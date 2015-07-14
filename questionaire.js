@@ -8,6 +8,7 @@ var QuestionaireBlock = function() {
     this.type = "QuestionaireBlock";
     this.x = ko.observable(0);
     this.y = ko.observable(0);
+    this.id = ko.observable(guid());
     this.container = new createjs.Container();
 
 
@@ -48,6 +49,7 @@ var QuestionaireBlock = function() {
 
 
 QuestionaireBlock.prototype.fromJS = function(questionaire) {
+    this.id(questionaire.id);
     this.setCoord(questionaire.x, questionaire.y);
     return this;
 };
@@ -55,6 +57,8 @@ QuestionaireBlock.prototype.fromJS = function(questionaire) {
 
 QuestionaireBlock.prototype.toJS = function() {
     return {
+        id: this.id(),
+        type: this.type,
         x: this.x(),
         y: this.y()
     };
