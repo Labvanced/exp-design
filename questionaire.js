@@ -10,6 +10,7 @@ var QuestionaireBlock = function(sequence) {
     this.x = ko.observable(0);
     this.y = ko.observable(0);
     this.id = ko.observable(guid());
+    this.questionData = null;
     this.ports = ko.observableArray();
     this.portsById = {};
     this.ports.subscribe(function() {
@@ -30,6 +31,7 @@ var QuestionaireBlock = function(sequence) {
         self.setCoord(mouseAt.x, mouseAt.y);
     });
     rect.addEventListener("dblclick", function (ev) {
+        uc.questionaireEditing = this;
         location.hash= "#questionnaireeditor";
     });
     this.container.addChild(rect);
@@ -83,6 +85,7 @@ QuestionaireBlock.prototype.fromJS = function(questionaire) {
         port.fromJS(questionaire.ports[i]);
         this.ports.push(port);
     }
+    this.questionData = questionaire.questionData;
     return this;
 };
 
@@ -99,6 +102,7 @@ QuestionaireBlock.prototype.toJS = function() {
         type: this.type,
         x: this.x(),
         y: this.y(),
+        questionData: this.questionData,
         ports: portsSerialized
     };
 };

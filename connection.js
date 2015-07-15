@@ -49,7 +49,7 @@ Connection.prototype.setPointers = function() {
     }
     function conn1Changed() {
         if (self.conn1()) {
-            console.log("conn1changed");
+            //console.log("conn1changed");
             self.element1 = self.sequence.elementsById[self.conn1().id];
             self.port1 = self.element1.portsById[self.conn1().portId];
             self.element1.x.subscribe(function(){
@@ -70,7 +70,7 @@ Connection.prototype.setPointers = function() {
     }
     function conn2Changed() {
         if (self.conn2()) {
-            console.log("conn2changed");
+            //console.log("conn2changed");
             self.element2 = self.sequence.elementsById[self.conn2().id];
             self.port2 = self.element2.portsById[self.conn2().portId];
             self.element2.x.subscribe(function(){
