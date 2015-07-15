@@ -5,6 +5,11 @@ var ExpData = function () {
 
 };
 
+
+ExpData.prototype.setPointers = function() {
+    this.sequence.setPointers();
+};
+
 ExpData.prototype.fromJS = function(exp_data) {
     this.sequence = new Sequence();
     if (exp_data.hasOwnProperty('sequence'))

@@ -1,14 +1,27 @@
 
 
 
-var EndBlock = function() {
+var EndBlock = function(sequence) {
 
     var self = this;
 
+    this.sequence = sequence;
     this.type = "EndBlock";
     this.x = ko.observable(0);
     this.y = ko.observable(0);
     this.id = ko.observable(guid());
+    this.ports = ko.observableArray();
+    this.portsById = {};
+    this.ports.subscribe(function() {
+        self.portsById = {};
+        var ports = self.ports();
+        for (var i= 0, len=ports.length; i<len; i++) {
+            self.portsById[ports[i].id()] = ports[i];
+        }
+    });
+
+
+
     this.container = new createjs.Container();
 
     var circ = new createjs.Shape();
@@ -23,28 +36,55 @@ var EndBlock = function() {
     txt.textAlign = 'center';
     this.container.addChild(txt);
 
-    var outputCirc = new createjs.Shape();
-    outputCirc.graphics.setStrokeStyle(8).beginStroke("red").drawCircle(-40, 0, 3);
-    this.container.addChild(outputCirc);
 
-    self.setCoord(250, 200);
+
+    // add input port
+    this.inPort = new Port(this);
+    this.inPort.x(-40);
+    this.inPort.type = "executeIn";
+    this.ports.push(this.inPort);
+
+
+    // add all port containers to this container:
+    for (var i= 0, len=this.ports().length; i<len; i++) {
+        this.container.addChild(this.ports()[i].container);
+    }
+
+
+    self.setCoord(600, 300);
 
 };
 
 
+EndBlock.prototype.setPointers = function() {
+
+};
+
 EndBlock.prototype.fromJS = function(end) {
     this.id(end.id);
     this.setCoord(end.x, end.y);
+    for (var i= 0, len=end.ports.length; i<len; i++) {
+        var port = new Port(this);
+        port.fromJS(end.ports[i]);
+        this.ports.push(port);
+    }
     return this;
 };
 
 
 EndBlock.prototype.toJS = function() {
+    var self = this;
+    var ports = self.ports();
+    var portsSerialized = [];
+    for (var i= 0, len=ports.length; i<len; i++) {
+        portsSerialized.push(ports[i].toJS());
+    }
     return {
         id: this.id(),
         type: this.type,
         x: this.x(),
-        y: this.y()
+        y: this.y(),
+        ports: portsSerialized
     };
 };
 
