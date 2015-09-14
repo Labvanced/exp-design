@@ -10,7 +10,9 @@ var QuestionaireBlock = function(sequence) {
     this.x = ko.observable(0);
     this.y = ko.observable(0);
     this.id = ko.observable(guid());
-    this.questionData = null;
+
+    this.questionnaireData = ko.observableArray([]);
+
     this.ports = ko.observableArray();
     this.portsById = {};
     this.ports.subscribe(function() {
@@ -30,8 +32,9 @@ var QuestionaireBlock = function(sequence) {
         var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
         self.setCoord(mouseAt.x, mouseAt.y);
     });
+    var self = this;
     rect.addEventListener("dblclick", function (ev) {
-        uc.questionaireEditing = this;
+        uc.questionaireEditing = self;
         location.hash= "#questionnaireeditor";
     });
     this.container.addChild(rect);
@@ -85,8 +88,31 @@ QuestionaireBlock.prototype.fromJS = function(questionaire) {
         port.fromJS(questionaire.ports[i]);
         this.ports.push(port);
     }
-    this.questionData = questionaire.questionData;
+    var data = questionaire.questionnaireData;
+    var elements = [];
+
+    for (var i= 0, len=data.length; i<len; i++) {
+        if (data[i].type == 'text'){
+            elements[i] = new TextElement(this);
+        }
+        else if (data[i].type == 'paragraph'){
+            elements[i] = new ParagraphElement(this);
+        }
+        else if (data[i].type == 'mChoice'){
+            elements[i] = new MChoiceElement(this);
+        }
+        else if (data[i].type == 'checkBox'){
+            elements[i] = new CheckBoxElement(this);
+        }
+        else if (data[i].type == 'scale'){
+            elements[i] = new ScaleElement(this);
+        }
+
+        elements[i].fromJS(data[i]);
+    }
+    this.questionnaireData(elements);
     return this;
+
 };
 
 
@@ -97,13 +123,20 @@ QuestionaireBlock.prototype.toJS = function() {
     for (var i= 0, len=ports.length; i<len; i++) {
         portsSerialized.push(ports[i].toJS());
     }
+    var questionnaireData = this.questionnaireData();
+    var questionnaireDataSerialized = [];
+    for (var i= 0, len=questionnaireData.length; i<len; i++) {
+        questionnaireDataSerialized.push(questionnaireData[i].toJS());
+    }
+
     return {
         id: this.id(),
         type: this.type,
         x: this.x(),
         y: this.y(),
-        questionData: this.questionData,
+        questionnaireData: questionnaireDataSerialized,
         ports: portsSerialized
+
     };
 };
 
