@@ -116,6 +116,9 @@ Sequence.prototype.fromJS = function(sequence) {
             else if (sequence.elements[i].type == 'Sequence'){
                 elements[i] = new Sequence(this);
             }
+            else if (sequence.elements[i].type == 'TextBlock'){
+                elements[i] = new TextBlock(this);
+            }
 
             elements[i].fromJS(sequence.elements[i]);
         }
