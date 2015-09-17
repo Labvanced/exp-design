@@ -34,7 +34,7 @@ var ImageEditorData = function(sequence) {
     var self = this;
     rect.addEventListener("dblclick", function (ev) {
         uc.imageEditing = self;
-        location.hash= "#imageeditor";
+        location.hash= "#imageEditor";
     });
     this.container.addChild(rect);
 
