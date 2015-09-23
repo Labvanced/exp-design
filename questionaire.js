@@ -28,6 +28,7 @@ var QuestionaireBlock = function(sequence) {
 
     var rect = new createjs.Shape();
     rect.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
+
     rect.addEventListener("pressmove", function (ev) {
         var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
         self.setCoord(mouseAt.x, mouseAt.y);
