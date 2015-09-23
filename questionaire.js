@@ -35,7 +35,7 @@ var QuestionaireBlock = function(sequence) {
     var self = this;
     rect.addEventListener("dblclick", function (ev) {
         uc.questionaireEditing = self;
-        location.hash= "#questionnaireeditor";
+        page("/questionnaireeditor");
     });
     this.container.addChild(rect);
 
