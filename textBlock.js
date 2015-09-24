@@ -34,7 +34,7 @@ var TextBlock = function(sequence) {
     var self = this;
     rect.addEventListener("dblclick", function (ev) {
         uc.textEditing = self;
-        page("/texteditor");
+        page("/page/texteditor");
     });
     this.container.addChild(rect);
 
