@@ -1,11 +1,11 @@
 
 
 
-var EndBlock = function(sequence) {
+var EndBlock = function(parentSequence) {
 
     var self = this;
 
-    this.sequence = sequence;
+    this.parentSequence = parentSequence;
     this.type = "EndBlock";
     this.x = ko.observable(0);
     this.y = ko.observable(0);

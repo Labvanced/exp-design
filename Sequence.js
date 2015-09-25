@@ -1,11 +1,11 @@
 
-var Sequence = function (sequence) {
+var Sequence = function (parentSequence) {
 
     var self = this;
 
 
     // properties when as block in parent
-    this.sequence = sequence;
+    this.parentSequence = parentSequence;
     this.type = "Sequence";
     this.x = ko.observable(0);
     this.y = ko.observable(0);
@@ -31,7 +31,7 @@ var Sequence = function (sequence) {
         self.setCoord(mouseAt.x, mouseAt.y);
     });
     rect.addEventListener("dblclick", function (ev) {
-        uc.experimentEditor.editSequence(self);
+        uc.experimentEditor.setDataModel(self);
     });
     this.container.addChild(rect);
 
@@ -87,43 +87,43 @@ Sequence.prototype.setPointers = function() {
     }
 };
 
-Sequence.prototype.fromJS = function(sequence) {
+Sequence.prototype.fromJS = function(parentSequence) {
 
-    this.id(sequence.id);
-    this.setCoord(sequence.x, sequence.y);
-    for (var i= 0, len=sequence.ports.length; i<len; i++) {
+    this.id(parentSequence.id);
+    this.setCoord(parentSequence.x, parentSequence.y);
+    for (var i= 0, len=parentSequence.ports.length; i<len; i++) {
         var port = new Port(this);
-        port.fromJS(sequence.ports[i]);
+        port.fromJS(parentSequence.ports[i]);
         this.ports.push(port);
     }
 
 
     var elements = [];
-    if (sequence.hasOwnProperty('elements')) {
-        for (var i= 0, len=sequence.elements.length; i<len; i++) {
-            if (sequence.elements[i].type == 'StartBlock'){
+    if (parentSequence.hasOwnProperty('elements')) {
+        for (var i= 0, len=parentSequence.elements.length; i<len; i++) {
+            if (parentSequence.elements[i].type == 'StartBlock'){
                 elements[i] = new StartBlock(this);
             }
-            else if (sequence.elements[i].type == 'EndBlock'){
+            else if (parentSequence.elements[i].type == 'EndBlock'){
                 elements[i] = new EndBlock(this);
             }
-            else if (sequence.elements[i].type == 'QuestionaireBlock'){
-                elements[i] = new QuestionaireBlock(this);
+            else if (parentSequence.elements[i].type == 'QuestionnaireEditorData'){
+                elements[i] = new QuestionnaireEditorData(this);
             }
-            else if (sequence.elements[i].type == 'Connection'){
+            else if (parentSequence.elements[i].type == 'Connection'){
                 elements[i] = new Connection(this);
             }
-            else if (sequence.elements[i].type == 'Sequence'){
+            else if (parentSequence.elements[i].type == 'Sequence'){
                 elements[i] = new Sequence(this);
             }
-            else if (sequence.elements[i].type == 'TextBlock'){
-                elements[i] = new TextBlock(this);
+            else if (parentSequence.elements[i].type == 'TextEditorData'){
+                elements[i] = new TextEditorData(this);
             }
-            else if (sequence.elements[i].type == 'ImageEditorData'){
+            else if (parentSequence.elements[i].type == 'ImageEditorData'){
                 elements[i] = new ImageEditorData(this);
             }
 
-            elements[i].fromJS(sequence.elements[i]);
+            elements[i].fromJS(parentSequence.elements[i]);
         }
     }
     this.elements(elements);

@@ -1,17 +1,17 @@
 
 
 
-var ImageEditorData = function(sequence) {
+var ImageEditorData = function(parentSequence) {
 
     var self = this;
 
-    this.sequence = sequence;
+    this.parentSequence = parentSequence;
     this.type = "ImageEditorData";
     this.x = ko.observable(0);
     this.y = ko.observable(0);
     this.id = ko.observable(guid());
 
-    this.content = ko.observableArray([]);
+    this.elements = ko.observableArray([]);
 
     this.ports = ko.observableArray();
     this.portsById = {};
@@ -33,7 +33,7 @@ var ImageEditorData = function(sequence) {
     });
     var self = this;
     rect.addEventListener("dblclick", function (ev) {
-        uc.imageEditing = self;
+        uc.imageEditorData = self;
         page("/page/imageEditor");
     });
     this.container.addChild(rect);

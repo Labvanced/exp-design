@@ -1,11 +1,11 @@
 
 
 
-var QuestionaireBlock = function(sequence) {
+var QuestionnaireEditorData = function(parentSequence) {
 
     var self = this;
 
-    this.sequence = sequence;
+    this.parentSequence = parentSequence;
     this.type = "QuestionaireBlock";
     this.x = ko.observable(0);
     this.y = ko.observable(0);
@@ -35,7 +35,7 @@ var QuestionaireBlock = function(sequence) {
     });
     var self = this;
     rect.addEventListener("dblclick", function (ev) {
-        uc.questionaireEditing = self;
+        uc.questionnaireEditorData = self;
         page("/page/questionnaireeditor");
     });
     this.container.addChild(rect);
@@ -76,12 +76,12 @@ var QuestionaireBlock = function(sequence) {
 
 
 
-QuestionaireBlock.prototype.setPointers = function() {
+QuestionnaireEditorData.prototype.setPointers = function() {
 
 };
 
 
-QuestionaireBlock.prototype.fromJS = function(questionaire) {
+QuestionnaireEditorData.prototype.fromJS = function(questionaire) {
     this.id(questionaire.id);
     this.setCoord(questionaire.x, questionaire.y);
     for (var i= 0, len=questionaire.ports.length; i<len; i++) {
@@ -117,7 +117,7 @@ QuestionaireBlock.prototype.fromJS = function(questionaire) {
 };
 
 
-QuestionaireBlock.prototype.toJS = function() {
+QuestionnaireEditorData.prototype.toJS = function() {
     var self = this;
     var ports = self.ports();
     var portsSerialized = [];
@@ -142,13 +142,12 @@ QuestionaireBlock.prototype.toJS = function() {
 };
 
 
-QuestionaireBlock.prototype.setCoord = function(x,y) {
+QuestionnaireEditorData.prototype.setCoord = function(x,y) {
 
     this.x(x);
     this.y(y);
     this.container.x = x;
     this.container.y = y;
-
 
     return this;
 };

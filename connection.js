@@ -1,9 +1,9 @@
 
 
 
-var Connection = function(sequence) {
+var Connection = function(parentSequence) {
     var self = this;
-    this.sequence = sequence;
+    this.parentSequence = parentSequence;
     this.type = "Connection";
     this.conn1 = ko.observable(null);
     this.conn2 = ko.observable(null);
@@ -50,7 +50,7 @@ Connection.prototype.setPointers = function() {
     function conn1Changed() {
         if (self.conn1()) {
             //console.log("conn1changed");
-            self.element1 = self.sequence.elementsById[self.conn1().id];
+            self.element1 = self.parentSequence.elementsById[self.conn1().id];
             self.port1 = self.element1.portsById[self.conn1().portId];
             self.element1.x.subscribe(function(){
                 recalc1pos();
@@ -71,7 +71,7 @@ Connection.prototype.setPointers = function() {
     function conn2Changed() {
         if (self.conn2()) {
             //console.log("conn2changed");
-            self.element2 = self.sequence.elementsById[self.conn2().id];
+            self.element2 = self.parentSequence.elementsById[self.conn2().id];
             self.port2 = self.element2.portsById[self.conn2().portId];
             self.element2.x.subscribe(function(){
                 recalc2pos();

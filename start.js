@@ -1,11 +1,11 @@
 
 
 
-var StartBlock = function(sequence) {
+var StartBlock = function(parentSequence) {
 
     var self = this;
 
-    this.sequence = sequence;
+    this.parentSequence = parentSequence;
     this.type = "StartBlock";
     this.x = ko.observable(0);
     this.y = ko.observable(0);
