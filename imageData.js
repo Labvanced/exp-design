@@ -5,27 +5,13 @@ var ImageData= function(parentSequence) {
 
     var self = this;
     this.parentSequence = parentSequence;
-    this.x = ko.observable(0);
-    this.y = ko.observable(0);
+    this.type = "ImageData";
     this.id = ko.observable(guid());
     this.container = new createjs.Container();
     var rect = new createjs.Shape();
-    rect.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
-    rect.addEventListener("pressmove", function (ev) {
-        var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
-        self.setCoord(mouseAt.x, mouseAt.y);
-    });
-    var self = this;
-    rect.addEventListener("dblclick", function (ev) {
-       // how properties, not yet implemented
-    });
-    this.container.addChild(rect);
+    this.gridSpaceInPixels = 25;
 
-    var txt = new createjs.Text("Image", "16px Arial", "#FFF");
-    txt.textAlign = 'center';
-    this.container.addChild(txt);
-
-    self.setCoord(550, 300);
+    this.canvasElement = new CanvasElement(this);
 
 };
 
@@ -38,7 +24,7 @@ ImageData.prototype.setPointers = function() {
 
 ImageData.prototype.fromJS = function(textBlock) {
     this.id(textBlock.id);
-    this.setCoord(textBlock.x, textBlock.y);
+    this.canvasElement.fromJS(textBlock);
     for (var i= 0, len=textBlock.ports.length; i<len; i++) {
         var port = new Port(this);
         port.fromJS(textBlock.ports[i]);
@@ -60,8 +46,7 @@ ImageData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        x: this.x(),
-        y: this.y(),
+        canvasElement: this.canvasElement.toJS(),
         textData: this.textData(),
         ports: portsSerialized
 

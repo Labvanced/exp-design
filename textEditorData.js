@@ -6,9 +6,7 @@ var TextEditorData = function(parentSequence) {
     var self = this;
 
     this.parentSequence = parentSequence;
-    this.type = "TextBlock";
-    this.x = ko.observable(0);
-    this.y = ko.observable(0);
+    this.type = "TextEditorData";
     this.id = ko.observable(guid());
 
     this.textData = ko.observable('');
@@ -23,25 +21,6 @@ var TextEditorData = function(parentSequence) {
         }
     });
 
-    this.container = new createjs.Container();
-
-    var rect = new createjs.Shape();
-    rect.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
-    rect.addEventListener("pressmove", function (ev) {
-        var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
-        self.setCoord(mouseAt.x, mouseAt.y);
-    });
-    var self = this;
-    rect.addEventListener("dblclick", function (ev) {
-        uc.textEditorData = self;
-        page("/page/texteditor");
-    });
-    this.container.addChild(rect);
-
-    var txt = new createjs.Text("Text", "16px Arial", "#FFF");
-    txt.textAlign = 'center';
-    this.container.addChild(txt);
-
     // add input port
     this.inPort = new Port(this);
     this.inPort.x(-100);
@@ -54,15 +33,8 @@ var TextEditorData = function(parentSequence) {
     this.outPort.type = "executeOut";
     this.ports.push(this.outPort);
 
-
-
-    // add all port containers to this container:
-    for (var i= 0, len=this.ports().length; i<len; i++) {
-        this.container.addChild(this.ports()[i].container);
-    }
-
-    self.setCoord(550, 300);
-
+    this.canvasElement = new CanvasElement(this);
+    this.canvasElement.addPorts(this.ports());
 };
 
 
@@ -74,7 +46,7 @@ TextEditorData.prototype.setPointers = function() {
 
 TextEditorData.prototype.fromJS = function(textBlock) {
     this.id(textBlock.id);
-    this.setCoord(textBlock.x, textBlock.y);
+    this.canvasElement.fromJS(textBlock);
     for (var i= 0, len=textBlock.ports.length; i<len; i++) {
         var port = new Port(this);
         port.fromJS(textBlock.ports[i]);
@@ -96,22 +68,10 @@ TextEditorData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        x: this.x(),
-        y: this.y(),
+        canvasElement: this.canvasElement.toJS(),
         textData: this.textData(),
         ports: portsSerialized
 
     };
 };
 
-
-TextEditorData.prototype.setCoord = function(x,y) {
-
-    this.x(x);
-    this.y(y);
-    this.container.x = x;
-    this.container.y = y;
-
-
-    return this;
-};

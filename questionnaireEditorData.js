@@ -6,9 +6,7 @@ var QuestionnaireEditorData = function(parentSequence) {
     var self = this;
 
     this.parentSequence = parentSequence;
-    this.type = "QuestionaireBlock";
-    this.x = ko.observable(0);
-    this.y = ko.observable(0);
+    this.type = "QuestionnaireEditorData";
     this.id = ko.observable(guid());
 
     this.questionnaireData = ko.observableArray([]);
@@ -23,30 +21,6 @@ var QuestionnaireEditorData = function(parentSequence) {
         }
     });
 
-    this.container = new createjs.Container();
-
-
-    var rect = new createjs.Shape();
-    rect.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
-
-    rect.addEventListener("pressmove", function (ev) {
-        var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
-        self.setCoord(mouseAt.x, mouseAt.y);
-    });
-    var self = this;
-    rect.addEventListener("dblclick", function (ev) {
-        uc.questionnaireEditorData = self;
-        page("/page/questionnaireeditor");
-    });
-    this.container.addChild(rect);
-
-
-    var txt = new createjs.Text("Questionaire", "16px Arial", "#FFF");
-    txt.textAlign = 'center';
-    this.container.addChild(txt);
-
-
-
 
     // add input port
     this.inPort = new Port(this);
@@ -55,22 +29,14 @@ var QuestionnaireEditorData = function(parentSequence) {
     this.ports.push(this.inPort);
 
 
-
     // add output port
     this.outPort = new Port(this);
     this.outPort.x(100);
     this.outPort.type = "executeOut";
     this.ports.push(this.outPort);
 
-
-
-    // add all port containers to this container:
-    for (var i= 0, len=this.ports().length; i<len; i++) {
-        this.container.addChild(this.ports()[i].container);
-    }
-
-
-    self.setCoord(550, 300);
+    this.canvasElement = new CanvasElement(this);
+    this.canvasElement.addPorts(this.ports());
 
 };
 
@@ -83,7 +49,8 @@ QuestionnaireEditorData.prototype.setPointers = function() {
 
 QuestionnaireEditorData.prototype.fromJS = function(questionaire) {
     this.id(questionaire.id);
-    this.setCoord(questionaire.x, questionaire.y);
+    this.canvasElement.fromJS(questionaire);
+    this.canvasElement.setCoord(questionaire.x, questionaire.y);
     for (var i= 0, len=questionaire.ports.length; i<len; i++) {
         var port = new Port(this);
         port.fromJS(questionaire.ports[i]);
@@ -133,8 +100,7 @@ QuestionnaireEditorData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        x: this.x(),
-        y: this.y(),
+        canvasElement: this.canvasElement.toJS(),
         questionnaireData: questionnaireDataSerialized,
         ports: portsSerialized
 
@@ -142,12 +108,3 @@ QuestionnaireEditorData.prototype.toJS = function() {
 };
 
 
-QuestionnaireEditorData.prototype.setCoord = function(x,y) {
-
-    this.x(x);
-    this.y(y);
-    this.container.x = x;
-    this.container.y = y;
-
-    return this;
-};

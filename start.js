@@ -7,8 +7,6 @@ var StartBlock = function(parentSequence) {
 
     this.parentSequence = parentSequence;
     this.type = "StartBlock";
-    this.x = ko.observable(0);
-    this.y = ko.observable(0);
     this.id = ko.observable(guid());
     this.ports = ko.observableArray();
     this.portsById = {};
@@ -20,7 +18,16 @@ var StartBlock = function(parentSequence) {
         }
     });
 
+    // add output port
+    this.outPort = new Port(this);
+    this.outPort.x(40);
+    this.outPort.type = "executeOut";
+    this.ports.push(this.outPort);
 
+    this.canvasElement = new CanvasElement(this);
+    this.canvasElement.addPorts(this.ports());
+
+    /**
     this.container = new createjs.Container();
 
     var circ = new createjs.Shape();
@@ -36,14 +43,6 @@ var StartBlock = function(parentSequence) {
     this.container.addChild(txt);
 
 
-    // add output port
-    this.outPort = new Port(this);
-    this.outPort.x(40);
-    this.outPort.type = "executeOut";
-    this.ports.push(this.outPort);
-
-
-
     // add all port containers to this container:
     for (var i= 0, len=this.ports().length; i<len; i++) {
         this.container.addChild(this.ports()[i].container);
@@ -51,6 +50,7 @@ var StartBlock = function(parentSequence) {
 
 
     self.setCoord(250, 300);
+     **/
 
 };
 
@@ -62,18 +62,21 @@ StartBlock.prototype.setPointers = function() {
 
 StartBlock.prototype.fromJS = function(start) {
     this.id(start.id);
-    this.setCoord(start.x, start.y);
+    this.canvasElement.fromJS(start);
     for (var i= 0, len=start.ports.length; i<len; i++) {
         var port = new Port(this);
         port.fromJS(start.ports[i]);
         this.ports.push(port);
     }
+    this.canvasElement = new CanvasElement(this);
+    this.canvasElement.addPorts(this.ports());
     return this;
 };
 
 
 StartBlock.prototype.toJS = function() {
     var self = this;
+
     var ports = self.ports();
     var portsSerialized = [];
     for (var i= 0, len=ports.length; i<len; i++) {
@@ -82,20 +85,7 @@ StartBlock.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        x: this.x(),
-        y: this.y(),
+        canvasElement: this.canvasElement.toJS(),
         ports: portsSerialized
     };
-};
-
-
-StartBlock.prototype.setCoord = function(x,y) {
-
-    this.x(x);
-    this.y(y);
-    this.container.x = x;
-    this.container.y = y;
-
-
-    return this;
 };

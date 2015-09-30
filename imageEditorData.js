@@ -7,10 +7,9 @@ var ImageEditorData = function(parentSequence) {
 
     this.parentSequence = parentSequence;
     this.type = "ImageEditorData";
-    this.x = ko.observable(0);
-    this.y = ko.observable(0);
     this.id = ko.observable(guid());
 
+    this.currSelectedElement = ko.observable(0);
     this.elements = ko.observableArray([]);
 
     this.ports = ko.observableArray();
@@ -22,25 +21,6 @@ var ImageEditorData = function(parentSequence) {
             self.portsById[ports[i].id()] = ports[i];
         }
     });
-
-    this.container = new createjs.Container();
-
-    var rect = new createjs.Shape();
-    rect.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
-    rect.addEventListener("pressmove", function (ev) {
-        var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
-        self.setCoord(mouseAt.x, mouseAt.y);
-    });
-    var self = this;
-    rect.addEventListener("dblclick", function (ev) {
-        uc.imageEditorData = self;
-        page("/page/imageEditor");
-    });
-    this.container.addChild(rect);
-
-    var txt = new createjs.Text("Image-Editor", "16px Arial", "#FFF");
-    txt.textAlign = 'center';
-    this.container.addChild(txt);
 
     // add input port
     this.inPort = new Port(this);
@@ -55,13 +35,8 @@ var ImageEditorData = function(parentSequence) {
     this.ports.push(this.outPort);
 
 
-
-    // add all port containers to this container:
-    for (var i= 0, len=this.ports().length; i<len; i++) {
-        this.container.addChild(this.ports()[i].container);
-    }
-
-    self.setCoord(550, 300);
+    this.canvasElement = new CanvasElement(this,"rectangle");
+    this.canvasElement.addPorts(this.ports());
 
 };
 
@@ -74,7 +49,7 @@ ImageEditorData.prototype.setPointers = function() {
 
 ImageEditorData.prototype.fromJS = function(textBlock) {
     this.id(textBlock.id);
-    this.setCoord(textBlock.x, textBlock.y);
+    this.canvasElement.fromJS(textBlock);
     for (var i= 0, len=textBlock.ports.length; i<len; i++) {
         var port = new Port(this);
         port.fromJS(textBlock.ports[i]);
@@ -89,28 +64,17 @@ ImageEditorData.prototype.toJS = function() {
     var self = this;
     var ports = self.ports();
     var portsSerialized = [];
+
     for (var i= 0, len=ports.length; i<len; i++) {
         portsSerialized.push(ports[i].toJS());
     }
     return {
         id: this.id(),
         type: this.type,
-        x: this.x(),
-        y: this.y(),
+        canvasElement: this.canvasElement.toJS(),
         ports: portsSerialized
 
     };
 };
 
-
-ImageEditorData.prototype.setCoord = function(x,y) {
-
-    this.x(x);
-    this.y(y);
-    this.container.x = x;
-    this.container.y = y;
-
-
-    return this;
-};
 

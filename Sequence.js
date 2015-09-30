@@ -7,8 +7,6 @@ var Sequence = function (parentSequence) {
     // properties when as block in parent
     this.parentSequence = parentSequence;
     this.type = "Sequence";
-    this.x = ko.observable(0);
-    this.y = ko.observable(0);
     this.id = ko.observable(guid());
     this.ports = ko.observableArray();
     this.portsById = {};
@@ -19,36 +17,12 @@ var Sequence = function (parentSequence) {
             self.portsById[ports[i].id()] = ports[i];
         }
     });
-    this.container = new createjs.Container();
-    self.setCoord(550, 300);
-
-
-
-    var rect = new createjs.Shape();
-    rect.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
-    rect.addEventListener("pressmove", function (ev) {
-        var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
-        self.setCoord(mouseAt.x, mouseAt.y);
-    });
-    rect.addEventListener("dblclick", function (ev) {
-        uc.experimentEditor.setDataModel(self);
-    });
-    this.container.addChild(rect);
-
-
-    var txt = new createjs.Text("Block", "16px Arial", "#FFF");
-    txt.textAlign = 'center';
-    this.container.addChild(txt);
-
-
-
 
     // add input port
     this.inPort = new Port(this);
     this.inPort.x(-100);
     this.inPort.type = "executeIn";
     this.ports.push(this.inPort);
-
 
 
     // add output port
@@ -58,11 +32,8 @@ var Sequence = function (parentSequence) {
     this.ports.push(this.outPort);
 
 
-
-    // add all port containers to this container:
-    for (var i= 0, len=this.ports().length; i<len; i++) {
-        this.container.addChild(this.ports()[i].container);
-    }
+    this.canvasElement = new CanvasElement(this);
+    this.canvasElement.addPorts(this.ports());
 
 
 
@@ -90,7 +61,7 @@ Sequence.prototype.setPointers = function() {
 Sequence.prototype.fromJS = function(parentSequence) {
 
     this.id(parentSequence.id);
-    this.setCoord(parentSequence.x, parentSequence.y);
+    this.canvasElement.fromJS(parentSequence);
     for (var i= 0, len=parentSequence.ports.length; i<len; i++) {
         var port = new Port(this);
         port.fromJS(parentSequence.ports[i]);
@@ -147,19 +118,8 @@ Sequence.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        x: this.x(),
-        y: this.y(),
+        canvasElement: this.canvasElement.toJS(),
         elements: elements,
         ports: portsSerialized
     };
-};
-
-
-
-Sequence.prototype.setCoord = function(x,y) {
-    this.x(x);
-    this.y(y);
-    this.container.x = x;
-    this.container.y = y;
-    return this;
 };
