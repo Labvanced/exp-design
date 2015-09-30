@@ -1,5 +1,5 @@
-var CanvasElement = function(editor) {
-    this.editor = editor;
+var CanvasElement = function(dataModel) {
+    this.editor = dataModel;
 
     this.x = ko.observable(0);
     this.y = ko.observable(0);
@@ -8,17 +8,17 @@ var CanvasElement = function(editor) {
     var elem = new createjs.Shape();
     var self = this;
 
-    if (editor.type =="StartBlock"){
+    if (dataModel.type =="StartBlock"){
         elem.graphics.beginStroke("black").beginFill("gray").drawCircle(0, 0, 40);
         var prelabel = "Start";
     }
 
-    else if (editor.type =="EndBlock") {
+    else if (dataModel.type =="EndBlock") {
         elem.graphics.beginStroke("black").beginFill("gray").drawCircle(0, 0, 40);
         var prelabel = "End";
     }
 
-    else if (editor.type =="Sequence") {
+    else if (dataModel.type =="Sequence") {
 
         elem.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
         var prelabel = "Block";
@@ -29,7 +29,7 @@ var CanvasElement = function(editor) {
     }
 
 
-    else if (editor.type =="ImageEditorData") {
+    else if (dataModel.type =="ImageEditorData") {
         elem.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
         var prelabel = "Image-Editor";
 
@@ -39,7 +39,7 @@ var CanvasElement = function(editor) {
         });
     }
 
-    else if (editor.type =="QuestionnaireEditorData") {
+    else if (dataModel.type =="QuestionnaireEditorData") {
         elem.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
         var prelabel = "Questionnaire";
 
@@ -51,7 +51,7 @@ var CanvasElement = function(editor) {
     }
 
 
-    else if (editor.type =="TextEditorData") {
+    else if (dataModel.type =="TextEditorData") {
         elem.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
         var prelabel = "Text-Editor";
 
@@ -61,7 +61,7 @@ var CanvasElement = function(editor) {
         });
     }
 
-    else if (editor.type =="ImageData") {
+    else if (dataModel.type =="ImageData") {
         elem.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
         var prelabel = "Image";
 
@@ -82,7 +82,7 @@ var CanvasElement = function(editor) {
         });
     }
 
-    else if (editor.type =="execute") {
+    else if (dataModel.type =="execute") {
 
         elem.graphics.setStrokeStyle(8).beginStroke("red").drawCircle(0, 0, 3);
         elem.addEventListener("click", function (ev) {
@@ -104,13 +104,13 @@ var CanvasElement = function(editor) {
 
     this.container.addChild(elem);
 
-    if (editor.type !="execute"){
+    if (dataModel.type !="execute"){
         var label = new createjs.Text(prelabel, "16px Arial", "#FFF");
         label.textAlign = 'center';
         this.container.addChild(label);
     }
 
-    if (!editor.type =="execute" || !editor.type=="ImageData"){
+    if (!dataModel.type =="execute" || !dataModel.type=="ImageData"){
         elem.addEventListener("pressmove", function (ev) {
             var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
             self.setCoord( mouseAt.x, mouseAt.y  );
