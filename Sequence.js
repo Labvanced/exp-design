@@ -2,43 +2,22 @@
 var Sequence = function (parentSequence) {
 
     var self = this;
-
-
-    // properties when as block in parent
     this.parentSequence = parentSequence;
-    this.type = "Sequence";
+    // serialized
     this.id = ko.observable(guid());
-    this.ports = ko.observableArray();
-    this.portsById = {};
-    this.ports.subscribe(function() {
-        self.portsById = {};
-        var ports = self.ports();
-        for (var i= 0, len=ports.length; i<len; i++) {
-            self.portsById[ports[i].id()] = ports[i];
-        }
-    });
+    this.type = "Sequence";
 
-    // add input port
-    this.inPort = new Port(this);
-    this.inPort.x(-100);
-    this.inPort.type = "executeIn";
-    this.ports.push(this.inPort);
+    // not serialized
+    this.shape = "square";
+    this.label = "Experiment-Editor";
+    this.portTypes = ["executeIn", "executeOut"];
 
-
-    // add output port
-    this.outPort = new Port(this);
-    this.outPort.x(100);
-    this.outPort.type = "executeOut";
-    this.ports.push(this.outPort);
-
-
-    this.canvasElement = new CanvasElement(this);
-    this.canvasElement.addPorts(this.ports());
-
-
-
-    // properties used when looking within this sequence:
+    // sub-Structures (serialized below)
     this.elements = ko.observableArray();
+    this.canvasElement = new CanvasElement(this);
+    this.portHandler = new PortHandler(this);
+
+    // ordered Elements by Id:
     this.elementsById = {};
     this.elements.subscribe(function() {
         self.elementsById = {};
@@ -48,7 +27,8 @@ var Sequence = function (parentSequence) {
         }
     });
 
-
+    // add Ports to Renderer
+    this.canvasElement.addPorts(this.portHandler.ports());
 };
 
 Sequence.prototype.setPointers = function() {
@@ -58,43 +38,39 @@ Sequence.prototype.setPointers = function() {
     }
 };
 
-Sequence.prototype.fromJS = function(parentSequence) {
+Sequence.prototype.fromJS = function(sequence) {
 
-    this.id(parentSequence.id);
-    this.canvasElement.fromJS(parentSequence);
-    for (var i= 0, len=parentSequence.ports.length; i<len; i++) {
-        var port = new Port(this);
-        port.fromJS(parentSequence.ports[i]);
-        this.ports.push(port);
-    }
-
+    this.id(sequence.id);
+    this.type = sequence.type;
+    this.canvasElement.fromJS(sequence.canvasElement);
+    this.portHandler.fromJS(sequence.portHandler);
 
     var elements = [];
-    if (parentSequence.hasOwnProperty('elements')) {
-        for (var i= 0, len=parentSequence.elements.length; i<len; i++) {
-            if (parentSequence.elements[i].type == 'StartBlock'){
+    if (sequence.hasOwnProperty('elements')) {
+        for (var i= 0, len=sequence.elements.length; i<len; i++) {
+            if (sequence.elements[i].type == 'Start'){
                 elements[i] = new StartBlock(this);
             }
-            else if (parentSequence.elements[i].type == 'EndBlock'){
+            else if (sequence.elements[i].type == 'End'){
                 elements[i] = new EndBlock(this);
             }
-            else if (parentSequence.elements[i].type == 'QuestionnaireEditorData'){
+            else if (sequence.elements[i].type == 'QuestionnaireEditorData'){
                 elements[i] = new QuestionnaireEditorData(this);
             }
-            else if (parentSequence.elements[i].type == 'Connection'){
+            else if (sequence.elements[i].type == 'Connection'){
                 elements[i] = new Connection(this);
             }
-            else if (parentSequence.elements[i].type == 'Sequence'){
+            else if (sequence.elements[i].type == 'Sequence'){
                 elements[i] = new Sequence(this);
             }
-            else if (parentSequence.elements[i].type == 'TextEditorData'){
+            else if (sequence.elements[i].type == 'TextEditorData'){
                 elements[i] = new TextEditorData(this);
             }
-            else if (parentSequence.elements[i].type == 'ImageEditorData'){
+            else if (sequence.elements[i].type == 'ImageEditorData'){
                 elements[i] = new ImageEditorData(this);
             }
 
-            elements[i].fromJS(parentSequence.elements[i]);
+            elements[i].fromJS(sequence.elements[i]);
         }
     }
     this.elements(elements);
@@ -105,12 +81,6 @@ Sequence.prototype.fromJS = function(parentSequence) {
 
 Sequence.prototype.toJS = function() {
 
-    var self = this;
-    var ports = self.ports();
-    var portsSerialized = [];
-    for (var i= 0, len=ports.length; i<len; i++) {
-        portsSerialized.push(ports[i].toJS());
-    }
     var elements = [];
     for (var i= 0, len=this.elements().length; i<len; i++) {
         elements.push(this.elements()[i].toJS());
@@ -119,7 +89,7 @@ Sequence.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         canvasElement: this.canvasElement.toJS(),
-        elements: elements,
-        ports: portsSerialized
+        portHandler:this.portHandler.toJS(),
+        elements: elements
     };
 };

@@ -4,20 +4,28 @@
 
 var Port = function(element) {
 
-    var self = this;
     this.element = element;
-    this.type = "execute";
-    this.name = ko.observable("");
-    this.id = ko.observable(guid());
 
+    // serialized
+    this.id = ko.observable(guid());
+    this.type = "Port";
+    this.name = ko.observable("");
+
+    // not serialized
+    this.shape = "circle";
+    this.label = "";
+
+    // sub-Structures (serialized below)
     this.canvasElement = new CanvasElement(this);
 };
 
 
-Port.prototype.fromJS = function(port) {
-    this.id(port.id);
-    this.canvasElement.fromJS(port);
-    this.name(port.name);
+Port.prototype.fromJS = function(portData) {
+    this.id(portData.id);
+    this.type = portData.type;
+    this.name(portData.name);
+    this.canvasElement.fromJS(portData.canvasElement);
+
     return this;
 };
 
@@ -26,7 +34,7 @@ Port.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        canvasElement: this.canvasElement.toJS(),
-        name: this.name()
+        name: this.name(),
+        canvasElement: this.canvasElement.toJS()
     };
 };

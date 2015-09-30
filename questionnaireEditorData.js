@@ -3,41 +3,24 @@
 
 var QuestionnaireEditorData = function(parentSequence) {
 
-    var self = this;
-
     this.parentSequence = parentSequence;
-    this.type = "QuestionnaireEditorData";
+
+    // serialized
     this.id = ko.observable(guid());
+    this.type = "QuestionnaireEditorData";
 
-    this.questionnaireData = ko.observableArray([]);
+    // not serialized
+    this.shape = "square";
+    this.label = "Questionnaire-Editor";
+    this.portTypes = ["executeIn", "executeOut"];
 
-    this.ports = ko.observableArray();
-    this.portsById = {};
-    this.ports.subscribe(function() {
-        self.portsById = {};
-        var ports = self.ports();
-        for (var i= 0, len=ports.length; i<len; i++) {
-            self.portsById[ports[i].id()] = ports[i];
-        }
-    });
-
-
-    // add input port
-    this.inPort = new Port(this);
-    this.inPort.x(-100);
-    this.inPort.type = "executeIn";
-    this.ports.push(this.inPort);
-
-
-    // add output port
-    this.outPort = new Port(this);
-    this.outPort.x(100);
-    this.outPort.type = "executeOut";
-    this.ports.push(this.outPort);
-
+    // sub-Structures (serialized below)
+    this.elements = ko.observableArray([]);
     this.canvasElement = new CanvasElement(this);
-    this.canvasElement.addPorts(this.ports());
+    this.portHandler = new PortHandler(this);
 
+    // add Ports to Renderer
+    this.canvasElement.addPorts(this.portHandler.ports());
 };
 
 
@@ -47,18 +30,14 @@ QuestionnaireEditorData.prototype.setPointers = function() {
 };
 
 
-QuestionnaireEditorData.prototype.fromJS = function(questionaire) {
-    this.id(questionaire.id);
-    this.canvasElement.fromJS(questionaire);
-    this.canvasElement.setCoord(questionaire.x, questionaire.y);
-    for (var i= 0, len=questionaire.ports.length; i<len; i++) {
-        var port = new Port(this);
-        port.fromJS(questionaire.ports[i]);
-        this.ports.push(port);
-    }
-    var data = questionaire.questionnaireData;
-    var elements = [];
+QuestionnaireEditorData.prototype.fromJS = function(questionnaireData) {
+    this.id(questionnaireData.id);
+    this.type = questionnaireData.type;
+    this.canvasElement.fromJS(questionnaireData);
+    this.portHandler.fromJS(questionnaireData.canvasElement);
 
+    var data = questionnaireData.elements;
+    var elements = [];
     for (var i= 0, len=data.length; i<len; i++) {
         if (data[i].type == 'text'){
             elements[i] = new TextElement(this);
@@ -75,23 +54,17 @@ QuestionnaireEditorData.prototype.fromJS = function(questionaire) {
         else if (data[i].type == 'scale'){
             elements[i] = new ScaleElement(this);
         }
-
         elements[i].fromJS(data[i]);
     }
-    this.questionnaireData(elements);
-    return this;
+    this.elements(elements);
 
+    return this;
 };
 
 
 QuestionnaireEditorData.prototype.toJS = function() {
-    var self = this;
-    var ports = self.ports();
-    var portsSerialized = [];
-    for (var i= 0, len=ports.length; i<len; i++) {
-        portsSerialized.push(ports[i].toJS());
-    }
-    var questionnaireData = this.questionnaireData();
+
+    var questionnaireData = this.elements();
     var questionnaireDataSerialized = [];
     for (var i= 0, len=questionnaireData.length; i<len; i++) {
         questionnaireDataSerialized.push(questionnaireData[i].toJS());
@@ -101,9 +74,8 @@ QuestionnaireEditorData.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         canvasElement: this.canvasElement.toJS(),
-        questionnaireData: questionnaireDataSerialized,
-        ports: portsSerialized
-
+        portHandler:this.portHandler.toJS(),
+        elements: questionnaireDataSerialized
     };
 };
 

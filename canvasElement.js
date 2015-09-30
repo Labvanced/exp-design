@@ -3,36 +3,30 @@ var CanvasElement = function(dataModel) {
 
     this.x = ko.observable(0);
     this.y = ko.observable(0);
+    this.width = ko.observable(200);
+    this.height = ko.observable(100);
+    this.radius = ko.observable(40);
+
 
     this.container = new createjs.Container();
     var elem = new createjs.Shape();
     var self = this;
 
-    if (dataModel.type =="StartBlock"){
-        elem.graphics.beginStroke("black").beginFill("gray").drawCircle(0, 0, 40);
-        var prelabel = "Start";
+    if (dataModel.shape =="circle"){
+        elem.graphics.beginStroke("black").beginFill("gray").drawCircle(this.x(), this.y(), this.radius());
     }
 
-    else if (dataModel.type =="EndBlock") {
-        elem.graphics.beginStroke("black").beginFill("gray").drawCircle(0, 0, 40);
-        var prelabel = "End";
+    else if (dataModel.shape =="square") {
+        elem.graphics.beginStroke("black").beginFill("gray").drawRect(-this.width()/2, -this.height()/2, this.width(), this.height());
     }
 
     else if (dataModel.type =="Sequence") {
-
-        elem.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
-        var prelabel = "Block";
-
         elem.addEventListener("dblclick", function (ev) {
             uc.experimentEditor.setDataModel(self);
         });
     }
 
-
     else if (dataModel.type =="ImageEditorData") {
-        elem.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
-        var prelabel = "Image-Editor";
-
         elem.addEventListener("dblclick", function (ev) {
             uc.imageEditorData = self;
             page("/page/imageEditor");
@@ -40,31 +34,20 @@ var CanvasElement = function(dataModel) {
     }
 
     else if (dataModel.type =="QuestionnaireEditorData") {
-        elem.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
-        var prelabel = "Questionnaire";
-
         elem.addEventListener("dblclick", function (ev) {
             uc.questionnaireEditorData = self;
-            page("/page/questionnaireeditor");
+            page("/page/questionnaireEditor");
         });
-
     }
 
-
     else if (dataModel.type =="TextEditorData") {
-        elem.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
-        var prelabel = "Text-Editor";
-
         elem.addEventListener("dblclick", function (ev) {
             uc.textEditorData = self;
-            page("/page/texteditor");
+            page("/page/textEditor");
         });
     }
 
     else if (dataModel.type =="ImageData") {
-        elem.graphics.beginStroke("black").beginFill("gray").drawRect(-100, -50, 200, 100);
-        var prelabel = "Image";
-
         elem.addEventListener("mousedown", function (ev) {
             self.parentSequence.currSelectedElement = self.id;
         });
@@ -82,7 +65,7 @@ var CanvasElement = function(dataModel) {
         });
     }
 
-    else if (dataModel.type =="execute") {
+    else if (dataModel.type =="Port") {
 
         elem.graphics.setStrokeStyle(8).beginStroke("red").drawCircle(0, 0, 3);
         elem.addEventListener("click", function (ev) {
@@ -104,13 +87,13 @@ var CanvasElement = function(dataModel) {
 
     this.container.addChild(elem);
 
-    if (dataModel.type !="execute"){
-        var label = new createjs.Text(prelabel, "16px Arial", "#FFF");
+    if (dataModel.type !="Port"){
+        var label = new createjs.Text(dataModel.label, "16px Arial", "#FFF");
         label.textAlign = 'center';
         this.container.addChild(label);
     }
 
-    if (!dataModel.type =="execute" || !dataModel.type=="ImageData"){
+    if (!dataModel.type =="Port" || !dataModel.type=="ImageData"){
         elem.addEventListener("pressmove", function (ev) {
             var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
             self.setCoord( mouseAt.x, mouseAt.y  );

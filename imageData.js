@@ -3,16 +3,19 @@
 
 var ImageData= function(parentSequence) {
 
-    var self = this;
     this.parentSequence = parentSequence;
-    this.type = "ImageData";
+
+    // serialized
     this.id = ko.observable(guid());
-    this.container = new createjs.Container();
-    var rect = new createjs.Shape();
+    this.type = "ImageData";
+
+    // not serialized
+    this.shape = "square";
+    this.label = "Image";
     this.gridSpaceInPixels = 25;
 
+    // sub-Structures (serialized below)
     this.canvasElement = new CanvasElement(this);
-
 };
 
 
@@ -22,45 +25,19 @@ ImageData.prototype.setPointers = function() {
 };
 
 
-ImageData.prototype.fromJS = function(textBlock) {
-    this.id(textBlock.id);
-    this.canvasElement.fromJS(textBlock);
-    for (var i= 0, len=textBlock.ports.length; i<len; i++) {
-        var port = new Port(this);
-        port.fromJS(textBlock.ports[i]);
-        this.ports.push(port);
-    }
-    this.textData(textBlock.textData);
+ImageData.prototype.fromJS = function(image) {
+    this.id(image.id);
+    this.type = image.type;
+    this.canvasElement.fromJS(image.canvasElement);
     return this;
-
 };
 
-
 ImageData.prototype.toJS = function() {
-    var self = this;
-    var ports = self.ports();
-    var portsSerialized = [];
-    for (var i= 0, len=ports.length; i<len; i++) {
-        portsSerialized.push(ports[i].toJS());
-    }
+
     return {
         id: this.id(),
         type: this.type,
-        canvasElement: this.canvasElement.toJS(),
-        textData: this.textData(),
-        ports: portsSerialized
-
+        canvasElement: this.canvasElement.toJS()
     };
 };
 
-
-ImageData.prototype.setCoord = function(x,y) {
-
-    this.x(x);
-    this.y(y);
-    this.container.x = x;
-    this.container.y = y;
-
-
-    return this;
-};
