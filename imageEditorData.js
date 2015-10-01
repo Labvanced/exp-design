@@ -13,19 +13,21 @@ var ImageEditorData = function(parentSequence) {
 
     // not serialized
     this.shape = "square";
-    this.label = "Image-Editor";
+    this.label = "MediaEditor";
     this.portTypes = ["executeIn", "executeOut"];
 
     // sub-Structures (serialized below)
     this.elements = ko.observableArray([]);
-    this.canvasElement = new CanvasElement(this);
     this.portHandler = new PortHandler(this);
+    this.canvasElement = new CanvasElement(this);
 
-    // add Ports to Renderer
-    this.canvasElement.addPorts(this.portHandler.ports());
 };
 
-
+ImageEditorData.prototype.doubleClick = function() {
+    // this block was double clicked in the parent Experiment editor:
+    uc.imageEditorData = this;
+    page("/page/imageEditor");
+};
 
 ImageEditorData.prototype.setPointers = function() {
 
@@ -36,8 +38,8 @@ ImageEditorData.prototype.fromJS = function(editorData) {
     this.id(editorData.id);
     this.type = editorData.type;
     this.currSelectedElement(editorData.currSelectedElement);
-    this.canvasElement.fromJS(editorData);
-    this.portHandler.fromJS(editorData.canvasElement);
+    this.portHandler.fromJS(editorData.portHandler);
+    this.canvasElement.fromJS(editorData.canvasElement);
 
     var elements = [];
     if (editorData.hasOwnProperty('elements')) {
@@ -64,8 +66,8 @@ ImageEditorData.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         currSelectedElement: this.currSelectedElement(),
-        canvasElement: this.canvasElement.toJS(),
         portHandler:this.portHandler.toJS(),
+        canvasElement: this.canvasElement.toJS(),
         elements: elements
     };
 };

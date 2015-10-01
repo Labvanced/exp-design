@@ -2,21 +2,18 @@
 
 
 
-var Port = function(element) {
+var Port = function(portHandler) {
 
-    this.element = element;
+    this.portHandler = portHandler;
 
     // serialized
     this.id = ko.observable(guid());
     this.type = "Port";
     this.name = ko.observable("");
+    this.portType = ko.observable("executeIn"); // or executeOut or variabelIn or variableOut
 
-    // not serialized
-    this.shape = "circle";
-    this.label = "";
+    this.canvasShape = null; // will be created by canvasElement.js
 
-    // sub-Structures (serialized below)
-    this.canvasElement = new CanvasElement(this);
 };
 
 
@@ -24,7 +21,7 @@ Port.prototype.fromJS = function(portData) {
     this.id(portData.id);
     this.type = portData.type;
     this.name(portData.name);
-    this.canvasElement.fromJS(portData.canvasElement);
+    this.portType(portData.portType);
 
     return this;
 };
@@ -35,6 +32,6 @@ Port.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         name: this.name(),
-        canvasElement: this.canvasElement.toJS()
+        portType: this.portType()
     };
 };

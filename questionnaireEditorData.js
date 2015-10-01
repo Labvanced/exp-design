@@ -11,19 +11,21 @@ var QuestionnaireEditorData = function(parentSequence) {
 
     // not serialized
     this.shape = "square";
-    this.label = "Questionnaire-Editor";
+    this.label = "Questionnaire";
     this.portTypes = ["executeIn", "executeOut"];
 
     // sub-Structures (serialized below)
     this.elements = ko.observableArray([]);
-    this.canvasElement = new CanvasElement(this);
     this.portHandler = new PortHandler(this);
+    this.canvasElement = new CanvasElement(this);
 
-    // add Ports to Renderer
-    this.canvasElement.addPorts(this.portHandler.ports());
 };
 
-
+QuestionnaireEditorData.prototype.doubleClick = function() {
+    // this block was double clicked in the parent Experiment editor:
+    uc.questionnaireEditorData = this;
+    page("/page/questionnaireEditor");
+};
 
 QuestionnaireEditorData.prototype.setPointers = function() {
 

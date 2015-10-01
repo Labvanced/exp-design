@@ -11,19 +11,22 @@ var TextEditorData = function(parentSequence) {
 
     // not serialized
     this.shape = "square";
-    this.label = "Text-Editor";
+    this.label = "Text";
     this.portTypes = ["executeIn", "executeOut"];
 
     // sub-Structures (serialized below)
     this.elements = ko.observable('');
-    this.canvasElement = new CanvasElement(this);
     this.portHandler = new PortHandler(this);
+    this.canvasElement = new CanvasElement(this);
 
-    // add Ports to Renderer
-    this.canvasElement.addPorts(this.portHandler.ports());
 };
 
 
+TextEditorData.prototype.doubleClick = function() {
+    // this block was double clicked in the parent Experiment editor:
+    uc.textEditorData = this;
+    page("/page/textEditor");
+};
 
 TextEditorData.prototype.setPointers = function() {
 

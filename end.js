@@ -15,11 +15,9 @@ var EndBlock = function(parentSequence) {
     this.portTypes = ["executeIn"];
 
     // sub-Structures (serialized below)
-    this.canvasElement = new CanvasElement(this);
     this.portHandler = new PortHandler(this);
+    this.canvasElement = new CanvasElement(this);
 
-    // add Ports to Renderer
-    this.canvasElement.addPorts(this.portHandler.ports());
 };
 
 
@@ -30,8 +28,8 @@ EndBlock.prototype.setPointers = function() {
 EndBlock.prototype.fromJS = function(end) {
     this.id(end.id);
     this.type = end.type;
-    this.canvasElement.fromJS(end.canvasElement);
     this.portHandler.fromJS(end.portHandler);
+    this.canvasElement.fromJS(end.canvasElement);
     return this;
 };
 
@@ -40,8 +38,8 @@ EndBlock.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        canvasElement: this.canvasElement.toJS(),
-        portHandler:this.portHandler.toJS()
+        portHandler:this.portHandler.toJS(),
+        canvasElement: this.canvasElement.toJS()
     };
 };
 

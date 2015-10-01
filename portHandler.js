@@ -1,8 +1,8 @@
-var PortHandler = function(dataModel) {
+var PortHandler = function(parentDataModel) {
 
     var self = this;
-    this.dataModel = dataModel;
-    this.portTypes = this.dataModel.portTypes;
+    this.parentDataModel = parentDataModel;
+    this.portTypes = this.parentDataModel.portTypes;
 
     // sub-Structures (serialized below)
     this.ports = ko.observableArray();
@@ -18,9 +18,9 @@ var PortHandler = function(dataModel) {
     });
 
     // add Ports
-    for (var i = 0;i<this.portTypes;i++){
+    for (var i = 0;i<this.portTypes.length;i++){
         var port = new Port(this);
-        port.portType = this.portTypes[i];
+        port.portType(this.portTypes[i]);
         this.ports.push(port);
     }
 

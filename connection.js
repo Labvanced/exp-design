@@ -44,18 +44,18 @@ Connection.prototype.setPointers = function() {
     var self = this;
 
     function recalc1pos() {
-        self.xStart(self.element1.x() + self.port1.x());
-        self.yStart(self.element1.y() + self.port1.y());
+        self.xStart(self.element1.canvasElement.x() + self.port1.canvasShape.x);
+        self.yStart(self.element1.canvasElement.y() + self.port1.canvasShape.y);
     }
     function conn1Changed() {
         if (self.conn1()) {
             //console.log("conn1changed");
             self.element1 = self.parentSequence.elementsById[self.conn1().id];
-            self.port1 = self.element1.portsById[self.conn1().portId];
-            self.element1.x.subscribe(function(){
+            self.port1 = self.element1.portHandler.portsById[self.conn1().portId];
+            self.element1.canvasElement.x.subscribe(function(){
                 recalc1pos();
             });
-            self.element1.y.subscribe(function(){
+            self.element1.canvasElement.y.subscribe(function(){
                 recalc1pos();
             });
             recalc1pos();
@@ -65,18 +65,18 @@ Connection.prototype.setPointers = function() {
     conn1Changed();
 
     function recalc2pos() {
-        self.xEnd(self.element2.x() + self.port2.x());
-        self.yEnd(self.element2.y() + self.port2.y());
+        self.xEnd(self.element2.canvasElement.x() + self.port2.canvasShape.x);
+        self.yEnd(self.element2.canvasElement.y() + self.port2.canvasShape.y);
     }
     function conn2Changed() {
         if (self.conn2()) {
             //console.log("conn2changed");
             self.element2 = self.parentSequence.elementsById[self.conn2().id];
-            self.port2 = self.element2.portsById[self.conn2().portId];
-            self.element2.x.subscribe(function(){
+            self.port2 = self.element2.portHandler.portsById[self.conn2().portId];
+            self.element2.canvasElement.x.subscribe(function(){
                 recalc2pos();
             });
-            self.element2.y.subscribe(function(){
+            self.element2.canvasElement.y.subscribe(function(){
                 recalc2pos();
             });
             recalc2pos();

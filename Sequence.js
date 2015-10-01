@@ -9,13 +9,13 @@ var Sequence = function (parentSequence) {
 
     // not serialized
     this.shape = "square";
-    this.label = "Experiment-Editor";
+    this.label = "Experiment";
     this.portTypes = ["executeIn", "executeOut"];
 
     // sub-Structures (serialized below)
     this.elements = ko.observableArray();
-    this.canvasElement = new CanvasElement(this);
     this.portHandler = new PortHandler(this);
+    this.canvasElement = new CanvasElement(this);
 
     // ordered Elements by Id:
     this.elementsById = {};
@@ -38,12 +38,18 @@ Sequence.prototype.setPointers = function() {
     }
 };
 
+
+Sequence.prototype.doubleClick = function() {
+    // this block was double clicked in the parent Experiment editor:
+    uc.experimentEditor.setDataModel(this);
+};
+
 Sequence.prototype.fromJS = function(sequence) {
 
     this.id(sequence.id);
     this.type = sequence.type;
-    this.canvasElement.fromJS(sequence.canvasElement);
     this.portHandler.fromJS(sequence.portHandler);
+    this.canvasElement.fromJS(sequence.canvasElement);
 
     var elements = [];
     if (sequence.hasOwnProperty('elements')) {
@@ -88,8 +94,8 @@ Sequence.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        canvasElement: this.canvasElement.toJS(),
         portHandler:this.portHandler.toJS(),
+        canvasElement: this.canvasElement.toJS(),
         elements: elements
     };
 };
