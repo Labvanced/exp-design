@@ -7,6 +7,9 @@ var CanvasElement = function(dataModel) {
     this.height = ko.observable(100);
     this.radius1 = ko.observable(40);
 
+    this.gridSpaceInPixels = 25;
+
+
     // creating containers
     this.container = new createjs.Container();
     var elem = new createjs.Shape();
@@ -22,9 +25,11 @@ var CanvasElement = function(dataModel) {
 
 
 
+
+
     // define click callback for all elements:
     elem.addEventListener("click", function (ev) {
-        self.dataModel.parentSequence.currSelectedElement = self.id;
+        self.dataModel.parentSequence.currSelectedElement = self.dataModel.id();
     });
 
 
@@ -39,6 +44,9 @@ var CanvasElement = function(dataModel) {
 
     // defining pressmove callbacks
     if (dataModel.type =="ImageData"){
+        var resizeElem = new createjs.Shape();
+        resizeElem.graphics.beginFill("black").moveTo(100, 30).lineTo(100, 50).lineTo(80, 50).lineTo(100, 30);
+
         elem.addEventListener("pressmove", function (ev) {
             var xPos = self.x();
             var yPos = self.y();
@@ -63,6 +71,11 @@ var CanvasElement = function(dataModel) {
     var label = new createjs.Text(dataModel.label, "14px Arial", "#FFF");
     label.textAlign = 'center';
     this.container.addChild(label);
+    if (resizeElem){
+        this.container.addChild(resizeElem);
+    }
+
+
     self.setCoord(550, 300);
 
     this.drawAllPorts();

@@ -12,7 +12,31 @@ var ImageData= function(parentSequence) {
     // not serialized
     this.shape = "square";
     this.label = "Image";
-    this.gridSpaceInPixels = 25;
+
+
+    // from new exp panel
+    this.uploader = {
+        filename: ko.observable(''),
+        percent: ko.observable(0),
+        mbUploaded: ko.observable(0),
+        mbTotal: ko.observable(0),
+        imgFile: ko.observable(''),
+        selectedFile: null
+    };
+
+    this.img_file_id = ko.observable(null);
+    this.img_file_orig_name = ko.observable(null);
+    this.imgSource = ko.computed( function() {
+        if (this.img_file_id()) {
+            return "/files/" + this.img_file_id() + "/" + this.img_file_orig_name();
+        }
+        else {
+            return false
+        }
+    }, this);
+    //
+
+
 
     // sub-Structures (serialized below)
     this.canvasElement = new CanvasElement(this);
