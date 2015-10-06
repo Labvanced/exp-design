@@ -6,6 +6,7 @@ var Sequence = function (parentSequence) {
     // serialized
     this.id = ko.observable(guid());
     this.type = "Sequence";
+    this.currSelectedElement = ko.observable(0);
 
     // not serialized
     this.shape = "square";
@@ -29,6 +30,13 @@ var Sequence = function (parentSequence) {
 
     // add Ports to Renderer
     this.canvasElement.addPorts(this.portHandler.ports());
+
+
+    // set current Element as selected Element of parent
+    if (parentSequence){
+        this.parentSequence.currSelectedElement(this.id());
+    }
+
 };
 
 Sequence.prototype.setPointers = function() {
@@ -48,6 +56,7 @@ Sequence.prototype.fromJS = function(sequence) {
 
     this.id(sequence.id);
     this.type = sequence.type;
+    this.currSelectedElement(sequence.currSelectedElement);
     this.portHandler.fromJS(sequence.portHandler);
     this.canvasElement.fromJS(sequence.canvasElement);
 
@@ -94,6 +103,7 @@ Sequence.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
+        currSelectedElement: this.currSelectedElement(),
         portHandler:this.portHandler.toJS(),
         canvasElement: this.canvasElement.toJS(),
         elements: elements

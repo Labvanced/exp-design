@@ -4,7 +4,9 @@
 var ImageEditorData = function(parentSequence) {
 
 
+    var self = this;
     this.parentSequence = parentSequence;
+
 
     // serialized
     this.id = ko.observable(guid());
@@ -21,6 +23,21 @@ var ImageEditorData = function(parentSequence) {
     this.portHandler = new PortHandler(this);
     this.canvasElement = new CanvasElement(this);
 
+    // ordered Elements by Id:
+    this.elementsById = {};
+    this.elements.subscribe(function() {
+        self.elementsById = {};
+        var elements = self.elements();
+        for (var i= 0, len=elements.length; i<len; i++) {
+            self.elementsById[elements[i].id()] = elements[i];
+        }
+    });
+
+    // set current Element as selected Element of parent
+    if (parentSequence){
+        this.parentSequence.currSelectedElement(this.id());
+    }
+
 };
 
 ImageEditorData.prototype.doubleClick = function() {
@@ -31,6 +48,10 @@ ImageEditorData.prototype.doubleClick = function() {
 
 ImageEditorData.prototype.setPointers = function() {
 
+};
+
+ImageEditorData.prototype.getElementById = function(id) {
+    return  this.elementsById[id];
 };
 
 

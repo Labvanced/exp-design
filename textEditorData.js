@@ -19,6 +19,10 @@ var TextEditorData = function(parentSequence) {
     this.portHandler = new PortHandler(this);
     this.canvasElement = new CanvasElement(this);
 
+    // set current Element as selected Element of parent
+    if (parentSequence){
+        this.parentSequence.currSelectedElement(this.id());
+    }
 };
 
 

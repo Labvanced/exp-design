@@ -23,58 +23,14 @@ var CanvasElement = function(dataModel) {
         elem.graphics.beginStroke("black").beginFill("gray").drawRect(-this.width()/2, -this.height()/2, this.width(), this.height());
     }
 
+    // add Callbacks
+    this.addCallbacks(elem);
 
-
-
-
-    // define click callback for all elements:
-    elem.addEventListener("click", function (ev) {
-        self.dataModel.parentSequence.currSelectedElement = self.dataModel.id();
-    });
-
-
-
-    // defining double click callback
-    if (typeof dataModel.doubleClick === "function") {
-        elem.addEventListener("dblclick", function (ev) {
-            dataModel.doubleClick();
-        });
-    }
-
-
-    // defining pressmove callbacks
-    if (dataModel.type =="ImageData"){
-        var resizeElem = new createjs.Shape();
-        resizeElem.graphics.beginFill("black").moveTo(100, 30).lineTo(100, 50).lineTo(80, 50).lineTo(100, 30);
-
-        elem.addEventListener("pressmove", function (ev) {
-            var xPos = self.x();
-            var yPos = self.y();
-            var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
-            var currDistanceX = xPos - mouseAt.x;
-            var currDistanceY = yPos - mouseAt.y;
-            if( Math.abs(currDistanceX) >=self.gridSpaceInPixels || Math.abs(currDistanceY) >=self.gridSpaceInPixels ){
-                self.setCoord(mouseAt.x, mouseAt.y);
-            }
-        });
-    }
-    else{
-        elem.addEventListener("pressmove", function (ev) {
-            var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
-            self.setCoord( mouseAt.x, mouseAt.y  );
-        });
-    }
-
-
-
+    // add element to container
     this.container.addChild(elem);
     var label = new createjs.Text(dataModel.label, "14px Arial", "#FFF");
     label.textAlign = 'center';
     this.container.addChild(label);
-    if (resizeElem){
-        this.container.addChild(resizeElem);
-    }
-
 
     self.setCoord(550, 300);
 
@@ -159,9 +115,88 @@ CanvasElement.prototype.drawAllPorts = function() {
         }
 
     }
+};
 
+
+CanvasElement.prototype.replaceWithImage = function(imgSource) {
+    var self = this;
+    var img = new Image;
+    img.src = imgSource;
+
+    img.onload = function() {
+
+        self.container.removeAllChildren();
+        var sizeRatio = self.width() /this.width;
+        var xyRatio = this.width /this.height;
+
+        var w = this.width*sizeRatio;
+        var h = this.height*sizeRatio;
+        self.setWidthAndHeight(w,h);
+
+        var bitmap = new createjs.Bitmap(imgSource);
+        bitmap.x = -self.width()/2;
+        bitmap.y = -self.width()*xyRatio/2;
+        bitmap.scaleX = sizeRatio;
+        bitmap.scaleY = sizeRatio;
+
+        self.addCallbacks(bitmap);
+
+        var edgeLength = 20;
+        var resizeElem = new createjs.Shape();
+        resizeElem.graphics.beginFill("black").moveTo(self.width()/2+(edgeLength/2), self.height()/2-(edgeLength/2)).lineTo(self.width()/2+(edgeLength/2),self.height()/2+edgeLength-(edgeLength/2)).lineTo(self.width()/2-edgeLength+(edgeLength/2), self.height()/2+edgeLength-(edgeLength/2)).lineTo(self.width()/2+(edgeLength/2), self.height()/2-(edgeLength/2));
+
+        self.container.addChild(bitmap);
+        self.container.addChild(resizeElem);
+
+        //self.setCoord(550, 300);
+    }
 
 };
+
+CanvasElement.prototype.setWidthAndHeight = function(w,h) {
+    this.width(w);
+    this.height(h);
+};
+
+
+CanvasElement.prototype.addCallbacks = function(elem) {
+    var self = this;
+
+    // define click callback for all elements:
+    elem.addEventListener("click", function (ev) {
+        self.dataModel.parentSequence.currSelectedElement(self.dataModel.id());
+    });
+
+    // defining double click callback
+    if (typeof this.dataModel.doubleClick === "function") {
+        elem.addEventListener("dblclick", function (ev) {
+            self.dataModel.doubleClick();
+        });
+    }
+
+    // defining pressmove callbacks
+    if (this.dataModel.type =="ImageData"){
+
+        elem.addEventListener("pressmove", function (ev) {
+            var xPos = self.x();
+            var yPos = self.y();
+            var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
+            var currDistanceX = xPos - mouseAt.x;
+            var currDistanceY = yPos - mouseAt.y;
+            if( Math.abs(currDistanceX) >=self.gridSpaceInPixels || Math.abs(currDistanceY) >=self.gridSpaceInPixels ){
+                self.setCoord(mouseAt.x, mouseAt.y);
+            }
+        });
+    }
+    else{
+        elem.addEventListener("pressmove", function (ev) {
+            var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
+            self.setCoord( mouseAt.x, mouseAt.y  );
+        });
+    }
+
+};
+
 
 
 CanvasElement.prototype.addPorts = function(ports) {
@@ -169,7 +204,6 @@ CanvasElement.prototype.addPorts = function(ports) {
     for (var i= 0, len=ports.length; i<len; i++) {
         this.container.addChild(ports[i].container);
     }
-
 };
 
 

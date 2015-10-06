@@ -14,16 +14,6 @@ var ImageData= function(parentSequence) {
     this.label = "Image";
 
 
-    // from new exp panel
-    this.uploader = {
-        filename: ko.observable(''),
-        percent: ko.observable(0),
-        mbUploaded: ko.observable(0),
-        mbTotal: ko.observable(0),
-        imgFile: ko.observable(''),
-        selectedFile: null
-    };
-
     this.img_file_id = ko.observable(null);
     this.img_file_orig_name = ko.observable(null);
     this.imgSource = ko.computed( function() {
@@ -34,18 +24,26 @@ var ImageData= function(parentSequence) {
             return false
         }
     }, this);
-    //
-
-
 
     // sub-Structures (serialized below)
     this.canvasElement = new CanvasElement(this);
+
+    // set current Element as selected Element of parent
+    if (parentSequence){
+        this.parentSequence.currSelectedElement(this.id());
+    }
 };
+
+
 
 
 
 ImageData.prototype.setPointers = function() {
 
+};
+
+ImageData.prototype.createImageInstance = function() {
+    this.canvasElement.replaceWithImage(this.imgSource());
 };
 
 
