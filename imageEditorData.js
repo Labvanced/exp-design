@@ -11,7 +11,8 @@ var ImageEditorData = function(parentSequence) {
     // serialized
     this.id = ko.observable(guid());
     this.type = "ImageEditorData";
-    this.currSelectedElement = ko.observable(0);
+    this.currSelectedElement = ko.observable(null);
+    this.name = ko.observable("Media Editor");
 
     // not serialized
     this.shape = "square";
@@ -33,10 +34,6 @@ var ImageEditorData = function(parentSequence) {
         }
     });
 
-    // set current Element as selected Element of parent
-    if (parentSequence){
-        this.parentSequence.currSelectedElement(this.id());
-    }
 
 };
 
@@ -47,7 +44,7 @@ ImageEditorData.prototype.doubleClick = function() {
 };
 
 ImageEditorData.prototype.setPointers = function() {
-
+    this.canvasElement.setActiveElement();
 };
 
 ImageEditorData.prototype.getElementById = function(id) {
@@ -58,6 +55,7 @@ ImageEditorData.prototype.getElementById = function(id) {
 ImageEditorData.prototype.fromJS = function(editorData) {
     this.id(editorData.id);
     this.type = editorData.type;
+    this.name = editorData.name;
     this.currSelectedElement(editorData.currSelectedElement);
     this.portHandler.fromJS(editorData.portHandler);
     this.canvasElement.fromJS(editorData.canvasElement);
@@ -86,6 +84,7 @@ ImageEditorData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
+        name:  this.name,
         currSelectedElement: this.currSelectedElement(),
         portHandler:this.portHandler.toJS(),
         canvasElement: this.canvasElement.toJS(),

@@ -18,10 +18,10 @@ var CanvasElement = function(dataModel) {
     var self = this;
 
     // drawing of elements
-    if (dataModel.shape =="circle"){
+    if (this.dataModel.shape =="circle"){
         elem.graphics.beginStroke("black").beginFill("gray").drawCircle(this.x(), this.y(), this.radius1());
     }
-    else if (dataModel.shape =="square") {
+    else if (this.dataModel.shape =="square") {
         elem.graphics.beginStroke("black").beginFill("gray").drawRect(-this.width()/2, -this.height()/2, this.width(), this.height());
     }
     elem.name = "placeholderBox";
@@ -30,9 +30,14 @@ var CanvasElement = function(dataModel) {
     this.addCallbacks(elem);
 
     // label and resize Element
-    var label = new createjs.Text(dataModel.label, "14px Arial", "#FFF");
+    var label = new createjs.Text(this.dataModel.name(), "14px Arial", "#FFF");
     label.textAlign = 'center';
     label.name = "label";
+    this.tabelBoxSubscription = this.dataModel.name.subscribe(function(newValue) {
+        self.container.getChildByName("label").text = newValue;
+    });
+
+
     var resizeElem = self.makeResizeElem();
 
     // add element to container
@@ -43,7 +48,8 @@ var CanvasElement = function(dataModel) {
     self.setCoord(550, 300);
 
     this.drawAllPorts();
-    this.setActiveElement();
+
+
 };
 
 
@@ -131,6 +137,8 @@ CanvasElement.prototype.replaceWithImage = function(imgSource) {
     var self = this;
     var img = new Image;
     img.src = imgSource;
+
+    this.tabelBoxSubscription.dispose();
 
     img.onload = function() {
 

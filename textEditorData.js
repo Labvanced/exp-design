@@ -8,6 +8,7 @@ var TextEditorData = function(parentSequence) {
     // serialized
     this.id = ko.observable(guid());
     this.type = "TextEditorData";
+    this.name = ko.observable("Text Editor");
 
     // not serialized
     this.shape = "square";
@@ -18,11 +19,6 @@ var TextEditorData = function(parentSequence) {
     this.elements = ko.observable('');
     this.portHandler = new PortHandler(this);
     this.canvasElement = new CanvasElement(this);
-
-    // set current Element as selected Element of parent
-    if (parentSequence){
-        this.parentSequence.currSelectedElement(this.id());
-    }
 };
 
 
@@ -33,13 +29,14 @@ TextEditorData.prototype.doubleClick = function() {
 };
 
 TextEditorData.prototype.setPointers = function() {
-
+    this.canvasElement.setActiveElement();
 };
 
 
 TextEditorData.prototype.fromJS = function(textData) {
     this.id(start.id);
     this.type = textData.type;
+    this.name = textData.name;
     this.canvasElement.fromJS(start.canvasElement);
     this.portHandler.fromJS(start.portHandler);
     this.elements(textData.elements);
@@ -52,6 +49,7 @@ TextEditorData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
+        name: this.name,
         canvasElement: this.canvasElement.toJS(),
         portHandler:this.portHandler.toJS(),
         elements: this.elements()

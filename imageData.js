@@ -12,7 +12,7 @@ var ImageData= function(parentSequence) {
     // not serialized
     this.shape = "square";
     this.label = "Image";
-    this.name = ko.observable();
+    this.name = ko.observable("Image");
 
 
     this.img_file_id = ko.observable(null);
@@ -29,10 +29,6 @@ var ImageData= function(parentSequence) {
     // sub-Structures (serialized below)
     this.canvasElement = new CanvasElement(this);
 
-    // set current Element as selected Element of parent
-    if (parentSequence){
-        this.parentSequence.currSelectedElement(this.id());
-    }
 };
 
 
@@ -40,7 +36,7 @@ var ImageData= function(parentSequence) {
 
 
 ImageData.prototype.setPointers = function() {
-
+    this.canvasElement.setActiveElement();
 };
 
 ImageData.prototype.createImageInstance = function() {
