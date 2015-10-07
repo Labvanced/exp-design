@@ -12,6 +12,7 @@ var ImageData= function(parentSequence) {
     // not serialized
     this.shape = "square";
     this.label = "Image";
+    this.name = ko.observable();
 
 
     this.img_file_id = ko.observable(null);
@@ -50,6 +51,7 @@ ImageData.prototype.createImageInstance = function() {
 ImageData.prototype.fromJS = function(image) {
     this.id(image.id);
     this.type = image.type;
+    this.name = image.name;
     this.canvasElement.fromJS(image.canvasElement);
     return this;
 };
@@ -59,6 +61,7 @@ ImageData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
+        name: this.name,
         canvasElement: this.canvasElement.toJS()
     };
 };

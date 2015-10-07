@@ -6,6 +6,8 @@ var CanvasElement = function(dataModel) {
     this.width = ko.observable(200);
     this.height = ko.observable(100);
     this.radius1 = ko.observable(40);
+    this.fullWidth = ko.observable(0);
+    this.fullHeight = ko.observable(0);
 
     this.gridSpaceInPixels = 25;
 
@@ -22,19 +24,26 @@ var CanvasElement = function(dataModel) {
     else if (dataModel.shape =="square") {
         elem.graphics.beginStroke("black").beginFill("gray").drawRect(-this.width()/2, -this.height()/2, this.width(), this.height());
     }
+    elem.name = "placeholderBox";
 
     // add Callbacks
     this.addCallbacks(elem);
 
-    // add element to container
-    this.container.addChild(elem);
+    // label and resize Element
     var label = new createjs.Text(dataModel.label, "14px Arial", "#FFF");
     label.textAlign = 'center';
+    label.name = "label";
+    var resizeElem = self.makeResizeElem();
+
+    // add element to container
+    this.container.addChild(elem);
     this.container.addChild(label);
+    this.container.addChild(resizeElem);
 
     self.setCoord(550, 300);
 
     this.drawAllPorts();
+    this.setActiveElement();
 };
 
 
@@ -126,29 +135,28 @@ CanvasElement.prototype.replaceWithImage = function(imgSource) {
     img.onload = function() {
 
         self.container.removeAllChildren();
-        var sizeRatio = self.width() /this.width;
-        var xyRatio = this.width /this.height;
+        self.fullWidth(this.width);
+        self.fullHeight(this.height);
+        var sizeRatio = self.width() /self.fullWidth();
+        var xyRatio =  self.fullWidth() /self.fullHeight();
 
-        var w = this.width*sizeRatio;
-        var h = this.height*sizeRatio;
+        var w = self.fullWidth()*sizeRatio;
+        var h = self.fullHeight()*sizeRatio;
         self.setWidthAndHeight(w,h);
 
         var bitmap = new createjs.Bitmap(imgSource);
         bitmap.x = -self.width()/2;
-        bitmap.y = -self.width()*xyRatio/2;
+        bitmap.y = -self.height()/2;
         bitmap.scaleX = sizeRatio;
         bitmap.scaleY = sizeRatio;
+        bitmap.name = "image";
 
         self.addCallbacks(bitmap);
 
-        var edgeLength = 20;
-        var resizeElem = new createjs.Shape();
-        resizeElem.graphics.beginFill("black").moveTo(self.width()/2+(edgeLength/2), self.height()/2-(edgeLength/2)).lineTo(self.width()/2+(edgeLength/2),self.height()/2+edgeLength-(edgeLength/2)).lineTo(self.width()/2-edgeLength+(edgeLength/2), self.height()/2+edgeLength-(edgeLength/2)).lineTo(self.width()/2+(edgeLength/2), self.height()/2-(edgeLength/2));
+        var resizeElem = self.makeResizeElem();
 
         self.container.addChild(bitmap);
         self.container.addChild(resizeElem);
-
-        //self.setCoord(550, 300);
     }
 
 };
@@ -159,12 +167,76 @@ CanvasElement.prototype.setWidthAndHeight = function(w,h) {
 };
 
 
+CanvasElement.prototype.makeResizeElem = function() {
+    var edgeLength = 20;
+    var resizeElem = new createjs.Shape();
+
+    resizeElem.x = this.width()/2;
+    resizeElem.y = this.height()/2;
+    resizeElem.graphics.beginFill("black").moveTo(edgeLength/2, -edgeLength/2).lineTo(edgeLength/2,edgeLength/2).lineTo(-edgeLength/2, edgeLength/2).lineTo(edgeLength/2, -edgeLength/2);
+
+
+    resizeElem.visible= true;
+    resizeElem.name = "resize";
+    var self = this;
+    resizeElem.addEventListener("pressmove", function (ev) {
+
+        var mouseAt = ev.currentTarget.globalToLocal(ev.stageX, ev.stageY);
+        var scaleChangeInPixel = mouseAt.x;
+        if (self.width()>= 10  || scaleChangeInPixel>0 ){
+
+            var scaleChangeInPercent = scaleChangeInPixel/self.width();
+            var scaleChangeAbsolute = self.container.getChildByName("image").scaleX*scaleChangeInPercent;
+
+            var sizeRatio = (self.width()+scaleChangeInPixel) /self.fullWidth();
+            var w = self.fullWidth()*sizeRatio;
+            var h = self.fullHeight()*sizeRatio;
+            self.setWidthAndHeight(w,h);
+
+           // ev.currentTarget.x += scaleChangeInPixel;
+           // ev.currentTarget.y += scaleChangeInPixel;
+            ev.currentTarget.x = self.width()/2;
+            ev.currentTarget.y = self.height()/2;
+            self.container.getChildByName("image").x = -self.width()/2;
+            self.container.getChildByName("image").y = -self.height()/2;
+
+            self.container.getChildByName("image").scaleX += scaleChangeAbsolute;
+            self.container.getChildByName("image").scaleY += scaleChangeAbsolute;
+        }
+    });
+
+    return resizeElem
+};
+
+
+CanvasElement.prototype.setActiveElement = function() {
+    if (this.dataModel.parentSequence){
+        this.dataModel.parentSequence.currSelectedElement(this.dataModel.id());
+        // hide all  resize elements
+        for (var i = 0;i<this.dataModel.parentSequence.elements().length;i++){
+            var elem = this.dataModel.parentSequence.elements()[i];
+            if (elem.canvasElement.container.getChildByName("resize")){
+                elem.canvasElement.container.getChildByName("resize").visible= false;
+            }
+
+        }
+        // set current resize active
+        if (this.container.getChildByName("resize")){
+            this.container.getChildByName("resize").visible= true;
+        }
+    }
+
+
+
+};
+
+
 CanvasElement.prototype.addCallbacks = function(elem) {
     var self = this;
 
     // define click callback for all elements:
     elem.addEventListener("click", function (ev) {
-        self.dataModel.parentSequence.currSelectedElement(self.dataModel.id());
+       self.setActiveElement();
     });
 
     // defining double click callback
