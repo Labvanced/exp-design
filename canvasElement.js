@@ -38,18 +38,50 @@ var CanvasElement = function(dataModel) {
     });
 
 
-    var resizeElem = self.makeResizeElem();
-
     // add element to container
     this.container.addChild(elem);
     this.container.addChild(label);
-    this.container.addChild(resizeElem);
 
     self.setCoord(550, 300);
 
     this.drawAllPorts();
+};
 
+CanvasElement.prototype.addCallbacks = function(elem) {
+    var self = this;
 
+    // define click callback for all elements:
+    elem.addEventListener("click", function (ev) {
+        self.setActiveElement();
+    });
+
+    // defining double click callback
+    if (typeof this.dataModel.doubleClick === "function") {
+        elem.addEventListener("dblclick", function (ev) {
+            self.dataModel.doubleClick();
+        });
+    }
+
+    // defining pressmove callbacks
+    if (this.dataModel.type =="ImageData"){
+
+        elem.addEventListener("pressmove", function (ev) {
+            var xPos = self.x();
+            var yPos = self.y();
+            var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
+            var currDistanceX = xPos - mouseAt.x;
+            var currDistanceY = yPos - mouseAt.y;
+            if( Math.abs(currDistanceX) >=self.gridSpaceInPixels || Math.abs(currDistanceY) >=self.gridSpaceInPixels ){
+                self.setCoord(mouseAt.x, mouseAt.y);
+            }
+        });
+    }
+    else{
+        elem.addEventListener("pressmove", function (ev) {
+            var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
+            self.setCoord( mouseAt.x, mouseAt.y  );
+        });
+    }
 };
 
 
@@ -59,14 +91,12 @@ CanvasElement.prototype.drawAllPorts = function() {
     // only execute if the element has a portHandler
     if (this.dataModel.portHandler){
 
-
         // first remove all previous port shapes:
         for(var i = this.container.children.length-1; i >= 0; i--){
             if(this.container.children[i].isPort) {
                 this.container.removeChildAt(i);
             }
         }
-
 
         // now draw all ports:
         var ports = this.dataModel.portHandler.ports();
@@ -92,7 +122,6 @@ CanvasElement.prototype.drawAllPorts = function() {
             width = this.width();
             height = this.height();
         }
-
 
         function createPortShape(portDataModel) {
             var elem = new createjs.Shape();
@@ -128,7 +157,6 @@ CanvasElement.prototype.drawAllPorts = function() {
             elem.y = -height/2 + executeOutOffsets * (i+1);
             this.container.addChild(elem);
         }
-
     }
 };
 
@@ -166,12 +194,6 @@ CanvasElement.prototype.replaceWithImage = function(imgSource) {
         self.container.addChild(bitmap);
         self.container.addChild(resizeElem);
     }
-
-};
-
-CanvasElement.prototype.setWidthAndHeight = function(w,h) {
-    this.width(w);
-    this.height(h);
 };
 
 
@@ -201,8 +223,6 @@ CanvasElement.prototype.makeResizeElem = function() {
             var h = self.fullHeight()*sizeRatio;
             self.setWidthAndHeight(w,h);
 
-           // ev.currentTarget.x += scaleChangeInPixel;
-           // ev.currentTarget.y += scaleChangeInPixel;
             ev.currentTarget.x = self.width()/2;
             ev.currentTarget.y = self.height()/2;
             self.container.getChildByName("image").x = -self.width()/2;
@@ -226,57 +246,19 @@ CanvasElement.prototype.setActiveElement = function() {
             if (elem.canvasElement.container.getChildByName("resize")){
                 elem.canvasElement.container.getChildByName("resize").visible= false;
             }
-
         }
         // set current resize active
         if (this.container.getChildByName("resize")){
             this.container.getChildByName("resize").visible= true;
         }
     }
-
-
-
 };
 
 
-CanvasElement.prototype.addCallbacks = function(elem) {
-    var self = this;
-
-    // define click callback for all elements:
-    elem.addEventListener("click", function (ev) {
-       self.setActiveElement();
-    });
-
-    // defining double click callback
-    if (typeof this.dataModel.doubleClick === "function") {
-        elem.addEventListener("dblclick", function (ev) {
-            self.dataModel.doubleClick();
-        });
-    }
-
-    // defining pressmove callbacks
-    if (this.dataModel.type =="ImageData"){
-
-        elem.addEventListener("pressmove", function (ev) {
-            var xPos = self.x();
-            var yPos = self.y();
-            var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
-            var currDistanceX = xPos - mouseAt.x;
-            var currDistanceY = yPos - mouseAt.y;
-            if( Math.abs(currDistanceX) >=self.gridSpaceInPixels || Math.abs(currDistanceY) >=self.gridSpaceInPixels ){
-                self.setCoord(mouseAt.x, mouseAt.y);
-            }
-        });
-    }
-    else{
-        elem.addEventListener("pressmove", function (ev) {
-            var mouseAt = self.container.parent.globalToLocal(ev.stageX, ev.stageY);
-            self.setCoord( mouseAt.x, mouseAt.y  );
-        });
-    }
-
+CanvasElement.prototype.setWidthAndHeight = function(w,h) {
+    this.width(w);
+    this.height(h);
 };
-
 
 
 CanvasElement.prototype.addPorts = function(ports) {

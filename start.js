@@ -29,7 +29,8 @@ StartBlock.prototype.setPointers = function() {
 StartBlock.prototype.fromJS = function(start) {
     this.id(start.id);
     this.type = start.type;
-    this.name = start.name;
+
+    this.name(start.name);
     this.portHandler.fromJS(start.portHandler);
     this.canvasElement.fromJS(start.canvasElement);
     return this;
@@ -40,7 +41,8 @@ StartBlock.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        name: this.name,
+
+        name: this.name(),
         portHandler:this.portHandler.toJS(),
         canvasElement: this.canvasElement.toJS()
     };

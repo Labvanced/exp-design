@@ -55,7 +55,8 @@ Sequence.prototype.fromJS = function(sequence) {
 
     this.id(sequence.id);
     this.type = sequence.type;
-    this.name = sequence.name;
+
+    this.name(sequence.name);
     this.currSelectedElement(sequence.currSelectedElement);
     this.portHandler.fromJS(sequence.portHandler);
     this.canvasElement.fromJS(sequence.canvasElement);
@@ -103,7 +104,7 @@ Sequence.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        name: this.name,
+        name: this.name(),
         currSelectedElement: this.currSelectedElement(),
         portHandler:this.portHandler.toJS(),
         canvasElement: this.canvasElement.toJS(),

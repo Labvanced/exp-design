@@ -36,7 +36,7 @@ TextEditorData.prototype.setPointers = function() {
 TextEditorData.prototype.fromJS = function(textData) {
     this.id(start.id);
     this.type = textData.type;
-    this.name = textData.name;
+    this.name(textData.name);
     this.canvasElement.fromJS(start.canvasElement);
     this.portHandler.fromJS(start.portHandler);
     this.elements(textData.elements);
@@ -49,7 +49,8 @@ TextEditorData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        name: this.name,
+
+        name: this.name(),
         canvasElement: this.canvasElement.toJS(),
         portHandler:this.portHandler.toJS(),
         elements: this.elements()

@@ -13,6 +13,9 @@ var ImageEditorData = function(parentSequence) {
     this.type = "ImageEditorData";
     this.currSelectedElement = ko.observable(null);
     this.name = ko.observable("Media Editor");
+    this.minPresentationTime = ko.observable(null);
+    this.maxPresentationTime = ko.observable(null);
+
 
     // not serialized
     this.shape = "square";
@@ -55,7 +58,10 @@ ImageEditorData.prototype.getElementById = function(id) {
 ImageEditorData.prototype.fromJS = function(editorData) {
     this.id(editorData.id);
     this.type = editorData.type;
-    this.name = editorData.name;
+
+    this.name(editorData.name);
+    this.minPresentationTime(editorData.minPresentationTime);
+    this.maxPresentationTime(editorData.maxPresentationTime);
     this.currSelectedElement(editorData.currSelectedElement);
     this.portHandler.fromJS(editorData.portHandler);
     this.canvasElement.fromJS(editorData.canvasElement);
@@ -84,7 +90,10 @@ ImageEditorData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        name:  this.name,
+
+        name:  this.name(),
+        minPresentationTime: this.minPresentationTime(),
+        maxPresentationTime: this.maxPresentationTime(),
         currSelectedElement: this.currSelectedElement(),
         portHandler:this.portHandler.toJS(),
         canvasElement: this.canvasElement.toJS(),

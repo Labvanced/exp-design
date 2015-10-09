@@ -37,7 +37,8 @@ QuestionnaireEditorData.prototype.setPointers = function() {
 QuestionnaireEditorData.prototype.fromJS = function(questionnaireData) {
     this.id(questionnaireData.id);
     this.type = questionnaireData.type;
-    this.name = questionnaireData.name;
+
+    this.name(questionnaireData.name);
     this.canvasElement.fromJS(questionnaireData);
     this.portHandler.fromJS(questionnaireData.canvasElement);
 
@@ -78,7 +79,8 @@ QuestionnaireEditorData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        name: this.name,
+
+        name: this.name(),
         canvasElement: this.canvasElement.toJS(),
         portHandler:this.portHandler.toJS(),
         elements: questionnaireDataSerialized

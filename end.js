@@ -31,7 +31,7 @@ EndBlock.prototype.setPointers = function() {
 EndBlock.prototype.fromJS = function(end) {
     this.id(end.id);
     this.type = end.type;
-    this.name = end.name;
+    this.name(end.name);
     this.portHandler.fromJS(end.portHandler);
     this.canvasElement.fromJS(end.canvasElement);
     return this;
@@ -42,7 +42,7 @@ EndBlock.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        name: this.name,
+        name: this.name(),
         portHandler:this.portHandler.toJS(),
         canvasElement: this.canvasElement.toJS()
     };

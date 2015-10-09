@@ -8,11 +8,16 @@ var ImageData= function(parentSequence) {
     // serialized
     this.id = ko.observable(guid());
     this.type = "ImageData";
+    this.name = ko.observable("Image");
+    this.minPresentationTime = ko.observable(this.parentSequence.minPresentationTime());
+    this.maxPresentationTime = ko.observable(this.parentSequence.maxPresentationTime());
+    this.keybordExitResponses = ko.observableArray(null);
+    this.mouseExitResponse = ko.observable(false);
+
 
     // not serialized
     this.shape = "square";
     this.label = "Image";
-    this.name = ko.observable("Image");
 
 
     this.img_file_id = ko.observable(null);
@@ -47,7 +52,12 @@ ImageData.prototype.createImageInstance = function() {
 ImageData.prototype.fromJS = function(image) {
     this.id(image.id);
     this.type = image.type;
-    this.name = image.name;
+
+    this.name(image.name);
+    this.minPresentationTime(image.minPresentationTime);
+    this.maxPresentationTime(image.maxPresentationTime);
+    this.keybordExitResponses(image.keybordExitResponses);
+    this.mouseExitResponse(image.mouseExitResponse);
     this.canvasElement.fromJS(image.canvasElement);
     return this;
 };
@@ -57,7 +67,12 @@ ImageData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        name: this.name,
+
+        name: this.name(),
+        minPresentationTime: this.minPresentationTime(),
+        maxPresentationTime: this.maxPresentationTime(),
+        keybordExitResponses: this.keybordExitResponses(),
+        mouseExitResponse: this.mouseExitResponse(),
         canvasElement: this.canvasElement.toJS()
     };
 };
