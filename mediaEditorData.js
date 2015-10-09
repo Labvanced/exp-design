@@ -1,7 +1,7 @@
 
 
 
-var ImageEditorData = function(parentSequence) {
+var MediaEditorData = function(parentSequence) {
 
 
     var self = this;
@@ -10,7 +10,7 @@ var ImageEditorData = function(parentSequence) {
 
     // serialized
     this.id = ko.observable(guid());
-    this.type = "ImageEditorData";
+    this.type = "MediaEditorData";
     this.currSelectedElement = ko.observable(null);
     this.name = ko.observable("Media Editor");
     this.minPresentationTime = ko.observable(null);
@@ -40,22 +40,22 @@ var ImageEditorData = function(parentSequence) {
 
 };
 
-ImageEditorData.prototype.doubleClick = function() {
+MediaEditorData.prototype.doubleClick = function() {
     // this block was double clicked in the parent Experiment editor:
-    uc.imageEditorData = this;
-    page("/page/imageEditor");
+    uc.mediaEditorData = this;
+    page("/page/editors/mediaEditor");
 };
 
-ImageEditorData.prototype.setPointers = function() {
+MediaEditorData.prototype.setPointers = function() {
     this.canvasElement.setActiveElement();
 };
 
-ImageEditorData.prototype.getElementById = function(id) {
+MediaEditorData.prototype.getElementById = function(id) {
     return  this.elementsById[id];
 };
 
 
-ImageEditorData.prototype.fromJS = function(editorData) {
+MediaEditorData.prototype.fromJS = function(editorData) {
     this.id(editorData.id);
     this.type = editorData.type;
 
@@ -81,7 +81,7 @@ ImageEditorData.prototype.fromJS = function(editorData) {
 };
 
 
-ImageEditorData.prototype.toJS = function() {
+MediaEditorData.prototype.toJS = function() {
     var elements = [];
     for (var i= 0, len=this.elements().length; i<len; i++) {
         elements.push(this.elements()[i].toJS());

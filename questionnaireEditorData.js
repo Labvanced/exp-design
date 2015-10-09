@@ -26,7 +26,7 @@ var QuestionnaireEditorData = function(parentSequence) {
 QuestionnaireEditorData.prototype.doubleClick = function() {
     // this block was double clicked in the parent Experiment editor:
     uc.questionnaireEditorData = this;
-    page("/page/questionnaireEditor");
+    page("/page/editors/questionnaireEditor");
 };
 
 QuestionnaireEditorData.prototype.setPointers = function() {

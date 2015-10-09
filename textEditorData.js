@@ -25,7 +25,7 @@ var TextEditorData = function(parentSequence) {
 TextEditorData.prototype.doubleClick = function() {
     // this block was double clicked in the parent Experiment editor:
     uc.textEditorData = this;
-    page("/page/textEditor");
+    page("/page/editors/textEditor");
 };
 
 TextEditorData.prototype.setPointers = function() {
@@ -34,7 +34,7 @@ TextEditorData.prototype.setPointers = function() {
 
 
 TextEditorData.prototype.fromJS = function(textData) {
-    this.id(start.id);
+    this.id(textData.id);
     this.type = textData.type;
     this.name(textData.name);
     this.canvasElement.fromJS(start.canvasElement);
