@@ -1,4 +1,4 @@
-
+// © by Caspar Goeke and Holger Finger
 
 
 var MediaEditorData = function(parentSequence) {

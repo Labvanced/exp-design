@@ -1,3 +1,6 @@
+// © by Caspar Goeke and Holger Finger
+
+
 var PortHandler = function(parentDataModel) {
 
     var self = this;

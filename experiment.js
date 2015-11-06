@@ -1,3 +1,5 @@
+// © by Caspar Goeke and Holger Finger
+
 
 var Experiment = function () {
     this.exp_id = ko.observable(0);

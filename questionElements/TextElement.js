@@ -1,3 +1,5 @@
+// © by Caspar Goeke and Holger Finger
+
 
 var TextElement = function() {
     this.type= "text";

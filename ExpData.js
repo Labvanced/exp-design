@@ -1,3 +1,4 @@
+// © by Caspar Goeke and Holger Finger
 
 var ExpData = function () {
 

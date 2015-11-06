@@ -1,3 +1,5 @@
+// © by Caspar Goeke and Holger Finger
+
 
 var Sequence = function (parentSequence) {
 

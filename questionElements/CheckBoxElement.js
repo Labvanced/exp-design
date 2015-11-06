@@ -1,3 +1,4 @@
+// © by Caspar Goeke and Holger Finger
 
 // CHECK BOX  ELEMENT //
 var CheckBoxElement= function() {

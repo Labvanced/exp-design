@@ -1,3 +1,5 @@
+// © by Caspar Goeke and Holger Finger
+
 var CanvasElement = function(dataModel) {
     this.dataModel = dataModel;
 
@@ -243,8 +245,10 @@ CanvasElement.prototype.setActiveElement = function() {
         // hide all  resize elements
         for (var i = 0;i<this.dataModel.parentSequence.elements().length;i++){
             var elem = this.dataModel.parentSequence.elements()[i];
-            if (elem.canvasElement.container.getChildByName("resize")){
-                elem.canvasElement.container.getChildByName("resize").visible= false;
+            if (elem.hasOwnProperty("canvasElement")){
+                if (elem.canvasElement.container.getChildByName("resize")){
+                    elem.canvasElement.container.getChildByName("resize").visible= false;
+                }
             }
         }
         // set current resize active

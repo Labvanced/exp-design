@@ -1,3 +1,5 @@
+// © by Caspar Goeke and Holger Finger
+
 // MULTIPLE CHOICE ELEMENT //
 var MChoiceElement = function() {
     this.type= "mChoice";
