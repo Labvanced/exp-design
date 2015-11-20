@@ -1,8 +1,9 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
 var QuestionnaireEditorData = function(parentSequence) {
 
+    var self = this;
     this.parentSequence = parentSequence;
 
     // serialized
@@ -20,6 +21,15 @@ var QuestionnaireEditorData = function(parentSequence) {
     this.portHandler = new PortHandler(this);
     this.canvasElement = new CanvasElement(this);
 
+    // ordered Elements by Id:
+    this.elementsById = {};
+    this.elements.subscribe(function() {
+        self.elementsById = {};
+        var elements = self.elements();
+        for (var i= 0, len=elements.length; i<len; i++) {
+            self.elementsById[elements[i].id()] = elements[i];
+        }
+    });
 
 };
 
@@ -39,8 +49,9 @@ QuestionnaireEditorData.prototype.fromJS = function(questionnaireData) {
     this.type = questionnaireData.type;
 
     this.name(questionnaireData.name);
-    this.canvasElement.fromJS(questionnaireData);
-    this.portHandler.fromJS(questionnaireData.canvasElement);
+    this.portHandler.fromJS(questionnaireData.portHandler);
+    this.canvasElement.fromJS(questionnaireData.canvasElement);
+
 
     var data = questionnaireData.elements;
     var elements = [];

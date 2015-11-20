@@ -1,4 +1,4 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
 var Sequence = function (parentSequence) {
@@ -86,6 +86,9 @@ Sequence.prototype.fromJS = function(sequence) {
             }
             else if (sequence.elements[i].type == 'ImageEditorData'){
                 elements[i] = new ImageEditorData(this);
+            }
+            else if (sequence.elements[i].type == 'MediaEditorData'){
+                elements[i] = new MediaEditorData(this);
             }
 
             elements[i].fromJS(sequence.elements[i]);
