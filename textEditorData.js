@@ -1,4 +1,4 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
 var TextEditorData = function(parentSequence) {
@@ -37,8 +37,8 @@ TextEditorData.prototype.fromJS = function(textData) {
     this.id(textData.id);
     this.type = textData.type;
     this.name(textData.name);
-    this.canvasElement.fromJS(start.canvasElement);
-    this.portHandler.fromJS(start.portHandler);
+    this.canvasElement.fromJS(textData.canvasElement);
+    this.portHandler.fromJS(textData.portHandler);
     this.elements(textData.elements);
     return this;
 

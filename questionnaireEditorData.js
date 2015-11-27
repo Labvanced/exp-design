@@ -22,14 +22,14 @@ var QuestionnaireEditorData = function(parentSequence) {
     this.canvasElement = new CanvasElement(this);
 
     // ordered Elements by Id:
-    this.elementsById = {};
+    /*this.elementsById = {};
     this.elements.subscribe(function() {
         self.elementsById = {};
         var elements = self.elements();
         for (var i= 0, len=elements.length; i<len; i++) {
             self.elementsById[elements[i].id()] = elements[i];
         }
-    });
+    });*/
 
 };
 
