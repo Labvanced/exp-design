@@ -1,10 +1,10 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var QuestionnaireEditorData = function(parentSequence) {
+var QuestionnaireEditorData = function(expData) {
 
     var self = this;
-    this.parentSequence = parentSequence;
+    this.expData = expData;
 
     // serialized
     this.id = ko.observable(guid());

@@ -1,37 +1,55 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
-var Session = function () {
+var Session = function (expData) {
+    this.expData = expData;
 
-    this.blocks = ko.observableArray([]);
+    this.id = ko.observable(guid());
     this.name = ko.observable("newSession");
-    var block1 = new Sequence();
-    this.blocks.push(block1);
-
+    this.type = "Session";
+    this.blocks = ko.observableArray([]).extend({sortById: null});
 };
 
+Session.prototype.addBlock = function(block) {
+    return this.blocks.push(block);
+};
 
 Session.prototype.setPointers = function() {
-    this.blocks.setPointers();
+    var self = this;
+
+    // convert ids to actual pointers:
+    this.blocks(jQuery.map( this.blocks(), function( id ) {
+        return self.expData.entities.byId[id];
+    } ));
 };
 
-
 Session.prototype.fromJS = function(session_data) {
-    var blocks = [];
-    if (session_data.hasOwnProperty('sessions')) {
-        for (var i= 0, len=session_data.blocks.length; i<len; i++) {
-            this.blocks.push(new Sequence());
-            blocks[i].fromJS(session_data.sessions[i]);
-        }
-    }
-    this.blocks(blocks);
+    this.id(session_data.id);
+    this.name(session_data.name);
+    this.blocks(session_data.blocks);
     return this;
 };
 
+Session.prototype.reAddEntities = function() {
+    var self = this;
+
+    // add the direct child nodes:
+    jQuery.each( this.blocks(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
+            self.expData.entities.push(elem);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        elem.reAddEntities();
+    } );
+};
 
 Session.prototype.toJS = function() {
 
     return {
-        blocks: this.blocks.toJS()
+        id: this.id(),
+        name: this.name(),
+        type: this.type,
+        blocks: jQuery.map( this.blocks(), function( elem ) { return elem.id(); } )
     };
 
 };

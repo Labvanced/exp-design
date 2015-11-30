@@ -1,9 +1,9 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var TextEditorData = function(parentSequence) {
+var TextEditorData = function(expData) {
 
-    this.parentSequence = parentSequence;
+    this.expData = expData;
 
     // serialized
     this.id = ko.observable(guid());
@@ -29,7 +29,7 @@ TextEditorData.prototype.doubleClick = function() {
 };
 
 TextEditorData.prototype.setPointers = function() {
-    this.canvasElement.setActiveElement();
+
 };
 
 

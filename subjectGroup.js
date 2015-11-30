@@ -1,36 +1,54 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
-var SubjectGroup = function () {
+var SubjectGroup = function (expData) {
+    this.expData = expData;
 
-    this.sessions = ko.observableArray([]);
-
+    this.id = ko.observable(guid());
     this.name = ko.observable("newGroup");
-    var session1 = new Session();
-    this.sessions.push(session1);
+    this.type = "SubjectGroup";
+    this.sessions = ko.observableArray([]).extend({sortById: null});
 };
 
+SubjectGroup.prototype.addSession = function(session) {
+    return this.sessions.push(session);
+};
 
 SubjectGroup.prototype.setPointers = function() {
-    this.sessions.setPointers();
+    var self = this;
+
+    // convert ids to actual pointers:
+    this.sessions(jQuery.map( this.sessions(), function( id ) {
+        return self.expData.entities.byId[id];
+    } ));
 };
 
 SubjectGroup.prototype.fromJS = function(group_data) {
-    var sessions = [];
-    if (group_data.hasOwnProperty('sessions')) {
-        for (var i= 0, len=group_data.sessions.length; i<len; i++) {
-            this.sessions.push(new Session());
-            sessions[i].fromJS(group_data.sessions[i]);
-        }
-    }
-    this.sessions(sessions);
+    this.id(group_data.id);
+    this.name(group_data.name);
+    this.sessions(group_data.sessions);
     return this;
 };
 
+SubjectGroup.prototype.reAddEntities = function() {
+    var self = this;
 
+    // add the direct child nodes:
+    jQuery.each( this.sessions(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
+            self.expData.entities.push(elem);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        elem.reAddEntities();
+    } );
+};
 
 SubjectGroup.prototype.toJS = function() {
     return {
-        sessions: this.sessions.toJS()
+        id: this.id(),
+        name: this.name(),
+        type: this.type,
+        sessions: jQuery.map( this.sessions(), function( elem ) { return elem.id(); } )
     };
 };
 

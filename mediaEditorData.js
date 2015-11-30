@@ -1,12 +1,11 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
-var MediaEditorData = function(parentSequence) {
+var MediaEditorData = function(expData) {
 
 
     var self = this;
-    this.parentSequence = parentSequence;
-
+    this.expData = expData;
 
     // serialized
     this.id = ko.observable(guid());
@@ -23,20 +22,9 @@ var MediaEditorData = function(parentSequence) {
     this.portTypes = ["executeIn", "executeOut"];
 
     // sub-Structures (serialized below)
-    this.elements = ko.observableArray([]);
+    this.elements = ko.observableArray([]).extend({sortById: null});
     this.portHandler = new PortHandler(this);
     this.canvasElement = new CanvasElement(this);
-
-    // ordered Elements by Id:
-    this.elementsById = {};
-    this.elements.subscribe(function() {
-        self.elementsById = {};
-        var elements = self.elements();
-        for (var i= 0, len=elements.length; i<len; i++) {
-            self.elementsById[elements[i].id()] = elements[i];
-        }
-    });
-
 
 };
 
@@ -51,7 +39,7 @@ MediaEditorData.prototype.setPointers = function() {
 };
 
 MediaEditorData.prototype.getElementById = function(id) {
-    return  this.elementsById[id];
+    return  this.elements.byId[id];
 };
 
 

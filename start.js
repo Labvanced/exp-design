@@ -1,13 +1,13 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
-var StartBlock = function(parentSequence) {
+var StartBlock = function(expData) {
 
-    this.parentSequence = parentSequence;
+    this.expData = expData;
 
     // serialized
     this.id = ko.observable(guid());
-    this.type = "Start";
+    this.type = "StartBlock";
 
     // not serialized
     this.shape = "circle";
@@ -22,7 +22,6 @@ var StartBlock = function(parentSequence) {
 
 
 StartBlock.prototype.setPointers = function() {
-    this.canvasElement.setActiveElement();
 };
 
 

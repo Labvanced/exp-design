@@ -1,9 +1,9 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
-var Connection = function(parentSequence) {
+var Connection = function(expData) {
     var self = this;
-    this.parentSequence = parentSequence;
+    this.expData = expData;
     this.type = "Connection";
     this.conn1 = ko.observable(null);
     this.conn2 = ko.observable(null);
@@ -50,7 +50,7 @@ Connection.prototype.setPointers = function() {
     function conn1Changed() {
         if (self.conn1()) {
             //console.log("conn1changed");
-            self.element1 = self.parentSequence.elementsById[self.conn1().id];
+            self.element1 = self.expData.entities.byId[self.conn1().id];
             self.port1 = self.element1.portHandler.portsById[self.conn1().portId];
             self.element1.canvasElement.x.subscribe(function(){
                 recalc1pos();
@@ -71,7 +71,7 @@ Connection.prototype.setPointers = function() {
     function conn2Changed() {
         if (self.conn2()) {
             //console.log("conn2changed");
-            self.element2 = self.parentSequence.elementsById[self.conn2().id];
+            self.element2 = self.expData.entities.byId[self.conn2().id];
             self.port2 = self.element2.portHandler.portsById[self.conn2().portId];
             self.element2.canvasElement.x.subscribe(function(){
                 recalc2pos();

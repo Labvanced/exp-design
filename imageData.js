@@ -1,16 +1,17 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
-var ImageData= function(parentSequence) {
+var ImageData= function(expData) {
 
-    this.parentSequence = parentSequence;
+    this.expData = expData;
 
     // serialized
     this.id = ko.observable(guid());
     this.type = "ImageData";
     this.name = ko.observable("Image");
-    this.minPresentationTime = ko.observable(this.parentSequence.minPresentationTime());
-    this.maxPresentationTime = ko.observable(this.parentSequence.maxPresentationTime());
+
+    this.stimulusOnset = ko.observable(null);
+    this.stimulusOffset = ko.observable(null);
     this.keybordExitResponses = ko.observableArray(null);
     this.mouseExitResponse = ko.observable(false);
 
@@ -54,8 +55,8 @@ ImageData.prototype.fromJS = function(image) {
     this.type = image.type;
 
     this.name(image.name);
-    this.minPresentationTime(image.minPresentationTime);
-    this.maxPresentationTime(image.maxPresentationTime);
+    this.stimulusOnset(image.stimulusOnset);
+    this.stimulusOffset(image.stimulusOffset);
     this.keybordExitResponses(image.keybordExitResponses);
     this.mouseExitResponse(image.mouseExitResponse);
     this.canvasElement.fromJS(image.canvasElement);

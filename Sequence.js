@@ -1,10 +1,11 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var Sequence = function (parentSequence) {
+var Sequence = function (expData) {
 
     var self = this;
-    this.parentSequence = parentSequence;
+    this.expData = expData;
+
     // serialized
     this.id = ko.observable(guid());
     this.type = "Sequence";
@@ -17,36 +18,27 @@ var Sequence = function (parentSequence) {
     this.portTypes = ["executeIn", "executeOut"];
 
     // sub-Structures (serialized below)
-    this.elements = ko.observableArray();
+    this.elements = ko.observableArray().extend({sortById: null});
+    this.elementsById = {};
     this.portHandler = new PortHandler(this);
     this.canvasElement = new CanvasElement(this);
-
-    // ordered Elements by Id:
-    this.elementsById = {};
-    this.elements.subscribe(function() {
-        self.elementsById = {};
-        var elements = self.elements();
-        for (var i= 0, len=elements.length; i<len; i++) {
-            self.elementsById[elements[i].id()] = elements[i];
-        }
-    });
 
     // add Ports to Renderer
     this.canvasElement.addPorts(this.portHandler.ports());
 };
 
 Sequence.prototype.setPointers = function() {
-    var elements = this.elements();
-    for (var i= 0, len=elements.length; i<len; i++) {
-        elements[i].setPointers();
-    }
-    this.canvasElement.setActiveElement();
+    var self = this;
+
+    // convert ids to actual pointers:
+    this.elements(jQuery.map( this.elements(), function( id ) {
+        return self.expData.entities.byId[id];
+    } ));
 };
 
 Sequence.prototype.getElementById = function(id) {
-    return  this.elementsById[id];
+    return  this.elements.byId[id];
 };
-
 
 Sequence.prototype.doubleClick = function() {
     // this block was double clicked in the parent Experiment editor:
@@ -56,56 +48,33 @@ Sequence.prototype.doubleClick = function() {
 Sequence.prototype.fromJS = function(sequence) {
 
     this.id(sequence.id);
-    this.type = sequence.type;
-
     this.name(sequence.name);
-    this.currSelectedElement(sequence.currSelectedElement);
     this.portHandler.fromJS(sequence.portHandler);
     this.canvasElement.fromJS(sequence.canvasElement);
-
-    var elements = [];
-    if (sequence.hasOwnProperty('elements')) {
-        for (var i= 0, len=sequence.elements.length; i<len; i++) {
-            if (sequence.elements[i].type == 'Start'){
-                elements[i] = new StartBlock(this);
-            }
-            else if (sequence.elements[i].type == 'End'){
-                elements[i] = new EndBlock(this);
-            }
-            else if (sequence.elements[i].type == 'QuestionnaireEditorData'){
-                elements[i] = new QuestionnaireEditorData(this);
-            }
-            else if (sequence.elements[i].type == 'Connection'){
-                elements[i] = new Connection(this);
-            }
-            else if (sequence.elements[i].type == 'Sequence'){
-                elements[i] = new Sequence(this);
-            }
-            else if (sequence.elements[i].type == 'TextEditorData'){
-                elements[i] = new TextEditorData(this);
-            }
-            else if (sequence.elements[i].type == 'ImageEditorData'){
-                elements[i] = new ImageEditorData(this);
-            }
-            else if (sequence.elements[i].type == 'MediaEditorData'){
-                elements[i] = new MediaEditorData(this);
-            }
-
-            elements[i].fromJS(sequence.elements[i]);
-        }
-    }
-    this.elements(elements);
+    this.elements(sequence.elements);
 
     return this;
 };
 
 
+Sequence.prototype.reAddEntities = function() {
+    var self = this;
+
+    // add the direct child nodes:
+    jQuery.each( this.elements(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
+            self.expData.entities.push(elem);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (elem.hasOwnProperty('reAddEntities'))
+            elem.reAddEntities();
+    } );
+
+};
+
 Sequence.prototype.toJS = function() {
 
-    var elements = [];
-    for (var i= 0, len=this.elements().length; i<len; i++) {
-        elements.push(this.elements()[i].toJS());
-    }
     return {
         id: this.id(),
         type: this.type,
@@ -113,6 +82,6 @@ Sequence.prototype.toJS = function() {
         currSelectedElement: this.currSelectedElement(),
         portHandler:this.portHandler.toJS(),
         canvasElement: this.canvasElement.toJS(),
-        elements: elements
+        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };
 };
