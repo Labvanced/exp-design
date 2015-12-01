@@ -1,20 +1,20 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var MediaEditorData = function(expData) {
+var FrameData = function(expData) {
     
     var self = this;
     this.expData = expData;
 
     // serialized
     this.id = ko.observable(guid());
-    this.type = "MediaEditorData";
-    this.name = ko.observable("Media Editor");
+    this.type = "FrameData";
+    this.name = ko.observable("NewFrame");
     this.maxPresentationTime = ko.observable(null);
 
     // not serialized
     this.shape = "square";
-    this.label = "MediaEditor";
+    this.label = "NewFrame";
     this.portTypes = ["executeIn", "executeOut"];
 
     // sub-Structures (serialized below)
@@ -25,13 +25,13 @@ var MediaEditorData = function(expData) {
 
 };
 
-MediaEditorData.prototype.doubleClick = function() {
+FrameData.prototype.doubleClick = function() {
     // this block was double clicked in the parent Experiment editor:
     uc.mediaEditorData = this;
     page("/page/editors/mediaEditor");
 };
 
-MediaEditorData.prototype.setPointers = function() {
+FrameData.prototype.setPointers = function() {
     var self = this;
 
     // convert ids to actual pointers:
@@ -40,12 +40,12 @@ MediaEditorData.prototype.setPointers = function() {
     } ));
 };
 
-MediaEditorData.prototype.getElementById = function(id) {
+FrameData.prototype.getElementById = function(id) {
     return  this.elements.byId[id];
 };
 
 
-MediaEditorData.prototype.reAddEntities = function() {
+FrameData.prototype.reAddEntities = function() {
     var self = this;
 
     // add the direct child nodes:
@@ -61,7 +61,7 @@ MediaEditorData.prototype.reAddEntities = function() {
 
 };
 
-MediaEditorData.prototype.fromJS = function(data) {
+FrameData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
@@ -75,7 +75,7 @@ MediaEditorData.prototype.fromJS = function(data) {
     return this;
 };
 
-MediaEditorData.prototype.toJS = function() {
+FrameData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,

@@ -43,8 +43,8 @@ ExpData.prototype.fromJS = function(data) {
                 case 'TextEditorData':
                     entity = new TextEditorData(self);
                     break;
-                case 'MediaEditorData':
-                    entity = new MediaEditorData(self);
+                case 'FrameData':
+                    entity = new FrameData(self);
                     break;
                 case 'SubjectGroup':
                     entity = new SubjectGroup(self);
@@ -52,6 +52,9 @@ ExpData.prototype.fromJS = function(data) {
                     break;
                 case 'Session':
                     entity = new Session(self);
+                    break;
+                case 'ImageData':
+                    entity = new ImageData(self);
                     break;
                 default:
                     console.error("type "+ entityJson.type + " is not defined in factory method.")

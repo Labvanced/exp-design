@@ -54,7 +54,8 @@ CanvasElement.prototype.addCallbacks = function(elem) {
 
     // define click callback for all elements:
     elem.addEventListener("click", function (ev) {
-        self.setActiveElement();
+        //self.setActiveElement();
+        uc.currentEditor.setActiveElement(self.dataModel);
     });
 
     // defining double click callback
@@ -240,6 +241,8 @@ CanvasElement.prototype.makeResizeElem = function() {
 
 
 CanvasElement.prototype.setActiveElement = function() {
+    uc.currentEditor.setActiveElement();
+
     if (this.dataModel.parentSequence){
         this.dataModel.parentSequence.currSelectedElement(this.dataModel.id());
         // hide all  resize elements
