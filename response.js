@@ -1,22 +1,19 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var Response= function(parentSequence) {
+var Response= function(parent) {
 
-    this.parentSequence = parentSequence;
+    this.parent = parent;
 
     // serialized
-    this.id = ko.observable(guid());
-    this.type = "responseAndPresentation";
-    this.name = ko.observable("responseAndPresentation");
-    this.responseType = ko.observable(0);
-    this.responseTime =  ko.observable(0);
-    this.infiniteResponseTime =  ko.observable(false);
-    this.keybordExitResponses = ko.observableArray(null);
-    this.mouseExitResponse = ko.observable(false);
-    this.minPresentationTime = ko.observable(this.parentSequence.minPresentationTime());
-    this.maxPresentationTime = ko.observable(this.parentSequence.maxPresentationTime());
-    this.infinitePresentationTime =  ko.observable(false);
+    this.type = "Response";
+    this.name = ko.observable("Response");
+    this.responseType = ko.observable("keyPress"); // or mouseClick or ...
+    this.responseKey = ko.observable(null); // keyboard key or leftClick or RightClick...
+
+    this.minResponseTime =  ko.observable(null);
+    this.maxResponseTime =  ko.observable(null);
+    this.action = ko.observableArray();
 };
 
 
@@ -34,12 +31,10 @@ Response.prototype.fromJS = function(data) {
     this.minPresentationTime(data.minPresentationTime);
     this.maxPresentationTime(data.maxPresentationTime);
     this.infinitePresentationTime(data.infinitePresentationTime);
-
     return this;
 };
 
 Response.prototype.toJS = function() {
-
     return {
         id: this.id(),
         type: this.type,
@@ -52,8 +47,6 @@ Response.prototype.toJS = function() {
         minPresentationTime: this.minPresentationTime(),
         maxPresentationTime: this.maxPresentationTime(),
         infinitePresentationTime: this.infinitePresentationTime()
-
-
     };
 };
 

@@ -54,25 +54,22 @@ Sequence.prototype.reAddEntities = function() {
             self.expData.entities.push(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
-        if (elem.hasOwnProperty('reAddEntities'))
+        if (elem.reAddEntities)
             elem.reAddEntities();
     } );
 
 };
 
 Sequence.prototype.fromJS = function(data) {
-
     this.id(data.id);
     this.name(data.name);
     this.portHandler.fromJS(data.portHandler);
     this.canvasElement.fromJS(data.canvasElement);
     this.elements(data.elements);
-
     return this;
 };
 
 Sequence.prototype.toJS = function() {
-
     return {
         id: this.id(),
         type: this.type,

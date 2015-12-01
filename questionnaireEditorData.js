@@ -21,16 +21,6 @@ var QuestionnaireEditorData = function(expData) {
     this.portHandler = new PortHandler(this);
     this.canvasElement = new CanvasElement(this);
 
-    // ordered Elements by Id:
-    /*this.elementsById = {};
-    this.elements.subscribe(function() {
-        self.elementsById = {};
-        var elements = self.elements();
-        for (var i= 0, len=elements.length; i<len; i++) {
-            self.elementsById[elements[i].id()] = elements[i];
-        }
-    });*/
-
 };
 
 QuestionnaireEditorData.prototype.doubleClick = function() {
