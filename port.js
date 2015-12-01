@@ -1,4 +1,4 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
 
@@ -17,11 +17,11 @@ var Port = function(portHandler) {
 };
 
 
-Port.prototype.fromJS = function(portData) {
-    this.id(portData.id);
-    this.type = portData.type;
-    this.name(portData.name);
-    this.portType(portData.portType);
+Port.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.type = data.type;
+    this.name(data.name);
+    this.portType(data.portType);
 
     return this;
 };

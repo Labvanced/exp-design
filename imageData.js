@@ -42,7 +42,6 @@ var ImageData= function(expData) {
 
 
 ImageData.prototype.setPointers = function() {
-    this.canvasElement.setActiveElement();
 };
 
 ImageData.prototype.createImageInstance = function() {
@@ -50,16 +49,16 @@ ImageData.prototype.createImageInstance = function() {
 };
 
 
-ImageData.prototype.fromJS = function(image) {
-    this.id(image.id);
-    this.type = image.type;
+ImageData.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.type = data.type;
 
-    this.name(image.name);
-    this.stimulusOnset(image.stimulusOnset);
-    this.stimulusOffset(image.stimulusOffset);
-    this.keybordExitResponses(image.keybordExitResponses);
-    this.mouseExitResponse(image.mouseExitResponse);
-    this.canvasElement.fromJS(image.canvasElement);
+    this.name(data.name);
+    this.stimulusOnset(data.stimulusOnset);
+    this.stimulusOffset(data.stimulusOffset);
+    this.keybordExitResponses(data.keybordExitResponses);
+    this.mouseExitResponse(data.mouseExitResponse);
+    this.canvasElement.fromJS(data.canvasElement);
     return this;
 };
 

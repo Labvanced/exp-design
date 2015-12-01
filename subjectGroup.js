@@ -22,13 +22,6 @@ SubjectGroup.prototype.setPointers = function() {
     } ));
 };
 
-SubjectGroup.prototype.fromJS = function(group_data) {
-    this.id(group_data.id);
-    this.name(group_data.name);
-    this.sessions(group_data.sessions);
-    return this;
-};
-
 SubjectGroup.prototype.reAddEntities = function() {
     var self = this;
 
@@ -41,6 +34,13 @@ SubjectGroup.prototype.reAddEntities = function() {
         // recursively make sure that all deep tree nodes are in the entities list:
         elem.reAddEntities();
     } );
+};
+
+SubjectGroup.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.name(data.name);
+    this.sessions(data.sessions);
+    return this;
 };
 
 SubjectGroup.prototype.toJS = function() {

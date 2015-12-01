@@ -1,4 +1,4 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
 var PortHandler = function(parentDataModel) {
@@ -30,12 +30,12 @@ var PortHandler = function(parentDataModel) {
 };
 
 
-PortHandler.prototype.fromJS = function(portData) {
+PortHandler.prototype.fromJS = function(data) {
 
     var ports = [];
-    for (var i= 0, len=portData.ports.length; i<len; i++) {
+    for (var i= 0, len=data.ports.length; i<len; i++) {
         var port = new Port(this);
-        port.fromJS(portData.ports[i]);
+        port.fromJS(data.ports[i]);
         ports.push(port);
     }
     this.ports(ports);

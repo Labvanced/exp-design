@@ -17,12 +17,12 @@ ExpData.prototype.addGroup = function(group) {
     return this.groups.push(group);
 };
 
-ExpData.prototype.fromJS = function(exp_data) {
+ExpData.prototype.fromJS = function(data) {
     var self = this;
 
     this.groups([]);
-    if (exp_data.hasOwnProperty('entities')) {
-        this.entities(jQuery.map(exp_data.entities, function (entityJson) {
+    if (data.hasOwnProperty('entities')) {
+        this.entities(jQuery.map(data.entities, function (entityJson) {
             var entity;
             switch (entityJson.type) {
                 case 'StartBlock':

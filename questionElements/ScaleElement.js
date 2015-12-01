@@ -1,10 +1,11 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
 // SCALE ELEMENT//
-var ScaleElement= function() {
+var ScaleElement= function(expData) {
+    this.expData = expData;
     this.type= "scale";
-    this.name= guid();
+    this.id = ko.observable(guid());
     this.editing=  ko.observable(true);
     this.questionText= ko.observable("");
     this.startChoice= ko.observable(1);
@@ -25,8 +26,7 @@ ScaleElement.prototype.finishQuestion = function() {
 ScaleElement.prototype.toJS = function() {
     return {
         type: this.type,
-        name: this.name,
-        editing: this.editing(),
+        id: this.id(),
         questionText: this.questionText(),
         startChoice: this.startChoice(),
         endChoice: this.endChoice(),
@@ -38,8 +38,7 @@ ScaleElement.prototype.toJS = function() {
 
 ScaleElement.prototype.fromJS = function(data) {
     this.type=data.type;
-    this.name=data.name;
-    this.editing(data.editing);
+    this.id(data.id);
     this.questionText(data.questionText);
     this.startChoice(data.startChoice);
     this.endChoice(data.endChoice);

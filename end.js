@@ -1,13 +1,13 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
-var EndBlock = function(parentSequence) {
+var EndBlock = function(expData) {
 
-    this.parentSequence = parentSequence;
+    this.expData = expData;
 
     // serialized
     this.id = ko.observable(guid());
-    this.type = "End";
+    this.type = "EndBlock";
     this.name = ko.observable("End");
 
     // not serialized
@@ -25,15 +25,15 @@ var EndBlock = function(parentSequence) {
 
 
 EndBlock.prototype.setPointers = function() {
-    this.canvasElement.setActiveElement();
+
 };
 
-EndBlock.prototype.fromJS = function(end) {
-    this.id(end.id);
-    this.type = end.type;
-    this.name(end.name);
-    this.portHandler.fromJS(end.portHandler);
-    this.canvasElement.fromJS(end.canvasElement);
+EndBlock.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.type = data.type;
+    this.name(data.name);
+    this.portHandler.fromJS(data.portHandler);
+    this.canvasElement.fromJS(data.canvasElement);
     return this;
 };
 

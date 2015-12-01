@@ -104,10 +104,10 @@ Connection.prototype.draw = function() {
 
 
 
-Connection.prototype.fromJS = function(conn) {
-    this.id(conn.id);
-    this.conn1(conn.conn1);
-    this.conn2(conn.conn2);
+Connection.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.conn1(data.conn1);
+    this.conn2(data.conn2);
     return this;
 };
 

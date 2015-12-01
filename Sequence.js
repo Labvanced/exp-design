@@ -19,7 +19,6 @@ var Sequence = function (expData) {
 
     // sub-Structures (serialized below)
     this.elements = ko.observableArray().extend({sortById: null});
-    this.elementsById = {};
     this.portHandler = new PortHandler(this);
     this.canvasElement = new CanvasElement(this);
 
@@ -45,18 +44,6 @@ Sequence.prototype.doubleClick = function() {
     uc.experimentEditor.setDataModel(this);
 };
 
-Sequence.prototype.fromJS = function(sequence) {
-
-    this.id(sequence.id);
-    this.name(sequence.name);
-    this.portHandler.fromJS(sequence.portHandler);
-    this.canvasElement.fromJS(sequence.canvasElement);
-    this.elements(sequence.elements);
-
-    return this;
-};
-
-
 Sequence.prototype.reAddEntities = function() {
     var self = this;
 
@@ -73,13 +60,23 @@ Sequence.prototype.reAddEntities = function() {
 
 };
 
+Sequence.prototype.fromJS = function(data) {
+
+    this.id(data.id);
+    this.name(data.name);
+    this.portHandler.fromJS(data.portHandler);
+    this.canvasElement.fromJS(data.canvasElement);
+    this.elements(data.elements);
+
+    return this;
+};
+
 Sequence.prototype.toJS = function() {
 
     return {
         id: this.id(),
         type: this.type,
         name: this.name(),
-        currSelectedElement: this.currSelectedElement(),
         portHandler:this.portHandler.toJS(),
         canvasElement: this.canvasElement.toJS(),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )

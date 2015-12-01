@@ -35,7 +35,6 @@ MediaEditorData.prototype.doubleClick = function() {
 };
 
 MediaEditorData.prototype.setPointers = function() {
-    this.canvasElement.setActiveElement();
 };
 
 MediaEditorData.prototype.getElementById = function(id) {
@@ -43,24 +42,24 @@ MediaEditorData.prototype.getElementById = function(id) {
 };
 
 
-MediaEditorData.prototype.fromJS = function(editorData) {
-    this.id(editorData.id);
-    this.type = editorData.type;
+MediaEditorData.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.type = data.type;
 
-    this.name(editorData.name);
-    this.minPresentationTime(editorData.minPresentationTime);
-    this.maxPresentationTime(editorData.maxPresentationTime);
-    this.currSelectedElement(editorData.currSelectedElement);
-    this.portHandler.fromJS(editorData.portHandler);
-    this.canvasElement.fromJS(editorData.canvasElement);
+    this.name(data.name);
+    this.minPresentationTime(data.minPresentationTime);
+    this.maxPresentationTime(data.maxPresentationTime);
+    this.currSelectedElement(data.currSelectedElement);
+    this.portHandler.fromJS(data.portHandler);
+    this.canvasElement.fromJS(data.canvasElement);
 
     var elements = [];
-    if (editorData.hasOwnProperty('elements')) {
-        for (var i= 0, len=editorData.elements.length; i<len; i++) {
-            if (editorData.elements[i].type == 'ImageData'){
+    if (data.hasOwnProperty('elements')) {
+        for (var i= 0, len=data.elements.length; i<len; i++) {
+            if (data.elements[i].type == 'ImageData'){
                 elements[i] = new ImageData(this);
             }
-            elements[i].fromJS(editorData.elements[i]);
+            elements[i].fromJS(data.elements[i]);
         }
     }
     this.elements(elements);

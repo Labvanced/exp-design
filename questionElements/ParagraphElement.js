@@ -1,9 +1,10 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 // PARAGRAPH ELEMENT //
-var ParagraphElement = function() {
+var ParagraphElement = function(expData) {
+    this.expData = expData;
     this.type= "paragraph";
-    this.name= guid();
+    this.id = ko.observable(guid());
     this.editing=  ko.observable(true);
     this.questionText= ko.observable("");
 };
@@ -15,15 +16,13 @@ ParagraphElement.prototype.finishQuestion = function() {
 ParagraphElement.prototype.toJS = function() {
     return {
         type: this.type,
-        name: this.name,
-        editing: this.editing(),
+        id: this.id(),
         questionText: this.questionText()
     };
 };
 
 ParagraphElement.prototype.fromJS = function(data) {
     this.type=data.type;
-    this.name=data.name;
-    this.editing(data.editing);
+    this.id(data.id);
     this.questionText(data.questionText);
 };

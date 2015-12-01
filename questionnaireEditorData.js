@@ -17,7 +17,7 @@ var QuestionnaireEditorData = function(expData) {
     this.portTypes = ["executeIn", "executeOut"];
 
     // sub-Structures (serialized below)
-    this.elements = ko.observableArray([]);
+    this.elements = ko.observableArray([]).extend({sortById: null});
     this.portHandler = new PortHandler(this);
     this.canvasElement = new CanvasElement(this);
 
@@ -40,61 +40,33 @@ QuestionnaireEditorData.prototype.doubleClick = function() {
 };
 
 QuestionnaireEditorData.prototype.setPointers = function() {
-    this.canvasElement.setActiveElement();
+    var self = this;
+
+    // convert ids to actual pointers:
+    this.elements(jQuery.map( this.elements(), function( id ) {
+        return self.expData.entities.byId[id];
+    } ));
 };
 
 
-QuestionnaireEditorData.prototype.fromJS = function(questionnaireData) {
-    this.id(questionnaireData.id);
-    this.type = questionnaireData.type;
-
-    this.name(questionnaireData.name);
-    this.portHandler.fromJS(questionnaireData.portHandler);
-    this.canvasElement.fromJS(questionnaireData.canvasElement);
-
-
-    var data = questionnaireData.elements;
-    var elements = [];
-    for (var i= 0, len=data.length; i<len; i++) {
-        if (data[i].type == 'text'){
-            elements[i] = new TextElement(this);
-        }
-        else if (data[i].type == 'paragraph'){
-            elements[i] = new ParagraphElement(this);
-        }
-        else if (data[i].type == 'mChoice'){
-            elements[i] = new MChoiceElement(this);
-        }
-        else if (data[i].type == 'checkBox'){
-            elements[i] = new CheckBoxElement(this);
-        }
-        else if (data[i].type == 'scale'){
-            elements[i] = new ScaleElement(this);
-        }
-        elements[i].fromJS(data[i]);
-    }
-    this.elements(elements);
-
+QuestionnaireEditorData.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.name(data.name);
+    this.portHandler.fromJS(data.portHandler);
+    this.canvasElement.fromJS(data.canvasElement);
+    this.elements(data.elements);
     return this;
 };
 
 
 QuestionnaireEditorData.prototype.toJS = function() {
-
-    var questionnaireData = this.elements();
-    var questionnaireDataSerialized = [];
-    for (var i= 0, len=questionnaireData.length; i<len; i++) {
-        questionnaireDataSerialized.push(questionnaireData[i].toJS());
-    }
-
     return {
         id: this.id(),
         type: this.type,
-
         name: this.name(),
         canvasElement: this.canvasElement.toJS(),
         portHandler:this.portHandler.toJS(),
-        elements: questionnaireDataSerialized
+        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };
 };
 

@@ -25,13 +25,13 @@ StartBlock.prototype.setPointers = function() {
 };
 
 
-StartBlock.prototype.fromJS = function(start) {
-    this.id(start.id);
-    this.type = start.type;
+StartBlock.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.type = data.type;
 
-    this.name(start.name);
-    this.portHandler.fromJS(start.portHandler);
-    this.canvasElement.fromJS(start.canvasElement);
+    this.name(data.name);
+    this.portHandler.fromJS(data.portHandler);
+    this.canvasElement.fromJS(data.canvasElement);
     return this;
 };
 

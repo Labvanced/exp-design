@@ -33,13 +33,13 @@ TextEditorData.prototype.setPointers = function() {
 };
 
 
-TextEditorData.prototype.fromJS = function(textData) {
-    this.id(textData.id);
-    this.type = textData.type;
-    this.name(textData.name);
-    this.canvasElement.fromJS(textData.canvasElement);
-    this.portHandler.fromJS(textData.portHandler);
-    this.elements(textData.elements);
+TextEditorData.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.type = data.type;
+    this.name(data.name);
+    this.canvasElement.fromJS(data.canvasElement);
+    this.portHandler.fromJS(data.portHandler);
+    this.elements(data.elements);
     return this;
 
 };

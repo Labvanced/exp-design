@@ -22,13 +22,6 @@ Session.prototype.setPointers = function() {
     } ));
 };
 
-Session.prototype.fromJS = function(session_data) {
-    this.id(session_data.id);
-    this.name(session_data.name);
-    this.blocks(session_data.blocks);
-    return this;
-};
-
 Session.prototype.reAddEntities = function() {
     var self = this;
 
@@ -41,6 +34,13 @@ Session.prototype.reAddEntities = function() {
         // recursively make sure that all deep tree nodes are in the entities list:
         elem.reAddEntities();
     } );
+};
+
+Session.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.name(data.name);
+    this.blocks(data.blocks);
+    return this;
 };
 
 Session.prototype.toJS = function() {

@@ -1,4 +1,4 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 var CanvasElement = function(dataModel) {
     this.dataModel = dataModel;
@@ -273,10 +273,10 @@ CanvasElement.prototype.addPorts = function(ports) {
 };
 
 
-CanvasElement.prototype.fromJS = function(canvasElement) {
-    this.x(canvasElement.x);
-    this.y(canvasElement.y);
-    this.setCoord(canvasElement.x, canvasElement.y);
+CanvasElement.prototype.fromJS = function(data) {
+    this.x(data.x);
+    this.y(data.y);
+    this.setCoord(data.x, data.y);
     this.drawAllPorts();
     return this;
 };

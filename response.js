@@ -1,7 +1,7 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
-var ResponseAndPresentation= function(parentSequence) {
+var Response= function(parentSequence) {
 
     this.parentSequence = parentSequence;
 
@@ -22,23 +22,23 @@ var ResponseAndPresentation= function(parentSequence) {
 
 
 
-ResponseAndPresentation.prototype.fromJS = function(stimulusItem) {
-    this.id(stimulusItem.id);
-    this.type = stimulusItem.type;
-    this.name(stimulusItem.name);
-    this.responseType(stimulusItem.responseType);
-    this.responseTime(stimulusItem.responseTime);
-    this.infiniteResponseTime(stimulusItem.infiniteResponseTime);
-    this.keybordExitResponses(stimulusItem.keybordExitResponses);
-    this.mouseExitResponse(stimulusItem.mouseExitResponse);
-    this.minPresentationTime(stimulusItem.minPresentationTime);
-    this.maxPresentationTime(stimulusItem.maxPresentationTime);
-    this.infinitePresentationTime(stimulusItem.infinitePresentationTime);
+Response.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.type = data.type;
+    this.name(data.name);
+    this.responseType(data.responseType);
+    this.responseTime(data.responseTime);
+    this.infiniteResponseTime(data.infiniteResponseTime);
+    this.keybordExitResponses(data.keybordExitResponses);
+    this.mouseExitResponse(data.mouseExitResponse);
+    this.minPresentationTime(data.minPresentationTime);
+    this.maxPresentationTime(data.maxPresentationTime);
+    this.infinitePresentationTime(data.infinitePresentationTime);
 
     return this;
 };
 
-ResponseAndPresentation.prototype.toJS = function() {
+Response.prototype.toJS = function() {
 
     return {
         id: this.id(),

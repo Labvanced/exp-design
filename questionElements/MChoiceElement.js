@@ -1,9 +1,10 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 // MULTIPLE CHOICE ELEMENT //
-var MChoiceElement = function() {
+var MChoiceElement = function(expData) {
+    this.expData = expData;
     this.type= "mChoice";
-    this.name= guid();
+    this.id = ko.observable(guid());
     this.editing=  ko.observable(true);
     this.questionText= ko.observable("");
 
@@ -33,21 +34,15 @@ MChoiceElement.prototype.removeReadyChoice = function(idx) {
 MChoiceElement.prototype.toJS = function() {
     return {
         type: this.type,
-        name: this.name,
-        editing: this.editing(),
+        id: this.id(),
         questionText: this.questionText(),
-        openQuestion: this.openQuestion(),
-        newChoice: this.newChoice(),
         choices: this.choices()
     };
 };
 
 MChoiceElement.prototype.fromJS = function(data) {
     this.type=data.type;
-    this.name=data.name;
-    this.editing(data.editing);
-    this.openQuestion(data.openQuestion);
-    this.openQuestion(data.openQuestion);
-    this.newChoice(data.newChoice);
+    this.id(data.id);
+    this.questionText(data.questionText);
     this.choices(data.choices);
 };
