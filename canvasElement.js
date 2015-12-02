@@ -55,7 +55,7 @@ CanvasElement.prototype.addCallbacks = function(elem) {
     // define click callback for all elements:
     elem.addEventListener("click", function (ev) {
         //self.setActiveElement();
-        uc.currentEditor.setActiveElement(self.dataModel);
+        uc.currentEditorView.setActiveElement(self.dataModel);
     });
 
     // defining double click callback
@@ -139,7 +139,7 @@ CanvasElement.prototype.drawAllPorts = function() {
                     id: self.dataModel.id(),
                     portId: elem.portDataModel.id()
                 };
-                uc.currentEditor.createConnection(connSpec);
+                uc.currentEditorView.createConnection(connSpec);
             });
             portDataModel.canvasShape = elem;
             return elem;
@@ -241,7 +241,7 @@ CanvasElement.prototype.makeResizeElem = function() {
 
 
 CanvasElement.prototype.setActiveElement = function() {
-    uc.currentEditor.setActiveElement();
+    uc.currentEditorView.setActiveElement();
 
     if (this.dataModel.parentSequence){
         this.dataModel.parentSequence.currSelectedElement(this.dataModel.id());
