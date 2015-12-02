@@ -24,7 +24,7 @@ ExpTrialLoop.prototype.setPointers = function() {
     var self = this;
 
     // convert id of subSequence to actual pointer:
-    return this.subSequence = self.expData.entities.byId[this.subSequence()];
+    return this.subSequence(self.expData.entities.byId[this.subSequence()]);
 };
 
 ExpTrialLoop.prototype.doubleClick = function() {

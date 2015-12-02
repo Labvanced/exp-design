@@ -10,10 +10,8 @@ var ExpBlock = function (expData) {
 };
 
 ExpBlock.prototype.setPointers = function() {
-    var self = this;
-
     // convert id of subSequence to actual pointer:
-    return this.subSequence = self.expData.entities.byId[this.subSequence()];
+    return this.subSequence(this.expData.entities.byId[this.subSequence()]);
 };
 
 ExpBlock.prototype.reAddEntities = function() {
