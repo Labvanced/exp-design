@@ -42,7 +42,7 @@ QuestionnaireEditorData.prototype.setPointers = function() {
 QuestionnaireEditorData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
-    this.portHandler.fromJS(data.portHandler);
+    this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.canvasElement.fromJS(data.canvasElement);
     this.elements(data.elements);
     return this;

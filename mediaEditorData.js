@@ -66,7 +66,7 @@ MediaEditorData.prototype.fromJS = function(data) {
     this.type = data.type;
     this.name(data.name);
     this.maxPresentationTime(data.maxPresentationTime);
-    this.portHandler.fromJS(data.portHandler);
+    this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.canvasElement.fromJS(data.canvasElement);
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response(self)).loadJS(respData);

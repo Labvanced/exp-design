@@ -139,7 +139,7 @@ CanvasElement.prototype.drawAllPorts = function() {
                     id: self.dataModel.id(),
                     portId: elem.portDataModel.id()
                 };
-                uc.experimentEditor.createConnection(connSpec);
+                uc.currentEditor.createConnection(connSpec);
             });
             portDataModel.canvasShape = elem;
             return elem;

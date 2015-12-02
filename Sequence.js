@@ -41,7 +41,7 @@ Sequence.prototype.getElementById = function(id) {
 
 Sequence.prototype.doubleClick = function() {
     // this block was double clicked in the parent Experiment editor:
-    uc.experimentEditor.setDataModel(this);
+    uc.currentEditor.setDataModel(this);
 };
 
 Sequence.prototype.reAddEntities = function() {
@@ -63,7 +63,7 @@ Sequence.prototype.reAddEntities = function() {
 Sequence.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
-    this.portHandler.fromJS(data.portHandler);
+    this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.canvasElement.fromJS(data.canvasElement);
     this.elements(data.elements);
     return this;

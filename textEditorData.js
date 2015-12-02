@@ -9,6 +9,7 @@ var TextEditorData = function(expData) {
     this.id = ko.observable(guid());
     this.type = "TextEditorData";
     this.name = ko.observable("Text Editor");
+    this.maxPresentationTime = ko.observable(null);
 
     // not serialized
     this.shape = "square";
@@ -16,7 +17,7 @@ var TextEditorData = function(expData) {
     this.portTypes = ["executeIn", "executeOut"];
 
     // sub-Structures (serialized below)
-    this.elements = ko.observable('');
+    this.text = ko.observable('');
     this.portHandler = new PortHandler(this);
     this.canvasElement = new CanvasElement(this);
 };
@@ -32,28 +33,24 @@ TextEditorData.prototype.setPointers = function() {
 
 };
 
-
 TextEditorData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
+    this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.canvasElement.fromJS(data.canvasElement);
-    this.portHandler.fromJS(data.portHandler);
-    this.elements(data.elements);
+    this.text(data.text);
     return this;
-
 };
-
 
 TextEditorData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-
         name: this.name(),
         canvasElement: this.canvasElement.toJS(),
         portHandler:this.portHandler.toJS(),
-        elements: this.elements()
+        text: this.text()
     };
 };
 

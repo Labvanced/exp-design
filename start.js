@@ -28,9 +28,8 @@ StartBlock.prototype.setPointers = function() {
 StartBlock.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
-
     this.name(data.name);
-    this.portHandler.fromJS(data.portHandler);
+    this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.canvasElement.fromJS(data.canvasElement);
     return this;
 };
@@ -40,7 +39,6 @@ StartBlock.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-
         name: this.name(),
         portHandler:this.portHandler.toJS(),
         canvasElement: this.canvasElement.toJS()
