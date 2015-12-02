@@ -50,11 +50,14 @@ ExpData.prototype.fromJS = function(data) {
                     entity = new SubjectGroup(self);
                     self.groups.push(entity);
                     break;
-                case 'Session':
-                    entity = new Session(self);
+                case 'ExpSession':
+                    entity = new ExpSession(self);
                     break;
                 case 'ImageData':
                     entity = new ImageData(self);
+                    break;
+                case 'ExpBlock':
+                    entity = new ExpBlock(self);
                     break;
                 default:
                     console.error("type "+ entityJson.type + " is not defined in factory method.")

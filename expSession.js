@@ -1,19 +1,19 @@
 // � by Caspar Goeke and Holger Finger
 
-var Session = function (expData) {
+var ExpSession = function (expData) {
     this.expData = expData;
 
     this.id = ko.observable(guid());
     this.name = ko.observable("newSession");
-    this.type = "Session";
+    this.type = "ExpSession";
     this.blocks = ko.observableArray([]).extend({sortById: null});
 };
 
-Session.prototype.addBlock = function(block) {
+ExpSession.prototype.addBlock = function(block) {
     return this.blocks.push(block);
 };
 
-Session.prototype.setPointers = function() {
+ExpSession.prototype.setPointers = function() {
     var self = this;
 
     // convert ids to actual pointers:
@@ -22,7 +22,7 @@ Session.prototype.setPointers = function() {
     } ));
 };
 
-Session.prototype.reAddEntities = function() {
+ExpSession.prototype.reAddEntities = function() {
     var self = this;
 
     // add the direct child nodes:
@@ -36,14 +36,14 @@ Session.prototype.reAddEntities = function() {
     } );
 };
 
-Session.prototype.fromJS = function(data) {
+ExpSession.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
     this.blocks(data.blocks);
     return this;
 };
 
-Session.prototype.toJS = function() {
+ExpSession.prototype.toJS = function() {
 
     return {
         id: this.id(),
