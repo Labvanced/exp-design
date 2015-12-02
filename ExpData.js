@@ -59,6 +59,9 @@ ExpData.prototype.fromJS = function(data) {
                 case 'ExpBlock':
                     entity = new ExpBlock(self);
                     break;
+                case 'ExpTrialLoop':
+                    entity = new ExpTrialLoop(self);
+                    break;
                 default:
                     console.error("type "+ entityJson.type + " is not defined in factory method.")
             }

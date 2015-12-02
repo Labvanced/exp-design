@@ -29,7 +29,7 @@ ExpTrialLoop.prototype.setPointers = function() {
 
 ExpTrialLoop.prototype.doubleClick = function() {
     // this trial loop was double clicked in the editor:
-    uc.currentEditorView.setDataModel(this);
+    uc.currentEditorView.setDataModel(this.subSequence());
 };
 
 ExpTrialLoop.prototype.reAddEntities = function() {
