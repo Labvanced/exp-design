@@ -9,12 +9,12 @@ var FrameData = function(expData) {
     // serialized
     this.id = ko.observable(guid());
     this.type = "FrameData";
-    this.name = ko.observable("NewFrame");
+    this.name = ko.observable("MediaFrame");
     this.maxPresentationTime = ko.observable(null);
 
     // not serialized
     this.shape = "square";
-    this.label = "NewFrame";
+    this.label = "MediaFrame";
     this.portTypes = ["executeIn", "executeOut"];
 
     // sub-Structures (serialized below)
