@@ -69,7 +69,7 @@ CanvasElement.prototype.addCallbacks = function(elem) {
     }
 
     // defining pressmove callbacks
-    if (this.dataModel.type =="ImageData"){
+    if (this.dataModel.type =="ImageData" || this.dataModel.type =="VideoData"){
 
         elem.addEventListener("pressmove", function (ev) {
             var xPos = self.x();

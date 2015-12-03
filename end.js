@@ -15,8 +15,6 @@ var EndBlock = function(expData) {
     this.label = "End";
     this.portTypes = ["executeIn"];
 
-
-
     // sub-Structures (serialized below)
     this.portHandler = new PortHandler(this);
     this.canvasElement = new CanvasElement(this);

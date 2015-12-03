@@ -57,6 +57,9 @@ ExpData.prototype.fromJS = function(data) {
                 case 'ImageData':
                     entity = new ImageData(self);
                     break;
+                case 'VideoData':
+                    entity = new VideoData(self);
+                    break;
                 case 'ExpBlock':
                     entity = new ExpBlock(self);
                     self.expBlocks.push(entity);
@@ -142,7 +145,42 @@ ExpData.prototype.addNewBlock = function() {
         blockElements[i].canvasElement.x(xPosition);
         elements.push(blockElements[i]);
 
+        if (i<blockElements.length-1) {
+            // add connection to next element:
+            var conn = new Connection(this);
+
+            // specify executeOut port:
+            var portId = null;
+            var ports = blockElements[i].portHandler.ports();
+            for (var k=0; k<ports.length; k++){
+                if (ports[k].portType() == 'executeOut'){
+                    portId = ports[k].id();
+                    break;
+                }
+            }
+            conn.conn1({
+                id: blockElements[i].id(),
+                portId: portId
+            });
+
+            // specify executeIn port:
+            var portId = null;
+            var ports = blockElements[i+1].portHandler.ports();
+            for (var k=0; k<ports.length; k++){
+                if (ports[k].portType() == 'executeIn'){
+                    portId = ports[k].id();
+                    break;
+                }
+            }
+            conn.conn2({
+                id: blockElements[i + 1].id(),
+                portId: portId
+            });
+            elements.push(conn);
+        }
+
     }
+
 
     // link block into all sessions
     var groups = this.groups();

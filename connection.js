@@ -5,6 +5,7 @@ var Connection = function(expData) {
     var self = this;
     this.expData = expData;
     this.type = "Connection";
+    this.name = ko.observable("Connection");
     this.conn1 = ko.observable(null);
     this.conn2 = ko.observable(null);
     this.container = new createjs.Container();
@@ -116,6 +117,7 @@ Connection.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
+        name: this.name(),
         conn1: this.conn1(),
         conn2: this.conn2()
     };
