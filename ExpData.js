@@ -4,6 +4,7 @@ var ExpData = function () {
     this.expData = this; // self reference for consistency with other classes..
     this.entities = ko.observableArray([]).extend({sortById: null});
     this.groups = ko.observableArray([]).extend({sortById: null});
+    this.expBlocks = ko.observableArray([]).extend({sortById: null});
 };
 
 ExpData.prototype.setPointers = function() {
@@ -58,6 +59,7 @@ ExpData.prototype.fromJS = function(data) {
                     break;
                 case 'ExpBlock':
                     entity = new ExpBlock(self);
+                    self.expBlocks.push(entity);
                     break;
                 case 'ExpTrialLoop':
                     entity = new ExpTrialLoop(self);
@@ -103,4 +105,34 @@ ExpData.prototype.toJS = function() {
     return {
         entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); })
     };
+};
+
+
+ExpData.prototype.addNewBlock = function() {
+
+    // define instance of block element
+    var blockElements = [
+        new TextEditorData(this),
+        new QuestionnaireEditorData(this),
+        new ExpTrialLoop(this),
+        new QuestionnaireEditorData(this),
+        new TextEditorData(this)
+    ];
+
+    // add fixed instances of block into sequence
+    var block = new ExpBlock(this);
+    for (var i = 0; i<blockElements.length;i++){
+        block.subSequence().elements.push(blockElements[i]);
+    }
+
+    // link block into all sessions
+    var groups = this.groups();
+    for (var i = 0;i<groups.length;i++){
+        var sessions = groups[i].sessions();
+        for (var k = 0;k<sessions.length;k++){
+            sessions[k].addBlock(block);
+        }
+    }
+
+    this.expBlocks.push(block)
 };
