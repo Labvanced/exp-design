@@ -47,6 +47,8 @@ ExpTrialLoop.prototype.reAddEntities = function() {
 ExpTrialLoop.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
+    this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
+    this.canvasElement.fromJS(data.canvasElement);
     this.subSequence(data.subSequence);
     return this;
 };
@@ -55,6 +57,8 @@ ExpTrialLoop.prototype.toJS = function() {
     return {
         id: this.id(),
         name: this.name(),
+        portHandler:this.portHandler.toJS(),
+        canvasElement: this.canvasElement.toJS(),
         type: this.type,
         subSequence: this.subSequence().id()
     };

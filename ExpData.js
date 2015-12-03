@@ -112,17 +112,36 @@ ExpData.prototype.addNewBlock = function() {
 
     // define instance of block element
     var blockElements = [
+        new StartBlock(this),
         new TextEditorData(this),
         new QuestionnaireEditorData(this),
         new ExpTrialLoop(this),
         new QuestionnaireEditorData(this),
-        new TextEditorData(this)
+        new TextEditorData(this),
+        new EndBlock(this)
+    ];
+
+    // define the names of each of the elements
+    var blockNames = [
+        'Start',
+        'Instructions',
+        'Pre-Questionaire',
+        'Trial-Loop',
+        'Post-Questionaire',
+        'Feedback',
+        'End'
     ];
 
     // add fixed instances of block into sequence
     var block = new ExpBlock(this);
+    var elements = block.subSequence().elements;
+    var xPosition = -70;
     for (var i = 0; i<blockElements.length;i++){
-        block.subSequence().elements.push(blockElements[i]);
+        blockElements[i].name(blockNames[i]);
+        xPosition += 180;
+        blockElements[i].canvasElement.x(xPosition);
+        elements.push(blockElements[i]);
+
     }
 
     // link block into all sessions

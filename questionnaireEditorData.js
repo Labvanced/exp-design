@@ -54,8 +54,8 @@ QuestionnaireEditorData.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         name: this.name(),
-        canvasElement: this.canvasElement.toJS(),
         portHandler:this.portHandler.toJS(),
+        canvasElement: this.canvasElement.toJS(),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };
 };

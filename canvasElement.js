@@ -5,13 +5,15 @@ var CanvasElement = function(dataModel) {
 
     this.x = ko.observable(0);
     this.y = ko.observable(0);
-    this.width = ko.observable(200);
-    this.height = ko.observable(100);
-    this.radius1 = ko.observable(40);
+    this.width = ko.observable(140);
+    this.height = ko.observable(70);
+    this.radius1 = ko.observable(30);
     this.fullWidth = ko.observable(0);
     this.fullHeight = ko.observable(0);
 
     this.gridSpaceInPixels = 25;
+
+    this.isSelected = ko.observable(false);
 
 
     // creating containers
@@ -35,6 +37,7 @@ var CanvasElement = function(dataModel) {
     var label = new createjs.Text(this.dataModel.name(), "14px Arial", "#FFF");
     label.textAlign = 'center';
     label.name = "label";
+    label.y = -7;
     this.tabelBoxSubscription = this.dataModel.name.subscribe(function(newValue) {
         self.container.getChildByName("label").text = newValue;
     });

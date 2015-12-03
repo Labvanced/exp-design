@@ -94,7 +94,7 @@ Connection.prototype.draw = function() {
     this.container.removeAllChildren();
 
         var polygon = new createjs.Shape();
-        polygon.graphics.beginStroke("black");
+        polygon.graphics.beginStroke("black").setStrokeStyle(3);
         polygon.graphics.moveTo(this.xStart(), this.yStart()).lineTo(this.xEnd(), this.yEnd());
 
     this.container.addChild(polygon);
