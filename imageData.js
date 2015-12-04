@@ -44,6 +44,8 @@ ImageData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
+    this.img_file_id(data.img_file_id);
+    this.img_file_orig_name(data.img_file_orig_name);
     this.imageOnset(data.imageOnset);
     this.imageOffset(data.imageOffset);
     this.responses(jQuery.map( data.responses, function( respData ) {
@@ -59,6 +61,8 @@ ImageData.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         name: this.name(),
+        img_file_id: this.img_file_id(),
+        img_file_orig_name: this.img_file_orig_name(),
         imageOnset: this.imageOnset(),
         imageOffset: this.imageOffset(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
