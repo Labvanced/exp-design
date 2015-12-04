@@ -13,6 +13,12 @@ SubjectGroup.prototype.addSession = function(session) {
     return this.sessions.push(session);
 };
 
+
+SubjectGroup.prototype.createSession = function() {
+    var session = new ExpSession(this.expData);
+    this.addSession(session);
+};
+
 SubjectGroup.prototype.setPointers = function() {
     var self = this;
 
