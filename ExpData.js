@@ -5,6 +5,7 @@ var ExpData = function () {
     this.entities = ko.observableArray([]).extend({sortById: null});
     this.groups = ko.observableArray([]).extend({sortById: null});
     this.expBlocks = ko.observableArray([]).extend({sortById: null});
+    this.globalVars = ko.observableArray([]).extend({sortById: null});
 };
 
 ExpData.prototype.setPointers = function() {
@@ -67,6 +68,10 @@ ExpData.prototype.fromJS = function(data) {
                 case 'ExpTrialLoop':
                     entity = new ExpTrialLoop(self);
                     break;
+                case 'GlobalVar':
+                    entity = new GlobalVar(self);
+                    self.globalVars.push(entity);
+                    break;
                 default:
                     console.error("type "+ entityJson.type + " is not defined in factory method.")
             }
@@ -88,15 +93,21 @@ ExpData.prototype.rebuildEntities = function() {
 ExpData.prototype.reAddEntities = function() {
     var self = this;
 
-    // add the direct child nodes:
-    var allGroups = this.groups();
-    jQuery.each( allGroups, function( index, elem ) {
+    // add the groups and their child nodes to entities:
+    jQuery.each( this.groups(), function( index, elem ) {
         // check if they are not already in the list:
         if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
             self.expData.entities.push(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
         elem.reAddEntities();
+    } );
+
+    // add global variables to entities:
+    jQuery.each( this.globalVars(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
+            self.expData.entities.push(elem);
     } );
 };
 
