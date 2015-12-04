@@ -15,6 +15,11 @@ ExpData.prototype.setPointers = function() {
     } );
 };
 
+
+ExpData.prototype.addGlobalVar = function(variable) {
+    return this.globalVars.push(variable);
+};
+
 ExpData.prototype.addGroup = function(group) {
     return this.groups.push(group);
 };

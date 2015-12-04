@@ -6,17 +6,24 @@ var GlobalVar = function (expData) {
     this.id = ko.observable(guid());
     this.name = ko.observable("newVariable");
     this.type = "GlobalVar";
-    this.subtype = ko.observable(GlobalVar.subtypes.factor);
+    this.subtype = ko.observable(GlobalVar.subtypes[0].text);
+    this.subtypeId = ko.observable(GlobalVar.subtypes[0].id);
+    this.dataType = ko.observable("undefined");
+    this.assigned = false;
     this.levels = ko.observableArray([]);
 };
 
-// enum: posssible variable subtypes...
-GlobalVar.subtypes.factor = 0;
-GlobalVar.subtypes.stimulus = 1;
-GlobalVar.subtypes.resp = 2;
-GlobalVar.subtypes.respTime = 3;
-GlobalVar.subtypes.trialOrder = 4;
-GlobalVar.subtypes.randomization = 4;
+// enum: posssible variable subtypes..
+GlobalVar.subtypes= [
+        { id: 1, text: 'undefined' },
+        { id: 2, text: 'factor' },
+        { id: 3, text: 'stimulus property' },
+        { id: 4, text: 'response' },
+        { id: 5, text: 'response time' },
+        { id: 6, text: 'randomization' }
+    ];
+
+
 
 GlobalVar.prototype.addSession = function(session) {
     return this.sessions.push(session);
