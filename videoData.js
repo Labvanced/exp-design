@@ -42,6 +42,8 @@ VideoData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
+    this.vid_file_id(data.vid_file_id);
+    this.vid_file_orig_name(data.vid_file_orig_name);
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response()).loadJS(respData);
     } ));
@@ -55,6 +57,8 @@ VideoData.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         name: this.name(),
+        vid_file_id: this.vid_file_id(),
+        vid_file_orig_name: this.vid_file_orig_name(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
         canvasElement: this.canvasElement.toJS()
     };

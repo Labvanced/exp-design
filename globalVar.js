@@ -24,18 +24,7 @@ GlobalVar.subtypes= [
     ];
 
 
-
-GlobalVar.prototype.addSession = function(session) {
-    return this.sessions.push(session);
-};
-
 GlobalVar.prototype.setPointers = function() {
-    var self = this;
-
-    // convert ids to actual pointers:
-    this.sessions(jQuery.map( this.sessions(), function( id ) {
-        return self.expData.entities.byId[id];
-    } ));
 };
 
 GlobalVar.prototype.reAddEntities = function() {
@@ -55,7 +44,9 @@ GlobalVar.prototype.reAddEntities = function() {
 GlobalVar.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
-    this.sessions(data.sessions);
+    this.subtype(data.subtype);
+    this.dataType(data.dataType);
+    this.levels(data.levels);
     return this;
 };
 
@@ -63,8 +54,10 @@ GlobalVar.prototype.toJS = function() {
     return {
         id: this.id(),
         name: this.name(),
+        subtype: this.subtype(),
+        dataType: this.dataType(),
         type: this.type,
-        sessions: jQuery.map( this.sessions(), function( elem ) { return elem.id(); } )
+        levels: this.levels()
     };
 };
 
