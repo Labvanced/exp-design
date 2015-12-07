@@ -32,10 +32,6 @@ var VideoData= function(expData) {
 VideoData.prototype.setPointers = function() {
 };
 
-VideoData.prototype.createImageInstance = function() {
-    //this.canvasElement.replaceWithImage(this.vidSource());
-};
-
 
 VideoData.prototype.fromJS = function(data) {
     this.id(data.id);

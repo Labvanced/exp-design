@@ -35,11 +35,6 @@ var ImageData= function(expData) {
 ImageData.prototype.setPointers = function() {
 };
 
-ImageData.prototype.createImageInstance = function() {
-    this.canvasElement.replaceWithImage(this.imgSource());
-};
-
-
 ImageData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
