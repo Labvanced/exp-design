@@ -156,11 +156,11 @@ ExpData.prototype.addNewBlock = function() {
     // add fixed instances of block into sequence
     var block = new ExpBlock(this);
     var elements = block.subSequence().elements;
-    var xPosition = -35;
-    var yPosition = 50;
+    var xPosition = -60;
+    var yPosition = 100;
     for (var i = 0; i<blockElements.length;i++){
         blockElements[i].name(blockNames[i]);
-        xPosition += 60;
+        xPosition += 160;
         blockElements[i].editorX(xPosition);
         blockElements[i].editorY(yPosition);
         elements.push(blockElements[i]);
