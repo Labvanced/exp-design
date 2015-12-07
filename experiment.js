@@ -1,4 +1,4 @@
-// © by Caspar Goeke and Holger Finger
+// ï¿½ by Caspar Goeke and Holger Finger
 
 
 var Experiment = function () {
@@ -33,8 +33,9 @@ Experiment.prototype.fromJS = function(data) {
 
 Experiment.prototype.editExp = function() {
     uc.experiment = this;
-    page("/page/editors/experimenteditor/"+this.exp_id());
-    //page("/experimenteditor");
+    uc.currentEditorData = this.exp_data;
+    //page("/page/editors/experimenteditor/"+this.exp_id());
+    page("/page/editors/mainExperimentPage/"+this.exp_id());
 };
 
 

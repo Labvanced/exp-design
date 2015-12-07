@@ -212,4 +212,6 @@ ExpData.prototype.addNewBlock = function() {
     }
 
     this.expBlocks.push(block)
+
+    this.reAddEntities();
 };

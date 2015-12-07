@@ -33,7 +33,7 @@ ExpTrialLoop.prototype.doubleClick = function() {
         uc.currentEditorView.setDataModel(this.subSequence());
     }
     else {
-        uc.loadExperimentEditor()
+        page("/page/editors/experimenteditor/"+uc.experiment.id());
     }
 };
 
