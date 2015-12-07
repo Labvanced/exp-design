@@ -6,6 +6,8 @@ var ImageData= function(expData) {
     this.expData = expData;
 
     // serialized
+    this.editorX = ko.observable(0);
+    this.editorY = ko.observable(0);
     this.id = ko.observable(guid());
     this.type = "ImageData";
     this.name = ko.observable("Image");
@@ -51,7 +53,8 @@ ImageData.prototype.fromJS = function(data) {
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response()).loadJS(respData);
     } ));
-    this.canvasElement.fromJS(data.canvasElement);
+    this.editorX(data.editorX);
+    this.editorY(data.editorX);
     return this;
 };
 
@@ -66,7 +69,8 @@ ImageData.prototype.toJS = function() {
         imageOnset: this.imageOnset(),
         imageOffset: this.imageOffset(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
-        canvasElement: this.canvasElement.toJS()
+        editorX:  this.editorX(),
+        editorY:  this.editorY()
     };
 };
 

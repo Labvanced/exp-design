@@ -142,6 +142,7 @@ ExpData.prototype.addNewBlock = function() {
 
     // define the names of each of the elements
     var blockNames = [
+
         'Start',
         'Instructions',
         'Pre-Questionaire',
@@ -149,15 +150,16 @@ ExpData.prototype.addNewBlock = function() {
         'Post-Questionaire',
         'Feedback',
         'End'
+
     ];
 
     // add fixed instances of block into sequence
     var block = new ExpBlock(this);
     var elements = block.subSequence().elements;
-    var xPosition = -70;
+    var xPosition = -35;
     for (var i = 0; i<blockElements.length;i++){
         blockElements[i].name(blockNames[i]);
-        xPosition += 180;
+        xPosition += 60;
         blockElements[i].canvasElement.x(xPosition);
         elements.push(blockElements[i]);
 

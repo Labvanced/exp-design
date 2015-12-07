@@ -7,6 +7,8 @@ var QuestionnaireEditorData = function(expData) {
     this.expData = expData;
 
     // serialized
+    this.editorX = ko.observable(0);
+    this.editorY = ko.observable(0);
     this.id = ko.observable(guid());
     this.type = "QuestionnaireEditorData";
     this.name = ko.observable("Questionnaire");
@@ -43,7 +45,8 @@ QuestionnaireEditorData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
-    this.canvasElement.fromJS(data.canvasElement);
+    this.editorX(data.editorX);
+    this.editorY(data.editorX);
     this.elements(data.elements);
     return this;
 };
@@ -55,7 +58,8 @@ QuestionnaireEditorData.prototype.toJS = function() {
         type: this.type,
         name: this.name(),
         portHandler:this.portHandler.toJS(),
-        canvasElement: this.canvasElement.toJS(),
+        editorX:  this.editorX(),
+        editorY:  this.editorY(),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };
 };

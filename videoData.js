@@ -6,6 +6,8 @@ var VideoData= function(expData) {
     this.expData = expData;
 
     // serialized
+    this.editorX = ko.observable(0);
+    this.editorY = ko.observable(0);
     this.id = ko.observable(guid());
     this.type = "VideoData";
     this.name = ko.observable("Video");
@@ -47,7 +49,8 @@ VideoData.prototype.fromJS = function(data) {
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response()).loadJS(respData);
     } ));
-    this.canvasElement.fromJS(data.canvasElement);
+    this.editorX(data.editorX);
+    this.editorY(data.editorX);
     return this;
 };
 
@@ -60,7 +63,8 @@ VideoData.prototype.toJS = function() {
         vid_file_id: this.vid_file_id(),
         vid_file_orig_name: this.vid_file_orig_name(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
-        canvasElement: this.canvasElement.toJS()
+        editorX:  this.editorX(),
+        editorY:  this.editorY()
     };
 };
 

@@ -7,6 +7,8 @@ var FrameData = function(expData) {
     this.expData = expData;
 
     // serialized
+    this.editorX = ko.observable(0);
+    this.editorY = ko.observable(0);
     this.id = ko.observable(guid());
     this.type = "FrameData";
     this.name = ko.observable("MediaFrame");
@@ -67,7 +69,8 @@ FrameData.prototype.fromJS = function(data) {
     this.name(data.name);
     this.maxPresentationTime(data.maxPresentationTime);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
-    this.canvasElement.fromJS(data.canvasElement);
+    this.editorX(data.editorX);
+    this.editorY(data.editorX);
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response(self)).loadJS(respData);
     } ));
@@ -82,7 +85,8 @@ FrameData.prototype.toJS = function() {
         name:  this.name(),
         maxPresentationTime: this.maxPresentationTime(),
         portHandler: this.portHandler.toJS(),
-        canvasElement: this.canvasElement.toJS(),
+        editorX:  this.editorX(),
+        editorY:  this.editorY(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };

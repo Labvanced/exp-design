@@ -3,6 +3,8 @@
 var ExpTrialLoop = function (expData) {
     this.expData = expData;
 
+    this.editorX = ko.observable(0);
+    this.editorY = ko.observable(0);
     this.id = ko.observable(guid());
     this.name = ko.observable("TrialLoop");
     this.type = "ExpTrialLoop";
@@ -48,7 +50,8 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
-    this.canvasElement.fromJS(data.canvasElement);
+    this.editorX(data.editorX);
+    this.editorY(data.editorX);
     this.subSequence(data.subSequence);
     return this;
 };
@@ -58,7 +61,8 @@ ExpTrialLoop.prototype.toJS = function() {
         id: this.id(),
         name: this.name(),
         portHandler:this.portHandler.toJS(),
-        canvasElement: this.canvasElement.toJS(),
+        editorX:  this.editorX(),
+        editorY:  this.editorY(),
         type: this.type,
         subSequence: this.subSequence().id()
     };

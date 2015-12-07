@@ -6,6 +6,8 @@ var TextEditorData = function(expData) {
     this.expData = expData;
 
     // serialized
+    this.editorX = ko.observable(0);
+    this.editorY = ko.observable(0);
     this.id = ko.observable(guid());
     this.type = "TextEditorData";
     this.name = ko.observable("Text Editor");
@@ -38,7 +40,8 @@ TextEditorData.prototype.fromJS = function(data) {
     this.type = data.type;
     this.name(data.name);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
-    this.canvasElement.fromJS(data.canvasElement);
+    this.editorX(data.editorX);
+    this.editorY(data.editorX);
     this.text(data.text);
     return this;
 };
@@ -48,7 +51,8 @@ TextEditorData.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         name: this.name(),
-        canvasElement: this.canvasElement.toJS(),
+        editorX:  this.editorX(),
+        editorY:  this.editorY(),
         portHandler:this.portHandler.toJS(),
         text: this.text()
     };
