@@ -5,6 +5,7 @@ var Sequence = function (expData) {
 
     var self = this;
     this.expData = expData;
+    this.currSelectedElement = ko.observable();
 
     // serialized
     this.id = ko.observable(guid());
