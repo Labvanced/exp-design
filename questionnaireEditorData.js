@@ -21,7 +21,6 @@ var QuestionnaireEditorData = function(expData) {
     // sub-Structures (serialized below)
     this.elements = ko.observableArray([]).extend({sortById: null});
     this.portHandler = new PortHandler(this);
-    this.canvasElement = new CanvasElement(this);
 
 };
 
@@ -46,7 +45,7 @@ QuestionnaireEditorData.prototype.fromJS = function(data) {
     this.name(data.name);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.editorX(data.editorX);
-    this.editorY(data.editorX);
+    this.editorY(data.editorY);
     this.elements(data.elements);
     return this;
 };

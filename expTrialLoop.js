@@ -16,10 +16,7 @@ var ExpTrialLoop = function (expData) {
     this.portTypes = ["executeIn", "executeOut"];
 
     this.portHandler = new PortHandler(this);
-    this.canvasElement = new CanvasElement(this);
 
-    // add Ports to Renderer
-    this.canvasElement.addPorts(this.portHandler.ports());
 };
 
 ExpTrialLoop.prototype.setPointers = function() {
@@ -51,7 +48,7 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.name(data.name);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.editorX(data.editorX);
-    this.editorY(data.editorX);
+    this.editorY(data.editorY);
     this.subSequence(data.subSequence);
     return this;
 };

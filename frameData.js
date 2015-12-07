@@ -22,7 +22,6 @@ var FrameData = function(expData) {
     // sub-Structures (serialized below)
     this.elements = ko.observableArray([]).extend({sortById: null});
     this.portHandler = new PortHandler(this);
-    this.canvasElement = new CanvasElement(this);
     this.responses = ko.observableArray([]);
 
 };
@@ -70,7 +69,7 @@ FrameData.prototype.fromJS = function(data) {
     this.maxPresentationTime(data.maxPresentationTime);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.editorX(data.editorX);
-    this.editorY(data.editorX);
+    this.editorY(data.editorY);
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response(self)).loadJS(respData);
     } ));

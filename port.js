@@ -12,8 +12,6 @@ var Port = function(portHandler) {
     this.name = ko.observable("");
     this.portType = ko.observable("executeIn"); // or executeOut or variabelIn or variableOut
 
-    this.canvasShape = null; // will be created by canvasElement.js
-
 };
 
 

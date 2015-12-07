@@ -19,7 +19,6 @@ var StartBlock = function(expData) {
 
     // sub-Structures (serialized below)
     this.portHandler = new PortHandler(this);
-    this.canvasElement = new CanvasElement(this);
 };
 
 
@@ -33,7 +32,7 @@ StartBlock.prototype.fromJS = function(data) {
     this.name(data.name);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.editorX(data.editorX);
-    this.editorY(data.editorX);
+    this.editorY(data.editorY);
     return this;
 };
 

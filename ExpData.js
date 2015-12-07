@@ -157,10 +157,12 @@ ExpData.prototype.addNewBlock = function() {
     var block = new ExpBlock(this);
     var elements = block.subSequence().elements;
     var xPosition = -35;
+    var yPosition = 50;
     for (var i = 0; i<blockElements.length;i++){
         blockElements[i].name(blockNames[i]);
         xPosition += 60;
-        blockElements[i].canvasElement.x(xPosition);
+        blockElements[i].editorX(xPosition);
+        blockElements[i].editorY(yPosition);
         elements.push(blockElements[i]);
 
         if (i<blockElements.length-1) {

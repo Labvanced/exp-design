@@ -21,7 +21,6 @@ var TextEditorData = function(expData) {
     // sub-Structures (serialized below)
     this.text = ko.observable('');
     this.portHandler = new PortHandler(this);
-    this.canvasElement = new CanvasElement(this);
 };
 
 
@@ -41,7 +40,7 @@ TextEditorData.prototype.fromJS = function(data) {
     this.name(data.name);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.editorX(data.editorX);
-    this.editorY(data.editorX);
+    this.editorY(data.editorY);
     this.text(data.text);
     return this;
 };

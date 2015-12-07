@@ -30,8 +30,6 @@ var ImageData= function(expData) {
         }
     }, this);
 
-    // sub-Structures (serialized below)
-    this.canvasElement = new CanvasElement(this);
 };
 
 ImageData.prototype.setPointers = function() {
@@ -54,7 +52,7 @@ ImageData.prototype.fromJS = function(data) {
         return (new Response()).loadJS(respData);
     } ));
     this.editorX(data.editorX);
-    this.editorY(data.editorX);
+    this.editorY(data.editorY);
     return this;
 };
 
