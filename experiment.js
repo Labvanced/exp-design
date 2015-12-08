@@ -34,7 +34,6 @@ Experiment.prototype.fromJS = function(data) {
 Experiment.prototype.editExp = function() {
     uc.experiment = this;
     uc.currentEditorData = this.exp_data;
-    //page("/page/editors/experimenteditor/"+this.exp_id());
     page("/page/editors/mainExperimentPage/"+this.exp_id());
 };
 

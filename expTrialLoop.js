@@ -78,7 +78,7 @@ ExpTrialLoop.prototype.doubleClick = function() {
         uc.currentEditorView.setDataModel(this.subSequence());
     }
     else {
-        page("/page/editors/experimenteditor/"+uc.experiment.exp_id());
+        page("/page/editors/experimenteditor/"+uc.experiment.exp_id()+"/"+this.subSequence().id());
     }
 };
 
