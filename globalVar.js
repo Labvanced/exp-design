@@ -9,7 +9,7 @@ var GlobalVar = function (expData) {
     this.subtype = ko.observable(GlobalVar.subtypes[0].text);
     this.subtypeId = ko.observable(GlobalVar.subtypes[0].id);
     this.dataType = ko.observable("undefined");
-    this.assigned = false;
+    this.assigned = ko.observable(false);
     this.levels = ko.observableArray([]);
 };
 
@@ -40,6 +40,16 @@ GlobalVar.prototype.reAddEntities = function() {
         elem.reAddEntities();
     } );
 };
+
+
+GlobalVar.prototype.addLevel = function(idx) {
+    var idx2 =  idx+2;
+    var level = {
+        name:"level_1"
+    };
+    this.levels.push(level);
+};
+
 
 GlobalVar.prototype.fromJS = function(data) {
     this.id(data.id);
