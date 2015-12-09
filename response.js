@@ -2,6 +2,7 @@
 
 
 var Response= function(parent) {
+    var self = this;
 
     this.parent = parent;
 
@@ -9,9 +10,18 @@ var Response= function(parent) {
     this.type = "Response";
     this.responseType = ko.observable("keyboard"); // or mouse or ...
     this.responseKey = ko.observable(null); // leftArrow or leftClick or RightClick...
-    this.minTime =  ko.observable(0);
-    this.maxTime =  ko.observable(null);
+    this.onset = ko.observable(0);
+    this.onsetEnabled = ko.observable(false);
+    this.offset = ko.observable(0);
+    this.offsetEnabled = ko.observable(false);
     this.actions = ko.observableArray();
+
+    this.isKeyboardResponse = ko.computed(function(){
+        return (self.responseType() == "keyboard");
+    }, this);
+    this.isMouseResponse = ko.computed(function(){
+        return (self.responseType() == "mouse");
+    }, this);
 };
 
 Response.prototype.fromJS = function(data) {
@@ -19,8 +29,10 @@ Response.prototype.fromJS = function(data) {
 
     this.responseType(data.responseType);
     this.responseKey(data.responseKey);
-    this.minTime(data.minTime);
-    this.maxTime(data.maxTime);
+    this.onset(data.onset);
+    this.onsetEnabled(data.onsetEnabled);
+    this.offset(data.offset);
+    this.offsetEnabled(data.offsetEnabled);
     this.actions(jQuery.map( data.actions, function( actionData ) {
         var action = actionFactory(self,actionData);
         action.fromJS(actionData);
@@ -34,8 +46,10 @@ Response.prototype.toJS = function() {
         type: this.type,
         responseType: this.responseType(),
         responseKey: this.responseKey(),
-        minTime: this.minTime(),
-        maxTime: this.maxTime(),
+        onset: this.onset(),
+        onsetEnabled: this.onsetEnabled(),
+        offset: this.offset(),
+        offsetEnabled: this.offsetEnabled(),
         actions: jQuery.map( this.actions(), function( action ) { return action.toJS(); } )
     };
 };

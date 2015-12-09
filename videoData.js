@@ -11,6 +11,10 @@ var VideoData= function(expData) {
     this.id = ko.observable(guid());
     this.type = "VideoData";
     this.name = ko.observable("Video");
+    this.onset = ko.observable(0);
+    this.onsetEnabled = ko.observable(false);
+    this.offset = ko.observable(0);
+    this.offsetEnabled = ko.observable(false);
     this.responses = ko.observableArray([]);
 
     // not serialized
@@ -39,6 +43,10 @@ VideoData.prototype.fromJS = function(data) {
     this.name(data.name);
     this.vid_file_id(data.vid_file_id);
     this.vid_file_orig_name(data.vid_file_orig_name);
+    this.onset(data.onset);
+    this.onsetEnabled(data.onsetEnabled);
+    this.offset(data.offset);
+    this.offsetEnabled(data.offsetEnabled);
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response()).loadJS(respData);
     } ));
@@ -55,6 +63,10 @@ VideoData.prototype.toJS = function() {
         name: this.name(),
         vid_file_id: this.vid_file_id(),
         vid_file_orig_name: this.vid_file_orig_name(),
+        onset: this.onset(),
+        onsetEnabled: this.onsetEnabled(),
+        offset: this.offset(),
+        offsetEnabled: this.offsetEnabled(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
         editorX:  this.editorX(),
         editorY:  this.editorY()

@@ -13,7 +13,10 @@ var FrameData = function(expData) {
     this.id = ko.observable(guid());
     this.type = "FrameData";
     this.name = ko.observable("MediaFrame");
-    this.maxPresentationTime = ko.observable(null);
+    this.onset = ko.observable(0);
+    this.onsetEnabled = ko.observable(false);
+    this.offset = ko.observable(0);
+    this.offsetEnabled = ko.observable(false);
 
     // not serialized
     this.shape = "square";
@@ -73,7 +76,10 @@ FrameData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
-    this.maxPresentationTime(data.maxPresentationTime);
+    this.onset(data.onset);
+    this.onsetEnabled(data.onsetEnabled);
+    this.offset(data.offset);
+    this.offsetEnabled(data.offsetEnabled);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.editorX(data.editorX);
     this.editorY(data.editorY);
@@ -89,7 +95,10 @@ FrameData.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         name:  this.name(),
-        maxPresentationTime: this.maxPresentationTime(),
+        onset: this.onset(),
+        onsetEnabled: this.onsetEnabled(),
+        offset: this.offset(),
+        offsetEnabled: this.offsetEnabled(),
         portHandler: this.portHandler.toJS(),
         editorX:  this.editorX(),
         editorY:  this.editorY(),
