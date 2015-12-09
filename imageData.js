@@ -35,6 +35,12 @@ var ImageData= function(expData) {
 ImageData.prototype.setPointers = function() {
 };
 
+ImageData.prototype.addNewResponse = function(responseType) {
+    var resp = new Response(this);
+    resp.responseType(responseType);
+    this.responses.push(resp);
+};
+
 ImageData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;

@@ -72,7 +72,6 @@ ExpTrialLoop.prototype.setPointers = function() {
 
 ExpTrialLoop.prototype.doubleClick = function() {
     // this trial loop was double clicked in the editor:
-    console.log("double clicked")
     uc.currentEditorData = this.subSequence();
     if (uc.currentEditorView instanceof ExperimentEditor){
         uc.currentEditorView.setDataModel(this.subSequence());

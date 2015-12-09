@@ -28,9 +28,15 @@ var FrameData = function(expData) {
 };
 
 FrameData.prototype.doubleClick = function() {
-    // this block was double clicked in the parent Experiment editor:
-    uc.mediaEditorData = this;
-    page("/page/editors/mediaEditor");
+    // this frame was double clicked in the parent Experiment editor:
+    uc.currentEditorData = this;
+    if (uc.currentEditorView instanceof MediaEditor){
+        uc.currentEditorView.setDataModel(this);
+    }
+    else {
+        page("/page/editors/mediaEditor/"+uc.experiment.exp_id()+"/"+this.id());
+    }
+
 };
 
 FrameData.prototype.setPointers = function() {

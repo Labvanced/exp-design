@@ -7,46 +7,36 @@ var Response= function(parent) {
 
     // serialized
     this.type = "Response";
-    this.name = ko.observable("Response");
-    this.responseType = ko.observable("keyPress"); // or mouseClick or ...
-    this.responseKey = ko.observable(null); // keyboard key or leftClick or RightClick...
-
-    this.minResponseTime =  ko.observable(null);
-    this.maxResponseTime =  ko.observable(null);
-    this.action = ko.observableArray();
+    this.responseType = ko.observable("keyboard"); // or mouse or ...
+    this.responseKey = ko.observable(null); // leftArrow or leftClick or RightClick...
+    this.minTime =  ko.observable(0);
+    this.maxTime =  ko.observable(null);
+    this.actions = ko.observableArray();
 };
 
-
-
-
 Response.prototype.fromJS = function(data) {
-    this.id(data.id);
-    this.type = data.type;
-    this.name(data.name);
+    var self = this;
+
     this.responseType(data.responseType);
-    this.responseTime(data.responseTime);
-    this.infiniteResponseTime(data.infiniteResponseTime);
-    this.keybordExitResponses(data.keybordExitResponses);
-    this.mouseExitResponse(data.mouseExitResponse);
-    this.minPresentationTime(data.minPresentationTime);
-    this.maxPresentationTime(data.maxPresentationTime);
-    this.infinitePresentationTime(data.infinitePresentationTime);
+    this.responseKey(data.responseKey);
+    this.minTime(data.minTime);
+    this.maxTime(data.maxTime);
+    this.actions(jQuery.map( data.actions, function( actionData ) {
+        var action = actionFactory(self,actionData);
+        action.fromJS(actionData);
+        return action;
+    } ));
     return this;
 };
 
 Response.prototype.toJS = function() {
     return {
-        id: this.id(),
         type: this.type,
-        name: this.name(),
         responseType: this.responseType(),
-        responseTime: this.responseTime(),
-        infiniteResponseTime: this.infiniteResponseTime(),
-        keybordExitResponses: this.keybordExitResponses(),
-        mouseExitResponse: this.mouseExitResponse(),
-        minPresentationTime: this.minPresentationTime(),
-        maxPresentationTime: this.maxPresentationTime(),
-        infinitePresentationTime: this.infinitePresentationTime()
+        responseKey: this.responseKey(),
+        minTime: this.minTime(),
+        maxTime: this.maxTime(),
+        actions: jQuery.map( this.actions(), function( action ) { return action.toJS(); } )
     };
 };
 
