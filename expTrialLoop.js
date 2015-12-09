@@ -9,28 +9,37 @@ var ExpTrialLoop = function (expData) {
     this.name = ko.observable("TrialLoop");
     this.type = "ExpTrialLoop";
     this.subSequence = ko.observable(new Sequence(expData));
+
     this.factors = ko.observableArray([]);
     this.trialDesign = ko.observable("balanced");
     this.repsPerTrialType = ko.observable(0);
-    this.isActive = ko.observable(false);
+    this.isActive = ko.observable(true);
     this.randomization = ko.observable("undefined");
 
     // not serialized
+    this.isInitialized = ko.observable(false);
     this.shape = "square";
     this.label = "Experiment";
     this.portTypes = ["executeIn", "executeOut"];
 
     this.nrTrialTypes = ko.computed(function() {
-        var nrTialT = 1;
-        for (var i = 0; i<this.factors().length;i++ ){
-            nrTialT*=this.factors()[i].levels().length
-        }
-        if  (this.factors().length>0)    {
-             return nrTialT;
+        if (this.isInitialized()){
+            var nrTialT = 1;
+            for (var i = 0; i<this.factors().length;i++ ){
+                nrTialT*=this.factors()[i].levels().length
+            }
+            if  (this.factors().length>0)    {
+                 return nrTialT;
+            }
+            else{
+                return nrTialT -1;
+            }
         }
         else{
-            return nrTialT -1;
+            return 0;
         }
+        
+        
     }, this);
 
     this.nrTrialTypesArray = ko.computed(function() {
@@ -67,9 +76,15 @@ var ExpTrialLoop = function (expData) {
 
 ExpTrialLoop.prototype.setPointers = function() {
     var self = this;
-    $("#repPerTrialTypeUnbal").hide();
+
     // convert id of subSequence to actual pointer:
-    return this.subSequence(self.expData.entities.byId[this.subSequence()]);
+    this.subSequence(self.expData.entities.byId[this.subSequence()]);
+
+    // convert ids to actual pointers:
+    this.factors(jQuery.map( this.factors(), function( id ) {
+        return self.expData.entities.byId[id];
+    } ));
+    this.isInitialized(true);
 };
 
 ExpTrialLoop.prototype.doubleClick = function() {
@@ -118,8 +133,17 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.editorX(data.editorX);
     this.editorY(data.editorY);
     this.subSequence(data.subSequence);
+    this.type =  data.type;
+
+    this.factors(data.factors);
+    this.trialDesign(data.trialDesign);
+    this.repsPerTrialType(data.repsPerTrialType);
+    this.isActive(data.isActive);
+    this.randomization(data.randomization);
     return this;
+
 };
+
 
 ExpTrialLoop.prototype.toJS = function() {
     return {
@@ -129,7 +153,12 @@ ExpTrialLoop.prototype.toJS = function() {
         editorX:  this.editorX(),
         editorY:  this.editorY(),
         type: this.type,
-        subSequence: this.subSequence().id()
+        subSequence: this.subSequence().id(),
+        trialDesign:  this.trialDesign(),
+        repsPerTrialType:  this.repsPerTrialType(),
+        isActive:  this.isActive(),
+        randomization:  this.randomization(),
+        factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } )
     };
 
 };
