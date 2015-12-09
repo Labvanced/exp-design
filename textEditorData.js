@@ -12,6 +12,7 @@ var TextEditorData = function(expData) {
     this.type = "TextEditorData";
     this.name = ko.observable("Text Editor");
     this.maxPresentationTime = ko.observable(null);
+    this.isActive = ko.observable(false);
 
     // not serialized
     this.shape = "square";
