@@ -11,8 +11,9 @@ var ImageData= function(expData) {
     this.id = ko.observable(guid());
     this.type = "ImageData";
     this.name = ko.observable("Image");
-    this.imageOnset = ko.observable(null);
-    this.imageOffset = ko.observable(null);
+    this.onset = ko.observable(0);
+    this.offset = ko.observable(0);
+    this.offsetEnabled = ko.observable(false);
     this.responses = ko.observableArray([]);
 
     // not serialized
@@ -47,8 +48,9 @@ ImageData.prototype.fromJS = function(data) {
     this.name(data.name);
     this.img_file_id(data.img_file_id);
     this.img_file_orig_name(data.img_file_orig_name);
-    this.imageOnset(data.imageOnset);
-    this.imageOffset(data.imageOffset);
+    this.onset(data.onset);
+    this.offset(data.offset);
+    this.offsetEnabled(data.offsetEnabled);
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response()).loadJS(respData);
     } ));
@@ -65,8 +67,9 @@ ImageData.prototype.toJS = function() {
         name: this.name(),
         img_file_id: this.img_file_id(),
         img_file_orig_name: this.img_file_orig_name(),
-        imageOnset: this.imageOnset(),
-        imageOffset: this.imageOffset(),
+        onset: this.onset(),
+        offset: this.offset(),
+        offsetEnabled: this.offsetEnabled(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
         editorX:  this.editorX(),
         editorY:  this.editorY()
