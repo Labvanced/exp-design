@@ -20,7 +20,8 @@ GlobalVar.subtypes= [
         { id: 3, text: 'stimulus property' },
         { id: 4, text: 'response' },
         { id: 5, text: 'response time' },
-        { id: 6, text: 'randomization' }
+        { id: 6, text: 'randomization' },
+        { id: 7, text: 'seperate trial type' }
     ];
 
 

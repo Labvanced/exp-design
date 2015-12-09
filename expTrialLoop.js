@@ -11,10 +11,11 @@ var ExpTrialLoop = function (expData) {
     this.subSequence = ko.observable(new Sequence(expData));
 
     this.factors = ko.observableArray([]);
+    this.additionalTrialTypes =  ko.observableArray([]);
     this.trialDesign = ko.observable("balanced");
     this.repsPerTrialType = ko.observable(0);
     this.isActive = ko.observable(true);
-    this.randomization = ko.observable("undefined");
+    this.randomization = ko.observable("reshuffle");
 
     // not serialized
     this.isInitialized = ko.observable(false);
@@ -26,9 +27,13 @@ var ExpTrialLoop = function (expData) {
         if (this.isInitialized()){
             var nrTialT = 1;
             for (var i = 0; i<this.factors().length;i++ ){
-                nrTialT*=this.factors()[i].levels().length
+                nrTialT*=this.factors()[i].levels().length;
             }
-            if  (this.factors().length>0)    {
+            for (var i = 0; i<this.additionalTrialTypes().length;i++ ){
+                nrTialT+=this.additionalTrialTypes()[i].levels().length;
+            }
+
+            if  (this.factors().length>0 || this.additionalTrialTypes().length>0)    {
                  return nrTialT;
             }
             else{
@@ -84,6 +89,9 @@ ExpTrialLoop.prototype.setPointers = function() {
     this.factors(jQuery.map( this.factors(), function( id ) {
         return self.expData.entities.byId[id];
     } ));
+    this.additionalTrialTypes(jQuery.map( this.additionalTrialTypes(), function( id ) {
+        return self.expData.entities.byId[id];
+    } ));
     this.isInitialized(true);
 };
 
@@ -114,6 +122,22 @@ ExpTrialLoop.prototype.addFactor = function() {
 };
 
 
+ExpTrialLoop.prototype.addSepTrialType= function() {
+
+
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.subtype(GlobalVar.subtypes[6].text);
+    globalVar.dataType("numeric");
+    globalVar.name("independet_factor_1");
+    globalVar.assigned(true);
+    var level = {
+        name:"level_1"
+    };
+    globalVar.levels.push(level);
+    this.expData.addGlobalVar(globalVar);
+    this.additionalTrialTypes.push(globalVar);
+};
+
 ExpTrialLoop.prototype.reAddEntities = function() {
     var self = this;
 
@@ -136,6 +160,7 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.type =  data.type;
 
     this.factors(data.factors);
+    this.additionalTrialTypes(data.additionalTrialTypes);
     this.trialDesign(data.trialDesign);
     this.repsPerTrialType(data.repsPerTrialType);
     this.isActive(data.isActive);
@@ -158,7 +183,8 @@ ExpTrialLoop.prototype.toJS = function() {
         repsPerTrialType:  this.repsPerTrialType(),
         isActive:  this.isActive(),
         randomization:  this.randomization(),
-        factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } )
+        factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } ),
+        additionalTrialTypes: jQuery.map( this.factors(), function( addtrialtypes ) { return addtrialtypes.id(); } )
     };
 
 };
