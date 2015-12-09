@@ -12,6 +12,7 @@ var QuestionnaireEditorData = function(expData) {
     this.id = ko.observable(guid());
     this.type = "QuestionnaireEditorData";
     this.name = ko.observable("Questionnaire");
+    this.isActive = ko.observable(false);
 
     // not serialized
     this.shape = "square";
