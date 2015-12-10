@@ -16,16 +16,17 @@ var VideoData= function(expData) {
     this.offset = ko.observable(0);
     this.offsetEnabled = ko.observable(false);
     this.responses = ko.observableArray([]);
+    this.modifier = ko.observable(new Modifier(this.expData, this));
+    this.file_id = ko.observable(null);
+    this.file_orig_name = ko.observable(null);
+
 
     // not serialized
     this.shape = "square";
     this.label = "Video";
-
-    this.vid_file_id = ko.observable(null);
-    this.vid_file_orig_name = ko.observable(null);
     this.vidSource = ko.computed( function() {
-        if (this.vid_file_id()) {
-            return "/files/" + this.vid_file_id() + "/" + this.vid_file_orig_name();
+        if (this.file_id()) {
+            return "/files/" + this.file_id() + "/" + this.file_orig_name();
         }
         else {
             return false
@@ -34,6 +35,7 @@ var VideoData= function(expData) {
 };
 
 VideoData.prototype.setPointers = function() {
+    this.modifier().setPointers();
 };
 
 
@@ -41,8 +43,8 @@ VideoData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
-    this.vid_file_id(data.vid_file_id);
-    this.vid_file_orig_name(data.vid_file_orig_name);
+    this.file_id(data.file_id);
+    this.file_orig_name(data.file_orig_name);
     this.onset(data.onset);
     this.onsetEnabled(data.onsetEnabled);
     this.offset(data.offset);
@@ -50,6 +52,8 @@ VideoData.prototype.fromJS = function(data) {
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response()).loadJS(respData);
     } ));
+    this.modifier(new Modifier(this.expData, this));
+    this.modifier().fromJS(data.modifier);
     this.editorX(data.editorX);
     this.editorY(data.editorY);
     return this;
@@ -61,13 +65,14 @@ VideoData.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         name: this.name(),
-        vid_file_id: this.vid_file_id(),
-        vid_file_orig_name: this.vid_file_orig_name(),
+        file_id: this.file_id(),
+        file_orig_name: this.file_orig_name(),
         onset: this.onset(),
         onsetEnabled: this.onsetEnabled(),
         offset: this.offset(),
         offsetEnabled: this.offsetEnabled(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
+        modifier: this.modifier().toJS(),
         editorX:  this.editorX(),
         editorY:  this.editorY()
     };

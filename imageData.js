@@ -17,16 +17,16 @@ var ImageData= function(expData) {
     this.offsetEnabled = ko.observable(false);
     this.responses = ko.observableArray([]);
     this.modifier = ko.observable(new Modifier(this.expData, this));
-    this.img_file_id = ko.observable(null);
-    this.img_file_orig_name = ko.observable(null);
+    this.file_id = ko.observable(null);
+    this.file_orig_name = ko.observable(null);
 
 
     // not serialized
     this.shape = "square";
     this.label = "Image";
     this.imgSource = ko.computed( function() {
-        if (this.img_file_id()) {
-            return "/files/" + this.img_file_id() + "/" + this.img_file_orig_name();
+        if (this.file_id()) {
+            return "/files/" + this.file_id() + "/" + this.file_orig_name();
         }
         else {
             return false
@@ -49,8 +49,8 @@ ImageData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
-    this.img_file_id(data.img_file_id);
-    this.img_file_orig_name(data.img_file_orig_name);
+    this.file_id(data.file_id);
+    this.file_orig_name(data.file_orig_name);
     this.onset(data.onset);
     this.onsetEnabled(data.onsetEnabled);
     this.offset(data.offset);
@@ -71,8 +71,8 @@ ImageData.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         name: this.name(),
-        img_file_id: this.img_file_id(),
-        img_file_orig_name: this.img_file_orig_name(),
+        file_id: this.file_id(),
+        file_orig_name: this.file_orig_name(),
         onset: this.onset(),
         onsetEnabled: this.onsetEnabled(),
         offset: this.offset(),
