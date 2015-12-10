@@ -16,13 +16,14 @@ var ImageData= function(expData) {
     this.offset = ko.observable(0);
     this.offsetEnabled = ko.observable(false);
     this.responses = ko.observableArray([]);
+    this.modifier = ko.observable(new Modifier(this.expData, this));
+    this.img_file_id = ko.observable(null);
+    this.img_file_orig_name = ko.observable(null);
+
 
     // not serialized
     this.shape = "square";
     this.label = "Image";
-
-    this.img_file_id = ko.observable(null);
-    this.img_file_orig_name = ko.observable(null);
     this.imgSource = ko.computed( function() {
         if (this.img_file_id()) {
             return "/files/" + this.img_file_id() + "/" + this.img_file_orig_name();
@@ -35,6 +36,7 @@ var ImageData= function(expData) {
 };
 
 ImageData.prototype.setPointers = function() {
+    this.modifier().setPointers();
 };
 
 ImageData.prototype.addNewResponse = function(responseType) {
@@ -56,6 +58,8 @@ ImageData.prototype.fromJS = function(data) {
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response()).fromJS(respData);
     } ));
+    this.modifier(new Modifier(this.expData, this));
+    this.modifier().fromJS(data.modifier);
     this.editorX(data.editorX);
     this.editorY(data.editorY);
     return this;
@@ -74,6 +78,7 @@ ImageData.prototype.toJS = function() {
         offset: this.offset(),
         offsetEnabled: this.offsetEnabled(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
+        modifier: this.modifier().toJS(),
         editorX:  this.editorX(),
         editorY:  this.editorY()
     };

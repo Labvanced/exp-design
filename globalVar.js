@@ -7,7 +7,6 @@ var GlobalVar = function (expData) {
     this.name = ko.observable("newVariable");
     this.type = "GlobalVar";
     this.subtype = ko.observable(GlobalVar.subtypes[0].text);
-    this.subtypeId = ko.observable(GlobalVar.subtypes[0].id);
     this.dataType = ko.observable("undefined");
     this.assigned = ko.observable(false);
     this.levels = ko.observableArray([]);
@@ -28,29 +27,12 @@ GlobalVar.subtypes= [
 GlobalVar.prototype.setPointers = function() {
 };
 
-GlobalVar.prototype.reAddEntities = function() {
-    var self = this;
-
-    // add the direct child nodes:
-    jQuery.each( this.sessions(), function( index, elem ) {
-        // check if they are not already in the list:
-        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
-            self.expData.entities.push(elem);
-
-        // recursively make sure that all deep tree nodes are in the entities list:
-        elem.reAddEntities();
-    } );
-};
-
-
-GlobalVar.prototype.addLevel = function(idx) {
-    var idx2 =  idx+2;
+GlobalVar.prototype.addLevel = function() {
     var level = {
-        name:"level_1"
+        name:"level_"+(this.levels().length+1)
     };
     this.levels.push(level);
 };
-
 
 GlobalVar.prototype.fromJS = function(data) {
     this.id(data.id);

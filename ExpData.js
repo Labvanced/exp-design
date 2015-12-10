@@ -34,53 +34,67 @@ ExpData.prototype.fromJS = function(data) {
             switch (entityJson.type) {
                 case 'StartBlock':
                     entity = new StartBlock(self);
+                    entity.fromJS(entityJson);
                     break;
                 case 'EndBlock':
                     entity = new EndBlock(self);
+                    entity.fromJS(entityJson);
                     break;
                 case 'QuestionnaireEditorData':
                     entity = new QuestionnaireEditorData(self);
+                    entity.fromJS(entityJson);
                     break;
                 case 'Connection':
                     entity = new Connection(self);
+                    entity.fromJS(entityJson);
                     break;
                 case 'Sequence':
                     entity = new Sequence(self);
+                    entity.fromJS(entityJson);
                     break;
                 case 'TextEditorData':
                     entity = new TextEditorData(self);
+                    entity.fromJS(entityJson);
                     break;
                 case 'FrameData':
                     entity = new FrameData(self);
+                    entity.fromJS(entityJson);
                     break;
                 case 'SubjectGroup':
                     entity = new SubjectGroup(self);
+                    entity.fromJS(entityJson);
                     self.groups.push(entity);
                     break;
                 case 'ExpSession':
                     entity = new ExpSession(self);
+                    entity.fromJS(entityJson);
                     break;
                 case 'ImageData':
                     entity = new ImageData(self);
+                    entity.fromJS(entityJson);
                     break;
                 case 'VideoData':
                     entity = new VideoData(self);
+                    entity.fromJS(entityJson);
                     break;
                 case 'ExpBlock':
                     entity = new ExpBlock(self);
+                    entity.fromJS(entityJson);
                     self.expBlocks.push(entity);
                     break;
                 case 'ExpTrialLoop':
                     entity = new ExpTrialLoop(self);
+                    entity.fromJS(entityJson);
                     break;
                 case 'GlobalVar':
                     entity = new GlobalVar(self);
+                    entity.fromJS(entityJson);
                     self.globalVars.push(entity);
                     break;
                 default:
                     console.error("type "+ entityJson.type + " is not defined in factory method.")
             }
-            entity.fromJS(entityJson);
+            
             return entity;
         }));
     }
