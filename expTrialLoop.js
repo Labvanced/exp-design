@@ -165,6 +165,29 @@ ExpTrialLoop.prototype.setPointers = function() {
     this.isInitialized(true);
 };
 
+ExpTrialLoop.prototype.renameFactor = function(idx,flag) {
+
+    if (flag == "true"){
+        this.factors()[idx].editName(true);
+    }
+    else if (flag == "false"){
+        this.factors()[idx].editName(false);
+    }
+};
+
+ExpTrialLoop.prototype.renameLevel = function(idxLevel,idxFactor,flag) {
+
+
+    if (flag == "true"){
+        this.factors()[idxFactor].levels()[idxLevel].editName(true);
+    }
+    else if (flag == "false"){
+        this.factors()[idxFactor].levels()[idxLevel].editName(false);
+    }
+};
+
+
+
 ExpTrialLoop.prototype.doubleClick = function() {
     // this trial loop was double clicked in the editor:
     uc.currentEditorData = this.subSequence();
@@ -184,7 +207,8 @@ ExpTrialLoop.prototype.addFactor = function() {
     globalVar.name("factor_1");
     globalVar.assigned(true);
     var level = {
-        name:"level_1"
+        name:"level_1",
+        editName:  ko.observable(false)
     };
     globalVar.levels.push(level);
     this.expData.addGlobalVar(globalVar);

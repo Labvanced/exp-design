@@ -10,6 +10,7 @@ var GlobalVar = function (expData) {
     this.dataType = ko.observable("undefined");
     this.assigned = ko.observable(false);
     this.levels = ko.observableArray([]);
+    this.editName =  ko.observable(false);
 };
 
 // enum: posssible variable subtypes..
@@ -29,7 +30,9 @@ GlobalVar.prototype.setPointers = function() {
 
 GlobalVar.prototype.addLevel = function() {
     var level = {
-        name:"level_"+(this.levels().length+1)
+        name:"level_"+(this.levels().length+1),
+        editName:  ko.observable(false)
+
     };
     this.levels.push(level);
 };
