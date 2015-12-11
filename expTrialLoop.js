@@ -61,6 +61,7 @@ var ExpTrialLoop = function (expData) {
     this.trialTypesInteracting = ko.computed(function() {
         if (this.isInitialized()){
             var trialTypes = [];
+            var trialTypesString = [];
             var factors = this.factors();
             for (var i = 0; i<factors.length;i++ ){
                 var levels = factors[i].levels();
@@ -70,12 +71,15 @@ var ExpTrialLoop = function (expData) {
                     for (var l=0; l<levels.length; l++){
                         // add this level of the non-interacting factor:
                         trialTypes.push([l]); // so far only one factor --> array of length 1
+                        trialTypesString.push([levels[l].name]);
                     }
                 }
                 else {
                     // create new array of new interacting trialTypes with all combinations:
                     var oldTrialTypes = trialTypes;
+                    var oldTrialTypesString = trialTypesString;
                     trialTypes = [];
+                    trialTypesString = [];
                     for (var t=0; t<oldTrialTypes.length; t++){
                         // add all levels of this new interacting factor:
                         for (var l=0; l<levels.length; l++) {
@@ -83,45 +87,25 @@ var ExpTrialLoop = function (expData) {
                             var newTrialType = oldTrialTypes[t].slice(); // deep copy array
                             newTrialType.push(l);
                             trialTypes.push(newTrialType);
+
+                            var newTrialTypeString = oldTrialTypesString[t].slice(); // deep copy array
+                            newTrialTypeString.push(levels[l].name);
+                            trialTypesString.push(newTrialTypeString);
                         }
                     }
                 }
             }
-            return trialTypes;
+
+            return {
+                idx: trialTypes,
+                str: trialTypesString
+            };
         }
         else{
-            return [];
-        }
-    }, this);
-
-    this.trialTypesNonInteracting = ko.computed(function() {
-        if (this.isInitialized()){
-            var trialTypes = [];
-            var numInteractingFactors = this.factors().length;
-
-            // create null array for each interacting factor, that can be copied into new trialTypes:
-            var nullArray = [];
-            var totalNrColumns = numInteractingFactors + this.additionalTrialTypes().length;
-            for (var f=0; f<totalNrColumns; f++){
-                nullArray.push(null);
-            }
-
-            var factorsNonInteracting = this.additionalTrialTypes();
-            for (var i = 0; i<factorsNonInteracting.length;i++ ){
-                var levels = factorsNonInteracting[i].levels();
-
-                // add all levels of this non-interacting factor:
-                for (var l=0; l<levels.length; l++){
-                    // add this level of the non-interacting factor:
-                    var newTrialType = nullArray.slice();
-                    newTrialType[numInteractingFactors+i] = l;
-                    trialTypes.push(newTrialType);
-                }
-            }
-            return trialTypes;
-        }
-        else{
-            return [];
+            return {
+                idx: [],
+                str: []
+            };
         }
     }, this);
 
