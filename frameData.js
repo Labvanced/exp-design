@@ -34,6 +34,12 @@ var FrameData = function(expData) {
 
 };
 
+FrameData.prototype.addNewResponse = function(responseType) {
+    var resp = new Response(this);
+    resp.responseType(responseType);
+    this.responses.push(resp);
+};
+
 FrameData.prototype.addNewSubElement = function(elem) {
     this.elements.push(elem);
     this.expData.entities.push(elem);
@@ -96,7 +102,7 @@ FrameData.prototype.fromJS = function(data) {
     this.editorX(data.editorX);
     this.editorY(data.editorY);
     this.responses(jQuery.map( data.responses, function( respData ) {
-        return (new Response(self)).loadJS(respData);
+        return (new Response()).fromJS(respData);
     } ));
     this.elements(data.elements);
     return this;
