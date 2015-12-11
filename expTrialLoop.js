@@ -96,57 +96,6 @@ var ExpTrialLoop = function (expData) {
                 }
             }
 
-            // add null elements to end of each row for non-interacting factors:
-            var factorsNonInteracting = this.additionalTrialTypes();
-            for (var t = 0; t<trialTypes.length; t++ ){
-                for (var f=0; f<factorsNonInteracting.length; f++){
-                    trialTypes[t].push(null);
-                    trialTypesString[t].push(null);
-                }
-            }
-
-            return {
-                idx: trialTypes,
-                str: trialTypesString
-            };
-        }
-        else{
-            return {
-                idx: [],
-                str: []
-            };
-        }
-    }, this);
-
-    this.trialTypesNonInteracting = ko.computed(function() {
-        if (this.isInitialized()){
-            var trialTypes = [];
-            var trialTypesString = [];
-            var numInteractingFactors = this.factors().length;
-
-            // create null array for each interacting factor, that can be copied into new trialTypes:
-            var nullArray = [];
-            var totalNrColumns = numInteractingFactors + this.additionalTrialTypes().length;
-            for (var f=0; f<totalNrColumns; f++){
-                nullArray.push(null);
-            }
-
-            var factorsNonInteracting = this.additionalTrialTypes();
-            for (var i = 0; i<factorsNonInteracting.length;i++ ){
-                var levels = factorsNonInteracting[i].levels();
-
-                // add all levels of this non-interacting factor:
-                for (var l=0; l<levels.length; l++){
-                    // add this level of the non-interacting factor:
-                    var newTrialType = nullArray.slice();
-                    newTrialType[numInteractingFactors+i] = l;
-                    trialTypes.push(newTrialType);
-
-                    var newTrialTypeString = nullArray.slice();
-                    newTrialTypeString[numInteractingFactors+i] = levels[l].name;
-                    trialTypesString.push(newTrialTypeString);
-                }
-            }
             return {
                 idx: trialTypes,
                 str: trialTypesString
