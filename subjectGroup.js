@@ -7,10 +7,21 @@ var SubjectGroup = function (expData) {
     this.name = ko.observable("newGroup");
     this.type = "SubjectGroup";
     this.sessions = ko.observableArray([]).extend({sortById: null});
+    this.editName =  ko.observable(false);
 };
 
 SubjectGroup.prototype.addSession = function(session) {
     return this.sessions.push(session);
+};
+
+SubjectGroup.prototype.rename = function(idx,flag) {
+
+    if (flag == "true"){
+        this.editName(true);
+    }
+    else if (flag == "false"){
+        this.editName(false);
+    }
 };
 
 

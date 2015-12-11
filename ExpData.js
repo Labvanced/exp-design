@@ -16,6 +16,7 @@ ExpData.prototype.setPointers = function() {
 };
 
 
+
 ExpData.prototype.addGlobalVar = function(variable) {
     return this.globalVars.push(variable);
 };
