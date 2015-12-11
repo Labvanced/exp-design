@@ -43,6 +43,7 @@ TextEditorData.prototype.fromJS = function(data) {
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.editorX(data.editorX);
     this.editorY(data.editorY);
+    this.isActive(data.isActive);
     this.text(data.text);
     return this;
 };
@@ -54,6 +55,7 @@ TextEditorData.prototype.toJS = function() {
         name: this.name(),
         editorX:  this.editorX(),
         editorY:  this.editorY(),
+        isActive:  this.isActive(),
         portHandler:this.portHandler.toJS(),
         text: this.text()
     };

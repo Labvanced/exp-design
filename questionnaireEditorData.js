@@ -76,6 +76,7 @@ QuestionnaireEditorData.prototype.fromJS = function(data) {
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.editorX(data.editorX);
     this.editorY(data.editorY);
+    this.isActive(data.isActive);
     this.elements(data.elements);
     return this;
 };
@@ -89,6 +90,7 @@ QuestionnaireEditorData.prototype.toJS = function() {
         portHandler:this.portHandler.toJS(),
         editorX:  this.editorX(),
         editorY:  this.editorY(),
+        isActive:  this.isActive(),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };
 };

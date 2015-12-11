@@ -16,7 +16,7 @@ var ExpTrialLoop = function (expData) {
     this.additionalTrialTypes =  ko.observableArray([]);
     this.trialDesign = ko.observable("balanced");
     this.repsPerTrialType = ko.observable(0);
-    this.isActive = ko.observable(true);
+    this.isActive = ko.observable(false);
     this.randomization = ko.observable("reshuffle");
 
     // not serialized
