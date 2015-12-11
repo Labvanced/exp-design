@@ -7,12 +7,25 @@ var ExpBlock = function (expData) {
     this.name = ko.observable("newBlock");
     this.type = "ExpBlock";
     this.subSequence = ko.observable(new Sequence(expData));
+    this.editName =  ko.observable(false);
 };
 
 ExpBlock.prototype.setPointers = function() {
     // convert id of subSequence to actual pointer:
     return this.subSequence(this.expData.entities.byId[this.subSequence()]);
 };
+
+
+ExpBlock.prototype.rename = function(idx,flag) {
+
+    if (flag == "true"){
+        this.editName(true);
+    }
+    else if (flag == "false"){
+        this.editName(false);
+    }
+};
+
 
 ExpBlock.prototype.reAddEntities = function() {
     var self = this;
