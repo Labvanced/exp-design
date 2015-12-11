@@ -4,6 +4,7 @@
 var EndBlock = function(expData) {
 
     this.expData = expData;
+    this.parent = null;
 
     // serialized
     this.editorX = ko.observable(0);

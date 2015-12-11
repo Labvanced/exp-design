@@ -6,6 +6,7 @@ var FrameData = function(expData) {
     var self = this;
     this.expData = expData;
     this.currSelectedElement = ko.observable();
+    this.parent = null;
 
     // serialized
     this.editorX = ko.observable(0);
@@ -22,12 +23,21 @@ var FrameData = function(expData) {
     this.shape = "square";
     this.label = "MediaFrame";
     this.portTypes = ["executeIn", "executeOut"];
+    this.trialTypeView = {
+
+    };
 
     // sub-Structures (serialized below)
     this.elements = ko.observableArray([]).extend({sortById: null});
     this.portHandler = new PortHandler(this);
     this.responses = ko.observableArray([]);
 
+};
+
+FrameData.prototype.addNewSubElement = function(elem) {
+    this.elements.push(elem);
+    this.expData.entities.push(elem);
+    elem.parent = this;
 };
 
 FrameData.prototype.doubleClick = function() {
@@ -47,7 +57,9 @@ FrameData.prototype.setPointers = function() {
 
     // convert ids to actual pointers:
     this.elements(jQuery.map( this.elements(), function( id ) {
-        return self.expData.entities.byId[id];
+        var elem = self.expData.entities.byId[id];
+        elem.parent = self;
+        return elem;
     } ));
 };
 

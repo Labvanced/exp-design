@@ -3,6 +3,9 @@
 
 var Connection = function(expData) {
     this.expData = expData;
+    this.parent = null;
+
+    // serialized:
     this.type = "Connection";
     this.name = ko.observable("Connection");
     this.conn1 = ko.observable(null);

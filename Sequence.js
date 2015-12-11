@@ -6,6 +6,7 @@ var Sequence = function (expData) {
     var self = this;
     this.expData = expData;
     this.currSelectedElement = ko.observable();
+    this.parent = null;
 
     // serialized
     this.id = ko.observable(guid());
@@ -21,8 +22,17 @@ Sequence.prototype.setPointers = function() {
 
     // convert ids to actual pointers:
     this.elements(jQuery.map( this.elements(), function( id ) {
-        return self.expData.entities.byId[id];
+        var elem = self.expData.entities.byId[id];
+        elem.parent = self;
+        return elem;
     } ));
+};
+
+
+Sequence.prototype.addNewSubElement = function(elem) {
+    this.elements.push(elem);
+    this.expData.entities.push(elem);
+    elem.parent = this;
 };
 
 Sequence.prototype.getElementById = function(id) {

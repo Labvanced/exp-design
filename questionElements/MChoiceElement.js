@@ -3,6 +3,9 @@
 // MULTIPLE CHOICE ELEMENT //
 var MChoiceElement = function(expData) {
     this.expData = expData;
+    this.parent = null;
+
+    //serialized
     this.type= "mChoice";
     this.id = ko.observable(guid());
     this.editing=  ko.observable(true);

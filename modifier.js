@@ -2,12 +2,15 @@
 
 var Modifier = function (expData, objToModify) {
     this.expData = expData;
+    this.parent = null;
     this.objToModify = objToModify;
 
+    // serialized:
     this.factors = ko.observableArray([]); // Array of GlobalVar
     this.modifierTrialTypes = ko.observableArray([]); // Array of ModifierTrialTypes
     this.type = "Modifier";
 
+    // helpers:
     this.selectedTrialType = ko.observable();
 
 };

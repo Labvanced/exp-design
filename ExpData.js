@@ -169,7 +169,7 @@ ExpData.prototype.addNewBlock = function() {
 
     // add fixed instances of block into sequence
     var block = new ExpBlock(this);
-    var elements = block.subSequence().elements;
+    var subSequence = block.subSequence();
     var xPosition = -60;
     var yPosition = 100;
     for (var i = 0; i<blockElements.length;i++){
@@ -177,7 +177,7 @@ ExpData.prototype.addNewBlock = function() {
         xPosition += 160;
         blockElements[i].editorX(xPosition);
         blockElements[i].editorY(yPosition);
-        elements.push(blockElements[i]);
+        subSequence.addNewSubElement(blockElements[i]);
 
         if (i<blockElements.length-1) {
             // add connection to next element:
@@ -210,7 +210,7 @@ ExpData.prototype.addNewBlock = function() {
                 id: blockElements[i + 1].id(),
                 portId: portId
             });
-            elements.push(conn);
+            subSequence.addNewSubElement(conn);
         }
 
     }

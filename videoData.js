@@ -4,6 +4,7 @@
 var VideoData= function(expData) {
 
     this.expData = expData;
+    this.parent = null;
 
     // serialized
     this.editorX = ko.observable(0);
@@ -19,7 +20,7 @@ var VideoData= function(expData) {
     this.modifier = ko.observable(new Modifier(this.expData, this));
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
-
+    this.isActive = ko.observable(true);
 
     // not serialized
     this.shape = "square";
@@ -56,6 +57,7 @@ VideoData.prototype.fromJS = function(data) {
     this.modifier().fromJS(data.modifier);
     this.editorX(data.editorX);
     this.editorY(data.editorY);
+    this.isActive(data.isActive);
     return this;
 };
 
@@ -74,7 +76,8 @@ VideoData.prototype.toJS = function() {
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
         modifier: this.modifier().toJS(),
         editorX:  this.editorX(),
-        editorY:  this.editorY()
+        editorY:  this.editorY(),
+        isActive:  this.isActive()
     };
 };
 

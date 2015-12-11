@@ -16,6 +16,7 @@ var Response= function(parent) {
     this.offsetEnabled = ko.observable(false);
     this.actions = ko.observableArray();
 
+    // helpers:
     this.isKeyboardResponse = ko.computed(function(){
         return (self.responseType() == "keyboard");
     }, this);

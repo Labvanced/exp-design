@@ -4,6 +4,9 @@
 // SCALE ELEMENT//
 var ScaleElement= function(expData) {
     this.expData = expData;
+    this.parent = null;
+
+    //serialized
     this.type= "scale";
     this.id = ko.observable(guid());
     this.editing=  ko.observable(true);

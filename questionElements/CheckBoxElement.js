@@ -3,6 +3,9 @@
 // CHECK BOX  ELEMENT //
 var CheckBoxElement= function(expData) {
     this.expData = expData;
+    this.parent = null;
+
+    //serialized
     this.type= "checkBox";
     this.id = ko.observable(guid());
     this.editing=  ko.observable(true);

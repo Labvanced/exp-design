@@ -2,7 +2,9 @@
 
 var ExpTrialLoop = function (expData) {
     this.expData = expData;
+    this.parent = null;
 
+    // serialized:
     this.editorX = ko.observable(0);
     this.editorY = ko.observable(0);
     this.id = ko.observable(guid());
@@ -56,6 +58,73 @@ var ExpTrialLoop = function (expData) {
 
     }, this);
 
+    this.trialTypesInteracting = ko.computed(function() {
+        if (this.isInitialized()){
+            var trialTypes = [];
+            var factors = this.factors();
+            for (var i = 0; i<factors.length;i++ ){
+                var levels = factors[i].levels();
+                if (trialTypes.length == 0) {
+                    // special case, because this is the first interacting factor. Therefore just add all levels:
+                    // add all levels of this new non-interacting factor:
+                    for (var l=0; l<levels.length; l++){
+                        // add this level of the non-interacting factor:
+                        trialTypes.push([l]); // so far only one factor --> array of length 1
+                    }
+                }
+                else {
+                    // create new array of new interacting trialTypes with all combinations:
+                    var oldTrialTypes = trialTypes;
+                    trialTypes = [];
+                    for (var t=0; t<oldTrialTypes.length; t++){
+                        // add all levels of this new interacting factor:
+                        for (var l=0; l<levels.length; l++) {
+                            // mix previous trialType t with level l of the newly interacting factor:
+                            var newTrialType = oldTrialTypes[t].slice(); // deep copy array
+                            newTrialType.push(l);
+                            trialTypes.push(newTrialType);
+                        }
+                    }
+                }
+            }
+            return trialTypes;
+        }
+        else{
+            return [];
+        }
+    }, this);
+
+    this.trialTypesNonInteracting = ko.computed(function() {
+        if (this.isInitialized()){
+            var trialTypes = [];
+            var numInteractingFactors = this.factors().length;
+
+            // create null array for each interacting factor, that can be copied into new trialTypes:
+            var nullArray = [];
+            var totalNrColumns = numInteractingFactors + this.additionalTrialTypes().length;
+            for (var f=0; f<totalNrColumns; f++){
+                nullArray.push(null);
+            }
+
+            var factorsNonInteracting = this.additionalTrialTypes();
+            for (var i = 0; i<factorsNonInteracting.length;i++ ){
+                var levels = factorsNonInteracting[i].levels();
+
+                // add all levels of this non-interacting factor:
+                for (var l=0; l<levels.length; l++){
+                    // add this level of the non-interacting factor:
+                    var newTrialType = nullArray.slice();
+                    newTrialType[numInteractingFactors+i] = l;
+                    trialTypes.push(newTrialType);
+                }
+            }
+            return trialTypes;
+        }
+        else{
+            return [];
+        }
+    }, this);
+
     this.totalNrTrials = ko.computed(function() {
         return  this.nrTrialTypes() * this.repsPerTrialType();
     }, this);
@@ -84,6 +153,7 @@ ExpTrialLoop.prototype.setPointers = function() {
 
     // convert id of subSequence to actual pointer:
     this.subSequence(self.expData.entities.byId[this.subSequence()]);
+    this.subSequence().parent = this;
 
     // convert ids to actual pointers:
     this.factors(jQuery.map( this.factors(), function( id ) {
@@ -184,7 +254,7 @@ ExpTrialLoop.prototype.toJS = function() {
         isActive:  this.isActive(),
         randomization:  this.randomization(),
         factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } ),
-        additionalTrialTypes: jQuery.map( this.factors(), function( addtrialtypes ) { return addtrialtypes.id(); } )
+        additionalTrialTypes: jQuery.map( this.additionalTrialTypes(), function( addtrialtypes ) { return addtrialtypes.id(); } )
     };
 
 };

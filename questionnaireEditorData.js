@@ -5,6 +5,7 @@ var QuestionnaireEditorData = function(expData) {
 
     var self = this;
     this.expData = expData;
+    this.parent = null;
 
     // serialized
     this.editorX = ko.observable(0);
@@ -25,6 +26,12 @@ var QuestionnaireEditorData = function(expData) {
 
 };
 
+QuestionnaireEditorData.prototype.addNewSubElement = function(elem) {
+    this.elements.push(elem);
+    this.expData.entities.push(elem);
+    elem.parent = this;
+};
+
 QuestionnaireEditorData.prototype.doubleClick = function() {
     // this block was double clicked in the parent Experiment editor:
     uc.questionnaireEditorData = this;
@@ -36,10 +43,32 @@ QuestionnaireEditorData.prototype.setPointers = function() {
 
     // convert ids to actual pointers:
     this.elements(jQuery.map( this.elements(), function( id ) {
-        return self.expData.entities.byId[id];
+        var elem = self.expData.entities.byId[id];
+        elem.parent = self;
+        return elem;
     } ));
 };
 
+QuestionnaireEditorData.prototype.getElementById = function(id) {
+    return  this.elements.byId[id];
+};
+
+
+QuestionnaireEditorData.prototype.reAddEntities = function() {
+    var self = this;
+
+    // add the direct child nodes:
+    jQuery.each( this.elements(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
+            self.expData.entities.push(elem);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (elem.reAddEntities)
+            elem.reAddEntities();
+    } );
+
+};
 
 QuestionnaireEditorData.prototype.fromJS = function(data) {
     this.id(data.id);
