@@ -7,10 +7,22 @@ var ExpSession = function (expData) {
     this.name = ko.observable("newSession");
     this.type = "ExpSession";
     this.blocks = ko.observableArray([]).extend({sortById: null});
+    this.editName =  ko.observable(false);
 };
 
 ExpSession.prototype.addBlock = function(block) {
     return this.blocks.push(block);
+};
+
+ExpSession.prototype.rename = function(idx,flag,data,event) {
+    event.stopImmediatePropagation();
+    if (flag == "true"){
+        this.editName(true);
+    }
+    else if (flag == "false"){
+        this.editName(false);
+    }
+
 };
 
 ExpSession.prototype.setPointers = function() {
