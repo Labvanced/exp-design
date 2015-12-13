@@ -170,6 +170,8 @@ ExpData.prototype.addNewBlock = function() {
 
     // add fixed instances of block into sequence
     var block = new ExpBlock(this);
+    var name= "block_"+(this.expBlocks().length+1);
+    block.name(name);
     var subSequence = block.subSequence();
     var xPosition = -60;
     var yPosition = 100;

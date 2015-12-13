@@ -148,36 +148,6 @@ ExpTrialLoop.prototype.setPointers = function() {
     this.isInitialized(true);
 };
 
-ExpTrialLoop.prototype.renameFactor = function(idx,flag) {
-
-    if (flag == "true"){
-        this.factors()[idx].editName(true);
-    }
-    else if (flag == "false"){
-        this.factors()[idx].editName(false);
-    }
-};
-
-ExpTrialLoop.prototype.renameLevel = function(idxLevel,idxFactor,flag) {
-
-
-    if (flag == "true"){
-        this.factors()[idxFactor].levels()[idxLevel].editName(true);
-        this.factors()[idxFactor].subLevelEdit(true);
-    }
-    else if (flag == "false"){
-        this.factors()[idxFactor].levels()[idxLevel].editName(false);
-        this.factors()[idxFactor].subLevelEdit(false);
-    }
-};
-
-
-ExpTrialLoop.prototype.removeLevel = function(idx) {
-
-    this.factors()[idx].levels.pop();
-};
-
-
 ExpTrialLoop.prototype.doubleClick = function() {
     // this trial loop was double clicked in the editor:
     uc.currentEditorData = this.subSequence();
@@ -194,7 +164,8 @@ ExpTrialLoop.prototype.addFactor = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.subtype(GlobalVar.subtypes[1].text);
     globalVar.dataType("numeric");
-    globalVar.name("factor_1");
+    var name = "factor_" + (this.factors().length+1);
+    globalVar.name(name);
     globalVar.assigned(true);
     var level = {
         name:"level_1",
@@ -205,22 +176,56 @@ ExpTrialLoop.prototype.addFactor = function() {
     this.factors.push(globalVar);
 };
 
+ExpTrialLoop.prototype.renameFactor = function(idx,flag) {
+
+    if (flag == "true"){
+        this.factors()[idx].editName(true);
+    }
+    else if (flag == "false"){
+        this.factors()[idx].editName(false);
+    }
+};
+
+
+ExpTrialLoop.prototype.removeFactor = function(idx) {
+    this.factors.splice(idx,1);
+};
+
+
 
 ExpTrialLoop.prototype.addSepTrialType= function() {
-
 
     var globalVar = new GlobalVar(this.expData);
     globalVar.subtype(GlobalVar.subtypes[6].text);
     globalVar.dataType("numeric");
-    globalVar.name("independet_factor_1");
+    var name = "indFactor_" + (this.additionalTrialTypes().length+1);
+    globalVar.name(name);
     globalVar.assigned(true);
     var level = {
-        name:"level_1"
+        name:"level_1",
+        editName:  ko.observable(false)
     };
     globalVar.levels.push(level);
     this.expData.addGlobalVar(globalVar);
     this.additionalTrialTypes.push(globalVar);
 };
+
+
+ExpTrialLoop.prototype.renameAddTrialType = function(idx,flag) {
+
+    if (flag == "true"){
+        this.additionalTrialTypes()[idx].editName(true);
+    }
+    else if (flag == "false"){
+        this.additionalTrialTypes()[idx].editName(false);
+    }
+};
+
+
+ExpTrialLoop.prototype.removeAddTrialType = function(idx) {
+    this.additionalTrialTypes.splice(idx,1);
+};
+
 
 ExpTrialLoop.prototype.reAddEntities = function() {
     var self = this;

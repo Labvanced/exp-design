@@ -4,7 +4,7 @@ var ExpBlock = function (expData) {
     this.expData = expData;
 
     this.id = ko.observable(guid());
-    this.name = ko.observable("newBlock");
+    this.name = ko.observable("block_1");
     this.type = "ExpBlock";
     this.subSequence = ko.observable(new Sequence(expData));
     this.editName =  ko.observable(false);
@@ -16,14 +16,15 @@ ExpBlock.prototype.setPointers = function() {
 };
 
 
-ExpBlock.prototype.rename = function(idx,flag) {
-
+ExpBlock.prototype.rename = function(idx,flag,data,event) {
+    event.stopImmediatePropagation();
     if (flag == "true"){
         this.editName(true);
     }
     else if (flag == "false"){
         this.editName(false);
     }
+
 };
 
 
