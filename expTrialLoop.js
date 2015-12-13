@@ -114,7 +114,6 @@ var ExpTrialLoop = function (expData) {
     }, this);
 
 
-
     this.trialDesign.subscribe(function(newVal){
         if (newVal== "unbalanced"){
             $("#repPerTrialType").hide();
@@ -164,12 +163,19 @@ ExpTrialLoop.prototype.renameLevel = function(idxLevel,idxFactor,flag) {
 
     if (flag == "true"){
         this.factors()[idxFactor].levels()[idxLevel].editName(true);
+        this.factors()[idxFactor].subLevelEdit(true);
     }
     else if (flag == "false"){
         this.factors()[idxFactor].levels()[idxLevel].editName(false);
+        this.factors()[idxFactor].subLevelEdit(false);
     }
 };
 
+
+ExpTrialLoop.prototype.removeLevel = function(idx) {
+
+    this.factors()[idx].levels.pop();
+};
 
 
 ExpTrialLoop.prototype.doubleClick = function() {
@@ -264,5 +270,4 @@ ExpTrialLoop.prototype.toJS = function() {
         factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } ),
         additionalTrialTypes: jQuery.map( this.additionalTrialTypes(), function( addtrialtypes ) { return addtrialtypes.id(); } )
     };
-
 };

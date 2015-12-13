@@ -11,6 +11,7 @@ var GlobalVar = function (expData) {
     this.assigned = ko.observable(false);
     this.levels = ko.observableArray([]);
     this.editName =  ko.observable(false);
+    this.subLevelEdit = ko.observable(false);
 };
 
 // enum: posssible variable subtypes..
