@@ -14,8 +14,8 @@ SubjectGroup.prototype.addSession = function(session) {
     return this.sessions.push(session);
 };
 
-SubjectGroup.prototype.rename = function(idx,flag) {
-
+SubjectGroup.prototype.rename = function(idx,flag,data,event) {
+    event.stopImmediatePropagation();
     if (flag == "true"){
         this.editName(true);
     }

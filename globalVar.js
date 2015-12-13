@@ -38,6 +38,26 @@ GlobalVar.prototype.addLevel = function() {
     this.levels.push(level);
 };
 
+
+GlobalVar.prototype.removeLevel = function() {
+    this.levels.pop();
+};
+
+
+GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
+
+    if (flag == "true"){
+        this.levels()[idxLevel].editName(true);
+        this.subLevelEdit(true);
+    }
+    else if (flag == "false"){
+        this.levels()[idxLevel].editName(false);
+        this.subLevelEdit(false);
+    }
+};
+
+
+
 GlobalVar.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
