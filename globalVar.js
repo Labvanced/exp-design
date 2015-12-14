@@ -60,12 +60,9 @@ GlobalVar.prototype.fromJS = function(data) {
     this.name(data.name);
     this.subtype(data.subtype);
     this.dataType(data.dataType);
-
     this.levels(jQuery.map( data.levels, function( lvlData ) {
         return (new Level()).fromJS(lvlData);
     } ));
-
-    this.levels(data.levels);
     return this;
 };
 

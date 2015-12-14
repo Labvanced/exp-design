@@ -123,5 +123,8 @@ function actionFactory(parent,type) {
     else if(type == "ActionNextFrame") {
         var action = new ActionNextFrame(parent);
     }
+    else if(type == "ActionRecordElementTag") {
+        var action = new ActionRecordElementTag(parent);
+    }
     return action;
 }
