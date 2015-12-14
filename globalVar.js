@@ -30,11 +30,8 @@ GlobalVar.prototype.setPointers = function() {
 };
 
 GlobalVar.prototype.addLevel = function() {
-    var level = {
-        name:"level_"+(this.levels().length+1),
-        editName:  ko.observable(false)
-
-    };
+    var name = "level_"+(this.levels().length+1);
+    var level = new Level(name);
     this.levels.push(level);
 };
 
@@ -63,6 +60,11 @@ GlobalVar.prototype.fromJS = function(data) {
     this.name(data.name);
     this.subtype(data.subtype);
     this.dataType(data.dataType);
+
+    this.levels(jQuery.map( data.levels, function( lvlData ) {
+        return (new Level()).fromJS(lvlData);
+    } ));
+
     this.levels(data.levels);
     return this;
 };
@@ -74,7 +76,7 @@ GlobalVar.prototype.toJS = function() {
         subtype: this.subtype(),
         dataType: this.dataType(),
         type: this.type,
-        levels: this.levels()
+        levels: jQuery.map( this.levels(), function( lvl ) { return lvl.toJS(); } )
     };
 };
 

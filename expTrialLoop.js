@@ -167,11 +167,7 @@ ExpTrialLoop.prototype.addFactor = function() {
     var name = "factor_" + (this.factors().length+1);
     globalVar.name(name);
     globalVar.assigned(true);
-    var level = {
-        name:"level_1",
-        editName:  ko.observable(false)
-    };
-    globalVar.levels.push(level);
+    globalVar.addLevel();
     this.expData.addGlobalVar(globalVar);
     this.factors.push(globalVar);
 };
@@ -201,11 +197,7 @@ ExpTrialLoop.prototype.addSepTrialType= function() {
     var name = "indFactor_" + (this.additionalTrialTypes().length+1);
     globalVar.name(name);
     globalVar.assigned(true);
-    var level = {
-        name:"level_1",
-        editName:  ko.observable(false)
-    };
-    globalVar.levels.push(level);
+    globalVar.addLevel();
     this.expData.addGlobalVar(globalVar);
     this.additionalTrialTypes.push(globalVar);
 };
