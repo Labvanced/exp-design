@@ -39,6 +39,11 @@ VideoData.prototype.setPointers = function() {
     this.modifier().setPointers();
 };
 
+VideoData.prototype.addNewResponse = function() {
+    var resp = new Response(this);
+    resp.responseType("mouse");
+    this.responses.push(resp);
+};
 
 VideoData.prototype.fromJS = function(data) {
     this.id(data.id);

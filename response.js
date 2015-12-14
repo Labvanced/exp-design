@@ -9,7 +9,7 @@ var Response= function(parent) {
     // serialized
     this.type = "Response";
     this.responseType = ko.observable("keyboard"); // or mouse or ...
-    this.responseKey = ko.observable(null); // leftArrow or leftClick or RightClick...
+    this.responseKey = ko.observable("none"); // leftArrow or leftClick or RightClick...
     this.onset = ko.observable(0);
     this.onsetEnabled = ko.observable(false);
     this.offset = ko.observable(0);
@@ -46,6 +46,9 @@ var Response= function(parent) {
             else if (value == "ActionNextFrame"){
                 self.action(new ActionNextFrame(self));
             }
+            else if (value == "ActionRecordElementTag"){
+                self.action(new ActionRecordElementTag(self));
+            }
         },
         owner: this
     });
@@ -71,7 +74,7 @@ Response.prototype.fromJS = function(data) {
 
 Response.prototype.toJS = function() {
     if (this.action()){
-        var actionData = this.action.toJS();
+        var actionData = this.action().toJS();
     }
     else {
         actionData = null;

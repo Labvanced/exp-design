@@ -109,6 +109,33 @@ var ExpTrialLoop = function (expData) {
         }
     }, this);
 
+    this.trialTypesNonInteract = ko.computed(function() {
+        if (this.isInitialized()){
+            var trialTypes = [];
+            var trialTypesString = [];
+            var additionalTrialTypes = this.additionalTrialTypes();
+            for (var i = 0; i<additionalTrialTypes.length;i++ ){
+                var levels = additionalTrialTypes[i].levels();
+                // add all levels of this non interacting factor:
+                for (var l=0; l<levels.length; l++) {
+                    // mix previous trialType t with level l of the newly interacting factor:
+                    trialTypes.push([i, l]);
+                    trialTypesString.push([additionalTrialTypes[i], levels[l]]);
+                }
+            }
+            return {
+                idx: trialTypes,
+                str: trialTypesString
+            };
+        }
+        else{
+            return {
+                idx: [],
+                str: []
+            };
+        }
+    }, this);
+
     this.totalNrTrials = ko.computed(function() {
         return  this.nrTrialTypes() * this.repsPerTrialType();
     }, this);

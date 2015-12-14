@@ -6,7 +6,7 @@ var ActionAssign = function(parent) {
 
     // serialized
     this.variableId = ko.observable('id-of-global-variable');
-    this.setValue = ko.observable('someValue');
+    this.setValue = ko.observable('string');
 };
 ActionAssign.prototype.type = "ActionAssign";
 ActionAssign.prototype.label = "Assignment";
@@ -39,7 +39,7 @@ var ActionRecordRespTime = function(parent) {
 
 };
 ActionRecordRespTime.prototype.type = "ActionRecordRespTime";
-ActionRecordRespTime.prototype.label = "RecordRespTime";
+ActionRecordRespTime.prototype.label = "Rec.Resp.Time";
 
 ActionRecordRespTime.prototype.run = function() {
 
@@ -56,6 +56,35 @@ ActionRecordRespTime.prototype.toJS = function() {
         variableId: this.variableId()
     };
 };
+
+//////////////////////
+
+var ActionRecordElementTag = function(parent) {
+    this.parent = parent;
+
+    // serialized
+    this.variableId = ko.observable('id-of-global-variable');
+
+};
+ActionRecordElementTag.prototype.type = "ActionRecordElementTag";
+ActionRecordElementTag.prototype.label = "Rec.Clicked.Elem.";
+
+ActionRecordElementTag.prototype.run = function() {
+
+};
+
+ActionRecordElementTag.prototype.fromJS = function(data) {
+    this.variableId(data.variableId);
+    return this;
+};
+
+ActionRecordElementTag.prototype.toJS = function() {
+    return {
+        type: this.type,
+        variableId: this.variableId()
+    };
+};
+
 
 //////////////////////
 
