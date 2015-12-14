@@ -34,9 +34,9 @@ var FrameData = function(expData) {
 
 };
 
-FrameData.prototype.addNewResponse = function(responseType) {
+FrameData.prototype.addNewResponse = function() {
     var resp = new Response(this);
-    resp.responseType(responseType);
+    resp.responseType("keyboard");
     this.responses.push(resp);
 };
 

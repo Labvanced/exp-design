@@ -41,9 +41,9 @@ ImageData.prototype.setPointers = function() {
     this.modifier().setPointers();
 };
 
-ImageData.prototype.addNewResponse = function(responseType) {
+ImageData.prototype.addNewResponse = function() {
     var resp = new Response(this);
-    resp.responseType(responseType);
+    resp.responseType("mouse");
     this.responses.push(resp);
 };
 
