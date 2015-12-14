@@ -48,6 +48,7 @@ ImageData.prototype.addNewResponse = function() {
 };
 
 ImageData.prototype.fromJS = function(data) {
+    var self = this;
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
@@ -58,7 +59,7 @@ ImageData.prototype.fromJS = function(data) {
     this.offset(data.offset);
     this.offsetEnabled(data.offsetEnabled);
     this.responses(jQuery.map( data.responses, function( respData ) {
-        return (new Response()).fromJS(respData);
+        return (new Response(self)).fromJS(respData);
     } ));
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
