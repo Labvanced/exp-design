@@ -1,24 +1,144 @@
 // � by Caspar Goeke and Holger Finger
 
 var Modifier = function (expData, objToModify) {
+    var self = this;
+
     this.expData = expData;
     this.parent = null;
     this.objToModify = objToModify;
 
     // serialized:
-    this.factors = ko.observableArray([]); // Array of GlobalVar
-    this.modifierTrialTypes = ko.observableArray([]); // Array of ModifierTrialTypes
+    this.interactingFactors = ko.observableArray([]); // list of N interacting factors
+    this.interactingTrialTypes = []; // N-dim Array of ModifierTrialTypes (each dimension corresponds to one factor)
+    this.noninteractFactors = ko.observableArray([]); // list of M non-interacting factors
+    this.noninteractTrialTypes = []; // Array-of-Array-of-ModifierTrialTypes (first dimension corresponds to all M factors, second dimension corresponds to levels)
+
     this.type = "Modifier";
 
     // helpers:
-    this.selectedTrialTypeType = ko.observable('wildcard');
-    this.selectedTrialTypeIndices = ko.observableArray([-1]);
-    this.selectedTrialTypeView = ko.observable({});
+    this.selectedTrialType = ko.observable({ type: 'default'});
+    this.selectedTrialView = {};
+    this.selectedModifier = ko.observable({});
 
-    //
+    var modifiableProp = objToModify.modifiableProp;
+
+    /*
+    for (var i=0; i<modifiableProp.length; i++) {
+
+        var propName = modifiableProp[i];
+        this.selectedTrialView[propName] = ko.pureComputed({
+            read: function () {
+                var selectedTrialType = this.selectedTrialType();
+                var selectionType = selectedTrialType.type;
+                if (selectionType=='wildcard'){
+
+                    var factorSelected = selectedTrialType.factor;
+                    var factorId = this.factors().indexOf(factorSelected);
+
+                    // check if this element depends on the selected factor:
+                    if (!(factorId > -1)) {
+                        // return the property of parent:
+                        return objToModify[propName]();
+                    }
+
+                    // find first matching modifierTrialTypes with the given level of the selected factor:
+                    var modifierTrialTypes = this.modifierTrialTypes();
+                    for (var t=0; t<modifierTrialTypes.length; t++){
+                        if (modifierTrialTypes[t].factorLevels()[factorId] == selectedTrialType.level){
+                            var prop = modifierTrialTypes[t].modifiedProp();
+                            if (prop.hasOwnProperty(propName)) {
+                                return prop[propName](value);
+                            }
+                            else {
+                                return objToModify[propName]();
+                            }
+                        }
+                    }
+
+                    // nothing found, so return the property of parent:
+                    return objToModify[propName]();
+
+                }
+                else if (selectionType=='interacting'){
+                    return objToModify[propName]();
+                }
+                else if (selectionType=='noninteract'){
+                    return objToModify[propName]();
+                }
+                else {
+                    // 'default' all trials
+                    return objToModify[propName]();
+                }
+            },
+            write: function (value) {
+                var selectedTrialType = this.selectedTrialType();
+                var selectionType = selectedTrialType.type;
+                if (selectionType=='wildcard'){
+
+                    var factorSelected = selectedTrialType.factor;
+                    var factorId = this.factors().indexOf(factorSelected);
+                    // check if this element already depends on the selected factor:
+                    if (!(factorId > -1)) {
+                        // add new factor dependency:
+                        this.addFactorDependency(factorSelected);
+                        factorId = this.factors().indexOf(factorSelected);
+                    }
+
+                    // modify all existing modifierTrialTypes with the given level of the selected factor:
+                    var modifierTrialTypes = this.modifierTrialTypes();
+                    for (var t=0; t<modifierTrialTypes.length; t++){
+                        if (modifierTrialTypes[t].factorLevels()[factorId] == selectedTrialType.level){
+                            modifierTrialTypes[t].modifiedProp()[propName](value);
+                        }
+                    }
+
+                }
+                else if (selectionType=='interacting'){
+
+                    var selectedFactors = selectedTrialType.factors();
+                    var selectedLevels = selectedTrialType.levels();
+
+                    // make sure to add all dependencies of all factors:
+                    for (var f=0; f<selectedFactors.length; f++){
+                        if (this.factors().indexOf(selectedFactors[f]) > -1) {
+                            // add new factor dependency:
+                            this.addFactorDependency(selectedFactors[f]);
+                        }
+                    }
+
+                    // resort selectedLevels according to the sorting in this.factors()[]:
+                    var resortedSelectedLevels = [];
+                    for (var f=0; f<selectedFactors.length; f++){
+                        resortedSelectedLevels.push();
+                    }
+
+                    // modify all existing modifierTrialTypes with the given level of the selected factor:
+                    var modifierTrialTypes = this.modifierTrialTypes();
+                    for (var t=0; t<modifierTrialTypes.length; t++){
+                        if (modifierTrialTypes[t].factorLevels()[factorId] == selectedTrialType.level){
+                            modifierTrialTypes[t].modifiedProp()[propName](value);
+                        }
+                    }
+                    objToModify[propName](value);
 
 
+                }
+                else if (selectionType=='noninteract'){
 
+
+                    objToModify[propName](value);
+
+
+                }
+                else {
+                    // 'default' all trials
+                    objToModify[propName](value);
+                }
+            },
+            owner: this
+        });
+    }
+    */
 
 };
 
@@ -26,171 +146,135 @@ Modifier.prototype.setPointers = function() {
     var self = this;
 
     // convert ids to actual pointers:
-    this.factors(jQuery.map( this.factors(), function( id ) {
+    this.interactingFactors(jQuery.map( this.interactingFactors(), function( id ) {
+        return self.expData.entities.byId[id];
+    } ));
+    this.noninteractFactors(jQuery.map( this.noninteractFactors(), function( id ) {
         return self.expData.entities.byId[id];
     } ));
 };
 
-Modifier.prototype.selectTrialType = function(type, indices){
-
-    this.selectedTrialTypeType(type);
-    this.selectedTrialTypeIndices(indices);
-
-    this.rebuildView();
-};
-
-
-Modifier.prototype.rebuildView = function() {
-
-    /*
-    if (type=='default'){
-
-    }
-    else if (type=='wildcard'){
-
-    }
-    else if (type=='interacting'){
-
-    }
-    else if (type=='noninteract'){
-
-    }
-
-    var modifiedProp = this.modifiedProp();
-    var modifiedPropView = {};
-    for (var property in modifiedProp) {
-        if (modifiedProp.hasOwnProperty(property)) {
-
-            modifiedPropView[property] = ko.pureComputed({
-                read: function () {
-                    return modifiedProp[property]();
-                },
-                write: function (value) {
-                    var lastSpacePos = value.lastIndexOf(" ");
-                    if (lastSpacePos > 0) { // Ignore values with no space character
-                        this.firstName(value.substring(0, lastSpacePos)); // Update "firstName"
-                        this.lastName(value.substring(lastSpacePos + 1)); // Update "lastName"
-                    }
-                },
-                owner: this
-            });
-
-        }
-    }
-
-    this.selectedTrialTypeView();
-    */
+Modifier.prototype.selectTrialType = function(selectionSpec){
+    this.selectedTrialType(selectionSpec);
 };
 
 Modifier.prototype.addFactorDependency = function(factorVar) {
 
-    this.factors.push(factorVar);
-
-    // use local variables for performance:
-    var modifierTrialTypes = this.modifierTrialTypes();
-    var factors = this.factors();
-
-    // create null array which can be copied into new trialTypes:
-    var nullArray = [];
-    for (var f=0; f<factors.length-1; f++){
-        nullArray.push(null);
-    }
-    
-    // update the modifierTrialTypes
     if (factorVar.subtype() == 'factor') {
+
         // add new interacting factor:
+        this.interactingFactors.push(factorVar);
 
-        // calculate seperate arrays of previous interacting and non-interacting factors:
-        var interactingTrialTypes = [];
-        var allNewModifierTrialTypes = [];
-        for (var t=0; t<modifierTrialTypes.length; t++){
-            if (modifierTrialTypes[t].isSeperateTrialType()){
-                // directly reuse the non-interacting trialTypes
-                allNewModifierTrialTypes.push(modifierTrialTypes[t]);
-
-                // modify with the new column:
-                modifierTrialTypes[t].factorLevels.push(null);
-            }
-            else {
-                // push interacting trialTypes into array to handle them further down:
-                interactingTrialTypes.push(modifierTrialTypes[t]);
-            }
-        }
-
-        if (interactingTrialTypes.length == 0) {
-            // special case, because this is the first interacting factor. Therefore just add all levels:
+        if (this.interactingFactors().length == 0) {
+            // special case, because this is the first interacting factor. Therefore just add all levels to top array:
 
             // add all levels of this new non-interacting factor:
             var levels = factorVar.levels();
             for (var l=0; l<levels.length; l++){
                 // add this level of the non-interacting factor:
-                var newModifierTrialType = new ModifierTrialType(this.expData, this.objToModify);
-
-                var factorLevels = nullArray.slice(); // copy null array
-                factorLevels.push(levels[l]); // as last entry enter the level of the non-interacting factor
-                newModifierTrialType.factorLevels(factorLevels);
-
-                allNewModifierTrialTypes.push(newModifierTrialType)
+                this.interactingTrialTypes.push(new ModifierTrialType(this.expData, this.objToModify))
             }
 
         }
         else {
-            // create new array of new interacting trialTypes with all combinations:
-            for (var t=0; t<interactingTrialTypes.length; t++){
 
-                // add all levels of this new interacting factor:
-                var levels = factorVar.levels();
-                for (var l=0; l<levels.length; l++) {
-                    // mix previous trialType t with level l of the newly interacting factor:
-                    var newModifierTrialType = interactingTrialTypes[t].deepCopy();
-                    newModifierTrialType.factorLevels.push(levels[l]);
-                    allNewModifierTrialTypes.push(newModifierTrialType);
+            function deepClone(arr, numNewLevels){
+
+                if (arr[0].constructor === Array) {
+                    // recursive call:
+                    for (var t = 0; t < arr.length; t++) {
+                        deepClone(arr[t], numNewLevels);
+                    }
+                }
+                else {
+                    // create new array of new interacting trialTypes with all combinations:
+                    for (var t = 0; t < arr.length; t++) {
+                        var oldMod = arr[t];
+
+                        // add all levels of this new interacting factor:
+                        var levels = factorVar.levels();
+                        var newModfiersPerLevel = [];
+                        for (var l = 0; l < levels.length; l++) {
+                            newModfiersPerLevel.push(oldMod.deepCopy());
+                        }
+
+                        // overwrite object in arr[t] with array of cloned objects:
+                        arr[t] = newModfiersPerLevel;
+                    }
                 }
 
             }
-        }
 
-        // update observable array:
-        this.modifierTrialTypes(allNewModifierTrialTypes);
+            // one more dimension of interacting trialTypes with all combinations:
+            deepClone(this.interactingTrialTypes, factorVar.levels().length);
+        }
 
     }
     else if (factorVar.subtype() == 'seperate trial type'){
-        // add new non-interacting factor:
 
-        // add to all previous modifiers a new null entry (column of new non-interacting factor):
-        for (var t=0; t<modifierTrialTypes.length; t++){
-            modifierTrialTypes[t].factorLevels.push(null);
-        }
-
-        // add all levels of this new non-interacting factor:
+        // create modifierTrialType for all levels of this new non-interacting factor:
+        var newModfiersPerLevel = [];
         var levels = factorVar.levels();
         for (var l=0; l<levels.length; l++){
             // add this level of the non-interacting factor:
-            var newModifierTrialType = new ModifierTrialType(this.expData, this.objToModify);
-
-            var factorLevels = nullArray.slice(); // copy null array
-            factorLevels.push(levels[l]); // as last entry enter the level of the non-interacting factor
-            newModifierTrialType.factorLevels(factorLevels);
-            newModifierTrialType.isSeperateTrialType(true);
-
-            this.modifierTrialTypes.push(newModifierTrialType)
+            newModfiersPerLevel.push(new ModifierTrialType(this.expData, this.objToModify))
         }
+
+        // add new non-interacting factor:
+        this.noninteractFactors.push(factorVar);
+        this.noninteractTrialTypes.push(newModfiersPerLevel);
+
     }
 
 };
 
 Modifier.prototype.fromJS = function(data) {
-    this.factors(data.factors);
-    this.modifierTrialTypes(jQuery.map( data.modifierTrialTypes, function( modifierTrialType ) {
-        return (new ModifierTrialType(this.expData, this.objToModify)).fromJS(modifierTrialType);
-    } ));
+
+    function modifierFactoryFromArray(data){
+        if (data.constructor === Array){
+            return jQuery.map( data, function( subData ) {
+                return modifierFactoryFromArray(subData);
+            } );
+        }
+        else {
+            var modifierTrialType = new ModifierTrialType(self.expData, self.objToModify);
+            return modifierTrialType.fromJS(data);
+        }
+
+    }
+
+    if (data.interactingFactors)
+        this.interactingFactors(data.interactingFactors);
+    if (data.interactingTrialTypes)
+        this.interactingTrialTypes = modifierFactoryFromArray(data.interactingTrialTypes);
+
+    if (data.noninteractFactors)
+        this.noninteractFactors(data.noninteractFactors);
+    if (data.noninteractTrialTypes)
+        this.noninteractTrialTypes = modifierFactoryFromArray(data.noninteractTrialTypes);
+
     return this;
 };
 
 Modifier.prototype.toJS = function() {
+
+    function modifierSerializeArray(objArr){
+        if (objArr.constructor === Array){
+            return jQuery.map( objArr, function( subObjArr ) {
+                return modifierSerializeArray(subObjArr);
+            } );
+        }
+        else {
+            return objArr.toJS();
+        }
+    }
+
     return {
-        factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } ),
-        modifierTrialTypes: jQuery.map( this.modifierTrialTypes(), function( modifierTrialType ) { return modifierTrialType.toJS(); } ),
+        interactingFactors: jQuery.map( this.interactingFactors(), function( factor ) { return factor.id(); } ),
+        interactingTrialTypes: modifierSerializeArray(this.interactingTrialTypes),
+        noninteractFactors: jQuery.map( this.noninteractFactors(), function( factor ) { return factor.id(); } ),
+        noninteractTrialTypes: modifierSerializeArray(this.noninteractTrialTypes),
         type: this.type
     };
 };
+
