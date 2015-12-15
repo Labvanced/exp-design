@@ -221,7 +221,7 @@ ExpTrialLoop.prototype.addSepTrialType= function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.subtype(GlobalVar.subtypes[6].text);
     globalVar.dataType("numeric");
-    var name = "indFactor_" + (this.additionalTrialTypes().length+1);
+    var name = "noninteracting_factor_" + (this.additionalTrialTypes().length+1);
     globalVar.name(name);
     globalVar.assigned(true);
     globalVar.addLevel();

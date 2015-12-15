@@ -11,7 +11,14 @@ var Modifier = function (expData, objToModify) {
     this.type = "Modifier";
 
     // helpers:
-    this.selectedTrialType = ko.observable();
+    this.selectedTrialTypeType = ko.observable('wildcard');
+    this.selectedTrialTypeIndices = ko.observableArray([-1]);
+    this.selectedTrialTypeView = ko.observable({});
+
+    //
+
+
+
 
 };
 
@@ -24,8 +31,55 @@ Modifier.prototype.setPointers = function() {
     } ));
 };
 
-Modifier.prototype.selectTrialType = function(index){
-    this.selectedTrialType(this.modifierTrialTypes()[index]);
+Modifier.prototype.selectTrialType = function(type, indices){
+
+    this.selectedTrialTypeType(type);
+    this.selectedTrialTypeIndices(indices);
+
+    this.rebuildView();
+};
+
+
+Modifier.prototype.rebuildView = function() {
+
+    /*
+    if (type=='default'){
+
+    }
+    else if (type=='wildcard'){
+
+    }
+    else if (type=='interacting'){
+
+    }
+    else if (type=='noninteract'){
+
+    }
+
+    var modifiedProp = this.modifiedProp();
+    var modifiedPropView = {};
+    for (var property in modifiedProp) {
+        if (modifiedProp.hasOwnProperty(property)) {
+
+            modifiedPropView[property] = ko.pureComputed({
+                read: function () {
+                    return modifiedProp[property]();
+                },
+                write: function (value) {
+                    var lastSpacePos = value.lastIndexOf(" ");
+                    if (lastSpacePos > 0) { // Ignore values with no space character
+                        this.firstName(value.substring(0, lastSpacePos)); // Update "firstName"
+                        this.lastName(value.substring(lastSpacePos + 1)); // Update "lastName"
+                    }
+                },
+                owner: this
+            });
+
+        }
+    }
+
+    this.selectedTrialTypeView();
+    */
 };
 
 Modifier.prototype.addFactorDependency = function(factorVar) {
