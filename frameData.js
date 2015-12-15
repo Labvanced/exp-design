@@ -18,6 +18,10 @@ var FrameData = function(expData) {
     this.onsetEnabled = ko.observable(false);
     this.offset = ko.observable(0);
     this.offsetEnabled = ko.observable(false);
+    this.bgColor = ko.observable("#ffffff"); // hex color as string, i.e. "#ffffff"
+    this.bgColorEnabled = ko.observable(false); // if false, then use experiment default background color.
+
+    this.zoomMode = ko.observable(null); // null means experiment default or "fullscreen" or "visualDegree"
 
     // not serialized
     this.shape = "square";
@@ -101,6 +105,8 @@ FrameData.prototype.fromJS = function(data) {
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.editorX(data.editorX);
     this.editorY(data.editorY);
+    this.bgColor(data.bgColor);
+    this.bgColorEnabled(data.bgColorEnabled);
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response()).fromJS(respData);
     } ));
@@ -120,6 +126,8 @@ FrameData.prototype.toJS = function() {
         portHandler: this.portHandler.toJS(),
         editorX:  this.editorX(),
         editorY:  this.editorY(),
+        bgColor: this.bgColor(),
+        bgColorEnabled: this.bgColorEnabled(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };

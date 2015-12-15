@@ -24,6 +24,7 @@ var ImageData= function(expData) {
 
 
     // not serialized
+    this.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
     this.shape = "square";
     this.label = "Image";
     this.imgSource = ko.computed( function() {
