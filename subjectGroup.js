@@ -30,6 +30,21 @@ SubjectGroup.prototype.createSession = function() {
     this.addSession(session);
 };
 
+SubjectGroup.prototype.renameSession = function(idx,flag) {
+
+    if (flag == "true"){
+        this.sessions()[idx].editName(true);
+    }
+    else if (flag == "false"){
+        this.sessions()[idx].editName(false);
+    }
+};
+
+
+SubjectGroup.prototype.removeSession= function(idx) {
+    this.sessions.splice(idx,1);
+};
+
 SubjectGroup.prototype.setPointers = function() {
     var self = this;
 

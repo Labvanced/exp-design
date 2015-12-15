@@ -4,7 +4,7 @@ var ExpSession = function (expData) {
     this.expData = expData;
 
     this.id = ko.observable(guid());
-    this.name = ko.observable("newSession");
+    this.name = ko.observable("session_1");
     this.type = "ExpSession";
     this.blocks = ko.observableArray([]).extend({sortById: null});
     this.editName =  ko.observable(false);
