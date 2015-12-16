@@ -329,6 +329,7 @@ Modifier.prototype.addFactorDependency = function(factorVar) {
 };
 
 Modifier.prototype.fromJS = function(data) {
+    var self =this;
 
     function modifierFactoryFromArray(data){
         if (data.constructor === Array){
