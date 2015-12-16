@@ -35,6 +35,8 @@ var VideoData= function(expData) {
     }, this);
 };
 
+VideoData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
+
 VideoData.prototype.setPointers = function() {
     this.modifier().setPointers();
 };
