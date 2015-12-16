@@ -14,6 +14,10 @@ ExpSession.prototype.addBlock = function(block) {
     return this.blocks.push(block);
 };
 
+ExpSession.prototype.removeBlock = function(idx,data,evet) {
+    this.blocks.splice(idx,1);
+};
+
 ExpSession.prototype.rename = function(idx,flag,data,event) {
     event.stopImmediatePropagation();
     if (flag == "true"){
