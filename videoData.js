@@ -17,10 +17,12 @@ var VideoData= function(expData) {
     this.offset = ko.observable(0);
     this.offsetEnabled = ko.observable(false);
     this.responses = ko.observableArray([]);
-    this.modifier = ko.observable(new Modifier(this.expData, this));
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
     this.isActive = ko.observable(true);
+
+    // modifier:
+    this.modifier = ko.observable(new Modifier(this.expData, this));
 
     // not serialized
     this.shape = "square";

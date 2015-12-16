@@ -20,16 +20,18 @@ var FrameData = function(expData) {
     this.offsetEnabled = ko.observable(false);
     this.bgColor = ko.observable("#ffffff"); // hex color as string, i.e. "#ffffff"
     this.bgColorEnabled = ko.observable(false); // if false, then use experiment default background color.
+    this.frameWidth = ko.observable(16);
+    this.frameHeight = ko.observable(9);
+    this.zoomMode = ko.observable("fullscreen"); // "fullscreen" or "pixel" or "visualDegree"
 
-    this.zoomMode = ko.observable(null); // null means experiment default or "fullscreen" or "visualDegree"
+    // modifier:
+    this.modifier = ko.observable(new Modifier(this.expData, this));
 
     // not serialized
     this.shape = "square";
     this.label = "MediaFrame";
     this.portTypes = ["executeIn", "executeOut"];
-    this.trialTypeView = {
-
-    };
+    this.trialTypeView = {};
 
     // sub-Structures (serialized below)
     this.elements = ko.observableArray([]).extend({sortById: null});
@@ -37,6 +39,7 @@ var FrameData = function(expData) {
     this.responses = ko.observableArray([]);
 
 };
+FrameData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode"];
 
 FrameData.prototype.addNewResponse = function() {
     var resp = new Response(this);
@@ -107,6 +110,9 @@ FrameData.prototype.fromJS = function(data) {
     this.editorY(data.editorY);
     this.bgColor(data.bgColor);
     this.bgColorEnabled(data.bgColorEnabled);
+    this.frameWidth(data.frameWidth);
+    this.frameHeight(data.frameHeight);
+    this.zoomMode(data.zoomMode);
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response()).fromJS(respData);
     } ));
@@ -128,6 +134,9 @@ FrameData.prototype.toJS = function() {
         editorY:  this.editorY(),
         bgColor: this.bgColor(),
         bgColorEnabled: this.bgColorEnabled(),
+        frameWidth: this.frameWidth(),
+        frameHeight: this.frameHeight(),
+        zoomMode: this.zoomMode(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };
