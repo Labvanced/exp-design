@@ -14,8 +14,18 @@ ExpSession.prototype.addBlock = function(block) {
     return this.blocks.push(block);
 };
 
-ExpSession.prototype.removeBlock = function(idx,data,evet) {
-    this.blocks.splice(idx,1);
+ExpSession.prototype.removeBlock = function(data,event) {
+
+    var idx = this.blocks().indexOf(data);
+    if (idx ==-1){
+        console.log('bad deletion');
+    }
+    else{
+        this.blocks.splice(idx,1);
+        this.blocks.valueHasMutated()
+    }
+
+
 };
 
 ExpSession.prototype.rename = function(idx,flag,data,event) {

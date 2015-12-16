@@ -4,7 +4,7 @@ var SubjectGroup = function (expData) {
     this.expData = expData;
 
     this.id = ko.observable(guid());
-    this.name = ko.observable("newGroup");
+    this.name = ko.observable("group_1");
     this.type = "SubjectGroup";
     this.sessions = ko.observableArray([]).extend({sortById: null});
     this.editName =  ko.observable(false);
@@ -27,6 +27,8 @@ SubjectGroup.prototype.rename = function(idx,flag,data,event) {
 
 SubjectGroup.prototype.createSession = function() {
     var session = new ExpSession(this.expData);
+    var name = "session_" + (this.sessions().length+1);
+    session.name(name);
     this.addSession(session);
 };
 
