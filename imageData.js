@@ -17,19 +17,19 @@ var ImageData= function(expData) {
     this.offset = ko.observable(0);
     this.offsetEnabled = ko.observable(false);
     this.responses = ko.observableArray([]);
-    this.modifier = ko.observable(new Modifier(this.expData, this));
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
     this.isActive = ko.observable(true);
 
+    // modifier:
+    this.modifier = ko.observable(new Modifier(this.expData, this));
 
     // not serialized
-    this.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
     this.shape = "square";
     this.label = "Image";
     this.imgSource = ko.computed( function() {
-        if (this.file_id()) {
-            return "/files/" + this.file_id() + "/" + this.file_orig_name();
+        if (this.modifier().selectedTrialView.file_id()) {
+            return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
         else {
             return false
@@ -37,6 +37,8 @@ var ImageData= function(expData) {
     }, this);
 
 };
+
+ImageData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
 
 ImageData.prototype.setPointers = function() {
     this.modifier().setPointers();

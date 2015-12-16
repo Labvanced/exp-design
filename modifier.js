@@ -18,129 +18,228 @@ var Modifier = function (expData, objToModify) {
     // helpers:
     this.selectedTrialType = ko.observable({ type: 'default'});
     this.selectedTrialView = {};
-    this.selectedModifier = ko.observable({});
 
     var modifiableProp = objToModify.modifiableProp;
-
-    /*
     for (var i=0; i<modifiableProp.length; i++) {
-
         var propName = modifiableProp[i];
-        this.selectedTrialView[propName] = ko.pureComputed({
-            read: function () {
-                var selectedTrialType = this.selectedTrialType();
-                var selectionType = selectedTrialType.type;
-                if (selectionType=='wildcard'){
-
-                    var factorSelected = selectedTrialType.factor;
-                    var factorId = this.factors().indexOf(factorSelected);
-
-                    // check if this element depends on the selected factor:
-                    if (!(factorId > -1)) {
-                        // return the property of parent:
-                        return objToModify[propName]();
-                    }
-
-                    // find first matching modifierTrialTypes with the given level of the selected factor:
-                    var modifierTrialTypes = this.modifierTrialTypes();
-                    for (var t=0; t<modifierTrialTypes.length; t++){
-                        if (modifierTrialTypes[t].factorLevels()[factorId] == selectedTrialType.level){
-                            var prop = modifierTrialTypes[t].modifiedProp();
-                            if (prop.hasOwnProperty(propName)) {
-                                return prop[propName](value);
-                            }
-                            else {
-                                return objToModify[propName]();
-                            }
-                        }
-                    }
-
-                    // nothing found, so return the property of parent:
-                    return objToModify[propName]();
-
-                }
-                else if (selectionType=='interacting'){
-                    return objToModify[propName]();
-                }
-                else if (selectionType=='noninteract'){
-                    return objToModify[propName]();
-                }
-                else {
-                    // 'default' all trials
-                    return objToModify[propName]();
-                }
-            },
-            write: function (value) {
-                var selectedTrialType = this.selectedTrialType();
-                var selectionType = selectedTrialType.type;
-                if (selectionType=='wildcard'){
-
-                    var factorSelected = selectedTrialType.factor;
-                    var factorId = this.factors().indexOf(factorSelected);
-                    // check if this element already depends on the selected factor:
-                    if (!(factorId > -1)) {
-                        // add new factor dependency:
-                        this.addFactorDependency(factorSelected);
-                        factorId = this.factors().indexOf(factorSelected);
-                    }
-
-                    // modify all existing modifierTrialTypes with the given level of the selected factor:
-                    var modifierTrialTypes = this.modifierTrialTypes();
-                    for (var t=0; t<modifierTrialTypes.length; t++){
-                        if (modifierTrialTypes[t].factorLevels()[factorId] == selectedTrialType.level){
-                            modifierTrialTypes[t].modifiedProp()[propName](value);
-                        }
-                    }
-
-                }
-                else if (selectionType=='interacting'){
-
-                    var selectedFactors = selectedTrialType.factors();
-                    var selectedLevels = selectedTrialType.levels();
-
-                    // make sure to add all dependencies of all factors:
-                    for (var f=0; f<selectedFactors.length; f++){
-                        if (this.factors().indexOf(selectedFactors[f]) > -1) {
-                            // add new factor dependency:
-                            this.addFactorDependency(selectedFactors[f]);
-                        }
-                    }
-
-                    // resort selectedLevels according to the sorting in this.factors()[]:
-                    var resortedSelectedLevels = [];
-                    for (var f=0; f<selectedFactors.length; f++){
-                        resortedSelectedLevels.push();
-                    }
-
-                    // modify all existing modifierTrialTypes with the given level of the selected factor:
-                    var modifierTrialTypes = this.modifierTrialTypes();
-                    for (var t=0; t<modifierTrialTypes.length; t++){
-                        if (modifierTrialTypes[t].factorLevels()[factorId] == selectedTrialType.level){
-                            modifierTrialTypes[t].modifiedProp()[propName](value);
-                        }
-                    }
-                    objToModify[propName](value);
-
-
-                }
-                else if (selectionType=='noninteract'){
-
-
-                    objToModify[propName](value);
-
-
-                }
-                else {
-                    // 'default' all trials
-                    objToModify[propName](value);
-                }
-            },
-            owner: this
-        });
+        this.addProp(propName);
     }
-    */
 
 };
+
+Modifier.prototype.addProp = function(propName) {
+
+    function selectFromMultiDimArr(arr, indices){
+        if (indices.length > 1){
+            var curIndex = indices.shift();
+            return selectFromMultiDimArr(arr[curIndex], indices);
+        }
+        else {
+            return arr[indices[0]];
+        }
+    }
+
+    this.selectedTrialView[propName] = ko.pureComputed({
+        read: function () {
+            var selectedTrialType = this.selectedTrialType();
+            var selectionType = selectedTrialType.type;
+            var interactingFactors = this.interactingFactors();
+
+            if (selectionType=='wildcard'){
+
+                var factorSelected = selectedTrialType.factor;
+                var factorId = interactingFactors.indexOf(factorSelected);
+
+                // check if this element depends on the selected factor:
+                if (!(factorId > -1)) {
+                    // return the property of parent:
+                    return this.objToModify[propName]();
+                }
+
+                // construct indices:
+                var indices = [];
+                for (var t=0; t<interactingFactors.length; t++){
+                    indices.push(0);
+                }
+                indices[factorId] = selectedTrialType.level;
+
+                // find first matching modifierTrialType with the given level of the selected factor:
+                var interactingTrialTypes = this.interactingTrialTypes;
+                var modifierTrialType = selectFromMultiDimArr(interactingTrialTypes, indices);
+
+                // check if this property is modified:
+                if (modifierTrialType.propIsModified[propName]()) {
+                    return modifierTrialType.modifiedProp[propName]();
+                }
+                else {
+                    return this.objToModify[propName]();
+                }
+
+            }
+            else if (selectionType=='interacting'){
+
+                var factorsSelected = selectedTrialType.factors;
+                var levelsSelected = selectedTrialType.levels;
+
+                //console.log("read factorsSelected="+JSON.stringify(jQuery.map(factorsSelected,function(val){return val.name()}))+ " levelsSelected="+levelsSelected)
+
+                if (interactingFactors.length == 0){
+                    var val = this.objToModify[propName]();
+                    //console.log("reading parent val="+val+ " because no dependencies yet.")
+                    return val;
+                }
+
+                // construct indices:
+                var indices = [];
+                for (var t=0; t<interactingFactors.length; t++){
+                    var factorId = factorsSelected.indexOf(interactingFactors[t]);
+                    indices.push(levelsSelected[factorId]);
+                }
+
+                // find matching modifierTrialType with the given levels of the selected factors:
+                var interactingTrialTypes = this.interactingTrialTypes;
+                var modifierTrialType = selectFromMultiDimArr(interactingTrialTypes, indices);
+
+                if (!modifierTrialType){
+                    // number of dimensions of interactingTrialTypes does not match number of indices:
+                    var val = this.objToModify[propName]();
+                    //console.log("reading parent val="+val+ " because dimension mismatch")
+                    return val;
+                }
+
+                // check if this property is modified:
+                if (modifierTrialType.propIsModified[propName]()) {
+                    var val = modifierTrialType.modifiedProp[propName]();
+                    //console.log("reading modified val="+val)
+                    return val;
+                }
+                else {
+                    var val = this.objToModify[propName]();
+                    //console.log("reading parent val="+val)
+                    return val;
+                }
+
+            }
+            else if (selectionType=='noninteract'){
+
+                var factorSelected = selectedTrialType.factor;
+                var factorId = this.noninteractFactors().indexOf(factorSelected);
+
+                // check if this element depends on the selected factor:
+                if (!(factorId > -1)) {
+                    // return the property of parent:
+                    return this.objToModify[propName]();
+                }
+
+                // read out the modifier:
+                var modifierTrialType = this.noninteractTrialTypes[factorId][selectedTrialType.level];
+
+                // check if this property is modified:
+                if (modifierTrialType.propIsModified[propName]()) {
+                    return modifierTrialType.modifiedProp[propName]();
+                }
+                else {
+                    return this.objToModify[propName]();
+                }
+
+            }
+            else {
+                // 'default' all trials
+                return this.objToModify[propName]();
+            }
+        },
+        write: function (value) {
+
+            var selectedTrialType = this.selectedTrialType();
+            var selectionType = selectedTrialType.type;
+            var interactingFactors = this.interactingFactors();
+
+            if (selectionType=='wildcard'){
+
+                var factorSelected = selectedTrialType.factor;
+                var factorId = interactingFactors.indexOf(factorSelected);
+
+                // check if this element already depends on the selected factor:
+                if (!(factorId > -1)) {
+                    // add new factor dependency:
+                    this.addFactorDependency(factorSelected);
+                    factorId = interactingFactors.indexOf(factorSelected);
+                }
+
+                // modify all existing modifierTrialTypes with the given level of the selected factor:
+                function modifyAll(modifierTrialTypes, factorId, level, value){
+
+                    if (modifierTrialTypes.constructor === Array){
+                        if (factorId==0) {
+                            modifyAll(modifierTrialTypes[level], null, null, value);
+                        }
+                        else {
+                            for (var l = 0; l < modifierTrialTypes.length; l++) {
+                                modifyAll(modifierTrialTypes[l], factorId-1, level, value);
+                            }
+                        }
+                    }
+                    else {
+                        modifierTrialTypes.setModification(propName, value);
+                    }
+                }
+
+                var modifierTrialTypes = this.interactingTrialTypes;
+                modifyAll(modifierTrialTypes, factorId, selectedTrialType.level, value);
+
+            }
+            else if (selectionType=='interacting'){
+
+                var factorsSelected = selectedTrialType.factors;
+                var levelsSelected = selectedTrialType.levels;
+
+                //console.log("write factorsSelected="+JSON.stringify(jQuery.map(factorsSelected,function(val){return val.name()}))+ " levelsSelected="+levelsSelected)
+
+                // make sure to add all dependencies of all factors:
+                for (var f=0; f<factorsSelected.length; f++){
+                    if (!(interactingFactors.indexOf(factorsSelected[f]) > -1)) {
+                        // add new factor dependency:
+                        this.addFactorDependency(factorsSelected[f]);
+                    }
+                }
+
+                // construct indices:
+                var indices = [];
+                for (var t=0; t<interactingFactors.length; t++){
+                    var factorId = factorsSelected.indexOf(interactingFactors[t]);
+                    indices.push(levelsSelected[factorId]);
+                }
+
+                // find matching modifierTrialType with the given levels of the selected factors:
+                var interactingTrialTypes = this.interactingTrialTypes;
+                var modifierTrialType = selectFromMultiDimArr(interactingTrialTypes, indices);
+                modifierTrialType.setModification(propName, value);
+
+            }
+            else if (selectionType=='noninteract'){
+
+                var factorSelected = selectedTrialType.factor;
+                var factorId = this.noninteractFactors().indexOf(factorSelected);
+
+                // check if this element depends on the selected factor:
+                if (!(factorId > -1)) {
+                    this.addFactorDependency(factorSelected);
+                    factorId = this.noninteractFactors().indexOf(factorSelected);
+                }
+
+                // read out the modifier:
+                var modifierTrialType = this.noninteractTrialTypes[factorId][selectedTrialType.level];
+                modifierTrialType.setModification(propName, value);
+
+            }
+            else {
+                // 'default' all trials
+                this.objToModify[propName](value);
+            }
+        },
+        owner: this
+    });
+}
 
 Modifier.prototype.setPointers = function() {
     var self = this;
@@ -161,9 +260,6 @@ Modifier.prototype.selectTrialType = function(selectionSpec){
 Modifier.prototype.addFactorDependency = function(factorVar) {
 
     if (factorVar.subtype() == 'factor') {
-
-        // add new interacting factor:
-        this.interactingFactors.push(factorVar);
 
         if (this.interactingFactors().length == 0) {
             // special case, because this is the first interacting factor. Therefore just add all levels to top array:
@@ -209,6 +305,9 @@ Modifier.prototype.addFactorDependency = function(factorVar) {
             deepClone(this.interactingTrialTypes, factorVar.levels().length);
         }
 
+        // add new interacting factor:
+        this.interactingFactors.push(factorVar);
+
     }
     else if (factorVar.subtype() == 'seperate trial type'){
 
@@ -221,14 +320,16 @@ Modifier.prototype.addFactorDependency = function(factorVar) {
         }
 
         // add new non-interacting factor:
-        this.noninteractFactors.push(factorVar);
         this.noninteractTrialTypes.push(newModfiersPerLevel);
+        this.noninteractFactors.push(factorVar);
+
 
     }
 
 };
 
 Modifier.prototype.fromJS = function(data) {
+    var self =this;
 
     function modifierFactoryFromArray(data){
         if (data.constructor === Array){
