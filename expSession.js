@@ -21,8 +21,11 @@ ExpSession.prototype.removeBlock = function(data,event) {
         console.log('bad deletion');
     }
     else{
-        this.blocks.splice(idx,1);
-        this.blocks.valueHasMutated()
+        //this.blocks.splice(idx,1);
+        //this.blocks.valueHasMutated()
+        var tmpArr = this.blocks();
+        tmpArr.splice(idx,1);
+        this.blocks(tmpArr);
     }
 
 
