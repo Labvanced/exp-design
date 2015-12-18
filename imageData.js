@@ -9,6 +9,8 @@ var ImageData= function(expData) {
     // serialized
     this.editorX = ko.observable(0);
     this.editorY = ko.observable(0);
+    this.editorWidth = ko.observable(0);
+    this.editorHeight = ko.observable(0);
     this.id = ko.observable(guid());
     this.type = "ImageData";
     this.name = ko.observable("Image");
@@ -68,6 +70,8 @@ ImageData.prototype.fromJS = function(data) {
     this.modifier().fromJS(data.modifier);
     this.editorX(data.editorX);
     this.editorY(data.editorY);
+    this.editorWidth(data.editorWidth);
+    this.editorHeight(data.editorHeight);
     this.isActive(data.isActive);
     return this;
 };
@@ -88,6 +92,8 @@ ImageData.prototype.toJS = function() {
         modifier: this.modifier().toJS(),
         editorX:  this.editorX(),
         editorY:  this.editorY(),
+        editorWidth: this.editorWidth(),
+        editorHeight: this.editorHeight(),
         isActive:  this.isActive()
     };
 };

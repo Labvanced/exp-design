@@ -25,6 +25,8 @@ ExpData.prototype.addGroup = function(group) {
     return this.groups.push(group);
 };
 
+
+
 ExpData.prototype.fromJS = function(data) {
     var self = this;
 
