@@ -331,15 +331,18 @@ Modifier.prototype.addFactorDependency = function(factorVar) {
 Modifier.prototype.fromJS = function(data) {
     var self =this;
 
-    function modifierFactoryFromArray(data){
-        if (data.constructor === Array){
-            return jQuery.map( data, function( subData ) {
-                return modifierFactoryFromArray(subData);
-            } );
+    function modifierFactoryFromArray(dataArr){
+        if (dataArr.constructor === Array){
+            var objArr = [];
+            for (var i=0; i<dataArr.length; i++){
+                var subObjArr = modifierFactoryFromArray(dataArr[i]);
+                objArr.push(subObjArr);
+            }
+            return objArr;
         }
         else {
             var modifierTrialType = new ModifierTrialType(self.expData, self.objToModify);
-            return modifierTrialType.fromJS(data);
+            return modifierTrialType.fromJS(dataArr);
         }
 
     }
@@ -361,21 +364,26 @@ Modifier.prototype.toJS = function() {
 
     function modifierSerializeArray(objArr){
         if (objArr.constructor === Array){
-            return jQuery.map( objArr, function( subObjArr ) {
-                return modifierSerializeArray(subObjArr);
-            } );
+            var dataArr = [];
+            for (var i=0; i<objArr.length; i++){
+                var subData = modifierSerializeArray(objArr[i]);
+                dataArr.push(subData);
+            }
+            return dataArr;
         }
         else {
             return objArr.toJS();
         }
     }
 
-    return {
+    var data = {
         interactingFactors: jQuery.map( this.interactingFactors(), function( factor ) { return factor.id(); } ),
         interactingTrialTypes: modifierSerializeArray(this.interactingTrialTypes),
         noninteractFactors: jQuery.map( this.noninteractFactors(), function( factor ) { return factor.id(); } ),
         noninteractTrialTypes: modifierSerializeArray(this.noninteractTrialTypes),
         type: this.type
     };
+
+    return data;
 };
 
