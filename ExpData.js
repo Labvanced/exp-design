@@ -6,13 +6,39 @@ var ExpData = function () {
     this.groups = ko.observableArray([]).extend({sortById: null});
     this.expBlocks = ko.observableArray([]).extend({sortById: null});
     this.globalVars = ko.observableArray([]).extend({sortById: null});
+    this.visibleVars =  ko.observableArray([]).extend({sortById: null});
+    this.variables= [
+        {name: 'Experiment Name', type: 'id', dataType:'string',scope:'experiment'},
+        {name: 'Subject Id', type: 'id', dataType:'string',scope:'experiment'},
+        {name: 'Group Id', type: 'id', dataType:'string',scope:'experiment' },
+        {name: 'Time Stamp', type: 'id', dataType:'string',scope:'session'},
+        {name: 'Session Number', type: 'id' , dataType:'numeric',scope:'session'},
+        {name: 'Block Order', type: 'randomization', dataType:'string array',scope:'session'}
+    ];
+    this.setVisibleVars();
 };
+
+
+
 
 ExpData.prototype.setPointers = function() {
     var allEntitiesArray = this.entities();
     jQuery.each( allEntitiesArray, function( index, elem ) {
         elem.setPointers();
     } );
+};
+
+ExpData.prototype.setVisibleVars = function() {
+
+    for (var i = 0; i<this.variables.length;i++){
+        var globalVar = new GlobalVar(this.expData);
+        globalVar.subtype(this.variables[i].type);
+        globalVar.dataType(this.variables[i].dataType);
+        globalVar.name(this.variables[i].name);
+        globalVar.scope(this.variables[i].scope);
+        this.visibleVars.push(globalVar);
+    }
+
 };
 
 ExpData.prototype.addGlobalVar = function(variable) {

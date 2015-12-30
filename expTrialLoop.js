@@ -20,10 +20,20 @@ var ExpTrialLoop = function (expData) {
     this.randomization = ko.observable("reshuffle");
 
     // not serialized
+    this.trialOrder = ko.observable(null);
     this.isInitialized = ko.observable(false);
     this.shape = "square";
     this.label = "Experiment";
     this.portTypes = ["executeIn", "executeOut"];
+
+    // trial randomization, premade variable per exp trial loop
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.subtype(GlobalVar.subtypes[5].text);
+    globalVar.dataType("numeric");
+    var name = "trial_randomization";
+    globalVar.name(name);
+    globalVar.scope('Trial-Loop');
+    this.trialOrder(globalVar);
 
     this.nrTrialTypes = ko.computed(function() {
         if (this.isInitialized()){
@@ -141,6 +151,23 @@ var ExpTrialLoop = function (expData) {
     }, this);
 
 
+    this.visibleVars = ko.computed(function() {
+        var array = [];
+        array.push(this.trialOrder());
+        var list1 = this.factors();
+        var list2 = this.additionalTrialTypes();
+        for (var i = 0; i< list1.length;i++ ){
+            array.push(list1[i]);
+        }
+        for (var i = 0; i< list2.length;i++ ){
+            array.push(list2[i]);
+        }
+        return array;
+
+    }, this);
+
+
+
     this.trialDesign.subscribe(function(newVal){
         if (newVal== "unbalanced"){
             $("#repPerTrialType").hide();
@@ -153,6 +180,7 @@ var ExpTrialLoop = function (expData) {
     });
 
     this.portHandler = new PortHandler(this);
+
 };
 
 
@@ -193,7 +221,7 @@ ExpTrialLoop.prototype.addFactor = function() {
     globalVar.dataType("numeric");
     var name = "factor_" + (this.factors().length+1);
     globalVar.name(name);
-    globalVar.assigned(true);
+    globalVar.scope('Trial-Loop');
     globalVar.addLevel();
     this.expData.addGlobalVar(globalVar);
     this.factors.push(globalVar);
@@ -223,7 +251,7 @@ ExpTrialLoop.prototype.addSepTrialType= function() {
     globalVar.dataType("numeric");
     var name = "noninteracting_factor_" + (this.additionalTrialTypes().length+1);
     globalVar.name(name);
-    globalVar.assigned(true);
+    globalVar.scope('Trial-Loop');
     globalVar.addLevel();
     this.expData.addGlobalVar(globalVar);
     this.additionalTrialTypes.push(globalVar);
@@ -293,5 +321,6 @@ ExpTrialLoop.prototype.toJS = function() {
         randomization:  this.randomization(),
         factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } ),
         additionalTrialTypes: jQuery.map( this.additionalTrialTypes(), function( addtrialtypes ) { return addtrialtypes.id(); } )
-    };
+    }
 };
+    

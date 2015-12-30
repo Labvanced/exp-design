@@ -8,6 +8,20 @@ var ExpBlock = function (expData) {
     this.type = "ExpBlock";
     this.subSequence = ko.observable(new Sequence(expData));
     this.editName =  ko.observable(false);
+
+    // not serialized
+    this.blockNumber = ko.observable(null);
+
+
+    // block Id, premade variable per exp block
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.subtype(GlobalVar.subtypes[7].text);
+    globalVar.dataType("string");
+    var name = "Block Id";
+    globalVar.name(name);
+    globalVar.scope('block');
+    this.blockNumber(globalVar);
+
 };
 
 ExpBlock.prototype.setPointers = function() {
@@ -35,7 +49,7 @@ ExpBlock.prototype.reAddEntities = function() {
     var self = this;
 
     // add the direct child nodes:
-    // check if they are not already in the list:
+    // check if they are not already in the list:.
     if (!self.expData.entities.byId.hasOwnProperty(this.subSequence().id()))
         self.expData.entities.push(this.subSequence());
 

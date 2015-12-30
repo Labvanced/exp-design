@@ -8,7 +8,7 @@ var GlobalVar = function (expData) {
     this.type = "GlobalVar";
     this.subtype = ko.observable(GlobalVar.subtypes[0].text);
     this.dataType = ko.observable("undefined");
-    this.assigned = ko.observable(false);
+    this.scope = ko.observable(null);
     this.levels = ko.observableArray([]);
     this.editName =  ko.observable(false);
     this.subLevelEdit = ko.observable(false);
@@ -22,7 +22,8 @@ GlobalVar.subtypes= [
         { id: 4, text: 'response' },
         { id: 5, text: 'response time' },
         { id: 6, text: 'randomization' },
-        { id: 7, text: 'seperate trial type' }
+        { id: 7, text: 'seperate trial type' },
+        { id: 8, text: 'id' }
     ];
 
 
