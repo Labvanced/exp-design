@@ -87,6 +87,10 @@ ExpData.prototype.fromJS = function(data) {
                     entity = new FrameData(self);
                     entity.fromJS(entityJson);
                     break;
+                case 'TrialData':
+                    entity = new TrialData(self);
+                    entity.fromJS(entityJson);
+                    break;
                 case 'SubjectGroup':
                     entity = new SubjectGroup(self);
                     entity.fromJS(entityJson);

@@ -56,7 +56,7 @@ FrameData.prototype.addNewSubElement = function(elem) {
 FrameData.prototype.doubleClick = function() {
     // this frame was double clicked in the parent Experiment editor:
     uc.currentEditorData = this;
-    if (uc.currentEditorView instanceof MediaEditor){
+    if (uc.currentEditorView instanceof TrialEditor){
         uc.currentEditorView.setDataModel(this);
     }
     else {
