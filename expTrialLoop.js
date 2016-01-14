@@ -11,6 +11,8 @@ var ExpTrialLoop = function (expData) {
     this.name = ko.observable("TrialLoop");
     this.type = "ExpTrialLoop";
     this.subSequence = ko.observable(new Sequence(expData));
+    var firstFrame = new FrameData(this.expData, this.subSequence());
+    this.subSequence().addNewSubElement(firstFrame);
 
     this.factors = ko.observableArray([]);
     this.additionalTrialTypes =  ko.observableArray([]);
@@ -206,11 +208,11 @@ ExpTrialLoop.prototype.setPointers = function() {
 ExpTrialLoop.prototype.doubleClick = function() {
     // this trial loop was double clicked in the editor:
     uc.currentEditorData = this.subSequence();
-    if (uc.currentEditorView instanceof ExperimentEditor){
+    if (uc.currentEditorView instanceof TrialEditor){
         uc.currentEditorView.setDataModel(this.subSequence());
     }
     else {
-        page("/page/editors/experimenteditor/"+uc.experiment.exp_id()+"/"+this.subSequence().id());
+        page("/page/editors/trialEditor/"+uc.experiment.exp_id()+"/"+this.subSequence().id());
     }
 };
 
