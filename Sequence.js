@@ -6,6 +6,7 @@ var Sequence = function (expData) {
     var self = this;
     this.expData = expData;
     this.currSelectedElement = ko.observable();
+    this.currSelectedFrame= ko.observable();
     this.parent = null;
 
     // serialized
