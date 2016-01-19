@@ -10,8 +10,8 @@ var ExpTrialLoop = function (expData) {
     this.id = ko.observable(guid());
     this.name = ko.observable("TrialLoop");
     this.type = "ExpTrialLoop";
-    this.subSequence = ko.observable(new Sequence(expData));
-    var firstFrame = new FrameData(this.expData, this.subSequence());
+    this.subSequence = ko.observable(new Sequence(this.expData));
+    var firstFrame = new FrameData(this.expData);
     this.subSequence().addNewSubElement(firstFrame);
 
     this.factors = ko.observableArray([]);
