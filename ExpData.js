@@ -163,7 +163,8 @@ ExpData.prototype.toJS = function() {
 
     // save to JSON:
     return {
-        entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); })
+        entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
+        numGroups: this.groups().length
     };
 };
 
