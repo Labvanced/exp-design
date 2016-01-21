@@ -40,7 +40,7 @@ var ImageData= function(expData) {
 
 };
 
-ImageData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
+ImageData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight","name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
 
 ImageData.prototype.setPointers = function() {
     this.modifier().setPointers();

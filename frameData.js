@@ -20,8 +20,8 @@ var FrameData = function(expData) {
     this.offsetEnabled = ko.observable(false);
     this.bgColor = ko.observable("#ffffff"); // hex color as string, i.e. "#ffffff"
     this.bgColorEnabled = ko.observable(false); // if false, then use experiment default background color.
-    this.frameWidth = ko.observable(16);
-    this.frameHeight = ko.observable(9);
+    this.frameWidth = ko.observable(1600);
+    this.frameHeight = ko.observable(900);
     this.zoomMode = ko.observable("fullscreen"); // "fullscreen" or "pixel" or "visualDegree"
 
     // modifier:
