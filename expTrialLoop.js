@@ -185,9 +185,6 @@ var ExpTrialLoop = function (expData) {
 
 };
 
-
-
-
 ExpTrialLoop.prototype.setPointers = function() {
     var self = this;
 

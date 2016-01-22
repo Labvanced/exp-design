@@ -12,20 +12,31 @@ var PortHandler = function(parentDataModel) {
 
     // ordered Ports by Id callback:
     this.portsById = {};
+    this.portsByType = {};
     this.ports.subscribe(function() {
         self.portsById = {};
+        self.portsByType = {};
         var ports = self.ports();
-        for (var i= 0, len=ports.length; i<len; i++) {
+        for (var i=0, len=ports.length; i<len; i++) {
             self.portsById[ports[i].id()] = ports[i];
+            if (!self.portsByType[ports[i].portType()]){
+                self.portsByType[ports[i].portType()] = [];
+            }
+            self.portsByType[ports[i].portType()].push(ports[i]);
         }
     });
 
     // add Ports
+    var ports = [];
     for (var i = 0;i<this.portTypes.length;i++){
         var port = new Port(this);
         port.portType(this.portTypes[i]);
-        this.ports.push(port);
+        ports.push(port);
     }
+    this.ports(ports);
+
+
+
 
 };
 

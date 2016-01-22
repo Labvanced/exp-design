@@ -240,6 +240,8 @@ ExpData.prototype.addNewBlock = function() {
                 id: blockElements[i + 1].id(),
                 portId: portId
             });
+
+            conn.makeConnection();
             subSequence.addNewSubElement(conn);
         }
 

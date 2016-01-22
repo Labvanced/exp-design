@@ -12,6 +12,8 @@ var Port = function(portHandler) {
     this.name = ko.observable("");
     this.portType = ko.observable("executeIn"); // or executeOut or variabelIn or variableOut
 
+    // helper
+    this.connectedToPorts = [];
 };
 
 
