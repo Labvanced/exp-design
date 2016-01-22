@@ -241,8 +241,18 @@ ExpData.prototype.addNewBlock = function() {
                 portId: portId
             });
 
-            conn.makeConnection();
+            conn.parent = subSequence;
+
+            
             subSequence.addNewSubElement(conn);
+        }
+
+    }
+
+    for (var i = 0; i<subSequence.elements().length;i++){
+
+        if (subSequence.elements()[i].type == "Connection"){
+            conn.makeConnection();
         }
 
     }
