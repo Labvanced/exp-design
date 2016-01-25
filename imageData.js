@@ -9,8 +9,8 @@ var ImageData= function(expData) {
     // serialized
     this.editorX = ko.observable(0);
     this.editorY = ko.observable(0);
-    this.editorWidth = ko.observable(0);
-    this.editorHeight = ko.observable(0);
+    this.editorWidth = ko.observable(120);
+    this.editorHeight = ko.observable(60);
     this.id = ko.observable(guid());
     this.type = "ImageData";
     this.name = ko.observable("Image");
