@@ -26,14 +26,16 @@ Experiment.prototype.fromJS = function(data) {
     this.img_file_id = ko.observable(data.img_file_id);
     this.img_file_orig_name = ko.observable(data.img_file_orig_name);
     this.exp_data = new ExpData();
-    this.exp_data.fromJS(data.exp_data);
+    if (data.hasOwnProperty("exp_data")){
+        this.exp_data.fromJS(data.exp_data);
+    }
     return this;
 };
 
 
 Experiment.prototype.editExp = function() {
-    uc.experiment = this;
-    uc.currentEditorData = this.exp_data;
+    //uc.experiment = this;
+    //uc.currentEditorData = this.exp_data;
     page("/page/editors/mainExperimentPage/"+this.exp_id());
 };
 
