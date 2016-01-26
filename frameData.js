@@ -5,7 +5,7 @@ var FrameData = function(expData) {
     
     var self = this;
     this.expData = expData;
-    this.currSelectedElement = ko.observable();
+    this.currSelectedElement = ko.observable(null);
     this.parent = null;
 
     // serialized
