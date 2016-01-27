@@ -7,10 +7,11 @@ var VideoData= function(expData) {
     this.parent = null;
 
     // serialized
-    this.editorX = ko.observable(0);
-    this.editorY = ko.observable(0);
-    this.editorWidth = ko.observable(120);
-    this.editorHeight = ko.observable(60);
+    this.editorX = ko.observable(100);
+    this.editorY = ko.observable(100);
+    this.editorWidth = ko.observable(320);
+    this.editorHeight = ko.observable(180);
+    this.keepAspectRatio = ko.observable(true);
     this.id = ko.observable(guid());
     this.type = "VideoData";
     this.name = ko.observable("Video");
@@ -29,9 +30,10 @@ var VideoData= function(expData) {
     // not serialized
     this.shape = "square";
     this.label = "Video";
+
     this.vidSource = ko.computed( function() {
-        if (this.file_id()) {
-            return "/files/" + this.file_id() + "/" + this.file_orig_name();
+        if (this.modifier().selectedTrialView.file_id()) {
+            return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
         else {
             return false
@@ -39,7 +41,7 @@ var VideoData= function(expData) {
     }, this);
 };
 
-VideoData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
+VideoData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
 
 VideoData.prototype.setPointers = function() {
     this.modifier().setPointers();
@@ -72,6 +74,8 @@ VideoData.prototype.fromJS = function(data) {
     this.editorWidth(data.editorWidth);
     this.editorHeight(data.editorHeight);
     this.isActive(data.isActive);
+    this.keepAspectRatio(data.keepAspectRatio);
+
     return this;
 };
 
@@ -93,7 +97,8 @@ VideoData.prototype.toJS = function() {
         editorY:  this.editorY(),
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
-        isActive:  this.isActive()
+        isActive:  this.isActive(),
+        keepAspectRatio: this.data.keepAspectRatio()
     };
 };
 

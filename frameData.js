@@ -55,17 +55,6 @@ FrameData.prototype.addNewSubElement = function(elem) {
     elem.parent = this;
 };
 
-FrameData.prototype.doubleClick = function() {
-    // this frame was double clicked in the parent Experiment editor:
-    uc.currentEditorData = this;
-    if (uc.currentEditorView instanceof TrialEditor){
-        uc.currentEditorView.setDataModel(this);
-    }
-    else {
-        page("/page/editors/mediaEditor/"+uc.experiment.exp_id()+"/"+this.id());
-    }
-
-};
 
 FrameData.prototype.setPointers = function() {
     var self = this;
