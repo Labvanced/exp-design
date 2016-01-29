@@ -9,13 +9,14 @@ var ImageData= function(expData) {
     // serialized
     this.editorX = ko.observable(0);
     this.editorY = ko.observable(0);
-    this.editorWidth = ko.observable(0);
-    this.editorHeight = ko.observable(0);
+    this.editorWidth = ko.observable(120);
+    this.editorHeight = ko.observable(60);
     this.id = ko.observable(guid());
     this.type = "ImageData";
     this.name = ko.observable("Image");
     this.onset = ko.observable(0);
     this.onsetEnabled = ko.observable(false);
+    this.keepAspectRatio = ko.observable(true);
     this.offset = ko.observable(0);
     this.offsetEnabled = ko.observable(false);
     this.responses = ko.observableArray([]);
@@ -73,6 +74,7 @@ ImageData.prototype.fromJS = function(data) {
     this.editorWidth(data.editorWidth);
     this.editorHeight(data.editorHeight);
     this.isActive(data.isActive);
+    this.keepAspectRatio(data.keepAspectRatio);
     return this;
 };
 
@@ -94,7 +96,8 @@ ImageData.prototype.toJS = function() {
         editorY:  this.editorY(),
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
-        isActive:  this.isActive()
+        isActive:  this.isActive(),
+        keepAspectRatio: this.data.keepAspectRatio()
     };
 };
 

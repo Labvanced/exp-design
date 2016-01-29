@@ -5,12 +5,14 @@ var FrameData = function(expData) {
     
     var self = this;
     this.expData = expData;
-    this.currSelectedElement = ko.observable();
+    this.currSelectedElement = ko.observable(null);
     this.parent = null;
 
     // serialized
     this.editorX = ko.observable(0);
     this.editorY = ko.observable(0);
+    this.editorWidth = ko.observable(120);
+    this.editorHeight = ko.observable(60);
     this.id = ko.observable(guid());
     this.type = "FrameData";
     this.name = ko.observable("MediaFrame");
@@ -53,17 +55,6 @@ FrameData.prototype.addNewSubElement = function(elem) {
     elem.parent = this;
 };
 
-FrameData.prototype.doubleClick = function() {
-    // this frame was double clicked in the parent Experiment editor:
-    uc.currentEditorData = this;
-    if (uc.currentEditorView instanceof TrialEditor){
-        uc.currentEditorView.setDataModel(this);
-    }
-    else {
-        page("/page/editors/mediaEditor/"+uc.experiment.exp_id()+"/"+this.id());
-    }
-
-};
 
 FrameData.prototype.setPointers = function() {
     var self = this;
@@ -108,6 +99,8 @@ FrameData.prototype.fromJS = function(data) {
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.editorX(data.editorX);
     this.editorY(data.editorY);
+    this.editorWidth(data.editorWidth);
+    this.editorHeight(data.editorHeight);
     this.bgColor(data.bgColor);
     this.bgColorEnabled(data.bgColorEnabled);
     this.frameWidth(data.frameWidth);
@@ -132,6 +125,8 @@ FrameData.prototype.toJS = function() {
         portHandler: this.portHandler.toJS(),
         editorX:  this.editorX(),
         editorY:  this.editorY(),
+        editorWidth: this.editorWidth(),
+        editorHeight: this.editorHeight(),
         bgColor: this.bgColor(),
         bgColorEnabled: this.bgColorEnabled(),
         frameWidth: this.frameWidth(),
