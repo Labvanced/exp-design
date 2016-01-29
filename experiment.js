@@ -47,6 +47,11 @@ Experiment.prototype.editExp = function() {
     page("/page/editors/mainExperimentPage/"+this.exp_id());
 };
 
+
+Experiment.prototype.copyExp = function() {
+
+};
+
 Experiment.prototype.publish = function() {
     page("/page/publishExperiment/"+this.exp_id());
 };

@@ -35,14 +35,29 @@ Sequence.prototype.setPointers = function() {
 };
 
 Sequence.prototype.selectNextElement = function() {
-    if (!this.currSelectedElement()){
-        var nextElement = this.startBlock;
+    if (this.startBlock){
+        // this sequence uses connections for the control flow:
+        if (!this.currSelectedElement()){
+            var nextElement = this.startBlock;
+        }
+        else {
+            var executeOutPort = this.currSelectedElement().portHandler.portsByType['executeOut'][0];
+            var executeInPortOfNextElem = executeOutPort.connectedToPorts[0];
+            var nextElement = executeInPortOfNextElem.portHandler.parentDataModel;
+        }
     }
     else {
-        var executeOutPort = this.currSelectedElement().portHandler.portsByType['executeOut'][0];
-        var executeInPortOfNextElem = executeOutPort.connectedToPorts[0];
-        var nextElement = executeInPortOfNextElem.portHandler.parentDataModel;
+        // this sequence has just a linear control flow in array order:
+        var elements = this.elements();
+        if (!this.currSelectedElement()){
+            var nextElement = elements[0];
+        }
+        else {
+            var index = elements.indexOf(this.currSelectedElement());
+            var nextElement = elements[index+1];
+        }
     }
+
     this.currSelectedElement(nextElement);
     return nextElement;
 };
