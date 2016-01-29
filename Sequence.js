@@ -34,6 +34,15 @@ Sequence.prototype.setPointers = function() {
     } ));
 };
 
+Sequence.prototype.selectTrialType = function(selectionSpec) {
+    var elements = this.elements();
+    for (var i=0; i<elements.length; i++){
+        if (typeof elements[i].selectTrialType === 'function') {
+            elements[i].selectTrialType(selectionSpec);
+        }
+    }
+};
+
 Sequence.prototype.selectNextElement = function() {
     if (this.startBlock){
         // this sequence uses connections for the control flow:
