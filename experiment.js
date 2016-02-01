@@ -61,6 +61,18 @@ Experiment.prototype.unpublish = function() {
     this.save();
 };
 
+
+Experiment.prototype.enableRec = function() {
+    this.is_recording(true);
+    this.save();
+};
+
+
+Experiment.prototype.stopRec = function() {
+    this.is_recording(false);
+    this.save();
+};
+
 Experiment.prototype.finishEditing = function() {
     this.is_editing(false);
     this.save();
