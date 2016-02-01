@@ -49,8 +49,6 @@ ExpData.prototype.addGroup = function(group) {
     return this.groups.push(group);
 };
 
-
-
 ExpData.prototype.fromJS = function(data) {
     var self = this;
 
@@ -168,6 +166,14 @@ ExpData.prototype.toJS = function() {
     };
 };
 
+
+
+ExpData.prototype.addNewSubjGroup = function() {
+    var group = new SubjectGroup(this);
+    var session = new ExpSession(this);
+    group.addSession(session);
+    this.addGroup(group);
+};
 
 ExpData.prototype.addNewBlock = function() {
 

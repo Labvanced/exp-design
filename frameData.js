@@ -55,7 +55,6 @@ FrameData.prototype.addNewSubElement = function(elem) {
     elem.parent = this;
 };
 
-
 FrameData.prototype.setPointers = function() {
     var self = this;
 
@@ -65,6 +64,15 @@ FrameData.prototype.setPointers = function() {
         elem.parent = self;
         return elem;
     } ));
+};
+
+FrameData.prototype.selectTrialType = function(selectionSpec) {
+    var elements = this.elements();
+    for (var i=0; i<elements.length; i++){
+        if (typeof elements[i].selectTrialType === 'function') {
+            elements[i].selectTrialType(selectionSpec);
+        }
+    }
 };
 
 FrameData.prototype.getElementById = function(id) {

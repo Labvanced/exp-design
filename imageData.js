@@ -53,6 +53,10 @@ ImageData.prototype.addNewResponse = function() {
     this.responses.push(resp);
 };
 
+ImageData.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
+};
+
 ImageData.prototype.fromJS = function(data) {
     var self = this;
     this.id(data.id);
@@ -97,7 +101,7 @@ ImageData.prototype.toJS = function() {
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
         isActive:  this.isActive(),
-        keepAspectRatio: this.data.keepAspectRatio()
+        keepAspectRatio: this.keepAspectRatio()
     };
 };
 

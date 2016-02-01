@@ -53,6 +53,10 @@ VideoData.prototype.addNewResponse = function() {
     this.responses.push(resp);
 };
 
+VideoData.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
+};
+
 VideoData.prototype.fromJS = function(data) {
     var self = this;
     this.id(data.id);
