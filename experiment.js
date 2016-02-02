@@ -11,7 +11,7 @@ var Experiment = function () {
     this.is_published = ko.observable(false);
     this.img_file_id = ko.observable(null);
     this.img_file_orig_name = ko.observable(null);
-    this.description = ko.observable(0);
+    this.description = ko.observable("");
     this.category_id = ko.observable(0);
     this.exp_data = new ExpData();
 };
@@ -53,6 +53,7 @@ Experiment.prototype.copyExp = function() {
 };
 
 Experiment.prototype.publish = function() {
+    uc.experiment = this;
     page("/page/publishExperiment/"+this.exp_id());
 };
 
@@ -70,11 +71,13 @@ Experiment.prototype.enableRec = function() {
 
 Experiment.prototype.stopRec = function() {
     this.is_recording(false);
+    this.is_published(false);
     this.save();
 };
 
 Experiment.prototype.finishEditing = function() {
     this.is_editing(false);
+    this.is_recording(true);
     this.save();
 };
 
