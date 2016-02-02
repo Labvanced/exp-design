@@ -65,6 +65,9 @@ Sequence.prototype.selectNextElement = function() {
             var index = elements.indexOf(this.currSelectedElement());
             var nextElement = elements[index+1];
         }
+        if (nextElement === undefined) {
+            nextElement = "EndOfSequence";
+        }
     }
 
     this.currSelectedElement(nextElement);
