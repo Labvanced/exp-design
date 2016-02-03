@@ -31,7 +31,7 @@ var ImageData= function(expData) {
     this.shape = "square";
     this.label = "Image";
     this.imgSource = ko.computed( function() {
-        if (this.modifier().selectedTrialView.file_id()) {
+        if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
             return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
         else {

@@ -32,7 +32,7 @@ var VideoData= function(expData) {
     this.label = "Video";
 
     this.vidSource = ko.computed( function() {
-        if (this.modifier().selectedTrialView.file_id()) {
+        if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
             return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
         else {
@@ -102,7 +102,7 @@ VideoData.prototype.toJS = function() {
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
         isActive:  this.isActive(),
-        keepAspectRatio: this.data.keepAspectRatio()
+        keepAspectRatio: this.keepAspectRatio()
     };
 };
 
