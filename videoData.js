@@ -1,7 +1,7 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var VideoData= function(expData) {
+var VideoData= function(expData,idx) {
 
     this.expData = expData;
     this.parent = null;
@@ -14,7 +14,7 @@ var VideoData= function(expData) {
     this.keepAspectRatio = ko.observable(true);
     this.id = ko.observable(guid());
     this.type = "VideoData";
-    this.name = ko.observable("Video");
+    this.name = ko.observable("Video"+idx);
     this.onset = ko.observable(0);
     this.onsetEnabled = ko.observable(false);
     this.offset = ko.observable(0);
@@ -32,7 +32,7 @@ var VideoData= function(expData) {
     this.label = "Video";
 
     this.vidSource = ko.computed( function() {
-        if (this.modifier().selectedTrialView.file_id()) {
+        if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
             return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
         else {
@@ -102,7 +102,7 @@ VideoData.prototype.toJS = function() {
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
         isActive:  this.isActive(),
-        keepAspectRatio: this.data.keepAspectRatio()
+        keepAspectRatio: this.keepAspectRatio()
     };
 };
 

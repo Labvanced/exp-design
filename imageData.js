@@ -1,7 +1,7 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var ImageData= function(expData) {
+var ImageData= function(expData,idx) {
 
     this.expData = expData;
     this.parent = null;
@@ -13,7 +13,7 @@ var ImageData= function(expData) {
     this.editorHeight = ko.observable(60);
     this.id = ko.observable(guid());
     this.type = "ImageData";
-    this.name = ko.observable("Image");
+    this.name = ko.observable("Image"+idx);
     this.onset = ko.observable(0);
     this.onsetEnabled = ko.observable(false);
     this.keepAspectRatio = ko.observable(false);
@@ -31,7 +31,7 @@ var ImageData= function(expData) {
     this.shape = "square";
     this.label = "Image";
     this.imgSource = ko.computed( function() {
-        if (this.modifier().selectedTrialView.file_id()) {
+        if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
             return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
         else {
@@ -40,6 +40,8 @@ var ImageData= function(expData) {
     }, this);
 
 };
+
+
 
 ImageData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight","name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
 

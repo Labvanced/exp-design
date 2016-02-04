@@ -67,7 +67,7 @@ var ActionRecordElementTag = function(parent) {
 
 };
 ActionRecordElementTag.prototype.type = "ActionRecordElementTag";
-ActionRecordElementTag.prototype.label = "Rec.Clicked.Elem.";
+ActionRecordElementTag.prototype.label = "RecordTag";
 
 ActionRecordElementTag.prototype.run = function() {
 
