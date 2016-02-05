@@ -19,7 +19,7 @@ var ExpTrialLoop = function (expData) {
     this.factors = ko.observableArray([]);
     this.additionalTrialTypes =  ko.observableArray([]);
     this.trialDesign = ko.observable("balanced");
-    this.repsPerTrialType = ko.observable(0);
+    this.repsPerTrialType = ko.observable(1).extend({ numeric: 0 });
     this.isActive = ko.observable(false);
     this.randomization = ko.observable("reshuffle");
 
@@ -132,7 +132,6 @@ var ExpTrialLoop = function (expData) {
                 var levels = additionalTrialTypes[i].levels();
                 // add all levels of this non interacting factor:
                 for (var l=0; l<levels.length; l++) {
-                    // mix previous trialType t with level l of the newly interacting factor:
                     trialTypes.push([i, l]);
                     trialTypesString.push([additionalTrialTypes[i], levels[l]]);
                 }
