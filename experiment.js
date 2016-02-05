@@ -18,7 +18,9 @@ var Experiment = function () {
 
 
 Experiment.prototype.setPointers = function() {
-    this.exp_data.setPointers();
+    if (this.exp_data instanceof ExpData) {
+        this.exp_data.setPointers();
+    }
 };
 
 Experiment.prototype.fromJS = function(data) {
@@ -47,6 +49,9 @@ Experiment.prototype.editExp = function() {
     page("/page/editors/mainExperimentPage/"+this.exp_id());
 };
 
+Experiment.prototype.viewRecordings = function() {
+    page("/page/recordingsPage/"+this.exp_id());
+};
 
 Experiment.prototype.copyExp = function() {
 
