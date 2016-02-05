@@ -37,8 +37,11 @@ var Response= function(parent) {
             if (value == "None"){
                 self.action(null);
             }
-            else if (value == "ActionAssign"){
-                self.action(new ActionAssign(self));
+            else if (value == "ActionChangeVar"){
+                self.action(new ActionChangeVar(self));
+            }
+            else if (value == "ActionChangeProp"){
+                self.action(new ActionChangeProp(self));
             }
             else if (value == "ActionRecordRespTime"){
                 self.action(new ActionRecordRespTime(self));

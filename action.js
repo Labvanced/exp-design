@@ -1,30 +1,64 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var ActionAssign = function(parent) {
+var ActionChangeVar = function(parent) {
     this.parent = parent;
 
     // serialized
     this.variableId = ko.observable('id-of-global-variable');
     this.setValue = ko.observable('string');
 };
-ActionAssign.prototype.type = "ActionAssign";
-ActionAssign.prototype.label = "Assignment";
+ActionChangeVar.prototype.type = "ActionChangeVar";
+ActionChangeVar.prototype.label = "Change Variable";
 
-ActionAssign.prototype.run = function() {
+ActionChangeVar.prototype.run = function() {
 
 };
 
-ActionAssign.prototype.fromJS = function(data) {
+ActionChangeVar.prototype.fromJS = function(data) {
     this.variableId(data.variableId);
     this.setValue(data.setValue);
     return this;
 };
 
-ActionAssign.prototype.toJS = function() {
+ActionChangeVar.prototype.toJS = function() {
     return {
         type: this.type,
         variableId: this.variableId(),
+        setValue: this.setValue()
+    };
+};
+
+//////////////////////
+
+var ActionChangeProp = function(parent) {
+    this.parent = parent;
+
+    // serialized
+    this.elemId = ko.observable(null);
+    this.propName = ko.observable(null);
+    this.setValue = ko.observable('string');
+};
+
+ActionChangeProp.prototype.type = "ActionChangeProp";
+ActionChangeProp.prototype.label = "Change Property Of";
+
+ActionChangeProp.prototype.run = function() {
+
+};
+
+ActionChangeProp.prototype.fromJS = function(data) {
+    this.elemId(data.elemId);
+    this.propName(data.propName);
+    this.setValue(data.setValue);
+    return this;
+};
+
+ActionChangeProp.prototype.toJS = function() {
+    return {
+        type: this.type,
+        elemId: this.elemId(),
+        propName: this.propName(),
         setValue: this.setValue()
     };
 };
@@ -114,8 +148,11 @@ ActionNextFrame.prototype.toJS = function() {
 
 function actionFactory(parent,type) {
 
-    if (type == "ActionAssign"){
-        var action = new ActionAssign(parent);
+    if (type == "ActionChangeVar"){
+        var action = new ActionChangeVar(parent);
+    }
+    else if(type == "ActionChangeProp") {
+        var action = new ActionChangeProp(parent);
     }
     else if(type == "ActionRecordRespTime") {
         var action = new ActionRecordRespTime(parent);

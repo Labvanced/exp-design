@@ -6,14 +6,14 @@ var ExpData = function () {
     this.groups = ko.observableArray([]).extend({sortById: null});
     this.expBlocks = ko.observableArray([]).extend({sortById: null});
     this.globalVars = ko.observableArray([]).extend({sortById: null});
+    this.eventVariables = ko.observableArray([]).extend({sortById: null});
     this.visibleVars =  ko.observableArray([]).extend({sortById: null});
     this.variables= [
         {name: 'Experiment Name', type: 'id', dataType:'string',scope:'experiment'},
         {name: 'Subject Id', type: 'id', dataType:'string',scope:'experiment'},
         {name: 'Group Id', type: 'id', dataType:'string',scope:'experiment' },
         {name: 'Time Stamp', type: 'id', dataType:'string',scope:'session'},
-        {name: 'Session Number', type: 'id' , dataType:'numeric',scope:'session'},
-        {name: 'Block Order', type: 'randomization', dataType:'string array',scope:'session'}
+        {name: 'Session Number', type: 'id' , dataType:'numeric',scope:'session'}
     ];
     this.setVisibleVars();
 };

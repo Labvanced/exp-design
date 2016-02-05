@@ -15,7 +15,7 @@ var GlobalVar = function (expData) {
 };
 
 // enum: posssible variable subtypes..
-GlobalVar.subtypes= [
+GlobalVar.subtypes = [
         { id: 1, text: 'undefined' },
         { id: 2, text: 'factor' },
         { id: 3, text: 'stimulus property' },

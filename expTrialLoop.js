@@ -18,6 +18,7 @@ var ExpTrialLoop = function (expData) {
 
     this.factors = ko.observableArray([]);
     this.additionalTrialTypes =  ko.observableArray([]);
+    this.eventVariables = ko.observableArray([]).extend({sortById: null});
     this.trialDesign = ko.observable("balanced");
     this.repsPerTrialType = ko.observable(1).extend({ numeric: 0 });
     this.isActive = ko.observable(false);
@@ -159,11 +160,15 @@ var ExpTrialLoop = function (expData) {
         array.push(this.trialOrder());
         var list1 = this.factors();
         var list2 = this.additionalTrialTypes();
+        var list3 = this.eventVariables();
         for (var i = 0; i< list1.length;i++ ){
             array.push(list1[i]);
         }
         for (var i = 0; i< list2.length;i++ ){
             array.push(list2[i]);
+        }
+        for (var i = 0; i< list3.length;i++ ){
+            array.push(list3[i]);
         }
         return array;
 
