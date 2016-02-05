@@ -1,7 +1,7 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var ImageData= function(expData,idx) {
+var ImageData= function(expData) {
 
     this.expData = expData;
     this.parent = null;
@@ -13,7 +13,7 @@ var ImageData= function(expData,idx) {
     this.editorHeight = ko.observable(60);
     this.id = ko.observable(guid());
     this.type = "ImageData";
-    this.name = ko.observable("Image"+idx);
+    this.name = ko.observable("Image");
     this.onset = ko.observable(0);
     this.onsetEnabled = ko.observable(false);
     this.keepAspectRatio = ko.observable(false);

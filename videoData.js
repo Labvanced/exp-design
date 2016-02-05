@@ -1,7 +1,7 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var VideoData= function(expData,idx) {
+var VideoData= function(expData) {
 
     this.expData = expData;
     this.parent = null;
@@ -14,7 +14,7 @@ var VideoData= function(expData,idx) {
     this.keepAspectRatio = ko.observable(true);
     this.id = ko.observable(guid());
     this.type = "VideoData";
-    this.name = ko.observable("Video"+idx);
+    this.name = ko.observable("Video");
     this.onset = ko.observable(0);
     this.onsetEnabled = ko.observable(false);
     this.offset = ko.observable(0);

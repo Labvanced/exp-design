@@ -11,9 +11,9 @@ var Response= function(parent) {
     this.responseType = ko.observable("keyboard"); // or mouse or ...
     this.responseKey = ko.observable("none"); // leftArrow or leftClick or RightClick...
     this.onset = ko.observable(0);
-    this.onsetEnabled = ko.observable(false);
+    this.onsetEnabled = ko.observable(true);
     this.offset = ko.observable(0);
-    this.offsetEnabled = ko.observable(false);
+    this.offsetEnabled = ko.observable(true);
     this.action = ko.observable(null); // default is no action
 
     // helpers:
