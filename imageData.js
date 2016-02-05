@@ -1,7 +1,7 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var ImageData= function(expData,idx) {
+var ImageData= function(expData) {
 
     this.expData = expData;
     this.parent = null;

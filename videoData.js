@@ -1,7 +1,7 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var VideoData= function(expData,idx) {
+var VideoData= function(expData) {
 
     this.expData = expData;
     this.parent = null;
