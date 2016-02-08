@@ -27,6 +27,13 @@ GlobalVar.subtypes = [
     ];
 
 
+// enum: posssible origins for variables..
+GlobalVar.originTypes = ['undefined', 'condition', 'randomization', 'response', 'variable'];
+
+// enum: posssible datatypes..
+GlobalVar.dataTypes = ['undefined', 'factor', 'numeric', 'string'];
+
+
 GlobalVar.prototype.setPointers = function() {
 };
 

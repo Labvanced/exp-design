@@ -45,6 +45,10 @@ VideoData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","edito
 
 VideoData.prototype.setPointers = function() {
     this.modifier().setPointers();
+
+    jQuery.each( this.responses(), function( resp ) {
+        resp.setPointers();
+    } );
 };
 
 VideoData.prototype.addNewResponse = function() {

@@ -8,8 +8,8 @@ var Response= function(parent) {
 
     // serialized
     this.type = "Response";
-    this.responseType = ko.observable("keyboard"); // or mouse or ...
-    this.responseKey = ko.observable("none"); // leftArrow or leftClick or RightClick...
+    this.responseType = ko.observable("mouse"); // or mouse or ...
+    this.responseKey = ko.observable("leftClick"); // leftArrow or leftClick or RightClick...
     this.onset = ko.observable(0);
     this.onsetEnabled = ko.observable(true);
     this.offset = ko.observable(0);
@@ -30,11 +30,11 @@ var Response= function(parent) {
                 return self.action().type;
             }
             else {
-                return "None";
+                return "undefined";
             }
         },
         write: function (value) {
-            if (value == "None"){
+            if (value === "undefined"){
                 self.action(null);
             }
             else if (value == "ActionChangeVar"){
@@ -55,6 +55,10 @@ var Response= function(parent) {
         },
         owner: this
     });
+};
+
+Response.prototype.setPointers = function() {
+    this.action().setPointers();
 };
 
 Response.prototype.fromJS = function(data) {

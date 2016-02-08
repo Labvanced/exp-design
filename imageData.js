@@ -47,6 +47,10 @@ ImageData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","edito
 
 ImageData.prototype.setPointers = function() {
     this.modifier().setPointers();
+
+    jQuery.each( this.responses(), function( idx, resp ) {
+        resp.setPointers();
+    } );
 };
 
 ImageData.prototype.addNewResponse = function() {

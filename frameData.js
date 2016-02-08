@@ -64,6 +64,10 @@ FrameData.prototype.setPointers = function() {
         elem.parent = self;
         return elem;
     } ));
+
+    jQuery.each( this.responses(), function( resp ) {
+        resp.setPointers();
+    } );
 };
 
 FrameData.prototype.selectTrialType = function(selectionSpec) {
