@@ -43,6 +43,12 @@ var FrameData = function(expData) {
 };
 FrameData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode"];
 
+FrameData.prototype.getDeepCopy = function() {
+    var copy = new FrameData(this.expData);
+    copy.fromJS(this.toJS());
+    copy.setPointers();
+};
+
 FrameData.prototype.addNewResponse = function() {
     var resp = new Response(this);
     resp.responseType("keyboard");
