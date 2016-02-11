@@ -47,6 +47,7 @@ FrameData.prototype.getDeepCopy = function() {
     var copy = new FrameData(this.expData);
     copy.fromJS(this.toJS());
     copy.setPointers();
+    return copy
 };
 
 FrameData.prototype.addNewResponse = function() {
