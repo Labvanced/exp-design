@@ -102,7 +102,14 @@ ActionRecordRespTime.prototype.setPointers = function(entitiesArr) {
 };
 
 ActionRecordRespTime.prototype.run = function() {
+    var currTime = Date.now();
+    var respTime = currTime-player.currentFrame.startedTime;
 
+    var blockId = player.getBlockId();
+    var trialId = player.getTrialId();
+    var recData = new RecData(this.variableId(), respTime);
+
+    player.addRecording(blockId,trialId,recData.toJS());
 };
 
 ActionRecordRespTime.prototype.fromJS = function(data) {
@@ -124,6 +131,7 @@ var ActionRecordElementTag = function(parent) {
 
     // serialized
     this.variableId = ko.observable(undefined);
+    this.variable = null;
 
 };
 ActionRecordElementTag.prototype.type = "ActionRecordElementTag";
@@ -131,9 +139,16 @@ ActionRecordElementTag.prototype.label = "Record Tag";
 
 ActionRecordElementTag.prototype.setPointers = function(entitiesArr) {
 
+
 };
 
-ActionRecordElementTag.prototype.run = function() {
+ActionRecordElementTag.prototype.run = function(dataModel) {
+
+    var blockId = player.getBlockId();
+    var trialId = player.getTrialId();
+    var recData = new RecData(this.variableId(), dataModel.name());
+
+    player.addRecording(blockId,trialId,recData.toJS());
 
 };
 
@@ -141,6 +156,9 @@ ActionRecordElementTag.prototype.fromJS = function(data) {
     this.variableId(data.variableId);
     return this;
 };
+
+
+
 
 ActionRecordElementTag.prototype.toJS = function() {
     return {
@@ -165,7 +183,7 @@ ActionNextFrame.prototype.setPointers = function(entitiesArr) {
 };
 
 ActionNextFrame.prototype.run = function() {
-
+    player.currentFrame.endFrame();
 };
 
 ActionNextFrame.prototype.fromJS = function(data) {
