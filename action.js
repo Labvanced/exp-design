@@ -102,7 +102,14 @@ ActionRecordRespTime.prototype.setPointers = function() {
 };
 
 ActionRecordRespTime.prototype.run = function() {
+    var currTime = Date.now();
+    var respTime = currTime-player.currentFrame.startedTime;
 
+    var blockId = player.getBlockId();
+    var trialId = player.getTrialId();
+    var recData = new RecData(this.variableId(), respTime);
+
+    player.addRecording(blockId,trialId,recData.toJS());
 };
 
 ActionRecordRespTime.prototype.fromJS = function(data) {
