@@ -34,7 +34,7 @@ TextEditorData.prototype.doubleClick = function() {
     page("/page/editors/textEditor");
 };
 
-TextEditorData.prototype.setPointers = function() {
+TextEditorData.prototype.setPointers = function(entitiesArr) {
 
 };
 

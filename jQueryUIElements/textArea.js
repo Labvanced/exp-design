@@ -29,8 +29,8 @@ var TextArea = function(expData) {
 
 TextArea.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight","name","onset","onsetEnabled","offset","offsetEnabled","isActive"];
 
-TextArea.prototype.setPointers = function() {
-    this.modifier().setPointers();
+TextArea.prototype.setPointers = function(entitiesArr) {
+    this.modifier().setPointers(entitiesArr);
 };
 
 

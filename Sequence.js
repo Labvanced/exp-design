@@ -20,12 +20,12 @@ var Sequence = function (expData) {
     this.startBlock = null;
 };
 
-Sequence.prototype.setPointers = function() {
+Sequence.prototype.setPointers = function(entitiesArr) {
     var self = this;
 
     // convert ids to actual pointers:
     this.elements(jQuery.map( this.elements(), function( id ) {
-        var elem = self.expData.entities.byId[id];
+        var elem = entitiesArr.byId[id];
         elem.parent = self;
         if (elem.type == "StartBlock"){
             self.startBlock = elem;
@@ -88,18 +88,18 @@ Sequence.prototype.getElementById = function(id) {
 };
 
 
-Sequence.prototype.reAddEntities = function() {
+Sequence.prototype.reAddEntities = function(entitiesArr) {
     var self = this;
 
     // add the direct child nodes:
     jQuery.each( this.elements(), function( index, elem ) {
         // check if they are not already in the list:
-        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
-            self.expData.entities.push(elem);
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
-            elem.reAddEntities();
+            elem.reAddEntities(entitiesArr);
     } );
 
 };

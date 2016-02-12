@@ -45,11 +45,11 @@ var ImageData= function(expData) {
 
 ImageData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight","name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
 
-ImageData.prototype.setPointers = function() {
-    this.modifier().setPointers();
+ImageData.prototype.setPointers = function(entitiesArr) {
+    this.modifier().setPointers(entitiesArr);
 
     jQuery.each( this.responses(), function( idx, resp ) {
-        resp.setPointers();
+        resp.setPointers(entitiesArr);
     } );
 };
 

@@ -13,7 +13,7 @@ ActionChangeVar.prototype.type = "ActionChangeVar";
 ActionChangeVar.prototype.label = "Change Var.";
 ActionChangeVar.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
 
-ActionChangeVar.prototype.setPointers = function() {
+ActionChangeVar.prototype.setPointers = function(entitiesArr) {
 
 };
 
@@ -53,8 +53,8 @@ ActionChangeProp.prototype.type = "ActionChangeProp";
 ActionChangeProp.prototype.label = "Change Prop.";
 ActionChangeProp.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
 
-ActionChangeProp.prototype.setPointers = function() {
-    this.elem(this.parent.parent.expData.entities.byId[this.elem()])
+ActionChangeProp.prototype.setPointers = function(entitiesArr) {
+    this.elem(entitiesArr.byId[this.elem()])
 };
 
 ActionChangeProp.prototype.run = function() {
@@ -97,7 +97,7 @@ var ActionRecordRespTime = function(parent) {
 ActionRecordRespTime.prototype.type = "ActionRecordRespTime";
 ActionRecordRespTime.prototype.label = "Rec. Time";
 
-ActionRecordRespTime.prototype.setPointers = function() {
+ActionRecordRespTime.prototype.setPointers = function(entitiesArr) {
 
 };
 
@@ -129,7 +129,7 @@ var ActionRecordElementTag = function(parent) {
 ActionRecordElementTag.prototype.type = "ActionRecordElementTag";
 ActionRecordElementTag.prototype.label = "Record Tag";
 
-ActionRecordElementTag.prototype.setPointers = function() {
+ActionRecordElementTag.prototype.setPointers = function(entitiesArr) {
 
 };
 
@@ -160,7 +160,7 @@ var ActionNextFrame = function(parent) {
 ActionNextFrame.prototype.type = "ActionNextFrame";
 ActionNextFrame.prototype.label = "Next Frame";
 
-ActionNextFrame.prototype.setPointers = function() {
+ActionNextFrame.prototype.setPointers = function(entitiesArr) {
 
 };
 

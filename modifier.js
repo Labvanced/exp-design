@@ -241,15 +241,15 @@ Modifier.prototype.addProp = function(propName) {
     });
 }
 
-Modifier.prototype.setPointers = function() {
+Modifier.prototype.setPointers = function(entitiesArr) {
     var self = this;
 
     // convert ids to actual pointers:
     this.interactingFactors(jQuery.map( this.interactingFactors(), function( id ) {
-        return self.expData.entities.byId[id];
+        return entitiesArr.byId[id];
     } ));
     this.noninteractFactors(jQuery.map( this.noninteractFactors(), function( id ) {
-        return self.expData.entities.byId[id];
+        return entitiesArr.byId[id];
     } ));
 };
 

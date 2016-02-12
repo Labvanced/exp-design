@@ -57,8 +57,8 @@ var Response= function(parent) {
     });
 };
 
-Response.prototype.setPointers = function() {
-    this.action().setPointers();
+Response.prototype.setPointers = function(entitiesArr) {
+    this.action().setPointers(entitiesArr);
 };
 
 Response.prototype.fromJS = function(data) {

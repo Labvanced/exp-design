@@ -47,26 +47,26 @@ SubjectGroup.prototype.removeSession= function(idx) {
     this.sessions.splice(idx,1);
 };
 
-SubjectGroup.prototype.setPointers = function() {
+SubjectGroup.prototype.setPointers = function(entitiesArr) {
     var self = this;
 
     // convert ids to actual pointers:
     this.sessions(jQuery.map( this.sessions(), function( id ) {
-        return self.expData.entities.byId[id];
+        return entitiesArr.byId[id];
     } ));
 };
 
-SubjectGroup.prototype.reAddEntities = function() {
+SubjectGroup.prototype.reAddEntities = function(entitiesArr) {
     var self = this;
 
     // add the direct child nodes:
     jQuery.each( this.sessions(), function( index, elem ) {
         // check if they are not already in the list:
-        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
-            self.expData.entities.push(elem);
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
-        elem.reAddEntities();
+        elem.reAddEntities(entitiesArr);
     } );
 };
 

@@ -34,7 +34,7 @@ GlobalVar.originTypes = ['undefined', 'condition', 'randomization', 'response', 
 GlobalVar.dataTypes = ['undefined', 'factor', 'numeric', 'string'];
 
 
-GlobalVar.prototype.setPointers = function() {
+GlobalVar.prototype.setPointers = function(entitiesArr) {
 };
 
 GlobalVar.prototype.addLevel = function() {

@@ -26,7 +26,7 @@ Connection.prototype.makeConnection = function() {
     }
 };
 
-Connection.prototype.setPointers = function() {
+Connection.prototype.setPointers = function(entitiesArr) {
     var self = this;
     this.makeConnection();
 };

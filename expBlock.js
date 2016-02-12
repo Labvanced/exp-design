@@ -24,13 +24,10 @@ var ExpBlock = function (expData) {
 
 };
 
-ExpBlock.prototype.setPointers = function() {
+ExpBlock.prototype.setPointers = function(entitiesArr) {
     // convert id of subSequence to actual pointer:
-    return this.subSequence(this.expData.entities.byId[this.subSequence()]);
+    return this.subSequence(entitiesArr.byId[this.subSequence()]);
 };
-
-
-
 
 
 ExpBlock.prototype.rename = function(idx,flag,data,event) {
@@ -45,16 +42,16 @@ ExpBlock.prototype.rename = function(idx,flag,data,event) {
 };
 
 
-ExpBlock.prototype.reAddEntities = function() {
+ExpBlock.prototype.reAddEntities = function(entitiesArr) {
     var self = this;
 
     // add the direct child nodes:
     // check if they are not already in the list:.
-    if (!self.expData.entities.byId.hasOwnProperty(this.subSequence().id()))
-        self.expData.entities.push(this.subSequence());
+    if (!entitiesArr.byId.hasOwnProperty(this.subSequence().id()))
+        entitiesArr.push(this.subSequence());
 
     // recursively make sure that all deep tree nodes are in the entities list:
-    this.subSequence().reAddEntities();
+    this.subSequence().reAddEntities(entitiesArr);
 };
 
 ExpBlock.prototype.fromJS = function(data) {

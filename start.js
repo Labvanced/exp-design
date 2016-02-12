@@ -25,7 +25,7 @@ var StartBlock = function(expData) {
 };
 
 
-StartBlock.prototype.setPointers = function() {
+StartBlock.prototype.setPointers = function(entitiesArr) {
 };
 
 

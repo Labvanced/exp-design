@@ -12,7 +12,7 @@ var Level = function (name) {
 
 
 
-Level.prototype.setPointers = function() {
+Level.prototype.setPointers = function(entitiesArr) {
 };
 
 

@@ -43,11 +43,11 @@ var VideoData= function(expData) {
 
 VideoData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
 
-VideoData.prototype.setPointers = function() {
-    this.modifier().setPointers();
+VideoData.prototype.setPointers = function(entitiesArr) {
+    this.modifier().setPointers(entitiesArr);
 
     jQuery.each( this.responses(), function( resp ) {
-        resp.setPointers();
+        resp.setPointers(entitiesArr);
     } );
 };
 

@@ -191,19 +191,19 @@ var ExpTrialLoop = function (expData) {
 
 };
 
-ExpTrialLoop.prototype.setPointers = function() {
+ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
     var self = this;
 
     // convert id of subSequence to actual pointer:
-    this.subSequence(self.expData.entities.byId[this.subSequence()]);
+    this.subSequence(entitiesArr.byId[this.subSequence()]);
     this.subSequence().parent = this;
 
     // convert ids to actual pointers:
     this.factors(jQuery.map( this.factors(), function( id ) {
-        return self.expData.entities.byId[id];
+        return entitiesArr.byId[id];
     } ));
     this.additionalTrialTypes(jQuery.map( this.additionalTrialTypes(), function( id ) {
-        return self.expData.entities.byId[id];
+        return entitiesArr.byId[id];
     } ));
     this.isInitialized(true);
 };
@@ -279,16 +279,16 @@ ExpTrialLoop.prototype.removeAddTrialType = function(idx) {
 };
 
 
-ExpTrialLoop.prototype.reAddEntities = function() {
+ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
     var self = this;
 
     // add the direct child nodes:
     // check if they are not already in the list:
-    if (!self.expData.entities.byId.hasOwnProperty(this.subSequence().id()))
-        self.expData.entities.push(this.subSequence());
+    if (!entitiesArr.byId.hasOwnProperty(this.subSequence().id()))
+        entitiesArr.push(this.subSequence());
 
     // recursively make sure that all deep tree nodes are in the entities list:
-    this.subSequence().reAddEntities();
+    this.subSequence().reAddEntities(entitiesArr);
 };
 
 ExpTrialLoop.prototype.fromJS = function(data) {

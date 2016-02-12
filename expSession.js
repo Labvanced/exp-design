@@ -42,26 +42,26 @@ ExpSession.prototype.rename = function(idx,flag,data,event) {
 
 };
 
-ExpSession.prototype.setPointers = function() {
+ExpSession.prototype.setPointers = function(entitiesArr) {
     var self = this;
 
     // convert ids to actual pointers:
     this.blocks(jQuery.map( this.blocks(), function( id ) {
-        return self.expData.entities.byId[id];
+        return entitiesArr.byId[id];
     } ));
 };
 
-ExpSession.prototype.reAddEntities = function() {
+ExpSession.prototype.reAddEntities = function(entitiesArr) {
     var self = this;
 
     // add the direct child nodes:
     jQuery.each( this.blocks(), function( index, elem ) {
         // check if they are not already in the list:
-        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
-            self.expData.entities.push(elem);
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
-        elem.reAddEntities();
+        elem.reAddEntities(entitiesArr);
     } );
 };
 

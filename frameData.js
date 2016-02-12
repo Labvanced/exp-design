@@ -62,18 +62,18 @@ FrameData.prototype.addNewSubElement = function(elem) {
     elem.parent = this;
 };
 
-FrameData.prototype.setPointers = function() {
+FrameData.prototype.setPointers = function(entitiesArr) {
     var self = this;
 
     // convert ids to actual pointers:
     this.elements(jQuery.map( this.elements(), function( id ) {
-        var elem = self.expData.entities.byId[id];
+        var elem = entitiesArr.byId[id];
         elem.parent = self;
         return elem;
     } ));
 
     jQuery.each( this.responses(), function( resp ) {
-        resp.setPointers();
+        resp.setPointers(entitiesArr);
     } );
 };
 
@@ -91,18 +91,18 @@ FrameData.prototype.getElementById = function(id) {
 };
 
 
-FrameData.prototype.reAddEntities = function() {
+FrameData.prototype.reAddEntities = function(entitiesArr) {
     var self = this;
 
     // add the direct child nodes:
     jQuery.each( this.elements(), function( index, elem ) {
         // check if they are not already in the list:
-        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
-            self.expData.entities.push(elem);
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
-            elem.reAddEntities();
+            elem.reAddEntities(entitiesArr);
     } );
 
 };

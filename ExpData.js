@@ -22,9 +22,10 @@ var ExpData = function () {
 
 
 ExpData.prototype.setPointers = function() {
+    var self = this;
     var allEntitiesArray = this.entities();
     jQuery.each( allEntitiesArray, function( index, elem ) {
-        elem.setPointers();
+        elem.setPointers(self.entities);
     } );
 };
 
@@ -137,21 +138,23 @@ ExpData.prototype.rebuildEntities = function() {
 ExpData.prototype.reAddEntities = function() {
     var self = this;
 
+    var entitiesArr = this.entities;
+
     // add the groups and their child nodes to entities:
     jQuery.each( this.groups(), function( index, elem ) {
         // check if they are not already in the list:
-        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
-            self.expData.entities.push(elem);
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
-        elem.reAddEntities();
+        elem.reAddEntities(entitiesArr);
     } );
 
     // add global variables to entities:
     jQuery.each( this.globalVars(), function( index, elem ) {
         // check if they are not already in the list:
-        if (!self.expData.entities.byId.hasOwnProperty(elem.id()))
-            self.expData.entities.push(elem);
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
     } );
 };
 
@@ -273,7 +276,7 @@ ExpData.prototype.addNewBlock = function() {
         }
     }
 
-    this.expBlocks.push(block)
+    this.expBlocks.push(block);
 
     this.reAddEntities();
 };
