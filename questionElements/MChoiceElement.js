@@ -8,31 +8,13 @@ var MChoiceElement = function(expData) {
     //serialized
     this.type= "mChoice";
     this.id = ko.observable(guid());
-    this.editing=  ko.observable(true);
     this.questionText= ko.observable("");
 
     this.openQuestion=  ko.observable(false);
-    this.newChoice= ko.observable("");
     this.choices= ko.observableArray([]);
+    this.newPage = ko.observable(false);
 };
 
-MChoiceElement.prototype.finishQuestion = function() {
-    this.editing(false);
-};
-
-MChoiceElement.prototype.addChoice = function() {
-    this.openQuestion(true);
-};
-
-MChoiceElement.prototype.addReadyChoice = function() {
-    this.choices.push(this.newChoice());
-    this.newChoice("");
-    this.openQuestion(false);
-};
-
-MChoiceElement.prototype.removeReadyChoice = function(idx) {
-    this.choices.splice(idx,1);
-};
 
 MChoiceElement.prototype.toJS = function() {
     return {
@@ -49,3 +31,69 @@ MChoiceElement.prototype.fromJS = function(data) {
     this.questionText(data.questionText);
     this.choices(data.choices);
 };
+
+ko.components.register('choice-element-edit', {
+    viewModel: function(dataModel){
+
+        this.dataModel = dataModel;
+        this.questionText = dataModel.questionText;
+        this.openQuestion = dataModel.openQuestion;
+        this.choices = dataModel.choices;
+
+        this.addChoice = function() {
+            this.choices.push(ko.observable(""));
+        };
+
+        this.removeChoice = function(idx) {
+            this.choices.splice(idx,1);
+        };
+
+    },
+    template:
+        '<div class="panel-body">\
+            <input style="max-width:50%" type="text" data-bind="textInput: questionText"\
+                class="form-control" placeholder="Your Question">\
+            <br>\
+            <div data-bind="foreach: choices">\
+                <div style="overflow: auto; margin-bottom: 3%">\
+                    <input style="float: left; margin-top: 3%" type="checkbox">\
+                    <input style="float: left; margin-left: 5%; max-width:50%" type="text" data-bind="textInput: $rawData" class="form-control">\
+                    <span style="float: left; margin-left: 5%; margin-top: 1%;"><a href="#" data-bind="click: function(data,event) {$parent.removeChoice($index())}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
+                </div>\
+            </div>\
+        <span><a href="#" data-bind="click: addChoice"><img style="float: left; margin-top: 2%" width="20" height="20"src="/resources/add.png"/> <h5 style="float: left; margin-left: 1%">Add Choice</h5> </a></span>\
+        </div>'
+});
+
+
+ko.components.register('choice-element-preview', {
+   viewModel: function(dataModel){
+
+       this.dataModel = dataModel;
+       this.questionText = dataModel.questionText;
+       this.openQuestion = dataModel.openQuestion;
+       this.newChoice = dataModel.newChoice;
+       this.choices = dataModel.choices;
+       this.newPage = dataModel.newPage;
+   },
+    template:
+        '<div class=\"panel-heading\">\
+        <span style="float: right"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
+        <h3 style="float: left">\
+            <span data-bind=\"text: questionText\"></span>\
+         </h3>\
+        </div>\
+        <br><br><br><br>\
+        <div class=\"panel-body\">\
+        <div data-bind=\"foreach: choices\">\
+            <input style="transform: scale(1.3); margin-bottom: 2%" type=\"radio\" data-bind=\"attr: {name: \'radio\'+ $parent.name}, click: function(){return true}, clickBubble: false\">\
+                <span style="font-size: large; margin-left: 1%" \
+                    data-bind=\"text: $data\">\
+                </span>\
+            <br>\
+        </div>\
+        </div>\
+        <div data-bind="visible: newPage">\
+                <img style="float: right" src="/resources/next.png">\
+        </div>'
+});
