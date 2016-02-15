@@ -63,6 +63,11 @@ ImageData.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
+
+ImageData.prototype.reAddEntities = function(entitiesArr) {
+    this.modifier().reAddEntities(entitiesArr);
+};
+
 ImageData.prototype.fromJS = function(data) {
     var self = this;
     this.id(data.id);

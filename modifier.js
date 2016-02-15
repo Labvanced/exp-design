@@ -92,7 +92,12 @@ Modifier.prototype.addProp = function(propName) {
                 // construct indices:
                 var indices = [];
                 for (var t=0; t<interactingFactors.length; t++){
-                    var factorId = factorsSelected.indexOf(interactingFactors[t]);
+                    if (factorsSelected[0] instanceof GlobalVar) {
+                        var factorId = factorsSelected.indexOf(interactingFactors[t]);
+                    }
+                    else {
+                        var factorId = factorsSelected.indexOf(interactingFactors[t].id());
+                    }
                     indices.push(levelsSelected[factorId]);
                 }
 
@@ -325,6 +330,34 @@ Modifier.prototype.addFactorDependency = function(factorVar) {
 
 
     }
+
+};
+
+Modifier.prototype.reAddEntities = function(entitiesArr) {
+
+    // add the direct child nodes:
+    jQuery.each( this.interactingFactors(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (elem.reAddEntities)
+            elem.reAddEntities(entitiesArr);
+    } );
+
+    // add the direct child nodes:
+    jQuery.each( this.noninteractFactors(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (elem.reAddEntities)
+            elem.reAddEntities(entitiesArr);
+    } );
+
+
 
 };
 

@@ -44,10 +44,25 @@ var FrameData = function(expData) {
 FrameData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode"];
 
 FrameData.prototype.getDeepCopy = function() {
-    var copy = new FrameData(this.expData);
-    copy.fromJS(this.toJS());
-    copy.setPointers();
-    return copy
+    var self = this;
+
+    var entitiesArr = ko.observableArray([]).extend({sortById: null});
+    this.reAddEntities(entitiesArr);
+    entitiesArr.push(this);
+
+    // loop through array and create deep copies
+    var entitiesArrCopy = jQuery.map(entitiesArr(), function (entity) {
+        var entityJson = entity.toJS();
+        return entityFactory(entityJson, self.expData);
+    });
+    var entitiesArrCopyObs = ko.observableArray([]).extend({sortById: null});
+    entitiesArrCopyObs(entitiesArrCopy);
+    jQuery.each( entitiesArrCopy, function( index, elem ) {
+        elem.setPointers(entitiesArrCopyObs);
+    } );
+
+    // recreate this frame and link to other copied entities:
+    return entitiesArrCopyObs.byId[this.id()];
 };
 
 FrameData.prototype.addNewResponse = function() {
