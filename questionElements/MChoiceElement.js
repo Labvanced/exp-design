@@ -15,6 +15,9 @@ var MChoiceElement = function(expData) {
     this.newPage = ko.observable(false);
 };
 
+MChoiceElement.prototype.setPointers = function() {
+
+};
 
 MChoiceElement.prototype.toJS = function() {
     return {

@@ -12,6 +12,9 @@ var ParagraphElement = function(expData) {
     this.newPage= ko.observable(false);
 };
 
+ParagraphElement.prototype.setPointers = function() {
+
+};
 
 ParagraphElement.prototype.toJS = function() {
     return {
@@ -68,5 +71,3 @@ ko.components.register('paragraph-element-preview',{
             </div> \
          </div>'
 });
-
-ko.applyBindings();

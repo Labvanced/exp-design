@@ -18,6 +18,9 @@ var ScaleElement= function(expData) {
     this.newPage = ko.observable(false);
 };
 
+ScaleElement.prototype.setPointers = function() {
+
+};
 
 ScaleElement.prototype.toJS = function() {
     return {

@@ -12,7 +12,9 @@ var TextElement = function(expData) {
     this.newPage = ko.observable(false);
 };
 
+TextElement.prototype.setPointers = function() {
 
+};
 
 TextElement.prototype.toJS = function() {
     return {

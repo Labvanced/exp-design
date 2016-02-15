@@ -15,6 +15,9 @@ var CheckBoxElement= function(expData) {
     this.newPage = ko.observable(false);
 };
 
+CheckBoxElement.prototype.setPointers = function() {
+
+};
 
 CheckBoxElement.prototype.toJS = function() {
     return {

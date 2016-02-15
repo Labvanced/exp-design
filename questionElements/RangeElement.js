@@ -22,6 +22,9 @@ var RangeElement= function(expData) {
     this.newPage = ko.observable(false);
 };
 
+RangeElement.prototype.setPointers = function() {
+
+};
 
 RangeElement.prototype.toJS = function() {
     return {
