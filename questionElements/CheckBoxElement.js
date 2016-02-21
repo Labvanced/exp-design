@@ -35,6 +35,7 @@ CheckBoxElement.prototype.fromJS = function(data) {
     this.choices(data.choices);
 };
 
+console.log("register checkbox element edit...");
 ko.components.register('checkbox-element-edit', {
     viewModel: function(dataModel){
         this.dataModel = dataModel;
