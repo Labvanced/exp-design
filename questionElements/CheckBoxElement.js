@@ -13,6 +13,7 @@ var CheckBoxElement= function(expData) {
     this.openQuestion=  ko.observable(false);
     this.choices= ko.observableArray([]);
     this.newPage = ko.observable(false);
+    this.selected = ko.observable(false);
 };
 
 CheckBoxElement.prototype.setPointers = function() {
@@ -73,7 +74,6 @@ ko.components.register('checkbox-element-preview', {
         this.dataModel = dataModel;
         this.questionText = dataModel.questionText;
         this.choices = dataModel.choices;
-        this.newPage = dataModel.newPage;
     },
     template:
         '<div class="panel-heading">\
@@ -89,9 +89,6 @@ ko.components.register('checkbox-element-preview', {
                 <span style="font-size: large; margin-left: 1%;" data-bind="text: $data"></span>\
                 <br>\
             </div>\
-        </div>\
-        <div data-bind="visible: newPage">\
-                <img style="float: right" src="/resources/next.png">\
         </div>'
 });
 

@@ -15,7 +15,7 @@ var ScaleElement= function(expData) {
     this.startLabel= ko.observable("");
     this.endLabel= ko.observable("");
     this.choices= ko.observableArray([1,2,3,4,5]);
-    this.newPage = ko.observable(false);
+    this.selected = ko.observable(false);
 };
 
 ScaleElement.prototype.setPointers = function() {
@@ -77,17 +77,17 @@ ko.components.register('scale-element-edit', {
         To\
         <select data-bind="options: values, value: endChoice, event: {change: finish}">\
         </select>\
-        <br><br>\
-    <div style="float:left; width: 5%;  margin-top: 2%" data-bind="text: startChoice"></div>\
-    <span style="float:left; margin-left: 3%;"><input\
+        <br><br><br>\
+    <div style="display: inline-block; width: 5%;  margin-top: 2%" data-bind="text: startChoice"></div>\
+    <span style="display: inline-block; margin-left: 3%;"><input\
     type="text"\
         data-bind="textInput: startLabel"\
         class="form-control"\
         placeholder="Label (optional)"\
         style="width:75%"></span>\
-    <br><br><br>\
-    <div style="float:left;  width: 5%; margin-top: 2%" data-bind="text: endChoice"></div>\
-    <span style="float:left; margin-left: 3%;"><input\
+    <br><br>\
+    <div style="display: inline-block;  width: 5%; margin-top: 2%" data-bind="text: endChoice"></div>\
+    <span style="display: inline-block; margin-left: 3%;"><input\
     type="text"\
         data-bind="textInput: endLabel"\
         class="form-control"\
@@ -107,7 +107,6 @@ ko.components.register('scale-element-preview',{
        this.startLabel = dataModel.startLabel;
        this.endLabel = dataModel.endLabel;
        this.choices = dataModel.choices;
-       this.newPage = dataModel.newPage;
    },
     template:
         '<div class="panel-heading">\
@@ -127,9 +126,6 @@ ko.components.register('scale-element-preview',{
                  type="radio" data-bind="attr: {name: \'radio\' + $parent.name}, click: function(){return true}, clickBubble: false">\
             </span>\
             <span style="float:left;  width: 5%; margin: 5px; margin-top: 1%" data-bind="text: endLabel"></span>\
-        </div>\
-        <div data-bind="visible: newPage">\
-                <img style="float: right" src="/resources/next.png">\
         </div>'
 
 });

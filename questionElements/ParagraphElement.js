@@ -9,7 +9,7 @@ var ParagraphElement = function(expData) {
     this.type= "paragraph";
     this.id = ko.observable(guid());
     this.questionText= ko.observable("");
-    this.newPage= ko.observable(false);
+    this.selected = ko.observable(false);
 };
 
 ParagraphElement.prototype.setPointers = function() {
@@ -41,8 +41,6 @@ ko.components.register('paragraph-element-edit', {
         '<div class="panel-body">\
             <input style="max-width:50%" type="text" data-bind="textInput: questionText"\
             class="form-control" placeholder="Your Question">\
-            <textarea style="max-width:50%" disabled class="form-control"\
-            placeholder="Participant Answer"></textarea>\
             <br><br>\
             </div>\
          </div>'
@@ -53,7 +51,6 @@ ko.components.register('paragraph-element-preview',{
    viewModel: function(dataModel){
        this.dataModel = dataModel;
        this.questionText = dataModel.questionText;
-       this.newPage = dataModel.newPage;
    },
     template:
         '<div class="panel-heading">\
@@ -66,8 +63,5 @@ ko.components.register('paragraph-element-preview',{
                    disabled class="form-control"\
                    placeholder="Participant Answer"></textarea>\
             </div>\
-            <div data-bind="visible: newPage">\
-                <img style="float: right" src="/resources/next.png">\
-            </div> \
          </div>'
 });

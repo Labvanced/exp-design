@@ -12,7 +12,7 @@ var MChoiceElement = function(expData) {
 
     this.openQuestion=  ko.observable(false);
     this.choices= ko.observableArray([]);
-    this.newPage = ko.observable(false);
+    this.selected = ko.observable(false);
 };
 
 MChoiceElement.prototype.setPointers = function() {
@@ -95,8 +95,5 @@ ko.components.register('choice-element-preview', {
                 </span>\
             <br>\
         </div>\
-        </div>\
-        <div data-bind="visible: newPage">\
-                <img style="float: right" src="/resources/next.png">\
         </div>'
 });

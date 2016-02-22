@@ -2,7 +2,6 @@
  * Created by Kai Standvoß
  */
 
-// � by Caspar Goeke and Holger Finger
 
 
 // Range ELEMENT//
@@ -20,6 +19,7 @@ var RangeElement= function(expData) {
     this.endLabel= ko.observable("");
     this.choice = ko.observable(1);
     this.newPage = ko.observable(false);
+    this.selected = ko.observable(false);
 };
 
 RangeElement.prototype.setPointers = function() {
@@ -71,17 +71,17 @@ ko.components.register('range-element-edit', {
         <input style="max-width: 30px" type="text" data-bind="textInput: minChoice"></input>\
         To\
         <input style="max-width: 30px" type="text" data-bind="textInput: maxChoice""></input>\
-        <br><br>\
-        <span style="float:left; width: 5%; overflow: scroll; margin-top: 2%" data-bind="text: minChoice"></span>\
-        <span style="float:left; margin-left: 5%;"><input\
+        <br><br><br>\
+        <span style="display: inline-block; width: 5%; overflow: scroll; margin-top: 2%" data-bind="text: minChoice"></span>\
+        <span style="display: inline-block; margin-left: 5%;"><input\
         type="text"\
             data-bind="textInput: startLabel"\
             class="form-control"\
             placeholder="Label (optional)"\
             style="width:75%"></span>\
-    <br><br><br>\
-    <span style="float:left;  width: 5%; overflow: scroll; margin-top: 2%" data-bind="text: maxChoice"></span>\
-    <span style="float:left; margin-left: 5%;">\
+    <br><br>\
+    <span style="display: inline-block;  width: 5%; overflow: scroll; margin-top: 2%" data-bind="text: maxChoice"></span>\
+    <span style="display: inline-block; margin-left: 5%;">\
     <input type="text"\
         data-bind="textInput: endLabel"\
         class="form-control"\
