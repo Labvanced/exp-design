@@ -37,18 +37,10 @@ ko.components.register('text-element-edit', {
 
         tinymce.editors = [];
 
-       // $("#myTextEditor").html(this.textBlock.text());
-
         tinymce.init({
             selector: "#myTextEditor",
             menubar:false,
             statusbar: false,
-
-            //setup: function (ed) {
-            //    ed.on('init', function(args) {
-            //       this.setContent(self.textBlock.text());
-            //    });
-            //},
 
             oninit: function(){
                 tinyMCE.activeEditor.setContent(self.questionText());
@@ -62,7 +54,7 @@ ko.components.register('text-element-edit', {
                 "insertdatetime  table contextmenu paste",
                 "autoresize"
             ],
-            toolbar: " undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | preview",
+            toolbar: " undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
 
             width: "100%",
             height: "100%",
@@ -73,7 +65,7 @@ ko.components.register('text-element-edit', {
         '<div class="panel-body">\
                 <div id="toolbar" class="ui-layout-content"></div>\
                 <form id="newtextArea" class="quest-form2" action="javascript:void(0);">\
-                    <textarea data-bind="textInput: questionText" id="myTextEditor" name="content" style="width:100%; height:100%"></textarea>\
+                    <textarea data-bind="tinymce: questionText" id="myTextEditor" name="content" style="width:100%; height:100%"></textarea>\
                 </form>\
                 <br><br>\
         </div>'
@@ -89,7 +81,7 @@ ko.components.register('text-element-preview',{
     '<div class="panel-heading">\
         <span style="float: right"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
         <h3 style="float: left">\
-            <span data-bind="html: questionText"></span>\
+            <span data-bind="text: questionText"></span>\
         </h3>\
       </div>\
       <br><br><br><br>\
