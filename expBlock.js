@@ -7,6 +7,7 @@ var ExpBlock = function (expData) {
     this.name = ko.observable("block_1");
     this.type = "ExpBlock";
     this.subSequence = ko.observable(new Sequence(expData));
+    this.subSequence().parent = this;
     this.editName =  ko.observable(false);
     this.blockId = ko.observable(null);
 
@@ -24,8 +25,10 @@ var ExpBlock = function (expData) {
 
 ExpBlock.prototype.setPointers = function(entitiesArr) {
     // convert id of subSequence to actual pointer:
+
     this.subSequence(entitiesArr.byId[this.subSequence()]);
     this.blockId(entitiesArr.byId[this.blockId()]);
+    this.subSequence().parent = this;
 
 };
 
