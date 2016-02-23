@@ -23,7 +23,7 @@ var TextEditorData = function(expData) {
     this.portTypes = ["executeIn", "executeOut"];
 
     // sub-Structures (serialized below)
-    this.text = ko.observable('');
+    this.text = ko.observable('<p style="text-align: center;"></p>');
     this.portHandler = new PortHandler(this);
 };
 
