@@ -15,7 +15,7 @@ var ExpData = function () {
 
     this.vars = ko.computed(function() {
         if (this.hasOwnProperty("expName")){
-            return [this.expName, this.subjectId, this.groupId,this.timeStamp, this.sessionNr];
+            return [this.expName(), this.subjectId(), this.groupId(),this.timeStamp(), this.sessionNr()];
         }
         else{
             return [];
@@ -145,15 +145,6 @@ ExpData.prototype.reAddEntities = function() {
         entitiesArr.push(this.sessionNr());
     }
 
-
-
-
-    // add global variables to entities:
-    jQuery.each( this.vars(), function( index, elem ) {
-        // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
-            entitiesArr.push(elem);
-    } );
 };
 
 ExpData.prototype.toJS = function() {
