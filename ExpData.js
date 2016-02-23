@@ -5,20 +5,25 @@ var ExpData = function () {
     this.entities = ko.observableArray([]).extend({sortById: null});
     this.groups = ko.observableArray([]).extend({sortById: null});
     this.expBlocks = ko.observableArray([]).extend({sortById: null});
-    this.globalVars = ko.observableArray([]).extend({sortById: null});
-    this.eventVariables = ko.observableArray([]).extend({sortById: null});
-    this.visibleVars =  ko.observableArray([]).extend({sortById: null});
-    this.variables= [
-        {name: 'Experiment Name', type: 'id', dataType:'string',scope:'experiment'},
-        {name: 'Subject Id', type: 'id', dataType:'string',scope:'experiment'},
-        {name: 'Group Id', type: 'id', dataType:'string',scope:'experiment' },
-        {name: 'Time Stamp', type: 'id', dataType:'string',scope:'session'},
-        {name: 'Session Number', type: 'id' , dataType:'numeric',scope:'session'}
-    ];
-    this.setVisibleVars();
+
+
+    this.expName =  ko.observable();
+    this.subjectId =  ko.observable();
+    this.groupId =  ko.observable();
+    this.timeStamp =  ko.observable();
+    this.sessionNr =  ko.observable();
+
+    this.vars = ko.computed(function() {
+        if (this.hasOwnProperty("expName")){
+            return [this.expName, this.subjectId, this.groupId,this.timeStamp, this.sessionNr];
+        }
+        else{
+            return [];
+        }
+    }, this);
+
+
 };
-
-
 
 
 ExpData.prototype.setPointers = function() {
@@ -27,24 +32,47 @@ ExpData.prototype.setPointers = function() {
     jQuery.each( allEntitiesArray, function( index, elem ) {
         elem.setPointers(self.entities);
     } );
+    this.expName(this.entities.byId[this.expName()]);
+    this.subjectId(this.entities.byId[this.subjectId()]);
+    this.groupId(this.entities.byId[this.groupId()]);
+    this.timeStamp(this.entities.byId[this.timeStamp()]);
+    this.sessionNr(this.entities.byId[this.sessionNr()]);
 };
 
-ExpData.prototype.setVisibleVars = function() {
+ExpData.prototype.setVars = function() {
 
-    for (var i = 0; i<this.variables.length;i++){
-        var globalVar = new GlobalVar(this.expData);
-        globalVar.subtype(this.variables[i].type);
-        globalVar.dataType(this.variables[i].dataType);
-        globalVar.name(this.variables[i].name);
-        globalVar.scope(this.variables[i].scope);
-        this.visibleVars.push(globalVar);
-    }
+    this.expName(new GlobalVar(this.expData));
+    this.expName().subtype('id');
+    this.expName().dataType('string');
+    this.expName().name('Experiment Name');
+    this.expName().scope('experiment');
+
+    this.subjectId(new GlobalVar(this.expData));
+    this.subjectId().subtype('id');
+    this.subjectId().dataType('string');
+    this.subjectId().name('Subject Id');
+    this.subjectId().scope('experiment');
+
+    this.groupId(new GlobalVar(this.expData));
+    this.groupId().subtype('id');
+    this.groupId().dataType('string');
+    this.groupId().name('Group Id');
+    this.groupId().scope('experiment');
+
+    this.timeStamp(new GlobalVar(this.expData));
+    this.timeStamp().subtype('id');
+    this.timeStamp().dataType('string');
+    this.timeStamp().name('Time Stamp');
+    this.timeStamp().scope('session');
+
+    this.sessionNr(new GlobalVar(this.expData));
+    this.sessionNr().subtype('id');
+    this.sessionNr().dataType('numeric');
+    this.sessionNr().name('Session Number');
+    this.sessionNr().scope('session');
 
 };
 
-ExpData.prototype.addGlobalVar = function(variable) {
-    return this.globalVars.push(variable);
-};
 
 ExpData.prototype.addGroup = function(group) {
     return this.groups.push(group);
@@ -65,14 +93,16 @@ ExpData.prototype.fromJS = function(data) {
                 case 'ExpBlock':
                     self.expBlocks.push(entity);
                     break;
-                case 'GlobalVar':
-                    self.globalVars.push(entity);
-                    break;
             }
 
             return entity;
         }));
     }
+    this.expName(data.expName);
+    this.subjectId(data.subjectId);
+    this.groupId(data.groupId);
+    this.timeStamp(data.timeStamp);
+    this.sessionNr(data.sessionNr);
 
     return this;
 };
@@ -99,8 +129,27 @@ ExpData.prototype.reAddEntities = function() {
         elem.reAddEntities(entitiesArr);
     } );
 
+    if (!entitiesArr.byId.hasOwnProperty(this.expName().id())) {
+        entitiesArr.push(this.expName());
+    }
+    if (!entitiesArr.byId.hasOwnProperty(this.subjectId().id())) {
+        entitiesArr.push(this.subjectId());
+    }
+    if (!entitiesArr.byId.hasOwnProperty(this.groupId().id())) {
+        entitiesArr.push(this.groupId());
+    }
+    if (!entitiesArr.byId.hasOwnProperty(this.timeStamp().id())) {
+        entitiesArr.push(this.timeStamp());
+    }
+    if (!entitiesArr.byId.hasOwnProperty(this.sessionNr().id())) {
+        entitiesArr.push(this.sessionNr());
+    }
+
+
+
+
     // add global variables to entities:
-    jQuery.each( this.globalVars(), function( index, elem ) {
+    jQuery.each( this.vars(), function( index, elem ) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(elem.id()))
             entitiesArr.push(elem);
@@ -111,10 +160,17 @@ ExpData.prototype.toJS = function() {
     // make sure that we have an up to date global list of all entities:
     this.rebuildEntities();
 
+
+
     // save to JSON:
     return {
         entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
-        numGroups: this.groups().length
+        numGroups: this.groups().length,
+        expName: this.expName().id(),
+        subjectId: this.subjectId().id(),
+        groupId: this.groupId().id(),
+        sessionNr: this.sessionNr().id(),
+        timeStamp: this.timeStamp().id()
     };
 };
 
@@ -155,6 +211,10 @@ ExpData.prototype.addNewBlock = function() {
 
     // add fixed instances of block into sequence
     var block = new ExpBlock(this);
+
+
+
+
     var name= "block_"+(this.expBlocks().length+1);
     block.name(name);
     var subSequence = block.subSequence();
@@ -185,6 +245,17 @@ ExpData.prototype.addNewBlock = function() {
                 portId: portId
             });
 
+            if (blockNames[i] == 'Trial-Loop'){
+                // trial randomization, premade variable per exp trial loop
+                var trialOrder = new GlobalVar(this.expData);
+                trialOrder.subtype(GlobalVar.subtypes[5].text);
+                trialOrder.dataType("numeric");
+                var name = "trial_randomization";
+                trialOrder.name(name);
+                trialOrder.scope('Trial-Loop');
+                blockElements[i].trialOrderVar(trialOrder);
+
+            }
             // specify executeIn port:
             var portId = null;
             var ports = blockElements[i+1].portHandler.ports();
@@ -206,6 +277,9 @@ ExpData.prototype.addNewBlock = function() {
         }
 
     }
+
+
+
 
     for (var i = 0; i<subSequence.elements().length;i++){
 

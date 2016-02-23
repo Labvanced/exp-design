@@ -35,6 +35,7 @@ GlobalVar.dataTypes = ['undefined', 'factor', 'numeric', 'string'];
 
 
 GlobalVar.prototype.setPointers = function(entitiesArr) {
+
 };
 
 GlobalVar.prototype.addLevel = function() {

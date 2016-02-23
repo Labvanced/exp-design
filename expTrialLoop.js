@@ -23,22 +23,14 @@ var ExpTrialLoop = function (expData) {
     this.repsPerTrialType = ko.observable(1).extend({ numeric: 0 });
     this.isActive = ko.observable(false);
     this.randomization = ko.observable("reshuffle");
+    this.trialOrderVar = ko.observable(null);
 
     // not serialized
-    this.trialOrder = ko.observable(null);
     this.isInitialized = ko.observable(false);
     this.shape = "square";
     this.label = "Experiment";
     this.portTypes = ["executeIn", "executeOut"];
 
-    // trial randomization, premade variable per exp trial loop
-    var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[5].text);
-    globalVar.dataType("numeric");
-    var name = "trial_randomization";
-    globalVar.name(name);
-    globalVar.scope('Trial-Loop');
-    this.trialOrder(globalVar);
 
     this.nrTrialTypes = ko.computed(function() {
         if (this.isInitialized()){
@@ -155,9 +147,9 @@ var ExpTrialLoop = function (expData) {
     }, this);
 
 
-    this.visibleVars = ko.computed(function() {
+    this.vars = ko.computed(function() {
         var array = [];
-        array.push(this.trialOrder());
+        array.push(this.trialOrderVar());
         var list1 = this.factors();
         var list2 = this.additionalTrialTypes();
         var list3 = this.eventVariables();
@@ -198,6 +190,8 @@ ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
     this.subSequence(entitiesArr.byId[this.subSequence()]);
     this.subSequence().parent = this;
 
+    this.trialOrderVar(entitiesArr.byId[this.trialOrderVar()]);
+
     // convert ids to actual pointers:
     this.factors(jQuery.map( this.factors(), function( id ) {
         return entitiesArr.byId[id];
@@ -228,7 +222,6 @@ ExpTrialLoop.prototype.addFactor = function() {
     globalVar.name(name);
     globalVar.scope('Trial-Loop');
     globalVar.addLevel();
-    this.expData.addGlobalVar(globalVar);
     this.factors.push(globalVar);
 };
 
@@ -258,7 +251,6 @@ ExpTrialLoop.prototype.addSepTrialType= function() {
     globalVar.name(name);
     globalVar.scope('Trial-Loop');
     globalVar.addLevel();
-    this.expData.addGlobalVar(globalVar);
     this.additionalTrialTypes.push(globalVar);
 };
 
@@ -284,8 +276,13 @@ ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
 
     // add the direct child nodes:
     // check if they are not already in the list:
-    if (!entitiesArr.byId.hasOwnProperty(this.subSequence().id()))
+    if (!entitiesArr.byId.hasOwnProperty(this.subSequence().id())) {
         entitiesArr.push(this.subSequence());
+    }
+
+    if (!entitiesArr.byId.hasOwnProperty(this.trialOrderVar().id())) {
+        entitiesArr.push(this.trialOrderVar());
+    }
 
     // recursively make sure that all deep tree nodes are in the entities list:
     this.subSequence().reAddEntities(entitiesArr);
@@ -308,6 +305,7 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.repsPerTrialType(data.repsPerTrialType);
     this.isActive(data.isActive);
     this.randomization(data.randomization);
+    this.trialOrderVar(data.trialOrderVar);
     return this;
 
 };
@@ -324,10 +322,12 @@ ExpTrialLoop.prototype.toJS = function() {
         editorHeight: this.editorHeight(),
         type: this.type,
         subSequence: this.subSequence().id(),
+
         trialDesign:  this.trialDesign(),
         repsPerTrialType:  this.repsPerTrialType(),
         isActive:  this.isActive(),
         randomization:  this.randomization(),
+        trialOrderVar: this.trialOrderVar().id(),
         factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } ),
         additionalTrialTypes: jQuery.map( this.additionalTrialTypes(), function( addtrialtypes ) { return addtrialtypes.id(); } )
     }

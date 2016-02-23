@@ -52,6 +52,9 @@ var Response= function(parent) {
             else if (value == "ActionRecordElementTag"){
                 self.action(new ActionRecordElementTag(self));
             }
+            else if (value == "ActionRecordTagAndExitFrame"){
+                self.action(new ActionRecordTagAndExitFrame(self));
+            }
         },
         owner: this
     });

@@ -171,6 +171,53 @@ ActionRecordElementTag.prototype.toJS = function() {
 //////////////////////
 
 
+
+//////////////////////
+
+var ActionRecordTagAndExitFrame = function(parent) {
+    this.parent = parent;
+
+    // serialized
+    this.variableId = ko.observable(undefined);
+    this.variable = null;
+
+};
+ActionRecordTagAndExitFrame.prototype.type = "ActionRecordTagAndExitFrame";
+ActionRecordTagAndExitFrame.prototype.label = "Record Tag And Leave";
+
+ActionRecordTagAndExitFrame.prototype.setPointers = function(entitiesArr) {
+
+
+};
+
+ActionRecordTagAndExitFrame.prototype.run = function(dataModel) {
+
+    var blockId = player.getBlockId();
+    var trialId = player.getTrialId();
+    var recData = new RecData(this.variableId(), dataModel.name());
+    player.addRecording(blockId,trialId,recData.toJS());
+    player.currentFrame.endFrame();
+};
+
+ActionRecordTagAndExitFrame.prototype.fromJS = function(data) {
+    this.variableId(data.variableId);
+    return this;
+};
+
+
+
+
+ActionRecordTagAndExitFrame.prototype.toJS = function() {
+    return {
+        type: this.type,
+        variableId: this.variableId()
+    };
+};
+
+
+//////////////////////
+
+
 var ActionNextFrame = function(parent) {
     this.parent = parent;
 
@@ -214,6 +261,9 @@ function actionFactory(parent,type) {
     }
     else if(type == "ActionRecordElementTag") {
         var action = new ActionRecordElementTag(parent);
+    }
+    else if(type == "ActionRecordTagAndExitFrame") {
+        var action = new ActionRecordTagAndExitFrame(parent);
     }
     return action;
 }
