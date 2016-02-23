@@ -16,7 +16,7 @@ var ExpBlock = function (expData) {
     var globalVar = new GlobalVar(this.expData);
     globalVar.subtype(GlobalVar.subtypes[7].text);
     globalVar.dataType("string");
-    var name = "Block Id";
+    var name = "block_name";
     globalVar.name(name);
     globalVar.scope('block');
     this.blockId(globalVar);
