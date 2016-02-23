@@ -16,14 +16,18 @@ var ExpTrialLoop = function (expData) {
     var firstFrame = new FrameData(this.expData);
     this.subSequence().addNewSubElement(firstFrame);
 
+    // Variables
+    this.trialOrderVar = ko.observable(null);
     this.factors = ko.observableArray([]);
     this.additionalTrialTypes =  ko.observableArray([]);
-    this.eventVariables = ko.observableArray([]).extend({sortById: null});
+    this.eventVariables = ko.observableArray([]);
+
+    //properties
     this.trialDesign = ko.observable("balanced");
     this.repsPerTrialType = ko.observable(1).extend({ numeric: 0 });
     this.isActive = ko.observable(false);
     this.randomization = ko.observable("reshuffle");
-    this.trialOrderVar = ko.observable(null);
+
 
     // not serialized
     this.isInitialized = ko.observable(false);
@@ -199,19 +203,54 @@ ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
     this.additionalTrialTypes(jQuery.map( this.additionalTrialTypes(), function( id ) {
         return entitiesArr.byId[id];
     } ));
+    this.eventVariables(jQuery.map( this.eventVariables(), function( id ) {
+        return entitiesArr.byId[id];
+    } ));
     this.isInitialized(true);
 };
 
-ExpTrialLoop.prototype.doubleClick = function() {
-    // this trial loop was double clicked in the editor:
-    uc.currentEditorData = this.subSequence();
-    if (uc.currentEditorView instanceof TrialEditor){
-        uc.currentEditorView.setDataModel(this.subSequence());
+
+
+
+ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
+    var self = this;
+
+    // add the direct child nodes:
+    // check if they are not already in the list:
+    if (!entitiesArr.byId.hasOwnProperty(this.subSequence().id())) {
+        entitiesArr.push(this.subSequence());
     }
-    else {
-        page("/page/editors/trialEditor/"+uc.experiment.exp_id()+"/"+this.subSequence().id());
+
+    if (!entitiesArr.byId.hasOwnProperty(this.trialOrderVar().id())) {
+        entitiesArr.push(this.trialOrderVar());
     }
+
+    jQuery.each(this.factors(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
+            entitiesArr.push(elem);
+        }
+    });
+    jQuery.each(this.additionalTrialTypes(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
+            entitiesArr.push(elem);
+        }
+    });
+    jQuery.each(this.eventVariables(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
+            entitiesArr.push(elem);
+        }
+    });
+
+
+    // recursively make sure that all deep tree nodes are in the entities list:
+    this.subSequence().reAddEntities(entitiesArr);
 };
+
+
+
 
 ExpTrialLoop.prototype.addFactor = function() {
 
@@ -271,22 +310,17 @@ ExpTrialLoop.prototype.removeAddTrialType = function(idx) {
 };
 
 
-ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
-    var self = this;
-
-    // add the direct child nodes:
-    // check if they are not already in the list:
-    if (!entitiesArr.byId.hasOwnProperty(this.subSequence().id())) {
-        entitiesArr.push(this.subSequence());
+ExpTrialLoop.prototype.doubleClick = function() {
+    // this trial loop was double clicked in the editor:
+    uc.currentEditorData = this.subSequence();
+    if (uc.currentEditorView instanceof TrialEditor){
+        uc.currentEditorView.setDataModel(this.subSequence());
     }
-
-    if (!entitiesArr.byId.hasOwnProperty(this.trialOrderVar().id())) {
-        entitiesArr.push(this.trialOrderVar());
+    else {
+        page("/page/editors/trialEditor/"+uc.experiment.exp_id()+"/"+this.subSequence().id());
     }
-
-    // recursively make sure that all deep tree nodes are in the entities list:
-    this.subSequence().reAddEntities(entitiesArr);
 };
+
 
 ExpTrialLoop.prototype.fromJS = function(data) {
     this.id(data.id);
@@ -296,16 +330,19 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.editorY(data.editorY);
     this.editorWidth(data.editorWidth);
     this.editorHeight(data.editorHeight);
-    this.subSequence(data.subSequence);
     this.type =  data.type;
+    this.subSequence(data.subSequence);
 
-    this.factors(data.factors);
-    this.additionalTrialTypes(data.additionalTrialTypes);
     this.trialDesign(data.trialDesign);
     this.repsPerTrialType(data.repsPerTrialType);
     this.isActive(data.isActive);
     this.randomization(data.randomization);
+
     this.trialOrderVar(data.trialOrderVar);
+    this.factors(data.factors);
+    this.additionalTrialTypes(data.additionalTrialTypes);
+    this.eventVariables(data.eventVariables);
+
     return this;
 
 };
@@ -327,9 +364,11 @@ ExpTrialLoop.prototype.toJS = function() {
         repsPerTrialType:  this.repsPerTrialType(),
         isActive:  this.isActive(),
         randomization:  this.randomization(),
+
         trialOrderVar: this.trialOrderVar().id(),
         factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } ),
-        additionalTrialTypes: jQuery.map( this.additionalTrialTypes(), function( addtrialtypes ) { return addtrialtypes.id(); } )
+        additionalTrialTypes: jQuery.map( this.additionalTrialTypes(), function( addtrialtypes ) { return addtrialtypes.id(); }),
+        eventVariables: jQuery.map( this.eventVariables(), function( eventVariables ) { return eventVariables.id(); })
     }
 };
     
