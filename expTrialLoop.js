@@ -289,13 +289,15 @@ ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
 
 
 ExpTrialLoop.prototype.addFactor = function() {
-
     var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[1].text);
-    globalVar.dataType("numeric");
-    var name = "factor_" + (this.factors().length+1);
-    globalVar.name(name);
-    globalVar.scope('Trial-Loop');
+    globalVar.subtype(GlobalVar.subtypes[3]);
+    globalVar.dataType(GlobalVar.dataTypes[2]);
+    globalVar.scope(GlobalVar.scopes[5]);
+    globalVar.scale(GlobalVar.scales[2]);
+    globalVar.name("factor_" + (this.factors().length+1));
+
+    globalVar.isFactor(true);
+    globalVar.isInteracting(true);
     globalVar.addLevel();
     this.factors.push(globalVar);
 };
@@ -318,13 +320,14 @@ ExpTrialLoop.prototype.removeFactor = function(idx) {
 
 
 ExpTrialLoop.prototype.addSepTrialType= function() {
-
     var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[6].text);
-    globalVar.dataType("numeric");
-    var name = "noninteracting_factor_" + (this.additionalTrialTypes().length+1);
-    globalVar.name(name);
-    globalVar.scope('Trial-Loop');
+    globalVar.subtype(GlobalVar.subtypes[3]);
+    globalVar.dataType(GlobalVar.dataTypes[2]);
+    globalVar.scope(GlobalVar.scopes[5]);
+    globalVar.scale(GlobalVar.scales[1]);
+    globalVar.name("nonint_factor_" + (this.additionalTrialTypes().length+1));
+
+    globalVar.isFactor(true);
     globalVar.addLevel();
     this.additionalTrialTypes.push(globalVar);
 };

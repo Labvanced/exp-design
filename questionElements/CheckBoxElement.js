@@ -8,12 +8,22 @@ var CheckBoxElement= function(expData) {
     //serialized
     this.type= "checkBox";
     this.id = ko.observable(guid());
-    this.questionText= ko.observable("");
+    this.questionText= ko.observable("Your Question");
 
     this.openQuestion=  ko.observable(false);
-    this.choices= ko.observableArray([]);
+    this.choices= ko.observableArray(["Choice1", "Choice2"]);
     this.newPage = ko.observable(false);
     this.selected = ko.observable(false);
+    this.tag = ko.observable("");
+};
+
+CheckBoxElement.prototype.addVar = function() {
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.subtype(GlobalVar.subtypes[9].text);
+    globalVar.dataType("boolean");
+    globalVar.name(this.tag);
+    globalVar.scope('questionnaire');
+    globalVar.scale('nominal');
 };
 
 CheckBoxElement.prototype.setPointers = function() {
@@ -65,7 +75,7 @@ ko.components.register('checkbox-element-edit', {
                 <span style="float: left; margin-left: 5%; margin-top: 1%;"><a href="#" data-bind="click: function(data,event) {$parent.removeChoice($index())}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
             </div>\
         </div>\
-    <span><a href="#" data-bind="click: addChoice"><img style="float: left; margin-top: 2%" width="20" height="20"src="/resources/add.png"/> <h5 style="float: left; margin-left: 1%">Add Choice</h5> </a></span>\
+    <span><a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> <h5 style="display: inline-block; margin-left: 1%">Add Choice</h5> </a></span>\
     </div>'
 });
 

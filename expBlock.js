@@ -14,12 +14,13 @@ var ExpBlock = function (expData) {
 
     // block Id, premade variable per exp block
     var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[7].text);
-    globalVar.dataType("string");
-    var name = "block_name";
-    globalVar.name(name);
-    globalVar.scope('block');
+    globalVar.subtype(GlobalVar.subtypes[1]);
+    globalVar.dataType(GlobalVar.dataTypes[1]);
+    globalVar.scope(GlobalVar.scopes[3]);
+    globalVar.scale(GlobalVar.scales[1]);
+    globalVar.name("Block Id");
     this.blockId(globalVar);
+
 
 };
 

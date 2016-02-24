@@ -8,9 +8,20 @@ var ParagraphElement = function(expData) {
     //serialized
     this.type= "paragraph";
     this.id = ko.observable(guid());
-    this.questionText= ko.observable("");
+    this.questionText= ko.observable("Your Question");
     this.selected = ko.observable(false);
+    this.tag = ko.observable("");
 };
+
+ParagraphElement.prototype.addVar = function() {
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.subtype(GlobalVar.subtypes[9].text);
+    globalVar.dataType("string");
+    globalVar.name(this.tag);
+    globalVar.scope('questionnaire');
+    globalVar.scale('nominal');
+};
+
 
 ParagraphElement.prototype.setPointers = function() {
 

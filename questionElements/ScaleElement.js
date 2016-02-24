@@ -9,13 +9,23 @@ var ScaleElement= function(expData) {
     //serialized
     this.type= "scale";
     this.id = ko.observable(guid());
-    this.questionText= ko.observable("");
+    this.questionText= ko.observable("Your Question");
     this.startChoice= ko.observable(1);
     this.endChoice= ko.observable(5);
-    this.startLabel= ko.observable("");
-    this.endLabel= ko.observable("");
+    this.startLabel= ko.observable("start label");
+    this.endLabel= ko.observable("end label");
     this.choices= ko.observableArray([1,2,3,4,5]);
     this.selected = ko.observable(false);
+    this.tag = ko.observable("");
+};
+
+ScaleElement.prototype.addVar = function() {
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.subtype(GlobalVar.subtypes[9].text);
+    globalVar.dataType("numeric");
+    globalVar.name(this.tag);
+    globalVar.scope('questionnaire');
+    globalVar.scale('ordinal');
 };
 
 ScaleElement.prototype.setPointers = function() {
@@ -117,15 +127,17 @@ ko.components.register('scale-element-preview',{
         </div>\
         <br><br><br><br>\
         <div class="panel-body">\
-        <span style="float:left; width: 5%;  margin-right: 1%; margin-top: 1%"\
-             data-bind="text: startLabel"></span>\
-        <span data-bind="foreach: choices">\
-            <span style="float:left; position:relative; margin-top: -15px; margin-left: 7px;  margin-right: 7px"\
-                data-bind="text: $data"></span>\
-            <input style="float:left; margin-left: 5px; margin-right: 5px; margin-top: 10px"\
-                 type="radio" data-bind="attr: {name: \'radio\' + $parent.name}, click: function(){return true}, clickBubble: false">\
+            <span style="display: inline-block;  margin-right: 1%; vertical-align: middle"\
+                 data-bind="text: startLabel"></span>\
+            <span style="display: inline-block; vertical-align: text-bottom" data-bind="foreach: choices">\
+                <div style="display: inline-block"> \
+                    <span style="display:block; position:relative; margin-left: 7px;  margin-right: 7px"\
+                        data-bind="text: $data"></span>\
+                    <input style="display:block; margin-left: 5px; margin-right: 5px;"\
+                         type="radio" data-bind="attr: {name: \'radio\' + $parent.name}, click: function(){return true}, clickBubble: false">\
+                 </div>\
             </span>\
-            <span style="float:left;  width: 5%; margin: 5px; margin-top: 1%" data-bind="text: endLabel"></span>\
+            <span style="display: inline-block; margin: 5px; vertical-align: middle" data-bind="text: endLabel"></span>\
         </div>'
 
 });
