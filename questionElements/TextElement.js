@@ -6,10 +6,21 @@ var TextElement = function(expData) {
     this.parent = null;
 
     //serialized
-    this.type= "text";
+    this.type = "text";
     this.id = ko.observable(guid());
-    this.questionText= ko.observable("");
+    this.questionText= ko.observable("Your Question");
     this.selected = ko.observable(false);
+    this.tag = ko.observable("");
+};
+
+
+TextElement.prototype.addVar = function() {
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.subtype(GlobalVar.subtypes[9].text);
+    globalVar.dataType("string");
+    globalVar.name(this.tag);
+    globalVar.scope('questionnaire');
+    globalVar.scale('nominal');
 };
 
 TextElement.prototype.setPointers = function() {
@@ -32,8 +43,9 @@ TextElement.prototype.fromJS = function(data) {
 
 ko.components.register('text-element-edit', {
     viewModel: function(dataModel){
-
+        var self = this;
         this.questionText = dataModel.questionText;
+        this.tag = dataModel.tag;
 
         tinymce.editors = [];
 
@@ -81,7 +93,7 @@ ko.components.register('text-element-preview',{
     '<div class="panel-heading">\
         <span style="float: right"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
         <h3 style="float: left">\
-            <span data-bind="text: questionText"></span>\
+            <span data-bind="html: questionText"></span>\
         </h3>\
       </div>\
       <br><br><br><br>\

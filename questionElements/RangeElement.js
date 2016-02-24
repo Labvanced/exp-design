@@ -12,15 +12,26 @@ var RangeElement= function(expData) {
     //serialized
     this.type= "range";
     this.id = ko.observable(guid());
-    this.questionText= ko.observable("");
+    this.questionText= ko.observable("Your Question");
     this.minChoice= ko.observable(1);
     this.maxChoice= ko.observable(5);
-    this.startLabel= ko.observable("");
-    this.endLabel= ko.observable("");
+    this.startLabel= ko.observable("start label");
+    this.endLabel= ko.observable("end label");
     this.choice = ko.observable(1);
     this.newPage = ko.observable(false);
     this.selected = ko.observable(false);
+    this.tag = ko.observable("");
 };
+
+RangeElement.prototype.addVar = function() {
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.subtype(GlobalVar.subtypes[9].text);
+    globalVar.dataType("numeric");
+    globalVar.name(this.tag);
+    globalVar.scope('questionnaire');
+    globalVar.scale('interval');
+};
+
 
 RangeElement.prototype.setPointers = function() {
 
@@ -112,8 +123,8 @@ ko.components.register('range-element-preview',{
         </div>\
         <br><br><br><br>\
         <div class="panel-body">\
-            <span style="float: left;  width: 5%; margin-top: 1%" data-bind="text: startLabel"></span>\
-            <span style="float: right; margin-right: 30%; margin-top:1%" data-bind="text: endLabel"></span>\
+            <span style="float: left;" data-bind="text: startLabel"></span>\
+            <span style="float: right; margin-right: 25%;" data-bind="text: endLabel"></span>\
             <br><br>\
             <span style="display: inline-block; width: 80%">\
                 <span style="margin-right: auto; margin-top: 1%; float: left" data-bind="text: minChoice"></span>\
