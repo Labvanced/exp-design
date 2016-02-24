@@ -42,34 +42,39 @@ ExpData.prototype.setPointers = function() {
 ExpData.prototype.setVars = function() {
 
     this.expName(new GlobalVar(this.expData));
-    this.expName().subtype('id');
-    this.expName().dataType('string');
-    this.expName().name('Experiment Name');
-    this.expName().scope('experiment');
+    this.expName().subtype(GlobalVar.subtypes[1]);
+    this.expName().dataType(GlobalVar.dataTypes[1]);
+    this.expName().scope(GlobalVar.scopes[1]);
+    this.expName().scale(GlobalVar.scales[1]);
+    this.expName().name('Experiment Id');
 
     this.subjectId(new GlobalVar(this.expData));
-    this.subjectId().subtype('id');
-    this.subjectId().dataType('string');
+    this.subjectId().subtype(GlobalVar.subtypes[1]);
+    this.subjectId().dataType(GlobalVar.dataTypes[1]);
+    this.subjectId().scope(GlobalVar.scopes[1]);
+    this.subjectId().scale(GlobalVar.scales[1]);
     this.subjectId().name('Subject Id');
-    this.subjectId().scope('experiment');
 
     this.groupId(new GlobalVar(this.expData));
-    this.groupId().subtype('id');
-    this.groupId().dataType('string');
+    this.groupId().subtype(GlobalVar.subtypes[1]);
+    this.groupId().dataType(GlobalVar.dataTypes[1]);
+    this.groupId().scope(GlobalVar.scopes[1]);
+    this.groupId().scale(GlobalVar.scales[1]);
     this.groupId().name('Group Id');
-    this.groupId().scope('experiment');
 
     this.timeStamp(new GlobalVar(this.expData));
-    this.timeStamp().subtype('id');
-    this.timeStamp().dataType('string');
+    this.timeStamp().subtype(GlobalVar.subtypes[1]);
+    this.timeStamp().dataType(GlobalVar.dataTypes[1]);
+    this.timeStamp().scope(GlobalVar.scopes[2]);
+    this.timeStamp().scale(GlobalVar.scales[1]);
     this.timeStamp().name('Time Stamp');
-    this.timeStamp().scope('session');
 
     this.sessionNr(new GlobalVar(this.expData));
-    this.sessionNr().subtype('id');
-    this.sessionNr().dataType('numeric');
+    this.sessionNr().subtype(GlobalVar.subtypes[1]);
+    this.sessionNr().dataType(GlobalVar.dataTypes[2]);
+    this.sessionNr().scope(GlobalVar.scopes[2]);
+    this.sessionNr().scale(GlobalVar.scales[1]);
     this.sessionNr().name('Session Number');
-    this.sessionNr().scope('session');
 
 };
 
@@ -239,13 +244,12 @@ ExpData.prototype.addNewBlock = function() {
             if (blockNames[i] == 'Trial-Loop'){
                 // trial randomization, premade variable per exp trial loop
                 var trialOrder = new GlobalVar(this.expData);
-                trialOrder.subtype(GlobalVar.subtypes[5].text);
-                trialOrder.dataType("numeric");
-                var name = "trial_randomization";
-                trialOrder.name(name);
-                trialOrder.scope('Trial-Loop');
+                trialOrder.subtype(GlobalVar.subtypes[2]);
+                trialOrder.dataType(GlobalVar.dataTypes[2]);
+                trialOrder.scope(GlobalVar.scopes[5]);
+                trialOrder.scale(GlobalVar.scales[2]);
+                trialOrder.name("trial_randomization");
                 blockElements[i].trialOrderVar(trialOrder);
-
             }
             // specify executeIn port:
             var portId = null;

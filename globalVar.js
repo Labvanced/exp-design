@@ -5,33 +5,26 @@ var GlobalVar = function (expData) {
 
     this.id = ko.observable(guid());
     this.name = ko.observable("newVariable");
-    this.type = "GlobalVar";
-    this.subtype = ko.observable(GlobalVar.subtypes[0].text);
-    this.dataType = ko.observable("undefined");
-    this.scope = ko.observable(null);
-    this.levels = ko.observableArray([]);
     this.editName =  ko.observable(false);
+    this.type = "GlobalVar";
+
+    this.subtype = ko.observable("undefined");
+    this.dataType = ko.observable("undefined");
+    this.scale = ko.observable("undefined");
+    this.scope = ko.observable("undefined");
+
+    this.isFactor =  ko.observable(false);
+    this.levels = ko.observableArray([]);
     this.subLevelEdit = ko.observable(false);
 };
 
-// enum: posssible variable subtypes..
-GlobalVar.subtypes = [
-        { id: 1, text: 'undefined' },
-        { id: 2, text: 'factor' },
-        { id: 3, text: 'stimulus property' },
-        { id: 4, text: 'response' },
-        { id: 5, text: 'response time' },
-        { id: 6, text: 'randomization' },
-        { id: 7, text: 'seperate trial type' },
-        { id: 8, text: 'id' }
-    ];
+// enum: possible variable subtypes defined by us or user
+GlobalVar.subtypes = ['undefined','id', 'randomization', 'condition', 'stimulus property', 'user decision', 'user response time',  'user questionnaire response'];
 
-
-// enum: posssible origins for variables..
-GlobalVar.originTypes = ['undefined', 'condition', 'randomization', 'response', 'variable'];
-
-// enum: posssible datatypes..
-GlobalVar.dataTypes = ['undefined', 'factor', 'numeric', 'string'];
+// further information defined by us
+GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean'];
+GlobalVar.scales = ['undefined', 'nominal', 'ordinal', 'interval', 'ratio'];
+GlobalVar.scopes = ['undefined','experiment','session', 'block', 'questionnaire', 'trial-loop', 'trial'];
 
 
 GlobalVar.prototype.setPointers = function(entitiesArr) {
@@ -63,12 +56,13 @@ GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
 };
 
 
-
 GlobalVar.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
     this.subtype(data.subtype);
     this.dataType(data.dataType);
+    this.scale(data.scale);
+    this.scope(data.scope);
     this.levels(jQuery.map( data.levels, function( lvlData ) {
         return (new Level()).fromJS(lvlData);
     } ));
@@ -81,6 +75,8 @@ GlobalVar.prototype.toJS = function() {
         name: this.name(),
         subtype: this.subtype(),
         dataType: this.dataType(),
+        scale: this.scale(),
+        scope: this.scope(),
         type: this.type,
         levels: jQuery.map( this.levels(), function( lvl ) { return lvl.toJS(); } )
     };
