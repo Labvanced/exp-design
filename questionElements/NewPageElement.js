@@ -12,8 +12,8 @@ var NewPageElement = function(expData) {
     this.id = ko.observable(guid());
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);
+    this.tag = ko.observable("");
 };
-
 
 
 NewPageElement.prototype.setPointers = function() {
