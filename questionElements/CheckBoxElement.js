@@ -11,31 +11,51 @@ var CheckBoxElement= function(expData) {
     this.questionText= ko.observable("Your Question");
 
     this.openQuestion=  ko.observable(false);
-    this.choices= ko.observableArray(["Choice1", "Choice2"]);
+    this.choices= ko.observableArray([ko.observable("Check")]);
     this.newPage = ko.observable(false);
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
+    this.variable = ko.observable();
 };
 
 CheckBoxElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[9].text);
-    globalVar.dataType("boolean");
-    globalVar.name(this.tag);
-    globalVar.scope('questionnaire');
-    globalVar.scale('nominal');
+    globalVar.subtype(GlobalVar.subtypes[7]);
+    globalVar.dataType(GlobalVar.dataTypes[3]);
+    globalVar.scope(GlobalVar.scopes[4]);
+    globalVar.scale(GlobalVar.scales[1]);
+    globalVar.name(this.tag());
+    this.variable(globalVar);
 };
 
-CheckBoxElement.prototype.setPointers = function() {
+CheckBoxElement.prototype.setPointers = function(entitiesArr) {
+    var choices =  this.choices();
+    this.choices = ko.observableArray([]);
+    for (var i = 0; i< choices.length; i++){
+        this.choices.push(ko.observable(choices[i]));
+    }
 
+    this.variable(entitiesArr.byId[this.variable()]);
+};
+
+CheckBoxElement.prototype.reAddEntities = function(entitiesArr) {
+    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+        entitiesArr.push(this.variable());
+    }
 };
 
 CheckBoxElement.prototype.toJS = function() {
+    var choices = [];
+    for (var i = 0; i< this.choices().length; i++){
+        choices.push(this.choices()[i]());
+    }
+
     return {
         type: this.type,
         id: this.id(),
         questionText: this.questionText(),
-        choices: this.choices()
+        choices: choices,
+        variable: this.variable().id()
     };
 };
 
@@ -44,6 +64,7 @@ CheckBoxElement.prototype.fromJS = function(data) {
     this.id(data.id);
     this.questionText(data.questionText);
     this.choices(data.choices);
+    this.variable(data.variable);
 };
 
 console.log("register checkbox element edit...");

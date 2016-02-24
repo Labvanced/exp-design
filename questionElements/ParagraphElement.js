@@ -11,27 +11,36 @@ var ParagraphElement = function(expData) {
     this.questionText= ko.observable("Your Question");
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
+    this.variable = ko.observable();
 };
 
 ParagraphElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[9].text);
-    globalVar.dataType("string");
-    globalVar.name(this.tag);
-    globalVar.scope('questionnaire');
-    globalVar.scale('nominal');
+    globalVar.subtype(GlobalVar.subtypes[7]);
+    globalVar.dataType(GlobalVar.dataTypes[1]);
+    globalVar.scope(GlobalVar.scopes[4]);
+    globalVar.scale(GlobalVar.scales[1]);
+    globalVar.name(this.tag());
+    this.variable(globalVar);
 };
 
 
-ParagraphElement.prototype.setPointers = function() {
+ParagraphElement.prototype.setPointers = function(entitiesArr) {
+    this.variable(entitiesArr.byId[this.variable()]);
+};
 
+ParagraphElement.prototype.reAddEntities = function(entitiesArr) {
+    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+        entitiesArr.push(this.variable());
+    }
 };
 
 ParagraphElement.prototype.toJS = function() {
     return {
         type: this.type,
         id: this.id(),
-        questionText: this.questionText()
+        questionText: this.questionText(),
+        variable: this.variable().id()
     };
 };
 
@@ -39,6 +48,7 @@ ParagraphElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.id(data.id);
     this.questionText(data.questionText);
+    this.variable(data.variable);
 };
 
 ko.components.register('paragraph-element-edit', {

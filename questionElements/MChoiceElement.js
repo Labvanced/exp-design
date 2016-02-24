@@ -11,30 +11,50 @@ var MChoiceElement = function(expData) {
     this.questionText= ko.observable("Your Question");
 
     this.openQuestion=  ko.observable(false);
-    this.choices= ko.observableArray(["Choice1", "Choice2"]);
+    this.choices= ko.observableArray([ko.observable("choice 1"),ko.observable("choice 2")]);
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
+    this.variable = ko.observable();
 };
 
 MChoiceElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[9].text);
-    globalVar.dataType("string");
-    globalVar.name(this.tag);
-    globalVar.scope('questionnaire');
-    globalVar.scale('nominal');
+    globalVar.subtype(GlobalVar.subtypes[7]);
+    globalVar.dataType(GlobalVar.dataTypes[1]);
+    globalVar.scope(GlobalVar.scopes[4]);
+    globalVar.scale(GlobalVar.scales[1]);
+    globalVar.name(this.tag());
+    this.variable(globalVar);
 };
 
-MChoiceElement.prototype.setPointers = function() {
+MChoiceElement.prototype.setPointers = function(entitiesArr) {
+    var choices =  this.choices();
+    this.choices = ko.observableArray([]);
+    for (var i = 0; i< choices.length; i++){
+        this.choices.push(ko.observable(choices[i]));
+    }
 
+    this.variable(entitiesArr.byId[this.variable()]);
+};
+
+MChoiceElement.prototype.reAddEntities = function(entitiesArr) {
+    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+        entitiesArr.push(this.variable());
+    }
 };
 
 MChoiceElement.prototype.toJS = function() {
+    var choices = [];
+    for (var i = 0; i< this.choices().length; i++){
+        choices.push(this.choices()[i]());
+    }
+
     return {
         type: this.type,
         id: this.id(),
         questionText: this.questionText(),
-        choices: this.choices()
+        choices: choices,
+        variable: this.variable().id()
     };
 };
 
@@ -43,6 +63,7 @@ MChoiceElement.prototype.fromJS = function(data) {
     this.id(data.id);
     this.questionText(data.questionText);
     this.choices(data.choices);
+    this.variable(data.variable);
 };
 
 ko.components.register('choice-element-edit', {

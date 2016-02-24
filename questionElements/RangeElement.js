@@ -21,20 +21,28 @@ var RangeElement= function(expData) {
     this.newPage = ko.observable(false);
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
+    this.variable = ko.observable();
 };
 
 RangeElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[9].text);
-    globalVar.dataType("numeric");
-    globalVar.name(this.tag);
-    globalVar.scope('questionnaire');
-    globalVar.scale('interval');
+    globalVar.subtype(GlobalVar.subtypes[7]);
+    globalVar.dataType(GlobalVar.dataTypes[2]);
+    globalVar.scope(GlobalVar.scopes[4]);
+    globalVar.scale(GlobalVar.scales[3]);
+    globalVar.name(this.tag());
+    this.variable(globalVar);
 };
 
 
-RangeElement.prototype.setPointers = function() {
+RangeElement.prototype.setPointers = function(entitiesArr) {
+    this.variable(entitiesArr.byId[this.variable()]);
+};
 
+RangeElement.prototype.reAddEntities = function(entitiesArr) {
+    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+        entitiesArr.push(this.variable());
+    }
 };
 
 RangeElement.prototype.toJS = function() {
@@ -42,10 +50,11 @@ RangeElement.prototype.toJS = function() {
         type: this.type,
         id: this.id(),
         questionText: this.questionText(),
-        minChoice: this.startChoice(),
-        maxChoice: this.endChoice(),
+        minChoice: this.minChoice(),
+        maxChoice: this.maxChoice(),
         startLabel: this.startLabel(),
         endLabel: this.endLabel(),
+        variable: this.variable().id()
     };
 };
 
@@ -53,10 +62,11 @@ RangeElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.id(data.id);
     this.questionText(data.questionText);
-    this.minChoice(data.startChoice);
-    this.maxChoice(data.endChoice);
+    this.minChoice(data.minChoice);
+    this.maxChoice(data.maxChoice);
     this.startLabel(data.startLabel);
     this.endLabel(data.endLabel);
+    this.variable(data.variable);
 };
 
 

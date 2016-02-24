@@ -17,19 +17,27 @@ var ScaleElement= function(expData) {
     this.choices= ko.observableArray([1,2,3,4,5]);
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
+    this.variable = ko.observable();
 };
 
 ScaleElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[9].text);
-    globalVar.dataType("numeric");
-    globalVar.name(this.tag);
-    globalVar.scope('questionnaire');
-    globalVar.scale('ordinal');
+    globalVar.subtype(GlobalVar.subtypes[7]);
+    globalVar.dataType(GlobalVar.dataTypes[2]);
+    globalVar.scope(GlobalVar.scopes[4]);
+    globalVar.scale(GlobalVar.scales[2]);
+    globalVar.name(this.tag());
+    this.variable(globalVar);
 };
 
-ScaleElement.prototype.setPointers = function() {
+ScaleElement.prototype.setPointers = function(entitiesArr) {
+    this.variable(entitiesArr.byId[this.variable()]);
+};
 
+ScaleElement.prototype.reAddEntities = function(entitiesArr) {
+    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+        entitiesArr.push(this.variable());
+    }
 };
 
 ScaleElement.prototype.toJS = function() {
@@ -41,7 +49,8 @@ ScaleElement.prototype.toJS = function() {
         endChoice: this.endChoice(),
         startLabel: this.startLabel(),
         endLabel: this.endLabel(),
-        choices: this.choices()
+        choices: this.choices(),
+        variable: this.variable().id()
     };
 };
 
@@ -54,6 +63,7 @@ ScaleElement.prototype.fromJS = function(data) {
     this.startLabel(data.startLabel);
     this.endLabel(data.endLabel);
     this.choices(data.choices);
+    this.variable(data.variable);
 };
 
 
