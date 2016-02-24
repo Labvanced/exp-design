@@ -25,6 +25,8 @@ var FrameData = function(expData) {
     this.frameWidth = ko.observable(1600);
     this.frameHeight = ko.observable(900);
     this.zoomMode = ko.observable("fullscreen"); // "fullscreen" or "pixel" or "visualDegree"
+    this.emotionEnabled = ko.observable(false);
+    this.emotionOffset = ko.observable(300).extend({ numeric: 0 });
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -41,7 +43,7 @@ var FrameData = function(expData) {
     this.responses = ko.observableArray([]);
 
 };
-FrameData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode"];
+FrameData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionOffset"];
 
 FrameData.prototype.getDeepCopy = function() {
     var self = this;
@@ -61,8 +63,11 @@ FrameData.prototype.getDeepCopy = function() {
         elem.setPointers(entitiesArrCopyObs);
     } );
 
-    // recreate this frame and link to other copied entities:
-    return entitiesArrCopyObs.byId[this.id()];
+    // find this frame:
+    var deepCopy = entitiesArrCopyObs.byId[this.id()];
+    deepCopy.parent = this.parent;
+
+    return deepCopy;
 };
 
 FrameData.prototype.addNewResponse = function() {
@@ -140,6 +145,12 @@ FrameData.prototype.fromJS = function(data) {
     this.frameWidth(data.frameWidth);
     this.frameHeight(data.frameHeight);
     this.zoomMode(data.zoomMode);
+    if (data.hasOwnProperty("emotionEnabled")) {
+        this.emotionEnabled(data.emotionEnabled);
+    }
+    if (data.hasOwnProperty("emotionOffset")) {
+        this.emotionOffset(data.emotionOffset);
+    }
     this.responses(jQuery.map( data.responses, function( respData ) {
         return (new Response()).fromJS(respData);
     } ));
@@ -166,6 +177,8 @@ FrameData.prototype.toJS = function() {
         frameWidth: this.frameWidth(),
         frameHeight: this.frameHeight(),
         zoomMode: this.zoomMode(),
+        emotionEnabled: this.emotionEnabled(),
+        emotionOffset: this.emotionOffset(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };

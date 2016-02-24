@@ -25,9 +25,10 @@ var ExpTrialLoop = function (expData) {
     //properties
     this.trialDesign = ko.observable("balanced");
     this.repsPerTrialType = ko.observable(1).extend({ numeric: 0 });
+    this.minIntervalBetweenRep = ko.observable(0).extend({ numeric: 0 });
     this.isActive = ko.observable(false);
     this.randomization = ko.observable("reshuffle");
-
+    this.webcamEnabled = ko.observable(false);
 
     // not serialized
     this.isInitialized = ko.observable(false);
@@ -145,6 +146,41 @@ var ExpTrialLoop = function (expData) {
             };
         }
     }, this);
+
+
+    this.trialSpecifications = ko.computed(function() {
+
+        var trialSpecifications = [];
+
+        var trialTypesInteracting = this.trialTypesInteracting();
+        for (var i=0; i<trialTypesInteracting.idx.length; i++){
+            var currentTrialSelection = {
+                type: 'interacting',
+                trialTypesInteractingIdx: i,
+                factors: jQuery.map(this.factors(),
+                    function(elem, idx){
+                        return elem.id();
+                    }
+                ),
+                levels: trialTypesInteracting.idx[i]
+            };
+            trialSpecifications.push(currentTrialSelection);
+        }
+
+        var trialTypesNonInteract = this.trialTypesNonInteract();
+        for (var i=0; i<trialTypesNonInteract.idx.length; i++){
+            var currentTrialSelection = {
+                type: 'noninteract',
+                factor: this.additionalTrialTypes()[i].id(),
+                level: trialTypesNonInteract.idx[i][1]
+            };
+            trialSpecifications.push(currentTrialSelection);
+        }
+
+        return trialSpecifications;
+
+    }, this);
+
 
     this.totalNrTrials = ko.computed(function() {
         return  this.nrTrialTypes() * this.repsPerTrialType();
@@ -337,6 +373,8 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.repsPerTrialType(data.repsPerTrialType);
     this.isActive(data.isActive);
     this.randomization(data.randomization);
+    this.minIntervalBetweenRep(data.minIntervalBetweenRep);
+    this.webcamEnabled(data.webcamEnabled);
 
     this.trialOrderVar(data.trialOrderVar);
     this.factors(data.factors);
@@ -364,6 +402,8 @@ ExpTrialLoop.prototype.toJS = function() {
         repsPerTrialType:  this.repsPerTrialType(),
         isActive:  this.isActive(),
         randomization:  this.randomization(),
+        minIntervalBetweenRep: this.minIntervalBetweenRep(),
+        webcamEnabled: this.webcamEnabled(),
 
         trialOrderVar: this.trialOrderVar().id(),
         factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } ),
