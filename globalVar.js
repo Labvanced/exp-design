@@ -14,6 +14,8 @@ var GlobalVar = function (expData) {
     this.scope = ko.observable("undefined");
 
     this.isFactor =  ko.observable(false);
+    this.isInteracting = ko.observable(false);
+
     this.levels = ko.observableArray([]);
     this.subLevelEdit = ko.observable(false);
 };
@@ -63,6 +65,9 @@ GlobalVar.prototype.fromJS = function(data) {
     this.dataType(data.dataType);
     this.scale(data.scale);
     this.scope(data.scope);
+    this.isFactor(data.isFactor);
+    this.isInteracting(data.isInteracting);
+
     this.levels(jQuery.map( data.levels, function( lvlData ) {
         return (new Level()).fromJS(lvlData);
     } ));
@@ -77,6 +82,9 @@ GlobalVar.prototype.toJS = function() {
         dataType: this.dataType(),
         scale: this.scale(),
         scope: this.scope(),
+        isFactor: this.isFactor(),
+        isInteracting: this.isInteracting(),
+
         type: this.type,
         levels: jQuery.map( this.levels(), function( lvl ) { return lvl.toJS(); } )
     };

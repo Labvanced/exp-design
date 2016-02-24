@@ -264,7 +264,7 @@ Modifier.prototype.selectTrialType = function(selectionSpec){
 
 Modifier.prototype.addFactorDependency = function(factorVar) {
 
-    if (factorVar.subtype() == 'factor') {
+    if (factorVar.isInteracting()) {
 
         if (this.interactingFactors().length == 0) {
             // special case, because this is the first interacting factor. Therefore just add all levels to top array:
@@ -314,7 +314,7 @@ Modifier.prototype.addFactorDependency = function(factorVar) {
         this.interactingFactors.push(factorVar);
 
     }
-    else if (factorVar.subtype() == 'seperate trial type'){
+    else {
 
         // create modifierTrialType for all levels of this new non-interacting factor:
         var newModfiersPerLevel = [];
