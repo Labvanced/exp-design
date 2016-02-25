@@ -17,6 +17,8 @@ var ExpTrialLoop = function (expData) {
     this.subSequence().addNewSubElement(firstFrame);
 
     // Variables
+    this.trialUniqueIdVar = ko.observable(null);
+    this.trialTypeIdVar = ko.observable(null);
     this.trialOrderVar = ko.observable(null);
     this.factors = ko.observableArray([]);
     this.additionalTrialTypes =  ko.observableArray([]);
@@ -57,8 +59,8 @@ var ExpTrialLoop = function (expData) {
         else{
             return 0;
         }
-        
-        
+
+
     }, this);
 
     this.nrTrialTypesArray = ko.computed(function() {
@@ -189,6 +191,8 @@ var ExpTrialLoop = function (expData) {
 
     this.vars = ko.computed(function() {
         var array = [];
+        array.push(this.trialUniqueIdVar());
+        array.push(this.trialTypeIdVar());
         array.push(this.trialOrderVar());
         var list1 = this.factors();
         var list2 = this.additionalTrialTypes();
@@ -230,6 +234,8 @@ ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
     this.subSequence(entitiesArr.byId[this.subSequence()]);
     this.subSequence().parent = this;
 
+    this.trialUniqueIdVar(entitiesArr.byId[this.trialUniqueIdVar()]);
+    this.trialTypeIdVar(entitiesArr.byId[this.trialTypeIdVar()]);
     this.trialOrderVar(entitiesArr.byId[this.trialOrderVar()]);
 
     // convert ids to actual pointers:
@@ -255,6 +261,14 @@ ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
     // check if they are not already in the list:
     if (!entitiesArr.byId.hasOwnProperty(this.subSequence().id())) {
         entitiesArr.push(this.subSequence());
+    }
+
+    if (!entitiesArr.byId.hasOwnProperty(this.trialUniqueIdVar().id())) {
+        entitiesArr.push(this.trialUniqueIdVar());
+    }
+
+    if (!entitiesArr.byId.hasOwnProperty(this.trialTypeIdVar().id())) {
+        entitiesArr.push(this.trialTypeIdVar());
     }
 
     if (!entitiesArr.byId.hasOwnProperty(this.trialOrderVar().id())) {
@@ -379,6 +393,8 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.minIntervalBetweenRep(data.minIntervalBetweenRep);
     this.webcamEnabled(data.webcamEnabled);
 
+    this.trialUniqueIdVar(data.trialUniqueIdVar);
+    this.trialTypeIdVar(data.trialTypeIdVar);
     this.trialOrderVar(data.trialOrderVar);
     this.factors(data.factors);
     this.additionalTrialTypes(data.additionalTrialTypes);
@@ -408,6 +424,8 @@ ExpTrialLoop.prototype.toJS = function() {
         minIntervalBetweenRep: this.minIntervalBetweenRep(),
         webcamEnabled: this.webcamEnabled(),
 
+        trialUniqueIdVar: this.trialUniqueIdVar().id(),
+        trialTypeIdVar: this.trialTypeIdVar().id(),
         trialOrderVar: this.trialOrderVar().id(),
         factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } ),
         additionalTrialTypes: jQuery.map( this.additionalTrialTypes(), function( addtrialtypes ) { return addtrialtypes.id(); }),
