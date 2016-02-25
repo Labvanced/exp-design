@@ -6,7 +6,6 @@ var ExpData = function () {
     this.groups = ko.observableArray([]).extend({sortById: null});
     this.expBlocks = ko.observableArray([]).extend({sortById: null});
 
-
     this.expName =  ko.observable();
     this.subjectId =  ko.observable();
     this.groupId =  ko.observable();
@@ -156,12 +155,17 @@ ExpData.prototype.toJS = function() {
     // make sure that we have an up to date global list of all entities:
     this.rebuildEntities();
 
-
+    var sessionsPerGroup = [];
+    var groups = this.groups();
+    for (var i=0; i<groups.length; i++){
+        sessionsPerGroup.push(groups[i].sessions().length);
+    }
 
     // save to JSON:
     return {
         entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
         numGroups: this.groups().length,
+        sessionsPerGroup: sessionsPerGroup,
         expName: this.expName().id(),
         subjectId: this.subjectId().id(),
         groupId: this.groupId().id(),
@@ -243,13 +247,29 @@ ExpData.prototype.addNewBlock = function() {
 
             if (blockNames[i] == 'Trial-Loop'){
                 // trial randomization, premade variable per exp trial loop
-                var trialOrder = new GlobalVar(this.expData);
-                trialOrder.subtype(GlobalVar.subtypes[2]);
-                trialOrder.dataType(GlobalVar.dataTypes[2]);
-                trialOrder.scope(GlobalVar.scopes[5]);
-                trialOrder.scale(GlobalVar.scales[2]);
-                trialOrder.name("trial_randomization");
-                blockElements[i].trialOrderVar(trialOrder);
+                var trialUniqueId = new GlobalVar(this.expData);
+                trialUniqueId.subtype(GlobalVar.subtypes[1]);
+                trialUniqueId.dataType(GlobalVar.dataTypes[2]);
+                trialUniqueId.scope(GlobalVar.scopes[5]);
+                trialUniqueId.scale(GlobalVar.scales[2]);
+                trialUniqueId.name("Trial Unique Id");
+                blockElements[i].trialUniqueIdVar(trialUniqueId);
+
+                var trialTypeIdVar = new GlobalVar(this.expData);
+                trialTypeIdVar.subtype(GlobalVar.subtypes[1]);
+                trialTypeIdVar.dataType(GlobalVar.dataTypes[2]);
+                trialTypeIdVar.scope(GlobalVar.scopes[5]);
+                trialTypeIdVar.scale(GlobalVar.scales[2]);
+                trialTypeIdVar.name("Trial Type Id");
+                blockElements[i].trialTypeIdVar(trialTypeIdVar);
+
+                var trialOrderVar = new GlobalVar(this.expData);
+                trialOrderVar.subtype(GlobalVar.subtypes[2]);
+                trialOrderVar.dataType(GlobalVar.dataTypes[2]);
+                trialOrderVar.scope(GlobalVar.scopes[5]);
+                trialOrderVar.scale(GlobalVar.scales[2]);
+                trialOrderVar.name("Trial Presentation Order");
+                blockElements[i].trialOrderVar(trialOrderVar);
             }
             // specify executeIn port:
             var portId = null;
