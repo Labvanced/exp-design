@@ -18,7 +18,7 @@ var PlayerQuestView = function(questionnaireData,questDiv,player) {
     });
 };
 
-PlayerFrame.prototype.init = function() {
+PlayerQuestView.prototype.init = function() {
 
     var pageCount = 0;
     this.divContainer.push($(document.createElement('div')));

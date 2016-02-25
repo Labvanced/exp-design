@@ -13,31 +13,45 @@ var PlayerCallbacks = function(frameElement,view) {
         return  this.view.scale();
     }, this);
 
-    this.addCallbacks();
-
     this.frameElement.callbacks = this;
+    this.eventsByTriggerType = {};
+    this.addCallbacks();
 };
 
+PlayerCallbacks.prototype.onTrigger = function(triggerType) {
+    var eventsToTrigger = this.eventsByTriggerType[triggerType];
+    for (var i=0; i<eventsToTrigger.length; i++){
+        eventsToTrigger[i].action().run(this.dataModel);
+    }
+};
 
-
+PlayerCallbacks.prototype.registerEventByTrigger = function(event, triggerType) {
+    if (!this.eventsByTriggerType.hasOwnProperty(triggerType)){
+        this.eventsByTriggerType[triggerType] = [];
+    }
+    this.eventsByTriggerType[triggerType].push(event);
+};
 
 PlayerCallbacks.prototype.addCallbacks = function() {
-
-    var responses = this.dataModel.responses();
     var self = this;
 
-    for(var cb = 0; cb<responses.length;cb++){
-        var callback = responses[cb];
-        if(callback.isKeyboardResponse()){
+    var events = this.dataModel.responses();
+    for(var i = 0; i<events.length; i++){
+        var event = events[i];
+        if(event.isKeyboardResponse()){
 
         }
-        else if(callback.isMouseResponse()){
+        else if(event.isMouseResponse()){
+            if(event.responseKey()=="leftClick"){
+                this.registerEventByTrigger(event, 'mouseLeftClick');
 
-            if(callback.responseKey()=="leftClick"){
-
-                $(this.div).click(function() {
-                    callback.action().run(self.dataModel);
-                });
+                // closure to make event persistent over loop:
+                (function(event) {
+                    $(self.div).click(function() {
+                        //self.onTrigger('mouseLeftClick');
+                        event.action().run(self.dataModel);
+                    });
+                })(event);
 
             }
 
