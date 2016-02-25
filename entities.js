@@ -83,6 +83,10 @@ function entityFactory(entityJson, expData) {
             entity = new TextElement(expData);
             entity.fromJS(entityJson);
             break;
+        case 'newPage':
+            entity = new NewPageElement(expData);
+            entity.fromJS(entityJson);
+            break;
         default:
             console.error("type " + entityJson.type + " is not defined in factory method.")
     }

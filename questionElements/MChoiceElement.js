@@ -128,3 +128,32 @@ ko.components.register('choice-element-preview', {
         </div>\
         </div>'
 });
+
+
+ko.components.register('choice-playerview', {
+    viewModel: function(dataModel){
+
+        this.dataModel = dataModel;
+        this.questionText = dataModel.questionText;
+        this.openQuestion = dataModel.openQuestion;
+        this.newChoice = dataModel.newChoice;
+        this.choices = dataModel.choices;
+        this.newPage = dataModel.newPage;
+    },
+    template:
+        '<div class=\"panel-heading\">\
+         <h3 style="float: left">\
+            <span data-bind=\"text: questionText\"></span>\
+         </h3>\
+        </div>\
+        <br><br>\
+        <div class=\"panel-body\">\
+        <div data-bind=\"foreach: choices\">\
+            <input style="transform: scale(1.3); margin-bottom: 2%" type=\"radio\" data-bind=\"attr: {name: \'radio\'+ $parent.name}, click: function(){return true}, clickBubble: false\">\
+                <span style="font-size: large; margin-left: 1%" \
+                    data-bind=\"text: $data\">\
+                </span>\
+            <br>\
+        </div>\
+        </div>'
+});

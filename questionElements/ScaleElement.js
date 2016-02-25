@@ -151,3 +151,36 @@ ko.components.register('scale-element-preview',{
         </div>'
 
 });
+
+ko.components.register('scale-playerview',{
+    viewModel: function(dataModel){
+        this.dataModel = dataModel;
+        this.questionText = dataModel.questionText;
+        this.startChoice = dataModel.startChoice;
+        this.endChoice = dataModel.endChoice;
+        this.startLabel = dataModel.startLabel;
+        this.endLabel = dataModel.endLabel;
+        this.choices = dataModel.choices;
+    },
+    template:
+        '<div class="panel-heading">\
+        <h3 style="float: left">\
+            <span data-bind="text: questionText"></span>\
+        </h3>\
+        </div>\
+        <br><br>\
+        <div class="panel-body">\
+            <span style="display: inline-block;  margin-right: 1%; vertical-align: middle"\
+                 data-bind="text: startLabel"></span>\
+            <span style="display: inline-block; vertical-align: text-bottom" data-bind="foreach: choices">\
+                <div style="display: inline-block"> \
+                    <span style="display:block; position:relative; margin-left: 7px;  margin-right: 7px"\
+                        data-bind="text: $data"></span>\
+                    <input style="display:block; margin-left: 5px; margin-right: 5px;"\
+                         type="radio" data-bind="attr: {name: \'radio\' + $parent.name}, click: function(){return true}, clickBubble: false">\
+                 </div>\
+            </span>\
+            <span style="display: inline-block; margin: 5px; vertical-align: middle" data-bind="text: endLabel"></span>\
+        </div>'
+
+});

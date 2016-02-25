@@ -56,32 +56,6 @@ ko.components.register('text-element-edit', {
         var self = this;
         this.questionText = dataModel.questionText;
         this.tag = dataModel.tag;
-
-        tinymce.editors = [];
-
-        tinymce.init({
-            selector: "#myTextEditor",
-            menubar:false,
-            statusbar: false,
-
-            oninit: function(){
-                tinyMCE.activeEditor.setContent(self.questionText());
-                tinyMCE.execCommand('mceRepaint'); //can be needed
-            },
-
-            theme_advanced_disable : "bold,italic",
-            plugins: [
-                "image  preview ",
-                "searchreplace ",
-                "insertdatetime  table contextmenu paste",
-                "autoresize"
-            ],
-            toolbar: " undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
-
-            width: "100%",
-            height: "100%",
-            autoresize_bottom_margin: 50
-        });
     } ,
     template:
         '<div class="panel-body">\
@@ -108,9 +82,28 @@ ko.components.register('text-element-preview',{
       </div>\
       <br><br><br><br>\
         <div class="panel-body"><input style="position:relative;left: 0%; max-width:50%"\
-            disabled type="text"\
+            type="text"\
             class="form-control"\
             placeholder="Participant Answer">\
       </div>'
 });
 
+
+ko.components.register('text-playerview',{
+    viewModel: function(dataModel){
+        this.dataModel = dataModel;
+        this.questionText = dataModel.questionText;
+    },
+    template:
+        '<div class="panel-heading">\
+            <h3 style="float: left">\
+                <span data-bind="html: questionText"></span>\
+            </h3>\
+          </div>\
+          <br><br>\
+            <div class="panel-body"><input style="position:relative;left: 0%; max-width:50%"\
+                 type="text"\
+                class="form-control"\
+                placeholder="Participant Answer">\
+          </div>'
+});

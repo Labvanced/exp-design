@@ -20,18 +20,29 @@ NewPageElement.prototype.setPointers = function() {
 
 };
 
+NewPageElement.prototype.previousPage = function() {
+ player.currQuestionnaireView.previousPage()
+};
+
+NewPageElement.prototype.nextPage = function() {
+    player.currQuestionnaireView.nextPage()
+};
+
+NewPageElement.prototype.submit = function() {
+    // ToDO add recordings
+    player.currQuestionnaireView.end()
+};
+
 NewPageElement.prototype.toJS = function() {
     return {
         type: this.type,
-        id: this.id(),
-        questionText: this.questionText()
+        id: this.id()
     };
 };
 
 NewPageElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.id(data.id);
-    this.questionText(data.questionText);
 };
 
 ko.components.register('newPage-element-edit', {
@@ -65,3 +76,29 @@ ko.components.register('newPage-element-preview',{
         '   </div>' +
         '</div>'
 });
+
+
+ko.components.register('newpage-playerview',{
+    viewModel: function(dataModel){
+        this.dataModel = dataModel;
+        this.returnButton = dataModel.returnButton;
+
+        this.backwards= false;
+        this.next= true;
+        this.submit= false;
+        if (dataModel.currPage>1){
+            this.backwards = true;
+        }
+        if (dataModel.currPage==dataModel.totalPages){
+            this.next = false;
+            this.submit = true;
+        }
+    },
+    template:
+    '<div class="panel-body">' +
+    '<span data-bind="if:backwards"><button class="btn-primary" data-bind="click: function() { $root.previousPage(); }">back</button></span>'+
+    '<span data-bind="if:next"><button class="btn-primary" data-bind="click: function() { $root.nextPage(); }">next</button></span>'+
+    '<span data-bind="if:submit"><button class="btn-primary" data-bind="click: function() { $root.submit(); }">submit</button></span>'+
+    '</div>'
+});
+

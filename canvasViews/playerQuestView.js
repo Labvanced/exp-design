@@ -10,6 +10,7 @@ var PlayerQuestView = function(questionnaireData,questDiv,player) {
     this.player = player;
     this.startedTime= null;
     this.divContainer = [];
+    this.nrOfPages= 1;
 
     this.currentPage = ko.observable(null);
     var self = this;
@@ -21,25 +22,92 @@ var PlayerQuestView = function(questionnaireData,questDiv,player) {
 PlayerQuestView.prototype.init = function() {
 
     var pageCount = 0;
-    this.divContainer.push($(document.createElement('div')));
+    this.addNewPage();
 
     for (var i = 0; i < this.questionElements.length; i++) {
-        if (this.questionElements[i] instanceof NewPageElement) {
-            this.divContainer.push($(document.createElement('div')));
-            pageCount++;
-        }
-        else{
-            this.divContainer[pageCount]
-            // ToDo add divs for all elements
+        if (this.questionElements[i] instanceof NewPageElement){
+            this.nrOfPages++;
         }
     }
 
+    for (var i = 0; i < this.questionElements.length; i++) {
+
+        var elem = this.questionElements[i];
+
+        if (!(elem instanceof NewPageElement)){
+            if (elem instanceof CheckBoxElement) {
+                var newDiv = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'</div>");
+            }
+            else if (elem instanceof MChoiceElement) {
+                var newDiv = $("<div data-bind='component: {name : \"choice-playerview\", params : $data}'</div>");
+            }
+            else if (elem instanceof ParagraphElement) {
+                var newDiv = $("<div data-bind='component: {name : \"paragraph-playerview\", params : $data}'</div>");
+            }
+            else if (elem instanceof RangeElement) {
+                var newDiv = $("<div data-bind='component: {name : \"range-playerview\", params : $data}'</div>");
+            }
+            else if (elem instanceof ScaleElement) {
+                var newDiv = $("<div data-bind='component: {name : \"scale-playerview\", params : $data}'</div>");
+            }
+            else if (elem instanceof TextElement) {
+                var newDiv = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'</div>");
+            }
+            this.divContainer[pageCount].append(newDiv);
+            $(newDiv).css({
+                "color":"black"
+            });
+
+            ko.applyBindings(elem,newDiv[0]);
+        }
+        else  {
+            var newDiv = $("<div data-bind='component: {name : \"newpage-playerview\", params : $data}'</div>");
+            this.divContainer[pageCount].append(newDiv);
+            elem.currPage =  pageCount+1;
+            elem.totalPages =  this.nrOfPages;
+            ko.applyBindings(elem,newDiv[0]);
+            this.addNewPage();
+            pageCount++;
+        }
+    }
+
+    // append end page if not last element
+    if (!(elem instanceof NewPageElement)){
+        var newDiv = $("<div data-bind='component: {name : \"newpage-playerview\", params : $data}'</div>");
+        this.divContainer[pageCount].append(newDiv);
+        elem.currPage =  pageCount+1;
+        elem.totalPages =  this.nrOfPages;
+        ko.applyBindings(elem,newDiv[0]);
+    }
 };
+
+PlayerQuestView.prototype.addNewPage= function() {
+    var div = $(document.createElement('div'));
+    var header = $("<h3>Questionnaire</h3>");
+    $(header).css({
+        "color":"black",
+        "text-align": "center"
+    });
+    $(div).append(header);
+
+    $(div).css({
+        "position": "absolute",
+        "backgroundColor": "white",
+        "left": "20%",
+        "width": "60%",
+        "top": "100px"
+    });
+    this.divContainer.push(div);
+};
+
+
+
+
 
 PlayerQuestView.prototype.setCurrentPage= function(currentPage) {
 
-    this.questDiv.removeAllChildren();
-    var currentDiv= this.divContainer[currentPage];
+    this.questDiv.empty();
+    var currentDiv= this.divContainer[currentPage][0];
     this.questDiv.append(currentDiv);
 
 };

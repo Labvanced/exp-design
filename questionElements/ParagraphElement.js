@@ -81,7 +81,25 @@ ko.components.register('paragraph-element-preview',{
             </h3>\
             <br><br><br><br>\
             <div class="panel-body"><textarea style="position:relative;left: 0%; max-width:50%"\
-                   disabled class="form-control"\
+                   class="form-control"\
+                   placeholder="Participant Answer"></textarea>\
+            </div>\
+         </div>'
+});
+
+ko.components.register('paragraph-playerview',{
+    viewModel: function(dataModel){
+        this.dataModel = dataModel;
+        this.questionText = dataModel.questionText;
+    },
+    template:
+        '<div class="panel-heading">\
+            <h3 style="float: left">\
+                <span data-bind="text: questionText"></span>\
+            </h3>\
+            <br><br>\
+            <div class="panel-body"><textarea style="position:relative;left: 0%; max-width:50%"\
+                   class="form-control"\
                    placeholder="Participant Answer"></textarea>\
             </div>\
          </div>'
