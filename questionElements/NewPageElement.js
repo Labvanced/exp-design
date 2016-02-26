@@ -29,8 +29,7 @@ NewPageElement.prototype.nextPage = function() {
 };
 
 NewPageElement.prototype.submitQuestionnaire = function() {
-    // ToDO add recordings
-    player.currQuestionnaireView.submitQuestionanire()
+    player.currQuestionnaireView.submitQuestionnaire()
 };
 
 NewPageElement.prototype.toJS = function() {

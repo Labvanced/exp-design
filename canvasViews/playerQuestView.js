@@ -73,6 +73,7 @@ PlayerQuestView.prototype.init = function() {
 
     // append end page if not last element
     if (!(elem instanceof NewPageElement)){
+        var elem =  new NewPageElement(this.player.experiment.exp_data);
         var newDiv = $("<div data-bind='component: {name : \"newpage-playerview\", params : $data}'</div>");
         this.divContainer[pageCount].append(newDiv);
         elem.currPage =  pageCount+1;
@@ -138,7 +139,13 @@ PlayerQuestView.prototype.start= function() {
 
 
 
-PlayerQuestView.prototype.submitQuestionanire = function() {
+PlayerQuestView.prototype.submitQuestionnaire = function() {
+
+
+    // trialId
+  //  var recData = new RecData(currentElement.trialUniqueIdVar().id(),this.trial_present_order[this.trialIter] );
+ //    this.addRecording(this.currentBlock, this.trialIter ,recData.toJS());
+
     // set next frame
     this.player.currentSequence.selectNextElement();
     // empty div and make new frame
