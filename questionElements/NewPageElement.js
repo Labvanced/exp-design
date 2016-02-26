@@ -28,9 +28,9 @@ NewPageElement.prototype.nextPage = function() {
     player.currQuestionnaireView.nextPage()
 };
 
-NewPageElement.prototype.submit = function() {
+NewPageElement.prototype.submitQuestionnaire = function() {
     // ToDO add recordings
-    player.currQuestionnaireView.end()
+    player.currQuestionnaireView.submitQuestionanire()
 };
 
 NewPageElement.prototype.toJS = function() {
@@ -98,7 +98,7 @@ ko.components.register('newpage-playerview',{
     '<div class="panel-body">' +
     '<span data-bind="if:backwards"><button class="btn-primary" data-bind="click: function() { $root.previousPage(); }">back</button></span>'+
     '<span data-bind="if:next"><button class="btn-primary" data-bind="click: function() { $root.nextPage(); }">next</button></span>'+
-    '<span data-bind="if:submit"><button class="btn-primary" data-bind="click: function() { $root.submit(); }">submit</button></span>'+
+    '<span data-bind="if:submit"><button class="btn-primary" data-bind="click: function() { $root.submitQuestionnaire(); }">submit</button></span>'+
     '</div>'
 });
 

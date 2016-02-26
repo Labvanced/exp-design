@@ -15,7 +15,7 @@ var PlayerQuestView = function(questionnaireData,questDiv,player) {
     this.currentPage = ko.observable(null);
     var self = this;
     this.currentPage.subscribe(function(currentPage){
-        self.setCurrentPage(currentPage);
+        self.showCurrentPage(currentPage);
     });
 };
 
@@ -79,6 +79,12 @@ PlayerQuestView.prototype.init = function() {
         elem.totalPages =  this.nrOfPages;
         ko.applyBindings(elem,newDiv[0]);
     }
+
+    // add divs to DOM
+    for (var i = 0; i <this.divContainer.length; i++) {
+        this.questDiv.append(this.divContainer[i][0]);
+    }
+
 };
 
 PlayerQuestView.prototype.addNewPage= function() {
@@ -95,7 +101,8 @@ PlayerQuestView.prototype.addNewPage= function() {
         "backgroundColor": "white",
         "left": "20%",
         "width": "60%",
-        "top": "100px"
+        "top": "100px",
+        "display": "none"
     });
     this.divContainer.push(div);
 };
@@ -104,12 +111,18 @@ PlayerQuestView.prototype.addNewPage= function() {
 
 
 
-PlayerQuestView.prototype.setCurrentPage= function(currentPage) {
+PlayerQuestView.prototype.showCurrentPage= function(currentPage) {
 
-    this.questDiv.empty();
-    var currentDiv= this.divContainer[currentPage][0];
-    this.questDiv.append(currentDiv);
+    $(this.questDiv.children()[currentPage]).css({
+        "display": "block"
+    });
+};
 
+PlayerQuestView.prototype.hide= function() {
+
+    $(this.questDiv.children()[this.currentPage()]).css({
+        "display": "none"
+    });
 };
 
 
@@ -120,7 +133,12 @@ PlayerQuestView.prototype.start= function() {
 };
 
 
-PlayerQuestView.prototype.end = function() {
+
+
+
+
+
+PlayerQuestView.prototype.submitQuestionanire = function() {
     // set next frame
     this.player.currentSequence.selectNextElement();
     // empty div and make new frame
@@ -131,10 +149,12 @@ PlayerQuestView.prototype.end = function() {
 
 
 PlayerQuestView.prototype.nextPage = function() {
+    this.hide();
     this.currentPage(this.currentPage()+1);
 };
 
 
 PlayerQuestView.prototype.previousPage = function() {
+    this.hide();
     this.currentPage(this.currentPage()-1);
 };
