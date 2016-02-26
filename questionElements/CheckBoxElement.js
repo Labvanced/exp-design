@@ -12,12 +12,23 @@ var CheckBoxElement= function(expData) {
 
     this.openQuestion=  ko.observable(false);
     this.choices= ko.observableArray([ko.observable("Check")]);
+    this.answer = ko.observableArray([false]);
     this.newPage = ko.observable(false);
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
     this.variable = ko.observable();
-    this.answer = ko.observableArray([]);
+
 };
+
+CheckBoxElement.prototype.changeCheck = function(index) {
+    if (this.answer()[index]){
+        this.answer.splice(index,1,false);
+    }
+    else{
+        this.answer.splice(index,1,true);
+    }
+};
+
 
 CheckBoxElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
@@ -56,7 +67,8 @@ CheckBoxElement.prototype.toJS = function() {
         id: this.id(),
         questionText: this.questionText(),
         choices: choices,
-        variable: this.variable().id()
+        variable: this.variable().id(),
+        answer: this.answer()
     };
 };
 
@@ -66,6 +78,7 @@ CheckBoxElement.prototype.fromJS = function(data) {
     this.questionText(data.questionText);
     this.choices(data.choices);
     this.variable(data.variable);
+    this.answer(data.answer);
 };
 
 console.log("register checkbox element edit...");
@@ -74,13 +87,16 @@ ko.components.register('checkbox-element-edit', {
         this.dataModel = dataModel;
         this.questionText = dataModel.questionText;
         this.choices = dataModel.choices;
+        this.answer = dataModel.answer;
 
         this.addChoice = function() {
             this.choices.push(ko.observable(""));
+            this.answer.push(false);
         };
 
         this.removeChoice = function(idx) {
             this.choices.splice(idx,1);
+            this.answer.splice(idx,1);
         };
 
 
@@ -124,6 +140,7 @@ ko.components.register('checkbox-element-preview', {
         </div>'
 });
 
+//  click: function(){$root.changeCheck($index())}
 
 ko.components.register('checkbox-playerview', {
     viewModel: function(dataModel){
@@ -141,7 +158,7 @@ ko.components.register('checkbox-playerview', {
         <br><br>\
         <div class="panel-body">\
             <div data-bind="foreach: choices">\
-                <input style="transform: scale(1.3); margin-bottom: 2%" type="checkbox" value="$data" data-bind="attr: {name: \'radio\'+ $parent.name}, checked: $root.answer, click: function(){return true}, clickBubble: false ">\
+                <input style="transform: scale(1.3); margin-bottom: 2%" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\
                 <span style="font-size: large; margin-left: 1%;" data-bind="text: $data"></span>\
                 <br>\
             </div>\

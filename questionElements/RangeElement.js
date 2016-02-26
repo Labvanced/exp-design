@@ -17,12 +17,12 @@ var RangeElement= function(expData) {
     this.maxChoice= ko.observable(5);
     this.startLabel= ko.observable("start label");
     this.endLabel= ko.observable("end label");
-    this.choice = ko.observable(1);
+    this.answer = ko.observable(1);
     this.newPage = ko.observable(false);
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
     this.variable = ko.observable();
-    this.answer = ko.observable();
+
 };
 
 RangeElement.prototype.addVar = function() {
@@ -55,7 +55,8 @@ RangeElement.prototype.toJS = function() {
         maxChoice: this.maxChoice(),
         startLabel: this.startLabel(),
         endLabel: this.endLabel(),
-        variable: this.variable().id()
+        variable: this.variable().id(),
+        answer: this.answer()
     };
 };
 
@@ -68,6 +69,7 @@ RangeElement.prototype.fromJS = function(data) {
     this.startLabel(data.startLabel);
     this.endLabel(data.endLabel);
     this.variable(data.variable);
+    this.answer(data.answer);
 };
 
 
@@ -76,7 +78,7 @@ ko.components.register('range-element-edit', {
 
         this.dataModel = dataModel;
         this.questionText = dataModel.questionText;
-        this.choices = dataModel.choices;
+        this.answer = dataModel.answer;
         this.minChoice = dataModel.minChoice;
         this.maxChoice = dataModel.maxChoice;
         this.startLabel = dataModel.startLabel;
@@ -90,9 +92,9 @@ ko.components.register('range-element-edit', {
             <br><br>\
         <strong>Range:</strong>\
         <br><br>\
-        <input style="max-width: 30px" type="text" data-bind="textInput: minChoice"></input>\
+        <input style="max-width: 30px" type="text" data-bind="textInput: minChoice">\
         To\
-        <input style="max-width: 30px" type="text" data-bind="textInput: maxChoice""></input>\
+        <input style="max-width: 30px" type="text" data-bind="textInput: maxChoice"">\
         <br><br><br>\
         <span style="display: inline-block; width: 5%; overflow: scroll; margin-top: 2%" data-bind="text: minChoice"></span>\
         <span style="display: inline-block; margin-left: 5%;"><input\
@@ -122,7 +124,7 @@ ko.components.register('range-element-preview',{
         this.maxChoice = dataModel.maxChoice;
         this.startLabel = dataModel.startLabel;
         this.endLabel = dataModel.endLabel;
-        this.choice = dataModel.choice;
+        this.answer = dataModel.answer;
         this.newPage = dataModel.newPage;
     },
     template:
@@ -140,11 +142,11 @@ ko.components.register('range-element-preview',{
             <span style="display: inline-block; width: 80%">\
                 <span style="margin-right: auto; margin-top: 1%; float: left" data-bind="text: minChoice"></span>\
                 <input style="margin-left: 5%; margin-right: auto; float: left; max-width: 80%" data-highlight="true"\
-                         type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, value: choice, valueUpdate: \'input\',  click: function(){return true}, clickBubble: false">\
+                         type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, value: answer, valueUpdate: \'input\',  click: function(){return true}, clickBubble: false">\
                 <span style="margin-left: auto;  width: 5%; margin-right: 5%; margin-top: 1%; float: right" data-bind="text: maxChoice"></span>\
             </span>\
             <br><br>\
-            <output data-bind="text: choice"></output>\
+            <output data-bind="text: answer"></output>\
         </div>\
         <div data-bind="visible: newPage">\
                 <img style="float: right" src="/resources/next.png">\
@@ -160,9 +162,9 @@ ko.components.register('range-playerview',{
         this.maxChoice = dataModel.maxChoice;
         this.startLabel = dataModel.startLabel;
         this.endLabel = dataModel.endLabel;
-        this.choice = dataModel.choice;
+        this.answer = dataModel.answer;
         this.newPage = dataModel.newPage;
-        this.answer = dataModel.choice;
+        this.answer = dataModel.answer;
     },
     template:
         '<div class="panel-heading">\
@@ -178,11 +180,11 @@ ko.components.register('range-playerview',{
             <span style="display: inline-block; width: 80%">\
                 <span style="margin-right: auto; margin-top: 1%; float: left" data-bind="text: minChoice"></span>\
                 <input style="margin-left: 5%; margin-right: auto; float: left; max-width: 80%" data-highlight="true"\
-                         type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, value: choice, valueUpdate: \'input\',  click: function(){return true}, clickBubble: false">\
+                         type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, value: answer, valueUpdate: \'input\',  click: function(){return true}, clickBubble: false">\
                 <span style="margin-left: auto;  width: 5%; margin-right: 5%; margin-top: 1%; float: right" data-bind="text: maxChoice"></span>\
             </span>\
             <br><br>\
-            <output data-bind="text: choice"></output>\
+            <output data-bind="text: answer"></output>\
         </div>\
         <div data-bind="visible: newPage">\
                 <img style="float: right" src="/resources/next.png">\

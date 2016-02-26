@@ -42,6 +42,7 @@ NewPageElement.prototype.toJS = function() {
 NewPageElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.id(data.id);
+
 };
 
 ko.components.register('newPage-element-edit', {

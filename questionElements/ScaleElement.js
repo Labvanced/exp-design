@@ -51,7 +51,8 @@ ScaleElement.prototype.toJS = function() {
         startLabel: this.startLabel(),
         endLabel: this.endLabel(),
         choices: this.choices(),
-        variable: this.variable().id()
+        variable: this.variable().id(),
+        answer: this.answer()
     };
 };
 
@@ -65,6 +66,7 @@ ScaleElement.prototype.fromJS = function(data) {
     this.endLabel(data.endLabel);
     this.choices(data.choices);
     this.variable(data.variable);
+    this.answer(data.answer);
 };
 
 
@@ -179,7 +181,7 @@ ko.components.register('scale-playerview',{
                     <span style="display:block; position:relative; margin-left: 7px;  margin-right: 7px"\
                         data-bind="text: $data"></span>\
                     <input style="display:block; margin-left: 5px; margin-right: 5px;"\
-                         type="radio" value="$data" data-bind="attr: {name: \'radio\' + $parent.name}, checked: $root.answer, click: function(){return true}, clickBubble: false">\
+                         type="radio" value="$data" data-bind="attr: {value:$data}, checked: $root.answer, click: function(){return true}, clickBubble: false">\
                  </div>\
             </span>\
             <span style="display: inline-block; margin: 5px; vertical-align: middle" data-bind="text: endLabel"></span>\

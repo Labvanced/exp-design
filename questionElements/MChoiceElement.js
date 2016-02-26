@@ -55,7 +55,8 @@ MChoiceElement.prototype.toJS = function() {
         id: this.id(),
         questionText: this.questionText(),
         choices: choices,
-        variable: this.variable().id()
+        variable: this.variable().id(),
+        answer: this.answer()
     };
 };
 
@@ -65,6 +66,7 @@ MChoiceElement.prototype.fromJS = function(data) {
     this.questionText(data.questionText);
     this.choices(data.choices);
     this.variable(data.variable);
+    this.answer(data.answer);
 };
 
 ko.components.register('choice-element-edit', {
@@ -151,10 +153,8 @@ ko.components.register('choice-playerview', {
         <br><br>\
         <div class=\"panel-body\">\
         <div data-bind=\"foreach: choices\">\
-            <input style="transform: scale(1.3); margin-bottom: 2%" value = "$data" type=\"radio\" data-bind=\"attr: {name: \'radio\'+ $parent.name}, checked: $root.answer, click: function(){return true}, clickBubble: false\">\
-                <span style="font-size: large; margin-left: 1%" \
-                    data-bind=\"text: $data\">\
-                </span>\
+            <input style="transform: scale(1.3); margin-bottom: 2%" type=\"radio\" data-bind="attr: {value:$data}, checked: $root.answer, click: function(){return true}, clickBubble: false\">\
+            <span style="font-size: large; margin-left: 1%" data-bind=\"text: $data\"></span>\
             <br>\
         </div>\
         </div>'

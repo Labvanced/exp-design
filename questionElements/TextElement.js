@@ -41,7 +41,8 @@ TextElement.prototype.toJS = function() {
         type: this.type,
         id: this.id(),
         questionText: this.questionText(),
-        variable: this.variable().id()
+        variable: this.variable().id(),
+        answer: this.answer()
     };
 };
 
@@ -50,6 +51,7 @@ TextElement.prototype.fromJS = function(data) {
     this.id(data.id);
     this.questionText(data.questionText);
     this.variable(data.variable);
+    this.answer(data.answer);
 };
 
 ko.components.register('text-element-edit', {

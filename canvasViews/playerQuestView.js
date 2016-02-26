@@ -81,8 +81,13 @@ PlayerQuestView.prototype.init = function() {
         ko.applyBindings(elem,newDiv[0]);
     }
 
-    // add divs to DOM
+    // make scrollbars and add divs to DOM
     for (var i = 0; i <this.divContainer.length; i++) {
+        var div = this.divContainer[pageCount];
+        $(div).height()
+        $(div).css({
+            'overflow-y':"scroll"
+        });
         this.questDiv.append(this.divContainer[i][0]);
     }
 
