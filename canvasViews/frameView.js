@@ -156,6 +156,9 @@ FrameView.prototype.addElem= function(elementData,index) {
         if (this.type=="editorView"){
             var callbacks = new EditorCallbacks(htmlFrameElement,this);
         }
+        else if (this.type=="playerView"){
+            var callbacks = new PlayerCallbacks(htmlFrameElement,this);
+        }
         this.viewElements.splice(index+1,0,htmlFrameElement);
         $(this.divContainer).append(htmlFrameElement.div);
     }

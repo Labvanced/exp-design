@@ -23,6 +23,12 @@ var Response= function(parent) {
     this.isMouseResponse = ko.computed(function(){
         return (self.responseType() == "mouse");
     }, this);
+    this.stimulusOffset= ko.computed(function(){
+        return (self.responseType() == "stimulusOff");
+    }, this);
+    this.stimulusOnset= ko.computed(function(){
+        return (self.responseType() == "stimulusOn");
+    }, this);
 
     this.actionType = ko.pureComputed({
         read: function () {

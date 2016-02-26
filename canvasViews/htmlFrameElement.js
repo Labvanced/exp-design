@@ -238,25 +238,35 @@ HtmlFrameElement.prototype.replaceWithVideo = function(videoSource) {
 
         if (this.editor.type == "editorView") {
             this.video.controls = true;
+            this.video.oncanplaythrough = function () {
+                // initialize original size:
+                self.fullWidth($(this).width());
+                self.fullHeight($(this).height());
+                self.update(true,true);
+                $(self.div).resizable( "destroy" );
+                self.callbacks.addResize();
+            }
+
         }
         else if (this.editor.type == "sequenceView") {
             this.video.controls = false;
+            this.video.oncanplaythrough = function () {
+                // initialize original size:
+                self.fullWidth($(this).width());
+                self.fullHeight($(this).height());
+                self.update(true,true);
+            }
         }
 
-        this.video.oncanplaythrough = function () {
-
-            // initialize original size:
-            self.fullWidth($(this).width());
-            self.fullHeight($(this).height());
-            self.update(true,true);
-
-           if (self.editor.type == "editorView"){
-               $(self.div).resizable( "destroy" );
-               self.callbacks.addResize();
-           }
-
+        else if(this.editor.type == "playerView"){
+            this.video.controls = false;
+            this.video.preload = "auto";
+            this.video.oncanplaythrough = function () {
+                // initialize original size:
+                self.fullWidth($(this).width());
+                self.fullHeight($(this).height());
+                self.update(true,true);
+            }
         }
-
-
     }
 };

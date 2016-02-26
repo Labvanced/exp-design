@@ -56,6 +56,16 @@ PlayerCallbacks.prototype.addCallbacks = function() {
             }
 
         }
+        if(event.stimulusOffset()){
+            this.frameElement.video.onended = function(e) {
+                event.action().run(self.dataModel);
+            };
+        }
+
+        if(event.stimulusOnset()){
+
+        }
+
     }
 };
 
