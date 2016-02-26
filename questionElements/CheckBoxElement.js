@@ -16,6 +16,7 @@ var CheckBoxElement= function(expData) {
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
     this.variable = ko.observable();
+    this.answer = ko.observableArray([]);
 };
 
 CheckBoxElement.prototype.addVar = function() {
@@ -129,6 +130,7 @@ ko.components.register('checkbox-playerview', {
         this.dataModel = dataModel;
         this.questionText = dataModel.questionText;
         this.choices = dataModel.choices;
+        this.answer = dataModel.answer;
     },
     template:
         '<div class="panel-heading">\
@@ -139,7 +141,7 @@ ko.components.register('checkbox-playerview', {
         <br><br>\
         <div class="panel-body">\
             <div data-bind="foreach: choices">\
-                <input style="transform: scale(1.3); margin-bottom: 2%" type="checkbox" data-bind="attr: {name: \'radio\'+ $parent.name}, click: function(){return true}, clickBubble: false ">\
+                <input style="transform: scale(1.3); margin-bottom: 2%" type="checkbox" value="$data" data-bind="attr: {name: \'radio\'+ $parent.name}, checked: $root.answer, click: function(){return true}, clickBubble: false ">\
                 <span style="font-size: large; margin-left: 1%;" data-bind="text: $data"></span>\
                 <br>\
             </div>\

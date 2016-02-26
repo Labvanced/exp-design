@@ -18,6 +18,7 @@ var ScaleElement= function(expData) {
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
     this.variable = ko.observable();
+    this.answer = ko.observableArray([]);
 };
 
 ScaleElement.prototype.addVar = function() {
@@ -161,6 +162,7 @@ ko.components.register('scale-playerview',{
         this.startLabel = dataModel.startLabel;
         this.endLabel = dataModel.endLabel;
         this.choices = dataModel.choices;
+        this.answer = dataModel.answer;
     },
     template:
         '<div class="panel-heading">\
@@ -177,7 +179,7 @@ ko.components.register('scale-playerview',{
                     <span style="display:block; position:relative; margin-left: 7px;  margin-right: 7px"\
                         data-bind="text: $data"></span>\
                     <input style="display:block; margin-left: 5px; margin-right: 5px;"\
-                         type="radio" data-bind="attr: {name: \'radio\' + $parent.name}, click: function(){return true}, clickBubble: false">\
+                         type="radio" value="$data" data-bind="attr: {name: \'radio\' + $parent.name}, checked: $root.answer, click: function(){return true}, clickBubble: false">\
                  </div>\
             </span>\
             <span style="display: inline-block; margin: 5px; vertical-align: middle" data-bind="text: endLabel"></span>\

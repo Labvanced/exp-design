@@ -12,6 +12,7 @@ var TextElement = function(expData) {
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
     this.variable = ko.observable();
+    this.answer = ko.observable("");
 };
 
 
@@ -93,6 +94,7 @@ ko.components.register('text-playerview',{
     viewModel: function(dataModel){
         this.dataModel = dataModel;
         this.questionText = dataModel.questionText;
+        this.answer = dataModel.answer;
     },
     template:
         '<div class="panel-heading">\
@@ -104,6 +106,6 @@ ko.components.register('text-playerview',{
             <div class="panel-body"><input style="position:relative;left: 0%; max-width:50%"\
                  type="text"\
                 class="form-control"\
-                placeholder="Participant Answer">\
+                placeholder="Participant Answer" data-bind="textInput: answer">\
           </div>'
 });

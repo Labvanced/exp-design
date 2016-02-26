@@ -15,6 +15,7 @@ var MChoiceElement = function(expData) {
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
     this.variable = ko.observable();
+    this.answer = ko.observable("");
 };
 
 MChoiceElement.prototype.addVar = function() {
@@ -139,6 +140,7 @@ ko.components.register('choice-playerview', {
         this.newChoice = dataModel.newChoice;
         this.choices = dataModel.choices;
         this.newPage = dataModel.newPage;
+        this.answer = dataModel.answer;
     },
     template:
         '<div class=\"panel-heading\">\
@@ -149,7 +151,7 @@ ko.components.register('choice-playerview', {
         <br><br>\
         <div class=\"panel-body\">\
         <div data-bind=\"foreach: choices\">\
-            <input style="transform: scale(1.3); margin-bottom: 2%" type=\"radio\" data-bind=\"attr: {name: \'radio\'+ $parent.name}, click: function(){return true}, clickBubble: false\">\
+            <input style="transform: scale(1.3); margin-bottom: 2%" value = "$data" type=\"radio\" data-bind=\"attr: {name: \'radio\'+ $parent.name}, checked: $root.answer, click: function(){return true}, clickBubble: false\">\
                 <span style="font-size: large; margin-left: 1%" \
                     data-bind=\"text: $data\">\
                 </span>\
