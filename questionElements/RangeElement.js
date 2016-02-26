@@ -22,6 +22,7 @@ var RangeElement= function(expData) {
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
     this.variable = ko.observable();
+    this.answer = ko.observable();
 };
 
 RangeElement.prototype.addVar = function() {
@@ -161,6 +162,7 @@ ko.components.register('range-playerview',{
         this.endLabel = dataModel.endLabel;
         this.choice = dataModel.choice;
         this.newPage = dataModel.newPage;
+        this.answer = dataModel.choice;
     },
     template:
         '<div class="panel-heading">\

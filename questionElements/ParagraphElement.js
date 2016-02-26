@@ -12,6 +12,7 @@ var ParagraphElement = function(expData) {
     this.selected = ko.observable(false);
     this.tag = ko.observable("");
     this.variable = ko.observable();
+    this.answer = ko.observable("");
 };
 
 ParagraphElement.prototype.addVar = function() {
@@ -60,7 +61,7 @@ ko.components.register('paragraph-element-edit', {
     } ,
     template:
         '<div class="panel-body">\
-            <input style="max-width:50%" type="text" data-bind="textInput: questionText"\
+            <input style="max-width:50%" type="text" data-bind="tinymce: questionText"\
             class="form-control" placeholder="Your Question">\
             <br><br>\
             </div>\
@@ -77,7 +78,7 @@ ko.components.register('paragraph-element-preview',{
         '<div class="panel-heading">\
             <span style="float:right;;"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
             <h3 style="float: left">\
-                <span data-bind="text: questionText"></span>\
+                <span data-bind="html: questionText"></span>\
             </h3>\
             <br><br><br><br>\
             <div class="panel-body"><textarea style="position:relative;left: 0%; max-width:50%"\
@@ -91,16 +92,17 @@ ko.components.register('paragraph-playerview',{
     viewModel: function(dataModel){
         this.dataModel = dataModel;
         this.questionText = dataModel.questionText;
+        this.answer = dataModel.answer;
     },
     template:
         '<div class="panel-heading">\
             <h3 style="float: left">\
-                <span data-bind="text: questionText"></span>\
+                <span data-bind="html: questionText"></span>\
             </h3>\
             <br><br>\
             <div class="panel-body"><textarea style="position:relative;left: 0%; max-width:50%"\
                    class="form-control"\
-                   placeholder="Participant Answer"></textarea>\
+                   placeholder="Participant Answer" data-bind="textInput: answer"></textarea>\
             </div>\
          </div>'
 });
