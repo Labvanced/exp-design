@@ -146,12 +146,18 @@ PlayerQuestView.prototype.start= function() {
 
 PlayerQuestView.prototype.submitQuestionnaire = function() {
 
+    var answers = [];
+    var varIds = [];
+    for (var i = 0; i<this.questionElements.length;i++){
+        if (!(this.questionElements[i] instanceof NewPageElement)){
+            varIds.push(this.questionElements[i].variable().id());
+            answers.push(this.questionElements[i].answer());
+        }
+    }
 
-    // trialId
-  //  var recData = new RecData(currentElement.trialUniqueIdVar().id(),this.trial_present_order[this.trialIter] );
- //    this.addRecording(this.currentBlock, this.trialIter ,recData.toJS());
+    var recData = new RecData(varIds,answers);
+    this.player.addRecording(this.player.currentBlock, this.player.trialIter ,recData.toJS());
 
-    // set next frame
     this.player.currentSequence.selectNextElement();
     // empty div and make new frame
     this.questDiv.remove();
