@@ -69,7 +69,8 @@ ko.components.register('newPage-element-preview',{
     template:
         '<div class="panel-body">' +
         '<span style="float: right"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>' +
-        '   <div style="margin: auto; max-width: 40%">' +
+        '<div style="text-align: center;">PAGE BREAK</div>   ' +
+        '<div style="margin: auto; max-width: 40%">' +
         '       <img style="float: right;" src="/resources/next.png"/></img>' +
         '       <img data-bind="visible: returnButton" style="float: left; -moz-transform: scale(-1, 1);' +
         ' -webkit-transform: scale(-1, 1); -o-transform: scale(-1, 1); -ms-transform: scale(-1, 1); transform: scale(-1, 1);" src="/resources/next.png">' +

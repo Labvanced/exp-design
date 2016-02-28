@@ -82,13 +82,13 @@ ko.components.register('text-element-preview',{
         <h3 style="float: left">\
             <span data-bind="html: questionText"></span>\
         </h3>\
-      </div>\
-      <br><br><br><br>\
-        <div class="panel-body"><input style="position:relative;left: 0%; max-width:50%"\
-            type="text"\
-            class="form-control"\
-            placeholder="Participant Answer">\
-      </div>'
+    </div>\
+    <br><br><br><br>\
+    <div class="panel-body"><input style="position:relative;left: 0%; max-width:50%"\
+        type="text"\
+        class="form-control"\
+        placeholder="Participant Answer">\
+    </div>'
 });
 
 
@@ -104,7 +104,7 @@ ko.components.register('text-playerview',{
                 <span data-bind="html: questionText"></span>\
             </h3>\
           </div>\
-          <br><br>\
+          <br><br><br>\
             <div class="panel-body"><input style="position:relative;left: 0%; max-width:50%"\
                  type="text"\
                 class="form-control"\

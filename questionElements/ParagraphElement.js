@@ -15,6 +15,7 @@ var ParagraphElement = function(expData) {
     this.answer = ko.observable("");
 };
 
+
 ParagraphElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.subtype(GlobalVar.subtypes[7]);
@@ -63,11 +64,12 @@ ko.components.register('paragraph-element-edit', {
     } ,
     template:
         '<div class="panel-body">\
-            <input style="max-width:50%" type="text" data-bind="tinymce: questionText"\
-            class="form-control" placeholder="Your Question">\
-            <br><br>\
-            </div>\
-         </div>'
+                <div id="toolbar" class="ui-layout-content"></div>\
+                <form id="newtextArea" class="quest-form2" action="javascript:void(0);">\
+                    <textarea data-bind="tinymce: questionText" id="myTextEditor" name="content" style="width:100%; height:100%"></textarea>\
+                </form>\
+                <br><br>\
+        </div>'
 
 });
 
@@ -77,17 +79,21 @@ ko.components.register('paragraph-element-preview',{
        this.questionText = dataModel.questionText;
    },
     template:
+
         '<div class="panel-heading">\
             <span style="float:right;;"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
             <h3 style="float: left">\
                 <span data-bind="html: questionText"></span>\
             </h3>\
-            <br><br><br><br>\
-            <div class="panel-body"><textarea style="position:relative;left: 0%; max-width:50%"\
-                   class="form-control"\
-                   placeholder="Participant Answer"></textarea>\
-            </div>\
-         </div>'
+        </div>\
+        <br><br><br><br>\
+        <div class="panel-body">\
+            <textarea style="position:relative;left: 0%; max-width:50%"\
+               class="form-control"\
+               placeholder="Participant Answer">\
+            </textarea>\
+        </div>'
+
 });
 
 ko.components.register('paragraph-playerview',{
@@ -101,10 +107,12 @@ ko.components.register('paragraph-playerview',{
             <h3 style="float: left">\
                 <span data-bind="html: questionText"></span>\
             </h3>\
-            <br><br>\
-            <div class="panel-body"><textarea style="position:relative;left: 0%; max-width:50%"\
-                   class="form-control"\
-                   placeholder="Participant Answer" data-bind="textInput: answer"></textarea>\
-            </div>\
-         </div>'
+        </div>\
+        <br><br><br>\
+        <div class="panel-body">\
+            <textarea style="position:relative;left: 0%; max-width:50%"\
+               class="form-control"\
+               placeholder="Participant Answer" data-bind="textInput: answer">\
+            </textarea>\
+        </div>'
 });
