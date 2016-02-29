@@ -20,6 +20,7 @@ var ExpTrialLoop = function (expData) {
     this.trialUniqueIdVar = ko.observable(null);
     this.trialTypeIdVar = ko.observable(null);
     this.trialOrderVar = ko.observable(null);
+    this.trialEmotionVar = ko.observable(null);
     this.factors = ko.observableArray([]);
     this.additionalTrialTypes =  ko.observableArray([]);
     this.eventVariables = ko.observableArray([]);
@@ -194,6 +195,7 @@ var ExpTrialLoop = function (expData) {
         array.push(this.trialUniqueIdVar());
         array.push(this.trialTypeIdVar());
         array.push(this.trialOrderVar());
+        array.push(this.trialEmotionVar());
         var list1 = this.factors();
         var list2 = this.additionalTrialTypes();
         var list3 = this.eventVariables();
@@ -238,6 +240,19 @@ ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
     this.trialTypeIdVar(entitiesArr.byId[this.trialTypeIdVar()]);
     this.trialOrderVar(entitiesArr.byId[this.trialOrderVar()]);
 
+    if (this.trialEmotionVar()) {
+        this.trialEmotionVar(entitiesArr.byId[this.trialEmotionVar()]);
+    }
+    else {
+        var trialEmotionVar = new GlobalVar(this.expData);
+        trialEmotionVar.subtype(GlobalVar.subtypes[0]);
+        trialEmotionVar.dataType(GlobalVar.dataTypes[0]);
+        trialEmotionVar.scope(GlobalVar.scopes[0]);
+        trialEmotionVar.scale(GlobalVar.scales[0]);
+        trialEmotionVar.name("Emotion");
+        this.trialEmotionVar(trialEmotionVar);
+    }
+
     // convert ids to actual pointers:
     this.factors(jQuery.map( this.factors(), function( id ) {
         return entitiesArr.byId[id];
@@ -273,6 +288,10 @@ ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
 
     if (!entitiesArr.byId.hasOwnProperty(this.trialOrderVar().id())) {
         entitiesArr.push(this.trialOrderVar());
+    }
+
+    if (!entitiesArr.byId.hasOwnProperty(this.trialEmotionVar().id())) {
+        entitiesArr.push(this.trialEmotionVar());
     }
 
     jQuery.each(this.factors(), function( index, elem ) {
@@ -396,6 +415,9 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.trialUniqueIdVar(data.trialUniqueIdVar);
     this.trialTypeIdVar(data.trialTypeIdVar);
     this.trialOrderVar(data.trialOrderVar);
+    if (data.hasOwnProperty('trialEmotionVar')){
+        this.trialEmotionVar(data.trialEmotionVar);
+    }
     this.factors(data.factors);
     this.additionalTrialTypes(data.additionalTrialTypes);
     this.eventVariables(data.eventVariables);
@@ -427,6 +449,7 @@ ExpTrialLoop.prototype.toJS = function() {
         trialUniqueIdVar: this.trialUniqueIdVar().id(),
         trialTypeIdVar: this.trialTypeIdVar().id(),
         trialOrderVar: this.trialOrderVar().id(),
+        trialEmotionVar: this.trialEmotionVar().id(),
         factors: jQuery.map( this.factors(), function( factor ) { return factor.id(); } ),
         additionalTrialTypes: jQuery.map( this.additionalTrialTypes(), function( addtrialtypes ) { return addtrialtypes.id(); }),
         eventVariables: jQuery.map( this.eventVariables(), function( eventVariables ) { return eventVariables.id(); })

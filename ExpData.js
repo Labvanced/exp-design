@@ -270,6 +270,14 @@ ExpData.prototype.addNewBlock = function() {
                 trialOrderVar.scale(GlobalVar.scales[2]);
                 trialOrderVar.name("Trial Presentation Order");
                 blockElements[i].trialOrderVar(trialOrderVar);
+
+                var trialEmotionVar = new GlobalVar(this.expData);
+                trialEmotionVar.subtype(GlobalVar.subtypes[0]);
+                trialEmotionVar.dataType(GlobalVar.dataTypes[0]);
+                trialEmotionVar.scope(GlobalVar.scopes[0]);
+                trialEmotionVar.scale(GlobalVar.scales[0]);
+                trialEmotionVar.name("Emotion");
+                blockElements[i].trialEmotionVar(trialEmotionVar);
             }
             // specify executeIn port:
             var portId = null;
