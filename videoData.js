@@ -61,6 +61,10 @@ VideoData.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
+VideoData.prototype.reAddEntities = function(entitiesArr) {
+    this.modifier().reAddEntities(entitiesArr);
+};
+
 VideoData.prototype.fromJS = function(data) {
     var self = this;
     this.id(data.id);
