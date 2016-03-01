@@ -1,8 +1,6 @@
 // � by Caspar Goeke and Holger Finger
 
 var CanvasFrameElement = function(dataModel,editor) {
-
-
     this.dataModel = dataModel;
     this.editor = editor;
 
@@ -22,13 +20,8 @@ var CanvasFrameElement = function(dataModel,editor) {
     this.setupCanvasAndStage();
     this.setupSubscriber();
 
-    // create box, label and resizeIcon
-    this.recreatePlaceHolderBoxAndLabel();
-
-
     // replace with image
-    this.replaceWithImage(this.dataModel.imgSource());
-
+    this.renderShapeOrImage(this.dataModel.imgSource());
 };
 
 
@@ -43,7 +36,6 @@ CanvasFrameElement.prototype.setupCanvasAndStage = function() {
 
     this.canvas = document.createElement('canvas');
     $(this.div).append(this.canvas);
-
 
     if (this.editor.type == "editorView") {
         this.canvas.id = "editorView"+this.dataModel.id();
@@ -130,6 +122,9 @@ CanvasFrameElement.prototype.setupSubscriber = function() {
         this.height = ko.computed(function() {
             return this.dataModel.modifier().selectedTrialView.editorHeight();
         }, this).extend({ rateLimit: { timeout: 100, method: "notifyWhenChangesStop" } });
+        this.keepAspectRatio = ko.computed(function() {
+            return this.dataModel.modifier().selectedTrialView.keepAspectRatio();
+        }, this);
 
     }
     else {
@@ -145,6 +140,9 @@ CanvasFrameElement.prototype.setupSubscriber = function() {
         this.height = ko.computed(function() {
             return this.dataModel.editorHeight();
         }, this).extend({ rateLimit: { timeout: 200, method: "notifyWhenChangesStop" } });
+        this.keepAspectRatio = ko.computed(function() {
+            return this.dataModel.keepAspectRatio();
+        }, this);
     }
 
     this.x.subscribe(function (x) {
@@ -165,6 +163,9 @@ CanvasFrameElement.prototype.setupSubscriber = function() {
         self.recreatePlaceHolderBoxAndLabel();
     });
 
+    this.keepAspectRatio.subscribe(function(){
+        self.update(true,false);
+    });
 
     this.isSelected.subscribe(function(){
         self.recreatePlaceHolderBoxAndLabel();
@@ -176,12 +177,12 @@ CanvasFrameElement.prototype.setupSubscriber = function() {
     });
 
     this.dataModel.imgSource.subscribe(function(imgSource) {
-        self.replaceWithImage(imgSource);
+        self.renderShapeOrImage(imgSource);
     });
 };
 
 
-CanvasFrameElement.prototype.replaceWithImage = function(imgSource) {
+CanvasFrameElement.prototype.renderShapeOrImage = function(imgSource) {
     var self = this;
 
     if (imgSource) {
@@ -217,6 +218,15 @@ CanvasFrameElement.prototype.replaceWithImage = function(imgSource) {
 
         }
     }
+    else {
+        // remove previously set image and resize elements:
+        var oldImage = self.stage.getChildByName("image");
+        if (oldImage) {
+            self.stage.removeChild(oldImage);
+        }
+        this.recreatePlaceHolderBoxAndLabel();
+        this.stage.addChild(this.placeHolderBox);
+    }
 };
 
 
@@ -231,8 +241,22 @@ CanvasFrameElement.prototype.update = function(size,position){
         if (this.dataModel.type == "ImageData"){
             var image = this.stage.getChildByName("image");
             if (image) {
-                image.scaleX =  this.width() / this.fullWidth();
-                image.scaleY =  this.height() / this.fullHeight();
+
+                // this.width is the bounding box in virtual frame coordinates
+                // this.fullWidth is the raw image width
+                if (this.dataModel.keepAspectRatio()) {
+                    var scale = Math.min(this.width() / this.fullWidth(), this.height() / this.fullHeight());
+                    image.scaleX = scale;
+                    image.scaleY = scale;
+                    image.x = (this.width() - (this.fullWidth() * scale))/2;
+                    image.y = (this.height() - (this.fullHeight() * scale))/2;
+                }
+                else {
+                    image.scaleX = this.width() / this.fullWidth();
+                    image.scaleY = this.height() / this.fullHeight();
+                    image.x = 0;
+                    image.y = 0;
+                }
             }
         }
 

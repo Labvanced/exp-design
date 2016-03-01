@@ -12,6 +12,7 @@ var VideoData= function(expData) {
     this.editorWidth = ko.observable(320);
     this.editorHeight = ko.observable(180);
     this.keepAspectRatio = ko.observable(true);
+    this.lockSize = ko.observable(false);
     this.id = ko.observable(guid());
     this.type = "VideoData";
     this.name = ko.observable("Video");
@@ -41,7 +42,7 @@ var VideoData= function(expData) {
     }, this);
 };
 
-VideoData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
+VideoData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive","keepAspectRatio","lockSize"];
 
 VideoData.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
@@ -87,7 +88,12 @@ VideoData.prototype.fromJS = function(data) {
     this.editorHeight(data.editorHeight);
     this.isActive(data.isActive);
     this.keepAspectRatio(data.keepAspectRatio);
-
+    if (data.hasOwnProperty('lockSize')) {
+        this.lockSize(data.lockSize);
+    }
+    else {
+        this.lockSize(false);
+    }
     return this;
 };
 
@@ -110,7 +116,8 @@ VideoData.prototype.toJS = function() {
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
         isActive:  this.isActive(),
-        keepAspectRatio: this.keepAspectRatio()
+        keepAspectRatio: this.keepAspectRatio(),
+        lockSize: this.lockSize()
     };
 };
 

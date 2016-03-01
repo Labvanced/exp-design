@@ -11,12 +11,13 @@ var ImageData= function(expData) {
     this.editorY = ko.observable(0);
     this.editorWidth = ko.observable(120);
     this.editorHeight = ko.observable(60);
+    this.lockSize = ko.observable(false);
     this.id = ko.observable(guid());
     this.type = "ImageData";
     this.name = ko.observable("Image");
     this.onset = ko.observable(0);
     this.onsetEnabled = ko.observable(false);
-    this.keepAspectRatio = ko.observable(false);
+    this.keepAspectRatio = ko.observable(true);
     this.offset = ko.observable(0);
     this.offsetEnabled = ko.observable(false);
     this.responses = ko.observableArray([]);
@@ -43,7 +44,7 @@ var ImageData= function(expData) {
 
 
 
-ImageData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight","name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive"];
+ImageData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight","name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive","keepAspectRatio","lockSize"];
 
 ImageData.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
@@ -90,6 +91,12 @@ ImageData.prototype.fromJS = function(data) {
     this.editorHeight(data.editorHeight);
     this.isActive(data.isActive);
     this.keepAspectRatio(data.keepAspectRatio);
+    if (data.hasOwnProperty('lockSize')) {
+        this.lockSize(data.lockSize);
+    }
+    else {
+        this.lockSize(false);
+    }
     return this;
 };
 
@@ -112,7 +119,8 @@ ImageData.prototype.toJS = function() {
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
         isActive:  this.isActive(),
-        keepAspectRatio: this.keepAspectRatio()
+        keepAspectRatio: this.keepAspectRatio(),
+        lockSize: this.lockSize()
     };
 };
 
