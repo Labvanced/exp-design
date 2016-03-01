@@ -9,7 +9,10 @@ var FrameView = function(divContainer,frameData,parent,type) {
     this.parent = parent;
     this.type= type;
     this.dataElements = this.frameData.elements;
+
+    this.bgElement = null;
     this.viewElements= ko.observableArray([]);
+
     this.width = 0;
     this.height = 0;
 
@@ -60,8 +63,10 @@ FrameView.prototype.setDataModel = function(frameData) {
                 self.updateStages();
             }
             else if(obj.status=="deleted"){
-                // ToDo include remove fucntion
-                // self.removeElem(obj.value,obj.index);
+                console.log("removing object with index "+obj.index);
+                self.removeElemFromView(obj.value,obj.index);
+                self.updateElements();
+                self.updateStages();
             }
         }
     },null, "arrayChange");
@@ -93,7 +98,7 @@ FrameView.prototype.setDataModel = function(frameData) {
 
 FrameView.prototype.setupBackground = function() {
     var bgFrameElement = new BgFrameElement(this.frameData,this);
-    this.viewElements.push(bgFrameElement);
+    this.bgElement = bgFrameElement;
     $(this.divContainer).append(bgFrameElement.div);
 };
 
@@ -134,7 +139,19 @@ FrameView.prototype.renderElements = function() {
 };
 
 
-FrameView.prototype.addElem= function(elementData,index) {
+FrameView.prototype.removeElemFromView = function(elementData,index) {
+
+    console.log("this.viewElements().length = "+this.viewElements().length);
+    var elemDiv = this.viewElements()[index].div;
+
+    // remove div from DOM:
+    elemDiv.remove();
+
+    // remove from viewElements:
+    this.viewElements.splice(index,1);
+};
+
+FrameView.prototype.addElem = function(elementData,index) {
 
     if (elementData.type == "ImageData") {
         var canvasFrameElement = new CanvasFrameElement(elementData,this);
@@ -145,7 +162,7 @@ FrameView.prototype.addElem= function(elementData,index) {
         else if (this.type=="playerView"){
             var callbacks = new PlayerCallbacks(canvasFrameElement,this);
         }
-        this.viewElements.splice(index+1,0,canvasFrameElement);
+        this.viewElements.splice(index,0,canvasFrameElement);
         $(this.divContainer).append(canvasFrameElement.div);
     }
 
@@ -159,7 +176,7 @@ FrameView.prototype.addElem= function(elementData,index) {
         else if (this.type=="playerView"){
             var callbacks = new PlayerCallbacks(htmlFrameElement,this);
         }
-        this.viewElements.splice(index+1,0,htmlFrameElement);
+        this.viewElements.splice(index,0,htmlFrameElement);
         $(this.divContainer).append(htmlFrameElement.div);
     }
 };
@@ -178,7 +195,9 @@ FrameView.prototype.updateStages = function() {
         if (this.viewElements()[i].hasOwnProperty("stage")){
             this.viewElements()[i].stage.update();
         }
-
+    }
+    if (this.bgElement && this.bgElement.hasOwnProperty("stage")) {
+        this.bgElement.stage.update();
     }
 };
 
@@ -188,14 +207,14 @@ FrameView.prototype.setSelectedElement = function(elem) {
     var prevSelectedElem = this.frameData.currSelectedElement();
 
     if (prevSelectedElem){
-        var formerIndex =this.dataElements.indexOf(prevSelectedElem)+1;
+        var formerIndex =this.dataElements.indexOf(prevSelectedElem);
         this.viewElements()[formerIndex].isSelected(false);
     }
 
     if (elem) {
         // check if element is really a child:
         if (this.frameData.elements.byId[elem.id()]) {
-            var index =this.dataElements.indexOf(elem)+1;
+            var index =this.dataElements.indexOf(elem);
 
             // change selection state of newly selected canvas element:
             this.viewElements()[index].isSelected(true);
