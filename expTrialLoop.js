@@ -245,10 +245,10 @@ ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
     }
     else {
         var trialEmotionVar = new GlobalVar(this.expData);
-        trialEmotionVar.subtype(GlobalVar.subtypes[0]);
-        trialEmotionVar.dataType(GlobalVar.dataTypes[0]);
-        trialEmotionVar.scope(GlobalVar.scopes[0]);
-        trialEmotionVar.scale(GlobalVar.scales[0]);
+        trialEmotionVar.subtype(GlobalVar.subtypes[8]);
+        trialEmotionVar.dataType(GlobalVar.dataTypes[2]);
+        trialEmotionVar.scope(GlobalVar.scopes[6]);
+        trialEmotionVar.scale(GlobalVar.scales[4]);
         trialEmotionVar.name("Emotion");
         this.trialEmotionVar(trialEmotionVar);
     }
