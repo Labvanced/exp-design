@@ -18,7 +18,7 @@ var ExpBlock = function (expData) {
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[3]);
     globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name("Block Id");
+    globalVar.name("Block");
     this.blockId(globalVar);
 
 
