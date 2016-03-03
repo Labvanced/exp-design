@@ -26,6 +26,7 @@ var FrameData = function(expData) {
     this.frameHeight = ko.observable(900);
     this.zoomMode = ko.observable("fullscreen"); // "fullscreen" or "pixel" or "visualDegree"
     this.emotionEnabled = ko.observable(false);
+    this.emotionFeedbackEnabled = ko.observable(false);
     this.emotionOffset = ko.observable(300).extend({ numeric: 0 });
 
     // modifier:
@@ -43,7 +44,7 @@ var FrameData = function(expData) {
     this.responses = ko.observableArray([]);
 
 };
-FrameData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionOffset"];
+FrameData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset"];
 
 FrameData.prototype.getDeepCopy = function() {
     var self = this;
@@ -148,6 +149,9 @@ FrameData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("emotionEnabled")) {
         this.emotionEnabled(data.emotionEnabled);
     }
+    if (data.hasOwnProperty("emotionFeedbackEnabled")) {
+        this.emotionFeedbackEnabled(data.emotionFeedbackEnabled);
+    }
     if (data.hasOwnProperty("emotionOffset")) {
         this.emotionOffset(data.emotionOffset);
     }
@@ -178,6 +182,7 @@ FrameData.prototype.toJS = function() {
         frameHeight: this.frameHeight(),
         zoomMode: this.zoomMode(),
         emotionEnabled: this.emotionEnabled(),
+        emotionFeedbackEnabled: this.emotionFeedbackEnabled(),
         emotionOffset: this.emotionOffset(),
         responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
