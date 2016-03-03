@@ -252,7 +252,7 @@ ExpData.prototype.addNewBlock = function() {
                 trialUniqueId.dataType(GlobalVar.dataTypes[2]);
                 trialUniqueId.scope(GlobalVar.scopes[5]);
                 trialUniqueId.scale(GlobalVar.scales[2]);
-                trialUniqueId.name("Trial Unique Id");
+                trialUniqueId.name("Trial Id");
                 blockElements[i].trialUniqueIdVar(trialUniqueId);
 
                 var trialTypeIdVar = new GlobalVar(this.expData);
@@ -260,7 +260,7 @@ ExpData.prototype.addNewBlock = function() {
                 trialTypeIdVar.dataType(GlobalVar.dataTypes[2]);
                 trialTypeIdVar.scope(GlobalVar.scopes[5]);
                 trialTypeIdVar.scale(GlobalVar.scales[2]);
-                trialTypeIdVar.name("Trial Type Id");
+                trialTypeIdVar.name("Trial Type");
                 blockElements[i].trialTypeIdVar(trialTypeIdVar);
 
                 var trialOrderVar = new GlobalVar(this.expData);
