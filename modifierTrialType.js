@@ -36,7 +36,8 @@ ModifierTrialType.prototype.deepCopy = function() {
     var modifiedPropNew = newObj.modifiedProp;
     for (var property in modifiedPropOld) {
         if (modifiedPropOld.hasOwnProperty(property)) {
-            modifiedPropNew[property] = ko.observable(modifiedPropOld[property]);
+            modifiedPropNew[property] = ko.observable(modifiedPropOld[property]());
+            newObj.propIsModified[property](true);
         }
     }
 
