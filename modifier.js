@@ -27,17 +27,17 @@ var Modifier = function (expData, objToModify) {
 
 };
 
-Modifier.prototype.addProp = function(propName) {
-
-    function selectFromMultiDimArr(arr, indices){
-        if (indices.length > 1){
-            var curIndex = indices.shift();
-            return selectFromMultiDimArr(arr[curIndex], indices);
-        }
-        else {
-            return arr[indices[0]];
-        }
+function selectFromMultiDimArr(arr, indices){
+    if (indices.length > 1){
+        var curIndex = indices.shift();
+        return selectFromMultiDimArr(arr[curIndex], indices);
     }
+    else {
+        return arr[indices[0]];
+    }
+}
+
+Modifier.prototype.addProp = function(propName) {
 
     this.selectedTrialView[propName] = ko.pureComputed({
         read: function () {
@@ -66,6 +66,13 @@ Modifier.prototype.addProp = function(propName) {
                 // find first matching modifierTrialType with the given level of the selected factor:
                 var interactingTrialTypes = this.interactingTrialTypes;
                 var modifierTrialType = selectFromMultiDimArr(interactingTrialTypes, indices);
+
+                if (!modifierTrialType){
+                    // number of dimensions of interactingTrialTypes does not match number of indices:
+                    this.addInteractingLevels();
+                    // repeat:
+                    modifierTrialType = selectFromMultiDimArr(interactingTrialTypes, indices);
+                }
 
                 // check if this property is modified:
                 if (modifierTrialType.propIsModified[propName]()) {
@@ -107,9 +114,9 @@ Modifier.prototype.addProp = function(propName) {
 
                 if (!modifierTrialType){
                     // number of dimensions of interactingTrialTypes does not match number of indices:
-                    var val = this.objToModify[propName]();
-                    //console.log("reading parent val="+val+ " because dimension mismatch")
-                    return val;
+                    this.addInteractingLevels();
+                    // repeat:
+                    modifierTrialType = selectFromMultiDimArr(interactingTrialTypes, indices);
                 }
 
                 // check if this property is modified:
@@ -218,6 +225,14 @@ Modifier.prototype.addProp = function(propName) {
                 // find matching modifierTrialType with the given levels of the selected factors:
                 var interactingTrialTypes = this.interactingTrialTypes;
                 var modifierTrialType = selectFromMultiDimArr(interactingTrialTypes, indices);
+
+                if (!modifierTrialType){
+                    // number of dimensions of interactingTrialTypes does not match number of indices:
+                    console.log("this level was not specified previously... make sure that all levels of dependent factors are added...");
+                    this.addInteractingLevels();
+                    modifierTrialType = selectFromMultiDimArr(interactingTrialTypes, indices);
+                }
+
                 modifierTrialType.setModification(propName, value);
 
             }
@@ -260,6 +275,46 @@ Modifier.prototype.setPointers = function(entitiesArr) {
 
 Modifier.prototype.selectTrialType = function(selectionSpec){
     this.selectedTrialType(selectionSpec);
+};
+
+/**
+ * this function makes sure that trial types for all levels of all interacting factors are present
+ */
+Modifier.prototype.addInteractingLevels = function() {
+    console.log("adding all new levels to modifier...");
+    var self = this;
+
+    function createSubArr(factorVars) {
+        if (factorVars.length > 0) {
+            var subArr = [];
+            var len = factorVars[0].levels().length;
+            for (var i=0; i<len; i++) {
+                subArr.push(createSubArr(factorVars.slice(1))); // recursively create sub array
+            }
+            return subArr;
+        }
+        else {
+            return new ModifierTrialType(self.expData, self.objToModify);
+        }
+    }
+
+    function addLevels(subarr, factorVars) {
+
+        // go into all existing levels of this factor (factorVars[0]) and make sure that all sub-factors (factorVars[1...]) have their levels:
+        if (factorVars.length>1) {
+            for (var i = 0; i < subarr.length; i++) {
+                addLevels(subarr[i], factorVars.slice(1)); // recursively add levels within this level
+            }
+        }
+
+        // make sure that this factor (factorVars[0]) has all it's levels:
+        var desired_len = factorVars[0].levels().length;
+        for (var i = subarr.length; i<desired_len; i++) {
+            subarr[i] = createSubArr(factorVars.slice(1)); // adding new level with all sub-levels here
+        }
+    }
+
+    addLevels(this.interactingTrialTypes, this.interactingFactors());
 };
 
 Modifier.prototype.addFactorDependency = function(factorVar) {
