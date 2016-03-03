@@ -21,7 +21,7 @@ var GlobalVar = function (expData) {
 };
 
 // enum: possible variable subtypes defined by us or user
-GlobalVar.subtypes = ['undefined','id', 'randomization', 'condition', 'stimulus property', 'user decision', 'user response time',  'user questionnaire response'];
+GlobalVar.subtypes = ['undefined','id', 'randomization', 'condition', 'stimulus property', 'user decision', 'user response time',  'user questionnaire response','physiological recording'];
 
 // further information defined by us
 GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean'];
