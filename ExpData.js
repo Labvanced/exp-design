@@ -250,7 +250,7 @@ ExpData.prototype.addNewBlock = function() {
                 var trialUniqueId = new GlobalVar(this.expData);
                 trialUniqueId.subtype(GlobalVar.subtypes[1]);
                 trialUniqueId.dataType(GlobalVar.dataTypes[2]);
-                trialUniqueId.scope(GlobalVar.scopes[5]);
+                trialUniqueId.scope(GlobalVar.scopes[6]);
                 trialUniqueId.scale(GlobalVar.scales[2]);
                 trialUniqueId.name("Trial Id");
                 blockElements[i].trialUniqueIdVar(trialUniqueId);
@@ -258,7 +258,7 @@ ExpData.prototype.addNewBlock = function() {
                 var trialTypeIdVar = new GlobalVar(this.expData);
                 trialTypeIdVar.subtype(GlobalVar.subtypes[1]);
                 trialTypeIdVar.dataType(GlobalVar.dataTypes[2]);
-                trialTypeIdVar.scope(GlobalVar.scopes[5]);
+                trialTypeIdVar.scope(GlobalVar.scopes[6]);
                 trialTypeIdVar.scale(GlobalVar.scales[2]);
                 trialTypeIdVar.name("Trial Type");
                 blockElements[i].trialTypeIdVar(trialTypeIdVar);
@@ -266,16 +266,16 @@ ExpData.prototype.addNewBlock = function() {
                 var trialOrderVar = new GlobalVar(this.expData);
                 trialOrderVar.subtype(GlobalVar.subtypes[2]);
                 trialOrderVar.dataType(GlobalVar.dataTypes[2]);
-                trialOrderVar.scope(GlobalVar.scopes[5]);
+                trialOrderVar.scope(GlobalVar.scopes[6]);
                 trialOrderVar.scale(GlobalVar.scales[2]);
                 trialOrderVar.name(" Presentation Order");
                 blockElements[i].trialOrderVar(trialOrderVar);
 
                 var trialEmotionVar = new GlobalVar(this.expData);
-                trialEmotionVar.subtype(GlobalVar.subtypes[0]);
-                trialEmotionVar.dataType(GlobalVar.dataTypes[0]);
-                trialEmotionVar.scope(GlobalVar.scopes[0]);
-                trialEmotionVar.scale(GlobalVar.scales[0]);
+                trialEmotionVar.subtype(GlobalVar.subtypes[8]);
+                trialEmotionVar.dataType(GlobalVar.dataTypes[2]);
+                trialEmotionVar.scope(GlobalVar.scopes[6]);
+                trialEmotionVar.scale(GlobalVar.scales[4]);
                 trialEmotionVar.name("Emotion");
                 blockElements[i].trialEmotionVar(trialEmotionVar);
             }

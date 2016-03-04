@@ -195,7 +195,9 @@ var ExpTrialLoop = function (expData) {
         array.push(this.trialUniqueIdVar());
         array.push(this.trialTypeIdVar());
         array.push(this.trialOrderVar());
-        array.push(this.trialEmotionVar());
+        if(this.webcamEnabled()){
+            array.push(this.trialEmotionVar());
+        }
         var list1 = this.factors();
         var list2 = this.additionalTrialTypes();
         var list3 = this.eventVariables();
@@ -325,7 +327,7 @@ ExpTrialLoop.prototype.addFactor = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.subtype(GlobalVar.subtypes[3]);
     globalVar.dataType(GlobalVar.dataTypes[2]);
-    globalVar.scope(GlobalVar.scopes[5]);
+    globalVar.scope(GlobalVar.scopes[6]);
     globalVar.scale(GlobalVar.scales[2]);
     globalVar.name("factor_" + (this.factors().length+1));
 
@@ -356,7 +358,7 @@ ExpTrialLoop.prototype.addSepTrialType= function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.subtype(GlobalVar.subtypes[3]);
     globalVar.dataType(GlobalVar.dataTypes[2]);
-    globalVar.scope(GlobalVar.scopes[5]);
+    globalVar.scope(GlobalVar.scopes[6]);
     globalVar.scale(GlobalVar.scales[1]);
     globalVar.name("nonint_factor_" + (this.additionalTrialTypes().length+1));
 
