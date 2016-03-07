@@ -2,15 +2,15 @@
  * Created by cgoeke on 2/1/16.
  */
 
-var EditorCallbacks = function(frameElement,editor) {
+var EditorCallbacks = function(frameElement,view) {
     var self = this;
 
     this.frameElement = frameElement;
     this.div = this.frameElement.div;
     this.dataModel = this.frameElement.dataModel;
-    this.editor = editor;
+    this.view = view;
     this.scale = ko.computed(function() {
-        return  this.editor.scale();
+        return  this.view.scale();
     }, this);
 
     this.addCallbacks();
@@ -29,7 +29,7 @@ EditorCallbacks.prototype.addCallbacks = function() {
             self2.frameElement.setCoord(ui.position.left*(1/self2.scale()),ui.position.top*(1/self2.scale()));
         },
         start: function( event, ui ) {
-            self2.editor.setSelectedElement(self2.dataModel)
+            self2.view.setSelectedElement(self2.dataModel)
         }
     });
 
@@ -39,7 +39,7 @@ EditorCallbacks.prototype.addCallbacks = function() {
     });
 
     $(this.div).click(function() {
-        self2.editor.setSelectedElement(self2.dataModel);
+        self2.view.setSelectedElement(self2.dataModel);
     });
 
 };
