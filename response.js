@@ -67,7 +67,9 @@ var Response= function(parent) {
 };
 
 Response.prototype.setPointers = function(entitiesArr) {
-    this.action().setPointers(entitiesArr);
+    if (this.action()) {
+        this.action().setPointers(entitiesArr);
+    }
 };
 
 Response.prototype.fromJS = function(data) {
