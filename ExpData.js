@@ -272,7 +272,7 @@ ExpData.prototype.addNewBlock = function() {
                 trialOrderVar.dataType(GlobalVar.dataTypes[2]);
                 trialOrderVar.scope(GlobalVar.scopes[6]);
                 trialOrderVar.scale(GlobalVar.scales[2]);
-                trialOrderVar.name(" Presentation Order");
+                trialOrderVar.name("Presentation Order");
                 blockElements[i].trialOrderVar(trialOrderVar);
 
                 var trialEmotionVar = new GlobalVar(this.expData);
