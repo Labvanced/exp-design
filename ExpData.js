@@ -186,6 +186,7 @@ ExpData.prototype.addNewSubjGroup = function() {
 ExpData.prototype.addNewBlock = function() {
 
     var expTrialLoop = new ExpTrialLoop(this);
+    expTrialLoop.isInitialized(true);
     expTrialLoop.addNewFrame();
 
     // define instance of block element
