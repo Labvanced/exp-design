@@ -185,12 +185,15 @@ ExpData.prototype.addNewSubjGroup = function() {
 
 ExpData.prototype.addNewBlock = function() {
 
+    var expTrialLoop = new ExpTrialLoop(this);
+    expTrialLoop.addNewFrame();
+
     // define instance of block element
     var blockElements = [
         new StartBlock(this),
         new TextEditorData(this),
         new QuestionnaireEditorData(this),
-        new ExpTrialLoop(this),
+        expTrialLoop,
         new QuestionnaireEditorData(this),
         new TextEditorData(this),
         new EndBlock(this)

@@ -13,8 +13,7 @@ var ExpTrialLoop = function (expData) {
     this.name = ko.observable("TrialLoop");
     this.type = "ExpTrialLoop";
     this.subSequence = ko.observable(new Sequence(this.expData));
-    var firstFrame = new FrameData(this.expData);
-    this.subSequence().addNewSubElement(firstFrame);
+    this.subSequence().parent = this;
 
     // Variables
     this.trialUniqueIdVar = ko.observable(null);
@@ -229,6 +228,13 @@ var ExpTrialLoop = function (expData) {
 
     this.portHandler = new PortHandler(this);
 
+};
+
+
+ExpTrialLoop.prototype.addNewFrame = function() {
+    var frame = new FrameData(this.expData);
+    this.subSequence().addNewSubElement(frame);
+    frame.parent = this.subSequence();
 };
 
 ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
