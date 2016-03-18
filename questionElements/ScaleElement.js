@@ -101,7 +101,7 @@ ko.components.register('scale-element-edit', {
         <select data-bind="options: values, value: endChoice, event: {change: finish}">\
         </select>\
         <br><br><br>\
-    <div style="display: inline-block; width: 5%;  margin-top: 2%" data-bind="text: startChoice"></div>\
+    <div style="display: inline-block; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: startChoice"></div>\
     <span style="display: inline-block; margin-left: 3%;"><input\
     type="text"\
         data-bind="textInput: startLabel"\
@@ -109,7 +109,7 @@ ko.components.register('scale-element-edit', {
         placeholder="Label (optional)"\
         style="width:75%"></span>\
     <br><br>\
-    <div style="display: inline-block;  width: 5%; margin-top: 2%" data-bind="text: endChoice"></div>\
+    <div style="display: inline-block;  width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: endChoice"></div>\
     <span style="display: inline-block; margin-left: 3%;"><input\
     type="text"\
         data-bind="textInput: endLabel"\
@@ -132,7 +132,7 @@ ko.components.register('scale-element-preview',{
        this.choices = dataModel.choices;
    },
     template:
-        '<div class="panel-heading">\
+        '<div>\
         <span style="float: right"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
         <h3 style="float: left">\
             <span data-bind="text: questionText"></span>\

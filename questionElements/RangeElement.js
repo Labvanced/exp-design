@@ -96,7 +96,7 @@ ko.components.register('range-element-edit', {
         To\
         <input style="max-width: 30px" type="text" data-bind="textInput: maxChoice"">\
         <br><br><br>\
-        <span style="display: inline-block; width: 5%; overflow: scroll; margin-top: 2%" data-bind="text: minChoice"></span>\
+        <span style="display: inline-block; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: minChoice"></span>\
         <span style="display: inline-block; margin-left: 5%;"><input\
         type="text"\
             data-bind="textInput: startLabel"\
@@ -104,7 +104,7 @@ ko.components.register('range-element-edit', {
             placeholder="Label (optional)"\
             style="width:75%"></span>\
     <br><br>\
-    <span style="display: inline-block;  width: 5%; overflow: scroll; margin-top: 2%" data-bind="text: maxChoice"></span>\
+    <span style="display: inline-block;  width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: maxChoice"></span>\
     <span style="display: inline-block; margin-left: 5%;">\
     <input type="text"\
         data-bind="textInput: endLabel"\
@@ -128,7 +128,7 @@ ko.components.register('range-element-preview',{
         this.newPage = dataModel.newPage;
     },
     template:
-        '<div class="panel-heading">\
+        '<div>\
         <span style="float: right"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
             <h3 style="float: left">\
                 <span data-bind="text: questionText"></span>\
@@ -184,7 +184,7 @@ ko.components.register('range-playerview',{
                 <span style="margin-left: auto;  width: 5%; margin-right: 5%; margin-top: 1%; float: right" data-bind="text: maxChoice"></span>\
             </span>\
             <br><br>\
-            <output data-bind="text: answer"></output>\
+            <output style="margin-left: 37%" data-bind="text: answer"></output>\
         </div>\
         <div data-bind="visible: newPage">\
                 <img style="float: right" src="/resources/next.png">\

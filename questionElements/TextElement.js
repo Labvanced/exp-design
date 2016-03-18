@@ -77,7 +77,7 @@ ko.components.register('text-element-preview',{
         this.questionText = dataModel.questionText;
     },
     template:
-    '<div class="panel-heading">\
+    '<div>\
         <span style="float: right"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
         <h3 style="float: left">\
             <span data-bind="html: questionText"></span>\
