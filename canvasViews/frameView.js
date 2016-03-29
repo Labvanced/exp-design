@@ -165,9 +165,7 @@ FrameView.prototype.addElem = function(elementData,index) {
         this.viewElements.splice(index,0,canvasFrameElement);
         $(this.divContainer).append(canvasFrameElement.div);
     }
-
-    else if (elementData.type == "VideoData") {
-
+    else{
         var htmlFrameElement = new HtmlFrameElement(elementData,this);
         var callbacks = null;
         if (this.type=="editorView"){

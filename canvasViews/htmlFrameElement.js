@@ -28,7 +28,7 @@ var HtmlFrameElement = function(dataModel,editor) {
    // this.recreatePlaceHolderBoxAndLabel();
 
     // replace with image
-    this.replaceWithVideo(this.dataModel.vidSource());
+    this.replaceWithContent(this.dataModel.content);
 
 };
 
@@ -41,10 +41,9 @@ HtmlFrameElement.prototype.setupDiv = function() {
         "position": "absolute",
         "backgroundColor": "transparent"
     });
-    this.video = document.createElement('div');
-    $(this.video).css({
+    this.content = document.createElement('div');
+    $(this.content).css({
         "position": "absolute",
-        "backgroundColor": "transparent"
     });
 
     this.text = document.createElement('p');
@@ -56,15 +55,15 @@ HtmlFrameElement.prototype.setupDiv = function() {
     });
     $(this.text).text(this.dataModel.name());
 
-    $(this.video).append(this.text);
-    $(this.div).append(this.video);
+    $(this.content).append(this.text);
+    $(this.div).append(this.content);
 
 };
 
 
 HtmlFrameElement.prototype.recreatePlaceHolderBoxAndLabel = function() {
     // create box
-    $(this.video).children().remove();
+    $(this.content).children().remove();
 
     var self = this;
     var text = document.createElement('p');
@@ -79,7 +78,7 @@ HtmlFrameElement.prototype.recreatePlaceHolderBoxAndLabel = function() {
         })
     }
 
-    $(this.video).append(text);
+    $(this.content).append(text);
 
 };
 
@@ -149,9 +148,16 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         self.label.text = newValue;
     });
 
-    this.dataModel.vidSource.subscribe(function(vidSource) {
-        self.replaceWithVideo(vidSource);
+    this.dataModel.content.subscribe(function(newValue){
+        self.replaceWithContent(newValue)
     });
+
+    if(this.dataModel.content.type == "VideoData"){
+        this.dataModel.content.vidSource.subscribe(function(vidSource) {
+            self.replaceWithContent(vidSource);
+        });
+    }
+
 };
 
 
@@ -167,7 +173,7 @@ HtmlFrameElement.prototype.update = function(size,position){
             "height":  self.height() * self.scale()
         });
 
-        $(this.video).css({
+        $(this.content).css({
             "width":self.width() * self.scale(),
             "height": self.height() * self.scale()
         });
@@ -219,26 +225,26 @@ HtmlFrameElement.prototype.setCoord = function(x,y) {
 };
 
 
-HtmlFrameElement.prototype.replaceWithVideo = function(videoSource) {
+HtmlFrameElement.prototype.replaceWithContent = function(data) {
     var self = this;
+    data = data();
 
-    if (videoSource) {
-
+    if (data.type == "VideoData") {
 
         $(this.div).children().remove();
-        this.video = document.createElement('video');
-        this.video.src = videoSource;
-        $(this.video).css({
+        this.content = document.createElement('video');
+        this.content.src = data.vidSource;
+        $(this.content).css({
             "width":self.width() * self.scale(),
             "height": self.height() * self.scale(),
             "position": "absolute",
             "backgroundColor": "transparent"
         });
-        $(this.div).append(this.video);
+        $(this.div).append(this.content);
 
         if (this.editor.type == "editorView") {
-            this.video.controls = true;
-            this.video.oncanplaythrough = function () {
+            this.content.controls = true;
+            this.content.oncanplaythrough = function () {
                 // initialize original size:
                 self.fullWidth($(this).width());
                 self.fullHeight($(this).height());
@@ -249,8 +255,8 @@ HtmlFrameElement.prototype.replaceWithVideo = function(videoSource) {
 
         }
         else if (this.editor.type == "sequenceView") {
-            this.video.controls = false;
-            this.video.oncanplaythrough = function () {
+            this.content.controls = false;
+            this.content.oncanplaythrough = function () {
                 // initialize original size:
                 self.fullWidth($(this).width());
                 self.fullHeight($(this).height());
@@ -259,14 +265,87 @@ HtmlFrameElement.prototype.replaceWithVideo = function(videoSource) {
         }
 
         else if(this.editor.type == "playerView"){
-            this.video.controls = false;
-            this.video.preload = "auto";
-            this.video.oncanplaythrough = function () {
+            this.content.controls = false;
+            this.content.preload = "auto";
+            this.content.oncanplaythrough = function () {
                 // initialize original size:
                 self.fullWidth($(this).width());
                 self.fullHeight($(this).height());
                 self.update(true,true);
             }
         }
+    }
+    else if(data.type == "textArea"){
+        $(this.div).children().remove();
+        this.content = document.createElement('text');
+    }
+    else {
+        $(this.div).children().remove();
+        this.content = document.createElement('questionnaire');
+        if (data instanceof CheckBoxElement) {
+            this.content = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'</div>");
+        }
+        else if (data instanceof MChoiceElement) {
+            this.content = $("<div data-bind='component: {name : \"choice-playerview\", params : $data}'</div>");
+        }
+        else if (data instanceof ParagraphElement) {
+            this.content = $("<div data-bind='component: {name : \"paragraph-playerview\", params : $data}'</div>");
+        }
+        else if (data instanceof RangeElement) {
+            this.content = $("<div data-bind='component: {name : \"range-playerview\", params : $data}'</div>");
+        }
+        else if (data instanceof ScaleElement) {
+            this.content = $("<div data-bind='component: {name : \"scale-playerview\", params : $data}'</div>");
+        }
+        else if (data instanceof TextElement) {
+            this.content = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'</div>");
+        }
+
+        ko.applyBindings(data, $(this.content)[0]);
+
+        $(this.content).css({
+            "width":self.width() * self.scale(),
+            "height": self.height() * self.scale(),
+            "position": "absolute",
+            "backgroundColor": "transparent"
+        });
+
+        if (this.editor.type == "editorView") {
+            this.content.controls = true;
+            this.content.oncanplaythrough = function () {
+                // initialize original size:
+                self.fullWidth($(this).width());
+                self.fullHeight($(this).height());
+                self.update(true,true);
+                $(self.div).resizable( "destroy" );
+                self.callbacks.addResize();
+            }
+
+        }
+        else if (this.editor.type == "sequenceView") {
+            this.content.controls = false;
+            this.content.oncanplaythrough = function () {
+                // initialize original size:
+                self.fullWidth($(this).width());
+                self.fullHeight($(this).height());
+                self.update(true,true);
+            }
+        }
+
+        else if(this.editor.type == "playerView"){
+            this.content.controls = false;
+            this.content.preload = "auto";
+            this.content.oncanplaythrough = function () {
+                // initialize original size:
+                self.fullWidth($(this).width());
+                self.fullHeight($(this).height());
+                self.update(true,true);
+            }
+        }
+
+
+        $(this.div).append(this.content);
+
+
     }
 };

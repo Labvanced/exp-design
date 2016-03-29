@@ -59,32 +59,36 @@ function entityFactory(entityJson, expData) {
             entity = new GlobalVar(expData);
             entity.fromJS(entityJson);
             break;
-        case 'checkBox':
+        case 'CheckBoxElement':
             entity = new CheckBoxElement(expData);
             entity.fromJS(entityJson);
             break;
-        case 'mChoice':
+        case 'MChoiceElement':
             entity = new MChoiceElement(expData);
             entity.fromJS(entityJson);
             break;
-        case 'paragraph':
+        case 'ParagraphElement':
             entity = new ParagraphElement(expData);
             entity.fromJS(entityJson);
             break;
-        case 'range':
+        case 'RangeElement':
             entity = new RangeElement(expData);
             entity.fromJS(entityJson);
             break;
-        case 'scale':
+        case 'ScaleElement':
             entity = new ScaleElement(expData);
             entity.fromJS(entityJson);
             break;
-        case 'text':
+        case 'TextElement':
             entity = new TextElement(expData);
             entity.fromJS(entityJson);
             break;
-        case 'newPage':
+        case 'NewPageElement':
             entity = new NewPageElement(expData);
+            entity.fromJS(entityJson);
+            break;
+        case 'htmlElementData':
+            entity = new htmlElementData(expData);
             entity.fromJS(entityJson);
             break;
         default:

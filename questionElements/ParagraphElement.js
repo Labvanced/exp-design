@@ -6,11 +6,11 @@ var ParagraphElement = function(expData) {
     this.parent = null;
 
     //serialized
-    this.type= "paragraph";
+    this.type= "ParagraphElement";
     this.id = ko.observable(guid());
     this.questionText= ko.observable("Your Question");
     this.selected = ko.observable(false);
-    this.tag = ko.observable("");
+    this.name = ko.observable("");
     this.variable = ko.observable();
     this.answer = ko.observable("");
 };
@@ -22,7 +22,7 @@ ParagraphElement.prototype.addVar = function() {
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name(this.tag());
+    globalVar.name(this.name());
     this.variable(globalVar);
 };
 

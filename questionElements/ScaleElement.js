@@ -7,7 +7,7 @@ var ScaleElement= function(expData) {
     this.parent = null;
 
     //serialized
-    this.type= "scale";
+    this.type= "ScaleElement";
     this.id = ko.observable(guid());
     this.questionText= ko.observable("Your Question");
     this.startChoice= ko.observable(1);
@@ -16,7 +16,7 @@ var ScaleElement= function(expData) {
     this.endLabel= ko.observable("end label");
     this.choices= ko.observableArray([1,2,3,4,5]);
     this.selected = ko.observable(false);
-    this.tag = ko.observable("");
+    this.name = ko.observable("");
     this.variable = ko.observable();
     this.answer = ko.observableArray([]);
 };
@@ -27,7 +27,7 @@ ScaleElement.prototype.addVar = function() {
     globalVar.dataType(GlobalVar.dataTypes[2]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[2]);
-    globalVar.name(this.tag());
+    globalVar.name(this.name());
     this.variable(globalVar);
 };
 

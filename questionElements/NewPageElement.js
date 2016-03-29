@@ -8,11 +8,11 @@ var NewPageElement = function(expData) {
     this.parent = null;
 
     //serialized
-    this.type= "newPage";
+    this.type= "NewPageElement";
     this.id = ko.observable(guid());
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);
-    this.tag = ko.observable("");
+    this.name = ko.observable("");
 };
 
 

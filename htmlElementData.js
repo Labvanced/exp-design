@@ -1,61 +1,68 @@
-// � by Caspar Goeke and Holger Finger
+/**
+ * Created by kstandvoss on 24/03/16.
+ */
 
+var htmlElementData= function(expData) {
 
-var TextArea = function(expData) {
     this.expData = expData;
     this.parent = null;
 
-    //serialized
-    this.type= "textArea";
+    // serialized
+    this.editorX = ko.observable(100);
+    this.editorY = ko.observable(100);
+    this.editorWidth = ko.observable(320);
+    this.editorHeight = ko.observable(180);
+    this.keepAspectRatio = ko.observable(true);
+    this.lockSize = ko.observable(false);
     this.id = ko.observable(guid());
-    this.editing=  ko.observable(true);
-    this.content = ko.observable("");
-    this.editorX = ko.observable(0);
-    this.editorY = ko.observable(0);
-    this.editorWidth = ko.observable(120);
-    this.editorHeight = ko.observable(60);
-    this.name = ko.observable("textArea");
+    this.type = "htmlElementData";
+    this.name = ko.observable("html");
     this.onset = ko.observable(0);
     this.onsetEnabled = ko.observable(false);
     this.offset = ko.observable(0);
     this.offsetEnabled = ko.observable(false);
     this.responses = ko.observableArray([]);
     this.isActive = ko.observable(true);
-    this.lockSize = ko.observable(false);
+    this.content = ko.observable();
+    this.file_id = ko.observable(null);
+    this.file_orig_name = ko.observable(null);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
-
 };
 
-TextArea.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight","name","onset","onsetEnabled","offset","offsetEnabled","isActive, lockSize"];
+htmlElementData.prototype.addContent = function(element){
+    this.content(element);
+};
 
-TextArea.prototype.setPointers = function(entitiesArr) {
+htmlElementData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","file_id","file_orig_name","keepAspectRatio","lockSize"];
+
+htmlElementData.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
+
+    jQuery.each( this.responses(), function(idx, resp ) {
+        resp.setPointers(entitiesArr);
+    } );
 };
 
-
-ImageData.prototype.addNewResponse = function() {
+htmlElementData.prototype.addNewResponse = function() {
     var resp = new Response(this);
     resp.responseType("mouse");
     this.responses.push(resp);
 };
 
-
-
-TextArea.prototype.finishQuestion = function() {
-    this.editing(false);
+htmlElementData.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
 };
 
+htmlElementData.prototype.reAddEntities = function(entitiesArr) {
+    this.modifier().reAddEntities(entitiesArr);
+};
 
-
-
-
-TextArea.prototype.fromJS = function(data) {
+htmlElementData.prototype.fromJS = function(data) {
     var self = this;
     this.id(data.id);
     this.type = data.type;
-    this.content(data.content);
     this.name(data.name);
     this.onset(data.onset);
     this.onsetEnabled(data.onsetEnabled);
@@ -71,6 +78,12 @@ TextArea.prototype.fromJS = function(data) {
     this.editorWidth(data.editorWidth);
     this.editorHeight(data.editorHeight);
     this.isActive(data.isActive);
+    this.keepAspectRatio(data.keepAspectRatio);
+    if(data.content){
+        var content = new window[data.content.type](this.expData);
+        content.fromJS(data.content);
+        this.content(content);
+    }
     if (data.hasOwnProperty('lockSize')) {
         this.lockSize(data.lockSize);
     }
@@ -80,11 +93,16 @@ TextArea.prototype.fromJS = function(data) {
     return this;
 };
 
-TextArea.prototype.toJS = function() {
+htmlElementData.prototype.toJS = function() {
+    if(this.content()){
+        var contentData = this.content().toJS();
+    }
+    else{
+        contentData = null
+    }
     return {
         id: this.id(),
         type: this.type,
-        content: this.content(),
         name: this.name(),
         onset: this.onset(),
         onsetEnabled: this.onsetEnabled(),
@@ -97,7 +115,9 @@ TextArea.prototype.toJS = function() {
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
         isActive:  this.isActive(),
-        keepAspectRatio: this.data.keepAspectRatio(),
-        lockSize: this.lockSize()
+        keepAspectRatio: this.keepAspectRatio(),
+        lockSize: this.lockSize(),
+        content: contentData
     };
 };
+

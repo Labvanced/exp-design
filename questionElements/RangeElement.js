@@ -10,7 +10,7 @@ var RangeElement= function(expData) {
     this.parent = null;
 
     //serialized
-    this.type= "range";
+    this.type= "RangeElement";
     this.id = ko.observable(guid());
     this.questionText= ko.observable("Your Question");
     this.minChoice= ko.observable(1);
@@ -20,7 +20,7 @@ var RangeElement= function(expData) {
     this.answer = ko.observable(1);
     this.newPage = ko.observable(false);
     this.selected = ko.observable(false);
-    this.tag = ko.observable("");
+    this.name = ko.observable("");
     this.variable = ko.observable();
 
 };
@@ -31,7 +31,7 @@ RangeElement.prototype.addVar = function() {
     globalVar.dataType(GlobalVar.dataTypes[2]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[3]);
-    globalVar.name(this.tag());
+    globalVar.name(this.name());
     this.variable(globalVar);
 };
 
@@ -78,7 +78,6 @@ ko.components.register('range-element-edit', {
 
         this.dataModel = dataModel;
         this.questionText = dataModel.questionText;
-        this.answer = dataModel.answer;
         this.minChoice = dataModel.minChoice;
         this.maxChoice = dataModel.maxChoice;
         this.startLabel = dataModel.startLabel;
@@ -184,7 +183,7 @@ ko.components.register('range-playerview',{
                 <span style="margin-left: auto;  width: 5%; margin-right: 5%; margin-top: 1%; float: right" data-bind="text: maxChoice"></span>\
             </span>\
             <br><br>\
-            <output style="margin-left: 37%" data-bind="text: answer"></output>\
+            <output style="margin-left: 37% !important;" data-bind="text: answer"></output>\
         </div>\
         <div data-bind="visible: newPage">\
                 <img style="float: right" src="/resources/next.png">\

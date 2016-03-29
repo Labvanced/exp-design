@@ -6,11 +6,11 @@ var TextElement = function(expData) {
     this.parent = null;
 
     //serialized
-    this.type = "text";
+    this.type = "TextElement";
     this.id = ko.observable(guid());
     this.questionText= ko.observable("Your Question");
     this.selected = ko.observable(false);
-    this.tag = ko.observable("");
+    this.name = ko.observable("");
     this.variable = ko.observable();
     this.answer = ko.observable("");
 };
@@ -22,7 +22,7 @@ TextElement.prototype.addVar = function() {
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name(this.tag());
+    globalVar.name(this.name());
     this.variable(globalVar);
 };
 
@@ -58,7 +58,6 @@ ko.components.register('text-element-edit', {
     viewModel: function(dataModel){
         var self = this;
         this.questionText = dataModel.questionText;
-        this.tag = dataModel.tag;
     } ,
     template:
         '<div class="panel-body">\
