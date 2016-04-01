@@ -47,7 +47,9 @@ CheckBoxElement.prototype.setPointers = function(entitiesArr) {
         this.choices.push(ko.observable(choices[i]));
     }
 
-    this.variable(entitiesArr.byId[this.variable()]);
+    if (this.variable()) {
+        this.variable(entitiesArr.byId[this.variable()]);
+    }
 };
 
 CheckBoxElement.prototype.reAddEntities = function(entitiesArr) {
@@ -62,12 +64,17 @@ CheckBoxElement.prototype.toJS = function() {
         choices.push(this.choices()[i]());
     }
 
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
+
     return {
         type: this.type,
         id: this.id(),
         questionText: this.questionText(),
         choices: choices,
-        variable: this.variable().id(),
+        variable: variableId,
         answer: this.answer()
     };
 };

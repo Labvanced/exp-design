@@ -28,7 +28,9 @@ ParagraphElement.prototype.addVar = function() {
 
 
 ParagraphElement.prototype.setPointers = function(entitiesArr) {
-    this.variable(entitiesArr.byId[this.variable()]);
+    if (this.variable()) {
+        this.variable(entitiesArr.byId[this.variable()]);
+    }
 };
 
 ParagraphElement.prototype.reAddEntities = function(entitiesArr) {
@@ -38,11 +40,16 @@ ParagraphElement.prototype.reAddEntities = function(entitiesArr) {
 };
 
 ParagraphElement.prototype.toJS = function() {
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
+
     return {
         type: this.type,
         id: this.id(),
         questionText: this.questionText(),
-        variable: this.variable().id(),
+        variable: variableId,
         answer: this.answer()
     };
 };

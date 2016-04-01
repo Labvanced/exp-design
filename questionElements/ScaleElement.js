@@ -32,7 +32,9 @@ ScaleElement.prototype.addVar = function() {
 };
 
 ScaleElement.prototype.setPointers = function(entitiesArr) {
-    this.variable(entitiesArr.byId[this.variable()]);
+    if (this.variable()) {
+        this.variable(entitiesArr.byId[this.variable()]);
+    }
 };
 
 ScaleElement.prototype.reAddEntities = function(entitiesArr) {
@@ -42,6 +44,11 @@ ScaleElement.prototype.reAddEntities = function(entitiesArr) {
 };
 
 ScaleElement.prototype.toJS = function() {
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
+
     return {
         type: this.type,
         id: this.id(),
@@ -51,7 +58,7 @@ ScaleElement.prototype.toJS = function() {
         startLabel: this.startLabel(),
         endLabel: this.endLabel(),
         choices: this.choices(),
-        variable: this.variable().id(),
+        variable: variableId,
         answer: this.answer()
     };
 };

@@ -37,7 +37,9 @@ RangeElement.prototype.addVar = function() {
 
 
 RangeElement.prototype.setPointers = function(entitiesArr) {
-    this.variable(entitiesArr.byId[this.variable()]);
+    if (this.variable()) {
+        this.variable(entitiesArr.byId[this.variable()]);
+    }
 };
 
 RangeElement.prototype.reAddEntities = function(entitiesArr) {
@@ -47,6 +49,11 @@ RangeElement.prototype.reAddEntities = function(entitiesArr) {
 };
 
 RangeElement.prototype.toJS = function() {
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
+
     return {
         type: this.type,
         id: this.id(),
@@ -55,7 +62,7 @@ RangeElement.prototype.toJS = function() {
         maxChoice: this.maxChoice(),
         startLabel: this.startLabel(),
         endLabel: this.endLabel(),
-        variable: this.variable().id(),
+        variable: variableId,
         answer: this.answer()
     };
 };

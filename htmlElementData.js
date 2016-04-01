@@ -43,6 +43,8 @@ htmlElementData.prototype.setPointers = function(entitiesArr) {
     jQuery.each( this.responses(), function(idx, resp ) {
         resp.setPointers(entitiesArr);
     } );
+
+    this.content().setPointers();
 };
 
 htmlElementData.prototype.addNewResponse = function() {
