@@ -97,27 +97,27 @@ ko.components.register('scale-element-edit', {
         };
 
     },
-    template: '<div class="panel-body">\
+    template: '<div style="margin-top: -10px" class="panel-body">\
         <input style="max-width:50%" type="text" data-bind="textInput: questionText"\
             class="form-control" placeholder="Your Question">\
-            <br><br>\
+            <br>\
         <strong>Scale:</strong>\
-        <br><br>\
+        <br>\
         <select data-bind="options: values, value: startChoice, event: {change: finish}"></select>\
         To\
         <select data-bind="options: values, value: endChoice, event: {change: finish}">\
         </select>\
-        <br><br><br>\
-    <div style="display: inline-block; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: startChoice"></div>\
-    <span style="display: inline-block; margin-left: 3%;"><input\
+        <br>\
+    <div style="display: inline-block; margin-top: 5px; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: startChoice"></div>\
+    <span style="display: inline-block; margin-top: 5px; margin-left: 3%;"><input\
     type="text"\
         data-bind="textInput: startLabel"\
         class="form-control"\
         placeholder="Label (optional)"\
         style="width:75%"></span>\
-    <br><br>\
-    <div style="display: inline-block;  width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: endChoice"></div>\
-    <span style="display: inline-block; margin-left: 3%;"><input\
+    <br>\
+    <div style="display: inline-block; margin-top: 5px; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: endChoice"></div>\
+    <span style="display: inline-block; margin-top: 5px; margin-left: 3%;"><input\
     type="text"\
         data-bind="textInput: endLabel"\
         class="form-control"\

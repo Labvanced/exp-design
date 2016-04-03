@@ -109,7 +109,7 @@ ko.components.register('checkbox-element-edit', {
 
     },
     template:
-    '<div class="panel-body">\
+    '<div class="panel-body" style="margin-top: -10px">\
         <input style="max-width:50%" type="text" data-bind="textInput: questionText"\
             class="form-control" placeholder="Your Question">\
         <br>\

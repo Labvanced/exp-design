@@ -67,10 +67,10 @@ ko.components.register('text-element-edit', {
         this.questionText = dataModel.questionText;
     } ,
     template:
-        '<div class="panel-body">\
+        '<div class="panel-body" style="height: 100%; margin-top: -10px">\
                 <div id="toolbar" class="ui-layout-content"></div>\
                 <form id="newtextArea" class="quest-form2" action="javascript:void(0);">\
-                    <textarea data-bind="tinymce: questionText" id="myTextEditor" name="content" style="width:100%; height:100%"></textarea>\
+                    <textarea data-bind="tinymce: questionText, tinymceOptions: {toolbar: false}" id="myTextEditor" name="content" style="width:100%; height:100%"></textarea>\
                 </form>\
                 <br><br>\
         </div>'

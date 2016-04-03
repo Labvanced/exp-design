@@ -92,26 +92,26 @@ ko.components.register('range-element-edit', {
 
 
     },
-    template: '<div class="panel-body" xmlns="http://www.w3.org/1999/html">\
+    template: '<div style="margin-top: -10px" class="panel-body" xmlns="http://www.w3.org/1999/html">\
         <input style="max-width:50%" type="text" data-bind="textInput: questionText"\
             class="form-control" placeholder="Your Question">\
-            <br><br>\
+            <br>\
         <strong>Range:</strong>\
-        <br><br>\
+        <br>\
         <input style="max-width: 30px" type="text" data-bind="textInput: minChoice">\
         To\
         <input style="max-width: 30px" type="text" data-bind="textInput: maxChoice"">\
-        <br><br><br>\
-        <span style="display: inline-block; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: minChoice"></span>\
-        <span style="display: inline-block; margin-left: 5%;"><input\
+        <br>\
+        <span style="display: inline-block; margin-top: 5px; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: minChoice"></span>\
+        <span style="display: inline-block; margin-top: 5px; margin-left: 3%;"><input\
         type="text"\
             data-bind="textInput: startLabel"\
             class="form-control"\
             placeholder="Label (optional)"\
             style="width:75%"></span>\
-    <br><br>\
-    <span style="display: inline-block;  width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: maxChoice"></span>\
-    <span style="display: inline-block; margin-left: 5%;">\
+    <br>\
+    <span style="display: inline-block; margin-top: 5px; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: maxChoice"></span>\
+    <span style="display: inline-block; margin-top: 5px; margin-left: 3%;">\
     <input type="text"\
         data-bind="textInput: endLabel"\
         class="form-control"\
