@@ -135,8 +135,19 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
      //   self.recreatePlaceHolderBoxAndLabel();
     });
 
-    this.isSelected.subscribe(function(){
+    this.isSelected.subscribe(function(newVal){
     //    self.recreatePlaceHolderBoxAndLabel();
+
+        if (newVal) {
+            $(self.div).css({
+                "border": "1px dashed black"
+            });
+        }
+        else {
+            $(self.div).css({
+                "border": "0px"
+            });
+        }
     });
 
     this.dataModel.name.subscribe(function(newValue) {
