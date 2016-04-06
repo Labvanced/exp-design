@@ -10,15 +10,13 @@ var EditorCallbacks = function(frameElement,view) {
     this.dataModel = this.frameElement.dataModel;
     this.view = view;
     this.scale = ko.computed(function() {
-        return  this.view.scale();
+        return this.view.scale();
     }, this);
 
     this.addCallbacks();
 
     this.frameElement.callbacks = this;
 };
-
-
 
 
 EditorCallbacks.prototype.addCallbacks = function() {
@@ -58,7 +56,7 @@ EditorCallbacks.prototype.addResize = function() {
             self2.frameElement.setWidthAndHeight(width, height);
         },
 
-        aspectRatio: false,
+        aspectRatio: self2.dataModel.keepAspectRatio(),
         helper: "ui-resizable-helper"
 
     });

@@ -300,7 +300,7 @@ HtmlFrameElement.prototype.replaceWithContent = function(data) {
                     self.fullWidth($(this).width());
                     self.fullHeight($(this).height());
                     self.update(true,true);
-                    $(self.div).resizable( "destroy" );
+                    //$(self.div).resizable( "destroy" );
                     self.callbacks.addResize();
                 }
 
