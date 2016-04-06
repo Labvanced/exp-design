@@ -277,6 +277,7 @@ CanvasFrameElement.prototype.update = function(size,position){
             "left": self.x() * self.scale(),
             "top": self.y() * self.scale()
         });
+
     }
 
 };
