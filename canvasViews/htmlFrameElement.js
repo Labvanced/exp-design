@@ -28,9 +28,9 @@ var HtmlFrameElement = function(dataModel,editor) {
    // this.recreatePlaceHolderBoxAndLabel();
 
     // render Elements
-    this.renderElements(this.dataModel.content);
+    this.renderElements(this.dataModel.content());
 
-    this.replaceWithContent(this.dataModel.content);
+    this.replaceWithContent(this.dataModel.content());
 };
 
 
@@ -40,7 +40,7 @@ HtmlFrameElement.prototype.setupDiv = function() {
     this.div = document.createElement('div');
     $(this.div).css({
         "position": "absolute",
-        "backgroundColor": "white"
+        //"backgroundColor": "white"
     });
     this.content = document.createElement('div');
     $(this.content).css({
@@ -50,7 +50,7 @@ HtmlFrameElement.prototype.setupDiv = function() {
     this.text = document.createElement('p');
     $(this.text).css({
         "position": "absolute",
-        "backgroundColor": "white",
+        //"backgroundColor": "white",
         "textAlign": "center",
         "border": " 1px solid black"
     });
@@ -117,9 +117,6 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         }, this);
     }
 
-
-
-
     this.x.subscribe(function(x) {
         self.update(false,true);
     });
@@ -127,7 +124,6 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
     this.y.subscribe(function(y) {
         self.update(false,true);
     });
-
 
     this.width.subscribe(function(w) {
         self.update(true,false);
@@ -139,11 +135,9 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
      //   self.recreatePlaceHolderBoxAndLabel();
     });
 
-
     this.isSelected.subscribe(function(){
     //    self.recreatePlaceHolderBoxAndLabel();
     });
-
 
     this.dataModel.name.subscribe(function(newValue) {
         self.label.text = newValue;
@@ -155,13 +149,11 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
 
     if(this.dataModel.content().type == "VideoData"){
         this.dataModel.content().vidSource.subscribe(function(vidSource) {
-            self.replaceWithContent(self.dataModel.content);
+            self.replaceWithContent(self.dataModel.content());
         });
     }
 
 };
-
-
 
 HtmlFrameElement.prototype.update = function(size,position){
 
@@ -183,6 +175,7 @@ HtmlFrameElement.prototype.update = function(size,position){
             "width":self.width() * self.scale(),
             "height": self.height() * self.scale()
         });
+
     }
 
     if (position){
@@ -275,55 +268,41 @@ HtmlFrameElement.prototype.renderElements = function(data) {
 
 HtmlFrameElement.prototype.replaceWithContent = function(data) {
     var self = this;
-    if (ko.isObservable(data)){
-        data = data();
-    }
 
     if (data.type == "VideoData") {
 
         if (data.vidSource()){
             $(this.div).children().remove();
+
+            var dispWidth = self.width() * self.scale();
+            var dispHeight = self.height() * self.scale();
+
             this.content = document.createElement('video');
-            this.content.src = data.vidSource();
             $(this.content).css({
-                "width":self.width() * self.scale(),
-                "height": self.height() * self.scale(),
-                "position": "absolute",
-                "backgroundColor": "transparent"
+                "width": dispWidth,
+                "height": dispHeight,
+                "position": "absolute"
             });
             $(this.div).append(this.content);
 
+            this.content.src = data.vidSource();
+            this.content.oncanplaythrough = function () {
+                // initialize original size:
+                self.fullWidth($(this).width());
+                self.fullHeight($(this).height());
+                self.update(true,true);
+            };
+            $(this.content).append(this.content);
+
             if (this.editor.type == "editorView") {
                 this.content.controls = true;
-                this.content.oncanplaythrough = function () {
-                    // initialize original size:
-                    self.fullWidth($(this).width());
-                    self.fullHeight($(this).height());
-                    self.update(true,true);
-                    //$(self.div).resizable( "destroy" );
-                    self.callbacks.addResize();
-                }
-
             }
             else if (this.editor.type == "sequenceView") {
                 this.content.controls = false;
-                this.content.oncanplaythrough = function () {
-                    // initialize original size:
-                    self.fullWidth($(this).width());
-                    self.fullHeight($(this).height());
-                    self.update(true,true);
-                }
             }
-
             else if(this.editor.type == "playerView"){
                 this.content.controls = false;
                 this.content.preload = "auto";
-                this.content.oncanplaythrough = function () {
-                    // initialize original size:
-                    self.fullWidth($(this).width());
-                    self.fullHeight($(this).height());
-                    self.update(true,true);
-                }
             }
         }
 

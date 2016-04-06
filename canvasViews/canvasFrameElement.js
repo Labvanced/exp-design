@@ -244,7 +244,7 @@ CanvasFrameElement.prototype.update = function(size,position){
 
                 // this.width is the bounding box in virtual frame coordinates
                 // this.fullWidth is the raw image width
-                if (this.dataModel.keepAspectRatio()) {
+                if (!this.dataModel.stretchImageToFitBoundingBox()) {
                     var scale = Math.min(this.width() / this.fullWidth(), this.height() / this.fullHeight());
                     image.scaleX = scale;
                     image.scaleY = scale;

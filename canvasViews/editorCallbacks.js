@@ -32,6 +32,9 @@ EditorCallbacks.prototype.addCallbacks = function() {
     });
 
     this.addResize();
+    this.dataModel.keepAspectRatio.subscribe(function(newVal) {
+        self2.addResize();
+    });
 
     $(this.div).click(function() {
         self2.view.setSelectedElement(self2.dataModel);
