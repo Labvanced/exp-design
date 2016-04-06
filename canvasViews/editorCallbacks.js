@@ -53,20 +53,18 @@ EditorCallbacks.prototype.addResize = function() {
         $(self2.div).resizable( "destroy" );
     }
 
-    if (!this.dataModel.lockSize()) {
 
-        $(this.div).resizable({
-            resize: function (eevent, ui) {
-                var sizeInPx = ui.size;
-                var width = sizeInPx.width * (1 / self2.scale());
-                var height = sizeInPx.height * (1 / self2.scale());
-                self2.frameElement.setWidthAndHeight(width, height);
-            },
+    $(this.div).resizable({
+        resize: function (eevent, ui) {
+            var sizeInPx = ui.size;
+            var width = sizeInPx.width * (1 / self2.scale());
+            var height = sizeInPx.height * (1 / self2.scale());
+            self2.frameElement.setWidthAndHeight(width, height);
+        },
 
-            aspectRatio: false,
-            helper: "ui-resizable-helper"
+        aspectRatio: false,
+        helper: "ui-resizable-helper"
 
-        });
-    }
+    });
 
 };
