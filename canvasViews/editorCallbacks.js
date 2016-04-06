@@ -34,9 +34,6 @@ EditorCallbacks.prototype.addCallbacks = function() {
     });
 
     this.addResize();
-    this.dataModel.lockSize.subscribe(function(newValue) {
-        self2.addResize();
-    });
 
     $(this.div).click(function() {
         self2.view.setSelectedElement(self2.dataModel);
@@ -52,7 +49,6 @@ EditorCallbacks.prototype.addResize = function() {
     if ($(self2.div).resizable( "instance" )) {
         $(self2.div).resizable( "destroy" );
     }
-
 
     $(this.div).resizable({
         resize: function (eevent, ui) {
