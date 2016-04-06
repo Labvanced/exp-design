@@ -167,8 +167,19 @@ CanvasFrameElement.prototype.setupSubscriber = function() {
         self.update(true,false);
     });
 
-    this.isSelected.subscribe(function(){
+    this.isSelected.subscribe(function(newVal){
         self.recreatePlaceHolderBoxAndLabel();
+
+        if (newVal) {
+            $(self.div).css({
+                "border": "1px dashed black"
+            });
+        }
+        else {
+            $(self.div).css({
+                "border": "0px"
+            });
+        }
     });
 
 
