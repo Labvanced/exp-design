@@ -24,8 +24,7 @@ var htmlElementData= function(expData) {
     this.responses = ko.observableArray([]);
     this.isActive = ko.observable(true);
     this.content = ko.observable();
-    this.file_id = ko.observable(null);
-    this.file_orig_name = ko.observable(null);
+
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -35,7 +34,7 @@ htmlElementData.prototype.addContent = function(element){
     this.content(element);
 };
 
-htmlElementData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","file_id","file_orig_name","keepAspectRatio","lockSize"];
+htmlElementData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","lockSize"];
 
 htmlElementData.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
@@ -44,7 +43,10 @@ htmlElementData.prototype.setPointers = function(entitiesArr) {
         resp.setPointers(entitiesArr);
     } );
 
-    this.content().setPointers();
+    if(this.content().setPointers){
+        this.content().setPointers(entitiesArr);
+    }
+
 };
 
 htmlElementData.prototype.addNewResponse = function() {
@@ -55,10 +57,16 @@ htmlElementData.prototype.addNewResponse = function() {
 
 htmlElementData.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
+    this.content().selectTrialType(selectionSpec);
 };
 
 htmlElementData.prototype.reAddEntities = function(entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
+
+    if(this.content().reAddEntities){
+        this.content().reAddEntities(entitiesArr);
+    }
+
 };
 
 htmlElementData.prototype.fromJS = function(data) {
