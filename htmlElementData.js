@@ -13,7 +13,6 @@ var htmlElementData= function(expData) {
     this.editorWidth = ko.observable(320);
     this.editorHeight = ko.observable(180);
     this.keepAspectRatio = ko.observable(true);
-    this.lockSize = ko.observable(false);
     this.id = ko.observable(guid());
     this.type = "htmlElementData";
     this.name = ko.observable("html");
@@ -34,7 +33,7 @@ htmlElementData.prototype.addContent = function(element){
     this.content(element);
 };
 
-htmlElementData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","lockSize"];
+htmlElementData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio"];
 
 htmlElementData.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
@@ -94,12 +93,6 @@ htmlElementData.prototype.fromJS = function(data) {
         content.fromJS(data.content);
         this.content(content);
     }
-    if (data.hasOwnProperty('lockSize')) {
-        this.lockSize(data.lockSize);
-    }
-    else {
-        this.lockSize(false);
-    }
     return this;
 };
 
@@ -126,7 +119,6 @@ htmlElementData.prototype.toJS = function() {
         editorHeight: this.editorHeight(),
         isActive:  this.isActive(),
         keepAspectRatio: this.keepAspectRatio(),
-        lockSize: this.lockSize(),
         content: contentData
     };
 };
