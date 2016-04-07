@@ -150,10 +150,6 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         }
     });
 
-    this.dataModel.name.subscribe(function(newValue) {
-        self.label.text = newValue;
-    });
-
     this.dataModel.content.subscribe(function(newValue){
         self.replaceWithContent(newValue)
     });
