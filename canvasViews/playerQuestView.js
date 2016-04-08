@@ -86,7 +86,8 @@ PlayerQuestView.prototype.init = function() {
         var div = this.divContainer[pageCount];
         $(div).height()
         $(div).css({
-            'overflow-y':"scroll"
+            "position": "absolute",
+            "overflow-y":"scroll"
         });
         this.questDiv.append(this.divContainer[i][0]);
     }
@@ -101,14 +102,17 @@ PlayerQuestView.prototype.addNewPage= function() {
         "text-align": "center"
     });
     $(div).append(header);
+    var height = window.innerHeight-150;
 
     $(div).css({
         "position": "absolute",
         "backgroundColor": "white",
         "left": "20%",
+        "height": height,
         "width": "60%",
         "top": "100px",
-        "display": "none"
+        "display": "none",
+        "overflow-y":"scroll"
     });
     this.divContainer.push(div);
 };
