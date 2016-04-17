@@ -151,15 +151,20 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
     });
 
     this.dataModel.content.subscribe(function(newValue){
-        self.replaceWithContent(newValue)
+        self.renderElements(newValue)
     });
 
-    if(this.dataModel.content().type == "VideoData"){
+    if(this.dataModel.content().vidSource){
         this.dataModel.content().vidSource.subscribe(function(vidSource) {
             self.replaceWithContent(self.dataModel.content());
         });
     }
 
+    if(this.dataModel.content().imgSource) {
+        this.dataModel.content().imgSource.subscribe(function(imgSource) {
+            self.replaceWithContent(self.dataModel.content);
+        });
+    }
 };
 
 HtmlFrameElement.prototype.update = function(size,position){
@@ -182,6 +187,31 @@ HtmlFrameElement.prototype.update = function(size,position){
             "width":self.width() * self.scale(),
             "height": self.height() * self.scale()
         });
+
+        if (this.dataModel.content().type == "ImageHtmlData"){
+            var image = this.content;
+            if (image) {
+                // this.width is the bounding box in virtual frame coordinates
+                // this.fullWidth is the raw image width
+                if (!this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox()) {
+                    var scale = Math.min(this.width() / this.fullWidth(), this.height() / this.fullHeight());
+                    image.scaleX = scale;
+                    image.scaleY = scale;
+                    image.x = (this.width() - (this.fullWidth() * scale))/2;
+                    image.y = (this.height() - (this.fullHeight() * scale))/2;
+                }
+                else {
+                    image.scaleX = this.width() / this.fullWidth();
+                    image.scaleY = this.height() / this.fullHeight();
+                    image.x = 0;
+                    image.y = 0;
+                }
+
+                this.content = image;
+                $(this.content).append(this.content);
+                $(this.div).append(this.content);
+            }
+        }
 
     }
 
@@ -225,8 +255,6 @@ HtmlFrameElement.prototype.setCoord = function(x,y) {
     return this;
 };
 
-
-
 HtmlFrameElement.prototype.renderElements = function(data) {
     var self = this;
     if (ko.isObservable(data)){
@@ -256,12 +284,13 @@ HtmlFrameElement.prototype.renderElements = function(data) {
             this.content = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'</div>");
         }
 
+
+
         ko.applyBindings(data, $(this.content)[0]);
         $(this.content).css({
             "width": self.width() * self.scale(),
             "height": self.height() * self.scale(),
-            "position": "absolute",
-            "backgroundColor": "transparent"
+            "position": "absolute"
         });
         $(this.div).append(this.content);
     }
@@ -275,6 +304,9 @@ HtmlFrameElement.prototype.renderElements = function(data) {
 
 HtmlFrameElement.prototype.replaceWithContent = function(data) {
     var self = this;
+    if (ko.isObservable(data)){
+        data = data();
+    }
 
     if (data.type == "VideoData") {
 
@@ -313,5 +345,31 @@ HtmlFrameElement.prototype.replaceWithContent = function(data) {
             }
         }
 
+    }
+    else if (data.type == "ImageHtmlData") {
+        if (data.imgSource()){
+            $(this.div).children().remove();
+            //this.content = document.createElement('image')
+            this.content = new Image;
+
+            this.content.src = data.imgSource();
+            this.content.onload = function () {
+                // initialize original size:
+                self.fullWidth($(this).width());
+                self.fullHeight($(this).height());
+                self.update(true,true);
+            };
+            //$(this.content).append(image);
+            $(this.div).append(this.content);
+            $(this.content).css({
+                "width":self.width() * self.scale(),
+                "height": self.height() * self.scale(),
+                "position": "absolute",
+                "backgroundColor": "transparent"
+            });
+            $(this.content).append(this.content);
+
+
+        }
     }
 };
