@@ -100,6 +100,12 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         this.height = ko.computed(function() {
             return this.dataModel.modifier().selectedTrialView.editorHeight();
         }, this);
+        this.keepAspectRatio = ko.computed(function() {
+            return this.dataModel.modifier().selectedTrialView.keepAspectRatio();
+        }, this);
+        this.stretchImageToFitBoundingBox = ko.computed(function() {
+            return this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox();
+        }, this);
 
     }
     else {
@@ -114,6 +120,12 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         }, this);
         this.height = ko.computed(function() {
             return this.dataModel.editorHeight();
+        }, this);
+        this.keepAspectRatio = ko.computed(function() {
+            return this.dataModel.content().keepAspectRatio();
+        }, this);
+        this.stretchImageToFitBoundingBox = ko.computed(function() {
+            return this.dataModel.content().stretchImageToFitBoundingBox();
         }, this);
     }
 
@@ -148,6 +160,10 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
                 "border": "0px"
             });
         }
+    });
+
+    this.stretchImageToFitBoundingBox.subscribe(function(newVal){
+        self.update(true, false);
     });
 
     this.dataModel.content.subscribe(function(newValue){
@@ -194,22 +210,26 @@ HtmlFrameElement.prototype.update = function(size,position){
                 // this.width is the bounding box in virtual frame coordinates
                 // this.fullWidth is the raw image width
                 if (!this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox()) {
-                    var scale = Math.min(this.width() / this.fullWidth(), this.height() / this.fullHeight());
-                    image.scaleX = scale;
-                    image.scaleY = scale;
-                    image.x = (this.width() - (this.fullWidth() * scale))/2;
-                    image.y = (this.height() - (this.fullHeight() * scale))/2;
+                    var scale = Math.min(self.width() / this.fullWidth(), self.height() / this.fullHeight());
+                    var w = this.fullWidth() * scale * self.scale();
+                    var h = this.fullHeight() * scale * self.scale();
+
+                    $(image).css({
+                        "width": w,
+                        "height": h,
+                        "position": 'absolute',
+                        "left": (self.width() * self.scale() - w)/2,
+                        "top": (self.height() * self.scale() - h)/2
+                    });
                 }
                 else {
-                    image.scaleX = this.width() / this.fullWidth();
-                    image.scaleY = this.height() / this.fullHeight();
-                    image.x = 0;
-                    image.y = 0;
+                    $(image).css({
+                        "width": self.width() * self.scale(),
+                        "height": self.height() * self.scale(),
+                        "left": 0,
+                        "top": 0
+                    });
                 }
-
-                this.content = image;
-                $(this.content).append(this.content);
-                $(this.div).append(this.content);
             }
         }
 
@@ -349,25 +369,26 @@ HtmlFrameElement.prototype.replaceWithContent = function(data) {
     else if (data.type == "ImageHtmlData") {
         if (data.imgSource()){
             $(this.div).children().remove();
-            //this.content = document.createElement('image')
+
             this.content = new Image;
 
-            this.content.src = data.imgSource();
-            this.content.onload = function () {
-                // initialize original size:
-                self.fullWidth($(this).width());
-                self.fullHeight($(this).height());
-                self.update(true,true);
-            };
-            //$(this.content).append(image);
-            $(this.div).append(this.content);
             $(this.content).css({
                 "width":self.width() * self.scale(),
                 "height": self.height() * self.scale(),
                 "position": "absolute",
                 "backgroundColor": "transparent"
             });
-            $(this.content).append(this.content);
+
+            this.content.src = data.imgSource();
+            this.content.onload = function () {
+                // initialize original size:
+                self.fullWidth(this.naturalWidth);
+                self.fullHeight(this.naturalHeight);
+                self.update(true,true);
+            };
+
+            $(this.div).append(this.content);
+
 
 
         }

@@ -118,7 +118,6 @@ ko.components.register('choice-element-preview', {
        this.openQuestion = dataModel.openQuestion;
        this.newChoice = dataModel.newChoice;
        this.choices = dataModel.choices;
-       this.newPage = dataModel.newPage;
    },
     template:
         '<div>\
