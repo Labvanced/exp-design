@@ -15,7 +15,8 @@ var HtmlFrameElement = function(dataModel,editor) {
     this.fullWidth = ko.observable(0);
     this.fullHeight = ko.observable(0);
     this.isSelected = ko.observable(false);
-    this.div= null;
+    this.div = null;
+    this.content = null;
     this.scale = ko.computed(function() {
         return this.editor.scale();
     }, this);
@@ -152,12 +153,12 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
 
         if (newVal) {
             $(self.div).css({
-                "border": "1px dashed black"
+                "outline": "1px dashed black"
             });
         }
         else {
             $(self.div).css({
-                "border": "0px"
+                "outline": "0px"
             });
         }
     });
@@ -283,7 +284,7 @@ HtmlFrameElement.prototype.renderElements = function(data) {
 
     if (data.type == "CheckBoxElement" ||data.type =="MChoiceElement"||data.type =="ParagraphElement"||data.type =="RangeElement"||data.type =="ScaleElement"||data.type =="TextElement"){
 
-        $(this.div).children().remove();
+        $(this.content).remove();
         this.content = document.createElement('questionnaire');
         if (data instanceof CheckBoxElement) {
             this.content = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'</div>");
@@ -315,7 +316,7 @@ HtmlFrameElement.prototype.renderElements = function(data) {
         $(this.div).append(this.content);
     }
     else if(data.type == "textArea"){
-        $(this.div).children().remove();
+        $(this.content).remove();
         this.content = document.createElement('text');
     }
 
@@ -331,7 +332,7 @@ HtmlFrameElement.prototype.replaceWithContent = function(data) {
     if (data.type == "VideoData") {
 
         if (data.vidSource()){
-            $(this.div).children().remove();
+            $(this.content).remove();
 
             var dispWidth = self.width() * self.scale();
             var dispHeight = self.height() * self.scale();
@@ -368,7 +369,7 @@ HtmlFrameElement.prototype.replaceWithContent = function(data) {
     }
     else if (data.type == "ImageHtmlData") {
         if (data.imgSource()){
-            $(this.div).children().remove();
+            $(this.content).remove();
 
             this.content = new Image;
 
