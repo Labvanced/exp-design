@@ -8,7 +8,6 @@ var ParagraphElement = function(expData) {
 
     //serialized
     this.type= "ParagraphElement";
-    this.id = ko.observable(guid());
     this.questionText= ko.observable("Your Question");
     this.selected = ko.observable(false);
     this.name = ko.observable("");
@@ -53,7 +52,6 @@ ParagraphElement.prototype.toJS = function() {
 
     return {
         type: this.type,
-        id: this.id(),
         questionText: this.questionText(),
         variable: variableId,
         answer: this.answer()
@@ -62,7 +60,6 @@ ParagraphElement.prototype.toJS = function() {
 
 ParagraphElement.prototype.fromJS = function(data) {
     this.type=data.type;
-    this.id(data.id);
     this.questionText(data.questionText);
     this.variable(data.variable);
     this.answer(data.answer);
@@ -86,29 +83,6 @@ ko.components.register('paragraph-element-edit', {
 
 });
 
-ko.components.register('paragraph-element-preview',{
-   viewModel: function(dataModel){
-       this.dataModel = dataModel;
-       this.questionText = dataModel.questionText;
-   },
-    template:
-
-        '<div>\
-            <span style="float:right;;"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
-            <h3 style="float: left">\
-                <span data-bind="html: questionText"></span>\
-            </h3>\
-        </div>\
-        <br><br><br><br>\
-        <div class="panel-body">\
-            <textarea style="position:relative;left: 0%; max-width:50%"\
-               class="form-control"\
-               placeholder="Participant Answer">\
-            </textarea>\
-        </div>'
-
-});
-
 ko.components.register('paragraph-playerview',{
     viewModel: function(dataModel){
         this.dataModel = dataModel;
@@ -116,7 +90,7 @@ ko.components.register('paragraph-playerview',{
         this.answer = dataModel.answer;
     },
     template:
-        '<div class="panel-heading">\
+        '<div>\
             <h3 style="float: left">\
                 <span data-bind="html: questionText"></span>\
             </h3>\

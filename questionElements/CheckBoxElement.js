@@ -8,14 +8,13 @@ var CheckBoxElement= function(expData) {
 
     //serialized
     this.type= "CheckBoxElement";
-    this.id = ko.observable(guid());
     this.questionText= ko.observable("Your Question");
 
     this.openQuestion=  ko.observable(false);
     this.choices= ko.observableArray([ko.observable("Check")]);
     this.answer = ko.observableArray([false]);
     this.newPage = ko.observable(false);
-    this.selected = ko.observable(false);
+    //this.selected = ko.observable(false);
     this.name = ko.observable("");
     this.variable = ko.observable();
 
@@ -77,7 +76,6 @@ CheckBoxElement.prototype.toJS = function() {
 
     return {
         type: this.type,
-        id: this.id(),
         questionText: this.questionText(),
         choices: choices,
         variable: variableId,
@@ -87,7 +85,6 @@ CheckBoxElement.prototype.toJS = function() {
 
 CheckBoxElement.prototype.fromJS = function(data) {
     this.type=data.type;
-    this.id(data.id);
     this.questionText(data.questionText);
     this.choices(data.choices);
     this.variable(data.variable);
@@ -130,31 +127,6 @@ ko.components.register('checkbox-element-edit', {
     </div>'
 });
 
-ko.components.register('checkbox-element-preview', {
-    viewModel: function(dataModel){
-        this.dataModel = dataModel;
-        this.questionText = dataModel.questionText;
-        this.choices = dataModel.choices;
-    },
-    template:
-        '<div>\
-        <span style="float: right;"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
-        <h3 style="float: left">\
-            <span data-bind="text: questionText"></span>\
-        </h3>\
-            </div>\
-        <br><br><br><br>\
-        <div class="panel-body">\
-            <div data-bind="foreach: choices">\
-                <input style="transform: scale(1.3); margin-bottom: 2%" type="checkbox" data-bind="attr: {name: \'radio\'+ $parent.name}, click: function(){return true}, clickBubble: false ">\
-                <span style="font-size: large; margin-left: 1%;" data-bind="text: $data"></span>\
-                <br>\
-            </div>\
-        </div>'
-});
-
-//  click: function(){$root.changeCheck($index())}
-
 ko.components.register('checkbox-playerview', {
     viewModel: function(dataModel){
         this.dataModel = dataModel;
@@ -163,12 +135,12 @@ ko.components.register('checkbox-playerview', {
         this.answer = dataModel.answer;
     },
     template:
-        '<div class="panel-heading">\
+        '<div>\
           <h3 style="float: left">\
             <span data-bind="text: questionText"></span>\
           </h3>\
         </div>\
-        <br><br>\
+        <br><br><br><br>\
         <div class="panel-body">\
             <div data-bind="foreach: choices">\
                 <input style="transform: scale(1.3); margin-bottom: 2%" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\

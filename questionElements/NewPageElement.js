@@ -10,7 +10,6 @@ var NewPageElement = function(expData) {
 
     //serialized
     this.type= "NewPageElement";
-    this.id = ko.observable(guid());
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);
     this.name = ko.observable("");
@@ -40,14 +39,12 @@ NewPageElement.prototype.submitQuestionnaire = function() {
 
 NewPageElement.prototype.toJS = function() {
     return {
-        type: this.type,
-        id: this.id()
+        type: this.type
     };
 };
 
 NewPageElement.prototype.fromJS = function(data) {
     this.type=data.type;
-    this.id(data.id);
 
 };
 
@@ -74,7 +71,6 @@ ko.components.register('newPage-element-preview',{
     },
     template:
         '<div class="panel-body">' +
-        '<span style="float: right"><a href="#" data-bind="click: function(data,event) {$root.removeElement(dataModel)}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>' +
         '<div style="text-align: center;">PAGE BREAK</div>   ' +
         '<div style="margin: auto; max-width: 40%">' +
         '       <img style="float: right;" src="/resources/next.png"/></img>' +
