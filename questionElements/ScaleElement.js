@@ -5,6 +5,7 @@
 var ScaleElement= function(expData) {
     this.expData = expData;
     this.parent = null;
+    this.label = "Scale";
 
     //serialized
     this.type= "ScaleElement";
@@ -19,7 +20,12 @@ var ScaleElement= function(expData) {
     this.name = ko.observable("");
     this.variable = ko.observable();
     this.answer = ko.observableArray([]);
+
+    // modifier:
+    this.modifier = ko.observable(new Modifier(this.expData, this));
 };
+
+ScaleElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
 
 ScaleElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);

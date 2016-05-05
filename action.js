@@ -243,6 +243,49 @@ ActionNextFrame.prototype.toJS = function() {
     };
 };
 
+//////////////////////
+
+var ActionRecordQuestionaireResponse = function(parent) {
+    this.parent = parent;
+
+    // serialized
+    this.variableId = ko.observable(undefined);
+    this.variable = null;
+
+};
+ActionRecordQuestionaireResponse.prototype.type = "ActionRecordQuestionaireResponse";
+ActionRecordQuestionaireResponse.prototype.label = "Record Questionaire Answer";
+
+ActionRecordQuestionaireResponse.prototype.setPointers = function(entitiesArr) {
+
+};
+
+ActionRecordQuestionaireResponse.prototype.run = function(dataModel) {
+
+    var blockId = player.getBlockId();
+    var trialId = player.getTrialId();
+    var resp = dataModel.content.answer;
+    var recData = new RecData(this.variableId(), resp);
+    player.addRecording(blockId,trialId,recData.toJS());
+
+};
+
+ActionRecordQuestionaireResponse.prototype.fromJS = function(data) {
+    this.variableId(data.variableId);
+    return this;
+};
+
+
+
+
+ActionRecordQuestionaireResponse.prototype.toJS = function() {
+    return {
+        type: this.type,
+        variableId: this.variableId()
+    };
+};
+
+
 ////////////////////////
 
 function actionFactory(parent,type) {
@@ -264,6 +307,9 @@ function actionFactory(parent,type) {
     }
     else if(type == "ActionRecordTagAndExitFrame") {
         var action = new ActionRecordTagAndExitFrame(parent);
+    }
+    else if(type == "ActionRecordQuestionaireResponse") {
+        var action = new ActionRecordQuestionaireResponse(parent);
     }
     return action;
 }

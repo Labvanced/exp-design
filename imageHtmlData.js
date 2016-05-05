@@ -10,7 +10,7 @@ var ImageHtmlData= function(expData) {
     // serialized
 
     this.type = "ImageHtmlData";
-    this.name = ko.observable("ImageHtml");
+    //this.name = ko.observable("ImageHtml");
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
     this.stretchImageToFitBoundingBox = ko.observable(false);
@@ -52,7 +52,7 @@ ImageHtmlData.prototype.selectTrialType = function(selectionSpec) {
 ImageHtmlData.prototype.fromJS = function(data) {
     var self = this;
     this.type = data.type;
-    this.name(data.name);
+    //this.name(data.name);
     this.file_id(data.file_id);
     this.file_orig_name(data.file_orig_name);
     this.modifier(new Modifier(this.expData, this));
@@ -67,7 +67,7 @@ ImageHtmlData.prototype.toJS = function() {
 
     return {
         type: this.type,
-        name: this.name(),
+        //name: this.name(),
         file_id: this.file_id(),
         file_orig_name: this.file_orig_name(),
         stretchImageToFitBoundingBox: this.stretchImageToFitBoundingBox(),

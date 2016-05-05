@@ -4,6 +4,7 @@
 var ParagraphElement = function(expData) {
     this.expData = expData;
     this.parent = null;
+    this.label = "Paragraph";
 
     //serialized
     this.type= "ParagraphElement";
@@ -13,7 +14,12 @@ var ParagraphElement = function(expData) {
     this.name = ko.observable("");
     this.variable = ko.observable();
     this.answer = ko.observable("");
+
+    // modifier:
+    this.modifier = ko.observable(new Modifier(this.expData, this));
 };
+
+ParagraphElement.prototype.modifiableProp = ["questionText"];
 
 
 ParagraphElement.prototype.addVar = function() {

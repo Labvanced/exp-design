@@ -4,6 +4,7 @@
 var CheckBoxElement= function(expData) {
     this.expData = expData;
     this.parent = null;
+    this.label = "Checkbox";
 
     //serialized
     this.type= "CheckBoxElement";
@@ -18,13 +19,18 @@ var CheckBoxElement= function(expData) {
     this.name = ko.observable("");
     this.variable = ko.observable();
 
+    // modifier:
+    this.modifier = ko.observable(new Modifier(this.expData, this));
+
 };
+
+CheckBoxElement.prototype.modifiableProp = ["questionText"];
 
 CheckBoxElement.prototype.changeCheck = function(index) {
     if (this.answer()[index]){
         this.answer.splice(index,1,false);
     }
-    else{
+    else {
         this.answer.splice(index,1,true);
     }
 };

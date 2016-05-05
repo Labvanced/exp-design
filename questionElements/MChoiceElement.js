@@ -4,6 +4,7 @@
 var MChoiceElement = function(expData) {
     this.expData = expData;
     this.parent = null;
+    this.label = "Multiple_Choice";
 
     //serialized
     this.type= "MChoiceElement";
@@ -16,7 +17,12 @@ var MChoiceElement = function(expData) {
     this.name = ko.observable("");
     this.variable = ko.observable();
     this.answer = ko.observable("");
+
+    // modifier:
+    this.modifier = ko.observable(new Modifier(this.expData, this));
 };
+
+MChoiceElement.prototype.modifiableProp = ["questionText"];
 
 MChoiceElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);

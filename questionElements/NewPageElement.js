@@ -6,6 +6,7 @@
 var NewPageElement = function(expData) {
     this.expData = expData;
     this.parent = null;
+    this.label = "New_Page";
 
     //serialized
     this.type= "NewPageElement";
@@ -13,7 +14,12 @@ var NewPageElement = function(expData) {
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);
     this.name = ko.observable("");
+
+    // modifier:
+    this.modifier = ko.observable(new Modifier(this.expData, this));
 };
+
+NewPageElement.prototype.modifiableProp = ["returnButton"];
 
 
 NewPageElement.prototype.setPointers = function() {

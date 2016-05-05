@@ -4,6 +4,7 @@
 var TextElement = function(expData) {
     this.expData = expData;
     this.parent = null;
+    this.label = "Text";
 
     //serialized
     this.type = "TextElement";
@@ -13,8 +14,12 @@ var TextElement = function(expData) {
     this.name = ko.observable("");
     this.variable = ko.observable();
     this.answer = ko.observable("");
+
+    // modifier:
+    this.modifier = ko.observable(new Modifier(this.expData, this));
 };
 
+TextElement.prototype.modifiableProp = ["questionText"];
 
 TextElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);

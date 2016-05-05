@@ -122,7 +122,7 @@ FrameView.prototype.resize = function(size) {
 FrameView.prototype.renderElements = function() {
 
     $(this.divContainer).children().remove();
-    this.viewElements= ko.observableArray([]);
+    this.viewElements = ko.observableArray([]);
 
     if (this.type== "editorView") {
         this.setupBackground();
@@ -156,25 +156,25 @@ FrameView.prototype.addElem = function(elementData,index) {
     if (elementData.type == "ImageData") {
         var canvasFrameElement = new CanvasFrameElement(elementData,this);
         var callbacks = null;
-        if (this.type=="editorView"){
+        if (this.type=="editorView") {
             var callbacks = new EditorCallbacks(canvasFrameElement,this);
         }
-        else if (this.type=="playerView"){
+        else if (this.type=="playerView") {
             var callbacks = new PlayerCallbacks(canvasFrameElement,this);
         }
-        this.viewElements.splice(index,0,canvasFrameElement);
+        this.viewElements.splice(index, 0, canvasFrameElement);
         $(this.divContainer).append(canvasFrameElement.div);
     }
-    else{
+    else {
         var htmlFrameElement = new HtmlFrameElement(elementData,this);
         var callbacks = null;
-        if (this.type=="editorView"){
+        if (this.type=="editorView") {
             var callbacks = new EditorCallbacks(htmlFrameElement,this);
         }
-        else if (this.type=="playerView"){
+        else if (this.type=="playerView") {
             var callbacks = new PlayerCallbacks(htmlFrameElement,this);
         }
-        this.viewElements.splice(index,0,htmlFrameElement);
+        this.viewElements.splice(index, 0, htmlFrameElement);
         $(this.divContainer).append(htmlFrameElement.div);
     }
 };

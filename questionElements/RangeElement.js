@@ -8,6 +8,7 @@
 var RangeElement= function(expData) {
     this.expData = expData;
     this.parent = null;
+    this.label = "Range";
 
     //serialized
     this.type= "RangeElement";
@@ -23,7 +24,12 @@ var RangeElement= function(expData) {
     this.name = ko.observable("");
     this.variable = ko.observable();
 
+    // modifier:
+    this.modifier = ko.observable(new Modifier(this.expData, this));
+
 };
+
+RangeElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
 
 RangeElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);

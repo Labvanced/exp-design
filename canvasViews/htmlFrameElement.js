@@ -55,7 +55,10 @@ HtmlFrameElement.prototype.setupDiv = function() {
         "textAlign": "center",
         "border": " 1px solid black"
     });
-    $(this.text).text(this.dataModel.content().name());
+    $(this.text).text(this.dataModel.name());
+    this.dataModel.name.subscribe(function(newName) {
+        $(self.text).text(newName);
+    })
 
     $(this.content).append($(this.text));
     $(this.div).append($(this.content));
@@ -104,10 +107,6 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         this.keepAspectRatio = ko.computed(function() {
             return this.dataModel.modifier().selectedTrialView.keepAspectRatio();
         }, this);
-        this.stretchImageToFitBoundingBox = ko.computed(function() {
-            return this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox();
-        }, this);
-
     }
     else {
         this.x = ko.computed(function() {
@@ -125,9 +124,12 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         this.keepAspectRatio = ko.computed(function() {
             return this.dataModel.content().keepAspectRatio();
         }, this);
-        this.stretchImageToFitBoundingBox = ko.computed(function() {
-            return this.dataModel.content().stretchImageToFitBoundingBox();
-        }, this);
+    }
+
+    if (this.dataModel.content().hasOwnProperty('stretchImageToFitBoundingBox')) {
+        this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox.subscribe(function(newVal) {
+            self.update(true, false);
+        });
     }
 
     this.x.subscribe(function(x) {
@@ -161,10 +163,6 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
                 "outline": "0px"
             });
         }
-    });
-
-    this.stretchImageToFitBoundingBox.subscribe(function(newVal){
-        self.update(true, false);
     });
 
     this.dataModel.content.subscribe(function(newValue){
@@ -282,7 +280,7 @@ HtmlFrameElement.prototype.renderElements = function(data) {
         data = data();
     }
 
-    if (data.type == "CheckBoxElement" ||data.type =="MChoiceElement"||data.type =="ParagraphElement"||data.type =="RangeElement"||data.type =="ScaleElement"||data.type =="TextElement"){
+    if (data.type == "CheckBoxElement" ||data.type =="MChoiceElement"||data.type =="ParagraphElement"||data.type =="RangeElement"||data.type =="ScaleElement"||data.type =="TextElement"||data.type =="ButtonElement"){
 
         $(this.content).remove();
         this.content = document.createElement('questionnaire');
@@ -303,6 +301,9 @@ HtmlFrameElement.prototype.renderElements = function(data) {
         }
         else if (data instanceof TextElement) {
             this.content = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'</div>");
+        }
+        else if (data instanceof ButtonElement) {
+            this.content = $("<div data-bind='component: {name : \"button-playerview\", params : $data}'</div>");
         }
 
 
