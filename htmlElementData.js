@@ -31,7 +31,10 @@ var htmlElementData= function(expData) {
                 this.content().name(newName);
             }
             if (this.content().variable) {
-                this.content().variable().name(newName);
+                var variable = this.content().variable();
+                if (variable) {
+                    variable.name(newName);
+                }
             }
         }
     }, this);
