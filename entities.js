@@ -60,35 +60,67 @@ function entityFactory(entityJson, expData) {
             entity.fromJS(entityJson);
             break;
         case 'CheckBoxElement':
-            entity = new CheckBoxElement(expData);
-            entity.fromJS(entityJson);
+            var elem = new CheckBoxElement(expData);
+            elem.fromJS(entityJson);
+            entity = new QuestionnaireElement(expData);
+            entity.id(entityJson.id);
+            entity.name(entityJson.name);
+            entity.addContent(elem);
             break;
         case 'MChoiceElement':
-            entity = new MChoiceElement(expData);
-            entity.fromJS(entityJson);
+            var elem = new MChoiceElement(expData);
+            elem.fromJS(entityJson);
+            entity = new QuestionnaireElement(expData);
+            entity.id(entityJson.id);
+            entity.name(entityJson.name);
+            entity.addContent(elem);
             break;
         case 'ParagraphElement':
-            entity = new ParagraphElement(expData);
-            entity.fromJS(entityJson);
+            var elem = new ParagraphElement(expData);
+            elem.fromJS(entityJson);
+            entity = new QuestionnaireElement(expData);
+            entity.id(entityJson.id);
+            entity.name(entityJson.name);
+            entity.addContent(elem);
             break;
         case 'RangeElement':
-            entity = new RangeElement(expData);
-            entity.fromJS(entityJson);
+            var elem = new RangeElement(expData);
+            elem.fromJS(entityJson);
+            entity = new QuestionnaireElement(expData);
+            entity.id(entityJson.id);
+            entity.name(entityJson.name);
+            entity.addContent(elem);
             break;
         case 'ScaleElement':
-            entity = new ScaleElement(expData);
-            entity.fromJS(entityJson);
+            var elem = new ScaleElement(expData);
+            elem.fromJS(entityJson);
+            entity = new QuestionnaireElement(expData);
+            entity.id(entityJson.id);
+            entity.name(entityJson.name);
+            entity.addContent(elem);
             break;
         case 'TextElement':
-            entity = new TextElement(expData);
-            entity.fromJS(entityJson);
+            var elem = new TextElement(expData);
+            elem.fromJS(entityJson);
+            entity = new QuestionnaireElement(expData);
+            entity.id(entityJson.id);
+            entity.name(entityJson.name);
+            entity.addContent(elem);
             break;
         case 'NewPageElement':
-            entity = new NewPageElement(expData);
-            entity.fromJS(entityJson);
+            var elem = new NewPageElement(expData);
+            elem.fromJS(entityJson);
+            entity = new QuestionnaireElement(expData);
+            entity.id(entityJson.id);
+            entity.name(entityJson.name);
+            entity.addContent(elem);
             break;
         case 'htmlElementData':
             entity = new htmlElementData(expData);
+            entity.fromJS(entityJson);
+            break;
+        case 'QuestionnaireElement':
+            entity = new QuestionnaireElement(expData);
             entity.fromJS(entityJson);
             break;
         default:

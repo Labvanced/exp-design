@@ -12,7 +12,6 @@ var NewPageElement = function(expData) {
     this.type= "NewPageElement";
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);
-    this.name = ko.observable("");
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -96,12 +95,15 @@ ko.components.register('newpage-playerview',{
             this.next = false;
             this.submit = true;
         }
+
+
     },
     template:
     '<div class="panel-body">' +
-    '<span data-bind="if:backwards"><button class="btn-primary" data-bind="click: function() { $root.previousPage(); }">back</button></span>'+
-    '<span data-bind="if:next"><button class="btn-primary" data-bind="click: function() { $root.nextPage(); }">next</button></span>'+
-    '<span data-bind="if:submit"><button class="btn-primary" data-bind="click: function() { $root.submitQuestionnaire(); }">submit</button></span>'+
+    '<span data-bind="if:backwards"><button class="btn-primary" data-bind="click: function() { dataModel.previousPage(); }">back</button></span>'+
+    '<span data-bind="if:next"><button class="btn-primary" data-bind="click: function() { dataModel.nextPage(); }">next</button></span>'+
+    '<span data-bind="text: $component.type"></span>' +
+    '<span data-bind="if:submit"><button class="btn-primary" data-bind="click: function() {dataModel.submitQuestionnaire(); }">submit</button></span>'+
     '</div>'
 });
 

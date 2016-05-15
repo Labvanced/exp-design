@@ -14,8 +14,6 @@ var CheckBoxElement= function(expData) {
     this.choices= ko.observableArray([ko.observable("Check")]);
     this.answer = ko.observableArray([false]);
     this.newPage = ko.observable(false);
-    //this.selected = ko.observable(false);
-    this.name = ko.observable("");
     this.variable = ko.observable();
 
     // modifier:
@@ -41,7 +39,7 @@ CheckBoxElement.prototype.addVar = function() {
     globalVar.dataType(GlobalVar.dataTypes[3]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name(this.name());
+    globalVar.name(this.parent.name());
     this.variable(globalVar);
 };
 

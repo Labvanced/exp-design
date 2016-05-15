@@ -17,7 +17,6 @@ var ScaleElement= function(expData) {
     this.endLabel= ko.observable("end label");
     this.choices= ko.observableArray([1,2,3,4,5]);
     this.selected = ko.observable(false);
-    this.name = ko.observable("");
     this.variable = ko.observable();
     this.answer = ko.observableArray([]);
 
@@ -33,7 +32,7 @@ ScaleElement.prototype.addVar = function() {
     globalVar.dataType(GlobalVar.dataTypes[2]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[2]);
-    globalVar.name(this.name());
+    globalVar.name(this.parent.name());
     this.variable(globalVar);
 };
 
@@ -146,7 +145,7 @@ ko.components.register('scale-playerview',{
         this.answer = dataModel.answer;
     },
     template:
-        '<div class="panel-heading">\
+        '<div>\
         <h3 style="float: left">\
             <span data-bind="text: questionText"></span>\
         </h3>\

@@ -10,7 +10,6 @@ var ParagraphElement = function(expData) {
     this.type= "ParagraphElement";
     this.questionText= ko.observable("Your Question");
     this.selected = ko.observable(false);
-    this.name = ko.observable("");
     this.variable = ko.observable();
     this.answer = ko.observable("");
 
@@ -27,7 +26,7 @@ ParagraphElement.prototype.addVar = function() {
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name(this.name());
+    globalVar.name(this.parent.name());
     this.variable(globalVar);
 };
 

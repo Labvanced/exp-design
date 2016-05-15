@@ -12,7 +12,6 @@ var RangeElement= function(expData) {
 
     //serialized
     this.type= "RangeElement";
-    this.id = ko.observable(guid());
     this.questionText= ko.observable("Your Question");
     this.minChoice= ko.observable(1);
     this.maxChoice= ko.observable(5);
@@ -21,7 +20,6 @@ var RangeElement= function(expData) {
     this.answer = ko.observable(1);
     this.newPage = ko.observable(false);
     this.selected = ko.observable(false);
-    this.name = ko.observable("");
     this.variable = ko.observable();
 
     // modifier:
@@ -37,7 +35,7 @@ RangeElement.prototype.addVar = function() {
     globalVar.dataType(GlobalVar.dataTypes[2]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[3]);
-    globalVar.name(this.name());
+    globalVar.name(this.parent.name());
     this.variable(globalVar);
 };
 
@@ -62,7 +60,6 @@ RangeElement.prototype.toJS = function() {
 
     return {
         type: this.type,
-        id: this.id(),
         questionText: this.questionText(),
         minChoice: this.minChoice(),
         maxChoice: this.maxChoice(),
@@ -75,7 +72,6 @@ RangeElement.prototype.toJS = function() {
 
 RangeElement.prototype.fromJS = function(data) {
     this.type=data.type;
-    this.id(data.id);
     this.questionText(data.questionText);
     this.minChoice(data.minChoice);
     this.maxChoice(data.maxChoice);

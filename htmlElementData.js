@@ -24,20 +24,6 @@ var htmlElementData= function(expData) {
     this.isActive = ko.observable(true);
     this.content = ko.observable();
 
-    // if this name changes, then also update the name property of the content and the variable:
-    this.name.subscribe(function(newName) {
-        if (this.content()) {
-            if (this.content().name) {
-                this.content().name(newName);
-            }
-            if (this.content().variable) {
-                var variable = this.content().variable();
-                if (variable) {
-                    variable.name(newName);
-                }
-            }
-        }
-    }, this);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));

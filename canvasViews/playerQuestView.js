@@ -34,17 +34,18 @@ PlayerQuestView.prototype.init = function() {
 
         var elem = this.questionElements[i];
 
-        if (!(elem instanceof NewPageElement)){
-            if (elem instanceof CheckBoxElement) {
+        if (!(elem.content() instanceof NewPageElement)){
+            var newDiv = elem.div;
+/*            if (elem.content() instanceof CheckBoxElement) {
                 var newDiv = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'</div>");
             }
-            else if (elem instanceof MChoiceElement) {
+            else if (elem.content() instanceof MChoiceElement) {
                 var newDiv = $("<div data-bind='component: {name : \"choice-playerview\", params : $data}'</div>");
             }
-            else if (elem instanceof ParagraphElement) {
+            else if (elem.content() instanceof ParagraphElement) {
                 var newDiv = $("<div data-bind='component: {name : \"paragraph-playerview\", params : $data}'</div>");
             }
-            else if (elem instanceof RangeElement) {
+            else if (elem.content() instanceof RangeElement) {
                 var newDiv = $("<div data-bind='component: {name : \"range-playerview\", params : $data}'</div>");
             }
             else if (elem instanceof ScaleElement) {
@@ -52,16 +53,16 @@ PlayerQuestView.prototype.init = function() {
             }
             else if (elem instanceof TextElement) {
                 var newDiv = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'</div>");
-            }
+            }*/
             this.divContainer[pageCount].append(newDiv);
             $(newDiv).css({
                 "color":"black"
             });
 
-            ko.applyBindings(elem,newDiv[0]);
+            //ko.applyBindings(elem.content(),newDiv);
         }
         else  {
-            var newDiv = $("<div data-bind='component: {name : \"newpage-playerview\", params : $data}'</div>");
+            var newDiv = $("<div data-bind='component: {name : \"newpage-playerview\", params : $data.content()}'</div>");
             this.divContainer[pageCount].append(newDiv);
             elem.currPage =  pageCount+1;
             elem.totalPages =  this.nrOfPages;
@@ -153,9 +154,9 @@ PlayerQuestView.prototype.submitQuestionnaire = function() {
     var answers = [];
     var varIds = [];
     for (var i = 0; i<this.questionElements.length;i++){
-        if (!(this.questionElements[i] instanceof NewPageElement)){
-            varIds.push(this.questionElements[i].variable().id());
-            answers.push(this.questionElements[i].answer());
+        if (!(this.questionElements[i].content() instanceof NewPageElement)){
+            varIds.push(this.questionElements[i].content().variable().id());
+            answers.push(this.questionElements[i].content().answer());
         }
     }
 

@@ -10,7 +10,6 @@ var TextElement = function(expData) {
     this.type = "TextElement";
     this.questionText= ko.observable("Your Question");
     this.selected = ko.observable(false);
-    this.name = ko.observable("");
     this.variable = ko.observable();
     this.answer = ko.observable("");
 
@@ -26,7 +25,7 @@ TextElement.prototype.addVar = function() {
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name(this.name());
+    globalVar.name(this.parent.name());
     this.variable(globalVar);
 };
 
@@ -47,7 +46,6 @@ TextElement.prototype.toJS = function() {
     if (this.variable()) {
         variableId = this.variable().id();
     }
-
     return {
         type: this.type,
         questionText: this.questionText(),

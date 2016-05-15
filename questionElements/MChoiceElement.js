@@ -13,7 +13,6 @@ var MChoiceElement = function(expData) {
     this.openQuestion=  ko.observable(false);
     this.choices= ko.observableArray([ko.observable("choice 1"),ko.observable("choice 2")]);
     this.selected = ko.observable(false);
-    this.name = ko.observable("");
     this.variable = ko.observable();
     this.answer = ko.observable("");
 
@@ -29,7 +28,7 @@ MChoiceElement.prototype.addVar = function() {
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name(this.name());
+    globalVar.name(this.parent.name());
     this.variable(globalVar);
 };
 
