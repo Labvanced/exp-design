@@ -146,12 +146,9 @@ ko.components.register('scale-playerview',{
     },
     template:
         '<div>\
-        <h3 style="float: left">\
-            <span data-bind="text: questionText"></span>\
-        </h3>\
+        <h3 data-bind="html: questionText"></h3>\
         </div>\
-        <br><br>\
-        <div class="panel-body">\
+        <div>\
             <span style="display: inline-block;  margin-right: 1%; vertical-align: middle"\
                  data-bind="text: startLabel"></span>\
             <span style="display: inline-block; vertical-align: text-bottom" data-bind="foreach: choices">\

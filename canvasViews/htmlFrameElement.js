@@ -142,17 +142,17 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
 
     this.width.subscribe(function(w) {
         self.update(true,false);
-      //  self.recreatePlaceHolderBoxAndLabel();
     });
 
     this.height.subscribe(function(h) {
         self.update(true,false);
-     //   self.recreatePlaceHolderBoxAndLabel();
+    });
+
+    this.dataModel.contentScaling.subscribe(function(newValue){
+        self.update(true,false);
     });
 
     this.isSelected.subscribe(function(newVal){
-    //    self.recreatePlaceHolderBoxAndLabel();
-
         if (newVal) {
             $(self.div).css({
                 "outline": "1px dashed black"
@@ -188,19 +188,36 @@ HtmlFrameElement.prototype.update = function(size,position){
 
     if (size){
 
-        $(this.text).css({
-            "width":self.width() * self.scale(),
-            "height":  self.height() * self.scale()
-        });
-
-        $(this.content).css({
-            "width":self.width() * self.scale(),
-            "height": self.height() * self.scale()
-        });
-
         $(this.div).css({
             "width":self.width() * self.scale(),
             "height": self.height() * self.scale()
+        });
+
+        $(this.content).css({
+            "width": self.width() * self.scale(),
+            "height": self.height() * self.scale(),
+            "position": "absolute"
+        });
+
+        var scale = self.dataModel.contentScaling() * self.scale();
+        $(this.contentScaling).css({
+            "position": "absolute",
+            '-webkit-transform': 'scale(' + scale + ')',
+            '-moz-transform': 'scale(' + scale + ')',
+            '-ms-transform': 'scale(' + scale + ')',
+            '-o-transform': 'scale(' + scale + ')',
+            'transform': 'scale(' + scale + ')'
+        });
+
+        $(this.contentInside).css({
+            "width": self.width(),
+            "height": self.height(),
+            "position": "absolute"
+        });
+
+        $(this.text).css({
+            "width":self.width() * self.scale(),
+            "height":  self.height() * self.scale()
         });
 
         if (this.dataModel.content().type == "ImageHtmlData"){
@@ -283,44 +300,39 @@ HtmlFrameElement.prototype.renderElements = function(data) {
     if (data.type == "CheckBoxElement" ||data.type =="MChoiceElement"||data.type =="ParagraphElement"||data.type =="RangeElement"||data.type =="ScaleElement"||data.type =="TextElement"||data.type =="ButtonElement"){
 
         $(this.content).remove();
-        this.content = document.createElement('questionnaire');
+        this.content = $("<div></div>");
+        this.contentScaling = $("<div></div>");
         if (data instanceof CheckBoxElement) {
-            this.content = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'</div>");
+            this.contentInside = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'></div>");
         }
         else if (data instanceof MChoiceElement) {
-            this.content = $("<div data-bind='component: {name : \"choice-playerview\", params : $data}'</div>");
+            this.contentInside = $("<div data-bind='component: {name : \"choice-playerview\", params : $data}'></div>");
         }
         else if (data instanceof ParagraphElement) {
-            this.content = $("<div data-bind='component: {name : \"paragraph-playerview\", params : $data}'</div>");
+            this.contentInside = $("<div data-bind='component: {name : \"paragraph-playerview\", params : $data}'></div>");
         }
         else if (data instanceof RangeElement) {
-            this.content = $("<div data-bind='component: {name : \"range-playerview\", params : $data}'</div>");
+            this.contentInside = $("<div data-bind='component: {name : \"range-playerview\", params : $data}'></div>");
         }
         else if (data instanceof ScaleElement) {
-            this.content = $("<div data-bind='component: {name : \"scale-playerview\", params : $data}'</div>");
+            this.contentInside = $("<div data-bind='component: {name : \"scale-playerview\", params : $data}'></div>");
         }
         else if (data instanceof TextElement) {
-            this.content = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'</div>");
+            this.contentInside = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'></div>");
         }
         else if (data instanceof ButtonElement) {
-            this.content = $("<div data-bind='component: {name : \"button-playerview\", params : $data}'</div>");
+            this.contentInside = $("<div data-bind='component: {name : \"button-playerview\", params : $data}'></div>");
         }
-
-
-
+        $(this.contentScaling).append(this.contentInside);
+        $(this.content).append(this.contentScaling);
         ko.applyBindings(data, $(this.content)[0]);
-        $(this.content).css({
-            "width": self.width() * self.scale(),
-            "height": self.height() * self.scale(),
-            "position": "absolute"
-        });
+        this.update(true, false);
         $(this.div).append(this.content);
     }
     else if(data.type == "textArea"){
         $(this.content).remove();
         this.content = document.createElement('text');
     }
-
 };
 
 
