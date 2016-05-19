@@ -37,7 +37,7 @@ QuestionnaireEditorData.prototype.addNewSubElement = function(elem) {
 QuestionnaireEditorData.prototype.doubleClick = function() {
     // this block was double clicked in the parent Experiment editor:
     uc.questionnaireEditorData = this;
-    page("/page/editors/questionnaireEditor");
+    page("/page/editors/questionnaireEditor/" + uc.experiment.exp_id() + "/" + this.id());
 };
 
 QuestionnaireEditorData.prototype.setPointers = function(entitiesArr) {

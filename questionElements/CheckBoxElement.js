@@ -133,17 +133,12 @@ ko.components.register('checkbox-playerview', {
         this.answer = dataModel.answer;
     },
     template:
-        '<div>\
-          <h3 style="float: left">\
-            <span data-bind="text: questionText"></span>\
-          </h3>\
+        '<div style="font-size: 200%" data-bind="text: questionText"></div>\
+        <br>\
+        <div data-bind="foreach: choices">\
+            <input margin-bottom: 2%" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\
+            <span  margin-left: 1%;" data-bind="text: $data"></span>\
+            <br>\
         </div>\
-        <br><br><br><br>\
-        <div class="panel-body">\
-            <div data-bind="foreach: choices">\
-                <input style="transform: scale(1.3); margin-bottom: 2%" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\
-                <span style="font-size: large; margin-left: 1%;" data-bind="text: $data"></span>\
-                <br>\
-            </div>\
-        </div>'
+        <br>'
 });

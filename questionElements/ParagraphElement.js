@@ -89,16 +89,13 @@ ko.components.register('paragraph-playerview',{
         this.answer = dataModel.answer;
     },
     template:
-        '<div>\
-            <h3 style="float: left">\
-                <span data-bind="html: questionText"></span>\
-            </h3>\
-        </div>\
-        <br><br><br>\
-        <div class="panel-body">\
+        '<div data-bind="html: questionText"></div>\
+          <br>\
+        <div>\
             <textarea style="position:relative;left: 0%; max-width:50%"\
                class="form-control"\
                placeholder="Participant Answer" data-bind="textInput: answer">\
             </textarea>\
-        </div>'
+        </div>\
+        <br>'
 });

@@ -145,9 +145,8 @@ ko.components.register('scale-playerview',{
         this.answer = dataModel.answer;
     },
     template:
-        '<div>\
-        <h3 data-bind="html: questionText"></h3>\
-        </div>\
+        '<div style="font-size: 200%" data-bind="text: questionText"></div>\
+        <br>\
         <div>\
             <span style="display: inline-block;  margin-right: 1%; vertical-align: middle"\
                  data-bind="text: startLabel"></span>\
@@ -160,6 +159,7 @@ ko.components.register('scale-playerview',{
                  </div>\
             </span>\
             <span style="display: inline-block; margin: 5px; vertical-align: middle" data-bind="text: endLabel"></span>\
-        </div>'
+        </div>\
+        <br>'
 
 });

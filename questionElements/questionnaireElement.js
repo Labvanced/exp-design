@@ -50,22 +50,22 @@ QuestionnaireElement.prototype.renderElements = function() {
     this.div = document.createElement('div');
     var elem = null;
     if (this.content() instanceof CheckBoxElement) {
-        elem = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"checkbox-playerview\", params : $data}'</div>");
     }
     else if (this.content() instanceof MChoiceElement) {
-        elem = $("<div data-bind='component: {name : \"choice-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"choice-playerview\", params : $data}'</div>");
     }
     else if (this.content() instanceof ParagraphElement) {
-        elem = $("<div data-bind='component: {name : \"paragraph-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"paragraph-playerview\", params : $data}'</div>");
     }
     else if (this.content() instanceof RangeElement) {
-        elem = $("<div data-bind='component: {name : \"range-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"range-playerview\", params : $data}'</div>");
     }
     else if (this.content() instanceof ScaleElement) {
-        elem = $("<div data-bind='component: {name : \"scale-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"scale-playerview\", params : $data}'</div>");
     }
     else if (this.content() instanceof TextElement) {
-        elem = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"text-playerview\", params : $data}'</div>");
     }
     else if (this.content() instanceof NewPageElement) {
         elem = $("<div data-bind='component: {name : \"newPage-element-preview\", params : $data}'</div>");

@@ -137,13 +137,9 @@ ko.components.register('range-playerview',{
         this.answer = dataModel.answer;
     },
     template:
-        '<div>\
-            <h3 style="float: left">\
-                <span data-bind="text: questionText"></span>\
-             </h3>\
-        </div>\
-        <br><br>\
-        <div class="panel-body">\
+        '<div style="font-size: 200%" data-bind="text: questionText"></div>\
+         <br>\
+        <div>\
             <span style="float: left;" data-bind="text: startLabel"></span>\
             <span style="float: right; margin-right: 25%;" data-bind="text: endLabel"></span>\
             <br><br>\
@@ -158,5 +154,6 @@ ko.components.register('range-playerview',{
         </div>\
         <div data-bind="visible: newPage">\
                 <img style="float: right" src="/resources/next.png">\
-        </div>'
+        </div>\
+        <br>'
 });
