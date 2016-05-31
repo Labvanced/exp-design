@@ -171,10 +171,14 @@ var ExpTrialLoop = function (expData) {
 
         var trialTypesNonInteract = this.trialTypesNonInteract();
         for (var i=0; i<trialTypesNonInteract.idx.length; i++){
+
+            var curr_factor = trialTypesNonInteract.idx[i][0];
+            var curr_level = trialTypesNonInteract.idx[i][1];
+
             var currentTrialSelection = {
                 type: 'noninteract',
-                factor: this.additionalTrialTypes()[i].id(),
-                level: trialTypesNonInteract.idx[i][1]
+                factor: this.additionalTrialTypes()[curr_factor].id(),
+                level: curr_level
             };
             trialSpecifications.push(currentTrialSelection);
         }
