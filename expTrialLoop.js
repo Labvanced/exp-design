@@ -345,6 +345,7 @@ ExpTrialLoop.prototype.addFactor = function() {
     globalVar.isInteracting(true);
     globalVar.addLevel();
     this.factors.push(globalVar);
+    return globalVar;
 };
 
 ExpTrialLoop.prototype.renameFactor = function(idx,flag) {

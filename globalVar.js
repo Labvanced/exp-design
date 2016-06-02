@@ -37,6 +37,7 @@ GlobalVar.prototype.addLevel = function() {
     var name = "level_"+(this.levels().length+1);
     var level = new Level(name);
     this.levels.push(level);
+    return level;
 };
 
 
