@@ -24,6 +24,8 @@ var QuestionnaireEditorData = function(expData) {
 
     // sub-Structures (serialized below)
     this.elements = ko.observableArray([]).extend({sortById: null});
+    this.progressBar = ko.observable(false);
+
     this.portHandler = new PortHandler(this);
 
 };

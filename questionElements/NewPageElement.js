@@ -12,9 +12,15 @@ var NewPageElement = function(expData) {
     this.type= "NewPageElement";
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);
+    this.elements = ko.observableArray([]);
+    this.answerTime = ko.observable(Infinity);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
+};
+
+NewPageElement.prototype.addElem = function (elem) {
+    this.elements.push(elem);
 };
 
 NewPageElement.prototype.modifiableProp = ["returnButton"];

@@ -19,6 +19,8 @@ var ScaleElement= function(expData) {
     this.selected = ko.observable(false);
     this.variable = ko.observable();
     this.answer = ko.observableArray([]);
+    this.showNums = ko.observable(true);
+    this.margin = ko.observable('5pt');
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -93,6 +95,8 @@ ko.components.register('scale-element-edit', {
         this.startLabel = dataModel.startLabel;
         this.endLabel = dataModel.endLabel;
         this.values = [1,2,3,4,5,6,7,8,9,10,11,12];
+        this.showNums = dataModel.showNums;
+        this.margin = dataModel.margin;
 
         this.finish = function() {
             this.choices([]);
@@ -129,6 +133,8 @@ ko.components.register('scale-element-edit', {
         placeholder="Label (optional)"\
         style="width:75%"></span>\
         <br>\
+        <div><input type="checkbox" data-bind="checked: showNums">Show numbers</div>\
+        <div>Margin: <input type="text" data-bind="textInput: margin"></div>\
   </div>'
 
 });
@@ -143,22 +149,24 @@ ko.components.register('scale-playerview',{
         this.endLabel = dataModel.endLabel;
         this.choices = dataModel.choices;
         this.answer = dataModel.answer;
+        this.showNums = dataModel.showNums;
+        this.margin = dataModel.margin;
     },
     template:
         '<div style="font-size: 200%" data-bind="text: questionText"></div>\
         <br>\
-        <div>\
-            <span style="display: inline-block;  margin-right: 1%; vertical-align: middle"\
+        <div data-bind="style: {marginLeft: margin, marginRight: margin}">\
+            <span style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle"\
                  data-bind="text: startLabel"></span>\
-            <span style="display: inline-block; vertical-align: text-bottom" data-bind="foreach: choices">\
-                <div style="display: inline-block"> \
-                    <span style="display:block; position:relative; margin-left: 7px;  margin-right: 7px"\
-                        data-bind="text: $data"></span>\
+            <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">\
+                <div style="display: inline-block; margin-left: inherit; margin-right: inherit "> \
+                    <span style="display:block; margin-left: 5px;  margin-right: 5px"\
+                        data-bind="visible: $root.showNums,  text: $data"></span>\
                     <input style="display:block; margin-left: 5px; margin-right: 5px;"\
                          type="radio" value="$data" data-bind="attr: {value:$data}, checked: $root.answer, click: function(){return true}, clickBubble: false">\
                  </div>\
             </span>\
-            <span style="display: inline-block; margin: 5px; vertical-align: middle" data-bind="text: endLabel"></span>\
+            <span style="display: inline-block; margin-left: inherit;  margin-right: inherit;  vertical-align: middle" data-bind="text: endLabel"></span>\
         </div>\
         <br>'
 

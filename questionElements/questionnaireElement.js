@@ -78,6 +78,8 @@ QuestionnaireElement.prototype.fromJS = function(data) {
     var self = this;
     this.id(data.id);
     this.type = data.type;
+    this.name = data.name;
+    
     if(data.content){
         var content = new window[data.content.type]();
         content.fromJS(data.content);
@@ -98,7 +100,8 @@ QuestionnaireElement.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        content: contentData
+        content: contentData,
+        name: this.name
     };
 };
 

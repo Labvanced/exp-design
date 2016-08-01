@@ -15,6 +15,7 @@ var MChoiceElement = function(expData) {
     this.selected = ko.observable(false);
     this.variable = ko.observable();
     this.answer = ko.observable("");
+    this.margin = ko.observable('5pt');
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -85,6 +86,7 @@ ko.components.register('choice-element-edit', {
         this.questionText = dataModel.questionText;
         this.openQuestion = dataModel.openQuestion;
         this.choices = dataModel.choices;
+        this.margin = dataModel.margin;
 
         this.addChoice = function() {
             this.choices.push(ko.observable(""));
@@ -107,7 +109,8 @@ ko.components.register('choice-element-edit', {
                     <span style="float: left; margin-left: 5%; margin-top: 1%;"><a href="#" data-bind="click: function(data,event) {$parent.removeChoice($index())}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
                 </div>\
             </div>\
-        <span><a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> <h5 style="display: inline-block; margin-left: 1%">Add Choice</h5> </a></span>\
+        <span><a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> <a style="display: inline-block; margin-left: 1%">Add Choice</a> </a></span>\
+        <div>Margin: <input type="text" data-bind="textInput: margin"></div>\
         </div>'
 });
 
@@ -121,13 +124,14 @@ ko.components.register('choice-playerview', {
         this.choices = dataModel.choices;
         this.newPage = dataModel.newPage;
         this.answer = dataModel.answer;
+        this.margin = dataModel.margin;
     },
     template:
         '<div style="font-size: 200%" data-bind="text: questionText"></div>\
         <br>\
-        <div data-bind=\"foreach: choices\">\
-            <input margin-bottom: 2%" type=\"radio\" data-bind="attr: {value:$data}, checked: $root.answer, click: function(){return true}, clickBubble: false\">\
-            <span margin-left: 1%" data-bind=\"text: $data\"></span>\
+        <div data-bind=\"foreach: choices, style: {marginTop: margin, marginBottom: margin}\">\
+            <input style="margin-bottom: inherit; margin-top: inherit" type=\"radio\" data-bind="attr: {value:$data}, checked: $root.answer, click: function(){return true}, clickBubble: false\">\
+            <span style="margin-bottom: inherit; margin-top: inherit" data-bind=\"text: $data\"></span>\
             <br>\
         </div>\
         <br>'
