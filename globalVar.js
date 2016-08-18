@@ -18,6 +18,8 @@ var GlobalVar = function (expData) {
 
     this.levels = ko.observableArray([]);
     this.subLevelEdit = ko.observable(false);
+
+    this.value = ko.observable(null);
 };
 
 // enum: possible variable subtypes defined by us or user

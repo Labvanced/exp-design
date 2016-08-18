@@ -1,8 +1,7 @@
 // � by Caspar Goeke and Holger Finger
 
-
-var ActionChangeVar = function(parent) {
-    this.parent = parent;
+var ActionChangeVar = function(event) {
+    this.event = event;
 
     // serialized
     this.variableId = ko.observable(undefined);
@@ -39,8 +38,8 @@ ActionChangeVar.prototype.toJS = function() {
 
 //////////////////////
 
-var ActionChangeProp = function(parent) {
-    this.parent = parent;
+var ActionChangeProp = function(event) {
+    this.event = event;
 
     // serialized
     this.elem = ko.observable(null);
@@ -87,8 +86,8 @@ ActionChangeProp.prototype.toJS = function() {
 
 //////////////////////
 
-var ActionRecordRespTime = function(parent) {
-    this.parent = parent;
+var ActionRecordRespTime = function(event) {
+    this.event = event;
 
     // serialized
     this.variableId = ko.observable(undefined);
@@ -126,8 +125,8 @@ ActionRecordRespTime.prototype.toJS = function() {
 
 //////////////////////
 
-var ActionRecordElementTag = function(parent) {
-    this.parent = parent;
+var ActionRecordElementTag = function(event) {
+    this.event = event;
 
     // serialized
     this.variableId = ko.observable(undefined);
@@ -174,8 +173,8 @@ ActionRecordElementTag.prototype.toJS = function() {
 
 //////////////////////
 
-var ActionRecordTagAndExitFrame = function(parent) {
-    this.parent = parent;
+var ActionRecordTagAndExitFrame = function(event) {
+    this.event = event;
 
     // serialized
     this.variableId = ko.observable(undefined);
@@ -218,8 +217,8 @@ ActionRecordTagAndExitFrame.prototype.toJS = function() {
 //////////////////////
 
 
-var ActionNextFrame = function(parent) {
-    this.parent = parent;
+var ActionNextFrame = function(event) {
+    this.event = event;
 
 };
 ActionNextFrame.prototype.type = "ActionNextFrame";
@@ -245,8 +244,8 @@ ActionNextFrame.prototype.toJS = function() {
 
 //////////////////////
 
-var ActionRecordQuestionaireResponse = function(parent) {
-    this.parent = parent;
+var ActionRecordQuestionaireResponse = function(event) {
+    this.event = event;
 
     // serialized
     this.variableId = ko.observable(undefined);
@@ -288,28 +287,28 @@ ActionRecordQuestionaireResponse.prototype.toJS = function() {
 
 ////////////////////////
 
-function actionFactory(parent,type) {
-
-    if (type == "ActionChangeVar"){
-        var action = new ActionChangeVar(parent);
-    }
-    else if(type == "ActionChangeProp") {
-        var action = new ActionChangeProp(parent);
-    }
-    else if(type == "ActionRecordRespTime") {
-        var action = new ActionRecordRespTime(parent);
-    }
-    else if(type == "ActionNextFrame") {
-        var action = new ActionNextFrame(parent);
-    }
-    else if(type == "ActionRecordElementTag") {
-        var action = new ActionRecordElementTag(parent);
-    }
-    else if(type == "ActionRecordTagAndExitFrame") {
-        var action = new ActionRecordTagAndExitFrame(parent);
-    }
-    else if(type == "ActionRecordQuestionaireResponse") {
-        var action = new ActionRecordQuestionaireResponse(parent);
-    }
+function actionFactory(event,type) {
+    var action = new window[type](event);
+    // if (type == "ActionChangeVar"){
+    //     var action = new ActionChangeVar(event);
+    // }
+    // else if(type == "ActionChangeProp") {
+    //     var action = new ActionChangeProp(event);
+    // }
+    // else if(type == "ActionRecordRespTime") {
+    //     var action = new ActionRecordRespTime(event);
+    // }
+    // else if(type == "ActionNextFrame") {
+    //     var action = new ActionNextFrame(event);
+    // }
+    // else if(type == "ActionRecordElementTag") {
+    //     var action = new ActionRecordElementTag(event);
+    // }
+    // else if(type == "ActionRecordTagAndExitFrame") {
+    //     var action = new ActionRecordTagAndExitFrame(event);
+    // }
+    // else if(type == "ActionRecordQuestionaireResponse") {
+    //     var action = new ActionRecordQuestionaireResponse(event);
+    // }
     return action;
 }

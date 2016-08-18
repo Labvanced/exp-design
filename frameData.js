@@ -41,7 +41,7 @@ var FrameData = function(expData) {
     // sub-Structures (serialized below)
     this.elements = ko.observableArray([]).extend({sortById: null});
     this.portHandler = new PortHandler(this);
-    this.responses = ko.observableArray([]);
+    this.events = ko.observableArray([]);
 
 };
 FrameData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset"];
@@ -71,10 +71,9 @@ FrameData.prototype.getDeepCopy = function() {
     return deepCopy;
 };
 
-FrameData.prototype.addNewResponse = function() {
-    var resp = new Response(this);
-    resp.responseType("keyboard");
-    this.responses.push(resp);
+FrameData.prototype.addNewEvent = function() {
+    var event = new Event(this);
+    this.events.push(event);
 };
 
 FrameData.prototype.addNewSubElement = function(elem) {
@@ -93,8 +92,8 @@ FrameData.prototype.setPointers = function(entitiesArr) {
         return elem;
     } ));
 
-    jQuery.each( this.responses(), function( resp ) {
-        resp.setPointers(entitiesArr);
+    jQuery.each( this.events(), function( event ) {
+        event.setPointers(entitiesArr);
     } );
 };
 
@@ -155,8 +154,8 @@ FrameData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("emotionOffset")) {
         this.emotionOffset(data.emotionOffset);
     }
-    this.responses(jQuery.map( data.responses, function( respData ) {
-        return (new Response()).fromJS(respData);
+    this.events(jQuery.map( data.events, function( eventData ) {
+        return (new Event()).fromJS(eventData);
     } ));
     this.elements(data.elements);
     return this;
@@ -184,7 +183,7 @@ FrameData.prototype.toJS = function() {
         emotionEnabled: this.emotionEnabled(),
         emotionFeedbackEnabled: this.emotionFeedbackEnabled(),
         emotionOffset: this.emotionOffset(),
-        responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
+        events: jQuery.map( this.events(), function( event ) { return event.toJS(); } ),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };
 };
