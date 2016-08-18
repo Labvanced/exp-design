@@ -41,7 +41,7 @@ var FrameData = function(expData) {
     // sub-Structures (serialized below)
     this.elements = ko.observableArray([]).extend({sortById: null});
     this.portHandler = new PortHandler(this);
-    this.events = ko.observableArray([]);
+    this.events = ko.observableArray([]).extend({sortById: null});
 
 };
 FrameData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset"];
@@ -92,7 +92,7 @@ FrameData.prototype.setPointers = function(entitiesArr) {
         return elem;
     } ));
 
-    jQuery.each( this.events(), function( event ) {
+    jQuery.each( this.events(), function( idx, event ) {
         event.setPointers(entitiesArr);
     } );
 };

@@ -7,6 +7,7 @@ var Event= function(parent) {
     this.parent = parent;
 
     // serialized
+    this.id = ko.observable(guid());
     this.type = "Event";
     this.trigger = ko.observable(null);
     this.requirement = ko.observable(null);
@@ -16,7 +17,9 @@ var Event= function(parent) {
 
 Event.prototype.setPointers = function(entitiesArr) {
     this.trigger().setPointers();
-    this.requirement().setPointers();
+    if (this.requirement()) {
+        this.requirement().setPointers();
+    }
     var actions = this.actions();
     for (var i=1; i<actions.length; i++) {
         actions[i].setPointers(entitiesArr);
@@ -39,15 +42,18 @@ Event.prototype.runActions = function(variables) {
 Event.prototype.fromJS = function(data) {
     var self = this;
 
+    this.id(data.id);
     this.name(data.name);
 
     var trigger = triggerFactory(self, data.trigger.type);
     trigger.fromJS(data.trigger);
     this.trigger(trigger);
 
-    var requirement = requirementFactory(self, data.requirement.type);
-    requirement.fromJS(data.requirement);
-    this.requirement(requirement);
+    if (data.requirement) {
+        var requirement = requirementFactory(self, data.requirement.type);
+        requirement.fromJS(data.requirement);
+        this.requirement(requirement);
+    }
 
     var actions = [];
     for (var i=1; i<data.actions.length; i++) {
@@ -68,9 +74,10 @@ Event.prototype.toJS = function() {
     }
 
     return {
+        id: this.id(),
         name:this.name(),
         type: this.type,
-        trigger: this.trigger.toJS(),
+        trigger: this.trigger().toJS(),
         requirement: this.requirement(),
         actions: actionData
     };

@@ -205,20 +205,41 @@ FrameView.prototype.setSelectedElement = function(elem) {
     var prevSelectedElem = this.frameData.currSelectedElement();
 
     if (prevSelectedElem){
-        var formerIndex =this.dataElements.indexOf(prevSelectedElem);
-        this.viewElements()[formerIndex].isSelected(false);
+        var formerIndex = this.dataElements.indexOf(prevSelectedElem);
+        if (formerIndex>=0) {
+            this.viewElements()[formerIndex].isSelected(false);
+        }
+        this.parent.eventViewModelObs(null);
     }
 
     if (elem) {
-        // check if element is really a child:
-        if (this.frameData.elements.byId[elem.id()]) {
-            var index = this.dataElements.indexOf(elem);
+        if (elem.type == "Event") {
+            // element is an event
+            // check if element is really a child of this frame:
+            if (this.frameData.events.byId[elem.id()]) {
 
-            // change selection state of newly selected canvas element:
-            this.viewElements()[index].isSelected(true);
+                // create a view model for this event:
+                this.parent.eventViewModelObs(new EventViewModel(elem));
 
-            // change currently selected element:
+                // change currently selected element:
+                this.frameData.currSelectedElement(elem);
+            }
+        }
+        else if (elem.type == "GlobalVar") {
             this.frameData.currSelectedElement(elem);
+        }
+        else {
+            // element is an object
+            // check if element is really a child of this frame:
+            if (this.frameData.elements.byId[elem.id()]) {
+                var index = this.dataElements.indexOf(elem);
+
+                // change selection state of newly selected canvas element:
+                this.viewElements()[index].isSelected(true);
+
+                // change currently selected element:
+                this.frameData.currSelectedElement(elem);
+            }
         }
     }
     else {// deselect:
