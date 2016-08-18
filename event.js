@@ -11,6 +11,7 @@ var Event= function(parent) {
     this.trigger = ko.observable(null);
     this.requirement = ko.observable(null);
     this.actions = ko.observableArray([]);
+    this.name =  ko.observable(null);
 };
 
 Event.prototype.setPointers = function(entitiesArr) {
@@ -37,6 +38,8 @@ Event.prototype.runActions = function(variables) {
 
 Event.prototype.fromJS = function(data) {
     var self = this;
+
+    this.name(data.name);
 
     var trigger = triggerFactory(self, data.trigger.type);
     trigger.fromJS(data.trigger);
@@ -65,6 +68,7 @@ Event.prototype.toJS = function() {
     }
 
     return {
+        name:this.name(),
         type: this.type,
         trigger: this.trigger.toJS(),
         requirement: this.requirement(),
