@@ -212,7 +212,7 @@ FrameView.prototype.setSelectedElement = function(elem) {
     if (elem) {
         // check if element is really a child:
         if (this.frameData.elements.byId[elem.id()]) {
-            var index =this.dataElements.indexOf(elem);
+            var index = this.dataElements.indexOf(elem);
 
             // change selection state of newly selected canvas element:
             this.viewElements()[index].isSelected(true);
