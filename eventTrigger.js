@@ -4,8 +4,8 @@ var TriggerMouse = function(event) {
     this.event = event;
 
     // serialized
-    this.buttonType = ko.observable(undefined);
-    this.interactionType = ko.observable(undefined);
+    this.buttonType = ko.observable("Left");
+    this.interactionType = ko.observable("Click");
     this.elements = ko.observableArray([]);
 };
 
@@ -58,7 +58,7 @@ var TriggerKeyboard = function(event) {
 
     // serialized
     this.buttons = ko.observableArray([]);
-    this.interactionType = ko.observable(undefined);
+    this.interactionType = ko.observable("Pressed");
 };
 
 TriggerKeyboard.prototype.type = "TriggerKeyboard";
