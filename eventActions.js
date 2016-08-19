@@ -10,8 +10,11 @@ var ActionRecord = function(event) {
     this.variable = null;
 
 };
-ActionRecord.prototype.type = "ActionRecord";
-ActionRecord.prototype.label = "Record Tag";
+
+ActionRecord.prototype.type = "Record";
+ActionRecord.prototype.label = "Record";
+
+
 
 ActionRecord.prototype.setPointers = function(entitiesArr) {
 
