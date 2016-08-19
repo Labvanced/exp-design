@@ -43,8 +43,8 @@ var Response= function(parent) {
             if (value === "undefined"){
                 self.action(null);
             }
-            else if (value == "ActionChangeVar"){
-                self.action(new ActionChangeVar(self));
+            else if (value == "ActionSetVariableTo"){
+                self.action(new ActionSetVariableTo(self));
             }
             else if (value == "ActionChangeProp"){
                 self.action(new ActionChangeProp(self));
@@ -55,8 +55,8 @@ var Response= function(parent) {
             else if (value == "ActionNextFrame"){
                 self.action(new ActionNextFrame(self));
             }
-            else if (value == "ActionRecordElementTag"){
-                self.action(new ActionRecordElementTag(self));
+            else if (value == "ActionRecord"){
+                self.action(new ActionRecord(self));
             }
             else if (value == "ActionRecordTagAndExitFrame"){
                 self.action(new ActionRecordTagAndExitFrame(self));

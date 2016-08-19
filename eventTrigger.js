@@ -63,6 +63,7 @@ var TriggerKeyboard = function(event) {
 
 TriggerKeyboard.prototype.type = "TriggerKeyboard";
 TriggerKeyboard.prototype.label = "Keyboard Trigger";
+TriggerKeyboard.prototype.buttonTypes = ["a", "s"];
 TriggerKeyboard.prototype.interactionTypes = ["Pressed", "PressDown", "PressUp"];
 
 TriggerKeyboard.prototype.setPointers = function(entitiesArr) {
