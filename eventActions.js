@@ -11,7 +11,7 @@ var ActionRecord = function(event) {
 
 };
 
-ActionRecord.prototype.type = "Record";
+ActionRecord.prototype.type = "ActionRecord";
 ActionRecord.prototype.label = "Record";
 
 
@@ -36,9 +36,6 @@ ActionRecord.prototype.fromJS = function(data) {
     return this;
 };
 
-
-
-
 ActionRecord.prototype.toJS = function() {
     return {
         type: this.type,
@@ -46,12 +43,11 @@ ActionRecord.prototype.toJS = function() {
     };
 };
 
-
 //////////////////////
 
 
 
-var ActionSetVariableTo = function(event) {
+var ActionSetVariable = function(event) {
     this.event = event;
 
     // serialized
@@ -59,26 +55,26 @@ var ActionSetVariableTo = function(event) {
     this.operatorType = ko.observable(undefined);
     this.argument = ko.observable('');
 };
-ActionSetVariableTo.prototype.type = "ActionSetVariableTo";
-ActionSetVariableTo.prototype.label = "Change Var.";
-ActionSetVariableTo.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
+ActionSetVariable.prototype.type = "ActionSetVariable";
+ActionSetVariable.prototype.label = "Set Variable";
+ActionSetVariable.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
 
-ActionSetVariableTo.prototype.setPointers = function(entitiesArr) {
-
-};
-
-ActionSetVariableTo.prototype.run = function() {
+ActionSetVariable.prototype.setPointers = function(entitiesArr) {
 
 };
 
-ActionSetVariableTo.prototype.fromJS = function(data) {
+ActionSetVariable.prototype.run = function() {
+
+};
+
+ActionSetVariable.prototype.fromJS = function(data) {
     this.variableId(data.variableId);
     this.operatorType(data.operatorType);
     this.argument(data.argument);
     return this;
 };
 
-ActionSetVariableTo.prototype.toJS = function() {
+ActionSetVariable.prototype.toJS = function() {
     return {
         type: this.type,
         variableId: this.variableId(),
@@ -87,9 +83,11 @@ ActionSetVariableTo.prototype.toJS = function() {
     };
 };
 
+
+
 //////////////////////
 
-var ActionChangeProp = function(event) {
+var ActionSetElementProp = function(event) {
     this.event = event;
 
     // serialized
@@ -99,19 +97,19 @@ var ActionChangeProp = function(event) {
     this.argument = ko.observable('');
 };
 
-ActionChangeProp.prototype.type = "ActionChangeProp";
-ActionChangeProp.prototype.label = "Change Prop.";
-ActionChangeProp.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
+ActionSetElementProp.prototype.type = "ActionSetElementProp";
+ActionSetElementProp.prototype.label = "Set Element Prop.";
+ActionSetElementProp.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
 
-ActionChangeProp.prototype.setPointers = function(entitiesArr) {
+ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
     this.elem(entitiesArr.byId[this.elem()])
 };
 
-ActionChangeProp.prototype.run = function() {
+ActionSetElementProp.prototype.run = function() {
 
 };
 
-ActionChangeProp.prototype.fromJS = function(data) {
+ActionSetElementProp.prototype.fromJS = function(data) {
     this.elem(data.elem);
     this.propName(data.propName);
     this.operatorType(data.operatorType);
@@ -119,7 +117,7 @@ ActionChangeProp.prototype.fromJS = function(data) {
     return this;
 };
 
-ActionChangeProp.prototype.toJS = function() {
+ActionSetElementProp.prototype.toJS = function() {
     if (this.elem()) {
         var elemId = this.elem().id();
     }
@@ -139,32 +137,106 @@ ActionChangeProp.prototype.toJS = function() {
 //////////////////////
 
 
-var ActionNextFrame = function(event) {
+var ActionJumpTo = function(event) {
     this.event = event;
 
 };
-ActionNextFrame.prototype.type = "ActionNextFrame";
-ActionNextFrame.prototype.label = "Next Frame";
+ActionJumpTo.prototype.type = "ActionJumpTo";
+ActionJumpTo.prototype.label = "Jump To";
 
-ActionNextFrame.prototype.setPointers = function(entitiesArr) {
+ActionJumpTo.prototype.setPointers = function(entitiesArr) {
 
 };
 
-ActionNextFrame.prototype.run = function() {
+ActionJumpTo.prototype.run = function() {
     player.currentFrame.endFrame();
 };
 
-ActionNextFrame.prototype.fromJS = function(data) {
+ActionJumpTo.prototype.fromJS = function(data) {
     return this;
 };
 
-ActionNextFrame.prototype.toJS = function() {
+ActionJumpTo.prototype.toJS = function() {
     return {
         type: this.type
     };
 };
 
 //////////////////////
+
+
+
+
+//////////////////////
+
+
+var ActionControlAV = function(event) {
+    this.event = event;
+
+};
+ActionControlAV.prototype.type = "ActionControlAV";
+ActionControlAV.prototype.label = "Control AV";
+
+ActionControlAV.prototype.setPointers = function(entitiesArr) {
+
+};
+
+ActionControlAV.prototype.run = function() {
+
+};
+
+ActionControlAV.prototype.fromJS = function(data) {
+    return this;
+};
+
+ActionControlAV.prototype.toJS = function() {
+    return {
+        type: this.type
+    };
+};
+
+//////////////////////
+
+
+
+//////////////////////
+
+
+var ActionControlTimer = function(event) {
+    this.event = event;
+
+};
+ActionControlTimer.prototype.type = "ActionControlTimer";
+ActionControlTimer.prototype.label = "Control Timer";
+
+ActionControlTimer.prototype.setPointers = function(entitiesArr) {
+
+};
+
+ActionControlTimer.prototype.run = function() {
+
+};
+
+ActionControlTimer.prototype.fromJS = function(data) {
+    return this;
+};
+
+ActionControlTimer.prototype.toJS = function() {
+    return {
+        type: this.type
+    };
+};
+
+//////////////////////
+
+
+
+
+
+
+
+
+////////////////  RECORDINGS //////////////////////
 
 var ActionRecordQuestionaireResponse = function(event) {
     this.event = event;

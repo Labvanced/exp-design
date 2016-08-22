@@ -43,17 +43,17 @@ var Response= function(parent) {
             if (value === "undefined"){
                 self.action(null);
             }
-            else if (value == "ActionSetVariableTo"){
-                self.action(new ActionSetVariableTo(self));
+            else if (value == "ActionSetVariable"){
+                self.action(new ActionSetVariable(self));
             }
-            else if (value == "ActionChangeProp"){
-                self.action(new ActionChangeProp(self));
+            else if (value == "ActionSetElementProp"){
+                self.action(new ActionSetElementProp(self));
             }
             else if (value == "ActionRecordRespTime"){
                 self.action(new ActionRecordRespTime(self));
             }
-            else if (value == "ActionNextFrame"){
-                self.action(new ActionNextFrame(self));
+            else if (value == "ActionJumpTo"){
+                self.action(new ActionJumpTo(self));
             }
             else if (value == "ActionRecord"){
                 self.action(new ActionRecord(self));
