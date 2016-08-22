@@ -63,7 +63,9 @@ var TriggerKeyboard = function(event) {
 
 TriggerKeyboard.prototype.type = "TriggerKeyboard";
 TriggerKeyboard.prototype.label = "Keyboard Trigger";
-TriggerKeyboard.prototype.buttonTypes = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+TriggerKeyboard.prototype.buttonTypesArrows = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
+TriggerKeyboard.prototype.buttonTypesNumbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+TriggerKeyboard.prototype.buttonTypesLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 TriggerKeyboard.prototype.interactionTypes = ["Pressed", "PressDown", "PressUp"];
 
 TriggerKeyboard.prototype.setPointers = function(entitiesArr) {
@@ -94,6 +96,12 @@ TriggerKeyboard.prototype.toJS = function() {
         interactionType: this.interactionType()
     };
 };
+
+// TriggerKeyboard.prototype.addKeyboardButton = function() {
+//     $('#btnSelectKey').show();
+//     $('#btnAddKey').hide();
+//     $('#btnSelectKey').open()
+// };
 
 ////////////////////////
 
