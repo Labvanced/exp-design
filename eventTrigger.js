@@ -6,7 +6,7 @@ var TriggerMouse = function(event) {
     // serialized
     this.buttonType = ko.observable("Left");
     this.interactionType = ko.observable("Click");
-    this.elements = ko.observableArray([]);
+    this.targets = ko.observableArray([]);
 };
 
 TriggerMouse.prototype.type = "TriggerMouse";
@@ -15,7 +15,7 @@ TriggerMouse.prototype.buttonTypes = ["Left", "Right"];
 TriggerMouse.prototype.interactionTypes = ["Click", "PressDown", "PressUp", "Hover", "Position"];
 
 TriggerMouse.prototype.setPointers = function(entitiesArr) {
-    this.elements(jQuery.map( this.elements(), function( id ) {
+    this.targets(jQuery.map( this.targets(), function( id ) {
         return entitiesArr.byId[id];
     } ));
 };
@@ -36,7 +36,7 @@ TriggerMouse.prototype.setupOnFrameView = function(frameView) {
 TriggerMouse.prototype.fromJS = function(data) {
     this.buttonType(data.buttonType);
     this.interactionType(data.interactionType);
-    this.elements(data.elements);
+    this.targets(data.targets);
     return this;
 };
 
@@ -45,7 +45,7 @@ TriggerMouse.prototype.toJS = function() {
         type: this.type,
         buttonType: this.buttonType(),
         interactionType: this.interactionType(),
-        elements: jQuery.map( this.elements(), function( element ) { return element.id(); } )
+        targets: jQuery.map( this.targets(), function( element ) { return element.id(); } )
     };
 };
 
@@ -97,22 +97,10 @@ TriggerKeyboard.prototype.toJS = function() {
     };
 };
 
-// TriggerKeyboard.prototype.addKeyboardButton = function() {
-//     $('#btnSelectKey').show();
-//     $('#btnAddKey').hide();
-//     $('#btnSelectKey').open()
-// };
-
 ////////////////////////
 
 
 function triggerFactory(event,type) {
     var trigger = new window[type](event);
-    // if (type == "TriggerMouse"){
-    //     var trigger = new TriggerMouse(event);
-    // }
-    // else if(type == "TriggerKeyboard") {
-    //     var trigger = new TriggerKeyboard(event);
-    // }
     return trigger;
 }
