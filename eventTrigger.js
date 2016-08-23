@@ -21,12 +21,10 @@ TriggerMouse.prototype.setPointers = function(entitiesArr) {
 };
 
 TriggerMouse.prototype.getParameterSpec = function() {
-    return {
-        'posX': 'numeric',
-        'posY': 'numeric',
-        'elementTagUnderMouse': 'string',
-        'timeFromFrameOnset': 'numeric'
-    };
+    return [
+        'elementTag',
+        'reactionTime'
+    ];
 };
 
 TriggerMouse.prototype.setupOnFrameView = function(frameView) {
@@ -73,10 +71,10 @@ TriggerKeyboard.prototype.setPointers = function(entitiesArr) {
 };
 
 TriggerKeyboard.prototype.getParameterSpec = function() {
-    return {
-        'buttonPressed': 'string',
-        'timeFromFrameOnset': 'numeric'
-    };
+    return [
+        'buttonPressed',
+        'reactionTime'
+    ];
 };
 
 TriggerKeyboard.prototype.setupOnFrameView = function(frameView) {

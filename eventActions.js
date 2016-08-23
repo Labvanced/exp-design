@@ -6,14 +6,37 @@ var ActionRecord = function(event) {
     this.event = event;
 
     // serialized
-    this.variableId = ko.observable(undefined);
-    this.variable = null;
+  //  this.variableId = ko.observable(undefined);
+   // this.variable = null;
 
+
+    var specialRecs = this.event.trigger().getParameterSpec();
+    var specR =  [];
+    for (var i = 0; i<specialRecs.length; i++){
+        specR.push({
+                recType: specialRecs[i],
+                varId :"not selected",
+                isRecorded: ko.observable(false)
+            });
+    }
+    this.specialRecordings = ko.observableArray(specR);
+    this.selectedRecordings =  ko.observableArray([]);
 };
 
 ActionRecord.prototype.type = "ActionRecord";
 ActionRecord.prototype.label = "Record";
 
+
+
+ActionRecord.prototype.addRecording = function(type){
+    var newRec={
+        recType: type,
+        varId :"not selected",
+        isRecorded: ko.observable(false)
+    };
+    this.selectedRecordings.push(newRec);
+
+};
 
 
 ActionRecord.prototype.setPointers = function(entitiesArr) {
