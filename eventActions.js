@@ -15,7 +15,7 @@ var ActionRecord = function(event) {
     for (var i = 0; i<specialRecs.length; i++){
         specR.push({
                 recType: specialRecs[i],
-                varId :"not selected",
+                variable :ko.observable(null),
                 isRecorded: ko.observable(false)
             });
     }
@@ -31,7 +31,7 @@ ActionRecord.prototype.label = "Record";
 ActionRecord.prototype.addRecording = function(type){
     var newRec={
         recType: type,
-        varId :"not selected",
+        variable :ko.observable(null),
         isRecorded: ko.observable(false)
     };
     this.selectedRecordings.push(newRec);
