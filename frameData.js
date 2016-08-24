@@ -183,7 +183,9 @@ FrameData.prototype.toJS = function() {
         emotionEnabled: this.emotionEnabled(),
         emotionFeedbackEnabled: this.emotionFeedbackEnabled(),
         emotionOffset: this.emotionOffset(),
-        events: jQuery.map( this.events(), function( event ) { return event.toJS(); } ),
+        events: jQuery.map( this.events(), function( event ) {
+            return event.toJS();
+        } ),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };
 };

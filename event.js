@@ -69,7 +69,7 @@ Event.prototype.fromJS = function(data) {
 Event.prototype.toJS = function() {
     var actions = this.actions();
     var actionData = [];
-    for (var i=1; i<actions.length; i++) {
+    for (var i=0; i<actions.length; i++) {
         actionData.push(actions[i].toJS());
     }
 

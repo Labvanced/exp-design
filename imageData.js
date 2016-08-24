@@ -43,7 +43,7 @@ var ImageData= function(expData) {
 };
 
 
-
+ImageData.prototype.eventPropChange = [ true, true, true,true,false,false,false,false,false,false,false,false,false,false];
 ImageData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight","name","onset","onsetEnabled","offset","offsetEnabled","file_id","file_orig_name","isActive","keepAspectRatio","stretchImageToFitBoundingBox"];
 
 ImageData.prototype.setPointers = function(entitiesArr) {
