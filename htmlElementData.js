@@ -35,6 +35,7 @@ htmlElementData.prototype.addContent = function(element){
     element.parent = this;
 };
 
+htmlElementData.prototype.dataType =      [ "numeric", "numeric", "numeric","numeric","string","string","boolean","string","boolean","boolean","boolean","boolean"];
 htmlElementData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","contentScaling"];
 
 htmlElementData.prototype.setPointers = function(entitiesArr) {
@@ -74,6 +75,7 @@ htmlElementData.prototype.fromJS = function(data) {
     var self = this;
     this.id(data.id);
     this.type = data.type;
+    this.dataType = data.dataType;
     this.name(data.name);
     this.onset(data.onset);
     this.onsetEnabled(data.onsetEnabled);
@@ -111,6 +113,7 @@ htmlElementData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
+        dataType: this.dataType,
         name: this.name(),
         onset: this.onset(),
         onsetEnabled: this.onsetEnabled(),

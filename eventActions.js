@@ -173,60 +173,29 @@ var ActionSetElementProp = function(event) {
     this.event = event;
 
     this.target = ko.observable(null);
-    this.operatorType =  ko.observable('');
-    this.setAbsolute = ko.observable(null);
-    this.setAbsoluteChange = ko.observable(null);
-    this.setPercentCahnge= ko.observable(null);
 
-    this.visibility = {
+
+    this.changes = ko.observableArray([null]);
+
+    this.changeObj = {
+        property: ko.observable(''),
         value:ko.observable(),
-        animationTime:ko.observable()
-    };
-    this.x = {
-        value:ko.observable(),
-        animationTime:ko.observable()
+        animationTime:ko.observable(),
+        operatorType :  ko.observable('')
+
     };
 
-    this.y = {
-        value:ko.observable(),
-        animationTime:ko.observable()
-    };
-
-    this.width = {
-        value:ko.observable(),
-        animationTime:ko.observable()
-    };
-
-    this.height = {
-        value:ko.observable(),
-        animationTime:ko.observable()
-    };
-
-    this.orientation = {
-        value:ko.observable(),
-        animationTime:ko.observable()
-    };
-
-    this.zIndex = {
-        value:ko.observable()
-    };
-
-    this.rgbFilter = {
-        value:ko.observableArray([0,0,0]),
-        animationTime:ko.observable()
-    };
 
 };
 
-
+ActionSetVariable.prototype.operatorTypes = ["PercentChange", "AbsChange", "SetValue"];
 
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
-ActionSetElementProp.prototype.label = "Set Element Prop.";
-ActionSetElementProp.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
 
-ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
-    this.elem(entitiesArr.byId[this.elem()])
-};
+
+ActionSetElementProp.prototype.label = "Set Element Prop.";
+
+
 
 ActionSetElementProp.prototype.run = function() {
 

@@ -34,6 +34,7 @@ var ImageHtmlData= function(expData) {
 };
 
 
+ImageHtmlData.prototype.dataType =      [ "string", "string", "string","string"];
 ImageHtmlData.prototype.modifiableProp = ["name","file_id","file_orig_name", "stretchImageToFitBoundingBox"];
 
 ImageHtmlData.prototype.setPointers = function(entitiesArr) {
@@ -52,6 +53,7 @@ ImageHtmlData.prototype.selectTrialType = function(selectionSpec) {
 ImageHtmlData.prototype.fromJS = function(data) {
     var self = this;
     this.type = data.type;
+    this.dataType = data.dataType;
     //this.name(data.name);
     this.file_id(data.file_id);
     this.file_orig_name(data.file_orig_name);
@@ -67,6 +69,7 @@ ImageHtmlData.prototype.toJS = function() {
 
     return {
         type: this.type,
+        dataType: this.dataType,
         //name: this.name(),
         file_id: this.file_id(),
         file_orig_name: this.file_orig_name(),
