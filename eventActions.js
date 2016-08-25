@@ -172,18 +172,53 @@ ActionSetVariable.prototype.toJS = function() {
 var ActionSetElementProp = function(event) {
     this.event = event;
 
-    this.target = ko.observable(null);
-
-
     this.changes = ko.observableArray([null]);
 
-    this.changeObj = {
-        property: ko.observable(''),
-        value:ko.observable(),
-        animationTime:ko.observable(),
-        operatorType :  ko.observable('')
+    this.target = ko.observable(null);
+    this.property= ko.observable(null);
+    this.operatorType=  ko.observable(null);
+    this.value=ko.observable(0);
+    this.animate=ko.observable(false);
+    this.animationTime=ko.observable(0);
 
-    };
+
+    var self = this;
+    this.target.subscribe(function(newVal) {
+
+        self.property= ko.observable(null);
+        self.value=ko.observable(0);
+        self.animationTime=ko.observable(0);
+        self.operatorType=  ko.observable(null);
+        self.animate=ko.observable(false);
+
+    });
+
+    this.property.subscribe(function(newVal) {
+
+        self.property= ko.observable(null);
+        self.value=ko.observable(0);
+        self.animationTime=ko.observable(0);
+        self.operatorType=  ko.observable(null);
+        self.animate=ko.observable(false);
+
+    });
+
+
+    this.operatorType.subscribe(function(newVal) {
+
+        if (newVal == "PercentChange") {
+            self.value(100);
+        }
+        else  if (newVal == "AbsChange") {
+            self.value(0);
+        }
+
+        else  if (newVal == "SetValue") {
+            var currentValue = self.event.parent.elements.byId[self.target()][self.property()]();
+            self.value(currentValue);
+        }
+
+    });
 
 
 };
