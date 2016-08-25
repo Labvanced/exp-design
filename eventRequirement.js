@@ -104,8 +104,8 @@ var RequirementVariableHasValue = function(event) {
 
     // serialized
     this.comparisonType = ko.observable("==");
-    this.operandLeft = ko.observable(new OperandVariable());
-    this.operandRight = ko.observable(new OperandVariable());
+    this.operandLeft = ko.observable(new OperandVariable(event));
+    this.operandRight = ko.observable(new OperandVariable(event));
 };
 
 RequirementVariableHasValue.prototype.type = "RequirementVariableHasValue";
@@ -146,11 +146,11 @@ RequirementVariableHasValue.prototype.checkIfTrue = function(parameters) {
 RequirementVariableHasValue.prototype.fromJS = function(data) {
     this.comparisonType(data.comparisonType);
     if (data.operandLeft) {
-        this.operandLeft(new OperandVariable());
+        this.operandLeft(new OperandVariable(this.event));
         this.operandLeft().fromJS(data.operandLeft);
     }
     if (data.operandRight) {
-        this.operandRight(new OperandVariable());
+        this.operandRight(new OperandVariable(this.event));
         this.operandRight().fromJS(data.operandRight);
     }
     return this;
@@ -178,7 +178,10 @@ RequirementVariableHasValue.prototype.toJS = function() {
 
 
 
-var OperandVariable = function() {
+var OperandVariable = function(event) {
+    this.event = event;
+
+    // serialized
     this.operandType = ko.observable('undefined');
     this.operandValueOrObject = ko.observable(null);
 };
@@ -190,27 +193,6 @@ OperandVariable.prototype.operandTypes = ['undefined', "variable", "triggerParam
 OperandVariable.prototype.setPointers = function(entitiesArr) {
     if (this.operandType() == "variable"){
         this.operandValueOrObject(entitiesArr.byId[this.operandValueOrObject()]);
-    }
-};
-
-OperandVariable.prototype.changeOperandType = function(newOperandType) {
-    this.operandType(newOperandType);
-    switch(this.operandType()) {
-        case "undefined":
-            this.operandValueOrObject(null);
-            break;
-        case "variable":
-            this.operandValueOrObject(null);
-            break;
-        case "triggerParameter":
-            this.operandValueOrObject(null);
-            break;
-        case "constantString":
-            this.operandValueOrObject("test");
-            break;
-        case "constantNumeric":
-            this.operandValueOrObject(5);
-            break;
     }
 };
 
@@ -240,7 +222,7 @@ OperandVariable.prototype.getValue = function(parameters) {
 };
 
 OperandVariable.prototype.fromJS = function(data) {
-    this.operandType(data.comparisonType);
+    this.operandType(data.operandType);
     this.operandValueOrObject(data.operandValueOrObject);
     return this;
 };
@@ -251,7 +233,7 @@ OperandVariable.prototype.toJS = function() {
         operandType: this.operandType(),
         operandValueOrObject: this.operandValueOrObject()
     };
-    if (data.operandType == "variable") {
+    if (data.operandType == "variable" && data.operandValueOrObject) {
         data.operandValueOrObject = data.operandValueOrObject.id();
     }
     return data;
