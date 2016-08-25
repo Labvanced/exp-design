@@ -16,9 +16,9 @@ var Event= function(parent) {
 };
 
 Event.prototype.setPointers = function(entitiesArr) {
-    this.trigger().setPointers();
+    this.trigger().setPointers(entitiesArr);
     if (this.requirement()) {
-        this.requirement().setPointers();
+        this.requirement().setPointers(entitiesArr);
     }
     var actions = this.actions();
     for (var i=1; i<actions.length; i++) {
@@ -78,7 +78,7 @@ Event.prototype.toJS = function() {
         name:this.name(),
         type: this.type,
         trigger: this.trigger().toJS(),
-        requirement: this.requirement(),
+        requirement: this.requirement().toJS(),
         actions: actionData
     };
 };

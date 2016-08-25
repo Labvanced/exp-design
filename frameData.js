@@ -128,6 +128,8 @@ FrameData.prototype.reAddEntities = function(entitiesArr) {
 };
 
 FrameData.prototype.fromJS = function(data) {
+    var self = this;
+
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
@@ -155,7 +157,7 @@ FrameData.prototype.fromJS = function(data) {
         this.emotionOffset(data.emotionOffset);
     }
     this.events(jQuery.map( data.events, function( eventData ) {
-        return (new Event()).fromJS(eventData);
+        return (new Event(self)).fromJS(eventData);
     } ));
     this.elements(data.elements);
     return this;
