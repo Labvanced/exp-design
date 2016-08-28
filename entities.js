@@ -108,12 +108,8 @@ function entityFactory(entityJson, expData) {
             entity.addContent(elem);
             break;
         case 'NewPageElement':
-            var elem = new NewPageElement(expData);
-            elem.fromJS(entityJson);
-            entity = new QuestionnaireElement(expData);
-            entity.id(entityJson.id);
-            entity.name(entityJson.name);
-            entity.addContent(elem);
+            entity = new NewPageElement(expData);
+            entity.fromJS(entityJson);
             break;
         case 'htmlElementData':
             entity = new htmlElementData(expData);

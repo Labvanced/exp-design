@@ -104,9 +104,9 @@ ko.components.register('choice-element-edit', {
             <br>\
             <div data-bind="foreach: choices">\
                 <div style="overflow: auto; margin-bottom: 3%">\
-                    <input style="float: left; margin-top: 3%" type="checkbox">\
-                    <input style="float: left; margin-left: 5%; max-width:50%" type="text" data-bind="textInput: $rawData" class="form-control">\
-                    <span style="float: left; margin-left: 5%; margin-top: 1%;"><a href="#" data-bind="click: function(data,event) {$parent.removeChoice($index())}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
+                    <input style="display: inline-block;" type="checkbox">\
+                    <input style="display: inline-block; margin-left: 5%; max-width:50%" type="text" data-bind="textInput: $rawData" class="form-control">\
+                    <span style="display: inline-block; margin-left: 5%;"><a href="#" data-bind="click: function(data,event) {$parent.removeChoice($index())}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
                 </div>\
             </div>\
         <span><a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> <a style="display: inline-block; margin-left: 1%">Add Choice</a> </a></span>\

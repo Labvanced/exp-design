@@ -7,6 +7,7 @@ var NewPageElement = function(expData) {
     this.expData = expData;
     this.parent = null;
     this.label = "New_Page";
+    this.id = ko.observable(guid());
 
     //serialized
     this.type= "NewPageElement";
@@ -14,6 +15,7 @@ var NewPageElement = function(expData) {
     this.selected = ko.observable(false);
     this.elements = ko.observableArray([]);
     this.answerTime = ko.observable(Infinity);
+    this.shuffleAll = ko.observable(false);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -26,7 +28,36 @@ NewPageElement.prototype.addElem = function (elem) {
 NewPageElement.prototype.modifiableProp = ["returnButton"];
 
 
-NewPageElement.prototype.setPointers = function() {
+NewPageElement.prototype.setPointers = function(entitiesArr) {
+
+    var self = this;
+
+    // convert ids to actual pointers:
+    this.elements(jQuery.map( this.elements(), function( id ) {
+        var elem = entitiesArr.byId[id];
+        elem.parent = self;
+        return elem;
+    } ));
+};
+
+NewPageElement.prototype.getElementById = function(id) {
+    return  this.elements.byId[id];
+};
+
+
+NewPageElement.prototype.reAddEntities = function(entitiesArr) {
+    var self = this;
+
+    // add the direct child nodes:
+    jQuery.each( this.elements(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (elem.reAddEntities)
+            elem.reAddEntities(entitiesArr);
+    } );
 
 };
 
@@ -44,12 +75,16 @@ NewPageElement.prototype.submitQuestionnaire = function() {
 
 NewPageElement.prototype.toJS = function() {
     return {
-        type: this.type
+        id: this.id(),
+        type: this.type,
+        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };
 };
 
 NewPageElement.prototype.fromJS = function(data) {
+    this.id(data.id);
     this.type=data.type;
+    this.elements(data.elements);
 
 };
 
