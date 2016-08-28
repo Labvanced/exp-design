@@ -156,7 +156,15 @@ ko.components.register('checkbox-preview',{
 
         elements = document.getElementsByClassName( 'editCheck' );
 
-        CKEDITOR.inline( elements[elements.length-1]);
+        CKEDITOR.inline( elements[elements.length-1],{
+            on: {
+                instanceReady: function (event) {
+                    var editor = event.editor;
+                    editor.name = self.name() + '_' + self.count;
+                }
+            },
+            startupFocus : true
+        });
 
         this.change = function (index) {
             var data = 0;
