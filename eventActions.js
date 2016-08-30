@@ -173,7 +173,6 @@ var ActionSetElementProp = function(event) {
     this.event = event;
 
     this.changes = ko.observableArray([null]);
-
     this.target = ko.observable(null);
     this.property= ko.observable(null);
     this.operatorType=  ko.observable(null);
@@ -183,39 +182,41 @@ var ActionSetElementProp = function(event) {
 
 
     var self = this;
+
     this.target.subscribe(function(newVal) {
-
-        self.property= ko.observable(null);
-        self.value=ko.observable(0);
-        self.animationTime=ko.observable(0);
-        self.operatorType=  ko.observable(null);
-        self.animate=ko.observable(false);
-
+        self.property(null);
+        self.operatorType(null);
+        self.value(0);
+        self.animate(false);
+        self.animationTime(0);
     });
+
 
     this.property.subscribe(function(newVal) {
-
-        self.property= ko.observable(null);
-        self.value=ko.observable(0);
-        self.animationTime=ko.observable(0);
-        self.operatorType=  ko.observable(null);
-        self.animate=ko.observable(false);
-
+        self.operatorType(null);
+        self.value(0);
+        self.animate(false);
+        self.animationTime(0);
     });
-
 
     this.operatorType.subscribe(function(newVal) {
 
         if (newVal == "PercentChange") {
             self.value(100);
+            self.animate(false);
+            self.animationTime(0);
         }
         else  if (newVal == "AbsChange") {
             self.value(0);
+            self.animate(false);
+            self.animationTime(0);
         }
 
         else  if (newVal == "SetValue") {
             var currentValue = self.event.parent.elements.byId[self.target()][self.property()]();
             self.value(currentValue);
+            self.animate(false);
+            self.animationTime(0);
         }
 
     });
@@ -223,10 +224,9 @@ var ActionSetElementProp = function(event) {
 
 };
 
-ActionSetVariable.prototype.operatorTypes = ["PercentChange", "AbsChange", "SetValue"];
+ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["PercentChange", "AbsChange", "SetValue"]);
 
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
-
 
 ActionSetElementProp.prototype.label = "Set Element Prop.";
 
