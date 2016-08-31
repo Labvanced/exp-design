@@ -21,9 +21,17 @@ Event.prototype.setPointers = function(entitiesArr) {
         this.requirement().setPointers(entitiesArr);
     }
     var actions = this.actions();
-    for (var i=1; i<actions.length; i++) {
+    for (var i=0; i<actions.length; i++) {
         actions[i].setPointers(entitiesArr);
     }
+};
+
+Event.prototype.reAddEntities = function(entitiesArr) {
+    jQuery.each( this.actions(), function( index, elem ) {
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (elem.reAddEntities)
+            elem.reAddEntities(entitiesArr);
+    } );
 };
 
 Event.prototype.triggerActions = function(parameters) {
@@ -34,7 +42,7 @@ Event.prototype.triggerActions = function(parameters) {
 
 Event.prototype.runActions = function(variables) {
     var actions = this.actions();
-    for (var i=1; i<actions.length; i++) {
+    for (var i=0; i<actions.length; i++) {
         actions[i].run(parameters);
     }
 };
@@ -56,9 +64,9 @@ Event.prototype.fromJS = function(data) {
     }
 
     var actions = [];
-    for (var i=1; i<data.actions.length; i++) {
+    for (var i=0; i<data.actions.length; i++) {
         var action = actionFactory(self, data.actions[i].type);
-        action.fromJS(data.action);
+        action.fromJS(data.actions[i]);
         actions.push(action)
     }
     this.actions(actions);
@@ -72,13 +80,18 @@ Event.prototype.toJS = function() {
     for (var i=0; i<actions.length; i++) {
         actionData.push(actions[i].toJS());
     }
+    
+    var req = null;
+    if (this.requirement()) {
+        req = this.requirement().toJS();
+    }
 
     return {
         id: this.id(),
         name:this.name(),
         type: this.type,
         trigger: this.trigger().toJS(),
-        requirement: this.requirement().toJS(),
+        requirement: req,
         actions: actionData
     };
 };

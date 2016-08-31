@@ -38,8 +38,32 @@ ActionRecord.prototype.addRecording = function(type){
 
 
 ActionRecord.prototype.setPointers = function(entitiesArr) {
+    var specialRecordings = this.specialRecordings();
+    for (var i = 0; i<specialRecordings.length; i++){
+        var globVar = entitiesArr.byId[specialRecordings[i].variable()];
+        specialRecordings[i].variable(globVar);
+    }
 
+    var selectedRecordings = this.selectedRecordings();
+    for (var i = 0; i<selectedRecordings.length; i++){
+        var globVar = entitiesArr.byId[selectedRecordings[i].variable()];
+        selectedRecordings[i].variable(globVar);
+    }
+};
 
+ActionRecord.prototype.reAddEntities = function(entitiesArr) {
+    var specialRec = this.specialRecordings();
+    for (var i = 0; i<specialRec.length; i++){
+        if (specialRec[i].variable()) {
+            entitiesArr.push(specialRec[i].variable());
+        }
+    }
+    var selectedRec = this.selectedRecordings();
+    for (var i = 0; i<selectedRec.length; i++){
+        if (selectedRec[i].variable()) {
+            entitiesArr.push(selectedRec[i].variable());
+        }
+    }
 };
 
 ActionRecord.prototype.run = function(dataModel) {
@@ -54,71 +78,64 @@ ActionRecord.prototype.run = function(dataModel) {
 
 ActionRecord.prototype.fromJS = function(data) {
     var specialRecordings = [];
-    var selectedRecordings = [];
-
-    for (var i = 0 ;i <data.recTypesSpecial.length;i++){
-      specialRecordings.push({
-          recType: data.recTypesSpecial,
-          variable :ko.observable(data.variablesSpecial),
-          isRecorded: ko.observable(data.isRecSpecial)
-      })
-    }
-
-    for (var i = 0 ;i <data.recTypesSelected.length;i++){
-        selectedRecordings.push({
-            recType: data.recTypesSelected,
-            variable :ko.observable(data.variablesSelected),
-            isRecorded: ko.observable(data.isRecSelected)
+    for (var i = 0; i < data.specialRecordings.length; i++) {
+        var tmp = data.specialRecordings[i];
+        specialRecordings.push({
+            recType: tmp.recType,
+            variable: ko.observable(tmp.variable),
+            isRecorded: ko.observable(tmp.isRecorded)
         })
     }
-
     this.specialRecordings(specialRecordings);
+
+    var selectedRecordings = [];
+    for (var i = 0; i < data.selectedRecordings.length; i++) {
+        var tmp = data.selectedRecordings[i];
+        selectedRecordings.push({
+            recType: tmp.recType,
+            variable: ko.observable(tmp.variable),
+            isRecorded: ko.observable(tmp.isRecorded)
+        })
+    }
     this.selectedRecordings(selectedRecordings);
-
-
     return this;
 };
 
 ActionRecord.prototype.toJS = function() {
-    var recTypesSpecial =[];
-    var variablesSpecial =[];
-    var isRecSpecial =[];
-    for (var i = 0 ;i <this.specialRecordings().length;i++){
-        recTypesSpecial[i] =   this.specialRecordings()[i].recType;
-        if  (this.specialRecordings()[i].variable()){
-            variablesSpecial[i] =   this.specialRecordings()[i].variable().id();
+    var specialRecordings = [];
+    var specialRec = this.specialRecordings();
+    for (var i = 0; i<specialRec.length; i++){
+        var rec = specialRec[i];
+        var varId = null;
+        if (rec.variable()) {
+            varId = rec.variable().id();
         }
-        else{
-            variablesSpecial[i] = null;
-        }
-
-        isRecSpecial[i] =   this.specialRecordings()[i].isRecorded();
+        specialRecordings.push({
+            recType: rec.recType,
+            variable:  varId,
+            isRecorded: rec.isRecorded()
+        });
     }
 
-
-    var recTypesSelected=[];
-    var variablesSelected =[];
-    var isRecSelected =[];
-    for (var i = 0 ;i <this.selectedRecordings().length;i++){
-        recTypesSelected[i] =   this.selectedRecordings()[i].recType;
-        if  (this.selectedRecordings()[i].variable()){
-            variablesSelected[i] =   this.selectedRecordings()[i].variable().id();
+    var selectedRecordings = [];
+    var selectedRec = this.selectedRecordings();
+    for (var i = 0; i<selectedRec.length; i++){
+        var rec = selectedRec[i];
+        var varId = null;
+        if (rec.variable()) {
+            varId = rec.variable().id();
         }
-        else{
-            variablesSelected[i] = null;
-        }
-
-        isRecSelected[i] =   this.selectedRecordings()[i].isRecorded();
+        selectedRecordings.push({
+            recType: rec.recType,
+            variable:  varId,
+            isRecorded: rec.isRecorded()
+        });
     }
 
     return {
         type: this.type,
-        recTypesSpecial: recTypesSpecial,
-        variablesSpecial: variablesSpecial,
-        isRecSpecial: isRecSpecial,
-        recTypesSelected: recTypesSpecial,
-        variablesSelected: variablesSpecial,
-        isRecSelected: isRecSpecial
+        specialRecordings: specialRecordings,
+        selectedRecordings: selectedRecordings
     };
 };
 
@@ -250,39 +267,29 @@ ActionSetElementProp.prototype.addProperty = function() {
     prop.subscribe(function(newVal) {
         operator(null);
         value(0);
-        self.animate(false);
-        self.animationTime(0);
     });
 
     operator.subscribe(function(newVal) {
 
-        if (newVal == "%  of former value") {
+        if (newVal == "%of former value") {
             value(100);
-            self.animate(false);
-            self.animationTime(0);
         }
         else  if (newVal == "+ former value") {
             value(0);
-            self.animate(false);
-            self.animationTime(0);
         }
-
         else  if (newVal == "absolute value") {
             var currentValue = self.event.parent.elements.byId[self.target()][prop()]();
             value(currentValue);
-            self.animate(false);
-            self.animationTime(0);
         }
 
     });
 
+    var addObj = {
+        property: prop,
+        operatorType: operator,
+        value: value
 
- var addObj = {
-     property : prop,
-     operatorType:operator,
-     value:value
-
- };
+    };
 
     this.changes.push(addObj);
 };

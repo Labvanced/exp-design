@@ -125,6 +125,17 @@ FrameData.prototype.reAddEntities = function(entitiesArr) {
             elem.reAddEntities(entitiesArr);
     } );
 
+    // add the direct child nodes:
+    jQuery.each( this.events(), function( index, evt ) {
+        // check if they are not already in the list:
+        // if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+        //     entitiesArr.push(elem);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (evt.reAddEntities)
+            evt.reAddEntities(entitiesArr);
+    } );
+
 };
 
 FrameData.prototype.fromJS = function(data) {
