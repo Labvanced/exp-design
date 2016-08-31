@@ -1,5 +1,8 @@
 // � by Caspar Goeke and Holger Finger
 
+
+////////////////////////
+
 var TriggerMouse = function(event) {
     this.event = event;
 
@@ -96,6 +99,173 @@ TriggerKeyboard.prototype.toJS = function() {
 };
 
 ////////////////////////
+
+var TriggerOnFrameStart = function(event) {
+    this.event = event;
+
+    // serialized
+    this.timeDelayInMs = ko.observable(0);
+};
+
+TriggerOnFrameStart.prototype.type = "TriggerOnFrameStart";
+TriggerOnFrameStart.prototype.label = "On Frame Start Trigger";
+
+TriggerOnFrameStart.prototype.setPointers = function(entitiesArr) {
+
+};
+
+TriggerOnFrameStart.prototype.getParameterSpec = function() {
+    return [
+    ];
+};
+
+TriggerOnFrameStart.prototype.setupOnFrameView = function(frameView) {
+    // TODO: to trigger call function this.event.triggerActions(variables)
+};
+
+TriggerOnFrameStart.prototype.fromJS = function(data) {
+    this.timeDelayInMs(data.timeDelayInMs);
+    return this;
+};
+
+TriggerOnFrameStart.prototype.toJS = function() {
+    return {
+        type: this.type,
+        timeDelayInMs: this.timeDelayInMs()
+    };
+};
+
+
+////////////////////////
+
+
+
+var TriggerOnFrameEnd = function(event) {
+    this.event = event;
+
+    // serialized
+};
+
+TriggerOnFrameEnd.prototype.type = "TriggerOnFrameEnd";
+TriggerOnFrameEnd.prototype.label = "On Frame End Trigger";
+
+TriggerOnFrameEnd.prototype.setPointers = function(entitiesArr) {
+
+};
+
+TriggerOnFrameEnd.prototype.getParameterSpec = function() {
+    return [
+    ];
+};
+
+TriggerOnFrameEnd.prototype.setupOnFrameView = function(frameView) {
+    // TODO: to trigger call function this.event.triggerActions(variables)
+};
+
+TriggerOnFrameEnd.prototype.fromJS = function(data) {
+    return this;
+};
+
+TriggerOnFrameEnd.prototype.toJS = function() {
+    return {
+        type: this.type
+    };
+};
+
+
+////////////////////////
+
+var TriggerTimerReached = function(event) {
+    this.event = event;
+
+    // serialized
+    this.timerVar = ko.observable(null);
+    this.timeInMs = ko.observable(0);
+};
+
+TriggerTimerReached.prototype.type = "TriggerTimerReached";
+TriggerTimerReached.prototype.label = "Timer Reached Trigger";
+
+TriggerTimerReached.prototype.setPointers = function(entitiesArr) {
+    if (this.timerVar()){
+        this.timerVar(entitiesArr.byId[this.timerVar()]);
+    }
+};
+
+TriggerTimerReached.prototype.getParameterSpec = function() {
+    return [
+    ];
+};
+
+TriggerTimerReached.prototype.setupOnFrameView = function(frameView) {
+    // TODO: to trigger call function this.event.triggerActions(variables)
+};
+
+TriggerTimerReached.prototype.fromJS = function(data) {
+    this.timerVar(data.timerVar);
+    this.timeInMs(data.timeInMs);
+    return this;
+};
+
+TriggerTimerReached.prototype.toJS = function() {
+    var timerVarId = null;
+    if (this.timerVar()) {
+        timerVarId = this.timerVar().id();
+    }
+
+    return {
+        type: this.type,
+        timerVar: timerVarId,
+        timeInMs: this.timeInMs()
+    };
+};
+
+
+////////////////////////
+
+var TriggerVariableValueChanged = function(event) {
+    this.event = event;
+
+    // serialized
+    this.variable = ko.observable(null);
+};
+
+TriggerVariableValueChanged.prototype.type = "TriggerVariableValueChanged";
+TriggerVariableValueChanged.prototype.label = "Variable Value Changed Trigger";
+
+TriggerVariableValueChanged.prototype.setPointers = function(entitiesArr) {
+    if (this.variable()){
+        this.variable(entitiesArr.byId[this.variable()]);
+    }
+};
+
+TriggerVariableValueChanged.prototype.getParameterSpec = function() {
+    return [
+    ];
+};
+
+TriggerVariableValueChanged.prototype.setupOnFrameView = function(frameView) {
+    // TODO: to trigger call function this.event.triggerActions(variables)
+};
+
+TriggerVariableValueChanged.prototype.fromJS = function(data) {
+    this.variable(data.variable);
+    return this;
+};
+
+TriggerVariableValueChanged.prototype.toJS = function() {
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
+
+    return {
+        type: this.type,
+        variable: variableId
+    };
+};
+
+///////////////////////////
 
 
 function triggerFactory(event,type) {

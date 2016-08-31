@@ -19,20 +19,26 @@ var GlobalVar = function (expData) {
     this.levels = ko.observableArray([]);
     this.subLevelEdit = ko.observable(false);
 
+    // private!!!
     this.value = ko.observable(null);
 };
 
-// enum: possible variable subtypes defined by us or user
-GlobalVar.subtypes = ['undefined','id', 'sequence', 'condition', 'stimulus property', 'user decision', 'user response time',  'user questionnaire response','physiological recording'];
-
-// further information defined by us
-GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean'];
+// enum definitions:
+GlobalVar.subtypes = ['custom','id', 'sequence', 'condition', 'stimulus property', 'user decision', 'user response time',  'user questionnaire response','physiological recording'];
 GlobalVar.scales = ['undefined', 'nominal', 'ordinal', 'interval', 'ratio'];
-GlobalVar.scopes = ['undefined','experiment','session', 'block', 'questionnaire', 'trial-loop', 'trial'];
+GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'time'];
+GlobalVar.scopes = ['undefined', 'participant','session','block','task','trial'];
+GlobalVar.depOrIndepVar = [true, false];
+GlobalVar.isRecorded = [true, false];
+GlobalVar.multipleTimes = [true, false, 'dontknow'];
 
 
 GlobalVar.prototype.setPointers = function(entitiesArr) {
 
+};
+
+GlobalVar.prototype.getValue = function() {
+    this.value();
 };
 
 GlobalVar.prototype.addLevel = function() {
