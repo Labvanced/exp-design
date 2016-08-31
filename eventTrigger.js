@@ -239,6 +239,12 @@ TriggerVariableValueChanged.prototype.setPointers = function(entitiesArr) {
     }
 };
 
+TriggerVariableValueChanged.prototype.reAddEntities = function(entitiesArr) {
+    if (this.variable()){
+        entitiesArr.push(this.variable());
+    }
+};
+
 TriggerVariableValueChanged.prototype.getParameterSpec = function() {
     return [
     ];
