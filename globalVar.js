@@ -3,35 +3,31 @@
 var GlobalVar = function (expData) {
     this.expData = expData;
 
+    // serialized:
     this.id = ko.observable(guid());
-    this.name = ko.observable("newVariable");
-    this.editName =  ko.observable(false);
     this.type = "GlobalVar";
-
+    this.name = ko.observable("newVariable");
     this.subtype = ko.observable("undefined");
     this.dataType = ko.observable("undefined");
     this.scale = ko.observable("undefined");
     this.scope = ko.observable("undefined");
-
     this.isFactor =  ko.observable(false);
     this.isInteracting = ko.observable(false);
-
     this.levels = ko.observableArray([]);
-    this.subLevelEdit = ko.observable(false);
 
-    // private!!!
+    // not serialized:
+    this.editName =  ko.observable(false);
+    this.subLevelEdit = ko.observable(false);
     this.value = ko.observable(null);
 };
 
 // enum definitions:
 GlobalVar.subtypes = ['custom','id', 'sequence', 'condition', 'stimulus property', 'user decision', 'user response time',  'user questionnaire response','physiological recording'];
 GlobalVar.scales = ['undefined', 'nominal', 'ordinal', 'interval', 'ratio'];
-GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'time'];
+GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime'];
 GlobalVar.scopes = ['undefined', 'participant','session','block','task','trial'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
-GlobalVar.multipleTimes = [true, false, 'dontknow'];
-
 
 GlobalVar.prototype.setPointers = function(entitiesArr) {
 
