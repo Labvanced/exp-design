@@ -171,65 +171,121 @@ ActionSetVariable.prototype.toJS = function() {
 
 var ActionSetElementProp = function(event) {
     this.event = event;
-
-    this.changes = ko.observableArray([null]);
     this.target = ko.observable(null);
-    this.property= ko.observable(null);
-    this.operatorType=  ko.observable(null);
-    this.value=ko.observable(0);
+    this.changes = ko.observableArray([]);
     this.animate=ko.observable(false);
     this.animationTime=ko.observable(0);
 
+    var self= this;
+    this.propertyList = ko.computed(function() {
+        if(self.target()){
+            var elemList = self.event.parent.elements;
 
-    var self = this;
+            var select= "numeric";
+            var proList = elemList.byId[self.target()].modifiableProp;
+            var proListDataType = elemList.byId[self.target()].dataType;
+            var numericOnly = self.getAllIndexes(proListDataType,select,proList);
+            var proListSub = elemList.byId[self.target()].content().modifiableProp;
+            var proListSubDataType = elemList.byId[self.target()].content().dataType;
+            var numericOnly2 = self.getAllIndexes(proListSubDataType,select,proListSub);
+
+            var completeList = numericOnly.concat(numericOnly2);
+            return ko.utils.arrayMap(completeList, function(list) {
+                return list;
+            });
+        }
+        else{
+            return ko.utils.arrayMap([], function(item) {
+                return item;
+            });
+        }
+
+    });
+
+    this.addProperty();
+
 
     this.target.subscribe(function(newVal) {
-        self.property(null);
-        self.operatorType(null);
-        self.value(0);
         self.animate(false);
         self.animationTime(0);
-    });
-
-
-    this.property.subscribe(function(newVal) {
-        self.operatorType(null);
-        self.value(0);
-        self.animate(false);
-        self.animationTime(0);
-    });
-
-    this.operatorType.subscribe(function(newVal) {
-
-        if (newVal == "PercentChange") {
-            self.value(100);
-            self.animate(false);
-            self.animationTime(0);
-        }
-        else  if (newVal == "AbsChange") {
-            self.value(0);
-            self.animate(false);
-            self.animationTime(0);
-        }
-
-        else  if (newVal == "SetValue") {
-            var currentValue = self.event.parent.elements.byId[self.target()][self.property()]();
-            self.value(currentValue);
-            self.animate(false);
-            self.animationTime(0);
-        }
+        self.changes([]);
+        self.addProperty();
 
     });
+
+    /**
+
+     **/
 
 
 };
 
-ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["PercentChange", "AbsChange", "SetValue"]);
 
+ActionSetElementProp.prototype.getAllIndexes = function(list1,val,list2) {
+    var indexes = [], i = -1;
+    while ((i = list1.indexOf(val, i+1)) != -1){
+        indexes.push(i);
+    }
+
+    var arr = $.grep(list2, function(n, i) {
+        return $.inArray(i, indexes) !=-1;
+    });
+
+    return arr
+};
+
+
+ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["%  of former value", "+ former value", "absolute value"]);
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
-
 ActionSetElementProp.prototype.label = "Set Element Prop.";
 
+
+ActionSetElementProp.prototype.addProperty = function() {
+
+    var prop = ko.observable(null);
+    var operator = ko.observable(null);
+    var value = ko.observable(0);
+    var self = this;
+
+    prop.subscribe(function(newVal) {
+        operator(null);
+        value(0);
+        self.animate(false);
+        self.animationTime(0);
+    });
+
+    operator.subscribe(function(newVal) {
+
+        if (newVal == "%  of former value") {
+            value(100);
+            self.animate(false);
+            self.animationTime(0);
+        }
+        else  if (newVal == "+ former value") {
+            value(0);
+            self.animate(false);
+            self.animationTime(0);
+        }
+
+        else  if (newVal == "absolute value") {
+            var currentValue = self.event.parent.elements.byId[self.target()][prop()]();
+            value(currentValue);
+            self.animate(false);
+            self.animationTime(0);
+        }
+
+    });
+
+
+ var addObj = {
+     property : prop,
+     operatorType:operator,
+     value:value
+
+ };
+
+    this.changes.push(addObj);
+};
 
 
 ActionSetElementProp.prototype.run = function() {
