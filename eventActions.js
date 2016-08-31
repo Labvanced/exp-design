@@ -196,14 +196,14 @@ var ActionSetElementProp = function(event) {
     var self= this;
     this.propertyList = ko.computed(function() {
         if(self.target()){
-            var elemList = self.event.parent.elements;
 
+            var target = self.target();
             var select= "numeric";
-            var proList = elemList.byId[self.target()].modifiableProp;
-            var proListDataType = elemList.byId[self.target()].dataType;
+            var proList = target.modifiableProp;
+            var proListDataType = target.dataType;
             var numericOnly = self.getAllIndexes(proListDataType,select,proList);
-            var proListSub = elemList.byId[self.target()].content().modifiableProp;
-            var proListSubDataType = elemList.byId[self.target()].content().dataType;
+            var proListSub = target.content().modifiableProp;
+            var proListSubDataType = target.content().dataType;
             var numericOnly2 = self.getAllIndexes(proListSubDataType,select,proListSub);
 
             var completeList = numericOnly.concat(numericOnly2);
@@ -295,6 +295,16 @@ ActionSetElementProp.prototype.addProperty = function() {
 };
 
 
+ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
+    var target = entitiesArr.byId[this.target()];
+    this.target(target);
+};
+
+ActionSetElementProp.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+
 ActionSetElementProp.prototype.run = function() {
 
 };
@@ -302,19 +312,31 @@ ActionSetElementProp.prototype.run = function() {
 ActionSetElementProp.prototype.fromJS = function(data) {
     this.animate(data.animate);
     this.animationTime(data.animationTime);
+    var changes = [];
+    for (var i = 0 ;i <data.changes.length;i++){
+        var obj = {
+            property :   ko.observable(data.changes[i].property),
+            operatorType :   ko.observable(data.changes[i].operatorType),
+            value:   ko.observable(data.changes[i].value)
+        };
+        changes.push(obj);
+    }
+    this.changes(changes);
 
     return this;
 };
 
 ActionSetElementProp.prototype.toJS = function() {
 
-    var properties= [];
-    var operators= [];
-    var values= [];
+
+    var changes= [];
     for (var i = 0 ;i <this.changes().length;i++){
-        properties[i] =   this.changes()[i].property();
-        operators[i] =   this.changes()[i].operator();
-        values[i] =   this.changes()[i].value();
+        var obj = {
+            property :   this.changes()[i].property(),
+            operatorType :   this.changes()[i].operatorType(),
+            value:   this.changes()[i].value()
+        };
+        changes.push(obj);
     }
 
     return {
@@ -322,9 +344,7 @@ ActionSetElementProp.prototype.toJS = function() {
         target: this.target().id(),
         animate: this.animate(),
         animationTime:this.animationTime,
-        properties : properties,
-        operators: operators,
-        values:values
+        changes:changes
     };
 };
 
