@@ -252,7 +252,7 @@ ActionSetElementProp.prototype.getAllIndexes = function(list1,val,list2) {
 };
 
 
-ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["% of former value", "+ former value", "absolute value"]);
+ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["%", "+", "set"]);
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
 ActionSetElementProp.prototype.label = "Set Element Prop.";
 
@@ -271,13 +271,13 @@ ActionSetElementProp.prototype.addProperty = function() {
 
     operator.subscribe(function(newVal) {
 
-        if (newVal == "%of former value") {
+        if (newVal == "%") {
             value(100);
         }
-        else  if (newVal == "+ former value") {
+        else  if (newVal == "+") {
             value(0);
         }
-        else  if (newVal == "absolute value") {
+        else  if (newVal == "set") {
             var currentValue = self.event.parent.elements.byId[self.target()][prop()]();
             value(currentValue);
         }
