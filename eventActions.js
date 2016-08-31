@@ -235,7 +235,7 @@ ActionSetElementProp.prototype.getAllIndexes = function(list1,val,list2) {
 };
 
 
-ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["%  of former value", "+ former value", "absolute value"]);
+ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["% of former value", "+ former value", "absolute value"]);
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
 ActionSetElementProp.prototype.label = "Set Element Prop.";
 
@@ -293,26 +293,31 @@ ActionSetElementProp.prototype.run = function() {
 };
 
 ActionSetElementProp.prototype.fromJS = function(data) {
-    this.elem(data.elem);
-    this.propName(data.propName);
-    this.operatorType(data.operatorType);
-    this.argument(data.argument);
+    this.animate(data.animate);
+    this.animationTime(data.animationTime);
+
     return this;
 };
 
 ActionSetElementProp.prototype.toJS = function() {
-    if (this.elem()) {
-        var elemId = this.elem().id();
+
+    var properties= [];
+    var operators= [];
+    var values= [];
+    for (var i = 0 ;i <this.changes().length;i++){
+        properties[i] =   this.changes()[i].property();
+        operators[i] =   this.changes()[i].operator();
+        values[i] =   this.changes()[i].value();
     }
-    else {
-        var elemId = undefined;
-    }
+
     return {
         type: this.type,
-        elem: elemId,
-        propName: this.propName(),
-        operatorType: this.operatorType(),
-        argument: this.argument()
+        target: this.target().id(),
+        animate: this.animate(),
+        animationTime:this.animationTime,
+        properties : properties,
+        operators: operators,
+        values:values
     };
 };
 
