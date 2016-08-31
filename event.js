@@ -27,6 +27,12 @@ Event.prototype.setPointers = function(entitiesArr) {
 };
 
 Event.prototype.reAddEntities = function(entitiesArr) {
+    if (this.trigger() && this.trigger().reAddEntities) {
+        this.trigger().reAddEntities(entitiesArr);
+    }
+    if (this.requirement() && this.requirement().reAddEntities) {
+        this.requirement().reAddEntities(entitiesArr);
+    }
     jQuery.each( this.actions(), function( index, elem ) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
