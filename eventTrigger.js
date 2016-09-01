@@ -10,6 +10,18 @@ var TriggerMouse = function(event) {
     this.buttonType = ko.observable("Left");
     this.interactionType = ko.observable("Click");
     this.targets = ko.observableArray([]);
+
+    var self= this;
+    this.isValid = ko.computed(function() {
+        if (self.event.trigger() && self.targets().length>0){
+            return true
+        }
+        else{
+            return false
+        }
+    }, this);
+
+
 };
 
 TriggerMouse.prototype.type = "TriggerMouse";
@@ -60,6 +72,16 @@ var TriggerKeyboard = function(event) {
     // serialized
     this.buttons = ko.observableArray([]);
     this.interactionType = ko.observable("Pressed");
+
+    var self= this;
+    this.isValid = ko.computed(function() {
+        if (self.event.trigger() && self.buttons().length>0){
+            return true
+        }
+        else{
+            return false
+        }
+    }, this);
 };
 
 TriggerKeyboard.prototype.type = "TriggerKeyboard";
