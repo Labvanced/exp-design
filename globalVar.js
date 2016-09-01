@@ -19,6 +19,7 @@ var GlobalVar = function (expData) {
     this.editName =  ko.observable(false);
     this.subLevelEdit = ko.observable(false);
     this.value = ko.observable(null);
+    this.backRefs = ko.observableArray([]).extend({sortById: null});
 };
 
 // enum definitions:
@@ -28,9 +29,30 @@ GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean', 'categorical
 GlobalVar.scopes = ['undefined', 'participant','session','block','task','trial'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
+GlobalVar.isUserWritable = [true, false];
 
 GlobalVar.prototype.setPointers = function(entitiesArr) {
 
+};
+
+GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, isRead, refLabel) {
+    this.backRefs.push({
+        id: entity.id(),
+        parentNamedEntity: parentNamedEntity,
+        isWritten: isWritten,
+        isRead: isRead,
+        refLabel: refLabel
+    });
+};
+
+GlobalVar.prototype.removeBackRef = function(entity) {
+    var backRefs = this.backRefs();
+    for (var k=0; k<backRefs.length; k++){
+        if (backRefs[k].id == entity.id()) {
+            this.backRefs.splice(k, 1);
+            break;
+        }
+    }
 };
 
 GlobalVar.prototype.getValue = function() {

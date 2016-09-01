@@ -57,7 +57,7 @@ TimerVar.prototype.updateCurrentValue = function() {
 //             if (this.state == 'up') {
 //                 timeDiff = - timeDiff;
 //             }
-//             var triggerTimeInUTC = this.startTimeInUTC + timeDiff;
+//             var triggerTimenUTC = this.startTimeInUTC + timeDiff;
 //             this.jsTimerHandles[k] = setTimeout(function () {
 //                 self.
 //             }, triggerTimeInUTC);

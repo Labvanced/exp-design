@@ -42,6 +42,7 @@ var FrameData = function(expData) {
     this.elements = ko.observableArray([]).extend({sortById: null});
     this.portHandler = new PortHandler(this);
     this.events = ko.observableArray([]).extend({sortById: null});
+    this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
 
 };
 FrameData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset"];
@@ -76,6 +77,11 @@ FrameData.prototype.addNewEvent = function() {
     this.events.push(event);
 };
 
+FrameData.prototype.addVariableToLocalWorkspace = function(variable) {
+    this.localWorkspaceVars.push(variable);
+    variable.addBackRef(this, this, false, false, 'workspace variable');
+};
+
 FrameData.prototype.addNewSubElement = function(elem) {
     this.elements.push(elem);
     this.expData.entities.push(elem);
@@ -90,6 +96,13 @@ FrameData.prototype.setPointers = function(entitiesArr) {
         var elem = entitiesArr.byId[id];
         elem.parent = self;
         return elem;
+    } ));
+
+    // convert ids to actual pointers:
+    this.localWorkspaceVars(jQuery.map( this.localWorkspaceVars(), function( id ) {
+        var localVar = entitiesArr.byId[id];
+        localVar.addBackRef(self);
+        return localVar;
     } ));
 
     jQuery.each( this.events(), function( idx, event ) {
@@ -136,6 +149,13 @@ FrameData.prototype.reAddEntities = function(entitiesArr) {
             evt.reAddEntities(entitiesArr);
     } );
 
+    // add the direct child nodes:
+    jQuery.each( this.localWorkspaceVars(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
+    } );
+
 };
 
 FrameData.prototype.fromJS = function(data) {
@@ -171,6 +191,7 @@ FrameData.prototype.fromJS = function(data) {
         return (new Event(self)).fromJS(eventData);
     } ));
     this.elements(data.elements);
+    this.localWorkspaceVars(data.localWorkspaceVars);
     return this;
 };
 
@@ -199,7 +220,9 @@ FrameData.prototype.toJS = function() {
         events: jQuery.map( this.events(), function( event ) {
             return event.toJS();
         } ),
-        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
+        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } ),
+        localWorkspaceVars: jQuery.map( this.localWorkspaceVars(), function( variable ) { return variable.id(); } )
+
     };
 };
 
