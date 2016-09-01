@@ -42,8 +42,58 @@ TriggerMouse.prototype.getParameterSpec = function() {
     ];
 };
 
-TriggerMouse.prototype.setupOnFrameView = function(frameView) {
+TriggerMouse.prototype.setupOnFrameView = function(playerFrame) {
     // TODO: to trigger call function this.event.triggerActions(variables)
+    var self = this;
+    if(this.buttonType()=="Left"){
+
+        switch (this.interactionType()){
+            case "Click":
+
+                for (var i = 0; i<this.targets().length;i++){
+                    var target = this.targets()[i];
+                    // closure to make event persistent over loop:
+                    (function(event,target) {
+                        $(playerFrame.frameView.divContainer[0]).click(function() {
+                            self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
+                        });
+                    })(event,target);
+                }
+
+
+            case "PressDown":
+            case "PressUp":
+            case "Hover":
+            case "Position":
+
+        }
+
+
+
+    }
+
+    else if (this.buttonType()=="Right"){
+        switch (this.interactionType()){
+            case "Click":
+
+                for (var i = 0; i<this.targets().length;i++){
+                    var target = this.targets()[i];
+                    // closure to make event persistent over loop:
+                    (function(event,target) {
+                        $(playerFrame.frameView.divContainer[0]).click(function() {
+                            self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
+                        });
+                    })(event,target);
+                }
+
+            case "PressDown":
+            case "PressUp":
+            case "Hover":
+            case "Position":
+
+        }
+
+    }
 };
 
 TriggerMouse.prototype.fromJS = function(data) {
@@ -102,7 +152,7 @@ TriggerKeyboard.prototype.getParameterSpec = function() {
     ];
 };
 
-TriggerKeyboard.prototype.setupOnFrameView = function(frameView) {
+TriggerKeyboard.prototype.setupOnFrameView = function(playerFrame) {
     // TODO: to trigger call function this.event.triggerActions(variables)
 };
 
@@ -141,7 +191,7 @@ TriggerOnFrameStart.prototype.getParameterSpec = function() {
     ];
 };
 
-TriggerOnFrameStart.prototype.setupOnFrameView = function(frameView) {
+TriggerOnFrameStart.prototype.setupOnFrameView = function(playerFrame) {
     // TODO: to trigger call function this.event.triggerActions(variables)
 };
 
@@ -180,7 +230,7 @@ TriggerOnFrameEnd.prototype.getParameterSpec = function() {
     ];
 };
 
-TriggerOnFrameEnd.prototype.setupOnFrameView = function(frameView) {
+TriggerOnFrameEnd.prototype.setupOnFrameView = function(playerFrame) {
     // TODO: to trigger call function this.event.triggerActions(variables)
 };
 
@@ -219,7 +269,7 @@ TriggerTimerReached.prototype.getParameterSpec = function() {
     ];
 };
 
-TriggerTimerReached.prototype.setupOnFrameView = function(frameView) {
+TriggerTimerReached.prototype.setupOnFrameView = function(playerFrame) {
     // TODO: to trigger call function this.event.triggerActions(variables)
 };
 
@@ -272,7 +322,7 @@ TriggerVariableValueChanged.prototype.getParameterSpec = function() {
     ];
 };
 
-TriggerVariableValueChanged.prototype.setupOnFrameView = function(frameView) {
+TriggerVariableValueChanged.prototype.setupOnFrameView = function(playerFrame) {
     // TODO: to trigger call function this.event.triggerActions(variables)
 };
 

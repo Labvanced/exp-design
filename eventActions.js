@@ -76,13 +76,58 @@ ActionRecord.prototype.reAddEntities = function(entitiesArr) {
     }
 };
 
-ActionRecord.prototype.run = function(dataModel) {
+ActionRecord.prototype.run = function(recInput) {
 
+    var tag = recInput[0];
+    var reactionTime = recInput[1];
     var blockId = player.getBlockId();
     var trialId = player.getTrialId();
-    var recData = new RecData(this.variableId(), dataModel.name());
 
-    player.addRecording(blockId,trialId,recData.toJS());
+    var specialRecs = this.specialRecordings();
+    for (var i =0; i<specialRecs.length; i++){
+        var name= specialRecs[i].recType;
+        var shouldBeRec= specialRecs[i].isRecorded;
+        var varToSave = specialRecs[i].variable().id();
+
+        switch (name){
+            case "elementTag":
+                    if (shouldBeRec){
+                        var recData = new RecData(varToSave, tag);
+                        player.addRecording(blockId,trialId,recData.toJS());
+                        break;
+                    }
+            case "reactionTime":
+                if (shouldBeRec){
+                    var recData = new RecData(varToSave, reactionTime);
+                    player.addRecording(blockId,trialId,recData.toJS());
+                    break;
+                }
+        }
+    }
+
+    var selectedRecs = this.selectedRecordings();
+    for (var i =0; i<selectedRecs.length; i++){
+        var name= specialRecs[i].recType;
+        var shouldBeRec= specialRecs[i].isRecorded;
+        var varToSave = specialRecs[i].variable;
+
+        switch (name){
+            case "elementTag":
+                if (shouldBeRec){
+                    var recData = new RecData(varToSave, tag);
+                    player.addRecording(blockId,trialId,recData.toJS());
+                    break;
+                }
+            case "reactionTime":
+                if (shouldBeRec){
+                    var recData = new RecData(varToSave, reactionTime);
+                    player.addRecording(blockId,trialId,recData.toJS());
+                    break;
+                }
+        }
+    }
+
+
 
 };
 
@@ -366,7 +411,7 @@ ActionSetElementProp.prototype.toJS = function() {
 };
 
 
-//////////////////////
+////////////////////////////////////////////   ActionJumpTo   ////////////////////////////////////////////
 
 
 var ActionJumpTo = function(event) {
@@ -395,7 +440,7 @@ ActionJumpTo.prototype.setPointers = function(entitiesArr) {
 };
 
 ActionJumpTo.prototype.run = function() {
-    if (this.jumpType == "nextFrame"){
+    if (this.jumpType() == "nextFrame"){
         player.currentFrame.endFrame();
     }
 
