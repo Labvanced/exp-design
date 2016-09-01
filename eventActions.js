@@ -19,6 +19,16 @@ var ActionRecord = function(event) {
     // serialized
     this.specialRecordings = ko.observableArray(specR);
     this.selectedRecordings =  ko.observableArray([]);
+
+    var self= this;
+    this.isValid = ko.computed(function() {
+        if (self.event.trigger().isValid()){
+            return true
+        }
+        else{
+            return false
+        }
+    }, this);
 };
 
 ActionRecord.prototype.type = "ActionRecord";
@@ -230,12 +240,22 @@ var ActionSetElementProp = function(event) {
 
     });
 
-    /**
-
-     **/
+    this.isValid = ko.computed(function() {
+        if (self.event.trigger().isValid()){
+            return true
+        }
+        else{
+            return false
+        }
+    }, this);
 
 
 };
+
+
+ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["%", "+", "set"]);
+ActionSetElementProp.prototype.type = "ActionSetElementProp";
+ActionSetElementProp.prototype.label = "Set Element Prop.";
 
 
 ActionSetElementProp.prototype.getAllIndexes = function(list1,val,list2) {
@@ -250,11 +270,6 @@ ActionSetElementProp.prototype.getAllIndexes = function(list1,val,list2) {
 
     return arr
 };
-
-
-ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["%", "+", "set"]);
-ActionSetElementProp.prototype.type = "ActionSetElementProp";
-ActionSetElementProp.prototype.label = "Set Element Prop.";
 
 
 ActionSetElementProp.prototype.addProperty = function() {
@@ -312,6 +327,8 @@ ActionSetElementProp.prototype.run = function() {
 ActionSetElementProp.prototype.fromJS = function(data) {
     this.animate(data.animate);
     this.animationTime(data.animationTime);
+    this.target(data.target);
+
     var changes = [];
     for (var i = 0 ;i <data.changes.length;i++){
         var obj = {
@@ -354,26 +371,56 @@ ActionSetElementProp.prototype.toJS = function() {
 
 var ActionJumpTo = function(event) {
     this.event = event;
+    this.jumpType = ko.observable(null);
+    this.frameToJump= ko.observable(null)
+
+    var self= this;
+    this.isValid = ko.computed(function() {
+        if (self.event.trigger().isValid()){
+            return true
+        }
+        else{
+            return false
+        }
+    }, this);
 
 };
+
 ActionJumpTo.prototype.type = "ActionJumpTo";
 ActionJumpTo.prototype.label = "Jump To";
 
 ActionJumpTo.prototype.setPointers = function(entitiesArr) {
-
+    var frame = entitiesArr.byId[this.frameToJump()];
+    this.frameToJump(frame);
 };
 
 ActionJumpTo.prototype.run = function() {
-    player.currentFrame.endFrame();
+    if (this.jumpType == "nextFrame"){
+        player.currentFrame.endFrame();
+    }
+
 };
 
 ActionJumpTo.prototype.fromJS = function(data) {
+    this.jumpType(data.jumpType);
+    this.frameToJump(data.frameToJump);
     return this;
 };
 
 ActionJumpTo.prototype.toJS = function() {
+
+    if (this.frameToJump()){
+        var frameToJump = this.frameToJump().id()
+    }
+    else{
+        var frameToJump = null;
+    }
+
     return {
-        type: this.type
+        type: this.type,
+        jumpType: this.jumpType(),
+        frameToJump: frameToJump
+
     };
 };
 
