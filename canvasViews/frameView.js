@@ -219,10 +219,13 @@ FrameView.prototype.setSelectedElement = function(elem) {
             if (this.frameData.events.byId[elem.id()]) {
 
                 // create a view model for this event:
-                this.parent.eventViewModelObs(new EventViewModel(elem));
+                var eventViewModel = new EventViewModel(elem);
+                this.parent.eventViewModelObs(eventViewModel);
 
                 // change currently selected element:
                 this.frameData.currSelectedElement(elem);
+
+                eventViewModel.initEventViewModel($('#eventPropertiesView'));
             }
         }
         else if (elem.type == "GlobalVar") {
