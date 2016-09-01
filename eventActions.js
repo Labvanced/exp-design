@@ -1,6 +1,7 @@
 // � by Caspar Goeke and Holger Finger
 
 
+/////////////////////////////////////////////////  ActionRecord  ///////////////////////////////////////////////////
 
 var ActionRecord = function(event) {
     this.event = event;
@@ -194,48 +195,7 @@ ActionRecord.prototype.toJS = function() {
     };
 };
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-var ActionSetVariable = function(event) {
-    this.event = event;
-
-    // serialized
-   // this.variableId = ko.observable(undefined);
-  //  this.argument = ko.observable('');
-
-
-};
-ActionSetVariable.prototype.type = "ActionSetVariable";
-ActionSetVariable.prototype.label = "Set Variable";
-ActionSetVariable.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
-
-
-
-ActionSetVariable.prototype.setPointers = function(entitiesArr) {
-
-};
-
-ActionSetVariable.prototype.run = function() {
-
-};
-
-ActionSetVariable.prototype.fromJS = function(data) {
-    this.variableId(data.variableId);
-    this.operatorType(data.operatorType);
-    this.argument(data.argument);
-    return this;
-};
-
-ActionSetVariable.prototype.toJS = function() {
-    return {
-        type: this.type,
-        variableId: this.variableId(),
-        operatorType: this.operatorType(),
-        argument: this.argument()
-    };
-};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -409,9 +369,11 @@ ActionSetElementProp.prototype.toJS = function() {
         changes:changes
     };
 };
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-////////////////////////////////////////////   ActionJumpTo   ////////////////////////////////////////////
+
+////////////////////////////////////////////   ActionJumpTo   /////////////////////////////////////////////////////
 
 
 var ActionJumpTo = function(event) {
@@ -469,14 +431,56 @@ ActionJumpTo.prototype.toJS = function() {
     };
 };
 
-//////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 
-//////////////////////
+/////////////////////////////////////////////   ActionSetVariable    ////////////////////////////////////////////////
+
+var ActionSetVariable = function(event) {
+    this.event = event;
+
+    // serialized
+    // this.variableId = ko.observable(undefined);
+    //  this.argument = ko.observable('');
 
 
+};
+ActionSetVariable.prototype.type = "ActionSetVariable";
+ActionSetVariable.prototype.label = "Set Variable";
+ActionSetVariable.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
+
+
+
+ActionSetVariable.prototype.setPointers = function(entitiesArr) {
+
+};
+
+ActionSetVariable.prototype.run = function() {
+
+};
+
+ActionSetVariable.prototype.fromJS = function(data) {
+    this.variableId(data.variableId);
+    this.operatorType(data.operatorType);
+    this.argument(data.argument);
+    return this;
+};
+
+ActionSetVariable.prototype.toJS = function() {
+    return {
+        type: this.type,
+        variableId: this.variableId(),
+        operatorType: this.operatorType(),
+        argument: this.argument()
+    };
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+/////////////////////////////////////////////////  ActionControlAV/  //////////////////////////////////////////////
 var ActionControlAV = function(event) {
     this.event = event;
 
@@ -502,11 +506,11 @@ ActionControlAV.prototype.toJS = function() {
     };
 };
 
-//////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-//////////////////////
+/////////////////////////////////////////////////  ActionControlTimer  //////////////////////////////////////////////
 
 
 var ActionControlTimer = function(event) {
@@ -534,16 +538,11 @@ ActionControlTimer.prototype.toJS = function() {
     };
 };
 
-//////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-
-
-
-
-
-////////////////  Questionnaire RECORDINGS //////////////////////
+//////////////////////////////////////  ActionRecordQuestionaireResponse  //////////////////////////////////////////
 
 var ActionRecordQuestionaireResponse = function(event) {
     this.event = event;
@@ -584,9 +583,8 @@ ActionRecordQuestionaireResponse.prototype.toJS = function() {
         variableId: this.variableId()
     };
 };
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-////////////////////////
 
 function actionFactory(event,type) {
     var action = new window[type](event);
