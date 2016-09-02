@@ -77,8 +77,10 @@ TriggerMouse.prototype.setupOnFrameView = function(playerFrame) {
                 var target = this.targets()[i];
                 // closure to make event persistent over loop:
                 (function(event,target) {
-                    $(playerFrame.frameView.viewElements.byId[target.id()].div).mousedown(function(ev) {
+                    $(playerFrame.frameView.viewElements.byId[target.id()].div).on('mousedown',function(ev) {
+                        ev.preventDefault();
                         if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
+
                             self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
                         }
                         return false;
