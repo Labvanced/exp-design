@@ -27,7 +27,7 @@ var TriggerMouse = function(event) {
 TriggerMouse.prototype.type = "TriggerMouse";
 TriggerMouse.prototype.label = "Mouse Trigger";
 TriggerMouse.prototype.buttonTypes = ["Left", "Right"];
-TriggerMouse.prototype.interactionTypes = ["Click", "PressDown", "PressUp", "Hover", "Position"];
+TriggerMouse.prototype.interactionTypes = ["Click", "PressDown", "PressUp", "Hover"];
 
 TriggerMouse.prototype.setPointers = function(entitiesArr) {
     this.targets(jQuery.map( this.targets(), function( id ) {
@@ -45,55 +45,80 @@ TriggerMouse.prototype.getParameterSpec = function() {
 TriggerMouse.prototype.setupOnFrameView = function(playerFrame) {
     // TODO: to trigger call function this.event.triggerActions(variables)
     var self = this;
-    if(this.buttonType()=="Left"){
 
-        switch (this.interactionType()){
-            case "Click":
+    switch (this.interactionType()){
+        case "Click":
 
-                for (var i = 0; i<this.targets().length;i++){
-                    var target = this.targets()[i];
-                    // closure to make event persistent over loop:
+
+            for (var i = 0; i<this.targets().length;i++){
+                var target = this.targets()[i];
+
+                if (this.buttonType() == "Left"){
                     (function(event,target) {
-                        $(playerFrame.frameView.viewElements.byId[target.id()].div).click(function() {
+                        $(playerFrame.frameView.viewElements.byId[target.id()].div).click(function(ev) {
                             self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
                         });
                     })(event,target);
                 }
 
-
-            case "PressDown":
-            case "PressUp":
-            case "Hover":
-            case "Position":
-
-        }
-
-
-
-    }
-
-    else if (this.buttonType()=="Right"){
-        switch (this.interactionType()){
-            case "Click":
-
-                for (var i = 0; i<this.targets().length;i++){
-                    var target = this.targets()[i];
-                    // closure to make event persistent over loop:
+                else if (this.buttonType() == "Right"){
                     (function(event,target) {
-                        $(playerFrame.frameView.divContainer[0]).click(function() {
+                        $(playerFrame.frameView.viewElements.byId[target.id()].div).contextmenu(function(ev) {
                             self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
                         });
                     })(event,target);
                 }
+            }
+            break;
 
-            case "PressDown":
-            case "PressUp":
-            case "Hover":
-            case "Position":
 
-        }
+        case "PressDown":
+            for (var i = 0; i<this.targets().length;i++){
+                var target = this.targets()[i];
+                // closure to make event persistent over loop:
+                (function(event,target) {
+                    $(playerFrame.frameView.viewElements.byId[target.id()].div).mousedown(function(ev) {
+                        if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
+                            self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
+                        }
+                        return false;
+                    });
+                })(event,target);
+            }
+            break;
+
+        case "PressUp":
+            for (var i = 0; i<this.targets().length;i++){
+                var target = this.targets()[i];
+                // closure to make event persistent over loop:
+                (function(event,target) {
+                    $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseup(function(ev) {
+                        if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
+                            self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
+                        }
+                    });
+                })(event,target);
+            }
+            break;
+
+        case "Hover":
+            for (var i = 0; i < this.targets().length; i++) {
+                var target = this.targets()[i];
+                // closure to make event persistent over loop:
+                (function (event, target) {
+                    $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseover(function (ev) {
+                        self.event.triggerActions([target.name(), playerFrame.getFrameTime()]);
+                    });
+                })(event, target);
+            }
+            break;
 
     }
+
+
+
+
+
 };
 
 TriggerMouse.prototype.fromJS = function(data) {
