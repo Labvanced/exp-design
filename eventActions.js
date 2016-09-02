@@ -208,41 +208,16 @@ var ActionSetElementProp = function(event) {
     this.animate=ko.observable(false);
     this.animationTime=ko.observable(0);
 
-    var self= this;
-    this.propertyList = ko.computed(function() {
-        if(self.target()){
-
-            var target = self.target();
-            var select= "numeric";
-            var proList = target.modifiableProp;
-            var proListDataType = target.dataType;
-            var numericOnly = self.getAllIndexes(proListDataType,select,proList);
-            var proListSub = target.content().modifiableProp;
-            var proListSubDataType = target.content().dataType;
-            var numericOnly2 = self.getAllIndexes(proListSubDataType,select,proListSub);
-
-            var completeList = numericOnly.concat(numericOnly2);
-            return ko.utils.arrayMap(completeList, function(list) {
-                return list;
-            });
-        }
-        else{
-            return ko.utils.arrayMap([], function(item) {
-                return item;
-            });
-        }
-
-    });
-
     this.addProperty();
 
-
+    var self= this;
     this.target.subscribe(function(newVal) {
-        self.animate(false);
-        self.animationTime(0);
-        self.changes([]);
-        self.addProperty();
-
+        if (self.target() != newVal){
+            self.animate(false);
+            self.animationTime(0);
+            self.changes([]);
+            self.addProperty();
+        }
     });
 
     this.isValid = ko.computed(function() {
@@ -261,20 +236,6 @@ var ActionSetElementProp = function(event) {
 ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["%", "+", "set"]);
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
 ActionSetElementProp.prototype.label = "Set Element Prop.";
-
-
-ActionSetElementProp.prototype.getAllIndexes = function(list1,val,list2) {
-    var indexes = [], i = -1;
-    while ((i = list1.indexOf(val, i+1)) != -1){
-        indexes.push(i);
-    }
-
-    var arr = $.grep(list2, function(n, i) {
-        return $.inArray(i, indexes) !=-1;
-    });
-
-    return arr
-};
 
 
 ActionSetElementProp.prototype.addProperty = function() {
@@ -326,6 +287,34 @@ ActionSetElementProp.prototype.reAddEntities = function(entitiesArr) {
 
 
 ActionSetElementProp.prototype.run = function() {
+
+    var changes = this.changes();
+    var target = this.target();
+    for (var i = 0; i <changes.length; i++){
+        var property =  changes[i].property();
+        var operatorType =  changes[i].operatorType();
+
+        // make sure to calculate on numeric
+        var value =  changes[i].value();
+        var oldValue = target[property]();
+        if (typeof oldValue  === 'string'){
+            oldValue = Number(oldValue);
+        }
+        if (typeof value  === 'string'){
+            value = Number(value);
+        }
+
+        if (operatorType== '+'){
+            var newValue = oldValue + value;
+        }
+        else if (operatorType== '%'){
+            var newValue = oldValue * (value/100);
+        }
+        else if (operatorType== 'set'){
+            var newValue = value;
+        }
+        target[property](newValue);
+    }
 
 };
 
