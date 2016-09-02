@@ -216,9 +216,15 @@ OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
 OperandVariable.prototype.operandTypes = ['undefined', "variable", "triggerParameter", "constantString", "constantNumeric"];
 
+OperandVariable.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, false, true, 'In Boolean Expression');
+};
+
 OperandVariable.prototype.setPointers = function(entitiesArr) {
     if (this.operandType() == "variable"){
-        this.operandValueOrObject(entitiesArr.byId[this.operandValueOrObject()]);
+        var globVar = entitiesArr.byId[this.operandValueOrObject()];
+        this.operandValueOrObject(globVar);
+        this.setVariableBackRef(globVar);
     }
 };
 

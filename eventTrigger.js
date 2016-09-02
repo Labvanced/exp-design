@@ -10,24 +10,21 @@ var TriggerMouse = function(event) {
     this.buttonType = ko.observable("Left");
     this.interactionType = ko.observable("Click");
     this.targets = ko.observableArray([]);
-
-    var self= this;
-    this.isValid = ko.computed(function() {
-        if (self.event.trigger() && self.targets().length>0){
-            return true
-        }
-        else{
-            return false
-        }
-    }, this);
-
-
 };
 
 TriggerMouse.prototype.type = "TriggerMouse";
 TriggerMouse.prototype.label = "Mouse Trigger";
 TriggerMouse.prototype.buttonTypes = ["Left", "Right"];
 TriggerMouse.prototype.interactionTypes = ["Click", "PressDown", "PressUp", "Hover"];
+
+TriggerMouse.prototype.isValid = function() {
+    if (this.event.trigger() && this.targets().length>0){
+        return true
+    }
+    else{
+        return false
+    }
+};
 
 TriggerMouse.prototype.setPointers = function(entitiesArr) {
     this.targets(jQuery.map( this.targets(), function( id ) {
@@ -147,16 +144,6 @@ var TriggerKeyboard = function(event) {
     // serialized
     this.buttons = ko.observableArray([]);
     this.interactionType = ko.observable("Pressed");
-
-    var self= this;
-    this.isValid = ko.computed(function() {
-        if (self.event.trigger() && self.buttons().length>0){
-            return true
-        }
-        else{
-            return false
-        }
-    }, this);
 };
 
 TriggerKeyboard.prototype.type = "TriggerKeyboard";
@@ -165,6 +152,15 @@ TriggerKeyboard.prototype.buttonTypesArrows = ["ArrowLeft", "ArrowRight", "Arrow
 TriggerKeyboard.prototype.buttonTypesNumbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 TriggerKeyboard.prototype.buttonTypesLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 TriggerKeyboard.prototype.interactionTypes = ["Pressed", "PressDown", "PressUp"];
+
+TriggerKeyboard.prototype.isValid = function() {
+    if (this.event.trigger() && this.buttons().length>0){
+        return true;
+    }
+    else{
+        return false;
+    }
+};
 
 TriggerKeyboard.prototype.setPointers = function(entitiesArr) {
 
@@ -207,6 +203,10 @@ var TriggerOnFrameStart = function(event) {
 TriggerOnFrameStart.prototype.type = "TriggerOnFrameStart";
 TriggerOnFrameStart.prototype.label = "On Frame Start Trigger";
 
+TriggerOnFrameStart.prototype.isValid = function() {
+    return true;
+};
+
 TriggerOnFrameStart.prototype.setPointers = function(entitiesArr) {
 
 };
@@ -246,6 +246,10 @@ var TriggerOnFrameEnd = function(event) {
 TriggerOnFrameEnd.prototype.type = "TriggerOnFrameEnd";
 TriggerOnFrameEnd.prototype.label = "On Frame End Trigger";
 
+TriggerOnFrameEnd.prototype.isValid = function() {
+    return true;
+};
+
 TriggerOnFrameEnd.prototype.setPointers = function(entitiesArr) {
 
 };
@@ -282,6 +286,10 @@ var TriggerTimerReached = function(event) {
 
 TriggerTimerReached.prototype.type = "TriggerTimerReached";
 TriggerTimerReached.prototype.label = "Timer Reached Trigger";
+
+TriggerTimerReached.prototype.isValid = function() {
+    return true;
+};
 
 TriggerTimerReached.prototype.setPointers = function(entitiesArr) {
     if (this.timerVar()){
@@ -330,9 +338,19 @@ var TriggerVariableValueChanged = function(event) {
 TriggerVariableValueChanged.prototype.type = "TriggerVariableValueChanged";
 TriggerVariableValueChanged.prototype.label = "Variable Value Changed Trigger";
 
+TriggerVariableValueChanged.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, false, true, 'Trigger On Variable Change');
+};
+
+TriggerVariableValueChanged.prototype.isValid = function() {
+    return true;
+};
+
 TriggerVariableValueChanged.prototype.setPointers = function(entitiesArr) {
     if (this.variable()){
-        this.variable(entitiesArr.byId[this.variable()]);
+        var globVar = entitiesArr.byId[this.variable()];
+        this.variable(globVar);
+        this.setVariableBackRef(globVar);
     }
 };
 

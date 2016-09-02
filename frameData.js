@@ -101,7 +101,7 @@ FrameData.prototype.setPointers = function(entitiesArr) {
     // convert ids to actual pointers:
     this.localWorkspaceVars(jQuery.map( this.localWorkspaceVars(), function( id ) {
         var localVar = entitiesArr.byId[id];
-        localVar.addBackRef(self);
+        localVar.addBackRef(self, self, false, false, 'workspace variable');
         return localVar;
     } ));
 
