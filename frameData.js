@@ -78,8 +78,11 @@ FrameData.prototype.addNewEvent = function() {
 };
 
 FrameData.prototype.addVariableToLocalWorkspace = function(variable) {
-    this.localWorkspaceVars.push(variable);
-    variable.addBackRef(this, this, false, false, 'workspace variable');
+    var isExisting = this.localWorkspaceVars.byId[variable.id()];
+    if (!isExisting) {
+        this.localWorkspaceVars.push(variable);
+        variable.addBackRef(this, this, false, false, 'workspace variable');
+    }
 };
 
 FrameData.prototype.addNewSubElement = function(elem) {
