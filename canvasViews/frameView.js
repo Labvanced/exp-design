@@ -11,7 +11,7 @@ var FrameView = function(divContainer,frameData,parent,type) {
     this.dataElements = this.frameData.elements;
 
     this.bgElement = null;
-    this.viewElements= ko.observableArray([]);
+    this.viewElements= ko.observableArray([]).extend({sortById: null});
 
     this.width = 0;
     this.height = 0;
@@ -122,7 +122,7 @@ FrameView.prototype.resize = function(size) {
 FrameView.prototype.renderElements = function() {
 
     $(this.divContainer).children().remove();
-    this.viewElements = ko.observableArray([]);
+    this.viewElements = ko.observableArray([]).extend({sortById: null});
 
     if (this.type== "editorView") {
         this.setupBackground();

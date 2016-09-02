@@ -1,6 +1,7 @@
 // � by Caspar Goeke and Holger Finger
 
 
+/////////////////////////////////////////////////  ActionRecord  ///////////////////////////////////////////////////
 
 var ActionRecord = function(event) {
     this.event = event;
@@ -76,13 +77,58 @@ ActionRecord.prototype.reAddEntities = function(entitiesArr) {
     }
 };
 
-ActionRecord.prototype.run = function(dataModel) {
+ActionRecord.prototype.run = function(recInput) {
 
+    var tag = recInput[0];
+    var reactionTime = recInput[1];
     var blockId = player.getBlockId();
     var trialId = player.getTrialId();
-    var recData = new RecData(this.variableId(), dataModel.name());
 
-    player.addRecording(blockId,trialId,recData.toJS());
+    var specialRecs = this.specialRecordings();
+    for (var i =0; i<specialRecs.length; i++){
+        var name= specialRecs[i].recType;
+        var shouldBeRec= specialRecs[i].isRecorded;
+        var varToSave = specialRecs[i].variable().id();
+
+        switch (name){
+            case "elementTag":
+                    if (shouldBeRec){
+                        var recData = new RecData(varToSave, tag);
+                        player.addRecording(blockId,trialId,recData.toJS());
+                        break;
+                    }
+            case "reactionTime":
+                if (shouldBeRec){
+                    var recData = new RecData(varToSave, reactionTime);
+                    player.addRecording(blockId,trialId,recData.toJS());
+                    break;
+                }
+        }
+    }
+
+    var selectedRecs = this.selectedRecordings();
+    for (var i =0; i<selectedRecs.length; i++){
+        var name= specialRecs[i].recType;
+        var shouldBeRec= specialRecs[i].isRecorded;
+        var varToSave = specialRecs[i].variable;
+
+        switch (name){
+            case "elementTag":
+                if (shouldBeRec){
+                    var recData = new RecData(varToSave, tag);
+                    player.addRecording(blockId,trialId,recData.toJS());
+                    break;
+                }
+            case "reactionTime":
+                if (shouldBeRec){
+                    var recData = new RecData(varToSave, reactionTime);
+                    player.addRecording(blockId,trialId,recData.toJS());
+                    break;
+                }
+        }
+    }
+
+
 
 };
 
@@ -149,48 +195,7 @@ ActionRecord.prototype.toJS = function() {
     };
 };
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-var ActionSetVariable = function(event) {
-    this.event = event;
-
-    // serialized
-   // this.variableId = ko.observable(undefined);
-  //  this.argument = ko.observable('');
-
-
-};
-ActionSetVariable.prototype.type = "ActionSetVariable";
-ActionSetVariable.prototype.label = "Set Variable";
-ActionSetVariable.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
-
-
-
-ActionSetVariable.prototype.setPointers = function(entitiesArr) {
-
-};
-
-ActionSetVariable.prototype.run = function() {
-
-};
-
-ActionSetVariable.prototype.fromJS = function(data) {
-    this.variableId(data.variableId);
-    this.operatorType(data.operatorType);
-    this.argument(data.argument);
-    return this;
-};
-
-ActionSetVariable.prototype.toJS = function() {
-    return {
-        type: this.type,
-        variableId: this.variableId(),
-        operatorType: this.operatorType(),
-        argument: this.argument()
-    };
-};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -364,9 +369,11 @@ ActionSetElementProp.prototype.toJS = function() {
         changes:changes
     };
 };
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-//////////////////////
+
+////////////////////////////////////////////   ActionJumpTo   /////////////////////////////////////////////////////
 
 
 var ActionJumpTo = function(event) {
@@ -395,7 +402,7 @@ ActionJumpTo.prototype.setPointers = function(entitiesArr) {
 };
 
 ActionJumpTo.prototype.run = function() {
-    if (this.jumpType == "nextFrame"){
+    if (this.jumpType() == "nextFrame"){
         player.currentFrame.endFrame();
     }
 
@@ -424,14 +431,56 @@ ActionJumpTo.prototype.toJS = function() {
     };
 };
 
-//////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 
-//////////////////////
+/////////////////////////////////////////////   ActionSetVariable    ////////////////////////////////////////////////
+
+var ActionSetVariable = function(event) {
+    this.event = event;
+
+    // serialized
+    // this.variableId = ko.observable(undefined);
+    //  this.argument = ko.observable('');
 
 
+};
+ActionSetVariable.prototype.type = "ActionSetVariable";
+ActionSetVariable.prototype.label = "Set Variable";
+ActionSetVariable.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
+
+
+
+ActionSetVariable.prototype.setPointers = function(entitiesArr) {
+
+};
+
+ActionSetVariable.prototype.run = function() {
+
+};
+
+ActionSetVariable.prototype.fromJS = function(data) {
+    this.variableId(data.variableId);
+    this.operatorType(data.operatorType);
+    this.argument(data.argument);
+    return this;
+};
+
+ActionSetVariable.prototype.toJS = function() {
+    return {
+        type: this.type,
+        variableId: this.variableId(),
+        operatorType: this.operatorType(),
+        argument: this.argument()
+    };
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+/////////////////////////////////////////////////  ActionControlAV/  //////////////////////////////////////////////
 var ActionControlAV = function(event) {
     this.event = event;
 
@@ -457,11 +506,11 @@ ActionControlAV.prototype.toJS = function() {
     };
 };
 
-//////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-//////////////////////
+/////////////////////////////////////////////////  ActionControlTimer  //////////////////////////////////////////////
 
 
 var ActionControlTimer = function(event) {
@@ -489,16 +538,11 @@ ActionControlTimer.prototype.toJS = function() {
     };
 };
 
-//////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-
-
-
-
-
-////////////////  Questionnaire RECORDINGS //////////////////////
+//////////////////////////////////////  ActionRecordQuestionaireResponse  //////////////////////////////////////////
 
 var ActionRecordQuestionaireResponse = function(event) {
     this.event = event;
@@ -539,9 +583,8 @@ ActionRecordQuestionaireResponse.prototype.toJS = function() {
         variableId: this.variableId()
     };
 };
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-////////////////////////
 
 function actionFactory(event,type) {
     var action = new window[type](event);

@@ -41,12 +41,12 @@ Event.prototype.reAddEntities = function(entitiesArr) {
 };
 
 Event.prototype.triggerActions = function(parameters) {
-    if (this.requirement()!=null || this.requirement().checkIfTrue()) {
+    if (this.requirement()==null || this.requirement().checkIfTrue()) {
         this.runActions(parameters)
     }
 };
 
-Event.prototype.runActions = function(variables) {
+Event.prototype.runActions = function(parameters) {
     var actions = this.actions();
     for (var i=0; i<actions.length; i++) {
         actions[i].run(parameters);
