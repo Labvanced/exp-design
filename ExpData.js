@@ -8,7 +8,6 @@ var ExpData = function () {
 
     this.expName =  ko.observable();
     this.subjectId =  ko.observable();
-    this.subjectId =  ko.observable();
     this.groupId =  ko.observable();
     this.timeStamp =  ko.observable();
     this.sessionNr =  ko.observable();
