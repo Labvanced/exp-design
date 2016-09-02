@@ -54,7 +54,7 @@ TriggerMouse.prototype.setupOnFrameView = function(playerFrame) {
                     var target = this.targets()[i];
                     // closure to make event persistent over loop:
                     (function(event,target) {
-                        $(playerFrame.frameView.divContainer[0]).click(function() {
+                        $(playerFrame.frameView.viewElements.byId[target.id()].div).click(function() {
                             self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
                         });
                     })(event,target);

@@ -12,6 +12,7 @@ var HtmlFrameElement = function(dataModel,editor) {
     this.editor = editor;
 
     // default values
+    this.id = dataModel.id();
     this.fullWidth = ko.observable(0);
     this.fullHeight = ko.observable(0);
     this.isSelected = ko.observable(false);
