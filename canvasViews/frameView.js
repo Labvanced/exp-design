@@ -209,7 +209,6 @@ FrameView.prototype.setSelectedElement = function(elem) {
         if (formerIndex>=0) {
             this.viewElements()[formerIndex].isSelected(false);
         }
-        this.parent.eventViewModelObs(null);
     }
 
     if (elem) {
@@ -217,15 +216,8 @@ FrameView.prototype.setSelectedElement = function(elem) {
             // element is an event
             // check if element is really a child of this frame:
             if (this.frameData.events.byId[elem.id()]) {
-
-                // create a view model for this event:
-                var eventViewModel = new EventViewModel(elem);
-                this.parent.eventViewModelObs(eventViewModel);
-
                 // change currently selected element:
                 this.frameData.currSelectedElement(elem);
-
-                eventViewModel.initEventViewModel($('#eventPropertiesView'));
             }
         }
         else if (elem.type == "GlobalVar") {
