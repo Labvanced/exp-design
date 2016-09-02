@@ -37,7 +37,7 @@ GlobalVar.prototype.setPointers = function(entitiesArr) {
 
 GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, isRead, refLabel) {
     this.backRefs.push({
-        id: entity.id(),
+        entity: entity,
         parentNamedEntity: parentNamedEntity,
         isWritten: isWritten,
         isRead: isRead,

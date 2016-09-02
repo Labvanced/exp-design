@@ -20,22 +20,18 @@ var ActionRecord = function(event) {
     // serialized
     this.specialRecordings = ko.observableArray(specR);
     this.selectedRecordings =  ko.observableArray([]);
-
-    var self= this;
-    this.isValid = ko.computed(function() {
-        if (self.event.trigger().isValid()){
-            return true
-        }
-        else{
-            return false
-        }
-    }, this);
 };
 
 ActionRecord.prototype.type = "ActionRecord";
 ActionRecord.prototype.label = "Record";
 
+ActionRecord.prototype.isValid = function(){
+    return true;
+};
 
+ActionRecord.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'recording variable');
+};
 
 ActionRecord.prototype.addRecording = function(type){
     var newRec={
@@ -51,14 +47,20 @@ ActionRecord.prototype.addRecording = function(type){
 ActionRecord.prototype.setPointers = function(entitiesArr) {
     var specialRecordings = this.specialRecordings();
     for (var i = 0; i<specialRecordings.length; i++){
-        var globVar = entitiesArr.byId[specialRecordings[i].variable()];
-        specialRecordings[i].variable(globVar);
+        if (specialRecordings[i].variable()) {
+            var globVar = entitiesArr.byId[specialRecordings[i].variable()];
+            specialRecordings[i].variable(globVar);
+            this.setVariableBackRef(globVar);
+        }
     }
 
     var selectedRecordings = this.selectedRecordings();
     for (var i = 0; i<selectedRecordings.length; i++){
-        var globVar = entitiesArr.byId[selectedRecordings[i].variable()];
-        selectedRecordings[i].variable(globVar);
+        if (selectedRecordings[i].variable()) {
+            var globVar = entitiesArr.byId[selectedRecordings[i].variable()];
+            selectedRecordings[i].variable(globVar);
+            this.setVariableBackRef(globVar);
+        }
     }
 };
 
@@ -195,9 +197,6 @@ ActionRecord.prototype.toJS = function() {
     };
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 ////////////////////////////////////////  ActionSetElementProp  ///////////////////////////////////////////////////
 
@@ -219,17 +218,6 @@ var ActionSetElementProp = function(event) {
             self.addProperty();
         }
     });
-
-    this.isValid = ko.computed(function() {
-        if (self.event.trigger().isValid()){
-            return true
-        }
-        else{
-            return false
-        }
-    }, this);
-
-
 };
 
 
@@ -237,6 +225,9 @@ ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["%", "+", "se
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
 ActionSetElementProp.prototype.label = "Set Element Prop.";
 
+ActionSetElementProp.prototype.isValid = function(){
+    return true;
+};
 
 ActionSetElementProp.prototype.addProperty = function() {
 
@@ -358,8 +349,6 @@ ActionSetElementProp.prototype.toJS = function() {
         changes:changes
     };
 };
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 ////////////////////////////////////////////   ActionJumpTo   /////////////////////////////////////////////////////
@@ -369,21 +358,14 @@ var ActionJumpTo = function(event) {
     this.event = event;
     this.jumpType = ko.observable(null);
     this.frameToJump= ko.observable(null)
-
-    var self= this;
-    this.isValid = ko.computed(function() {
-        if (self.event.trigger().isValid()){
-            return true
-        }
-        else{
-            return false
-        }
-    }, this);
-
 };
 
 ActionJumpTo.prototype.type = "ActionJumpTo";
 ActionJumpTo.prototype.label = "Jump To";
+
+ActionJumpTo.prototype.isValid = function(){
+    return true;
+};
 
 ActionJumpTo.prototype.setPointers = function(entitiesArr) {
     var frame = entitiesArr.byId[this.frameToJump()];
@@ -440,7 +422,9 @@ ActionSetVariable.prototype.type = "ActionSetVariable";
 ActionSetVariable.prototype.label = "Set Variable";
 ActionSetVariable.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
 
-
+ActionSetVariable.prototype.isValid = function(){
+    return true;
+};
 
 ActionSetVariable.prototype.setPointers = function(entitiesArr) {
 
@@ -477,6 +461,10 @@ var ActionControlAV = function(event) {
 ActionControlAV.prototype.type = "ActionControlAV";
 ActionControlAV.prototype.label = "Control AV";
 
+ActionControlAV.prototype.isValid = function(){
+    return true;
+};
+
 ActionControlAV.prototype.setPointers = function(entitiesArr) {
 
 };
@@ -508,6 +496,10 @@ var ActionControlTimer = function(event) {
 };
 ActionControlTimer.prototype.type = "ActionControlTimer";
 ActionControlTimer.prototype.label = "Control Timer";
+
+ActionControlTimer.prototype.isValid = function(){
+    return true;
+};
 
 ActionControlTimer.prototype.setPointers = function(entitiesArr) {
 
@@ -543,6 +535,10 @@ var ActionRecordQuestionaireResponse = function(event) {
 };
 ActionRecordQuestionaireResponse.prototype.type = "ActionRecordQuestionaireResponse";
 ActionRecordQuestionaireResponse.prototype.label = "Record Questionaire Answer";
+
+ActionRecordQuestionaireResponse.prototype.isValid = function(){
+    return true;
+};
 
 ActionRecordQuestionaireResponse.prototype.setPointers = function(entitiesArr) {
 
