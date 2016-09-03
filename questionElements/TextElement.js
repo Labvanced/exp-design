@@ -70,10 +70,15 @@ ko.components.register('text-element-edit', {
         this.htmlText = ko.observable("Your Question");
         this.name = dataModel.parent.name;
 
+        this.focus = function () {
+          if(dataModel.ckeditor){
+              dataModel.ckeditor.focus();
+          }
+        };
+
     } ,
     template:
         '<div class="panel-body" style="height: 100%; margin-top: -10px">\
-                <div id="toolbar" class="ui-layout-content"></div>\
                 <div>\
                     <span>Element Tag:</span>\
                     <br>\
@@ -101,7 +106,7 @@ ko.components.register('text-preview',{
 
         var elements = document.getElementsByClassName( 'editableTextQuestion' );
 
-        CKEDITOR.inline( elements[elements.length - 1],{
+        var editor = CKEDITOR.inline( elements[elements.length - 1],{
             on : {
                 change: function (event) {
                     var data = event.editor.getData();
@@ -111,6 +116,7 @@ ko.components.register('text-preview',{
             startupFocus : true
         });
 
+        dataModel.ckeditor = editor;
     },
     template:
         '<div class="editableTextQuestion" contenteditable="true"><p>Your Question</p></div>\

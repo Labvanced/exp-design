@@ -71,7 +71,12 @@ ko.components.register('paragraph-element-edit', {
         this.questionText = dataModel.questionText;
         this.htmlText = ko.observable("Your Question");
         this.name = dataModel.parent.name;
-        
+
+        this.focus = function () {
+            if(dataModel.ckeditor){
+                dataModel.ckeditor.focus();
+            }
+        };
 
     } ,
     template:
@@ -104,7 +109,7 @@ ko.components.register('paragraph-preview',{
         CKEDITOR.disableAutoInline = true;
 
         var elements = document.getElementsByClassName( 'editableParaQuestion' );
-        CKEDITOR.inline( elements[elements.length - 1],{
+        var editor = CKEDITOR.inline( elements[elements.length - 1],{
             on : {
                 change: function (event) {
                     var data = event.editor.getData();
@@ -113,6 +118,8 @@ ko.components.register('paragraph-preview',{
             },
             startupFocus : true
         });
+
+        dataModel.ckeditor = editor;
     },
     template:
         '<div class="editableParaQuestion" contenteditable="true"><p>Your Question</p></div>\

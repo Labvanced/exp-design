@@ -58,16 +58,16 @@ QuestionnaireElement.prototype.renderElements = function() {
         elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"checkbox-preview\", params : $data}'</div>");
     }
     else if (this.content() instanceof MChoiceElement) {
-        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"choice-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"choice-preview\", params : $data}'</div>");
     }
     else if (this.content() instanceof ParagraphElement) {
         elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"paragraph-preview\", params : $data}'</div>");
     }
     else if (this.content() instanceof RangeElement) {
-        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"range-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"range-preview\", params : $data}'</div>");
     }
     else if (this.content() instanceof ScaleElement) {
-        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"scale-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"scale-preview\", params : $data}'</div>");
     }
     else if (this.content() instanceof TextElement) {
         elem = $("<div style='margin-left: 5%;' data-bind='component: {name : \"text-preview\", params : $data}'</div>");

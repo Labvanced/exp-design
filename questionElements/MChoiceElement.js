@@ -81,37 +81,82 @@ MChoiceElement.prototype.fromJS = function(data) {
 
 ko.components.register('choice-element-edit', {
     viewModel: function(dataModel){
-
         this.dataModel = dataModel;
         this.questionText = dataModel.questionText;
-        this.openQuestion = dataModel.openQuestion;
         this.choices = dataModel.choices;
+        this.answer = dataModel.answer;
         this.margin = dataModel.margin;
+        this.name = dataModel.parent.name;
 
         this.addChoice = function() {
-            this.choices.push(ko.observable(""));
+            this.choices.push(ko.observable("choice"));
         };
 
         this.removeChoice = function(idx) {
             this.choices.splice(idx,1);
         };
 
+        this.focus = function () {
+            if(dataModel.ckeditor){
+                dataModel.ckeditor.focus();
+            }
+        };
+
     },
     template:
-        '<div class="panel-body" style="margin-top: -10px">\
-            <input style="max-width:50%" type="text" data-bind="textInput: questionText"\
-                class="form-control" placeholder="Your Question">\
-            <br>\
-            <div data-bind="foreach: choices">\
-                <div style="overflow: auto; margin-bottom: 3%">\
-                    <input style="display: inline-block;" type="checkbox">\
-                    <input style="display: inline-block; margin-left: 5%; max-width:50%" type="text" data-bind="textInput: $rawData" class="form-control">\
-                    <span style="display: inline-block; margin-left: 5%;"><a href="#" data-bind="click: function(data,event) {$parent.removeChoice($index())}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
-                </div>\
+        '<div class="panel-body" style="height: 100%; margin-top: -10px">\
+                    <div>\
+                        <span>Element Tag:</span>\
+                        <br>\
+                        <input style="max-width:50%;" type="text" data-bind="textInput: name"> \
+                    </div>\
+                    <br>\
+                    <div>\
+                        <span style="display: inline-block">Question Text</span>\
+                        <span style="display: inline-block"><img style="cursor: pointer" width="20" height="20" src="/resources/edit.png" data-bind="click: focus"></span>\
+                   </div>\
+                    <span><a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> <a style="display: inline-block; margin-left: 1%">Add Choice</a> </a></span>\
+                    <br><br>\
+            </div>'
+});
+
+ko.components.register('choice-preview',{
+    viewModel: function(dataModel){
+
+        var self = this;
+        this.dataModel = dataModel;
+        this.questionText = dataModel.questionText;
+        this.choices = dataModel.choices;
+        this.margin = dataModel.margin;
+        this.name = dataModel.parent.name;
+        this.count = dataModel.count;
+
+        CKEDITOR.disableAutoInline = true;
+
+        var elements = document.getElementsByClassName( 'editChoiceQuestion' );
+        var editor = CKEDITOR.inline( elements[elements.length - 1],{
+            on : {
+                change: function (event) {
+                    var data = event.editor.getData();
+                    self.questionText(data);
+                }
+            },
+            startupFocus : true
+        });
+
+        dataModel.ckeditor = editor;
+    },
+    template:
+        '<div class="editChoiceQuestion" contenteditable="true"><p>Your Question</p></div>\
+          <br>\
+        <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">\
+            <div>\
+                <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block" type="radio" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\
+                <div style="display: inline-block" data-bind="wysiwyg: $rawData, valueUpdate: \'afterkeydown\'"></div>\
             </div>\
-        <span><a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> <a style="display: inline-block; margin-left: 1%">Add Choice</a> </a></span>\
-        <div>Margin: <input type="text" data-bind="textInput: margin"></div>\
-        </div>'
+            <br>\
+        </div>\
+        <br>'
 });
 
 ko.components.register('choice-playerview', {

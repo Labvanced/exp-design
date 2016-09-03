@@ -98,6 +98,13 @@ ko.components.register('scale-element-edit', {
         this.showNums = dataModel.showNums;
         this.margin = dataModel.margin;
 
+        this.name = dataModel.parent.name;
+
+        this.focus = function () {
+            if(dataModel.ckeditor){
+                dataModel.ckeditor.focus();
+            }
+        };
         this.finish = function() {
             this.choices([]);
             for (var i = this.startChoice();i<=this.endChoice();i++){
@@ -116,27 +123,55 @@ ko.components.register('scale-element-edit', {
         To\
         <select data-bind="options: values, value: endChoice, event: {change: finish}">\
         </select>\
-        <br>\
-    <div style="display: inline-block; margin-top: 5px; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: startChoice"></div>\
-    <span style="display: inline-block; margin-top: 5px; margin-left: 3%;"><input\
-    type="text"\
-        data-bind="textInput: startLabel"\
-        class="form-control"\
-        placeholder="Label (optional)"\
-        style="width:75%"></span>\
-    <br>\
-    <div style="display: inline-block; margin-top: 5px; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: endChoice"></div>\
-    <span style="display: inline-block; margin-top: 5px; margin-left: 3%;"><input\
-    type="text"\
-        data-bind="textInput: endLabel"\
-        class="form-control"\
-        placeholder="Label (optional)"\
-        style="width:75%"></span>\
-        <br>\
         <div><input type="checkbox" data-bind="checked: showNums">Show numbers</div>\
         <div>Margin: <input type="text" data-bind="textInput: margin"></div>\
   </div>'
 
+});
+
+ko.components.register('scale-preview',{
+    viewModel: function(dataModel){
+
+        var self = this;
+        this.dataModel = dataModel;
+        this.questionText = dataModel.questionText;
+        this.margin = dataModel.margin;
+        this.startChoice = dataModel.startChoice;
+        this.choices = dataModel.choices;
+        this.startLabel = dataModel.startLabel;
+        this.endLabel = dataModel.endLabel;
+        CKEDITOR.disableAutoInline = true;
+
+        var elements = document.getElementsByClassName( 'editScaleQuestion' );
+        var editor = CKEDITOR.inline( elements[elements.length - 1],{
+            on : {
+                change: function (event) {
+                    var data = event.editor.getData();
+                    self.questionText(data);
+                }
+            },
+            startupFocus : true
+        });
+
+        dataModel.ckeditor = editor;
+    },
+    template:
+        '<div class="editScaleQuestion" contenteditable="true"><p>Your Question</p></div>\
+         <br>\
+         <div data-bind="style: {marginLeft: margin, marginRight: margin}">\
+             <div style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle"\
+                  data-bind="wysiwyg: startLabel"></div>\
+             <div style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">\
+                 <div style="display: inline-block; margin-left: inherit; margin-right: inherit "> \
+                     <span style="display:block; margin-left: 5px;  margin-right: 5px"\
+                         data-bind="visible: $root.showNums,  text: $data"></span>\
+                     <input style="display:block; margin-left: 5px; margin-right: 5px;"\
+                          type="radio" value="$data" data-bind="attr: {value:$data}, click: function(){return true}, clickBubble: false">\
+                  </div>\
+             </div>\
+             <div style="display: inline-block; margin-left: inherit;  margin-right: inherit;  vertical-align: middle" data-bind="wysiwyg: endLabel"></div>\
+         </div>\
+         <br>'
 });
 
 ko.components.register('scale-playerview',{

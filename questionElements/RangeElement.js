@@ -91,37 +91,71 @@ ko.components.register('range-element-edit', {
         this.maxChoice = dataModel.maxChoice;
         this.startLabel = dataModel.startLabel;
         this.endLabel = dataModel.endLabel;
+        this.name = dataModel.parent.name;
 
+        this.focus = function () {
+            if(dataModel.ckeditor){
+                dataModel.ckeditor.focus();
+            }
+        };
 
     },
-    template: '<div style="margin-top: -10px" class="panel-body" xmlns="http://www.w3.org/1999/html">\
-        <input style="max-width:50%" type="text" data-bind="textInput: questionText"\
-            class="form-control" placeholder="Your Question">\
-            <br>\
+    template: '<div class="panel-body" style="height: 100%; margin-top: -10px">\
+                <div>\
+                    <span>Element Tag:</span>\
+                    <br>\
+                    <input style="max-width:50%;" type="text" data-bind="textInput: name"> \
+                </div>\
+                <br>\
         <strong>Range:</strong>\
         <br>\
         <input style="max-width: 30px" type="text" data-bind="textInput: minChoice">\
         To\
         <input style="max-width: 30px" type="text" data-bind="textInput: maxChoice"">\
-        <br>\
-        <span style="display: inline-block; margin-top: 5px; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: minChoice"></span>\
-        <span style="display: inline-block; margin-top: 5px; margin-left: 3%;"><input\
-        type="text"\
-            data-bind="textInput: startLabel"\
-            class="form-control"\
-            placeholder="Label (optional)"\
-            style="width:75%"></span>\
-    <br>\
-    <span style="display: inline-block; margin-top: 5px; width: 20px; overflow: hidden; vertical-align: middle;" data-bind="text: maxChoice"></span>\
-    <span style="display: inline-block; margin-top: 5px; margin-left: 3%;">\
-    <input type="text"\
-        data-bind="textInput: endLabel"\
-        class="form-control"\
-        placeholder="Label (optional)"\
-        style="width:75%"></span>\
-        <br>\
   </div>'
 
+});
+
+ko.components.register('range-preview',{
+    viewModel: function(dataModel){
+
+        var self = this;
+        this.dataModel = dataModel;
+        this.questionText = dataModel.questionText;
+        this.minChoice = dataModel.minChoice;
+        this.maxChoice = dataModel.maxChoice;
+        this.startLabel = dataModel.startLabel;
+        this.endLabel = dataModel.endLabel;
+        CKEDITOR.disableAutoInline = true;
+
+        var elements = document.getElementsByClassName( 'editRangeQuestion' );
+        var editor = CKEDITOR.inline( elements[elements.length - 1],{
+            on : {
+                change: function (event) {
+                    var data = event.editor.getData();
+                    self.questionText(data);
+                }
+            },
+            startupFocus : true
+        });
+
+        dataModel.ckeditor = editor;
+    },
+    template:
+        '<div class="editRangeQuestion" contenteditable="true"><p>Your Question</p></div>\
+        <br>\
+        <div>\
+            <div style="float: left;" data-bind="wysiwyg: startLabel"></div>\
+            <div style="float: right; margin-right: 25%;" data-bind="wysiwyg: endLabel"></div>\
+            <br><br>\
+            <span style="display: inline-block; width: 80%">\
+                <span style="margin-right: auto; margin-top: 1%; float: left" data-bind="text: minChoice"></span>\
+                <input style="margin-left: 5%; margin-right: auto; float: left; max-width: 80%" data-highlight="true"\
+                         type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, click: function(){return true}, clickBubble: false">\
+                <span style="margin-left: auto;  width: 5%; margin-right: 5%; margin-top: 1%; float: right" data-bind="text: maxChoice"></span>\
+            </span>\
+        </div>\
+        <br>'
 });
 
 ko.components.register('range-playerview',{
@@ -134,7 +168,6 @@ ko.components.register('range-playerview',{
         this.endLabel = dataModel.endLabel;
         this.answer = dataModel.answer;
         this.newPage = dataModel.newPage;
-        this.answer = dataModel.answer;
     },
     template:
         '<div style="font-size: 200%" data-bind="text: questionText"></div>\
