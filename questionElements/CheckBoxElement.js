@@ -11,11 +11,12 @@ var CheckBoxElement= function(expData) {
     this.questionText= ko.observable("Your Question");
 
     this.openQuestion=  ko.observable(false);
-    this.choices= ko.observableArray([ko.observable("Check")]);
+    this.choices= ko.observableArray([ko.observable("check")]);
     this.answer = ko.observableArray([false]);
     this.newPage = ko.observable(false);
     this.variable = ko.observable();
     this.margin = ko.observable('5pt');
+    this.count = 0;
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -91,6 +92,7 @@ CheckBoxElement.prototype.fromJS = function(data) {
 };
 
 console.log("register checkbox element edit...");
+
 ko.components.register('checkbox-element-edit', {
     viewModel: function(dataModel){
         this.dataModel = dataModel;
@@ -98,9 +100,10 @@ ko.components.register('checkbox-element-edit', {
         this.choices = dataModel.choices;
         this.answer = dataModel.answer;
         this.margin = dataModel.margin;
+        this.name = dataModel.parent.name;
 
         this.addChoice = function() {
-            this.choices.push(ko.observable(""));
+            this.choices.push(ko.observable("check"));
             this.answer.push(false);
         };
 
@@ -109,24 +112,103 @@ ko.components.register('checkbox-element-edit', {
             this.answer.splice(idx,1);
         };
 
+        this.focus = function () {
+            if(dataModel.ckeditor){
+                dataModel.ckeditor.focus();
+            }
+        };
 
     },
     template:
-    '<div class="panel-body" style="margin-top: -10px">\
-        <input style="max-width:50%" type="text" data-bind="textInput: questionText"\
-            class="form-control" placeholder="Your Question">\
-        <br>\
-        <div data-bind="foreach: choices">\
-            <div style="overflow: auto; margin-bottom: 3%">\
-                <input style="float: left; margin-top: 3%" type="checkbox">\
-                <input style="float: left; margin-left: 5%; max-width:50%" type="text" data-bind="textInput: $rawData" class="form-control">\
-                <span style="float: left; margin-left: 5%; margin-top: 1%;"><a href="#" data-bind="click: function(data,event) {$parent.removeChoice($index())}, clickBubble: false"><img style="margin-left: 1%" width="20" height="20"src="/resources/trash.png"/></a></span>\
-            </div>\
-        </div>\
-    <span><a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> <a style="display: inline-block; margin-left: 1%">Add Choice</a> </a></span>\
-    <div>Margin: <input type="text" data-bind="textInput: margin"></div>\
-    </div>'
+    '<div class="panel-body" style="height: 100%; margin-top: -10px">\
+                <div>\
+                    <span>Element Tag:</span>\
+                    <br>\
+                    <input style="max-width:50%;" type="text" data-bind="textInput: name"> \
+                </div>\
+                <br>\
+                <div>\
+                    <span style="display: inline-block">Question Text</span>\
+                    <span style="display: inline-block"><img style="cursor: pointer" width="20" height="20" src="/resources/edit.png" data-bind="click: focus"></span>\
+               </div>\
+                <span><a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> <a style="display: inline-block; margin-left: 1%">Add Choice</a> </a></span>\
+                <br><br>\
+        </div>'
 });
+
+ko.components.register('checkbox-preview',{
+    viewModel: function(dataModel){
+
+        var self = this;
+        this.dataModel = dataModel;
+        this.questionText = dataModel.questionText;
+        this.choices = dataModel.choices;
+        this.margin = dataModel.margin;
+        this.name = dataModel.parent.name;
+        this.count = dataModel.count;
+
+        CKEDITOR.disableAutoInline = true;
+
+        var elements = document.getElementsByClassName( 'editCheckQuestion' );
+        var editor = CKEDITOR.inline( elements[elements.length - 1],{
+            on : {
+                change: function (event) {
+                    var data = event.editor.getData();
+                    self.questionText(data);
+                }
+            },
+            startupFocus : true
+        });
+
+        dataModel.ckeditor = editor;
+    },
+    template:
+        '<div class="editCheckQuestion" contenteditable="true"><p>Your Question</p></div>\
+          <br>\
+        <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">\
+            <div>\
+                <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\
+                <div style="display: inline-block" data-bind="wysiwyg: $rawData, valueUpdate: \'afterkeydown\'"></div>\
+            </div>\
+            <br>\
+        </div>\
+        <br>'
+});
+
+ko.bindingHandlers.wysiwyg = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var ckEditorValue = valueAccessor();
+        var $element = $(element);
+        $element.attr('contenteditable', true);
+        var ignoreChanges = false;
+
+        var instance = CKEDITOR.inline(element, {
+            on: {
+                change: function() {
+                    ignoreChanges = true;
+                    ckEditorValue(instance.getData());
+                    ignoreChanges = false;
+                }
+            }
+        });
+
+        instance.setData(ckEditorValue());
+
+        ckEditorValue.subscribe(function(newValue) {
+            if (!ignoreChanges) {
+                instance.setData(newValue);
+            }
+        });
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element,
+            function () {
+                instance.updateElement();
+                instance.destroy();
+            });
+
+    }
+};
+
 
 ko.components.register('checkbox-playerview', {
     viewModel: function(dataModel){
@@ -137,11 +219,11 @@ ko.components.register('checkbox-playerview', {
         this.margin = dataModel.margin;
     },
     template:
-        '<div style="font-size: 200%" data-bind="text: questionText"></div>\
+        '<div data-bind="html: questionText"></div>\
         <br>\
         <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">\
             <input style="margin-top: inherit; margin-bottom: inherit" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\
-            <span  style="margin-top: inherit; margin-bottom: inherit" data-bind="text: $data"></span>\
+            <span  style="margin-top: inherit; margin-bottom: inherit"><p>Check</p></span>\
             <br>\
         </div>\
         <br>'

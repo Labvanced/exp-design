@@ -28,6 +28,7 @@ QuestionnaireElement.prototype.modifiableProp = ["name"];
 QuestionnaireElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 
+    this.content().parent = this;
     if(this.content().setPointers){
         this.content().setPointers(entitiesArr);
     }
@@ -48,24 +49,28 @@ QuestionnaireElement.prototype.renderElements = function() {
 
     $(this.div).children().remove();
     this.div = document.createElement('div');
+    this.div.style.display = 'inline-block';
+    this.div.style.margin = '5pt';
+    this.div.style.width = '70%';
+
     var elem = null;
     if (this.content() instanceof CheckBoxElement) {
-        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"checkbox-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"checkbox-preview\", params : $data}'</div>");
     }
     else if (this.content() instanceof MChoiceElement) {
-        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"choice-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"choice-preview\", params : $data}'</div>");
     }
     else if (this.content() instanceof ParagraphElement) {
-        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"paragraph-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"paragraph-preview\", params : $data}'</div>");
     }
     else if (this.content() instanceof RangeElement) {
-        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"range-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"range-preview\", params : $data}'</div>");
     }
     else if (this.content() instanceof ScaleElement) {
-        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"scale-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"scale-preview\", params : $data}'</div>");
     }
     else if (this.content() instanceof TextElement) {
-        elem = $("<div style='margin-left: 5%' data-bind='component: {name : \"text-playerview\", params : $data}'</div>");
+        elem = $("<div style='margin-left: 5%;' data-bind='component: {name : \"text-preview\", params : $data}'</div>");
     }
     else if (this.content() instanceof NewPageElement) {
         elem = $("<div data-bind='component: {name : \"newPage-element-preview\", params : $data}'</div>");
@@ -78,7 +83,7 @@ QuestionnaireElement.prototype.fromJS = function(data) {
     var self = this;
     this.id(data.id);
     this.type = data.type;
-    this.name = data.name;
+    this.name(data.name);
     
     if(data.content){
         var content = new window[data.content.type]();
@@ -101,7 +106,7 @@ QuestionnaireElement.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         content: contentData,
-        name: this.name
+        name: this.name()
     };
 };
 

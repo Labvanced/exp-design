@@ -12,7 +12,6 @@ var TextElement = function(expData) {
     this.selected = ko.observable(false);
     this.variable = ko.observable();
     this.answer = ko.observable("");
-    this.useRich = ko.observable(false);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -65,64 +64,21 @@ TextElement.prototype.fromJS = function(data) {
 //TODO @Holger Add image FileManager, @Kai Multiple mceEditors
 ko.components.register('text-element-edit', {
     viewModel: function(dataModel){
-        this.sleep
+
         var self = this;
         this.questionText = dataModel.questionText;
         this.htmlText = ko.observable("Your Question");
-        this.useRich = dataModel.useRich;
         this.name = dataModel.parent.name;
 
-        $(document).on('focusin', function(e) {
-            if ($(e.target).closest(".mce-window, .moxman-window").length) {
-                e.stopImmediatePropagation();
-            }
-        });
-
-        function removeTinyMCE() {
-            tinyMCE.execCommand('mceFocus', false, 'myTextEditor');
-            tinyMCE.execCommand('mceRemoveControl', false, 'myTextEditor');
-        }
-
-        function addTinyMCE() {
-            if (typeof tinyMCE != 'undefined') {
-                tinyMCE.execCommand('mceFocus', false, 'myTextEditor');
-                tinyMCE.execCommand('mceRemoveControl', false, 'myTextEditor');
-            }
-            jQuery('#myTextEditor').tinymce({
-                menubar: false,
-                plugins: ['image'],
-                mode: 'none'
-                //file_browser_callback: \'FileManager\'}
-            });
-        }
-        this.edit = function () {
-            this.useRich(true);
-
-            $("#dialog").dialog({
-                width: 500,
-                buttons: [
-                    {
-                        text: "Save",
-                        click: function() {
-                            $( this ).dialog( "close" );
-                        }
-
-                    }
-                ],
-                open: addTinyMCE,
-                close: function() {
-                    self.htmlText(tinyMCE.activeEditor.getContent());
-                    self.questionText(self.htmlText());
-                    removeTinyMCE();
-                    $(this).dialog('destroy').remove();
-                }
-            });
-
+        this.focus = function () {
+          if(dataModel.ckeditor){
+              dataModel.ckeditor.focus();
+          }
         };
+
     } ,
     template:
         '<div class="panel-body" style="height: 100%; margin-top: -10px">\
-                <div id="toolbar" class="ui-layout-content"></div>\
                 <div>\
                     <span>Element Tag:</span>\
                     <br>\
@@ -130,32 +86,63 @@ ko.components.register('text-element-edit', {
                 </div>\
                 <br>\
                 <div>\
-                    <span>Question Text:</span>\
-                    <br>\
-                    <input style="max-width:50%;" type="text" data-bind="style: { display: !useRich() ? \'inline-block\' : \'none\' }, textInput: questionText"\
-                    class="form-control">\
-                    <input style="max-width:50%;" type="text" data-bind="style: { display: useRich() ? \'inline-block\' : \'none\' }"\
-                    class="form-control", placeholder="Edit Rich Text" disabled>\
-                    <span><a href="#" data-bind="click: edit"><img style="display: inline-block;" width="20" height="20"src="/resources/edit.png"/></a></span> \
+                    <span style="display: inline-block">Question Text</span>\
+                    <span style="display: inline-block"><img style="cursor: pointer" width="20" height="20" src="/resources/edit.png" data-bind="click: focus"></span>\
                </div>\
-                <div style="display: none" title="Edit Rich Text" id="dialog">\
-                   <h2>Edit Rich Text</h2>\
-                   <textarea id="myTextEditor" name="content" style="width:100%; height:100%"></textarea>\
-                </div>\
                 <br><br>\
         </div>'
 });
 
+ko.components.register('text-preview',{
+    viewModel: function(dataModel){
+
+        var self = this;
+        this.dataModel = dataModel;
+        this.questionText = dataModel.questionText;
+        this.name = dataModel.parent.name;
+
+
+        CKEDITOR.disableAutoInline = true;
+
+        var elements = document.getElementsByClassName( 'editableTextQuestion' );
+
+        var editor = CKEDITOR.inline( elements[elements.length - 1],{
+            on : {
+                change: function (event) {
+                    var data = event.editor.getData();
+                    self.questionText(data);
+                }
+            },
+            startupFocus : true
+        });
+
+        dataModel.ckeditor = editor;
+    },
+    template:
+        '<div class="editableTextQuestion" contenteditable="true"><p>Your Question</p></div>\
+          <br>\
+            <div>\
+            <input style="position:relative;left: 0%; max-width:50%"\
+                 type="text"\
+                class="form-control"\
+                placeholder="Participant Answer""\
+                disabled>\
+          </div>\
+          <br>'
+});
+
+
 ko.components.register('text-playerview',{
     viewModel: function(dataModel){
+
+        var self = this;
         this.dataModel = dataModel;
         this.questionText = dataModel.questionText;
         this.answer = dataModel.answer;
-        this.useRich = dataModel.useRich;
+
     },
     template:
-        '<span  data-bind="if: useRich"><div style="font-size: 200%" data-bind="html: questionText"></div></span>\
-         <span data-bind="ifnot: useRich"><div style="font-size: 200%" data-bind="text: questionText"></div></span>\
+        '<div data-bind="html: questionText"></div>\
           <br>\
             <div>\
             <input style="position:relative;left: 0%; max-width:50%"\
