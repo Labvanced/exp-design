@@ -40,7 +40,7 @@ TriggerMouse.prototype.getParameterSpec = function() {
 };
 
 TriggerMouse.prototype.setupOnFrameView = function(playerFrame) {
-    // TODO: to trigger call function this.event.triggerActions(variables)
+
     var self = this;
 
     switch (this.interactionType()){
@@ -147,10 +147,17 @@ var TriggerKeyboard = function(event) {
 
 TriggerKeyboard.prototype.type = "TriggerKeyboard";
 TriggerKeyboard.prototype.label = "Keyboard Trigger";
-TriggerKeyboard.prototype.buttonTypesArrows = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
+TriggerKeyboard.prototype.buttonTypesArrows = ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"];
 TriggerKeyboard.prototype.buttonTypesNumbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 TriggerKeyboard.prototype.buttonTypesLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-TriggerKeyboard.prototype.interactionTypes = ["Pressed", "PressDown", "PressUp"];
+TriggerKeyboard.prototype.buttonTypesSpecial= ["Space","Enter","Ctrl","Tab","Shift"];
+TriggerKeyboard.prototype.interactionTypes = ["PressDown", "PressUp"];
+
+TriggerKeyboard.prototype.buttonTypesArrowsCode = [37,38,39,40];
+TriggerKeyboard.prototype.buttonTypesNumbersCode = [48,49,50,51,52,53,54,55,56,57];
+TriggerKeyboard.prototype.buttonTypesLettersCode = [65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90];
+TriggerKeyboard.prototype.buttonTypesSpecialCode= [32,13,17,9,16];
+
 
 TriggerKeyboard.prototype.isValid = function() {
     if (this.event.trigger() && this.buttons().length>0){
@@ -158,6 +165,18 @@ TriggerKeyboard.prototype.isValid = function() {
     }
     else{
         return false;
+    }
+};
+
+TriggerKeyboard.prototype.getKeys = function() {
+    this.allKeys = this.buttonTypesSpecial.concat(this.buttonTypesLetters.concat(this.buttonTypesArrows.concat(this.buttonTypesNumbers)));
+    this.allKeysCode = this.buttonTypesSpecialCode.concat(this.buttonTypesLettersCode.concat(this.buttonTypesArrowsCode.concat(this.buttonTypesNumbersCode)));
+
+    this.validKeyCodes = [];
+    this.validKeys = this.buttons();
+    for (var i = 0; i<this.buttons().length; i++){
+        var index =  this.allKeys.indexOf(this.validKeys[i]);
+        this.validKeyCodes.push(this.allKeysCode[index]);
     }
 };
 
@@ -174,6 +193,29 @@ TriggerKeyboard.prototype.getParameterSpec = function() {
 
 TriggerKeyboard.prototype.setupOnFrameView = function(playerFrame) {
     // TODO: to trigger call function this.event.triggerActions(variables)
+
+    var self =this;
+
+    if (this.interactionType() == "PressDown"){
+        (function(event) {
+            self.getKeys();
+            $(document).on("keydown", function (ev){
+                var key = self.validKeyCodes.indexOf(ev.keyCode);
+                if (key>=0){
+                    self.event.triggerActions([self.validKeys[key],playerFrame.getFrameTime()]);
+                }
+
+            });
+        })(event);
+    }
+
+    else if (this.interactionType() == "PressUp"){
+        (function(event) {
+            $(document).on("keyup", function (ev){
+                self.event.triggerActions([playerFrame.getFrameTime()]);
+            });
+        })(event);
+    }
 };
 
 TriggerKeyboard.prototype.fromJS = function(data) {
