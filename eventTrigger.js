@@ -211,8 +211,12 @@ TriggerKeyboard.prototype.setupOnFrameView = function(playerFrame) {
 
     else if (this.interactionType() == "PressUp"){
         (function(event) {
+            self.getKeys();
             $(document).on("keyup", function (ev){
-                self.event.triggerActions([playerFrame.getFrameTime()]);
+                var key = self.validKeyCodes.indexOf(ev.keyCode);
+                if (key>=0){
+                    self.event.triggerActions([self.validKeys[key],playerFrame.getFrameTime()]);
+                }
             });
         })(event);
     }
