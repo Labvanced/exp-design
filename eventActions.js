@@ -1,6 +1,7 @@
 // � by Caspar Goeke and Holger Finger
 
 
+/////////////////////////////////////////////////  ActionRecord  ///////////////////////////////////////////////////
 
 var ActionRecord = function(event) {
     this.event = event;
@@ -24,7 +25,13 @@ var ActionRecord = function(event) {
 ActionRecord.prototype.type = "ActionRecord";
 ActionRecord.prototype.label = "Record";
 
+ActionRecord.prototype.isValid = function(){
+    return true;
+};
 
+ActionRecord.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'recording variable');
+};
 
 ActionRecord.prototype.addRecording = function(type){
     var newRec={
@@ -38,100 +45,376 @@ ActionRecord.prototype.addRecording = function(type){
 
 
 ActionRecord.prototype.setPointers = function(entitiesArr) {
+    var specialRecordings = this.specialRecordings();
+    for (var i = 0; i<specialRecordings.length; i++){
+        if (specialRecordings[i].variable()) {
+            var globVar = entitiesArr.byId[specialRecordings[i].variable()];
+            specialRecordings[i].variable(globVar);
+            this.setVariableBackRef(globVar);
+        }
+    }
 
-
+    var selectedRecordings = this.selectedRecordings();
+    for (var i = 0; i<selectedRecordings.length; i++){
+        if (selectedRecordings[i].variable()) {
+            var globVar = entitiesArr.byId[selectedRecordings[i].variable()];
+            selectedRecordings[i].variable(globVar);
+            this.setVariableBackRef(globVar);
+        }
+    }
 };
 
-ActionRecord.prototype.run = function(dataModel) {
+ActionRecord.prototype.reAddEntities = function(entitiesArr) {
+    var specialRec = this.specialRecordings();
+    for (var i = 0; i<specialRec.length; i++){
+        if (specialRec[i].variable()) {
+            entitiesArr.push(specialRec[i].variable());
+        }
+    }
+    var selectedRec = this.selectedRecordings();
+    for (var i = 0; i<selectedRec.length; i++){
+        if (selectedRec[i].variable()) {
+            entitiesArr.push(selectedRec[i].variable());
+        }
+    }
+};
 
+ActionRecord.prototype.run = function(recInput) {
+
+    var tag = recInput[0];
+    var reactionTime = recInput[1];
     var blockId = player.getBlockId();
     var trialId = player.getTrialId();
-    var recData = new RecData(this.variableId(), dataModel.name());
 
-    player.addRecording(blockId,trialId,recData.toJS());
+    var specialRecs = this.specialRecordings();
+    for (var i =0; i<specialRecs.length; i++){
+        var name= specialRecs[i].recType;
+        var shouldBeRec= specialRecs[i].isRecorded;
+        var varToSave = specialRecs[i].variable().id();
+
+        switch (name){
+            case "elementTag":
+                    if (shouldBeRec){
+                        var recData = new RecData(varToSave, tag);
+                        player.addRecording(blockId,trialId,recData.toJS());
+                        break;
+                    }
+            case "reactionTime":
+                if (shouldBeRec){
+                    var recData = new RecData(varToSave, reactionTime);
+                    player.addRecording(blockId,trialId,recData.toJS());
+                    break;
+                }
+        }
+    }
+
+    var selectedRecs = this.selectedRecordings();
+    for (var i =0; i<selectedRecs.length; i++){
+        var name= specialRecs[i].recType;
+        var shouldBeRec= specialRecs[i].isRecorded;
+        var varToSave = specialRecs[i].variable;
+
+        switch (name){
+            case "elementTag":
+                if (shouldBeRec){
+                    var recData = new RecData(varToSave, tag);
+                    player.addRecording(blockId,trialId,recData.toJS());
+                    break;
+                }
+            case "reactionTime":
+                if (shouldBeRec){
+                    var recData = new RecData(varToSave, reactionTime);
+                    player.addRecording(blockId,trialId,recData.toJS());
+                    break;
+                }
+        }
+    }
+
+
 
 };
 
 ActionRecord.prototype.fromJS = function(data) {
     var specialRecordings = [];
-    var selectedRecordings = [];
-
-    for (var i = 0 ;i <data.recTypesSpecial.length;i++){
-      specialRecordings.push({
-          recType: data.recTypesSpecial,
-          variable :ko.observable(data.variablesSpecial),
-          isRecorded: ko.observable(data.isRecSpecial)
-      })
-    }
-
-    for (var i = 0 ;i <data.recTypesSelected.length;i++){
-        selectedRecordings.push({
-            recType: data.recTypesSelected,
-            variable :ko.observable(data.variablesSelected),
-            isRecorded: ko.observable(data.isRecSelected)
+    for (var i = 0; i < data.specialRecordings.length; i++) {
+        var tmp = data.specialRecordings[i];
+        specialRecordings.push({
+            recType: tmp.recType,
+            variable: ko.observable(tmp.variable),
+            isRecorded: ko.observable(tmp.isRecorded)
         })
     }
-
     this.specialRecordings(specialRecordings);
+
+    var selectedRecordings = [];
+    for (var i = 0; i < data.selectedRecordings.length; i++) {
+        var tmp = data.selectedRecordings[i];
+        selectedRecordings.push({
+            recType: tmp.recType,
+            variable: ko.observable(tmp.variable),
+            isRecorded: ko.observable(tmp.isRecorded)
+        })
+    }
     this.selectedRecordings(selectedRecordings);
-
-
     return this;
 };
 
 ActionRecord.prototype.toJS = function() {
-    var recTypesSpecial =[];
-    var variablesSpecial =[];
-    var isRecSpecial =[];
-    for (var i = 0 ;i <this.specialRecordings().length;i++){
-        recTypesSpecial[i] =   this.specialRecordings()[i].recType;
-        if  (this.specialRecordings()[i].variable()){
-            variablesSpecial[i] =   this.specialRecordings()[i].variable().id();
+    var specialRecordings = [];
+    var specialRec = this.specialRecordings();
+    for (var i = 0; i<specialRec.length; i++){
+        var rec = specialRec[i];
+        var varId = null;
+        if (rec.variable()) {
+            varId = rec.variable().id();
         }
-        else{
-            variablesSpecial[i] = null;
-        }
-
-        isRecSpecial[i] =   this.specialRecordings()[i].isRecorded();
+        specialRecordings.push({
+            recType: rec.recType,
+            variable:  varId,
+            isRecorded: rec.isRecorded()
+        });
     }
 
-
-    var recTypesSelected=[];
-    var variablesSelected =[];
-    var isRecSelected =[];
-    for (var i = 0 ;i <this.selectedRecordings().length;i++){
-        recTypesSelected[i] =   this.selectedRecordings()[i].recType;
-        if  (this.selectedRecordings()[i].variable()){
-            variablesSelected[i] =   this.selectedRecordings()[i].variable().id();
+    var selectedRecordings = [];
+    var selectedRec = this.selectedRecordings();
+    for (var i = 0; i<selectedRec.length; i++){
+        var rec = selectedRec[i];
+        var varId = null;
+        if (rec.variable()) {
+            varId = rec.variable().id();
         }
-        else{
-            variablesSelected[i] = null;
-        }
-
-        isRecSelected[i] =   this.selectedRecordings()[i].isRecorded();
+        selectedRecordings.push({
+            recType: rec.recType,
+            variable:  varId,
+            isRecorded: rec.isRecorded()
+        });
     }
 
     return {
         type: this.type,
-        recTypesSpecial: recTypesSpecial,
-        variablesSpecial: variablesSpecial,
-        isRecSpecial: isRecSpecial,
-        recTypesSelected: recTypesSpecial,
-        variablesSelected: variablesSpecial,
-        isRecSelected: isRecSpecial
+        specialRecordings: specialRecordings,
+        selectedRecordings: selectedRecordings
     };
 };
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////  ActionSetElementProp  ///////////////////////////////////////////////////
+
+var ActionSetElementProp = function(event) {
+    this.event = event;
+    this.target = ko.observable(null);
+    this.changes = ko.observableArray([]);
+    this.animate=ko.observable(false);
+    this.animationTime=ko.observable(0);
+
+    this.addProperty();
+
+    var self= this;
+    this.target.subscribe(function(newVal) {
+        if (self.target() != newVal){
+            self.animate(false);
+            self.animationTime(0);
+            self.changes([]);
+            self.addProperty();
+        }
+    });
+};
 
 
+ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["%", "+", "set"]);
+ActionSetElementProp.prototype.type = "ActionSetElementProp";
+ActionSetElementProp.prototype.label = "Set Element Prop.";
+
+ActionSetElementProp.prototype.isValid = function(){
+    return true;
+};
+
+ActionSetElementProp.prototype.addProperty = function() {
+
+    var prop = ko.observable(null);
+    var operator = ko.observable(null);
+    var value = ko.observable(0);
+    var self = this;
+
+    prop.subscribe(function(newVal) {
+        operator(null);
+        value(0);
+    });
+
+    operator.subscribe(function(newVal) {
+
+        if (newVal == "%") {
+            value(100);
+        }
+        else  if (newVal == "+") {
+            value(0);
+        }
+        else  if (newVal == "set") {
+            var currentValue = self.event.parent.elements.byId[self.target()][prop()]();
+            value(currentValue);
+        }
+
+    });
+
+    var addObj = {
+        property: prop,
+        operatorType: operator,
+        value: value
+
+    };
+
+    this.changes.push(addObj);
+};
+
+
+ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
+    var target = entitiesArr.byId[this.target()];
+    this.target(target);
+};
+
+ActionSetElementProp.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+
+ActionSetElementProp.prototype.run = function() {
+
+    var changes = this.changes();
+    var target = this.target();
+    for (var i = 0; i <changes.length; i++){
+        var property =  changes[i].property();
+        var operatorType =  changes[i].operatorType();
+
+        // make sure to calculate on numeric
+        var value =  changes[i].value();
+        var oldValue = target[property]();
+        if (typeof oldValue  === 'string'){
+            oldValue = Number(oldValue);
+        }
+        if (typeof value  === 'string'){
+            value = Number(value);
+        }
+
+        if (operatorType== '+'){
+            var newValue = oldValue + value;
+        }
+        else if (operatorType== '%'){
+            var newValue = oldValue * (value/100);
+        }
+        else if (operatorType== 'set'){
+            var newValue = value;
+        }
+        target[property](newValue);
+    }
+
+};
+
+ActionSetElementProp.prototype.fromJS = function(data) {
+    this.animate(data.animate);
+    this.animationTime(data.animationTime);
+    this.target(data.target);
+
+    var changes = [];
+    for (var i = 0 ;i <data.changes.length;i++){
+        var obj = {
+            property :   ko.observable(data.changes[i].property),
+            operatorType :   ko.observable(data.changes[i].operatorType),
+            value:   ko.observable(data.changes[i].value)
+        };
+        changes.push(obj);
+    }
+    this.changes(changes);
+
+    return this;
+};
+
+ActionSetElementProp.prototype.toJS = function() {
+
+
+    var changes= [];
+    for (var i = 0 ;i <this.changes().length;i++){
+        var obj = {
+            property :   this.changes()[i].property(),
+            operatorType :   this.changes()[i].operatorType(),
+            value:   this.changes()[i].value()
+        };
+        changes.push(obj);
+    }
+
+    return {
+        type: this.type,
+        target: this.target().id(),
+        animate: this.animate(),
+        animationTime:this.animationTime,
+        changes:changes
+    };
+};
+
+
+////////////////////////////////////////////   ActionJumpTo   /////////////////////////////////////////////////////
+
+
+var ActionJumpTo = function(event) {
+    this.event = event;
+    this.jumpType = ko.observable(null);
+    this.frameToJump= ko.observable(null)
+};
+
+ActionJumpTo.prototype.type = "ActionJumpTo";
+ActionJumpTo.prototype.label = "Jump To";
+
+ActionJumpTo.prototype.isValid = function(){
+    return true;
+};
+
+ActionJumpTo.prototype.setPointers = function(entitiesArr) {
+    var frame = entitiesArr.byId[this.frameToJump()];
+    this.frameToJump(frame);
+};
+
+ActionJumpTo.prototype.run = function() {
+    if (this.jumpType() == "nextFrame"){
+        player.currentFrame.endFrame();
+    }
+
+};
+
+ActionJumpTo.prototype.fromJS = function(data) {
+    this.jumpType(data.jumpType);
+    this.frameToJump(data.frameToJump);
+    return this;
+};
+
+ActionJumpTo.prototype.toJS = function() {
+
+    if (this.frameToJump()){
+        var frameToJump = this.frameToJump().id()
+    }
+    else{
+        var frameToJump = null;
+    }
+
+    return {
+        type: this.type,
+        jumpType: this.jumpType(),
+        frameToJump: frameToJump
+
+    };
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+/////////////////////////////////////////////   ActionSetVariable    ////////////////////////////////////////////////
 
 var ActionSetVariable = function(event) {
     this.event = event;
 
     // serialized
-   // this.variableId = ko.observable(undefined);
-  //  this.argument = ko.observable('');
+    // this.variableId = ko.observable(undefined);
+    //  this.argument = ko.observable('');
 
 
 };
@@ -139,7 +422,9 @@ ActionSetVariable.prototype.type = "ActionSetVariable";
 ActionSetVariable.prototype.label = "Set Variable";
 ActionSetVariable.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
 
-
+ActionSetVariable.prototype.isValid = function(){
+    return true;
+};
 
 ActionSetVariable.prototype.setPointers = function(entitiesArr) {
 
@@ -164,145 +449,21 @@ ActionSetVariable.prototype.toJS = function() {
         argument: this.argument()
     };
 };
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-////////////////////////////////////////  ActionSetElementProp  ///////////////////////////////////////////////////
-
-var ActionSetElementProp = function(event) {
-    this.event = event;
-
-    this.changes = ko.observableArray([null]);
-
-    this.target = ko.observable(null);
-    this.property= ko.observable(null);
-    this.operatorType=  ko.observable(null);
-    this.value=ko.observable(0);
-    this.animate=ko.observable(false);
-    this.animationTime=ko.observable(0);
-
-
-    var self = this;
-    this.target.subscribe(function(newVal) {
-
-        self.property= ko.observable(null);
-        self.value=ko.observable(0);
-        self.animationTime=ko.observable(0);
-        self.operatorType=  ko.observable(null);
-        self.animate=ko.observable(false);
-
-    });
-
-    this.property.subscribe(function(newVal) {
-
-        self.property= ko.observable(null);
-        self.value=ko.observable(0);
-        self.animationTime=ko.observable(0);
-        self.operatorType=  ko.observable(null);
-        self.animate=ko.observable(false);
-
-    });
-
-
-    this.operatorType.subscribe(function(newVal) {
-
-        if (newVal == "PercentChange") {
-            self.value(100);
-        }
-        else  if (newVal == "AbsChange") {
-            self.value(0);
-        }
-
-        else  if (newVal == "SetValue") {
-            var currentValue = self.event.parent.elements.byId[self.target()][self.property()]();
-            self.value(currentValue);
-        }
-
-    });
-
-
-};
-
-ActionSetVariable.prototype.operatorTypes = ["PercentChange", "AbsChange", "SetValue"];
-
-ActionSetElementProp.prototype.type = "ActionSetElementProp";
-
-
-ActionSetElementProp.prototype.label = "Set Element Prop.";
-
-
-
-ActionSetElementProp.prototype.run = function() {
-
-};
-
-ActionSetElementProp.prototype.fromJS = function(data) {
-    this.elem(data.elem);
-    this.propName(data.propName);
-    this.operatorType(data.operatorType);
-    this.argument(data.argument);
-    return this;
-};
-
-ActionSetElementProp.prototype.toJS = function() {
-    if (this.elem()) {
-        var elemId = this.elem().id();
-    }
-    else {
-        var elemId = undefined;
-    }
-    return {
-        type: this.type,
-        elem: elemId,
-        propName: this.propName(),
-        operatorType: this.operatorType(),
-        argument: this.argument()
-    };
-};
-
-
-//////////////////////
-
-
-var ActionJumpTo = function(event) {
-    this.event = event;
-
-};
-ActionJumpTo.prototype.type = "ActionJumpTo";
-ActionJumpTo.prototype.label = "Jump To";
-
-ActionJumpTo.prototype.setPointers = function(entitiesArr) {
-
-};
-
-ActionJumpTo.prototype.run = function() {
-    player.currentFrame.endFrame();
-};
-
-ActionJumpTo.prototype.fromJS = function(data) {
-    return this;
-};
-
-ActionJumpTo.prototype.toJS = function() {
-    return {
-        type: this.type
-    };
-};
-
-//////////////////////
-
-
-
-
-//////////////////////
-
-
+/////////////////////////////////////////////////  ActionControlAV/  //////////////////////////////////////////////
 var ActionControlAV = function(event) {
     this.event = event;
 
 };
 ActionControlAV.prototype.type = "ActionControlAV";
 ActionControlAV.prototype.label = "Control AV";
+
+ActionControlAV.prototype.isValid = function(){
+    return true;
+};
 
 ActionControlAV.prototype.setPointers = function(entitiesArr) {
 
@@ -322,11 +483,11 @@ ActionControlAV.prototype.toJS = function() {
     };
 };
 
-//////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-//////////////////////
+/////////////////////////////////////////////////  ActionControlTimer  //////////////////////////////////////////////
 
 
 var ActionControlTimer = function(event) {
@@ -335,6 +496,10 @@ var ActionControlTimer = function(event) {
 };
 ActionControlTimer.prototype.type = "ActionControlTimer";
 ActionControlTimer.prototype.label = "Control Timer";
+
+ActionControlTimer.prototype.isValid = function(){
+    return true;
+};
 
 ActionControlTimer.prototype.setPointers = function(entitiesArr) {
 
@@ -354,16 +519,11 @@ ActionControlTimer.prototype.toJS = function() {
     };
 };
 
-//////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-
-
-
-
-
-////////////////  Questionnaire RECORDINGS //////////////////////
+//////////////////////////////////////  ActionRecordQuestionaireResponse  //////////////////////////////////////////
 
 var ActionRecordQuestionaireResponse = function(event) {
     this.event = event;
@@ -375,6 +535,10 @@ var ActionRecordQuestionaireResponse = function(event) {
 };
 ActionRecordQuestionaireResponse.prototype.type = "ActionRecordQuestionaireResponse";
 ActionRecordQuestionaireResponse.prototype.label = "Record Questionaire Answer";
+
+ActionRecordQuestionaireResponse.prototype.isValid = function(){
+    return true;
+};
 
 ActionRecordQuestionaireResponse.prototype.setPointers = function(entitiesArr) {
 
@@ -404,9 +568,8 @@ ActionRecordQuestionaireResponse.prototype.toJS = function() {
         variableId: this.variableId()
     };
 };
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-////////////////////////
 
 function actionFactory(event,type) {
     var action = new window[type](event);

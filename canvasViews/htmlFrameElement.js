@@ -12,6 +12,7 @@ var HtmlFrameElement = function(dataModel,editor) {
     this.editor = editor;
 
     // default values
+    this.id = dataModel.id();
     this.fullWidth = ko.observable(0);
     this.fullHeight = ko.observable(0);
     this.isSelected = ko.observable(false);
@@ -297,7 +298,7 @@ HtmlFrameElement.prototype.renderElements = function(data) {
         data = data();
     }
 
-    if (data.type == "CheckBoxElement" ||data.type =="MChoiceElement"||data.type =="ParagraphElement"||data.type =="RangeElement"||data.type =="ScaleElement"||data.type =="TextElement"||data.type =="ButtonElement"){
+    if (data.type == "CheckBoxElement" ||data.type =="MChoiceElement"||data.type =="ParagraphElement"||data.type =="RangeElement"||data.type =="ScaleElement"||data.type =="TextElement"||data.type =="ButtonElement" ||data.type =="InvisibleElement"){
 
         $(this.content).remove();
         this.content = $("<div></div>");
@@ -322,6 +323,9 @@ HtmlFrameElement.prototype.renderElements = function(data) {
         }
         else if (data instanceof ButtonElement) {
             this.contentInside = $("<div data-bind='component: {name : \"button-playerview\", params : $data}'></div>");
+        }
+        else if (data instanceof InvisibleElement) {
+            this.contentInside = $("<div data-bind='component: {name : \"invisible-playerview\", params : $data}'></div>");
         }
         $(this.contentScaling).append(this.contentInside);
         $(this.content).append(this.contentScaling);

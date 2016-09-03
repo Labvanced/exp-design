@@ -11,7 +11,7 @@ var FrameView = function(divContainer,frameData,parent,type) {
     this.dataElements = this.frameData.elements;
 
     this.bgElement = null;
-    this.viewElements= ko.observableArray([]);
+    this.viewElements= ko.observableArray([]).extend({sortById: null});
 
     this.width = 0;
     this.height = 0;
@@ -122,7 +122,7 @@ FrameView.prototype.resize = function(size) {
 FrameView.prototype.renderElements = function() {
 
     $(this.divContainer).children().remove();
-    this.viewElements = ko.observableArray([]);
+    this.viewElements = ko.observableArray([]).extend({sortById: null});
 
     if (this.type== "editorView") {
         this.setupBackground();
@@ -209,7 +209,6 @@ FrameView.prototype.setSelectedElement = function(elem) {
         if (formerIndex>=0) {
             this.viewElements()[formerIndex].isSelected(false);
         }
-        this.parent.eventViewModelObs(null);
     }
 
     if (elem) {
@@ -217,10 +216,6 @@ FrameView.prototype.setSelectedElement = function(elem) {
             // element is an event
             // check if element is really a child of this frame:
             if (this.frameData.events.byId[elem.id()]) {
-
-                // create a view model for this event:
-                this.parent.eventViewModelObs(new EventViewModel(elem));
-
                 // change currently selected element:
                 this.frameData.currSelectedElement(elem);
             }

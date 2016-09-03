@@ -28,9 +28,18 @@ RequirementOR.prototype.checkIfTrue = function(parameters) {
     return false;
 };
 
+
+RequirementOR.prototype.reAddEntities = function(entitiesArr) {
+    jQuery.each( this.childRequirements(), function( index, req ) {
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (req.reAddEntities)
+            req.reAddEntities(entitiesArr);
+    } );
+};
+
 RequirementOR.prototype.fromJS = function(data) {
     var childRequirements = [];
-    for (var i=1; i<data.childRequirements.length; i++) {
+    for (var i=0; i<data.childRequirements.length; i++) {
         var requirement = requirementFactory(this.event, data.childRequirements[i].type);
         requirement.fromJS(data.childRequirements[i]);
         childRequirements.push(requirement);
@@ -69,12 +78,20 @@ RequirementAND.prototype.setPointers = function(entitiesArr) {
 
 RequirementAND.prototype.checkIfTrue = function(parameters) {
     var childRequirements = this.childRequirements();
-    for (var i=1; i<childRequirements.length; i++) {
+    for (var i=0; i<childRequirements.length; i++) {
         if (!childRequirements[i].checkIfTrue(parameters)){
             return false;
         }
     }
     return true;
+};
+
+RequirementAND.prototype.reAddEntities = function(entitiesArr) {
+    jQuery.each( this.childRequirements(), function( index, req ) {
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (req.reAddEntities)
+            req.reAddEntities(entitiesArr);
+    } );
 };
 
 RequirementAND.prototype.fromJS = function(data) {
@@ -143,6 +160,15 @@ RequirementVariableHasValue.prototype.checkIfTrue = function(parameters) {
     return true;
 };
 
+RequirementVariableHasValue.prototype.reAddEntities = function(entitiesArr) {
+    if (this.operandLeft() && this.operandLeft().reAddEntities){
+        this.operandLeft().reAddEntities(entitiesArr);
+    }
+    if (this.operandRight() && this.operandRight().reAddEntities){
+        this.operandRight().reAddEntities(entitiesArr);
+    }
+};
+
 RequirementVariableHasValue.prototype.fromJS = function(data) {
     this.comparisonType(data.comparisonType);
     if (data.operandLeft) {
@@ -190,9 +216,21 @@ OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
 OperandVariable.prototype.operandTypes = ['undefined', "variable", "triggerParameter", "constantString", "constantNumeric"];
 
+OperandVariable.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, false, true, 'In Boolean Expression');
+};
+
 OperandVariable.prototype.setPointers = function(entitiesArr) {
     if (this.operandType() == "variable"){
-        this.operandValueOrObject(entitiesArr.byId[this.operandValueOrObject()]);
+        var globVar = entitiesArr.byId[this.operandValueOrObject()];
+        this.operandValueOrObject(globVar);
+        this.setVariableBackRef(globVar);
+    }
+};
+
+OperandVariable.prototype.reAddEntities = function(entitiesArr) {
+    if (this.operandType() == "variable"){
+        entitiesArr.push(this.operandValueOrObject());
     }
 };
 

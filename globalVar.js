@@ -3,36 +3,60 @@
 var GlobalVar = function (expData) {
     this.expData = expData;
 
+    // serialized:
     this.id = ko.observable(guid());
-    this.name = ko.observable("newVariable");
-    this.editName =  ko.observable(false);
     this.type = "GlobalVar";
-
+    this.name = ko.observable("newVariable");
     this.subtype = ko.observable("undefined");
     this.dataType = ko.observable("undefined");
     this.scale = ko.observable("undefined");
     this.scope = ko.observable("undefined");
-
     this.isFactor =  ko.observable(false);
     this.isInteracting = ko.observable(false);
-
     this.levels = ko.observableArray([]);
-    this.subLevelEdit = ko.observable(false);
 
+    // not serialized:
+    this.editName =  ko.observable(false);
+    this.subLevelEdit = ko.observable(false);
     this.value = ko.observable(null);
+    this.backRefs = ko.observableArray([]).extend({sortById: null});
 };
 
-// enum: possible variable subtypes defined by us or user
-GlobalVar.subtypes = ['undefined','id', 'sequence', 'condition', 'stimulus property', 'user decision', 'user response time',  'user questionnaire response','physiological recording'];
-
-// further information defined by us
-GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean'];
+// enum definitions:
+GlobalVar.subtypes = ['custom','id', 'sequence', 'condition', 'stimulus property', 'user decision', 'user response time',  'user questionnaire response','physiological recording'];
 GlobalVar.scales = ['undefined', 'nominal', 'ordinal', 'interval', 'ratio'];
-GlobalVar.scopes = ['undefined','experiment','session', 'block', 'questionnaire', 'trial-loop', 'trial'];
-
+GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime'];
+GlobalVar.scopes = ['undefined', 'participant','session','block','task','trial'];
+GlobalVar.depOrIndepVar = [true, false];
+GlobalVar.isRecorded = [true, false];
+GlobalVar.isUserWritable = [true, false];
 
 GlobalVar.prototype.setPointers = function(entitiesArr) {
 
+};
+
+GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, isRead, refLabel) {
+    this.backRefs.push({
+        entity: entity,
+        parentNamedEntity: parentNamedEntity,
+        isWritten: isWritten,
+        isRead: isRead,
+        refLabel: refLabel
+    });
+};
+
+GlobalVar.prototype.removeBackRef = function(entity) {
+    var backRefs = this.backRefs();
+    for (var k=0; k<backRefs.length; k++){
+        if (backRefs[k].id == entity.id()) {
+            this.backRefs.splice(k, 1);
+            break;
+        }
+    }
+};
+
+GlobalVar.prototype.getValue = function() {
+    this.value();
 };
 
 GlobalVar.prototype.addLevel = function() {
