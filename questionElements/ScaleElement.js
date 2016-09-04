@@ -85,38 +85,48 @@ ScaleElement.prototype.fromJS = function(data) {
 
 
 ko.components.register('scale-element-edit', {
-    viewModel: function(dataModel){
+    viewModel: {
+        createViewModel: function(dataModel, componentInfo){
 
-        this.dataModel = dataModel;
-        this.questionText = dataModel.questionText;
-        this.choices = dataModel.choices;
-        this.startChoice = dataModel.startChoice;
-        this.endChoice = dataModel.endChoice;
-        this.startLabel = dataModel.startLabel;
-        this.endLabel = dataModel.endLabel;
-        this.values = [1,2,3,4,5,6,7,8,9,10,11,12];
-        this.showNums = dataModel.showNums;
-        this.margin = dataModel.margin;
+            var viewModel = function(dataModel){
 
-        this.name = dataModel.parent.name;
+                this.dataModel = dataModel;
+                this.questionText = dataModel.questionText;
+                this.choices = dataModel.choices;
+                this.startChoice = dataModel.startChoice;
+                this.endChoice = dataModel.endChoice;
+                this.startLabel = dataModel.startLabel;
+                this.endLabel = dataModel.endLabel;
+                this.values = [1,2,3,4,5,6,7,8,9,10,11,12];
+                this.showNums = dataModel.showNums;
+                this.margin = dataModel.margin;
 
-        this.focus = function () {
-            if(dataModel.ckeditor){
-                dataModel.ckeditor.focus();
-            }
-        };
-        this.finish = function() {
-            this.choices([]);
-            for (var i = this.startChoice();i<=this.endChoice();i++){
-                this.choices.push(i);
-            }
-        };
+                this.name = dataModel.parent.name;
 
+                this.focus = function () {
+                    if(dataModel.ckeditor){
+                        dataModel.ckeditor.focus();
+                    }
+                };
+                this.finish = function() {
+                    this.choices([]);
+                    for (var i = this.startChoice();i<=this.endChoice();i++){
+                        this.choices.push(i);
+                    }
+                };
+
+            };
+
+            return viewModel(dataModel);
+        }
     },
-    template: '<div style="margin-top: -10px" class="panel-body">\
-        <input style="max-width:50%" type="text" data-bind="textInput: questionText"\
-            class="form-control" placeholder="Your Question">\
-            <br>\
+    template: '<div class="panel-body" style="height: 100%; margin-top: -10px">\
+                <div>\
+                    <span>Element Tag:</span>\
+                    <br>\
+                    <input style="max-width:50%;" type="text" data-bind="textInput: $parent.name"> \
+                </div>\
+                <br>\
         <strong>Scale:</strong>\
         <br>\
         <select data-bind="options: values, value: startChoice, event: {change: finish}"></select>\
@@ -130,30 +140,39 @@ ko.components.register('scale-element-edit', {
 });
 
 ko.components.register('scale-preview',{
-    viewModel: function(dataModel){
+    viewModel: {
+        createViewModel: function(dataModel, componentInfo){
 
-        var self = this;
-        this.dataModel = dataModel;
-        this.questionText = dataModel.questionText;
-        this.margin = dataModel.margin;
-        this.startChoice = dataModel.startChoice;
-        this.choices = dataModel.choices;
-        this.startLabel = dataModel.startLabel;
-        this.endLabel = dataModel.endLabel;
-        CKEDITOR.disableAutoInline = true;
+            var elem = componentInfo.element.firstChild;
 
-        var elements = document.getElementsByClassName( 'editScaleQuestion' );
-        var editor = CKEDITOR.inline( elements[elements.length - 1],{
-            on : {
-                change: function (event) {
-                    var data = event.editor.getData();
-                    self.questionText(data);
-                }
-            },
-            startupFocus : true
-        });
+            var viewModel = function(dataModel){
 
-        dataModel.ckeditor = editor;
+                var self = this;
+                this.dataModel = dataModel;
+                this.questionText = dataModel.questionText;
+                this.margin = dataModel.margin;
+                this.startChoice = dataModel.startChoice;
+                this.choices = dataModel.choices;
+                this.startLabel = dataModel.startLabel;
+                this.endLabel = dataModel.endLabel;
+                CKEDITOR.disableAutoInline = true;
+
+                var editor = CKEDITOR.inline( elem,{
+                    on : {
+                        change: function (event) {
+                            var data = event.editor.getData();
+                            self.questionText(data);
+                        }
+                    },
+                    startupFocus : true
+                });
+
+                dataModel.ckeditor = editor;
+                elem.focus();
+            };
+            
+            return viewModel(dataModel);
+        }
     },
     template:
         '<div class="editScaleQuestion" contenteditable="true"><p>Your Question</p></div>\

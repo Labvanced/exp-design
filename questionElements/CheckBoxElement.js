@@ -94,37 +94,45 @@ CheckBoxElement.prototype.fromJS = function(data) {
 console.log("register checkbox element edit...");
 
 ko.components.register('checkbox-element-edit', {
-    viewModel: function(dataModel){
-        this.dataModel = dataModel;
-        this.questionText = dataModel.questionText;
-        this.choices = dataModel.choices;
-        this.answer = dataModel.answer;
-        this.margin = dataModel.margin;
-        this.name = dataModel.parent.name;
+    viewModel: {
+        createViewModel: function(dataModel, componentInfo){
 
-        this.addChoice = function() {
-            this.choices.push(ko.observable("check"));
-            this.answer.push(false);
-        };
 
-        this.removeChoice = function(idx) {
-            this.choices.splice(idx,1);
-            this.answer.splice(idx,1);
-        };
+            var viewModel = function(dataModel){
+                this.dataModel = dataModel;
+                this.questionText = dataModel.questionText;
+                this.choices = dataModel.choices;
+                this.answer = dataModel.answer;
+                this.margin = dataModel.margin;
+                this.name = dataModel.parent.name;
 
-        this.focus = function () {
-            if(dataModel.ckeditor){
-                dataModel.ckeditor.focus();
-            }
-        };
+                this.addChoice = function() {
+                    this.choices.push(ko.observable("check"));
+                    this.answer.push(false);
+                };
 
+                this.removeChoice = function(idx) {
+                    this.choices.splice(idx,1);
+                    this.answer.splice(idx,1);
+                };
+
+                this.focus = function () {
+                    if(dataModel.ckeditor){
+                        dataModel.ckeditor.focus();
+                    }
+                };
+
+            };
+
+            return viewModel(dataModel);
+        }
     },
     template:
     '<div class="panel-body" style="height: 100%; margin-top: -10px">\
                 <div>\
                     <span>Element Tag:</span>\
                     <br>\
-                    <input style="max-width:50%;" type="text" data-bind="textInput: name"> \
+                    <input style="max-width:50%;" type="text" data-bind="textInput: $parent.name"> \
                 </div>\
                 <br>\
                 <div>\
@@ -137,30 +145,37 @@ ko.components.register('checkbox-element-edit', {
 });
 
 ko.components.register('checkbox-preview',{
-    viewModel: function(dataModel){
+    viewModel: {
+        createViewModel: function(dataModel, componentInfo){
 
-        var self = this;
-        this.dataModel = dataModel;
-        this.questionText = dataModel.questionText;
-        this.choices = dataModel.choices;
-        this.margin = dataModel.margin;
-        this.name = dataModel.parent.name;
-        this.count = dataModel.count;
+            var elem = componentInfo.element.firstChild;
 
-        CKEDITOR.disableAutoInline = true;
+            var viewModel = function(dataModel){
 
-        var elements = document.getElementsByClassName( 'editCheckQuestion' );
-        var editor = CKEDITOR.inline( elements[elements.length - 1],{
-            on : {
-                change: function (event) {
-                    var data = event.editor.getData();
-                    self.questionText(data);
-                }
-            },
-            startupFocus : true
-        });
+                var self = this;
+                this.dataModel = dataModel;
+                this.questionText = dataModel.questionText;
+                this.choices = dataModel.choices;
+                this.margin = dataModel.margin;
+                this.count = dataModel.count;
 
-        dataModel.ckeditor = editor;
+                CKEDITOR.disableAutoInline = true;
+
+                var editor = CKEDITOR.inline( elem,{
+                    on : {
+                        change: function (event) {
+                            var data = event.editor.getData();
+                            self.questionText(data);
+                        }
+                    },
+                    startupFocus : true
+                });
+
+                dataModel.ckeditor = editor;
+            };
+
+            return viewModel(dataModel);
+        }
     },
     template:
         '<div class="editCheckQuestion" contenteditable="true"><p>Your Question</p></div>\
@@ -174,41 +189,6 @@ ko.components.register('checkbox-preview',{
         </div>\
         <br>'
 });
-
-ko.bindingHandlers.wysiwyg = {
-    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-        var ckEditorValue = valueAccessor();
-        var $element = $(element);
-        $element.attr('contenteditable', true);
-        var ignoreChanges = false;
-
-        var instance = CKEDITOR.inline(element, {
-            on: {
-                change: function() {
-                    ignoreChanges = true;
-                    ckEditorValue(instance.getData());
-                    ignoreChanges = false;
-                }
-            }
-        });
-
-        instance.setData(ckEditorValue());
-
-        ckEditorValue.subscribe(function(newValue) {
-            if (!ignoreChanges) {
-                instance.setData(newValue);
-            }
-        });
-
-        ko.utils.domNodeDisposal.addDisposeCallback(element,
-            function () {
-                instance.updateElement();
-                instance.destroy();
-            });
-
-    }
-};
-
 
 ko.components.register('checkbox-playerview', {
     viewModel: function(dataModel){

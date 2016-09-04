@@ -80,35 +80,42 @@ MChoiceElement.prototype.fromJS = function(data) {
 };
 
 ko.components.register('choice-element-edit', {
-    viewModel: function(dataModel){
-        this.dataModel = dataModel;
-        this.questionText = dataModel.questionText;
-        this.choices = dataModel.choices;
-        this.answer = dataModel.answer;
-        this.margin = dataModel.margin;
-        this.name = dataModel.parent.name;
+    viewModel: {
+        createViewModel: function(dataModel, componentInfo){
 
-        this.addChoice = function() {
-            this.choices.push(ko.observable("choice"));
-        };
+            var viewModel = function(dataModel){
+                this.dataModel = dataModel;
+                this.questionText = dataModel.questionText;
+                this.choices = dataModel.choices;
+                this.answer = dataModel.answer;
+                this.margin = dataModel.margin;
+                this.name = dataModel.parent.name;
 
-        this.removeChoice = function(idx) {
-            this.choices.splice(idx,1);
-        };
+                this.addChoice = function() {
+                    this.choices.push(ko.observable("choice"));
+                };
 
-        this.focus = function () {
-            if(dataModel.ckeditor){
-                dataModel.ckeditor.focus();
-            }
-        };
+                this.removeChoice = function(idx) {
+                    this.choices.splice(idx,1);
+                };
 
+                this.focus = function () {
+                    if(dataModel.ckeditor){
+                        dataModel.ckeditor.focus();
+                    }
+                };
+
+            };
+
+            return viewModel(dataModel);
+        }
     },
     template:
         '<div class="panel-body" style="height: 100%; margin-top: -10px">\
                     <div>\
                         <span>Element Tag:</span>\
                         <br>\
-                        <input style="max-width:50%;" type="text" data-bind="textInput: name"> \
+                        <input style="max-width:50%;" type="text" data-bind="textInput: $parent.name"> \
                     </div>\
                     <br>\
                     <div>\
@@ -121,30 +128,36 @@ ko.components.register('choice-element-edit', {
 });
 
 ko.components.register('choice-preview',{
-    viewModel: function(dataModel){
+    viewModel: {
+        createViewModel: function(dataModel, componentInfo){
 
-        var self = this;
-        this.dataModel = dataModel;
-        this.questionText = dataModel.questionText;
-        this.choices = dataModel.choices;
-        this.margin = dataModel.margin;
-        this.name = dataModel.parent.name;
-        this.count = dataModel.count;
+            var elem = componentInfo.element.firstChild;
+            var viewModel = function(dataModel){
 
-        CKEDITOR.disableAutoInline = true;
+                var self = this;
+                this.dataModel = dataModel;
+                this.questionText = dataModel.questionText;
+                this.choices = dataModel.choices;
+                this.margin = dataModel.margin;
+                this.count = dataModel.count;
 
-        var elements = document.getElementsByClassName( 'editChoiceQuestion' );
-        var editor = CKEDITOR.inline( elements[elements.length - 1],{
-            on : {
-                change: function (event) {
-                    var data = event.editor.getData();
-                    self.questionText(data);
-                }
-            },
-            startupFocus : true
-        });
+                CKEDITOR.disableAutoInline = true;
 
-        dataModel.ckeditor = editor;
+                var editor = CKEDITOR.inline( elem,{
+                    on : {
+                        change: function (event) {
+                            var data = event.editor.getData();
+                            self.questionText(data);
+                        }
+                    },
+                    startupFocus : true
+                });
+
+                dataModel.ckeditor = editor;
+            };
+
+            return viewModel(dataModel);
+        }
     },
     template:
         '<div class="editChoiceQuestion" contenteditable="true"><p>Your Question</p></div>\

@@ -83,28 +83,35 @@ RangeElement.prototype.fromJS = function(data) {
 
 
 ko.components.register('range-element-edit', {
-    viewModel: function(dataModel){
+    viewModel: {
+        createViewModel: function(dataModel, componentInfo){
 
-        this.dataModel = dataModel;
-        this.questionText = dataModel.questionText;
-        this.minChoice = dataModel.minChoice;
-        this.maxChoice = dataModel.maxChoice;
-        this.startLabel = dataModel.startLabel;
-        this.endLabel = dataModel.endLabel;
-        this.name = dataModel.parent.name;
+            var viewModel = function(dataModel){
 
-        this.focus = function () {
-            if(dataModel.ckeditor){
-                dataModel.ckeditor.focus();
-            }
-        };
+                this.dataModel = dataModel;
+                this.questionText = dataModel.questionText;
+                this.minChoice = dataModel.minChoice;
+                this.maxChoice = dataModel.maxChoice;
+                this.startLabel = dataModel.startLabel;
+                this.endLabel = dataModel.endLabel;
+                this.name = dataModel.parent.name;
 
+                this.focus = function () {
+                    if(dataModel.ckeditor){
+                        dataModel.ckeditor.focus();
+                    }
+                };
+
+            };
+
+            return viewModel(dataModel)
+        }
     },
     template: '<div class="panel-body" style="height: 100%; margin-top: -10px">\
                 <div>\
                     <span>Element Tag:</span>\
                     <br>\
-                    <input style="max-width:50%;" type="text" data-bind="textInput: name"> \
+                    <input style="max-width:50%;" type="text" data-bind="textInput: $parent.name"> \
                 </div>\
                 <br>\
         <strong>Range:</strong>\
@@ -117,29 +124,37 @@ ko.components.register('range-element-edit', {
 });
 
 ko.components.register('range-preview',{
-    viewModel: function(dataModel){
+    viewModel: {
+        createViewModel: function(dataModel, componentInfo){
 
-        var self = this;
-        this.dataModel = dataModel;
-        this.questionText = dataModel.questionText;
-        this.minChoice = dataModel.minChoice;
-        this.maxChoice = dataModel.maxChoice;
-        this.startLabel = dataModel.startLabel;
-        this.endLabel = dataModel.endLabel;
-        CKEDITOR.disableAutoInline = true;
+            var elem = componentInfo.element.firstChild;
 
-        var elements = document.getElementsByClassName( 'editRangeQuestion' );
-        var editor = CKEDITOR.inline( elements[elements.length - 1],{
-            on : {
-                change: function (event) {
-                    var data = event.editor.getData();
-                    self.questionText(data);
-                }
-            },
-            startupFocus : true
-        });
+            var viewModel = function(dataModel){
 
-        dataModel.ckeditor = editor;
+                var self = this;
+                this.dataModel = dataModel;
+                this.questionText = dataModel.questionText;
+                this.minChoice = dataModel.minChoice;
+                this.maxChoice = dataModel.maxChoice;
+                this.startLabel = dataModel.startLabel;
+                this.endLabel = dataModel.endLabel;
+                CKEDITOR.disableAutoInline = true;
+
+                var editor = CKEDITOR.inline( elem,{
+                    on : {
+                        change: function (event) {
+                            var data = event.editor.getData();
+                            self.questionText(data);
+                        }
+                    },
+                    startupFocus : true
+                });
+
+                dataModel.ckeditor = editor;
+            };
+
+            return viewModel(dataModel);
+        }
     },
     template:
         '<div class="editRangeQuestion" contenteditable="true"><p>Your Question</p></div>\

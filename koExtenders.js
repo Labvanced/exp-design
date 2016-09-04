@@ -70,3 +70,37 @@ ko.extenders.numeric = function(target, precision) {
     //return the new computed observable
     return result;
 };
+
+ko.bindingHandlers.wysiwyg = {
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var ckEditorValue = valueAccessor();
+        var $element = $(element);
+        $element.attr('contenteditable', true);
+        var ignoreChanges = false;
+
+        var instance = CKEDITOR.inline(element, {
+            on: {
+                change: function() {
+                    ignoreChanges = true;
+                    ckEditorValue(instance.getData());
+                    ignoreChanges = false;
+                }
+            }
+        });
+
+        instance.setData(ckEditorValue());
+
+        ckEditorValue.subscribe(function(newValue) {
+            if (!ignoreChanges) {
+                instance.setData(newValue);
+            }
+        });
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element,
+            function () {
+                instance.updateElement();
+                instance.destroy();
+            });
+
+    }
+};
