@@ -39,7 +39,7 @@ TriggerMouse.prototype.getParameterSpec = function() {
     ];
 };
 
-TriggerMouse.prototype.setupOnFrameView = function(playerFrame) {
+TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
 
     var self = this;
 
@@ -117,6 +117,10 @@ TriggerMouse.prototype.setupOnFrameView = function(playerFrame) {
 
 };
 
+TriggerMouse.prototype.destroyOnPlayerFrame = function(playerFrame) {
+
+};
+
 TriggerMouse.prototype.fromJS = function(data) {
     this.buttonType(data.buttonType);
     this.interactionType(data.interactionType);
@@ -191,7 +195,7 @@ TriggerKeyboard.prototype.getParameterSpec = function() {
     ];
 };
 
-TriggerKeyboard.prototype.setupOnFrameView = function(playerFrame) {
+TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
     // TODO: to trigger call function this.event.triggerActions(variables)
 
     var self =this;
@@ -220,6 +224,10 @@ TriggerKeyboard.prototype.setupOnFrameView = function(playerFrame) {
             });
         })(event);
     }
+};
+
+TriggerKeyboard.prototype.destroyOnPlayerFrame = function(playerFrame) {
+
 };
 
 TriggerKeyboard.prototype.fromJS = function(data) {
@@ -261,8 +269,13 @@ TriggerOnFrameStart.prototype.getParameterSpec = function() {
     ];
 };
 
-TriggerOnFrameStart.prototype.setupOnFrameView = function(playerFrame) {
-    // TODO: to trigger call function this.event.triggerActions(variables)
+TriggerOnFrameStart.prototype.setupOnPlayerFrame = function(playerFrame) {
+    // just trigger directly, because this function is called on frame start:
+    this.event.triggerActions([]);
+};
+
+TriggerOnFrameStart.prototype.destroyOnPlayerFrame = function(playerFrame) {
+
 };
 
 TriggerOnFrameStart.prototype.fromJS = function(data) {
@@ -301,11 +314,19 @@ TriggerOnFrameEnd.prototype.setPointers = function(entitiesArr) {
 
 TriggerOnFrameEnd.prototype.getParameterSpec = function() {
     return [
+        "totalFrameTime"
     ];
 };
 
-TriggerOnFrameEnd.prototype.setupOnFrameView = function(playerFrame) {
-    // TODO: to trigger call function this.event.triggerActions(variables)
+TriggerOnFrameEnd.prototype.setupOnPlayerFrame = function(playerFrame) {
+    var self = this;
+    playerFrame.onFrameEndCallbacks.push(function(){
+        self.event.triggerActions([playerFrame.getFrameTime()]);
+    });
+};
+
+TriggerOnFrameEnd.prototype.destroyOnPlayerFrame = function(playerFrame) {
+
 };
 
 TriggerOnFrameEnd.prototype.fromJS = function(data) {
@@ -347,8 +368,12 @@ TriggerTimerReached.prototype.getParameterSpec = function() {
     ];
 };
 
-TriggerTimerReached.prototype.setupOnFrameView = function(playerFrame) {
+TriggerTimerReached.prototype.setupOnPlayerFrame = function(playerFrame) {
     // TODO: to trigger call function this.event.triggerActions(variables)
+};
+
+TriggerTimerReached.prototype.destroyOnPlayerFrame = function(playerFrame) {
+
 };
 
 TriggerTimerReached.prototype.fromJS = function(data) {
@@ -378,6 +403,9 @@ var TriggerVariableValueChanged = function(event) {
 
     // serialized
     this.variable = ko.observable(null);
+
+    // not serialized:
+    this.subscriberHandle = null;
 };
 
 TriggerVariableValueChanged.prototype.type = "TriggerVariableValueChanged";
@@ -407,11 +435,19 @@ TriggerVariableValueChanged.prototype.reAddEntities = function(entitiesArr) {
 
 TriggerVariableValueChanged.prototype.getParameterSpec = function() {
     return [
+        "newValue"
     ];
 };
 
-TriggerVariableValueChanged.prototype.setupOnFrameView = function(playerFrame) {
-    // TODO: to trigger call function this.event.triggerActions(variables)
+TriggerVariableValueChanged.prototype.setupOnPlayerFrame = function(playerFrame) {
+    var self = this;
+    this.subscriberHandle = this.variable().value.subscribe(function(newVal){
+        self.event.triggerActions(newVal)
+    })
+};
+
+TriggerVariableValueChanged.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    this.subscriberHandle.dispose();
 };
 
 TriggerVariableValueChanged.prototype.fromJS = function(data) {

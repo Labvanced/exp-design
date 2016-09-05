@@ -81,57 +81,43 @@ ActionRecord.prototype.reAddEntities = function(entitiesArr) {
 
 ActionRecord.prototype.run = function(recInput) {
 
-    var tag = recInput[0];
-    var reactionTime = recInput[1];
     var blockId = player.getBlockId();
     var trialId = player.getTrialId();
 
     var specialRecs = this.specialRecordings();
-    for (var i =0; i<specialRecs.length; i++){
-        var name= specialRecs[i].recType;
-        var shouldBeRec= specialRecs[i].isRecorded;
-        var varToSave = specialRecs[i].variable().id();
-
-        switch (name){
-            case "elementTag":
-                    if (shouldBeRec){
-                        var recData = new RecData(varToSave, tag);
-                        player.addRecording(blockId,trialId,recData.toJS());
-                        break;
-                    }
-            case "reactionTime":
-                if (shouldBeRec){
-                    var recData = new RecData(varToSave, reactionTime);
-                    player.addRecording(blockId,trialId,recData.toJS());
-                    break;
-                }
+    for (var i = 0; i < specialRecs.length; i++) {
+        var valueToRecord = recInput[i];
+        var varToSave = specialRecs[i].variable();
+        if (specialRecs[i].isRecorded()) {
+            varToSave.value(valueToRecord);
+            var recData = new RecData(varToSave.id(), valueToRecord);
+            player.addRecording(blockId, trialId, recData.toJS());
         }
     }
 
     var selectedRecs = this.selectedRecordings();
-    for (var i =0; i<selectedRecs.length; i++){
-        var name= specialRecs[i].recType;
-        var shouldBeRec= specialRecs[i].isRecorded;
-        var varToSave = specialRecs[i].variable;
+    for (var i = 0; i < selectedRecs.length; i++) {
+        var name = selectedRecs[i].recType;
+        var shouldBeRec = selectedRecs[i].isRecorded();
+        var varToSave = selectedRecs[i].variable();
 
-        switch (name){
+        switch (name) {
             case "elementTag":
-                if (shouldBeRec){
-                    var recData = new RecData(varToSave, tag);
-                    player.addRecording(blockId,trialId,recData.toJS());
-                    break;
+                if (shouldBeRec) {
+                    var tag = "TODO";
+                    var recData = new RecData(varToSave.id(), tag);
+                    player.addRecording(blockId, trialId, recData.toJS());
                 }
+                break;
             case "reactionTime":
-                if (shouldBeRec){
-                    var recData = new RecData(varToSave, reactionTime);
-                    player.addRecording(blockId,trialId,recData.toJS());
-                    break;
+                if (shouldBeRec) {
+                    var reactionTime = "TODO";
+                    var recData = new RecData(varToSave.id(), reactionTime);
+                    player.addRecording(blockId, trialId, recData.toJS());
                 }
+                break;
         }
     }
-
-
-
 };
 
 ActionRecord.prototype.fromJS = function(data) {
@@ -250,7 +236,7 @@ ActionSetElementProp.prototype.addProperty = function() {
             value(0);
         }
         else  if (newVal == "set") {
-            var currentValue = self.event.parent.elements.byId[self.target()][prop()]();
+            var currentValue = self.target()[prop()]();
             value(currentValue);
         }
 
