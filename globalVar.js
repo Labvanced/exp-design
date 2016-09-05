@@ -7,13 +7,16 @@ var GlobalVar = function (expData) {
     this.id = ko.observable(guid());
     this.type = "GlobalVar";
     this.name = ko.observable("newVariable");
-    this.subtype = ko.observable("undefined");
     this.dataType = ko.observable("undefined");
     this.scale = ko.observable("undefined");
     this.scope = ko.observable("undefined");
     this.isFactor =  ko.observable(false);
     this.isInteracting = ko.observable(false);
     this.levels = ko.observableArray([]);
+
+    this.isNameEditable = true; // this is set to false for variables that are created by our platform
+    this.isScaleEditable = true; // this is set to false for variables that are created by our platform
+    this.isDataTypeEditable = true; // this is set to false for variables that are created by our platform
 
     // not serialized:
     this.editName =  ko.observable(false);
@@ -23,13 +26,40 @@ var GlobalVar = function (expData) {
 };
 
 // enum definitions:
-GlobalVar.subtypes = ['custom','id', 'sequence', 'condition', 'stimulus property', 'user decision', 'user response time',  'user questionnaire response','physiological recording'];
 GlobalVar.scales = ['undefined', 'nominal', 'ordinal', 'interval', 'ratio'];
-GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime'];
-GlobalVar.scopes = ['undefined', 'participant','session','block','task','trial'];
+GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime', 'timer', 'structure'];
+GlobalVar.scopes = ['subject','task','trial'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];
+
+// definition of what dataTypes are allowed for each scale:
+GlobalVar.allowedDataTypePerScale = {
+    'undefined': ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime', 'timer'],
+    'nominal': ['undefined', 'string', 'numeric', 'boolean', 'categorical'],
+    'ordinal': ['undefined', 'numeric', 'boolean', 'categorical', 'datetime'],
+    'interval': ['undefined', 'numeric', 'datetime', 'timer'],
+    'ratio': ['undefined', 'numeric', 'datetime', 'timer']
+};
+// now create the inverted mapping:
+GlobalVar.allowedScalePerDataType = {};
+for (var i=0; i<GlobalVar.dataTypes.length; i++){
+    GlobalVar.allowedScalePerDataType[GlobalVar.dataTypes[i]] = [];
+}
+for (var i=0; i<GlobalVar.scales.length; i++){
+    var allowedDataTypes = GlobalVar.allowedDataTypePerScale[GlobalVar.scales[i]];
+    for (var j=0; j<allowedDataTypes.length; j++){
+        GlobalVar.allowedScalePerDataType[allowedDataTypes[j]].push(GlobalVar.scales[i]);
+    }
+}
+
+GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
+    this.dataType(dataType);
+    this.scope(scope);
+    this.scale(scale);
+    this.name(name);
+    return this;
+};
 
 GlobalVar.prototype.setPointers = function(entitiesArr) {
 
@@ -55,8 +85,14 @@ GlobalVar.prototype.removeBackRef = function(entity) {
     }
 };
 
+GlobalVar.prototype.setValue = function(val) {
+    // TODO: dataType conversions
+    this.value(val);
+};
+
 GlobalVar.prototype.getValue = function() {
-    this.value();
+    // TODO: dataType conversions
+    return this.value();
 };
 
 GlobalVar.prototype.addLevel = function() {
@@ -88,7 +124,6 @@ GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
 GlobalVar.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
-    this.subtype(data.subtype);
     this.dataType(data.dataType);
     this.scale(data.scale);
     this.scope(data.scope);
@@ -105,7 +140,6 @@ GlobalVar.prototype.toJS = function() {
     return {
         id: this.id(),
         name: this.name(),
-        subtype: this.subtype(),
         dataType: this.dataType(),
         scale: this.scale(),
         scope: this.scope(),

@@ -25,7 +25,6 @@ MChoiceElement.prototype.modifiableProp = ["questionText"];
 
 MChoiceElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[7]);
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);

@@ -15,7 +15,7 @@ var ExpTrialLoop = function (expData) {
     this.subSequence = ko.observable(new Sequence(this.expData));
     this.subSequence().parent = this;
 
-    // Variables
+    // Variables that are recorded per trial:
     this.trialUniqueIdVar = ko.observable(null);
     this.trialTypeIdVar = ko.observable(null);
     this.trialOrderVar = ko.observable(null);
@@ -257,7 +257,6 @@ ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
     }
     else {
         var trialEmotionVar = new GlobalVar(this.expData);
-        trialEmotionVar.subtype(GlobalVar.subtypes[8]);
         trialEmotionVar.dataType(GlobalVar.dataTypes[2]);
         trialEmotionVar.scope(GlobalVar.scopes[6]);
         trialEmotionVar.scale(GlobalVar.scales[4]);
@@ -334,13 +333,9 @@ ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
 
 
 ExpTrialLoop.prototype.addFactor = function() {
-    var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[3]);
-    globalVar.dataType(GlobalVar.dataTypes[2]);
-    globalVar.scope(GlobalVar.scopes[6]);
-    globalVar.scale(GlobalVar.scales[2]);
-    globalVar.name("factor_" + (this.factors().length+1));
 
+    var newName = "factor_" + (this.factors().length+1);
+    var globalVar = (new GlobalVar(this.expData)).initProperties('categorical', 'trial', 'nominal', newName);
     globalVar.isFactor(true);
     globalVar.isInteracting(true);
     globalVar.addLevel();
@@ -366,13 +361,9 @@ ExpTrialLoop.prototype.removeFactor = function(idx) {
 
 
 ExpTrialLoop.prototype.addSepTrialType= function() {
-    var globalVar = new GlobalVar(this.expData);
-    globalVar.subtype(GlobalVar.subtypes[3]);
-    globalVar.dataType(GlobalVar.dataTypes[2]);
-    globalVar.scope(GlobalVar.scopes[6]);
-    globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name("nonint_factor_" + (this.additionalTrialTypes().length+1));
 
+    var newName = "nonint_factor_" + (this.additionalTrialTypes().length+1);
+    var globalVar = (new GlobalVar(this.expData)).initProperties('categorical', 'trial', 'nominal', newName);
     globalVar.isFactor(true);
     globalVar.addLevel();
     this.additionalTrialTypes.push(globalVar);

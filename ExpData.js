@@ -6,22 +6,26 @@ var ExpData = function () {
     this.groups = ko.observableArray([]).extend({sortById: null});
     this.expBlocks = ko.observableArray([]).extend({sortById: null});
 
-    this.expName =  ko.observable();
-    this.subjectId =  ko.observable();
-    this.groupId =  ko.observable();
-    this.timeStamp =  ko.observable();
-    this.sessionNr =  ko.observable();
+    // the following variables are recorded once per subject:
+    this.varSubjectId =  ko.observable();
+    this.varSubjectIndex =  ko.observable();
+    this.varGroupId =  ko.observable();
+    // the following variables are recorded once per task:
+    this.varSessionTimeStamp =  ko.observable();
+    this.varSessionId =  ko.observable();
+    this.varSessionIndex =  ko.observable();
+    this.varBlockId =  ko.observable();
+    this.varBlockIndex =  ko.observable();
+    this.varTaskId =  ko.observable();
+    this.varTaskIndex =  ko.observable();
 
     this.vars = ko.computed(function() {
-        if (this.hasOwnProperty("expName")){
-            return [this.expName(), this.subjectId(), this.groupId(),this.timeStamp(), this.sessionNr()];
+        var varArray = [];
+        for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+            varArray.push( this[ExpData.prototype.fixedVarNames[i]]());
         }
-        else{
-            return [];
-        }
+        return varArray;
     }, this);
-
-
 };
 
 
@@ -31,50 +35,38 @@ ExpData.prototype.setPointers = function() {
     jQuery.each( allEntitiesArray, function( index, elem ) {
         elem.setPointers(self.entities);
     } );
-    this.expName(this.entities.byId[this.expName()]);
-    this.subjectId(this.entities.byId[this.subjectId()]);
-    this.groupId(this.entities.byId[this.groupId()]);
-    this.timeStamp(this.entities.byId[this.timeStamp()]);
-    this.sessionNr(this.entities.byId[this.sessionNr()]);
+
+    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+        var varId = this[ExpData.prototype.fixedVarNames[i]]();
+        var varInstance = this.entities.byId[varId];
+        this[ExpData.prototype.fixedVarNames[i]](varInstance);
+    }
 };
 
-ExpData.prototype.setVars = function() {
+ExpData.prototype.fixedVarNames = [
+    'varSubjectId',
+    'varSubjectIndex',
+    'varGroupId',
+    'varSessionTimeStamp',
+    'varSessionId',
+    'varSessionIndex',
+    'varBlockId',
+    'varBlockIndex',
+    'varTaskId',
+    'varTaskIndex'
+];
 
-    this.expName(new GlobalVar(this.expData));
-    this.expName().subtype(GlobalVar.subtypes[1]);
-    this.expName().dataType(GlobalVar.dataTypes[1]);
-    this.expName().scope(GlobalVar.scopes[1]);
-    this.expName().scale(GlobalVar.scales[1]);
-    this.expName().name('Experiment Id');
-
-    this.subjectId(new GlobalVar(this.expData));
-    this.subjectId().subtype(GlobalVar.subtypes[1]);
-    this.subjectId().dataType(GlobalVar.dataTypes[1]);
-    this.subjectId().scope(GlobalVar.scopes[1]);
-    this.subjectId().scale(GlobalVar.scales[1]);
-    this.subjectId().name('Subject Id');
-
-    this.groupId(new GlobalVar(this.expData));
-    this.groupId().subtype(GlobalVar.subtypes[1]);
-    this.groupId().dataType(GlobalVar.dataTypes[1]);
-    this.groupId().scope(GlobalVar.scopes[1]);
-    this.groupId().scale(GlobalVar.scales[1]);
-    this.groupId().name('Group Id');
-
-    this.timeStamp(new GlobalVar(this.expData));
-    this.timeStamp().subtype(GlobalVar.subtypes[1]);
-    this.timeStamp().dataType(GlobalVar.dataTypes[1]);
-    this.timeStamp().scope(GlobalVar.scopes[2]);
-    this.timeStamp().scale(GlobalVar.scales[1]);
-    this.timeStamp().name('Time Stamp');
-
-    this.sessionNr(new GlobalVar(this.expData));
-    this.sessionNr().subtype(GlobalVar.subtypes[1]);
-    this.sessionNr().dataType(GlobalVar.dataTypes[2]);
-    this.sessionNr().scope(GlobalVar.scopes[2]);
-    this.sessionNr().scale(GlobalVar.scales[1]);
-    this.sessionNr().name('Session Number');
-
+ExpData.prototype.createVars = function() {
+    this.varSubjectId((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Subject Id'));
+    this.varSubjectIndex((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'nominal', 'Subject Index'));
+    this.varGroupId((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group Id'));
+    this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session Start Time'));
+    this.varSessionId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Session Id'));
+    this.varSessionIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Session Index'));
+    this.varBlockId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Block Id'));
+    this.varBlockIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Block Index'));
+    this.varTaskId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Task Id'));
+    this.varTaskIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Task Index'));
 };
 
 
@@ -102,11 +94,11 @@ ExpData.prototype.fromJS = function(data) {
             return entity;
         }));
     }
-    this.expName(data.expName);
-    this.subjectId(data.subjectId);
-    this.groupId(data.groupId);
-    this.timeStamp(data.timeStamp);
-    this.sessionNr(data.sessionNr);
+
+    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+        var varName = ExpData.prototype.fixedVarNames[i];
+        this[varName](data[varName]);
+    }
 
     return this;
 };
@@ -133,22 +125,12 @@ ExpData.prototype.reAddEntities = function() {
         elem.reAddEntities(entitiesArr);
     } );
 
-    if (!entitiesArr.byId.hasOwnProperty(this.expName().id())) {
-        entitiesArr.push(this.expName());
+    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+        var varInstance = this[ExpData.prototype.fixedVarNames[i]]();
+        if (!entitiesArr.byId.hasOwnProperty(varInstance.id())) {
+            entitiesArr.push(varInstance);
+        }
     }
-    if (!entitiesArr.byId.hasOwnProperty(this.subjectId().id())) {
-        entitiesArr.push(this.subjectId());
-    }
-    if (!entitiesArr.byId.hasOwnProperty(this.groupId().id())) {
-        entitiesArr.push(this.groupId());
-    }
-    if (!entitiesArr.byId.hasOwnProperty(this.timeStamp().id())) {
-        entitiesArr.push(this.timeStamp());
-    }
-    if (!entitiesArr.byId.hasOwnProperty(this.sessionNr().id())) {
-        entitiesArr.push(this.sessionNr());
-    }
-
 };
 
 ExpData.prototype.toJS = function() {
@@ -161,17 +143,19 @@ ExpData.prototype.toJS = function() {
         sessionsPerGroup.push(groups[i].sessions().length);
     }
 
-    // save to JSON:
-    return {
+    var data = {
         entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
         numGroups: this.groups().length,
-        sessionsPerGroup: sessionsPerGroup,
-        expName: this.expName().id(),
-        subjectId: this.subjectId().id(),
-        groupId: this.groupId().id(),
-        sessionNr: this.sessionNr().id(),
-        timeStamp: this.timeStamp().id()
+        sessionsPerGroup: sessionsPerGroup
     };
+
+    // add all variable ids:
+    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+        var varName = ExpData.prototype.fixedVarNames[i];
+        data[varName] = this[varName]().id();
+    }
+
+    return data;
 };
 
 
@@ -252,34 +236,30 @@ ExpData.prototype.addNewBlock = function() {
             if (blockNames[i] == 'Trial-Loop'){
                 // trial randomization, premade variable per exp trial loop
                 var trialUniqueId = new GlobalVar(this.expData);
-                trialUniqueId.subtype(GlobalVar.subtypes[1]);
-                trialUniqueId.dataType(GlobalVar.dataTypes[2]);
-                trialUniqueId.scope(GlobalVar.scopes[6]);
-                trialUniqueId.scale(GlobalVar.scales[2]);
+                trialUniqueId.dataType('numeric');
+                trialUniqueId.scope('trial');
+                trialUniqueId.scale('nominal');
                 trialUniqueId.name("Trial Id");
                 blockElements[i].trialUniqueIdVar(trialUniqueId);
 
                 var trialTypeIdVar = new GlobalVar(this.expData);
-                trialTypeIdVar.subtype(GlobalVar.subtypes[1]);
-                trialTypeIdVar.dataType(GlobalVar.dataTypes[2]);
-                trialTypeIdVar.scope(GlobalVar.scopes[6]);
-                trialTypeIdVar.scale(GlobalVar.scales[2]);
+                trialTypeIdVar.dataType('numeric');
+                trialTypeIdVar.scope('trial');
+                trialTypeIdVar.scale('nominal');
                 trialTypeIdVar.name("Trial Type");
                 blockElements[i].trialTypeIdVar(trialTypeIdVar);
 
                 var trialOrderVar = new GlobalVar(this.expData);
-                trialOrderVar.subtype(GlobalVar.subtypes[2]);
-                trialOrderVar.dataType(GlobalVar.dataTypes[2]);
-                trialOrderVar.scope(GlobalVar.scopes[6]);
-                trialOrderVar.scale(GlobalVar.scales[2]);
+                trialOrderVar.dataType('numeric');
+                trialOrderVar.scope('trial');
+                trialOrderVar.scale('interval');
                 trialOrderVar.name("Presentation Order");
                 blockElements[i].trialOrderVar(trialOrderVar);
 
                 var trialEmotionVar = new GlobalVar(this.expData);
-                trialEmotionVar.subtype(GlobalVar.subtypes[8]);
-                trialEmotionVar.dataType(GlobalVar.dataTypes[2]);
-                trialEmotionVar.scope(GlobalVar.scopes[6]);
-                trialEmotionVar.scale(GlobalVar.scales[4]);
+                trialEmotionVar.dataType('structure');
+                trialEmotionVar.scope('trial');
+                trialEmotionVar.scale('undefined');
                 trialEmotionVar.name("Emotion");
                 blockElements[i].trialEmotionVar(trialEmotionVar);
             }
