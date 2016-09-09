@@ -42,13 +42,13 @@ HtmlFrameElement.prototype.setupDiv = function() {
     this.div = document.createElement('div');
     $(this.div).css({
         "position": "absolute",
-        "opacity": this.dataModel.alpha()
+        "opacity": this.dataModel.visibility()
         //"backgroundColor": "white"
     });
     this.content = document.createElement('div');
     $(this.content).css({
         "position": "absolute",
-        "opacity": this.dataModel.alpha()
+        "opacity": this.dataModel.visibility()
     });
 
     this.text = document.createElement('p');
@@ -101,8 +101,8 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         this.y = ko.computed(function() {
             return this.dataModel.modifier().selectedTrialView.editorY();
         }, this);
-        this.alpha = ko.computed(function() {
-            return this.dataModel.modifier().selectedTrialView.alpha();
+        this.visibility = ko.computed(function() {
+            return this.dataModel.modifier().selectedTrialView.visibility();
         }, this);
         this.width = ko.computed(function() {
             return this.dataModel.modifier().selectedTrialView.editorWidth();
@@ -121,8 +121,8 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         this.y = ko.computed(function() {
             return this.dataModel.editorY();
         }, this);
-        this.alpha = ko.computed(function() {
-            return this.dataModel.alpha();
+        this.visibility = ko.computed(function() {
+            return this.dataModel.visibility();
         }, this);
         this.width = ko.computed(function() {
             return this.dataModel.editorWidth();
@@ -149,12 +149,12 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         self.update(false,true);
     });
 
-    this.alpha.subscribe(function(a) {
+    this.visibility.subscribe(function(a) {
         $(self.div).css({
-            "opacity": self.alpha()
+            "opacity": self.visibility()
         });
         $(self.content).css({
-            "opacity": self.alpha()
+            "opacity": self.visibility()
         });
     });
 
