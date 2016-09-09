@@ -13,6 +13,7 @@ var htmlElementData= function(expData) {
     this.editorWidth = ko.observable(320);
     this.editorHeight = ko.observable(180);
     this.contentScaling = ko.observable(1);
+    this.alpha = ko.observable(1);
     this.keepAspectRatio = ko.observable(false);
     this.id = ko.observable(guid());
     this.type = "htmlElementData";
@@ -35,8 +36,8 @@ htmlElementData.prototype.addContent = function(element){
     element.parent = this;
 };
 
-htmlElementData.prototype.dataType =      [ "numeric", "numeric", "numeric","numeric","string","string","boolean","string","boolean","boolean","boolean","boolean"];
-htmlElementData.prototype.modifiableProp = ["editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","contentScaling"];
+htmlElementData.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","string","string","boolean","string","boolean","boolean","boolean","boolean"];
+htmlElementData.prototype.modifiableProp = ["alpha","editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","contentScaling"];
 
 htmlElementData.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
@@ -93,6 +94,7 @@ htmlElementData.prototype.fromJS = function(data) {
     if(data.contentScaling) {
         this.contentScaling(data.contentScaling);
     }
+    this.alpha(data.alpha);
     this.isActive(data.isActive);
     this.keepAspectRatio(data.keepAspectRatio);
     if(data.content){
@@ -126,6 +128,7 @@ htmlElementData.prototype.toJS = function() {
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
         contentScaling: this.contentScaling(),
+        alpha: this.alpha(),
         isActive:  this.isActive(),
         keepAspectRatio: this.keepAspectRatio(),
         content: contentData

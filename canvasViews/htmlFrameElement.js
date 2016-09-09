@@ -42,11 +42,13 @@ HtmlFrameElement.prototype.setupDiv = function() {
     this.div = document.createElement('div');
     $(this.div).css({
         "position": "absolute",
+        "opacity": this.dataModel.alpha()
         //"backgroundColor": "white"
     });
     this.content = document.createElement('div');
     $(this.content).css({
-        "position": "absolute"
+        "position": "absolute",
+        "opacity": this.dataModel.alpha()
     });
 
     this.text = document.createElement('p');
@@ -99,6 +101,9 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         this.y = ko.computed(function() {
             return this.dataModel.modifier().selectedTrialView.editorY();
         }, this);
+        this.alpha = ko.computed(function() {
+            return this.dataModel.modifier().selectedTrialView.alpha();
+        }, this);
         this.width = ko.computed(function() {
             return this.dataModel.modifier().selectedTrialView.editorWidth();
         }, this);
@@ -115,6 +120,9 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         }, this);
         this.y = ko.computed(function() {
             return this.dataModel.editorY();
+        }, this);
+        this.alpha = ko.computed(function() {
+            return this.dataModel.alpha();
         }, this);
         this.width = ko.computed(function() {
             return this.dataModel.editorWidth();
@@ -139,6 +147,15 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
 
     this.y.subscribe(function(y) {
         self.update(false,true);
+    });
+
+    this.alpha.subscribe(function(a) {
+        $(self.div).css({
+            "opacity": self.alpha()
+        });
+        $(self.content).css({
+            "opacity": self.alpha()
+        });
     });
 
     this.width.subscribe(function(w) {
@@ -182,6 +199,7 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         });
     }
 };
+
 
 HtmlFrameElement.prototype.update = function(size,position){
 
