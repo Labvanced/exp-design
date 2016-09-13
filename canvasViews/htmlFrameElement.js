@@ -170,6 +170,14 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
         self.update(true,false);
     });
 
+    this.dataModel.anchorPointX.subscribe(function(newVal) {
+        self.update(false,true);
+    });
+
+    this.dataModel.anchorPointY.subscribe(function(newVal) {
+        self.update(false,true);
+    });
+
     this.isSelected.subscribe(function(newVal){
         if (newVal) {
             $(self.div).css({
@@ -272,9 +280,31 @@ HtmlFrameElement.prototype.update = function(size,position){
 
     if (position){
 
+        var left = 0;
+        if (this.dataModel.anchorPointX() == 'low'){
+            left = self.x();
+        }
+        else if(this.dataModel.anchorPointX() == 'high'){
+            left = self.x() - self.width();
+        }
+        else { // center
+            left = self.x() - self.width()/2;
+        }
+
+        var top = 0;
+        if (this.dataModel.anchorPointY() == 'low'){
+            top = self.y();
+        }
+        else if(this.dataModel.anchorPointY() == 'high'){
+            top = self.y() - self.height();
+        }
+        else { // center
+            top = self.y() - self.height()/2;
+        }
+
         $(this.div).css({
-            "left": self.x() * self.scale(),
-            "top": self.y() *self.scale()
+            "left": left * self.scale(),
+            "top": top * self.scale()
         });
 
     }
@@ -296,7 +326,29 @@ HtmlFrameElement.prototype.setWidthAndHeight = function(w,h) {
 
 };
 
-HtmlFrameElement.prototype.setCoord = function(x,y) {
+HtmlFrameElement.prototype.setCoord = function(left,top) {
+
+    var x = 0;
+    if (this.dataModel.anchorPointX() == 'low'){
+        x = left;
+    }
+    else if(this.dataModel.anchorPointX() == 'high'){
+        x = left + this.width();
+    }
+    else { // center
+        x = left + this.width()/2;
+    }
+
+    var y = 0;
+    if (this.dataModel.anchorPointY() == 'low'){
+        y = top;
+    }
+    else if(this.dataModel.anchorPointY() == 'high'){
+        y = top + this.height();
+    }
+    else { // center
+        y = top + this.height()/2;
+    }
 
     if (this.dataModel.hasOwnProperty('modifier')) {
         this.dataModel.modifier().selectedTrialView.editorX(x);

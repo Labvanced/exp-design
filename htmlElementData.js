@@ -13,6 +13,8 @@ var htmlElementData= function(expData) {
     this.editorWidth = ko.observable(320);
     this.editorHeight = ko.observable(180);
     this.contentScaling = ko.observable(1);
+    this.anchorPointX = ko.observable('center');
+    this.anchorPointY = ko.observable('center');
     this.visibility = ko.observable(1);
     this.keepAspectRatio = ko.observable(false);
     this.id = ko.observable(guid());
@@ -58,6 +60,12 @@ htmlElementData.prototype.addNewResponse = function() {
     this.responses.push(resp);
 };
 
+htmlElementData.prototype.setAnchorPoint = function(horizontal,vertical) {
+    this.anchorPointX(horizontal);
+    this.anchorPointY(vertical);
+    // TODO: convert old x and y coordinates to new coordinates such that the element does not move when switching modes.
+};
+
 htmlElementData.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
     this.content().modifier().selectTrialType(selectionSpec);
@@ -94,6 +102,12 @@ htmlElementData.prototype.fromJS = function(data) {
     if(data.contentScaling) {
         this.contentScaling(data.contentScaling);
     }
+    if(data.anchorPointX) {
+        this.anchorPointX(data.anchorPointX);
+    }
+    if(data.anchorPointY) {
+        this.anchorPointY(data.anchorPointY);
+    }
     this.visibility(data.visibility);
     this.isActive(data.isActive);
     this.keepAspectRatio(data.keepAspectRatio);
@@ -128,6 +142,8 @@ htmlElementData.prototype.toJS = function() {
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
         contentScaling: this.contentScaling(),
+        anchorPointX: this.anchorPointX(),
+        anchorPointY: this.anchorPointY(),
         visibility: this.visibility(),
         isActive:  this.isActive(),
         keepAspectRatio: this.keepAspectRatio(),
