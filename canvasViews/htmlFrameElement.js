@@ -278,7 +278,7 @@ HtmlFrameElement.prototype.update = function(size,position){
 
     }
 
-    if (position){
+    if (position || size){
 
         var left = 0;
         if (this.dataModel.anchorPointX() == 'low'){

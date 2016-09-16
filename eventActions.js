@@ -273,7 +273,10 @@ ActionSetElementProp.prototype.run = function() {
 
         // make sure to calculate on numeric
         var value =  changes[i].value();
-        var oldValue = target[property]();
+
+        //var oldValue = target[property]();
+        var oldValue = target.modifier().selectedTrialView[property]();
+
         if (typeof oldValue  === 'string'){
             oldValue = Number(oldValue);
         }
@@ -290,7 +293,8 @@ ActionSetElementProp.prototype.run = function() {
         else if (operatorType== 'set'){
             var newValue = value;
         }
-        target[property](newValue);
+        //target[property](newValue);
+        target.modifier().selectedTrialView[property](newValue);
     }
 
 };

@@ -43,7 +43,14 @@ Modifier.prototype.addProp = function(propName) {
         read: function () {
             var selectedTrialType = this.selectedTrialType();
             var selectionType = selectedTrialType.type;
-            var interactingFactors = this.interactingFactors();
+            var interactingFactors = $.map(this.interactingFactors(), function(factor) {
+                if (factor instanceof GlobalVar) {
+                    return factor.id();
+                }
+                else {
+                    return factor;
+                }
+            });
 
             if (selectionType=='wildcard'){
 
@@ -99,12 +106,7 @@ Modifier.prototype.addProp = function(propName) {
                 // construct indices:
                 var indices = [];
                 for (var t=0; t<interactingFactors.length; t++){
-                    if (factorsSelected[0] instanceof GlobalVar) {
-                        var factorId = factorsSelected.indexOf(interactingFactors[t]);
-                    }
-                    else {
-                        var factorId = factorsSelected.indexOf(interactingFactors[t].id());
-                    }
+                    var factorId = factorsSelected.indexOf(interactingFactors[t]);
                     indices.push(levelsSelected[factorId]);
                 }
 
@@ -135,7 +137,15 @@ Modifier.prototype.addProp = function(propName) {
             else if (selectionType=='noninteract'){
 
                 var factorSelected = selectedTrialType.factor;
-                var factorId = this.noninteractFactors().indexOf(factorSelected);
+                var noninteractingFactors = $.map(this.noninteractFactors(), function(factor) {
+                    if (factor instanceof GlobalVar) {
+                        return factor.id();
+                    }
+                    else {
+                        return factor;
+                    }
+                });
+                var factorId = noninteractingFactors.indexOf(factorSelected);
 
                 // check if this element depends on the selected factor:
                 if (!(factorId > -1)) {
@@ -164,7 +174,14 @@ Modifier.prototype.addProp = function(propName) {
 
             var selectedTrialType = this.selectedTrialType();
             var selectionType = selectedTrialType.type;
-            var interactingFactors = this.interactingFactors();
+            var interactingFactors = $.map(this.interactingFactors(), function(factor) {
+                if (factor instanceof GlobalVar) {
+                    return factor.id();
+                }
+                else {
+                    return factor;
+                }
+            });
 
             if (selectionType=='wildcard'){
 
@@ -244,7 +261,15 @@ Modifier.prototype.addProp = function(propName) {
                 // check if this element depends on the selected factor:
                 if (!(factorId > -1)) {
                     this.addFactorDependency(factorSelected);
-                    factorId = this.noninteractFactors().indexOf(factorSelected);
+                    var noninteractingFactors = $.map(this.noninteractFactors(), function(factor) {
+                        if (factor instanceof GlobalVar) {
+                            return factor.id();
+                        }
+                        else {
+                            return factor;
+                        }
+                    });
+                    factorId = noninteractingFactors.indexOf(factorSelected);
                 }
 
                 // read out the modifier:
@@ -274,6 +299,27 @@ Modifier.prototype.setPointers = function(entitiesArr) {
 };
 
 Modifier.prototype.selectTrialType = function(selectionSpec){
+    // convert factors to id-strings:
+
+    // 4 types possible:
+    // { type: 'default' }
+    // { type: 'interacting', trialTypesInteractingIdx: 8, factors: [factor1_obj, factor2_obj], levels: [4 2] } // the index of array ExpTrialLoop.trialTypesInteracting
+    // { type: 'noninteract', factor: noninteracting_factor2_obj, level: 5}
+    // { type: 'wildcard', factor: factor1_obj, level: 3}
+
+    if (selectionSpec.hasOwnProperty('factor')) {
+        if (selectionSpec.factor instanceof GlobalVar) {
+            selectionSpec.factor = selectionSpec.factor.id();
+        }
+    }
+    if (selectionSpec.hasOwnProperty('factors')) {
+        for (var i=0; i<selectionSpec.factors.length; i++){
+            if (selectionSpec.factors[i] instanceof GlobalVar) {
+                selectionSpec.factors[i] = selectionSpec.factors[i].id();
+            }
+        }
+    }
+
     this.selectedTrialType(selectionSpec);
 };
 
