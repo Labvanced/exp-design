@@ -88,8 +88,10 @@ ActionRecord.prototype.run = function(recInput) {
     for (var i = 0; i < specialRecs.length; i++) {
         var valueToRecord = recInput[i];
         var varToSave = specialRecs[i].variable();
-        if (specialRecs[i].isRecorded()) {
+        if (varToSave) {
             varToSave.value(valueToRecord);
+        }
+        if (specialRecs[i].isRecorded()) {
             var recData = new RecData(varToSave.id(), valueToRecord);
             player.addRecording(blockId, trialId, recData.toJS());
         }

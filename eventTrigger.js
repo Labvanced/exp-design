@@ -402,10 +402,10 @@ var TriggerVariableValueChanged = function(event) {
     this.event = event;
 
     // serialized
-    this.variable = ko.observable(null);
+    this.variables = ko.observableArray([]);
 
     // not serialized:
-    this.subscriberHandle = null;
+    this.subscriberHandles = [];
 };
 
 TriggerVariableValueChanged.prototype.type = "TriggerVariableValueChanged";
@@ -420,17 +420,22 @@ TriggerVariableValueChanged.prototype.isValid = function() {
 };
 
 TriggerVariableValueChanged.prototype.setPointers = function(entitiesArr) {
-    if (this.variable()){
-        var globVar = entitiesArr.byId[this.variable()];
-        this.variable(globVar);
+    var variableIds = this.variables();
+    var variables = [];
+    for (var i=0; i<variableIds.length; i++) {
+        var globVar = entitiesArr.byId[variableIds[i]];
+        variables.push(globVar);
         this.setVariableBackRef(globVar);
     }
+    this.variables(variables);
 };
 
 TriggerVariableValueChanged.prototype.reAddEntities = function(entitiesArr) {
-    if (this.variable()){
-        entitiesArr.push(this.variable());
-    }
+    jQuery.each( this.variables(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
+    } );
 };
 
 TriggerVariableValueChanged.prototype.getParameterSpec = function() {
@@ -441,29 +446,36 @@ TriggerVariableValueChanged.prototype.getParameterSpec = function() {
 
 TriggerVariableValueChanged.prototype.setupOnPlayerFrame = function(playerFrame) {
     var self = this;
-    this.subscriberHandle = this.variable().value.subscribe(function(newVal){
-        self.event.triggerActions(newVal)
-    })
+    var variables = this.variables();
+    for (var i=0; i<variables.length; i++) {
+        var subscribeHandle = variables[i].value.subscribe(function(newVal){
+            self.event.triggerActions(newVal)
+        });
+        this.subscriberHandles.push(subscribeHandle);
+    }
 };
 
 TriggerVariableValueChanged.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    this.subscriberHandle.dispose();
+    for (var i=0; i<this.subscriberHandles.length; i++) {
+        this.subscriberHandles[i].dispose();
+    }
 };
 
 TriggerVariableValueChanged.prototype.fromJS = function(data) {
-    this.variable(data.variable);
+    this.variables(data.variables);
     return this;
 };
 
 TriggerVariableValueChanged.prototype.toJS = function() {
-    var variableId = null;
-    if (this.variable()) {
-        variableId = this.variable().id();
+    var variableIds = [];
+    var variables = this.variables();
+    for (var i=0; i<variables.length; i++) {
+        variableIds.push(variables[i].id());
     }
 
     return {
         type: this.type,
-        variable: variableId
+        variables: variableIds
     };
 };
 

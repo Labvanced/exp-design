@@ -143,7 +143,7 @@ RequirementVariableHasValue.prototype.checkIfTrue = function(parameters) {
     var operandLeftValue = this.operandLeft().getValue(parameters);
     var operandRightValue = this.operandRight().getValue(parameters);
 
-    switch(this.comparisonType) {
+    switch(this.comparisonType()) {
         case "==":
             return (operandLeftValue == operandRightValue);
         case "!=":
