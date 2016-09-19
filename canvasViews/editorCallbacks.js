@@ -60,7 +60,7 @@ EditorCallbacks.prototype.addResize = function() {
         },
 
         aspectRatio: self2.dataModel.keepAspectRatio(),
-        helper: "ui-resizable-helper"
+
 
     });
 
