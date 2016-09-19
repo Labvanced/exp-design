@@ -209,7 +209,7 @@ var ActionSetElementProp = function(event) {
 };
 
 
-ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["%", "+", "set"]);
+ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["%", "+", "set", "variable"]);
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
 ActionSetElementProp.prototype.label = "Set Element Prop.";
 
@@ -241,6 +241,9 @@ ActionSetElementProp.prototype.addProperty = function() {
             var currentValue = self.target()[prop()]();
             value(currentValue);
         }
+        else  if (newVal == "variable") {
+            value(null);
+        }
 
     });
 
@@ -254,10 +257,23 @@ ActionSetElementProp.prototype.addProperty = function() {
     this.changes.push(addObj);
 };
 
-
 ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
     var target = entitiesArr.byId[this.target()];
     this.target(target);
+
+    var changes = this.changes();
+    for (var i=0; i<changes.length; i++) {
+        if (changes[i].operatorType() == "variable") {
+            var varId = changes[i].value();
+            var globVar = entitiesArr.byId[varId];
+            changes[i].value(globVar);
+            this.setVariableBackRef(globVar);
+        }
+    }
+};
+
+ActionSetElementProp.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, false, true, 'Action Set Element Prop');
 };
 
 ActionSetElementProp.prototype.reAddEntities = function(entitiesArr) {
@@ -295,6 +311,9 @@ ActionSetElementProp.prototype.run = function() {
         else if (operatorType== 'set'){
             var newValue = value;
         }
+        else if (operatorType== 'variable'){
+            var newValue = value.value();
+        }
         //target[property](newValue);
         target.modifier().selectedTrialView[property](newValue);
     }
@@ -308,10 +327,11 @@ ActionSetElementProp.prototype.fromJS = function(data) {
 
     var changes = [];
     for (var i = 0 ;i <data.changes.length;i++){
+        var tmp = data.changes[i];
         var obj = {
-            property :   ko.observable(data.changes[i].property),
-            operatorType :   ko.observable(data.changes[i].operatorType),
-            value:   ko.observable(data.changes[i].value)
+            property :   ko.observable(tmp.property),
+            operatorType :   ko.observable(tmp.operatorType),
+            value:   ko.observable(tmp.value)
         };
         changes.push(obj);
     }
@@ -322,13 +342,18 @@ ActionSetElementProp.prototype.fromJS = function(data) {
 
 ActionSetElementProp.prototype.toJS = function() {
 
-
     var changes= [];
-    for (var i = 0 ;i <this.changes().length;i++){
+    var origChanges = this.changes();
+    for (var i = 0; i<origChanges.length; i++){
+        var currChanges = origChanges[i];
+        var value = currChanges.value();
+        if (currChanges.operatorType() == "variable" && value) {
+            value = value.id();
+        }
         var obj = {
-            property :   this.changes()[i].property(),
-            operatorType :   this.changes()[i].operatorType(),
-            value:   this.changes()[i].value()
+            property: currChanges.property(),
+            operatorType: currChanges.operatorType(),
+            value: value
         };
         changes.push(obj);
     }
@@ -439,6 +464,65 @@ ActionSetVariable.prototype.toJS = function() {
         variableId: this.variableId(),
         operatorType: this.operatorType(),
         argument: this.argument()
+    };
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////   ActionDrawRandomNumber    ////////////////////////////////////////////////
+
+var ActionDrawRandomNumber = function(event) {
+    this.event = event;
+
+    // serialized
+    this.variable = ko.observable(null);
+    this.distribution = ko.observable('Uniform');
+    this.distributionParam1 = ko.observable(0); // i.e. lower bound of Uniform or mean of Gaussian
+    this.distributionParam2 = ko.observable(1); // i.e. upper bound of Uniform or std of Gaussian
+};
+ActionDrawRandomNumber.prototype.type = "ActionDrawRandomNumber";
+ActionDrawRandomNumber.prototype.label = "Draw Random Number";
+ActionDrawRandomNumber.prototype.distributions = ["Uniform", "Gaussian"];
+
+ActionDrawRandomNumber.prototype.isValid = function(){
+    return true;
+};
+
+ActionDrawRandomNumber.prototype.setPointers = function(entitiesArr) {
+    if (this.variable()){
+        var globVar = entitiesArr.byId[this.variable()];
+        this.variable(globVar);
+        this.setVariableBackRef(globVar);
+    }
+};
+
+ActionDrawRandomNumber.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'Action Draw Random Number');
+};
+
+ActionDrawRandomNumber.prototype.run = function() {
+
+};
+
+ActionDrawRandomNumber.prototype.fromJS = function(data) {
+    this.variable(data.variable);
+    this.distribution(data.distribution);
+    this.distributionParam1(data.distributionParam1);
+    this.distributionParam2(data.distributionParam2);
+    return this;
+};
+
+ActionDrawRandomNumber.prototype.toJS = function() {
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
+    return {
+        type: this.type,
+        variable: variableId,
+        distribution: this.distribution(),
+        distributionParam1: this.distributionParam1(),
+        distributionParam2: this.distributionParam2()
     };
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
