@@ -42,7 +42,7 @@ HtmlFrameElement.prototype.setupDiv = function() {
     this.div = document.createElement('div');
     $(this.div).css({
         "position": "absolute",
-        "opacity": this.dataModel.visibility()
+        //"opacity": this.dataModel.visibility()
         //"backgroundColor": "white"
     });
     this.content = document.createElement('div');
@@ -70,14 +70,15 @@ HtmlFrameElement.prototype.setupDiv = function() {
 
 
 HtmlFrameElement.prototype.recreatePlaceHolderBoxAndLabel = function() {
-    // create box
-    $(this.content).children().remove();
+    this.contentScaling = $("<div></div>");
+    this.contentInside = new Image;
 
+    // create box
     var self = this;
-    var text = document.createElement('p');
-    $(text).text(this.dataModel.name());
+    this.contentInside = document.createElement('p');
+    $(this.contentInside).text(this.dataModel.name());
     if (this.scale){
-        $(text).css({
+        $(this.contentInside).css({
             "width":this.width() * self.scale,
             "height":  this.height() * self.scale,
             "backgroundColor": "white",
@@ -85,9 +86,9 @@ HtmlFrameElement.prototype.recreatePlaceHolderBoxAndLabel = function() {
             "border": " 1px solid black"
         })
     }
-
-    $(this.content).append(text);
-
+    $(this.contentScaling).append(this.contentInside);
+    $(this.content).children().remove();
+    $(this.content).append(this.contentScaling);
 };
 
 
@@ -248,7 +249,7 @@ HtmlFrameElement.prototype.update = function(size,position){
         });
 
         if (this.dataModel.content().type == "ImageHtmlData"){
-            var image = this.content;
+            var image = this.contentInside;
             if (image) {
                 // this.width is the bounding box in virtual frame coordinates
                 // this.fullWidth is the raw image width
@@ -370,8 +371,8 @@ HtmlFrameElement.prototype.renderElements = function(data) {
 
     if (data.type == "CheckBoxElement" ||data.type =="MChoiceElement"||data.type =="ParagraphElement"||data.type =="RangeElement"||data.type =="ScaleElement"||data.type =="TextElement"||data.type =="ButtonElement" ||data.type =="InvisibleElement"){
 
-        $(this.content).remove();
-        this.content = $("<div></div>");
+        $(this.content).children().remove();
+        //this.content = $("<div></div>");
         this.contentScaling = $("<div></div>");
         if (data instanceof CheckBoxElement) {
             this.contentInside = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'></div>");
@@ -456,28 +457,26 @@ HtmlFrameElement.prototype.replaceWithContent = function(data) {
     }
     else if (data.type == "ImageHtmlData") {
         if (data.imgSource()){
-            $(this.content).remove();
 
-            this.content = new Image;
+            this.contentInside = new Image;
 
-            $(this.content).css({
+            $(this.contentInside).css({
                 "width":self.width() * self.scale(),
                 "height": self.height() * self.scale(),
                 "position": "absolute",
                 "backgroundColor": "transparent"
             });
 
-            this.content.src = data.imgSource();
-            this.content.onload = function () {
+            this.contentInside.src = data.imgSource();
+            this.contentInside.onload = function () {
                 // initialize original size:
                 self.fullWidth(this.naturalWidth);
                 self.fullHeight(this.naturalHeight);
                 self.update(true,true);
             };
 
-            $(this.div).append(this.content);
-
-
+            $(this.content).children().remove();
+            $(this.content).append(this.contentInside);
 
         }
     }

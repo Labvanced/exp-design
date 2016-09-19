@@ -43,14 +43,7 @@ Modifier.prototype.addProp = function(propName) {
         read: function () {
             var selectedTrialType = this.selectedTrialType();
             var selectionType = selectedTrialType.type;
-            var interactingFactors = $.map(this.interactingFactors(), function(factor) {
-                if (factor instanceof GlobalVar) {
-                    return factor.id();
-                }
-                else {
-                    return factor;
-                }
-            });
+            var interactingFactors = this.getIdsOfFactors(this.interactingFactors());
 
             if (selectionType=='wildcard'){
 
@@ -137,14 +130,7 @@ Modifier.prototype.addProp = function(propName) {
             else if (selectionType=='noninteract'){
 
                 var factorSelected = selectedTrialType.factor;
-                var noninteractingFactors = $.map(this.noninteractFactors(), function(factor) {
-                    if (factor instanceof GlobalVar) {
-                        return factor.id();
-                    }
-                    else {
-                        return factor;
-                    }
-                });
+                var noninteractingFactors = this.getIdsOfFactors(this.noninteractFactors());
                 var factorId = noninteractingFactors.indexOf(factorSelected);
 
                 // check if this element depends on the selected factor:
@@ -174,14 +160,7 @@ Modifier.prototype.addProp = function(propName) {
 
             var selectedTrialType = this.selectedTrialType();
             var selectionType = selectedTrialType.type;
-            var interactingFactors = $.map(this.interactingFactors(), function(factor) {
-                if (factor instanceof GlobalVar) {
-                    return factor.id();
-                }
-                else {
-                    return factor;
-                }
-            });
+            var interactingFactors = this.getIdsOfFactors(this.interactingFactors());
 
             if (selectionType=='wildcard'){
 
@@ -229,6 +208,7 @@ Modifier.prototype.addProp = function(propName) {
                     if (!(interactingFactors.indexOf(factorsSelected[f]) > -1)) {
                         // add new factor dependency:
                         this.addFactorDependency(factorsSelected[f]);
+                        interactingFactors = this.getIdsOfFactors(this.interactingFactors()); // update with new list
                     }
                 }
 
@@ -261,14 +241,7 @@ Modifier.prototype.addProp = function(propName) {
                 // check if this element depends on the selected factor:
                 if (!(factorId > -1)) {
                     this.addFactorDependency(factorSelected);
-                    var noninteractingFactors = $.map(this.noninteractFactors(), function(factor) {
-                        if (factor instanceof GlobalVar) {
-                            return factor.id();
-                        }
-                        else {
-                            return factor;
-                        }
-                    });
+                    var noninteractingFactors = this.getIdsOfFactors(this.noninteractFactors());
                     factorId = noninteractingFactors.indexOf(factorSelected);
                 }
 
@@ -284,6 +257,18 @@ Modifier.prototype.addProp = function(propName) {
         },
         owner: this
     });
+}
+
+Modifier.prototype.getIdsOfFactors = function(factorArr) {
+    var factorIds = $.map(factorArr, function(factor) {
+        if (factor instanceof GlobalVar) {
+            return factor.id();
+        }
+        else {
+            return factor;
+        }
+    });
+    return factorIds;
 }
 
 Modifier.prototype.setPointers = function(entitiesArr) {
@@ -364,6 +349,10 @@ Modifier.prototype.addInteractingLevels = function() {
 };
 
 Modifier.prototype.addFactorDependency = function(factorVar) {
+
+    if (!(factorVar instanceof GlobalVar)){
+        factorVar = this.expData.entities.byId[factorVar];
+    }
 
     if (factorVar.isInteracting()) {
 
