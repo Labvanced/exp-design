@@ -119,6 +119,10 @@ function entityFactory(entityJson, expData) {
             entity = new QuestionnaireElement(expData);
             entity.fromJS(entityJson);
             break;
+        case 'Event':
+            entity = new Event(expData);
+            entity.fromJS(entityJson);
+            break;
         default:
             console.error("type " + entityJson.type + " is not defined in factory method.")
     }

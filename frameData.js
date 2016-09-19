@@ -77,6 +77,47 @@ FrameData.prototype.addNewEvent = function() {
     this.events.push(event);
 };
 
+FrameData.prototype.deleteChildEntity = function(entity) {
+    var obsArr;
+    if (entity instanceof Event) {
+        obsArr = this.events;
+    }
+    else if (entity instanceof GlobalVar) {
+        obsArr = this.localWorkspaceVars;
+    }
+    else {
+        obsArr = this.elements;
+    }
+    //var index = obsArr.indexOf(entity);
+    //obsArr.splice(index, 1);
+    obsArr.remove(entity);
+
+    // if this element was selected, set selection to null
+    if (entity === this.currSelectedElement()) {
+        this.currSelectedElement(null);
+    }
+};
+
+FrameData.prototype.copyChildEntity = function(entity) {
+    var obsArr;
+    if (entity instanceof Event) {
+        obsArr = this.events;
+    }
+    else if (entity instanceof GlobalVar) {
+        obsArr = this.localWorkspaceVars;
+    }
+    else {
+        obsArr = this.elements;
+    }
+    var index = obsArr.indexOf(entity);
+    var entityCopy = entityFactory(entity.toJS(), this.expData);
+    entityCopy.id(guid());
+    entityCopy.name(entityCopy.name() + "_copy");
+    entityCopy.parent = this;
+    entityCopy.setPointers(this.expData.entities);
+    obsArr.splice(index+1, 0, entityCopy);
+};
+
 FrameData.prototype.addVariableToLocalWorkspace = function(variable) {
     var isExisting = this.localWorkspaceVars.byId[variable.id()];
     if (!isExisting) {
