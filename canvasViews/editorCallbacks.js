@@ -1,45 +1,53 @@
-/**
- * Created by cgoeke on 2/1/16.
- */
 
-var EditorCallbacks = function(frameElement,view) {
-    var self = this;
+var EditorCallbacks = function(frameElementView,frameView) {
 
-    this.frameElement = frameElement;
-    this.div = this.frameElement.div;
-    this.dataModel = this.frameElement.dataModel;
-    this.view = view;
-    this.scale = ko.computed(function() {
-        return this.view.scale();
-    }, this);
+    this.frameElementView = frameElementView;
+    this.div = this.frameElementView.div;
+    this.dataModel = this.frameElementView.dataModel;
+    this.frameView = frameView;
 
     this.addCallbacks();
 
-    this.frameElement.callbacks = this;
+    this.frameElementView.callbacks = this;
 };
-
 
 EditorCallbacks.prototype.addCallbacks = function() {
     var self2 = this;
 
-    $(this.div).draggable({
-        drag : function(eevent,ui) {
-            self2.frameElement.setCoord(ui.position.left*(1/self2.scale()),ui.position.top*(1/self2.scale()));
-        },
-        start: function( event, ui ) {
-            self2.view.setSelectedElement(self2.dataModel)
-        }
+    $(this.div).click(function() {
+        self2.frameView.setSelectedElement(self2.dataModel);
     });
 
+    // Draggable On Frame in Editor View:
+    $(this.div).draggable({
+        drag : function(event, ui) {
+            self2.frameElementView.setCoord(ui.position.left*(1/self2.frameView.scale()),ui.position.top*(1/self2.frameView.scale()));
+        },
+        start: function(event, ui) {
+            self2.frameView.setSelectedElement(self2.dataModel)
+        },
+        cancel : '.notDraggable'
+    });
+
+    // Make resizable:
     this.addResize();
     this.dataModel.keepAspectRatio.subscribe(function(newVal) {
         self2.addResize();
     });
 
-    $(this.div).click(function() {
-        self2.view.setSelectedElement(self2.dataModel);
+    // It is only draggable or resizable when it is selected:
+    this.frameElementView.isSelected.subscribe(function(newVal){
+        if (newVal) {
+            $(self2.div).resizable("enable");
+            $(self2.div).draggable("enable");
+        }
+        else {
+            $(self2.div).resizable("disable");
+            $(self2.div).draggable("disable");
+        }
     });
-
+    $(self2.div).resizable("disable");
+    $(self2.div).draggable("disable");
 };
 
 
@@ -54,14 +62,11 @@ EditorCallbacks.prototype.addResize = function() {
     $(this.div).resizable({
         resize: function (eevent, ui) {
             var sizeInPx = ui.size;
-            var width = sizeInPx.width * (1 / self2.scale());
-            var height = sizeInPx.height * (1 / self2.scale());
-            self2.frameElement.setWidthAndHeight(width, height);
+            var width = sizeInPx.width * (1 / self2.frameView.scale());
+            var height = sizeInPx.height * (1 / self2.frameView.scale());
+            self2.frameElementView.setWidthAndHeight(width, height);
         },
-
         aspectRatio: self2.dataModel.keepAspectRatio(),
-
-
     });
 
 };

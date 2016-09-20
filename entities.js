@@ -43,8 +43,8 @@ function entityFactory(entityJson, expData) {
             entity = new ImageData(expData);
             entity.fromJS(entityJson);
             break;
-        case 'VideoData':
-            entity = new VideoData(expData);
+        case 'VideoElement':
+            entity = new VideoElement(expData);
             entity.fromJS(entityJson);
             break;
         case 'ExpBlock':
@@ -62,23 +62,23 @@ function entityFactory(entityJson, expData) {
         case 'CheckBoxElement':
             var elem = new CheckBoxElement(expData);
             elem.fromJS(entityJson);
-            entity = new QuestionnaireElement(expData);
+            entity = new PageElement(expData);
             entity.id(entityJson.id);
             entity.name(entityJson.name);
             entity.addContent(elem);
             break;
-        case 'MChoiceElement':
-            var elem = new MChoiceElement(expData);
+        case 'MultipleChoiceElement':
+            var elem = new MultipleChoiceElement(expData);
             elem.fromJS(entityJson);
-            entity = new QuestionnaireElement(expData);
+            entity = new PageElement(expData);
             entity.id(entityJson.id);
             entity.name(entityJson.name);
             entity.addContent(elem);
             break;
-        case 'ParagraphElement':
-            var elem = new ParagraphElement(expData);
+        case 'MultiLineInputElement':
+            var elem = new MultiLineInputElement(expData);
             elem.fromJS(entityJson);
-            entity = new QuestionnaireElement(expData);
+            entity = new PageElement(expData);
             entity.id(entityJson.id);
             entity.name(entityJson.name);
             entity.addContent(elem);
@@ -86,7 +86,7 @@ function entityFactory(entityJson, expData) {
         case 'RangeElement':
             var elem = new RangeElement(expData);
             elem.fromJS(entityJson);
-            entity = new QuestionnaireElement(expData);
+            entity = new PageElement(expData);
             entity.id(entityJson.id);
             entity.name(entityJson.name);
             entity.addContent(elem);
@@ -94,29 +94,29 @@ function entityFactory(entityJson, expData) {
         case 'ScaleElement':
             var elem = new ScaleElement(expData);
             elem.fromJS(entityJson);
-            entity = new QuestionnaireElement(expData);
+            entity = new PageElement(expData);
             entity.id(entityJson.id);
             entity.name(entityJson.name);
             entity.addContent(elem);
             break;
-        case 'TextElement':
-            var elem = new TextElement(expData);
+        case 'TextInputElement':
+            var elem = new TextInputElement(expData);
             elem.fromJS(entityJson);
-            entity = new QuestionnaireElement(expData);
+            entity = new PageElement(expData);
             entity.id(entityJson.id);
             entity.name(entityJson.name);
             entity.addContent(elem);
             break;
-        case 'NewPageElement':
-            entity = new NewPageElement(expData);
+        case 'PageData':
+            entity = new PageData(expData);
             entity.fromJS(entityJson);
             break;
-        case 'htmlElementData':
-            entity = new htmlElementData(expData);
+        case 'FrameElement':
+            entity = new FrameElement(expData);
             entity.fromJS(entityJson);
             break;
-        case 'QuestionnaireElement':
-            entity = new QuestionnaireElement(expData);
+        case 'PageElement':
+            entity = new PageElement(expData);
             entity.fromJS(entityJson);
             break;
         case 'Event':

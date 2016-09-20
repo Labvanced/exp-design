@@ -1,13 +1,11 @@
-// � by Caspar Goeke and Holger Finger
 
-
-var TextElement = function(expData) {
+var TextInputElement = function(expData) {
     this.expData = expData;
     this.parent = null;
     this.label = "Text";
 
     //serialized
-    this.type = "TextElement";
+    this.type = "TextInputElement";
     this.questionText= ko.observable("Your Question");
     this.selected = ko.observable(false);
     this.variable = ko.observable();
@@ -17,9 +15,9 @@ var TextElement = function(expData) {
     this.modifier = ko.observable(new Modifier(this.expData, this));
 };
 
-TextElement.prototype.modifiableProp = ["questionText"];
+TextInputElement.prototype.modifiableProp = ["questionText"];
 
-TextElement.prototype.addVar = function() {
+TextInputElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[4]);
@@ -28,19 +26,19 @@ TextElement.prototype.addVar = function() {
     this.variable(globalVar);
 };
 
-TextElement.prototype.setPointers = function(entitiesArr) {
+TextInputElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
 };
 
-TextElement.prototype.reAddEntities = function(entitiesArr) {
+TextInputElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
 };
 
-TextElement.prototype.toJS = function() {
+TextInputElement.prototype.toJS = function() {
     var variableId = null;
     if (this.variable()) {
         variableId = this.variable().id();
@@ -53,7 +51,7 @@ TextElement.prototype.toJS = function() {
     };
 };
 
-TextElement.prototype.fromJS = function(data) {
+TextInputElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.questionText(data.questionText);
     this.variable(data.variable);
@@ -69,7 +67,6 @@ ko.components.register('text-element-edit', {
 
                 var self = this;
                 this.questionText = dataModel.questionText;
-                this.htmlText = ko.observable("Your Question");
                 this.name = dataModel.parent.name;
 
                 this.focus = function () {
@@ -80,7 +77,7 @@ ko.components.register('text-element-edit', {
 
             };
 
-            return viewModel(dataModel);
+            return new viewModel(dataModel);
         }
 
     },
@@ -103,37 +100,18 @@ ko.components.register('text-element-edit', {
 ko.components.register('text-preview',{
     viewModel: {
         createViewModel: function(dataModel, componentInfo){
-
             var elem = componentInfo.element.firstChild;
-
             var viewModel = function(dataModel){
-
                 var self = this;
                 this.dataModel = dataModel;
                 this.questionText = dataModel.questionText;
                 this.name = dataModel.parent.name;
-
-
-                CKEDITOR.disableAutoInline = true;
-
-                var editor = CKEDITOR.inline( elem,{
-                    on : {
-                        change: function (event) {
-                            var data = event.editor.getData();
-                            self.questionText(data);
-                        }
-                    },
-                    startupFocus : true
-                });
-                
-                dataModel.ckeditor = editor;
             };
-
-            return viewModel(dataModel);
+            return new viewModel(dataModel);
         }
     },
     template:
-        '<div class="editableTextQuestion" contenteditable="true"><p>Your Question</p></div>\
+        '<div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: \'afterkeydown\'"><p>Your Question</p></div>\
           <br>\
             <div>\
             <input style="position:relative;left: 0%; max-width:50%"\

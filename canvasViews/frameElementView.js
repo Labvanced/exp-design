@@ -4,9 +4,7 @@
 
 
 
-var HtmlFrameElement = function(dataModel,editor) {
-
-
+var FrameElementView = function(dataModel, editor) {
 
     this.dataModel = dataModel;
     this.editor = editor;
@@ -36,7 +34,7 @@ var HtmlFrameElement = function(dataModel,editor) {
 };
 
 
-HtmlFrameElement.prototype.setupDiv = function() {
+FrameElementView.prototype.setupDiv = function() {
     var self = this;
     // setup canvas, stage and container
     this.div = document.createElement('div');
@@ -69,7 +67,7 @@ HtmlFrameElement.prototype.setupDiv = function() {
 };
 
 
-HtmlFrameElement.prototype.recreatePlaceHolderBoxAndLabel = function() {
+FrameElementView.prototype.recreatePlaceHolderBoxAndLabel = function() {
     this.contentScaling = $("<div></div>");
     this.contentInside = new Image;
 
@@ -92,7 +90,7 @@ HtmlFrameElement.prototype.recreatePlaceHolderBoxAndLabel = function() {
 };
 
 
-HtmlFrameElement.prototype.setupSubscriber = function() {
+FrameElementView.prototype.setupSubscriber = function() {
     var self = this;
     // set height and width and subscirbe
     if (this.dataModel.hasOwnProperty('modifier')) {
@@ -210,7 +208,7 @@ HtmlFrameElement.prototype.setupSubscriber = function() {
 };
 
 
-HtmlFrameElement.prototype.update = function(size,position){
+FrameElementView.prototype.update = function(size, position){
 
     var self = this;
 
@@ -248,7 +246,7 @@ HtmlFrameElement.prototype.update = function(size,position){
             "height":  self.height() * self.scale()
         });
 
-        if (this.dataModel.content().type == "ImageHtmlData"){
+        if (this.dataModel.content().type == "ImageElement"){
             var image = this.contentInside;
             if (image) {
                 // this.width is the bounding box in virtual frame coordinates
@@ -314,7 +312,7 @@ HtmlFrameElement.prototype.update = function(size,position){
 
 
 
-HtmlFrameElement.prototype.setWidthAndHeight = function(w,h) {
+FrameElementView.prototype.setWidthAndHeight = function(w, h) {
 
     if (this.dataModel.hasOwnProperty('modifier')) {
         this.dataModel.modifier().selectedTrialView.editorWidth(w);
@@ -327,7 +325,7 @@ HtmlFrameElement.prototype.setWidthAndHeight = function(w,h) {
 
 };
 
-HtmlFrameElement.prototype.setCoord = function(left,top) {
+FrameElementView.prototype.setCoord = function(left, top) {
 
     var x = 0;
     if (this.dataModel.anchorPointX() == 'low'){
@@ -363,25 +361,24 @@ HtmlFrameElement.prototype.setCoord = function(left,top) {
     return this;
 };
 
-HtmlFrameElement.prototype.renderElements = function(data) {
+FrameElementView.prototype.renderElements = function(data) {
     var self = this;
     if (ko.isObservable(data)){
         data = data();
     }
 
-    if (data.type == "CheckBoxElement" ||data.type =="MChoiceElement"||data.type =="ParagraphElement"||data.type =="RangeElement"||data.type =="ScaleElement"||data.type =="TextElement"||data.type =="ButtonElement" ||data.type =="InvisibleElement"){
+    if (data.type != "ImageElement" && data.type !="VideoElement"){
 
         $(this.content).children().remove();
-        //this.content = $("<div></div>");
         this.contentScaling = $("<div></div>");
         if (this.editor.type == "editorView") {
             if (data instanceof CheckBoxElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"checkbox-preview\", params : $data}'></div>");
             }
-            else if (data instanceof MChoiceElement) {
+            else if (data instanceof MultipleChoiceElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"choice-preview\", params : $data}'></div>");
             }
-            else if (data instanceof ParagraphElement) {
+            else if (data instanceof MultiLineInputElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"paragraph-preview\", params : $data}'></div>");
             }
             else if (data instanceof RangeElement) {
@@ -390,8 +387,11 @@ HtmlFrameElement.prototype.renderElements = function(data) {
             else if (data instanceof ScaleElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"scale-preview\", params : $data}'></div>");
             }
-            else if (data instanceof TextElement) {
+            else if (data instanceof TextInputElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"text-preview\", params : $data}'></div>");
+            }
+            else if (data instanceof DisplayTextElement) {
+                this.contentInside = $("<div data-bind='component: {name : \"display-text-element-preview\", params : $data}'></div>");
             }
             else if (data instanceof ButtonElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"button-preview\", params : $data}'></div>");
@@ -404,10 +404,10 @@ HtmlFrameElement.prototype.renderElements = function(data) {
             if (data instanceof CheckBoxElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'></div>");
             }
-            else if (data instanceof MChoiceElement) {
+            else if (data instanceof MultipleChoiceElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"choice-playerview\", params : $data}'></div>");
             }
-            else if (data instanceof ParagraphElement) {
+            else if (data instanceof MultiLineInputElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"paragraph-playerview\", params : $data}'></div>");
             }
             else if (data instanceof RangeElement) {
@@ -416,8 +416,11 @@ HtmlFrameElement.prototype.renderElements = function(data) {
             else if (data instanceof ScaleElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"scale-playerview\", params : $data}'></div>");
             }
-            else if (data instanceof TextElement) {
+            else if (data instanceof TextInputElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'></div>");
+            }
+            else if (data instanceof DisplayTextElement) {
+                this.contentInside = $("<div data-bind='component: {name : \"display-text-element-playerview\", params : $data}'></div>");
             }
             else if (data instanceof ButtonElement) {
                 this.contentInside = $("<div data-bind='component: {name : \"button-playerview\", params : $data}'></div>");
@@ -432,20 +435,16 @@ HtmlFrameElement.prototype.renderElements = function(data) {
         this.update(true, false);
         $(this.div).append(this.content);
     }
-    else if(data.type == "textArea"){
-        $(this.content).remove();
-        this.content = document.createElement('text');
-    }
 };
 
 
-HtmlFrameElement.prototype.replaceWithContent = function(data) {
+FrameElementView.prototype.replaceWithContent = function(data) {
     var self = this;
     if (ko.isObservable(data)){
         data = data();
     }
 
-    if (data.type == "VideoData") {
+    if (data.type == "VideoElement") {
 
         if (data.vidSource()){
             $(this.content).remove();
@@ -483,7 +482,7 @@ HtmlFrameElement.prototype.replaceWithContent = function(data) {
         }
 
     }
-    else if (data.type == "ImageHtmlData") {
+    else if (data.type == "ImageElement") {
         if (data.imgSource()){
 
             this.contentInside = new Image;

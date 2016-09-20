@@ -1,6 +1,6 @@
 // � by Caspar Goeke and Holger Finger
 
-var CanvasFrameElement = function(dataModel,editor) {
+var CanvasFrameElementView = function(dataModel, editor) {
     this.dataModel = dataModel;
     this.editor = editor;
 
@@ -25,7 +25,7 @@ var CanvasFrameElement = function(dataModel,editor) {
 };
 
 
-CanvasFrameElement.prototype.setupCanvasAndStage = function() {
+CanvasFrameElementView.prototype.setupCanvasAndStage = function() {
     var self = this;
     // setup canvas, stage and container
     this.div = document.createElement('div');
@@ -62,7 +62,7 @@ CanvasFrameElement.prototype.setupCanvasAndStage = function() {
 };
 
 
-CanvasFrameElement.prototype.recreatePlaceHolderBoxAndLabel = function() {
+CanvasFrameElementView.prototype.recreatePlaceHolderBoxAndLabel = function() {
     // create box
     var shape = new createjs.Shape();
     if (this.isSelected()) {
@@ -106,7 +106,7 @@ CanvasFrameElement.prototype.recreatePlaceHolderBoxAndLabel = function() {
 };
 
 
-CanvasFrameElement.prototype.setupSubscriber = function() {
+CanvasFrameElementView.prototype.setupSubscriber = function() {
     var self = this;
     // set height and width and subscirve
     if (this.dataModel.hasOwnProperty('modifier')) {
@@ -193,7 +193,7 @@ CanvasFrameElement.prototype.setupSubscriber = function() {
 };
 
 
-CanvasFrameElement.prototype.renderShapeOrImage = function(imgSource) {
+CanvasFrameElementView.prototype.renderShapeOrImage = function(imgSource) {
     var self = this;
 
     if (imgSource) {
@@ -244,7 +244,7 @@ CanvasFrameElement.prototype.renderShapeOrImage = function(imgSource) {
 
 
 
-CanvasFrameElement.prototype.update = function(size,position){
+CanvasFrameElementView.prototype.update = function(size, position){
 
     var self = this;
 
@@ -293,7 +293,7 @@ CanvasFrameElement.prototype.update = function(size,position){
 
 };
 
-CanvasFrameElement.prototype.setWidthAndHeight = function(w,h) {
+CanvasFrameElementView.prototype.setWidthAndHeight = function(w, h) {
 
     if (this.dataModel.hasOwnProperty('modifier')) {
         this.dataModel.modifier().selectedTrialView.editorWidth(w);
@@ -306,7 +306,7 @@ CanvasFrameElement.prototype.setWidthAndHeight = function(w,h) {
 
 };
 
-CanvasFrameElement.prototype.setCoord = function(x,y) {
+CanvasFrameElementView.prototype.setCoord = function(x, y) {
 
     if (this.dataModel.hasOwnProperty('modifier')) {
         this.dataModel.modifier().selectedTrialView.editorX(x);

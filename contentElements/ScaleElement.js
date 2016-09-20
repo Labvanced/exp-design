@@ -1,7 +1,4 @@
-// � by Caspar Goeke and Holger Finger
 
-
-// SCALE ELEMENT//
 var ScaleElement= function(expData) {
     this.expData = expData;
     this.parent = null;
@@ -116,7 +113,7 @@ ko.components.register('scale-element-edit', {
 
             };
 
-            return viewModel(dataModel);
+            return new viewModel(dataModel);
         }
     },
     template: '<div class="panel-body" style="height: 100%; margin-top: -10px">\
@@ -141,12 +138,8 @@ ko.components.register('scale-element-edit', {
 ko.components.register('scale-preview',{
     viewModel: {
         createViewModel: function(dataModel, componentInfo){
-
             var elem = componentInfo.element.firstChild;
-
             var viewModel = function(dataModel){
-
-                var self = this;
                 this.dataModel = dataModel;
                 this.questionText = dataModel.questionText;
                 this.margin = dataModel.margin;
@@ -154,31 +147,16 @@ ko.components.register('scale-preview',{
                 this.choices = dataModel.choices;
                 this.startLabel = dataModel.startLabel;
                 this.endLabel = dataModel.endLabel;
-                CKEDITOR.disableAutoInline = true;
-
-                var editor = CKEDITOR.inline( elem,{
-                    on : {
-                        change: function (event) {
-                            var data = event.editor.getData();
-                            self.questionText(data);
-                        }
-                    },
-                    startupFocus : true
-                });
-
-                dataModel.ckeditor = editor;
-                elem.focus();
             };
-            
-            return viewModel(dataModel);
+            return new viewModel(dataModel);
         }
     },
     template:
-        '<div class="editScaleQuestion" contenteditable="true"><p>Your Question</p></div>\
+        '<div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: \'afterkeydown\'"><p>Your Question</p></div>\
          <br>\
          <div data-bind="style: {marginLeft: margin, marginRight: margin}">\
-             <div style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle"\
-                  data-bind="wysiwyg: startLabel"></div>\
+             <div class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle"\
+                  data-bind="wysiwyg: startLabel, valueUpdate: \'afterkeydown\'"></div>\
              <div style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">\
                  <div style="display: inline-block; margin-left: inherit; margin-right: inherit "> \
                      <span style="display:block; margin-left: 5px;  margin-right: 5px"\
@@ -187,7 +165,7 @@ ko.components.register('scale-preview',{
                           type="radio" value="$data" data-bind="attr: {value:$data}, click: function(){return true}, clickBubble: false">\
                   </div>\
              </div>\
-             <div style="display: inline-block; margin-left: inherit;  margin-right: inherit;  vertical-align: middle" data-bind="wysiwyg: endLabel"></div>\
+             <div style="display: inline-block; margin-left: inherit;  margin-right: inherit;  vertical-align: middle" class="notDraggable" data-bind="wysiwyg: endLabel, valueUpdate: \'afterkeydown\'"></div>\
          </div>\
          <br>'
 });

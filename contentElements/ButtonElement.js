@@ -1,7 +1,3 @@
-/**
- * Created by kstandvoss on 15/02/16.
- */
-
 
 var ButtonElement = function(expData) {
     this.expData = expData;
@@ -51,12 +47,22 @@ ko.components.register('button-element-edit', {
             class="form-control" placeholder="Button Text">'
 });
 
+ko.components.register('button-preview',{
+    viewModel: function(dataModel){
+        this.dataModel = dataModel;
+        this.buttonText= dataModel.buttonText;
+    },
+    template:
+        '<div class="btn-primary" style="width: 100%; height: 100%;"><div style="margin: auto;" class="notDraggable" data-bind="wysiwyg: buttonText">Button</div></div>'
+});
+
+
 ko.components.register('button-playerview',{
     viewModel: function(dataModel){
         this.dataModel = dataModel;
         this.buttonText= dataModel.buttonText;
     },
     template:
-    '<button class="btn-primary" style="width: 100%; height: 100%;" data-bind="text: buttonText">asdfasdf</button>'
+    '<button class="btn-primary" style="width: 100%; height: 100%;"><div style="margin: auto;" data-bind="text: buttonText">Button</div></button>'
 });
 

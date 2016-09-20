@@ -1,13 +1,11 @@
-// � by Caspar Goeke and Holger Finger
 
-// MULTIPLE CHOICE ELEMENT //
-var MChoiceElement = function(expData) {
+var MultipleChoiceElement = function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Multiple_Choice";
+    this.label = "Multiple Choice";
 
     //serialized
-    this.type= "MChoiceElement";
+    this.type= "MultipleChoiceElement";
     this.questionText= ko.observable("Your Question");
 
     this.openQuestion=  ko.observable(false);
@@ -21,9 +19,9 @@ var MChoiceElement = function(expData) {
     this.modifier = ko.observable(new Modifier(this.expData, this));
 };
 
-MChoiceElement.prototype.modifiableProp = ["questionText"];
+MultipleChoiceElement.prototype.modifiableProp = ["questionText"];
 
-MChoiceElement.prototype.addVar = function() {
+MultipleChoiceElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[4]);
@@ -32,7 +30,7 @@ MChoiceElement.prototype.addVar = function() {
     this.variable(globalVar);
 };
 
-MChoiceElement.prototype.setPointers = function(entitiesArr) {
+MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
     var choices =  this.choices();
     this.choices = ko.observableArray([]);
     for (var i = 0; i< choices.length; i++){
@@ -44,13 +42,13 @@ MChoiceElement.prototype.setPointers = function(entitiesArr) {
     }
 };
 
-MChoiceElement.prototype.reAddEntities = function(entitiesArr) {
+MultipleChoiceElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
 };
 
-MChoiceElement.prototype.toJS = function() {
+MultipleChoiceElement.prototype.toJS = function() {
     var choices = [];
     for (var i = 0; i< this.choices().length; i++){
         choices.push(this.choices()[i]());
@@ -70,7 +68,7 @@ MChoiceElement.prototype.toJS = function() {
     };
 };
 
-MChoiceElement.prototype.fromJS = function(data) {
+MultipleChoiceElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.questionText(data.questionText);
     this.choices(data.choices);
@@ -106,7 +104,7 @@ ko.components.register('choice-element-edit', {
 
             };
 
-            return viewModel(dataModel);
+            return new viewModel(dataModel);
         }
     },
     template:
@@ -121,7 +119,7 @@ ko.components.register('choice-element-edit', {
                         <span style="display: inline-block">Question Text</span>\
                         <span style="display: inline-block"><img style="cursor: pointer" width="20" height="20" src="/resources/edit.png" data-bind="click: focus"></span>\
                    </div>\
-                    <span><a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> <a style="display: inline-block; margin-left: 1%">Add Choice</a> </a></span>\
+                    <span><a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> Add Choice</a></span>\
                     <br><br>\
             </div>'
 });
@@ -129,41 +127,23 @@ ko.components.register('choice-element-edit', {
 ko.components.register('choice-preview',{
     viewModel: {
         createViewModel: function(dataModel, componentInfo){
-
             var elem = componentInfo.element.firstChild;
             var viewModel = function(dataModel){
-
-                var self = this;
                 this.dataModel = dataModel;
                 this.questionText = dataModel.questionText;
                 this.choices = dataModel.choices;
                 this.margin = dataModel.margin;
                 this.count = dataModel.count;
-
-                CKEDITOR.disableAutoInline = true;
-
-                var editor = CKEDITOR.inline( elem,{
-                    on : {
-                        change: function (event) {
-                            var data = event.editor.getData();
-                            self.questionText(data);
-                        }
-                    },
-                    startupFocus : true
-                });
-
-                dataModel.ckeditor = editor;
             };
-
-            return viewModel(dataModel);
+            return new viewModel(dataModel);
         }
     },
     template:
-        '<div class="editChoiceQuestion" contenteditable="true"><p>Your Question</p></div>\
+        '<div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: \'afterkeydown\'"><p>Your Question</p></div>\
         <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">\
             <div>\
                 <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block" type="radio" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\
-                <div style="display: inline-block" data-bind="wysiwyg: $rawData, valueUpdate: \'afterkeydown\'"></div>\
+                <div style="display: inline-block" class="notDraggable" data-bind="wysiwyg: $rawData, valueUpdate: \'afterkeydown\'"></div>\
             </div>\
         </div>\
         <br>'

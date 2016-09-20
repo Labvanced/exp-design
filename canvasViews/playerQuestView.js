@@ -25,7 +25,7 @@ PlayerQuestView.prototype.init = function() {
     this.addNewPage();
 
     for (var i = 0; i < this.questionElements.length; i++) {
-        if (this.questionElements[i] instanceof NewPageElement){
+        if (this.questionElements[i] instanceof PageData){
             this.nrOfPages++;
         }
     }
@@ -34,15 +34,15 @@ PlayerQuestView.prototype.init = function() {
 
         var elem = this.questionElements[i];
 
-        if (!(elem.content() instanceof NewPageElement)){
+        if (!(elem.content() instanceof PageData)){
             var newDiv = elem.div;
 /*            if (elem.content() instanceof CheckBoxElement) {
                 var newDiv = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'</div>");
             }
-            else if (elem.content() instanceof MChoiceElement) {
+            else if (elem.content() instanceof MultipleChoiceElement) {
                 var newDiv = $("<div data-bind='component: {name : \"choice-playerview\", params : $data}'</div>");
             }
-            else if (elem.content() instanceof ParagraphElement) {
+            else if (elem.content() instanceof MultiLineInputElement) {
                 var newDiv = $("<div data-bind='component: {name : \"paragraph-playerview\", params : $data}'</div>");
             }
             else if (elem.content() instanceof RangeElement) {
@@ -51,7 +51,7 @@ PlayerQuestView.prototype.init = function() {
             else if (elem instanceof ScaleElement) {
                 var newDiv = $("<div data-bind='component: {name : \"scale-playerview\", params : $data}'</div>");
             }
-            else if (elem instanceof TextElement) {
+            else if (elem instanceof TextInputElement) {
                 var newDiv = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'</div>");
             }*/
             this.divContainer[pageCount].append(newDiv);
@@ -73,8 +73,8 @@ PlayerQuestView.prototype.init = function() {
     }
 
     // append end page if not last element
-    if (!(elem instanceof NewPageElement)){
-        var elem =  new NewPageElement(this.player.experiment.exp_data);
+    if (!(elem instanceof PageData)){
+        var elem =  new PageData(this.player.experiment.exp_data);
         var newDiv = $("<div data-bind='component: {name : \"newpage-playerview\", params : $data}'</div>");
         this.divContainer[pageCount].append(newDiv);
         elem.currPage =  pageCount+1;
@@ -154,7 +154,7 @@ PlayerQuestView.prototype.submitQuestionnaire = function() {
     var answers = [];
     var varIds = [];
     for (var i = 0; i<this.questionElements.length;i++){
-        if (!(this.questionElements[i].content() instanceof NewPageElement)){
+        if (!(this.questionElements[i].content() instanceof PageData)){
             varIds.push(this.questionElements[i].content().variable().id());
             answers.push(this.questionElements[i].content().answer());
         }

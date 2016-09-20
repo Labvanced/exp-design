@@ -225,7 +225,7 @@ CanvasElement.prototype.addCallbacks = function(elem) {
     if (this.activeElement) {
 
 
-        if (this.dataModel.type =="ImageData" || this.dataModel.type =="VideoData"){
+        if (this.dataModel.type =="ImageData" || this.dataModel.type =="VideoElement"){
 
 
             elem.addEventListener("stagemousemove", function(evt){
@@ -425,7 +425,7 @@ CanvasElement.prototype.updateSize = function(){
             image.scaleY =  this.height() / this.fullHeight();
         }
     }
-    else if (this.dataModel.type == "VideoData"){
+    else if (this.dataModel.type == "VideoElement"){
 
         var video = $(document.getElementById(this.divId())).children()[0];
 

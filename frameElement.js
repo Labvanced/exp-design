@@ -1,8 +1,5 @@
-/**
- * Created by kstandvoss on 24/03/16.
- */
 
-var htmlElementData= function(expData) {
+var FrameElement= function(expData) {
 
     this.expData = expData;
     this.parent = null;
@@ -18,7 +15,7 @@ var htmlElementData= function(expData) {
     this.visibility = ko.observable(1).extend({ numeric: 2 });
     this.keepAspectRatio = ko.observable(false);
     this.id = ko.observable(guid());
-    this.type = "htmlElementData";
+    this.type = "FrameElement";
     this.name = ko.observable("html");
     this.onset = ko.observable(0);
     this.onsetEnabled = ko.observable(false);
@@ -33,15 +30,15 @@ var htmlElementData= function(expData) {
     this.modifier = ko.observable(new Modifier(this.expData, this));
 };
 
-htmlElementData.prototype.addContent = function(element){
+FrameElement.prototype.addContent = function(element){
     this.content(element);
     element.parent = this;
 };
 
-htmlElementData.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","string","string","boolean","string","boolean","boolean","boolean","boolean"];
-htmlElementData.prototype.modifiableProp = ["visibility","editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","contentScaling"];
+FrameElement.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","string","string","boolean","string","boolean","boolean","boolean","boolean"];
+FrameElement.prototype.modifiableProp = ["visibility","editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","contentScaling"];
 
-htmlElementData.prototype.setPointers = function(entitiesArr) {
+FrameElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 
     jQuery.each( this.responses(), function(idx, resp ) {
@@ -54,24 +51,24 @@ htmlElementData.prototype.setPointers = function(entitiesArr) {
 
 };
 
-htmlElementData.prototype.addNewResponse = function() {
+FrameElement.prototype.addNewResponse = function() {
     var resp = new Response(this);
     resp.responseType("mouse");
     this.responses.push(resp);
 };
 
-htmlElementData.prototype.setAnchorPoint = function(horizontal,vertical) {
+FrameElement.prototype.setAnchorPoint = function(horizontal, vertical) {
     this.anchorPointX(horizontal);
     this.anchorPointY(vertical);
     // TODO: convert old x and y coordinates to new coordinates such that the element does not move when switching modes.
 };
 
-htmlElementData.prototype.selectTrialType = function(selectionSpec) {
+FrameElement.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
     this.content().modifier().selectTrialType(selectionSpec);
 };
 
-htmlElementData.prototype.reAddEntities = function(entitiesArr) {
+FrameElement.prototype.reAddEntities = function(entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 
     if(this.content().reAddEntities){
@@ -80,7 +77,7 @@ htmlElementData.prototype.reAddEntities = function(entitiesArr) {
 
 };
 
-htmlElementData.prototype.fromJS = function(data) {
+FrameElement.prototype.fromJS = function(data) {
     var self = this;
     this.id(data.id);
     this.type = data.type;
@@ -120,7 +117,7 @@ htmlElementData.prototype.fromJS = function(data) {
     return this;
 };
 
-htmlElementData.prototype.toJS = function() {
+FrameElement.prototype.toJS = function() {
     if(this.content()){
         var contentData = this.content().toJS();
     }

@@ -1,6 +1,4 @@
-// � by Caspar Goeke and Holger Finger
 
-// CHECK BOX  ELEMENT //
 var InvisibleElement= function(expData) {
     this.expData = expData;
     this.parent = null;
@@ -44,6 +42,14 @@ ko.components.register('invisible-element-edit', {
     template:
         '<div class="panel-body"></div>'
 
+});
+
+ko.components.register('invisible-preview', {
+    viewModel: function(dataModel){
+        this.dataModel = dataModel;
+    },
+    template:
+        '<div class="panel-body"></div>'
 });
 
 ko.components.register('invisible-playerview', {

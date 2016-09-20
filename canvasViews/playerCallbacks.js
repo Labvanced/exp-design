@@ -2,18 +2,18 @@
  * Created by cgoeke on 2/1/16.
  */
 
-var PlayerCallbacks = function(frameElement,view) {
+var PlayerCallbacks = function(frameElementView,view) {
     var self = this;
 
-    this.frameElement = frameElement;
-    this.div = this.frameElement.div;
-    this.dataModel = this.frameElement.dataModel;
+    this.frameElementView = frameElementView;
+    this.div = this.frameElementView.div;
+    this.dataModel = this.frameElementView.dataModel;
     this.view = view;
     this.scale = ko.computed(function() {
         return  this.view.scale();
     }, this);
 
-    this.frameElement.callbacks = this;
+    this.frameElementView.callbacks = this;
     this.eventsByTriggerType = {};
     this.addCallbacks();
 };
@@ -57,7 +57,7 @@ PlayerCallbacks.prototype.addCallbacks = function() {
 
         }
         if(event.stimulusOffset()){
-            this.frameElement.content.onended = function(e) {
+            this.frameElementView.content.onended = function(e) {
                 event.action().run(self.dataModel);
             };
         }

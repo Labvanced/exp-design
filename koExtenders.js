@@ -71,6 +71,10 @@ ko.extenders.numeric = function(target, precision) {
     return result;
 };
 
+// disable auto inline editing for CKeditor, because the custom binding below is doing this manually:
+CKEDITOR.disableAutoInline = true;
+
+
 ko.bindingHandlers.wysiwyg = {
     init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
         var ckEditorValue = valueAccessor();

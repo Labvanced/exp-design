@@ -1,16 +1,12 @@
-/**
- * Created by kstandvoss on 15/02/16.
- */
 
-
-var NewPageElement = function(expData) {
+var PageData = function(expData) {
     this.expData = expData;
     this.parent = null;
     this.label = "New_Page";
     this.id = ko.observable(guid());
 
     //serialized
-    this.type= "NewPageElement";
+    this.type= "PageData";
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);
     this.elements = ko.observableArray([]);
@@ -21,14 +17,14 @@ var NewPageElement = function(expData) {
     this.modifier = ko.observable(new Modifier(this.expData, this));
 };
 
-NewPageElement.prototype.addElem = function (elem) {
+PageData.prototype.addElem = function (elem) {
     this.elements.push(elem);
 };
 
-NewPageElement.prototype.modifiableProp = ["returnButton"];
+PageData.prototype.modifiableProp = ["returnButton"];
 
 
-NewPageElement.prototype.setPointers = function(entitiesArr) {
+PageData.prototype.setPointers = function(entitiesArr) {
 
     var self = this;
 
@@ -40,12 +36,12 @@ NewPageElement.prototype.setPointers = function(entitiesArr) {
     } ));
 };
 
-NewPageElement.prototype.getElementById = function(id) {
+PageData.prototype.getElementById = function(id) {
     return  this.elements.byId[id];
 };
 
 
-NewPageElement.prototype.reAddEntities = function(entitiesArr) {
+PageData.prototype.reAddEntities = function(entitiesArr) {
     var self = this;
 
     // add the direct child nodes:
@@ -61,19 +57,19 @@ NewPageElement.prototype.reAddEntities = function(entitiesArr) {
 
 };
 
-NewPageElement.prototype.previousPage = function() {
+PageData.prototype.previousPage = function() {
  player.currQuestionnaireView.previousPage()
 };
 
-NewPageElement.prototype.nextPage = function() {
+PageData.prototype.nextPage = function() {
     player.currQuestionnaireView.nextPage()
 };
 
-NewPageElement.prototype.submitQuestionnaire = function() {
+PageData.prototype.submitQuestionnaire = function() {
     player.currQuestionnaireView.submitQuestionnaire()
 };
 
-NewPageElement.prototype.toJS = function() {
+PageData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
@@ -81,7 +77,7 @@ NewPageElement.prototype.toJS = function() {
     };
 };
 
-NewPageElement.prototype.fromJS = function(data) {
+PageData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type=data.type;
     this.elements(data.elements);

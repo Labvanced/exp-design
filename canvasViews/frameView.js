@@ -153,30 +153,19 @@ FrameView.prototype.removeElemFromView = function(elementData,index) {
 
 FrameView.prototype.addElem = function(elementData,index) {
 
-    if (elementData.type == "ImageData") {
-        var canvasFrameElement = new CanvasFrameElement(elementData,this);
-        var callbacks = null;
-        if (this.type=="editorView") {
-            var callbacks = new EditorCallbacks(canvasFrameElement,this);
-        }
-        else if (this.type=="playerView") {
-            var callbacks = new PlayerCallbacks(canvasFrameElement,this);
-        }
-        this.viewElements.splice(index, 0, canvasFrameElement);
-        $(this.divContainer).append(canvasFrameElement.div);
+    var elemView = new FrameElementView(elementData,this);
+    // var elemView = new CanvasFrameElementView(elementData,this); // deprecated easeljs canvas elements
+
+    var callbacks = null;
+    if (this.type=="editorView") {
+        var callbacks = new EditorCallbacks(elemView,this);
     }
-    else {
-        var htmlFrameElement = new HtmlFrameElement(elementData,this);
-        var callbacks = null;
-        if (this.type=="editorView") {
-            var callbacks = new EditorCallbacks(htmlFrameElement,this);
-        }
-        else if (this.type=="playerView") {
-            var callbacks = new PlayerCallbacks(htmlFrameElement,this);
-        }
-        this.viewElements.splice(index, 0, htmlFrameElement);
-        $(this.divContainer).append(htmlFrameElement.div);
+    else if (this.type=="playerView") {
+        var callbacks = new PlayerCallbacks(elemView,this);
     }
+    this.viewElements.splice(index, 0, elemView);
+    $(this.divContainer).append(elemView.div);
+
 };
 
 FrameView.prototype.updateElements = function() {

@@ -1,5 +1,3 @@
-// � by Caspar Goeke and Holger Finger
-
 
 var FrameData = function(expData) {
     

@@ -1,10 +1,4 @@
-/**
- * Created by Kai Standvoß
- */
 
-
-
-// Range ELEMENT//
 var RangeElement= function(expData) {
     this.expData = expData;
     this.parent = null;
@@ -103,7 +97,7 @@ ko.components.register('range-element-edit', {
 
             };
 
-            return viewModel(dataModel)
+            return new viewModel(dataModel)
         }
     },
     template: '<div class="panel-body" style="height: 100%; margin-top: -10px">\
@@ -137,7 +131,6 @@ ko.components.register('range-preview',{
                 this.maxChoice = dataModel.maxChoice;
                 this.startLabel = dataModel.startLabel;
                 this.endLabel = dataModel.endLabel;
-                CKEDITOR.disableAutoInline = true;
 
                 var editor = CKEDITOR.inline( elem,{
                     on : {
@@ -145,22 +138,22 @@ ko.components.register('range-preview',{
                             var data = event.editor.getData();
                             self.questionText(data);
                         }
-                    },
-                    startupFocus : true
+                    }
                 });
+                editor.setData(dataModel.questionText());
 
                 dataModel.ckeditor = editor;
             };
 
-            return viewModel(dataModel);
+            return new viewModel(dataModel);
         }
     },
     template:
         '<div class="editRangeQuestion" contenteditable="true"><p>Your Question</p></div>\
         <br>\
         <div>\
-            <div style="float: left;" data-bind="wysiwyg: startLabel"></div>\
-            <div style="float: right; margin-right: 25%;" data-bind="wysiwyg: endLabel"></div>\
+            <div style="float: left;" class="notDraggable" data-bind="wysiwyg: startLabel, valueUpdate: \'afterkeydown\'"></div>\
+            <div style="float: right; margin-right: 25%;" class="notDraggable" data-bind="wysiwyg: endLabel, valueUpdate: \'afterkeydown\'"></div>\
             <br><br>\
             <span style="display: inline-block; width: 80%">\
                 <span style="margin-right: auto; margin-top: 1%; float: left" data-bind="text: minChoice"></span>\
