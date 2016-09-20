@@ -8,14 +8,14 @@ var htmlElementData= function(expData) {
     this.parent = null;
 
     // serialized
-    this.editorX = ko.observable(100);
-    this.editorY = ko.observable(100);
-    this.editorWidth = ko.observable(320);
-    this.editorHeight = ko.observable(180);
-    this.contentScaling = ko.observable(1);
+    this.editorX = ko.observable(100).extend({ numeric: 2 });
+    this.editorY = ko.observable(100).extend({ numeric: 2 });
+    this.editorWidth = ko.observable(320).extend({ numeric: 2 });
+    this.editorHeight = ko.observable(180).extend({ numeric: 2 });
+    this.contentScaling = ko.observable(1).extend({ numeric: 2 });
     this.anchorPointX = ko.observable('center');
     this.anchorPointY = ko.observable('center');
-    this.visibility = ko.observable(1);
+    this.visibility = ko.observable(1).extend({ numeric: 2 });
     this.keepAspectRatio = ko.observable(false);
     this.id = ko.observable(guid());
     this.type = "htmlElementData";
@@ -114,6 +114,7 @@ htmlElementData.prototype.fromJS = function(data) {
     if(data.content){
         var content = new window[data.content.type](this.expData);
         content.fromJS(data.content);
+        content.parent = this;
         this.content(content);
     }
     return this;
