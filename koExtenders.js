@@ -57,7 +57,7 @@ ko.extenders.numeric = function(target, precision) {
                 target(valueToWrite);
             } else {
                 //if the rounded value is the same, but a different value was written, force a notification for the current field
-                if (newValue !== current) {
+                if (newValueAsNum !== current) {
                     target.notifySubscribers(valueToWrite);
                 }
             }
