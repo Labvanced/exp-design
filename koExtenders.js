@@ -71,40 +71,44 @@ ko.extenders.numeric = function(target, precision) {
     return result;
 };
 
-// disable auto inline editing for CKeditor, because the custom binding below is doing this manually:
-CKEDITOR.disableAutoInline = true;
 
+// CKEDITOR is not defined in player:
+if (typeof CKEDITOR !== 'undefined') {
 
-ko.bindingHandlers.wysiwyg = {
-    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-        var ckEditorValue = valueAccessor();
-        var $element = $(element);
-        $element.attr('contenteditable', true);
-        var ignoreChanges = false;
+    // disable auto inline editing for CKeditor, because the custom binding below is doing this manually:
+    CKEDITOR.disableAutoInline = true;
 
-        var instance = CKEDITOR.inline(element, {
-            on: {
-                change: function() {
-                    ignoreChanges = true;
-                    ckEditorValue(instance.getData());
-                    ignoreChanges = false;
+    ko.bindingHandlers.wysiwyg = {
+        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            var ckEditorValue = valueAccessor();
+            var $element = $(element);
+            $element.attr('contenteditable', true);
+            var ignoreChanges = false;
+
+            var instance = CKEDITOR.inline(element, {
+                on: {
+                    change: function () {
+                        ignoreChanges = true;
+                        ckEditorValue(instance.getData());
+                        ignoreChanges = false;
+                    }
                 }
-            }
-        });
-
-        instance.setData(ckEditorValue());
-
-        ckEditorValue.subscribe(function(newValue) {
-            if (!ignoreChanges) {
-                instance.setData(newValue);
-            }
-        });
-
-        ko.utils.domNodeDisposal.addDisposeCallback(element,
-            function () {
-                instance.updateElement();
-                instance.destroy();
             });
 
-    }
-};
+            instance.setData(ckEditorValue());
+
+            ckEditorValue.subscribe(function (newValue) {
+                if (!ignoreChanges) {
+                    instance.setData(newValue);
+                }
+            });
+
+            ko.utils.domNodeDisposal.addDisposeCallback(element,
+                function () {
+                    instance.updateElement();
+                    instance.destroy();
+                });
+
+        }
+    };
+}
