@@ -160,13 +160,11 @@ ko.components.register('choice-preview',{
     },
     template:
         '<div class="editChoiceQuestion" contenteditable="true"><p>Your Question</p></div>\
-          <br>\
         <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">\
             <div>\
                 <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block" type="radio" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\
                 <div style="display: inline-block" data-bind="wysiwyg: $rawData, valueUpdate: \'afterkeydown\'"></div>\
             </div>\
-            <br>\
         </div>\
         <br>'
 });
@@ -185,11 +183,9 @@ ko.components.register('choice-playerview', {
     },
     template:
         '<div style="font-size: 200%" data-bind="text: questionText"></div>\
-        <br>\
         <div data-bind=\"foreach: choices, style: {marginTop: margin, marginBottom: margin}\">\
             <input style="margin-bottom: inherit; margin-top: inherit" type=\"radio\" data-bind="attr: {value:$data}, checked: $root.answer, click: function(){return true}, clickBubble: false\">\
             <span style="margin-bottom: inherit; margin-top: inherit" data-bind=\"text: $data\"></span>\
-            <br>\
         </div>\
         <br>'
 });

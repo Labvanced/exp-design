@@ -178,13 +178,11 @@ ko.components.register('checkbox-preview',{
     },
     template:
         '<div class="editCheckQuestion" contenteditable="true"><p>Your Question</p></div>\
-          <br>\
         <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">\
             <div>\
                 <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\
                 <div style="display: inline-block" data-bind="wysiwyg: $rawData, valueUpdate: \'afterkeydown\'"></div>\
             </div>\
-            <br>\
         </div>\
         <br>'
 });
@@ -199,11 +197,9 @@ ko.components.register('checkbox-playerview', {
     },
     template:
         '<div data-bind="html: questionText"></div>\
-        <br>\
         <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">\
             <input style="margin-top: inherit; margin-bottom: inherit" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\
             <span  style="margin-top: inherit; margin-bottom: inherit"><p>Check</p></span>\
-            <br>\
         </div>\
         <br>'
 });
