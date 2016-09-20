@@ -1,16 +1,15 @@
 
 // � by Caspar Goeke and Holger Finger
 
-
 var PlayerQuestView = function(questionnaireData,questDiv,player) {
 
     this.questionnaireData = questionnaireData;
-    this.questionElements = this.questionnaireData.elements();
+    this.questionnairePages = this.questionnaireData.elements();
     this.questDiv  = questDiv;
     this.player = player;
-    this.startedTime= null;
-    this.divContainer = [];
-    this.nrOfPages= 1;
+    this.startedTime = null;
+    this.divContainerPerPage = [];
+    this.nrOfPages = this.questionnairePages.length;
 
     this.currentPage = ko.observable(null);
     var self = this;
@@ -20,82 +19,29 @@ var PlayerQuestView = function(questionnaireData,questDiv,player) {
 };
 
 PlayerQuestView.prototype.init = function() {
+    for (var p = 0; p<this.nrOfPages; p++) {
+        var page = this.questionnairePages[p];
 
-    var pageCount = 0;
-    this.addNewPage();
+        // add new page:
+        this.addNewPage(page);
 
-    for (var i = 0; i < this.questionElements.length; i++) {
-        if (this.questionElements[i] instanceof PageData){
-            this.nrOfPages++;
+        // add questions of this page:
+        var questions = page.elements();
+        for (var q=0; q<questions.length; q++) {
+            var newDiv = $("<div data-bind='component: {name : \"contentElementPlayerview\", params : $data}'</div>");
+            this.divContainerPerPage[p].append(newDiv);
+            ko.applyBindings(questions[q].content(), newDiv[0]);
         }
+
+        // add confirm button:
+        var newDiv = $("<div data-bind='component: {name : \"page-playerview\", params : $data}'</div>");
+        this.divContainerPerPage[p].append(newDiv);
+        ko.applyBindings(page, newDiv[0]);
+        this.addNewPage();
     }
-
-    for (var i = 0; i < this.questionElements.length; i++) {
-
-        var elem = this.questionElements[i];
-
-        if (!(elem.content() instanceof PageData)){
-            var newDiv = elem.div;
-/*            if (elem.content() instanceof CheckBoxElement) {
-                var newDiv = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'</div>");
-            }
-            else if (elem.content() instanceof MultipleChoiceElement) {
-                var newDiv = $("<div data-bind='component: {name : \"choice-playerview\", params : $data}'</div>");
-            }
-            else if (elem.content() instanceof MultiLineInputElement) {
-                var newDiv = $("<div data-bind='component: {name : \"paragraph-playerview\", params : $data}'</div>");
-            }
-            else if (elem.content() instanceof RangeElement) {
-                var newDiv = $("<div data-bind='component: {name : \"range-playerview\", params : $data}'</div>");
-            }
-            else if (elem instanceof ScaleElement) {
-                var newDiv = $("<div data-bind='component: {name : \"scale-playerview\", params : $data}'</div>");
-            }
-            else if (elem instanceof TextInputElement) {
-                var newDiv = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'</div>");
-            }*/
-            this.divContainer[pageCount].append(newDiv);
-            $(newDiv).css({
-                "color":"black"
-            });
-
-            //ko.applyBindings(elem.content(),newDiv);
-        }
-        else  {
-            var newDiv = $("<div data-bind='component: {name : \"newpage-playerview\", params : $data.content()}'</div>");
-            this.divContainer[pageCount].append(newDiv);
-            elem.currPage =  pageCount+1;
-            elem.totalPages =  this.nrOfPages;
-            ko.applyBindings(elem,newDiv[0]);
-            this.addNewPage();
-            pageCount++;
-        }
-    }
-
-    // append end page if not last element
-    if (!(elem instanceof PageData)){
-        var elem =  new PageData(this.player.experiment.exp_data);
-        var newDiv = $("<div data-bind='component: {name : \"newpage-playerview\", params : $data}'</div>");
-        this.divContainer[pageCount].append(newDiv);
-        elem.currPage =  pageCount+1;
-        elem.totalPages =  this.nrOfPages;
-        ko.applyBindings(elem,newDiv[0]);
-    }
-
-    // make scrollbars and add divs to DOM
-    for (var i = 0; i <this.divContainer.length; i++) {
-        var div = this.divContainer[pageCount];
-        $(div).height()
-        $(div).css({
-            "position": "absolute",
-            "overflow-y":"scroll"
-        });
-        this.questDiv.append(this.divContainer[i][0]);
-    }
-
 };
 
-PlayerQuestView.prototype.addNewPage= function() {
+PlayerQuestView.prototype.addNewPage= function(page) {
     var div = $(document.createElement('div'));
     var header = $("<h3>Questionnaire</h3>");
     $(header).css({
@@ -115,15 +61,18 @@ PlayerQuestView.prototype.addNewPage= function() {
         "display": "none",
         "overflow-y":"scroll"
     });
-    this.divContainer.push(div);
+    this.divContainerPerPage.push(div);
+
+    $(div).css({
+        "position": "absolute",
+        "overflow-y":"scroll"
+    });
+
+    this.questDiv.append(div);
 };
 
 
-
-
-
 PlayerQuestView.prototype.showCurrentPage= function(currentPage) {
-
     $(this.questDiv.children()[currentPage]).css({
         "display": "block"
     });
@@ -138,25 +87,19 @@ PlayerQuestView.prototype.hide= function() {
 
 
 PlayerQuestView.prototype.start= function() {
-
     this.currentPage(0);
     this.questDiv.css('display','block');
 };
-
-
-
-
-
-
 
 PlayerQuestView.prototype.submitQuestionnaire = function() {
 
     var answers = [];
     var varIds = [];
-    for (var i = 0; i<this.questionElements.length;i++){
-        if (!(this.questionElements[i].content() instanceof PageData)){
-            varIds.push(this.questionElements[i].content().variable().id());
-            answers.push(this.questionElements[i].content().answer());
+    for (var p = 0; p<this.nrOfPages; p++) {
+        var questions = this.questionnairePages[p].elements();
+        for (var q=0; q<questions.length; q++) {
+            varIds.push(questions[q].content().variable().id());
+            answers.push(questions[q].content().answer());
         }
     }
 
@@ -170,12 +113,10 @@ PlayerQuestView.prototype.submitQuestionnaire = function() {
 
 };
 
-
 PlayerQuestView.prototype.nextPage = function() {
     this.hide();
     this.currentPage(this.currentPage()+1);
 };
-
 
 PlayerQuestView.prototype.previousPage = function() {
     this.hide();

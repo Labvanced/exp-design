@@ -84,7 +84,7 @@ PageData.prototype.fromJS = function(data) {
 
 };
 
-ko.components.register('newPage-element-edit', {
+ko.components.register('page-element-edit', {
     viewModel: function(dataModel){
         this.returnButton = dataModel.returnButton;
         this.previousMandatory = dataModel
@@ -100,7 +100,7 @@ ko.components.register('newPage-element-edit', {
 });
 
 
-ko.components.register('newPage-element-preview',{
+ko.components.register('page-element-preview',{
     viewModel: function(dataModel){
         this.dataModel = dataModel;
         this.returnButton = dataModel.returnButton;
@@ -117,7 +117,7 @@ ko.components.register('newPage-element-preview',{
 });
 
 
-ko.components.register('newpage-playerview',{
+ko.components.register('page-playerview',{
     viewModel: function(dataModel){
         this.dataModel = dataModel;
         this.returnButton = dataModel.returnButton;
