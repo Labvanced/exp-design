@@ -312,7 +312,7 @@ ActionSetElementProp.prototype.run = function() {
             var newValue = value;
         }
         else if (operatorType== 'variable'){
-            var newValue = value.value();
+            var newValue = parseFloat(value.value());
         }
         //target[property](newValue);
         target.modifier().selectedTrialView[property](newValue);
@@ -477,12 +477,16 @@ var ActionDrawRandomNumber = function(event) {
     // serialized
     this.variable = ko.observable(null);
     this.distribution = ko.observable('Uniform');
-    this.distributionParam1 = ko.observable(0); // i.e. lower bound of Uniform or mean of Gaussian
-    this.distributionParam2 = ko.observable(1); // i.e. upper bound of Uniform or std of Gaussian
+    this.distributionParam1 = ko.observable(0).extend({ numeric: 4 }); // i.e. lower bound of Uniform or mean of Gaussian
+    this.distributionParam2 = ko.observable(1).extend({ numeric: 4 }); // i.e. upper bound of Uniform or std of Gaussian
 };
 ActionDrawRandomNumber.prototype.type = "ActionDrawRandomNumber";
 ActionDrawRandomNumber.prototype.label = "Draw Random Number";
 ActionDrawRandomNumber.prototype.distributions = ["Uniform", "Gaussian"];
+ActionDrawRandomNumber.prototype.distributionParamLabels = {
+    "Uniform": ["min", "max"],
+    "Gaussian": ["mean", "std"]
+};
 
 ActionDrawRandomNumber.prototype.isValid = function(){
     return true;
@@ -500,8 +504,52 @@ ActionDrawRandomNumber.prototype.setVariableBackRef = function(variable){
     variable.addBackRef(this, this.event, true, false, 'Action Draw Random Number');
 };
 
-ActionDrawRandomNumber.prototype.run = function() {
+// Standard Normal variate using Box-Muller transform.
+function randn_bm() {
+    var u = 1 - Math.random(); // Subtraction to flip [0, 1) to (0, 1].
+    var v = 1 - Math.random();
+    return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+}
 
+// randn with marsaglia_polar algorithm:
+var randn_marsaglia_polar = (function() {
+    var y2;
+    var isSpareReady = false;
+    return function() {
+        var y1;
+        if(isSpareReady) {
+            y1 = y2;
+            isSpareReady = false;
+        }
+        else {
+            var x1, x2, w;
+            do {
+                x1 = 2.0 * Math.random() - 1.0;
+                x2 = 2.0 * Math.random() - 1.0;
+                w  = x1 * x1 + x2 * x2;
+            } while( w >= 1.0);
+            w = Math.sqrt((-2.0 * Math.log(w))/w);
+            y1 = x1 * w;
+            y2 = x2 * w;
+            isSpareReady = true;
+        }
+        return y1;
+    }
+})();
+
+ActionDrawRandomNumber.prototype.run = function() {
+    if (this.distribution() == "Uniform") {
+        var min = this.distributionParam1();
+        var max = this.distributionParam2();
+        var value = Math.random() * (max - min) + min;
+        this.variable().value(value);
+    }
+    else if (this.distribution() == "Gaussian") {
+        var mean = this.distributionParam1();
+        var std = this.distributionParam2();
+        var value = mean + randn_marsaglia_polar() * std;
+        this.variable().value(value);
+    }
 };
 
 ActionDrawRandomNumber.prototype.fromJS = function(data) {
