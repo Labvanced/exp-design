@@ -75,7 +75,7 @@ RangeElement.prototype.fromJS = function(data) {
 };
 
 
-ko.components.register('range-element-edit', {
+ko.components.register('range-editview', {
     viewModel: {
         createViewModel: function(dataModel, componentInfo){
 

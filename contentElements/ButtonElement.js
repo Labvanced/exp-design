@@ -37,7 +37,7 @@ ButtonElement.prototype.fromJS = function(data) {
     this.buttonText(data.buttonText);
 };
 
-ko.components.register('button-element-edit', {
+ko.components.register('button-editview', {
     viewModel: function(dataModel){
         this.dataModel = dataModel;
         this.buttonText= dataModel.buttonText;

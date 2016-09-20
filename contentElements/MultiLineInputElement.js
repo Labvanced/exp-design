@@ -61,7 +61,7 @@ MultiLineInputElement.prototype.fromJS = function(data) {
     this.answer(data.answer);
 };
 
-ko.components.register('paragraph-element-edit', {
+ko.components.register('multi-line-input-editview', {
     viewModel: {
         createViewModel: function(dataModel, componentInfo){
             var viewModel = function(dataModel){
@@ -89,7 +89,7 @@ ko.components.register('paragraph-element-edit', {
 
 });
 
-ko.components.register('paragraph-preview',{
+ko.components.register('multi-line-input-preview',{
     viewModel: {
         createViewModel: function(dataModel, componentInfo){
             var elem = componentInfo.element.firstChild;
@@ -111,7 +111,7 @@ ko.components.register('paragraph-preview',{
           <br>'
 });
 
-ko.components.register('paragraph-playerview',{
+ko.components.register('multi-line-input-playerview',{
     viewModel: function(dataModel){
         this.dataModel = dataModel;
         this.questionText = dataModel.questionText;

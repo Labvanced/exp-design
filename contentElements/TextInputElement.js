@@ -58,8 +58,8 @@ TextInputElement.prototype.fromJS = function(data) {
     this.answer(data.answer);
 };
 
-//TODO @Holger Add image FileManager, @Kai Multiple mceEditors
-ko.components.register('text-element-edit', {
+// TODO: @Holger Add image FileManager
+ko.components.register('text-input-editview', {
     viewModel: {
         createViewModel: function (dataModel, componentInfo) {
 
@@ -97,7 +97,7 @@ ko.components.register('text-element-edit', {
         </div>'
 });
 
-ko.components.register('text-preview',{
+ko.components.register('text-input-preview',{
     viewModel: {
         createViewModel: function(dataModel, componentInfo){
             var elem = componentInfo.element.firstChild;
@@ -124,7 +124,7 @@ ko.components.register('text-preview',{
 });
 
 
-ko.components.register('text-playerview',{
+ko.components.register('text-input-playerview',{
     viewModel: function(dataModel){
 
         var self = this;

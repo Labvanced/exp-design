@@ -1,8 +1,3 @@
-/**
- * Created by cgoeke on 1/29/16.
- */
-
-
 
 var FrameElementView = function(dataModel, editor) {
 
@@ -368,67 +363,16 @@ FrameElementView.prototype.renderElements = function(data) {
     }
 
     if (data.type != "ImageElement" && data.type !="VideoElement"){
-
         $(this.content).children().remove();
         this.contentScaling = $("<div></div>");
+
         if (this.editor.type == "editorView") {
-            if (data instanceof CheckBoxElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"checkbox-preview\", params : $data}'></div>");
-            }
-            else if (data instanceof MultipleChoiceElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"choice-preview\", params : $data}'></div>");
-            }
-            else if (data instanceof MultiLineInputElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"paragraph-preview\", params : $data}'></div>");
-            }
-            else if (data instanceof RangeElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"range-preview\", params : $data}'></div>");
-            }
-            else if (data instanceof ScaleElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"scale-preview\", params : $data}'></div>");
-            }
-            else if (data instanceof TextInputElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"text-preview\", params : $data}'></div>");
-            }
-            else if (data instanceof DisplayTextElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"display-text-element-preview\", params : $data}'></div>");
-            }
-            else if (data instanceof ButtonElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"button-preview\", params : $data}'></div>");
-            }
-            else if (data instanceof InvisibleElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"invisible-preview\", params : $data}'></div>");
-            }
+            this.contentInside = $("<div data-bind='component: {name : \"contentElementPreview\", params : $data}'></div>");
         }
         else {
-            if (data instanceof CheckBoxElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"checkbox-playerview\", params : $data}'></div>");
-            }
-            else if (data instanceof MultipleChoiceElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"choice-playerview\", params : $data}'></div>");
-            }
-            else if (data instanceof MultiLineInputElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"paragraph-playerview\", params : $data}'></div>");
-            }
-            else if (data instanceof RangeElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"range-playerview\", params : $data}'></div>");
-            }
-            else if (data instanceof ScaleElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"scale-playerview\", params : $data}'></div>");
-            }
-            else if (data instanceof TextInputElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"text-playerview\", params : $data}'></div>");
-            }
-            else if (data instanceof DisplayTextElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"display-text-element-playerview\", params : $data}'></div>");
-            }
-            else if (data instanceof ButtonElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"button-playerview\", params : $data}'></div>");
-            }
-            else if (data instanceof InvisibleElement) {
-                this.contentInside = $("<div data-bind='component: {name : \"invisible-playerview\", params : $data}'></div>");
-            }
+            this.contentInside = $("<div data-bind='component: {name : \"contentElementPlayerview\", params : $data}'></div>");
         }
+
         $(this.contentScaling).append(this.contentInside);
         $(this.content).append(this.contentScaling);
         ko.applyBindings(data, $(this.content)[0]);

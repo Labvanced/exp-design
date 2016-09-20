@@ -32,7 +32,7 @@ DisplayTextElement.prototype.fromJS = function(data) {
     this.text(data.text);
 };
 
-ko.components.register('display-text-element-edit', {
+ko.components.register('display-text-editview', {
     viewModel: {
         createViewModel: function (dataModel, componentInfo) {
             var viewModel = function(dataModel){

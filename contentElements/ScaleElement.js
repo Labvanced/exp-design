@@ -80,7 +80,7 @@ ScaleElement.prototype.fromJS = function(data) {
 };
 
 
-ko.components.register('scale-element-edit', {
+ko.components.register('scale-editview', {
     viewModel: {
         createViewModel: function(dataModel, componentInfo){
 

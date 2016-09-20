@@ -34,7 +34,7 @@ InvisibleElement.prototype.fromJS = function(data) {
 };
 
 console.log("register invisible element edit...");
-ko.components.register('invisible-element-edit', {
+ko.components.register('invisible-editview', {
     viewModel: function(dataModel){
         this.dataModel = dataModel;
 

@@ -76,7 +76,7 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
     this.answer(data.answer);
 };
 
-ko.components.register('choice-element-edit', {
+ko.components.register('choice-editview', {
     viewModel: {
         createViewModel: function(dataModel, componentInfo){
 
