@@ -3,6 +3,7 @@
 
 var Experiment = function () {
     this.exp_id = ko.observable(0);
+    this.guid = ko.observable(guid());
     this.exp_series_id = ko.observable(0);
     this.exp_name = ko.observable('');
     this.version = ko.observable(1);
@@ -24,17 +25,18 @@ Experiment.prototype.setPointers = function() {
 };
 
 Experiment.prototype.fromJS = function(data) {
-    this.exp_id = ko.observable(data.exp_id);
-    this.exp_series_id = ko.observable(data.exp_series_id);
-    this.exp_name = ko.observable(data.exp_name);
-    this.version = ko.observable(data.version);
-    this.is_editing = ko.observable(data.is_editing);
-    this.is_recording = ko.observable(data.is_recording);
-    this.is_published = ko.observable(data.is_published);
-    this.description = ko.observable(data.description);
-    this.category_id = ko.observable(data.category_id);
-    this.img_file_id = ko.observable(data.img_file_id);
-    this.img_file_orig_name = ko.observable(data.img_file_orig_name);
+    this.guid(data.guid);
+    this.exp_id(data.exp_id);
+    this.exp_series_id(data.exp_series_id);
+    this.exp_name(data.exp_name);
+    this.version(data.version);
+    this.is_editing(data.is_editing);
+    this.is_recording(data.is_recording);
+    this.is_published(data.is_published);
+    this.description(data.description);
+    this.category_id(data.category_id);
+    this.img_file_id(data.img_file_id);
+    this.img_file_orig_name(data.img_file_orig_name);
     if (data.hasOwnProperty("exp_data")){
         this.exp_data = new ExpData();
         this.exp_data.fromJS(data.exp_data);
@@ -96,6 +98,7 @@ Experiment.prototype.toJS = function() {
     }
 
     return {
+        guid: this.guid(),
         exp_id: this.exp_id(),
         exp_series_id: this.exp_series_id(),
         exp_name: this.exp_name(),
