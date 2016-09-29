@@ -298,11 +298,16 @@ Modifier.prototype.selectTrialType = function(selectionSpec){
         }
     }
     if (selectionSpec.hasOwnProperty('factors')) {
+        var factorIds = [];
         for (var i=0; i<selectionSpec.factors.length; i++){
             if (selectionSpec.factors[i] instanceof GlobalVar) {
-                selectionSpec.factors[i] = selectionSpec.factors[i].id();
+                factorIds.push(selectionSpec.factors[i].id());
+            }
+            else {
+                factorIds.push(selectionSpec.factors[i]);
             }
         }
+        selectionSpec.factors = factorIds;
     }
 
     this.selectedTrialType(selectionSpec);

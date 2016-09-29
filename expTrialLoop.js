@@ -340,6 +340,7 @@ ExpTrialLoop.prototype.addFactor = function() {
     globalVar.isInteracting(true);
     globalVar.addLevel();
     this.factors.push(globalVar);
+    this.expData.entities.push(globalVar);
     return globalVar;
 };
 
