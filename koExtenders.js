@@ -86,6 +86,7 @@ if (typeof CKEDITOR !== 'undefined') {
             var ignoreChanges = false;
 
             var instance = CKEDITOR.inline(element, {
+                customConfig: '/client/editors/ckeditor_config.js',
                 on: {
                     change: function () {
                         ignoreChanges = true;
