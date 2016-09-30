@@ -15,6 +15,11 @@ var Event= function(parent) {
     this.name =  ko.observable(null);
 };
 
+Event.prototype.deleteRequirement = function() {
+    this.requirement(null)
+}
+
+
 Event.prototype.setPointers = function(entitiesArr) {
     this.trigger().setPointers(entitiesArr);
     if (this.requirement()) {
