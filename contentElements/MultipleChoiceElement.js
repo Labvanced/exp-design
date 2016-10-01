@@ -76,96 +76,63 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
     this.answer(data.answer);
 };
 
-ko.components.register('choice-editview', {
-    viewModel: {
-        createViewModel: function(dataModel, componentInfo){
+function createMultipleChoiceComponents() {
+    ko.components.register('choice-editview', {
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
 
-            var viewModel = function(dataModel){
-                this.dataModel = dataModel;
-                this.questionText = dataModel.questionText;
-                this.choices = dataModel.choices;
-                this.answer = dataModel.answer;
-                this.margin = dataModel.margin;
-                this.name = dataModel.parent.name;
+                var viewModel = function(dataModel){
+                    this.dataModel = dataModel;
+                    this.questionText = dataModel.questionText;
+                    this.choices = dataModel.choices;
+                    this.answer = dataModel.answer;
+                    this.margin = dataModel.margin;
+                    this.name = dataModel.parent.name;
 
-                this.addChoice = function() {
-                    this.choices.push(ko.observable("choice"));
+                    this.addChoice = function() {
+                        this.choices.push(ko.observable("choice"));
+                    };
+
+                    this.removeChoice = function(idx) {
+                        this.choices.splice(idx,1);
+                    };
                 };
 
-                this.removeChoice = function(idx) {
-                    this.choices.splice(idx,1);
+                return new viewModel(dataModel);
+            }
+        },
+        template: {element: 'choice-editview-template'}
+    });
+
+    ko.components.register('choice-preview',{
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+                var elem = componentInfo.element.firstChild;
+                var viewModel = function(dataModel){
+                    this.dataModel = dataModel;
+                    this.questionText = dataModel.questionText;
+                    this.choices = dataModel.choices;
+                    this.margin = dataModel.margin;
+                    this.count = dataModel.count;
                 };
+                return new viewModel(dataModel);
+            }
+        },
+        template: {element: 'choice-preview-template'}
+    });
 
-                this.focus = function () {
-                    if(dataModel.ckeditor){
-                        dataModel.ckeditor.focus();
-                    }
-                };
+    ko.components.register('choice-playerview', {
+        viewModel: function(dataModel){
 
-            };
-
-            return new viewModel(dataModel);
-        }
-    },
-    template:
-        '<div class="panel-body" style="height: 100%; margin-top: -10px">\
-                    <div>\
-                        <span>Element Tag:</span>\
-                        <br>\
-                        <input style="max-width:50%;" type="text" data-bind="textInput: $parent.name"> \
-                    </div>\
-                    <br>\
-                    <div>\
-                        <span style="display: inline-block">Question Text</span>\
-                        <span style="display: inline-block"><img style="cursor: pointer" width="20" height="20" src="/resources/edit.png" data-bind="click: focus"></span>\
-                   </div>\
-                    <span><a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> Add Choice</a></span>\
-                    <br><br>\
-            </div>'
-});
-
-ko.components.register('choice-preview',{
-    viewModel: {
-        createViewModel: function(dataModel, componentInfo){
-            var elem = componentInfo.element.firstChild;
-            var viewModel = function(dataModel){
-                this.dataModel = dataModel;
-                this.questionText = dataModel.questionText;
-                this.choices = dataModel.choices;
-                this.margin = dataModel.margin;
-                this.count = dataModel.count;
-            };
-            return new viewModel(dataModel);
-        }
-    },
-    template:
-        '<div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: \'afterkeydown\'"><p>Your Question</p></div>\
-        <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">\
-            <div>\
-                <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block" type="radio" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">\
-                <div style="display: inline-block" class="notDraggable" data-bind="wysiwyg: $rawData, valueUpdate: \'afterkeydown\'"></div>\
-            </div>\
-        </div>\
-        <br>'
-});
-
-ko.components.register('choice-playerview', {
-    viewModel: function(dataModel){
-
-        this.dataModel = dataModel;
-        this.questionText = dataModel.questionText;
-        this.openQuestion = dataModel.openQuestion;
-        this.newChoice = dataModel.newChoice;
-        this.choices = dataModel.choices;
-        this.newPage = dataModel.newPage;
-        this.answer = dataModel.answer;
-        this.margin = dataModel.margin;
-    },
-    template:
-        '<div style="font-size: 200%" data-bind="text: questionText"></div>\
-        <div data-bind=\"foreach: choices, style: {marginTop: margin, marginBottom: margin}\">\
-            <input style="margin-bottom: inherit; margin-top: inherit" type=\"radio\" data-bind="attr: {value:$data}, checked: $root.answer, click: function(){return true}, clickBubble: false\">\
-            <span style="margin-bottom: inherit; margin-top: inherit" data-bind=\"text: $data\"></span>\
-        </div>\
-        <br>'
-});
+            this.dataModel = dataModel;
+            this.questionText = dataModel.questionText;
+            this.openQuestion = dataModel.openQuestion;
+            this.newChoice = dataModel.newChoice;
+            this.choices = dataModel.choices;
+            this.newPage = dataModel.newPage;
+            this.answer = dataModel.answer;
+            this.margin = dataModel.margin;
+        },
+        template: {element: 'choice-playerview-template'}
+    });
+};

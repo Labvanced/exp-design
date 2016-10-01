@@ -34,29 +34,29 @@ InvisibleElement.prototype.fromJS = function(data) {
 };
 
 console.log("register invisible element edit...");
-ko.components.register('invisible-editview', {
-    viewModel: function(dataModel){
-        this.dataModel = dataModel;
+function createInvisibleElementComponents() {
+    ko.components.register('invisible-editview', {
+        viewModel: function(dataModel){
+            this.dataModel = dataModel;
 
-    },
-    template:
-        '<div class="panel-body"></div>'
+        },
+        template: {element: 'invisible-editview-template'}
 
-});
+    });
 
-ko.components.register('invisible-preview', {
-    viewModel: function(dataModel){
-        this.dataModel = dataModel;
-    },
-    template:
-        '<div class="panel-body"></div>'
-});
+    ko.components.register('invisible-preview', {
+        viewModel: function(dataModel){
+            this.dataModel = dataModel;
+        },
+        template: {element: 'invisible-preview-template'}
+    });
 
-ko.components.register('invisible-playerview', {
-    viewModel: function(dataModel){
-        this.dataModel = dataModel;
+    ko.components.register('invisible-playerview', {
+        viewModel: function(dataModel){
+            this.dataModel = dataModel;
 
-    },
-    template:
-        '<div class="panel-body"></div>'
-});
+        },
+        template: {element: 'invisible-playerview-template'}
+    });
+}
+

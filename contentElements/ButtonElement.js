@@ -37,32 +37,31 @@ ButtonElement.prototype.fromJS = function(data) {
     this.buttonText(data.buttonText);
 };
 
-ko.components.register('button-editview', {
-    viewModel: function(dataModel){
-        this.dataModel = dataModel;
-        this.buttonText= dataModel.buttonText;
-    } ,
-    template:
-        '<input style="max-width:50%" type="text" data-bind="textInput: buttonText"\
-            class="form-control" placeholder="Button Text">'
-});
+function createButtonElementComponents() {
+    ko.components.register('button-editview', {
+        viewModel: function(dataModel){
+            this.dataModel = dataModel;
+            this.buttonText= dataModel.buttonText;
+        } ,
+        template: {element: 'button-editview-template'}
+    });
 
-ko.components.register('button-preview',{
-    viewModel: function(dataModel){
-        this.dataModel = dataModel;
-        this.buttonText= dataModel.buttonText;
-    },
-    template:
-        '<div class="btn-primary" style="width: 100%; height: 100%;"><div style="margin: auto;" class="notDraggable" data-bind="wysiwyg: buttonText">Button</div></div>'
-});
+    ko.components.register('button-preview',{
+        viewModel: function(dataModel){
+            this.dataModel = dataModel;
+            this.buttonText= dataModel.buttonText;
+        },
+        template: {element: 'button-preview-template'}
+    });
 
 
-ko.components.register('button-playerview',{
-    viewModel: function(dataModel){
-        this.dataModel = dataModel;
-        this.buttonText= dataModel.buttonText;
-    },
-    template:
-    '<button class="btn-primary" style="width: 100%; height: 100%;"><div style="margin: auto;" data-bind="text: buttonText">Button</div></button>'
-});
+    ko.components.register('button-playerview',{
+        viewModel: function(dataModel){
+            this.dataModel = dataModel;
+            this.buttonText= dataModel.buttonText;
+        },
+        template: {element: 'button-playerview-template'}
+    });
+}
+
 

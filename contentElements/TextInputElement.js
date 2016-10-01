@@ -58,89 +58,53 @@ TextInputElement.prototype.fromJS = function(data) {
     this.answer(data.answer);
 };
 
-// TODO: @Holger Add image FileManager
-ko.components.register('text-input-editview', {
-    viewModel: {
-        createViewModel: function (dataModel, componentInfo) {
 
-            var viewModel = function(dataModel){
-
-                var self = this;
-                this.questionText = dataModel.questionText;
-                this.name = dataModel.parent.name;
-
-                this.focus = function () {
-                    if(dataModel.ckeditor){
-                        dataModel.ckeditor.focus();
-                    }
+function createTextInputComponents() {
+    // TODO: @Holger Add image FileManager
+    ko.components.register('text-input-editview', {
+        viewModel: {
+            createViewModel: function (dataModel, componentInfo) {
+                var viewModel = function(dataModel){
+                    var self = this;
+                    this.questionText = dataModel.questionText;
+                    this.name = dataModel.parent.name;
                 };
 
-            };
+                return new viewModel(dataModel);
+            }
 
-            return new viewModel(dataModel);
-        }
-
-    },
-    template:
-        '<div class="panel-body" style="height: 100%; margin-top: -10px">\
-                <div>\
-                    <span>Element Tag:</span>\
-                    <br>\
-                    <input style="max-width:50%;" type="text" data-bind="textInput: $parent.name"> \
-                </div>\
-                <br>\
-                <div>\
-                    <span style="display: inline-block">Question Text</span>\
-                    <span style="display: inline-block"><img style="cursor: pointer" width="20" height="20" src="/resources/edit.png" data-bind="click: focus"></span>\
-               </div>\
-                <br><br>\
-        </div>'
-});
-
-ko.components.register('text-input-preview',{
-    viewModel: {
-        createViewModel: function(dataModel, componentInfo){
-            var elem = componentInfo.element.firstChild;
-            var viewModel = function(dataModel){
-                var self = this;
-                this.dataModel = dataModel;
-                this.questionText = dataModel.questionText;
-                this.name = dataModel.parent.name;
-            };
-            return new viewModel(dataModel);
-        }
-    },
-    template:
-        '<div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: \'afterkeydown\'"><p>Your Question</p></div>\
-          <br>\
-            <div>\
-            <input style="position:relative;left: 0%; max-width:50%"\
-                 type="text"\
-                class="form-control"\
-                placeholder="Participant Answer""\
-                disabled>\
-          </div>\
-          <br>'
-});
+        },
+        template: {element: 'text-input-editview-template'}
+    });
 
 
-ko.components.register('text-input-playerview',{
-    viewModel: function(dataModel){
+    ko.components.register('text-input-preview',{
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+                var elem = componentInfo.element.firstChild;
+                var viewModel = function(dataModel){
+                    var self = this;
+                    this.dataModel = dataModel;
+                    this.questionText = dataModel.questionText;
+                    this.name = dataModel.parent.name;
+                };
+                return new viewModel(dataModel);
+            }
+        },
+        template: { element: 'text-input-preview-template' }
+    });
 
-        var self = this;
-        this.dataModel = dataModel;
-        this.questionText = dataModel.questionText;
-        this.answer = dataModel.answer;
 
-    },
-    template:
-        '<div data-bind="html: questionText"></div>\
-          <br>\
-            <div>\
-            <input style="position:relative;left: 0%; max-width:50%"\
-                 type="text"\
-                class="form-control"\
-                placeholder="Participant Answer" data-bind="textInput: answer">\
-          </div>\
-          <br>'
-});
+    ko.components.register('text-input-playerview',{
+        viewModel: function(dataModel){
+            var self = this;
+            this.dataModel = dataModel;
+            this.questionText = dataModel.questionText;
+            this.answer = dataModel.answer;
+
+        },
+        template: {element: 'text-input-playerview-template'}
+    });
+}
+
+

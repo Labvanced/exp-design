@@ -1,0 +1,44 @@
+<template id="checkbox-editview-template">
+    <div class="panel-body" style="height: 100%; margin-top: -10px">
+        <div>
+            <span>Element Tag:</span>
+            <br>
+            <input style="max-width:50%;" type="text" data-bind="textInput: $parent.name"> 
+        </div>
+        <br>
+        <div>
+            <span style="display: inline-block">Question Text</span>
+            <span style="display: inline-block">
+                <img style="cursor: pointer" width="20" height="20" src="/resources/edit.png" data-bind="click: focus">
+            </span>
+        </div>
+        <span>
+            <a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> Add Choice </a>
+        </span>
+        <br><br>
+    </div>
+</template>
+
+<template id="checkbox-preview-template">
+    <div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: 'afterkeydown'">
+        <p>Your Question</p>
+    </div>
+    <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">
+        <div>
+            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">
+            <div style="display: inline-block" class="notDraggable" data-bind="wysiwyg: $rawData, valueUpdate: 'afterkeydown'"></div>
+        </div>
+    </div>
+    <br>
+</template>
+
+<template id="checkbox-playerview-template">
+    <div data-bind="html: questionText"></div>
+    <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">
+        <input style="margin-top: inherit; margin-bottom: inherit" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">
+        <span  style="margin-top: inherit; margin-bottom: inherit">
+            <p>Check</p>
+        </span>
+    </div>
+    <br>
+</template>
