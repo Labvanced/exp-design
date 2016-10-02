@@ -16,9 +16,12 @@ var Event= function(parent) {
 };
 
 Event.prototype.deleteRequirement = function() {
-    this.requirement(null)
-}
+    this.requirement(null);
+};
 
+Event.prototype.deleteAction = function(index) {
+    this.actions.splice(index, 1);
+};
 
 Event.prototype.setPointers = function(entitiesArr) {
     this.trigger().setPointers(entitiesArr);
