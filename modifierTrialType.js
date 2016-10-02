@@ -26,7 +26,10 @@ ModifierTrialType.prototype.setModification = function(propName, val) {
     }
 };
 
-
+ModifierTrialType.prototype.removeModification = function(propName) {
+    this.propIsModified[propName](false);
+    delete this.modifiedProp[propName];
+};
 
 ModifierTrialType.prototype.deepCopy = function() {
     var newObj = new ModifierTrialType(this.expData, this.objToModify);

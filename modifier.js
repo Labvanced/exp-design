@@ -253,11 +253,26 @@ Modifier.prototype.addProp = function(propName) {
             else {
                 // 'default' all trials
                 this.objToModify[propName](value);
+
+                // remove all modifications that were made to this property in any trial types:
+                this.removeModificationRecursive(this.interactingTrialTypes, propName);
+                this.removeModificationRecursive(this.noninteractTrialTypes, propName);
             }
         },
         owner: this
     });
-}
+};
+
+Modifier.prototype.removeModificationRecursive = function(objArr,propName) {
+    if (objArr.constructor === Array){
+        for (var i=0; i<objArr.length; i++){
+            this.removeModificationRecursive(objArr[i],propName);
+        }
+    }
+    else {
+        objArr.removeModification(propName);
+    }
+};
 
 Modifier.prototype.getIdsOfFactors = function(factorArr) {
     var factorIds = $.map(factorArr, function(factor) {
@@ -269,7 +284,7 @@ Modifier.prototype.getIdsOfFactors = function(factorArr) {
         }
     });
     return factorIds;
-}
+};
 
 Modifier.prototype.setPointers = function(entitiesArr) {
     var self = this;
