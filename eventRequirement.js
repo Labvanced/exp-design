@@ -214,7 +214,7 @@ var OperandVariable = function(event) {
 
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
-OperandVariable.prototype.operandTypes = ['undefined', "variable", "triggerParameter", "constantString", "constantNumeric"];
+OperandVariable.prototype.operandTypes = ['undefined', "variable", "objectProperty", "triggerParameter", "constantString", "constantNumeric"];
 
 OperandVariable.prototype.setVariableBackRef = function(variable){
     variable.addBackRef(this, this.event, false, true, 'In Boolean Expression');
@@ -225,6 +225,9 @@ OperandVariable.prototype.setPointers = function(entitiesArr) {
         var globVar = entitiesArr.byId[this.operandValueOrObject()];
         this.operandValueOrObject(globVar);
         this.setVariableBackRef(globVar);
+    }
+    if (this.operandType() == "objectProperty") {
+        this.operandValueOrObject().setPointers(entitiesArr);
     }
 };
 
@@ -244,6 +247,8 @@ OperandVariable.prototype.getValue = function(parameters) {
             return null;
         case "variable":
             return value.getValue();
+        case "objectProperty":
+            return this.operandValueOrObject().getValue();
         case "triggerParameter":
             return parameters[value];
         case "constantString":
@@ -253,7 +258,10 @@ OperandVariable.prototype.getValue = function(parameters) {
             return value;
         case "constantNumeric":
             if (typeof value != "number") {
-                console.error("operand is not a number");
+                value = parseFloat(value);
+                if (isNaN(value)) {
+                    console.error("operand is not a number");
+                }
             }
             return value;
     }
@@ -261,7 +269,14 @@ OperandVariable.prototype.getValue = function(parameters) {
 
 OperandVariable.prototype.fromJS = function(data) {
     this.operandType(data.operandType);
-    this.operandValueOrObject(data.operandValueOrObject);
+    if (data.operandType == "objectProperty") {
+        var refToObjectProperty = new RefToObjectProperty(this.event);
+        refToObjectProperty.fromJS(data.operandValueOrObject);
+        this.operandValueOrObject(refToObjectProperty);
+    }
+    else {
+        this.operandValueOrObject(data.operandValueOrObject);
+    }
     return this;
 };
 
@@ -274,12 +289,51 @@ OperandVariable.prototype.toJS = function() {
     if (data.operandType == "variable" && data.operandValueOrObject) {
         data.operandValueOrObject = data.operandValueOrObject.id();
     }
+    if (data.operandType == "objectProperty") {
+        data.operandValueOrObject = data.operandValueOrObject.toJS();
+    }
     return data;
 };
 
-
 ///////////////////////
 
+var RefToObjectProperty = function(event) {
+    this.event = event;
+
+    // serialized
+    this.target = ko.observable(null);
+    this.property = ko.observable(null);
+};
+
+RefToObjectProperty.prototype.setPointers = function(entitiesArr) {
+    if (this.target()) {
+        var target = entitiesArr.byId[this.target()];
+        this.target(target);
+    }
+};
+
+RefToObjectProperty.prototype.getValue = function() {
+    return this.target().modifier().selectedTrialView[this.property()]();
+};
+
+RefToObjectProperty.prototype.fromJS = function(data) {
+    this.target(data.target);
+    this.property(data.property);
+    return this;
+};
+
+RefToObjectProperty.prototype.toJS = function() {
+    var target = this.target();
+    if (target) { // convert to id if target is set
+        target = target.id();
+    }
+    return {
+        target: target,
+        property: this.property()
+    };
+};
+
+///////////////////////
 
 function requirementFactory(event,type) {
     var requirement = new window[type](event);

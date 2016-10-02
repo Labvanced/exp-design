@@ -34,9 +34,31 @@ TriggerMouse.prototype.setPointers = function(entitiesArr) {
 
 TriggerMouse.prototype.getParameterSpec = function() {
     return [
-        'elementTag',
+        'elementName',
+        'elementVisibility',
+        'elementX',
+        'elementY',
+        'elementWidth',
+        'elementHeight',
         'reactionTime'
     ];
+};
+
+/**
+ * private member function to trigger the event on a specific target object
+ * @param playerFrame
+ * @param target
+ */
+TriggerMouse.prototype.triggerOnTarget = function(playerFrame,target) {
+    this.event.triggerActions([
+        target.modifier().selectedTrialView.name(),
+        target.modifier().selectedTrialView.visibility(),
+        target.modifier().selectedTrialView.editorX(),
+        target.modifier().selectedTrialView.editorY(),
+        target.modifier().selectedTrialView.editorWidth(),
+        target.modifier().selectedTrialView.editorHeight(),
+        playerFrame.getFrameTime()
+    ]);
 };
 
 TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
@@ -46,14 +68,13 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
     switch (this.interactionType()){
         case "Click":
 
-
             for (var i = 0; i<this.targets().length;i++){
                 var target = this.targets()[i];
 
                 if (this.buttonType() == "Left"){
                     (function(event,target) {
                         $(playerFrame.frameView.viewElements.byId[target.id()].div).click(function(ev) {
-                            self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
+                            self.triggerOnTarget(playerFrame,target);
                         });
                     })(event,target);
                 }
@@ -61,7 +82,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 else if (this.buttonType() == "Right"){
                     (function(event,target) {
                         $(playerFrame.frameView.viewElements.byId[target.id()].div).contextmenu(function(ev) {
-                            self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
+                            self.triggerOnTarget(playerFrame,target);
                         });
                     })(event,target);
                 }
@@ -76,7 +97,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 (function(event,target) {
                     $(playerFrame.frameView.viewElements.byId[target.id()].div).on('mousedown',function(ev) {
                         if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
-                            self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
+                            self.triggerOnTarget(playerFrame,target);
                         }
                     });
                 })(event,target);
@@ -90,7 +111,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 (function(event,target) {
                     $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseup(function(ev) {
                         if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
-                            self.event.triggerActions([target.name(),playerFrame.getFrameTime()]);
+                            self.triggerOnTarget(playerFrame,target);
                         }
                     });
                 })(event,target);
@@ -103,18 +124,12 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 // closure to make event persistent over loop:
                 (function (event, target) {
                     $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseover(function (ev) {
-                        self.event.triggerActions([target.name(), playerFrame.getFrameTime()]);
+                        self.triggerOnTarget(playerFrame,target);
                     });
                 })(event, target);
             }
             break;
-
     }
-
-
-
-
-
 };
 
 TriggerMouse.prototype.destroyOnPlayerFrame = function(playerFrame) {
