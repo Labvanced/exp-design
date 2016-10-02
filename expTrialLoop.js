@@ -10,6 +10,7 @@ var ExpTrialLoop = function (expData) {
     this.editorWidth = ko.observable(120);
     this.editorHeight = ko.observable(60);
     this.id = ko.observable(guid());
+    this.displayInitialCountdown = ko.observable(true);
     this.name = ko.observable("TrialLoop");
     this.type = "ExpTrialLoop";
     this.subSequence = ko.observable(new Sequence(this.expData));
@@ -407,6 +408,9 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.editorY(data.editorY);
     this.editorWidth(data.editorWidth);
     this.editorHeight(data.editorHeight);
+    if (data.hasOwnProperty('displayInitialCountdown')) {
+        this.displayInitialCountdown(data.displayInitialCountdown);
+    }
     this.type =  data.type;
     this.subSequence(data.subSequence);
 
@@ -441,6 +445,7 @@ ExpTrialLoop.prototype.toJS = function() {
         editorY:  this.editorY(),
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
+        displayInitialCountdown: this.displayInitialCountdown(),
         type: this.type,
         subSequence: this.subSequence().id(),
 
