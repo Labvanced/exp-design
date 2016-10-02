@@ -20,13 +20,14 @@ EditorCallbacks.prototype.addCallbacks = function() {
 
     // Draggable On Frame in Editor View:
     $(this.div).draggable({
+        distance: 10,
+        cancel : '.notDraggable',
         drag : function(event, ui) {
-            self2.frameElementView.setCoord(ui.position.left*(1/self2.frameView.scale()),ui.position.top*(1/self2.frameView.scale()));
+            self2.frameElementView.setCoord(ui.position.left * (1 / self2.frameView.scale()), ui.position.top * (1 / self2.frameView.scale()));
         },
         start: function(event, ui) {
             self2.frameView.setSelectedElement(self2.dataModel)
-        },
-        cancel : '.notDraggable'
+        }
     });
 
     // Make resizable:
@@ -39,15 +40,14 @@ EditorCallbacks.prototype.addCallbacks = function() {
     this.frameElementView.isSelected.subscribe(function(newVal){
         if (newVal) {
             $(self2.div).resizable("enable");
-            $(self2.div).draggable("enable");
+            $(self2.div).draggable( "option", "distance", 0 );
         }
         else {
             $(self2.div).resizable("disable");
-            $(self2.div).draggable("disable");
+            $(self2.div).draggable( "option", "distance", 10 );
         }
     });
     $(self2.div).resizable("disable");
-    $(self2.div).draggable("disable");
 };
 
 
