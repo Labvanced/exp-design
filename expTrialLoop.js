@@ -22,10 +22,13 @@ var ExpTrialLoop = function (expData) {
     this.trialOrderVar = ko.observable(null);
     this.trialEmotionVar = ko.observable(null);
     this.factors = ko.observableArray([]);
+    this.factorGroups = ko.observableArray([]);
     this.additionalTrialTypes =  ko.observableArray([]);
     this.eventVariables = ko.observableArray([]);
 
     //properties
+    this.trialsPerSub = ko.observable(0);
+    this.betweenSubjectDesign = ko.observable(false);
     this.trialDesign = ko.observable("balanced");
     this.repsPerTrialType = ko.observable(1).extend({ numeric: 0 });
     this.minIntervalBetweenRep = ko.observable(0).extend({ numeric: 0 });
@@ -34,6 +37,7 @@ var ExpTrialLoop = function (expData) {
     this.webcamEnabled = ko.observable(false);
 
     // not serialized
+
     this.isInitialized = ko.observable(false);
     this.shape = "square";
     this.label = "Experiment";
@@ -233,7 +237,19 @@ var ExpTrialLoop = function (expData) {
 
     this.portHandler = new PortHandler(this);
 
+    var self = this;
+
+    this.betweenSubjectDesign.subscribe(function(newVal) {
+        if (newVal == true) {
+            self.trialsPerSub(self.totalNrTrials())
+        }
+    })
+
+
 };
+
+
+
 
 
 ExpTrialLoop.prototype.addNewFrame = function() {
@@ -331,33 +347,46 @@ ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
 };
 
 
+ExpTrialLoop.prototype.addFactorGroup = function() {
 
+    var facGroup = new FactorGroup(this.expData,this);
+    this.factorGroups.push(facGroup);
 
-ExpTrialLoop.prototype.addFactor = function() {
-
-    var newName = "factor_" + (this.factors().length+1);
-    var globalVar = (new GlobalVar(this.expData)).initProperties('categorical', 'trial', 'nominal', newName);
-    globalVar.isFactor(true);
-    globalVar.isInteracting(true);
-    globalVar.addLevel();
-    this.factors.push(globalVar);
-    this.expData.entities.push(globalVar);
-    return globalVar;
 };
 
-ExpTrialLoop.prototype.renameFactor = function(idx,flag) {
+ExpTrialLoop.prototype.renameGroup = function(facGroupIdx,flag) {
 
     if (flag == "true"){
-        this.factors()[idx].editName(true);
+        this.factorGroups()[facGroupIdx].editName(true);
     }
     else if (flag == "false"){
-        this.factors()[idx].editName(false);
+        this.factorGroups()[facGroupIdx].editName(false);
     }
 };
 
+ExpTrialLoop.prototype.removeGroup = function(facGroupIdx,idx) {
+    this.factorGroups.splice(facGroupIdx,1);
 
-ExpTrialLoop.prototype.removeFactor = function(idx) {
-    this.factors.splice(idx,1);
+};
+
+
+
+ExpTrialLoop.prototype.addFactor = function(facGroupIdx) {
+
+
+    var globalVar = this.factorGroups()[facGroupIdx].addFactor();
+  //  return globalVar
+};
+
+ExpTrialLoop.prototype.renameFactor = function(facGroupIdx,idx,flag) {
+
+    this.factorGroups()[facGroupIdx].renameFactor(idx,flag)
+};
+
+
+ExpTrialLoop.prototype.removeFactor = function(facGroupIdx,idx) {
+    this.factorGroups()[facGroupIdx].removeFactor();
+
 };
 
 
