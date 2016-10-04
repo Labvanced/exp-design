@@ -54,8 +54,13 @@ FrameData.prototype.getDeepCopy = function() {
 
     // loop through array and create deep copies
     var entitiesArrCopy = jQuery.map(entitiesArr(), function (entity) {
-        var entityJson = entity.toJS();
-        return entityFactory(entityJson, self.expData);
+        if (entity instanceof GlobalVar) { // no deep copy of global variables so that we can keep state across frames.
+            return entity;
+        }
+        else {
+            var entityJson = entity.toJS();
+            return entityFactory(entityJson, self.expData);
+        }
     });
     var entitiesArrCopyObs = ko.observableArray([]).extend({sortById: null});
     entitiesArrCopyObs(entitiesArrCopy);
