@@ -254,7 +254,7 @@ TriggerKeyboard.prototype.fromJS = function(data) {
 TriggerKeyboard.prototype.toJS = function() {
     return {
         type: this.type,
-        buttons: this.buttons(),
+        buttons: this.buttons().slice(0),
         interactionType: this.interactionType()
     };
 };
