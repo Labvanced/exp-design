@@ -14,6 +14,10 @@ var GlobalVar = function (expData) {
     this.isInteracting = ko.observable(false);
     this.levels = ko.observableArray([]);
 
+    this.resetAtTrialStart = ko.observable(false);
+    this.recordAtTrialEnd = ko.observable(false);
+    this.startValue = ko.observable(null);
+
     this.isNameEditable = true; // this is set to false for variables that are created by our platform
     this.isScaleEditable = true; // this is set to false for variables that are created by our platform
     this.isDataTypeEditable = true; // this is set to false for variables that are created by our platform
@@ -59,6 +63,10 @@ GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
     this.scale(scale);
     this.name(name);
     return this;
+};
+
+GlobalVar.prototype.resetValue = function() {
+    this.value(this.startValue());
 };
 
 GlobalVar.prototype.setPointers = function(entitiesArr) {
@@ -130,6 +138,16 @@ GlobalVar.prototype.fromJS = function(data) {
     this.isFactor(data.isFactor);
     this.isInteracting(data.isInteracting);
 
+    if (data.hasOwnProperty('resetAtTrialStart')) {
+        this.resetAtTrialStart(data.resetAtTrialStart);
+    }
+    if (data.hasOwnProperty('recordAtTrialEnd')) {
+        this.recordAtTrialEnd(data.recordAtTrialEnd);
+    }
+    if (data.hasOwnProperty('startValue')) {
+        this.startValue(data.startValue);
+    }
+
     this.levels(jQuery.map( data.levels, function( lvlData ) {
         return (new Level()).fromJS(lvlData);
     } ));
@@ -145,6 +163,10 @@ GlobalVar.prototype.toJS = function() {
         scope: this.scope(),
         isFactor: this.isFactor(),
         isInteracting: this.isInteracting(),
+
+        resetAtTrialStart: this.resetAtTrialStart(),
+        recordAtTrialEnd: this.recordAtTrialEnd(),
+        startValue: this.startValue(),
 
         type: this.type,
         levels: jQuery.map( this.levels(), function( lvl ) { return lvl.toJS(); } )
