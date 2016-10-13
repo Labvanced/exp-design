@@ -40,88 +40,9 @@ var ExpTrialLoop = function (expData) {
     this.label = "Experiment";
     this.portTypes = ["executeIn", "executeOut"];
 
-
-
-    this.nrConditions= ko.computed(function() {
-        if (this.isInitialized()){
-
-            return 0
-        }
-        else{
-            return 0;
-        }
-
-
-    }, this);
-
-
-    var self = this;
-    this.conditions= ko.computed(function() {
-        if (self.isInitialized()) {
-
-            var allConditions = [];
-
-            for (var i = 0; i < self.factorGroups().length; i++) {
-                var conds = self.factorGroups()[i].conditions();
-                allConditions.push(conds);
-            }
-
-            return allConditions
-
-        }
-        else{
-            return []
-        }
-    });
-
-
-
-    /**
-    this.trialSpecifications = ko.computed(function() {
-
-        var trialSpecifications = [];
-        var idx = 0;
-        var conditions = self.conditions();
-        for (var group=0; group<conditions.length; group++){
-            var  condGroup = conditions[group];
-            for (var condi=0; condi<condGroup.length; condi++) {
-
-                var currentTrialSelection = {
-                    type: 'interacting',
-                    trialTypesIdx: idx,
-                    factors: jQuery.map(self.factorGroups()[group].factors(),
-                        function (elem, idx) {
-                            return elem.id();
-                        }
-                    ),
-                    levels:conditions[group][condi]
-                };
-                trialSpecifications.push(currentTrialSelection);
-                idx++;
-            }
-        }
-
-        return trialSpecifications;
-
-    }, this);
-     **/
-
-
-
     this.totalNrTrials = ko.computed(function() {
-        /**
-        var ntrials = 0;
-        for (var i = 0; i < self.conditions().length; i++) {
-            var  condGroup = self.conditions()[i];
-            for (var k = 0; k<condGroup.length; k++) {
-               var l = condGroup[k].nrOfRepetitions();
-                ntrials = ntrials+l;
-            }
-        }
-        return ntrials;
-         **/
 
-        return 5;
+        return 5; // TODo
     }, this);
 
 
@@ -155,7 +76,6 @@ ExpTrialLoop.prototype.addFactorGroup = function() {
 
     var facGroup = new FactorGroup(this.expData,this);
     this.factorGroups.push(facGroup);
-    facGroup.init();
 };
 
 ExpTrialLoop.prototype.renameGroup = function(facGroupIdx,flag) {

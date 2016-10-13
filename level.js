@@ -8,6 +8,7 @@ var Level = function (name) {
     this.type = "Level";
     this.name = ko.observable(name);
     this.editName =  ko.observable(false);
+
 };
 
 
