@@ -303,27 +303,29 @@ Modifier.prototype.selectTrialType = function(selectionSpec){
 
     // 4 types possible:
     // { type: 'default' }
-    // { type: 'interacting', trialTypesInteractingIdx: 8, factors: [factor1_obj, factor2_obj], levels: [4 2] } // the index of array ExpTrialLoop.trialTypesInteracting
-    // { type: 'noninteract', factor: noninteracting_factor2_obj, level: 5}
+    // { type: 'interacting', factors: [factor1_obj, factor2_obj], levels: [4 2] } // the index of array ExpTrialLoop.trialTypesInteracting
     // { type: 'wildcard', factor: factor1_obj, level: 3}
 
-    if (selectionSpec.hasOwnProperty('factor')) {
-        if (selectionSpec.factor instanceof GlobalVar) {
-            selectionSpec.factor = selectionSpec.factor.id();
-        }
-    }
-    if (selectionSpec.hasOwnProperty('factors')) {
-        var factorIds = [];
-        for (var i=0; i<selectionSpec.factors.length; i++){
-            if (selectionSpec.factors[i] instanceof GlobalVar) {
-                factorIds.push(selectionSpec.factors[i].id());
-            }
-            else {
-                factorIds.push(selectionSpec.factors[i]);
-            }
-        }
-        selectionSpec.factors = factorIds;
-    }
+    //if (selectionSpec.hasOwnProperty('factor')) {
+    //    if (selectionSpec.factor instanceof GlobalVar) {
+    //        selectionSpec.factor = selectionSpec.factor.id();
+    //    }
+    //}
+    //if (selectionSpec.hasOwnProperty('factors')) {
+    //    var factorIds = [];
+    //    for (var i=0; i<selectionSpec.factors.length; i++){
+    //        if (selectionSpec.factors[i] instanceof GlobalVar) {
+    //            factorIds.push(selectionSpec.factors[i].id());
+    //        }
+    //        else if (selectionSpec.factors[i] instanceof Factor) {
+    //            factorIds.push(selectionSpec.factors[i].globalVar().id());
+    //        }
+    //        else {
+    //            factorIds.push(selectionSpec.factors[i]);
+    //        }
+    //    }
+    //    selectionSpec.factors = factorIds;
+    //}
 
     this.selectedTrialType(selectionSpec);
 };
@@ -370,76 +372,56 @@ Modifier.prototype.addInteractingLevels = function() {
 
 Modifier.prototype.addFactorDependency = function(factorVar) {
 
-    if (!(factorVar instanceof GlobalVar)){
-        factorVar = this.expData.entities.byId[factorVar];
-    }
+    //if (!(factorVar instanceof GlobalVar)){
+    //    factorVar = this.expData.entities.byId[factorVar];
+    //}
 
-    if (factorVar.isInteracting()) {
+    if (this.interactingFactors().length == 0) {
+        // special case, because this is the first interacting factor. Therefore just add all levels to top array:
 
-        if (this.interactingFactors().length == 0) {
-            // special case, because this is the first interacting factor. Therefore just add all levels to top array:
-
-            // add all levels of this new non-interacting factor:
-            var levels = factorVar.levels();
-            for (var l=0; l<levels.length; l++){
-                // add this level of the non-interacting factor:
-                this.interactingTrialTypes.push(new ModifierTrialType(this.expData, this.objToModify))
-            }
-
+        // add all levels of this new non-interacting factor:
+        var levels = factorVar.levels();
+        for (var l=0; l<levels.length; l++){
+            // add this level of the non-interacting factor:
+            this.interactingTrialTypes.push(new ModifierTrialType(this.expData, this.objToModify))
         }
-        else {
-
-            function deepClone(arr, numNewLevels){
-
-                if (arr[0].constructor === Array) {
-                    // recursive call:
-                    for (var t = 0; t < arr.length; t++) {
-                        deepClone(arr[t], numNewLevels);
-                    }
-                }
-                else {
-                    // create new array of new interacting trialTypes with all combinations:
-                    for (var t = 0; t < arr.length; t++) {
-                        var oldMod = arr[t];
-
-                        // add all levels of this new interacting factor:
-                        var levels = factorVar.levels();
-                        var newModfiersPerLevel = [];
-                        for (var l = 0; l < levels.length; l++) {
-                            newModfiersPerLevel.push(oldMod.deepCopy());
-                        }
-
-                        // overwrite object in arr[t] with array of cloned objects:
-                        arr[t] = newModfiersPerLevel;
-                    }
-                }
-
-            }
-
-            // one more dimension of interacting trialTypes with all combinations:
-            deepClone(this.interactingTrialTypes, factorVar.levels().length);
-        }
-
-        // add new interacting factor:
-        this.interactingFactors.push(factorVar);
 
     }
     else {
 
-        // create modifierTrialType for all levels of this new non-interacting factor:
-        var newModfiersPerLevel = [];
-        var levels = factorVar.levels();
-        for (var l=0; l<levels.length; l++){
-            // add this level of the non-interacting factor:
-            newModfiersPerLevel.push(new ModifierTrialType(this.expData, this.objToModify))
+        function deepClone(arr, numNewLevels){
+
+            if (arr[0].constructor === Array) {
+                // recursive call:
+                for (var t = 0; t < arr.length; t++) {
+                    deepClone(arr[t], numNewLevels);
+                }
+            }
+            else {
+                // create new array of new interacting trialTypes with all combinations:
+                for (var t = 0; t < arr.length; t++) {
+                    var oldMod = arr[t];
+
+                    // add all levels of this new interacting factor:
+                    var levels = factorVar.levels();
+                    var newModfiersPerLevel = [];
+                    for (var l = 0; l < levels.length; l++) {
+                        newModfiersPerLevel.push(oldMod.deepCopy());
+                    }
+
+                    // overwrite object in arr[t] with array of cloned objects:
+                    arr[t] = newModfiersPerLevel;
+                }
+            }
+
         }
 
-        // add new non-interacting factor:
-        this.noninteractTrialTypes.push(newModfiersPerLevel);
-        this.noninteractFactors.push(factorVar);
-
-
+        // one more dimension of interacting trialTypes with all combinations:
+        deepClone(this.interactingTrialTypes, factorVar.levels().length);
     }
+
+    // add new interacting factor:
+    this.interactingFactors.push(factorVar);
 
 };
 

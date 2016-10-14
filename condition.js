@@ -13,9 +13,8 @@ var Condition= function(expData) {
     // not serialized
     this.expData = expData;
     this.factorLevels = ko.observableArray([]); // 0, 1
-    this.factors = ko.observableArray([]); // 'factor1', 'factor2'
-
-    this.repetitionIdx= ko.observable();
+    this.factors = ko.observableArray([]); // factor1Obj, factor2Obj
+    this.trialStartIdx = ko.observable(0);
     this.conditionIdx = ko.observable();
     this.addRepetition()
 
@@ -69,15 +68,21 @@ Condition.prototype.removeRepetition = function() {
 
 
 Condition.prototype.fromJS = function(data) {
-    this.nrOfRepetitions(data.nrOfRepetitions);
+
+    var self = this;
+    this.repetitions(jQuery.map( data.repetitions, function( repetition ) {
+        return (new Repetition(self)).fromJS(repetition);
+    } ));
+
 
     return this;
 };
 
 
 Condition.prototype.toJS = function() {
+
     return {
-        nrOfRepetitions: this.nrOfRepetitions()
+        repetitions: jQuery.map( this.repetitions(), function( repetition ) { return repetition.toJS(); })
     }
 };
 
@@ -85,14 +90,32 @@ Condition.prototype.toJS = function() {
 var Repetition= function(condition) {
     this.variations = ko.observableArray([]);
     this.condition = condition;
+    this.isSelected = ko.observable(false);
 };
 
 
+
+Repetition.prototype.selectTrial = function(){
+
+    // TODo Select single trials
+
+};
 
 Repetition.prototype.setVariations= function() {
     this.factorLevels = [];
     this.conditionIdx = null;
 };
+
+Repetition.prototype.toJS= function() {
+
+    return {}
+};
+
+Repetition.prototype.fromJS= function(data) {
+
+    return this;
+};
+
 
 
 var Variation= function() {

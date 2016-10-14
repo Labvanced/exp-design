@@ -202,7 +202,6 @@ ExpData.prototype.addNewBlock = function() {
 
 
 
-
     var name= "block_"+(this.expBlocks().length+1);
     block.name(name);
     var subSequence = block.subSequence();
@@ -256,12 +255,6 @@ ExpData.prototype.addNewBlock = function() {
                 trialOrderVar.name("Presentation Order");
                 blockElements[i].trialOrderVar(trialOrderVar);
 
-         //       var trialEmotionVar = new GlobalVar(this.expData);
-         //       trialEmotionVar.dataType('structure');
-         //       trialEmotionVar.scope('trial');
-         //       trialEmotionVar.scale('undefined');
-        //        trialEmotionVar.name("Emotion");
-         //       blockElements[i].trialEmotionVar(trialEmotionVar);
             }
             // specify executeIn port:
             var portId = null;
@@ -284,7 +277,6 @@ ExpData.prototype.addNewBlock = function() {
         }
 
     }
-
 
 
 

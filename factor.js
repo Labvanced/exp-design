@@ -40,9 +40,9 @@ Factor.prototype.updateLevels = function() {
 };
 
 Factor.prototype.addLevel = function() {
-   var newLevel =  this._addLevel();
+   this._addLevel();
     if (this.factorGroup){
-        this.factorGroup.addLevelToCondition(this,newLevel);
+        this.factorGroup.addLevelToCondition();
     }
 };
 
@@ -51,8 +51,6 @@ Factor.prototype._addLevel = function() {
     var levelName = "level_"+(this.levels().length+1);
     var level = new Level(levelName);
     this.levels.push(level);
-    return level
-
 };
 
 

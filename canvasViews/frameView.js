@@ -23,7 +23,7 @@ var FrameView = function(divContainer,frameData,parent,type) {
     this.selectedTrialType = ko.observable({ type: 'default'});
     // 4 types possible: COMMENT
     // { type: 'default' }
-    // { type: 'interacting', trialTypesInteractingIdx: 8, factors: [factor1_obj, factor2_obj], levels: [4 2] } // the index of array ExpTrialLoop.trialTypesInteracting
+    // { type: 'interacting', factors: [factor1_obj, factor2_obj], levels: [4 2] } // the index of array ExpTrialLoop.trialTypesInteracting
     // { type: 'noninteract', factor: noninteracting_factor2_obj, level: 5}
     // { type: 'wildcard', factor: factor1_obj, level: 3}
 };

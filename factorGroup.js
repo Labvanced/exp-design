@@ -20,8 +20,7 @@ var FactorGroup= function(expData, task) {
     this.conditionsLinear = ko.computed(function() {
         var LinearArray = [];
         var conditions = self.conditions();
-        var trialStartIdx = 0;
-        var trialEndIdx = 0;
+        var trialStartIdx = 1;
 
         function deepDive(arr, numNewLevels){
 
@@ -35,30 +34,10 @@ var FactorGroup= function(expData, task) {
                 // create new array of new interacting trialTypes with all combinations:
                 for (var t = 0; t < arr.length; t++) {
                     var existingCond = arr[t];
-
-                    trialStartIdx = trialEndIdx+1;
-                    var nrTrials = parseInt(existingCond.repetitions().length);
-
-                    trialEndIdx = trialStartIdx +nrTrials-1;
-
-                    if (nrTrials<=0){
-                        var strOut = "-";
-
-                    }
-                    else if (nrTrials==1){
-                        var strOut = trialStartIdx.toString();
-                    }
-                    else{
-                        var str1 = trialStartIdx.toString();
-                        var str2 = trialEndIdx.toString();
-                        var strOut = str1 +'-'+ str2;
-                    }
-
-                    existingCond.repetitionIdx(strOut);
-
+                    existingCond.trialStartIdx(trialStartIdx);
+                    trialStartIdx += existingCond.repetitions().length;
                     existingCond.conditionIdx(LinearArray.length+1);
                     LinearArray.push(existingCond);
-
                 }
             }
 
@@ -149,65 +128,6 @@ FactorGroup.prototype.removeFactorFromCondition= function() {
 
 };
 
-/**
-FactorGroup.prototype.addLevelsToCondition = function() {
-
-
-    function createSubArr(factors) {
-        if (factors.length > 0) {
-            var subArr = [];
-            var len = factors[0].levels().length;
-            for (var i=0; i<len; i++) {
-                subArr.push(createSubArr(factors.slice(1))); // recursively create sub array
-            }
-            return subArr;
-        }
-        else {
-            // create new Conditions
-            var condition =  new Condition(self.expData);
-            // get Factor Names
-            for (var i = 0; i <self.factors().length;i++){
-                var factor = self.factors()[i];
-                condition.factorNames.push(factor.globalVar().name());
-            }
-           // condition.factorLevelNames.push(fac.levels()[l].name());
-          //  condition.factorLevels.push(l);
-
-            return condition
-        }
-    }
-
-    function addLevels(conditions, factors) {
-
-        // go into all existing levels of this factor (factorVars[0]) and make sure that all sub-factors (factorVars[1...]) have their levels:
-        if (factors.length>1) {
-            for (var i = 0; i < conditions.length; i++) {
-                addLevels(conditions[i], factors.slice(1)); // recursively add levels within this level
-            }
-            return conditions
-        }
-
-        else{
-            var desired_len = factors[0].levels().length;
-            for (var i = conditions.length; i<desired_len; i++) {
-                conditions[i] = createSubArr(factors.slice(1)); // adding new level with all sub-levels here
-            }
-            return conditions
-        }
-    }
-
-
-    var self = this;
-    if (this.task.isInitialized()){
-        var factors = this.factors();
-        var conditionArray = this.conditions();
-        conditionArray= addLevels(conditionArray, factors);
-        this.conditions(conditionArray);
-    }
-
-
-};
-**/
 
 FactorGroup.prototype.addLevelToCondition = function() {
 
@@ -283,7 +203,7 @@ FactorGroup.prototype.closeFactorDialog = function() {
 
 FactorGroup.prototype.addFactor = function(factor) {
 
-    this.expData.entities.push(factor.globalVar);
+    this.expData.entities.push(factor.globalVar());
 
     this.factors.push(factor);
     this.addFactorToCondition(factor);
