@@ -8,10 +8,8 @@ var CheckBoxElement= function(expData) {
     this.type= "CheckBoxElement";
     this.questionText= ko.observable("Your Question");
 
-    this.openQuestion=  ko.observable(false);
     this.choices= ko.observableArray([ko.observable("check")]);
     this.answer = ko.observableArray([false]);
-    this.newPage = ko.observable(false);
     this.variable = ko.observable();
     this.margin = ko.observable('5pt');
     this.count = 0;

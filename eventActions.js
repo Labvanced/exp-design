@@ -209,7 +209,7 @@ var ActionSetElementProp = function(event) {
 };
 
 
-ActionSetElementProp.prototype.operatorTypes = ko.observableArray(["%", "+", "set", "variable"]);
+ActionSetElementProp.prototype.operatorTypes = ["%", "+", "set", "variable"];
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
 ActionSetElementProp.prototype.label = "Set Element Prop.";
 
