@@ -96,6 +96,10 @@ function createMultipleChoiceComponents() {
                     this.removeChoice = function(idx) {
                         this.choices.splice(idx,1);
                     };
+
+                    this.focus = function () {
+                        this.dataModel.ckInstance.focus()
+                    };
                 };
 
                 return new viewModel(dataModel);
@@ -107,13 +111,13 @@ function createMultipleChoiceComponents() {
     ko.components.register('choice-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                var elem = componentInfo.element.firstChild;
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.choices = dataModel.choices;
                     this.margin = dataModel.margin;
                     this.count = dataModel.count;
+
                 };
                 return new viewModel(dataModel);
             }
@@ -122,16 +126,21 @@ function createMultipleChoiceComponents() {
     });
 
     ko.components.register('choice-playerview', {
-        viewModel: function(dataModel){
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
 
-            this.dataModel = dataModel;
-            this.questionText = dataModel.questionText;
-            this.openQuestion = dataModel.openQuestion;
-            this.newChoice = dataModel.newChoice;
-            this.choices = dataModel.choices;
-            this.newPage = dataModel.newPage;
-            this.answer = dataModel.answer;
-            this.margin = dataModel.margin;
+                var viewModel = function (dataModel) {
+                    this.dataModel = dataModel;
+                    this.questionText = dataModel.questionText;
+                    this.openQuestion = dataModel.openQuestion;
+                    this.newChoice = dataModel.newChoice;
+                    this.choices = dataModel.choices;
+                    this.newPage = dataModel.newPage;
+                    this.answer = dataModel.answer;
+                    this.margin = dataModel.margin;
+                };
+                return new viewModel(dataModel);
+            }
         },
         template: {element: 'choice-playerview-template'}
     });

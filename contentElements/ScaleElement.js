@@ -100,16 +100,15 @@ function createScaleComponents() {
 
                     this.name = dataModel.parent.name;
 
-                    this.focus = function () {
-                        if(dataModel.ckeditor){
-                            dataModel.ckeditor.focus();
-                        }
-                    };
                     this.finish = function() {
                         this.choices([]);
                         for (var i = this.startChoice();i<=this.endChoice();i++){
                             this.choices.push(i);
                         }
+                    };
+
+                    this.focus = function () {
+                        this.dataModel.ckInstance.focus()
                     };
 
                 };
@@ -124,7 +123,6 @@ function createScaleComponents() {
     ko.components.register('scale-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                var elem = componentInfo.element.firstChild;
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
@@ -141,17 +139,22 @@ function createScaleComponents() {
     });
 
     ko.components.register('scale-playerview',{
-        viewModel: function(dataModel){
-            this.dataModel = dataModel;
-            this.questionText = dataModel.questionText;
-            this.startChoice = dataModel.startChoice;
-            this.endChoice = dataModel.endChoice;
-            this.startLabel = dataModel.startLabel;
-            this.endLabel = dataModel.endLabel;
-            this.choices = dataModel.choices;
-            this.answer = dataModel.answer;
-            this.showNums = dataModel.showNums;
-            this.margin = dataModel.margin;
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+                var viewModel = function (dataModel) {
+                    this.dataModel = dataModel;
+                    this.questionText = dataModel.questionText;
+                    this.startChoice = dataModel.startChoice;
+                    this.endChoice = dataModel.endChoice;
+                    this.startLabel = dataModel.startLabel;
+                    this.endLabel = dataModel.endLabel;
+                    this.choices = dataModel.choices;
+                    this.answer = dataModel.answer;
+                    this.showNums = dataModel.showNums;
+                    this.margin = dataModel.margin;
+                };
+                return new viewModel(dataModel);
+            }
         },
         template: {element: 'scale-playerview-template'}
     });

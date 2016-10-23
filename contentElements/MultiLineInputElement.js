@@ -68,6 +68,10 @@ function createMultiLineInputComponents() {
                 var viewModel = function(dataModel){
                     this.questionText = dataModel.questionText;
                     this.name = dataModel.parent.name;
+
+                    this.focus = function () {
+                        dataModel.ckInstance.focus()
+                    }
                 };
                 return new viewModel(dataModel);
             }
@@ -78,7 +82,6 @@ function createMultiLineInputComponents() {
     ko.components.register('multi-line-input-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                var elem = componentInfo.element.firstChild;
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
@@ -90,10 +93,15 @@ function createMultiLineInputComponents() {
     });
 
     ko.components.register('multi-line-input-playerview',{
-        viewModel: function(dataModel){
-            this.dataModel = dataModel;
-            this.questionText = dataModel.questionText;
-            this.answer = dataModel.answer;
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+                var viewModel = function(dataModel){
+                    this.dataModel = dataModel;
+                    this.questionText = dataModel.questionText;
+                    this.answer = dataModel.answer;
+                };
+                return new viewModel(dataModel);
+            }
         },
         template: {element: 'multi-line-input-playerview-template'}
     });

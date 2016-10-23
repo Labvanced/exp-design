@@ -89,6 +89,10 @@ function createRangeComponents() {
                     this.startLabel = dataModel.startLabel;
                     this.endLabel = dataModel.endLabel;
                     this.name = dataModel.parent.name;
+
+                    this.focus = function () {
+                        this.dataModel.ckInstance.focus()
+                    };
                     
                 };
 
@@ -104,14 +108,13 @@ function createRangeComponents() {
 
                 var viewModel = function(dataModel){
 
-                    var self = this;
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.minChoice = dataModel.minChoice;
                     this.maxChoice = dataModel.maxChoice;
                     this.startLabel = dataModel.startLabel;
                     this.endLabel = dataModel.endLabel;
-
+                    
                 };
 
                 return new viewModel(dataModel);
@@ -121,15 +124,21 @@ function createRangeComponents() {
     });
 
     ko.components.register('range-playerview',{
-        viewModel: function(dataModel){
-            this.dataModel = dataModel;
-            this.questionText = dataModel.questionText;
-            this.minChoice = dataModel.minChoice;
-            this.maxChoice = dataModel.maxChoice;
-            this.startLabel = dataModel.startLabel;
-            this.endLabel = dataModel.endLabel;
-            this.answer = dataModel.answer;
-            this.newPage = dataModel.newPage;
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+
+                var viewModel = function (dataModel) {
+                    this.dataModel = dataModel;
+                    this.questionText = dataModel.questionText;
+                    this.minChoice = dataModel.minChoice;
+                    this.maxChoice = dataModel.maxChoice;
+                    this.startLabel = dataModel.startLabel;
+                    this.endLabel = dataModel.endLabel;
+                    this.answer = dataModel.answer;
+                    this.newPage = dataModel.newPage;
+                };
+                return new viewModel(dataModel);
+            }
         },
         template: {element: 'range-playerview-template'}
     });

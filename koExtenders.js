@@ -96,6 +96,11 @@ if (typeof CKEDITOR !== 'undefined') {
                 }
             });
 
+            if(viewModel.dataModel){
+                viewModel.dataModel.ckInstance = instance;
+            }
+
+
             instance.setData(ckEditorValue());
 
             ckEditorValue.subscribe(function (newValue) {

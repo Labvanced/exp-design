@@ -93,7 +93,6 @@ function createCheckBoxComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
 
-
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
@@ -112,6 +111,10 @@ function createCheckBoxComponents() {
                         this.answer.splice(idx,1);
                     };
 
+                    this.focus = function () {
+                        this.dataModel.ckInstance.focus()
+                    }
+
                 };
 
                 return new viewModel(dataModel);
@@ -123,7 +126,7 @@ function createCheckBoxComponents() {
     ko.components.register('checkbox-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                var elem = componentInfo.element.firstChild;
+                
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
@@ -138,12 +141,18 @@ function createCheckBoxComponents() {
     });
 
     ko.components.register('checkbox-playerview', {
-        viewModel: function(dataModel){
-            this.dataModel = dataModel;
-            this.questionText = dataModel.questionText;
-            this.choices = dataModel.choices;
-            this.answer = dataModel.answer;
-            this.margin = dataModel.margin;
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo) {
+
+                var viewModel = function (dataModel) {
+                    this.dataModel = dataModel;
+                    this.questionText = dataModel.questionText;
+                    this.choices = dataModel.choices;
+                    this.answer = dataModel.answer;
+                    this.margin = dataModel.margin;
+                };
+                return new viewModel(dataModel);
+            }
         },
         template: {element: 'checkbox-playerview-template'}
     });

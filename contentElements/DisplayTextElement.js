@@ -37,13 +37,12 @@ function createDisplayTextComponents() {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
-                    var self = this;
+                    this.dataModel = dataModel;
                     this.text = dataModel.text;
                     this.name = dataModel.parent.name;
+
                     this.focus = function () {
-                        if(dataModel.ckeditor){
-                            dataModel.ckeditor.focus();
-                        }
+                        this.dataModel.ckInstance.focus()
                     };
                 };
                 return new viewModel(dataModel);
@@ -59,7 +58,6 @@ function createDisplayTextComponents() {
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
                     this.text = dataModel.text;
-                    this.name = dataModel.parent.name;
                 };
                 return new viewModel(dataModel);
             }
@@ -69,9 +67,14 @@ function createDisplayTextComponents() {
 
 
     ko.components.register('display-text-element-playerview',{
-        viewModel: function(dataModel){
-            this.dataModel = dataModel;
-            this.text = dataModel.text;
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+                var viewModel = function(dataModel){
+                    this.dataModel = dataModel;
+                    this.text = dataModel.text;
+                };
+                return new viewModel(dataModel);
+            }
         },
         template: {element: 'display-text-element-playerview-template'}
     });

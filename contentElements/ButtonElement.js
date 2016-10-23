@@ -39,26 +39,47 @@ ButtonElement.prototype.fromJS = function(data) {
 
 function createButtonElementComponents() {
     ko.components.register('button-editview', {
-        viewModel: function(dataModel){
-            this.dataModel = dataModel;
-            this.buttonText= dataModel.buttonText;
-        } ,
+        viewModel: {
+            createViewModel: function (dataModel, componentInfo) {
+
+                var viewModel = function (dataModel) {
+                    this.dataModel = dataModel;
+                    this.buttonText = dataModel.buttonText;
+                };
+
+                return new viewModel(dataModel);
+            }
+        },
         template: {element: 'button-editview-template'}
     });
 
     ko.components.register('button-preview',{
-        viewModel: function(dataModel){
-            this.dataModel = dataModel;
-            this.buttonText= dataModel.buttonText;
+        viewModel: {
+            createViewModel: function (dataModel, componentInfo) {
+
+                var viewModel = function (dataModel) {
+                    this.dataModel = dataModel;
+                    this.buttonText = dataModel.buttonText;
+                };
+
+                return new viewModel(dataModel);
+            }
         },
         template: {element: 'button-preview-template'}
     });
 
 
     ko.components.register('button-playerview',{
-        viewModel: function(dataModel){
-            this.dataModel = dataModel;
-            this.buttonText= dataModel.buttonText;
+        viewModel: {
+            createViewModel: function (dataModel, componentInfo) {
+
+                var viewModel = function (dataModel) {
+                    this.dataModel = dataModel;
+                    this.buttonText = dataModel.buttonText;
+                };
+
+                return new viewModel(dataModel);
+            }
         },
         template: {element: 'button-playerview-template'}
     });

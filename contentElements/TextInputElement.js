@@ -65,9 +65,13 @@ function createTextInputComponents() {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
-                    var self = this;
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.name = dataModel.parent.name;
+
+                    this.focus = function () {
+                        this.dataModel.ckInstance.focus()
+                    };
                 };
 
                 return new viewModel(dataModel);
@@ -81,12 +85,9 @@ function createTextInputComponents() {
     ko.components.register('text-input-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                var elem = componentInfo.element.firstChild;
                 var viewModel = function(dataModel){
-                    var self = this;
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
-                    this.name = dataModel.parent.name;
                 };
                 return new viewModel(dataModel);
             }
@@ -96,12 +97,15 @@ function createTextInputComponents() {
 
 
     ko.components.register('text-input-playerview',{
-        viewModel: function(dataModel){
-            var self = this;
-            this.dataModel = dataModel;
-            this.questionText = dataModel.questionText;
-            this.answer = dataModel.answer;
-
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+                var viewModel = function(dataModel){
+                    this.dataModel = dataModel;
+                    this.questionText = dataModel.questionText;
+                    this.answer = dataModel.answer;
+                };
+                return new viewModel(dataModel);
+            }
         },
         template: {element: 'text-input-playerview-template'}
     });
