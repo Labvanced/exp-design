@@ -139,6 +139,7 @@ PageView.prototype.removeElemFromView = function(elementData,index) {
 
 PageView.prototype.addElem = function(elementData,index) {
 
+    // TODO what should go here add view model for single elements but how?
     this.viewElements.splice(index, 0, elementData);
 };
 

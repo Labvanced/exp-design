@@ -54,7 +54,7 @@ FrameElementView.prototype.setupDiv = function() {
     $(this.text).text(this.dataModel.name());
     this.dataModel.name.subscribe(function(newName) {
         $(self.text).text(newName);
-    })
+    });
 
     $(this.content).append($(this.text));
     $(this.div).append($(this.content));
