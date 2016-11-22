@@ -176,7 +176,9 @@ FrameView.prototype.addElem = function(elementData,index) {
 
 FrameView.prototype.updateElements = function() {
 
-    this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
+    if (this.type!="sequenceView"){
+         this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
+    }
     var elements = this.viewElements();
     for (var i = 0; i< elements.length; i++){
         elements[i].update(true,true);
