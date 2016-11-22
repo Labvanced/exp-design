@@ -5,16 +5,29 @@ var PageData = function(expData) {
     this.label = "New_Page";
     this.id = ko.observable(guid());
 
+    this.currSelectedElement = ko.observable(null);
+
     //serialized
     this.type= "PageData";
+    this.name = ko.observable("PageData");
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);
     this.elements = ko.observableArray([]);
     this.answerTime = ko.observable(Infinity);
     this.shuffleAll = ko.observable(false);
 
+    this.bgColor = ko.observable("#000000"); // hex color as string, i.e. "#ffffff"
+    this.bgColorEnabled = ko.observable(false); // if false, then use experiment default background co
+
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
+
+    // sub-Structures (serialized below)
+    this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
+    this.events = ko.observableArray([]).extend({sortById: null});
+    this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
+
+
 };
 
 PageData.prototype.addElem = function (elem) {
@@ -23,6 +36,14 @@ PageData.prototype.addElem = function (elem) {
 
 PageData.prototype.modifiableProp = ["returnButton"];
 
+
+PageData.prototype.addVariableToLocalWorkspace = function(variable) {
+    var isExisting = this.localWorkspaceVars.byId[variable.id()];
+    if (!isExisting) {
+        this.localWorkspaceVars.push(variable);
+        variable.addBackRef(this, this, false, false, 'workspace variable');
+    }
+};
 
 PageData.prototype.setPointers = function(entitiesArr) {
 

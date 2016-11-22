@@ -5,10 +5,11 @@ var FrameView = function(divContainer,frameData,parent,type) {
     var self = this;
 
     this.divContainer = divContainer;
-    this.frameData = frameData;
+
     this.parent = parent;
     this.type= type;
-    this.dataElements = this.frameData.elements;
+    this.frameData = frameData;
+    this.dataElements = null;
 
     this.bgElement = null;
     this.viewElements= ko.observableArray([]).extend({sortById: null});
@@ -30,9 +31,6 @@ var FrameView = function(divContainer,frameData,parent,type) {
 
 
 FrameView.prototype.init = function(size) {
-
-    this.width = size[0];
-    this.height = size[1];
 
     // resize once and set dataModel
     this.resize(size);
@@ -102,15 +100,23 @@ FrameView.prototype.setupBackground = function() {
     $(this.divContainer).append(bgFrameElement.div);
 };
 
+FrameView.prototype.setSize = function(size) {
 
+    if (size){
+        this.width = size[0];
+        this.height = size[1];
+    }
+
+};
+
+FrameView.prototype.setDiv= function(div) {
+    this.divContainer = div;
+};
 
 
 FrameView.prototype.resize = function(size) {
 
-    if (size){
-       this.width = size[0];
-       this.height = size[1];
-    }
+    this.setSize(size);
 
     this.updateElements();
     this.updateStages();
