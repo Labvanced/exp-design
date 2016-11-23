@@ -10,7 +10,7 @@ var PageView = function(divContainer,pageData,parent,type) {
     this.type= type;
 
 
-    this.viewElements= ko.observableArray([]).extend({sortById: null});
+    //this.viewElements= ko.observableArray([]).extend({sortById: null});
   //  this.currSelectedElement = ko.observable(this.pageData.elements()[0]);
 
     this.width = 0;
@@ -161,18 +161,18 @@ PageView.prototype.selectElement = function(index){
 PageView.prototype.updateElements = function() {
 
 
-    var elements = this.viewElements();
-    for (var i = 0; i< elements.length; i++){
-        elements[i].update(true,true);
-    }
+    // var elements = this.viewElements();
+    // for (var i = 0; i< elements.length; i++){
+    //     elements[i].update(true,true);
+    // }
 };
 
 PageView.prototype.updateStages = function() {
-    for (var i = 0; i< this.viewElements().length; i++){
-        if (this.viewElements()[i].hasOwnProperty("stage")){
-            this.viewElements()[i].stage.update();
-        }
-    }
+    // for (var i = 0; i< this.viewElements().length; i++){
+    //     if (this.viewElements()[i].hasOwnProperty("stage")){
+    //         this.viewElements()[i].stage.update();
+    //     }
+    // }
 };
 
 PageView.prototype.setSelectedElement = function(elem) {
