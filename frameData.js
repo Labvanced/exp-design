@@ -7,10 +7,6 @@ var FrameData = function(expData) {
     this.parent = null;
 
     // serialized
-    this.editorX = ko.observable(0);
-    this.editorY = ko.observable(0);
-    this.editorWidth = ko.observable(120);
-    this.editorHeight = ko.observable(60);
     this.id = ko.observable(guid());
     this.type = "FrameData";
     this.name = ko.observable("MediaFrame");
@@ -20,8 +16,8 @@ var FrameData = function(expData) {
     this.offsetEnabled = ko.observable(false);
     this.bgColor = ko.observable("#000000"); // hex color as string, i.e. "#ffffff"
     this.bgColorEnabled = ko.observable(false); // if false, then use experiment default background color.
-    this.frameWidth = ko.observable(null);
-    this.frameHeight = ko.observable(null);
+    this.frameWidth = ko.observable(1600);
+    this.frameHeight = ko.observable(900);
     this.zoomMode = ko.observable("fullscreen"); // "fullscreen" or "pixel" or "visualDegree"
     this.emotionEnabled = ko.observable(false);
     this.emotionFeedbackEnabled = ko.observable(false);
@@ -43,7 +39,7 @@ var FrameData = function(expData) {
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
 
 };
-FrameData.prototype.modifiableProp = ["editorX", "editorY", "name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset"];
+FrameData.prototype.modifiableProp = ["name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset"];
 
 FrameData.prototype.getDeepCopy = function() {
     var self = this;
@@ -216,10 +212,6 @@ FrameData.prototype.fromJS = function(data) {
     this.offset(data.offset);
     this.offsetEnabled(data.offsetEnabled);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
-    this.editorX(data.editorX);
-    this.editorY(data.editorY);
-    this.editorWidth(data.editorWidth);
-    this.editorHeight(data.editorHeight);
     this.bgColor(data.bgColor);
     this.bgColorEnabled(data.bgColorEnabled);
     this.frameWidth(data.frameWidth);
@@ -252,10 +244,6 @@ FrameData.prototype.toJS = function() {
         offset: this.offset(),
         offsetEnabled: this.offsetEnabled(),
         portHandler: this.portHandler.toJS(),
-        editorX:  this.editorX(),
-        editorY:  this.editorY(),
-        editorWidth: this.editorWidth(),
-        editorHeight: this.editorHeight(),
         bgColor: this.bgColor(),
         bgColorEnabled: this.bgColorEnabled(),
         frameWidth: this.frameWidth(),
