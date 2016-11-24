@@ -25,6 +25,10 @@ var BgFrameElement = function(frameData,editor) {
         return this.editor.scale();
     }, this);
 
+    this.scale.subscribe(function() {
+        self.update();
+    });
+
     this.update();
 
     if (this.bgImg.complete) {

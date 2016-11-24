@@ -70,6 +70,10 @@ FrameElementView.prototype.recreatePlaceHolderBoxAndLabel = function() {
     var self = this;
     this.contentInside = document.createElement('p');
     $(this.contentInside).text(this.dataModel.name());
+
+
+    /* this should not be used??? could not be used because this.scale is only usable as this.scale()....???
+
     if (this.scale){
         $(this.contentInside).css({
             "width":this.width() * self.scale,
@@ -78,7 +82,9 @@ FrameElementView.prototype.recreatePlaceHolderBoxAndLabel = function() {
             "textAlign": "center",
             "border": " 1px solid black"
         })
-    }
+    }*/
+
+
     $(this.contentScaling).append(this.contentInside);
     $(this.content).children().remove();
     $(this.content).append(this.contentScaling);
@@ -134,6 +140,10 @@ FrameElementView.prototype.setupSubscriber = function() {
             self.update(true, false);
         });
     }
+
+    this.scale.subscribe(function() {
+        self.update(true,true);
+    });
 
     this.x.subscribe(function(x) {
         self.update(false,true);

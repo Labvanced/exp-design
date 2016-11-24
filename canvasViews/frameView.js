@@ -31,6 +31,38 @@ var FrameView = function(divContainer,frameData,parent,type) {
 
 
 FrameView.prototype.init = function(size) {
+    var self =this;
+
+    if (this.type=="editorView") {
+        function MouseWheelHandler(e) {
+
+            // cross-browser wheel delta
+            var e = window.event || e; // old IE support
+            var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+            var oldScale = self.scale();
+            if (delta>0){
+                var newScale = oldScale * (1+delta/10.0);
+            }
+            else {
+                var newScale = oldScale / (1-delta/10.0);
+            }
+            self.scale( newScale );
+
+            return false;
+        }
+
+        if (this.divContainer.addEventListener) {
+            // IE9, Chrome, Safari, Opera
+            this.divContainer.addEventListener("mousewheel", MouseWheelHandler, false);
+            // Firefox
+            this.divContainer.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+        }
+        else {
+            // IE 6/7/8
+            this.divContainer.attachEvent("onmousewheel", MouseWheelHandler);
+        }
+
+    }
 
     // resize once and set dataModel
     this.resize(size);
