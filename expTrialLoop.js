@@ -13,8 +13,8 @@ var ExpTrialLoop = function (expData) {
     this.displayInitialCountdown = ko.observable(true);
     this.name = ko.observable("TrialLoop");
     this.type = "ExpTrialLoop";
-    this.subSequence = ko.observable(new Sequence(this.expData));
-    this.subSequence().parent = this;
+    this.subSequence = ko.observable(null);
+    this.subSequencePerFactorGroup = ko.observableArray([]);
 
     // Variables that are recorded per trial:
     this.trialUniqueIdVar = ko.observable(null);
@@ -72,10 +72,50 @@ var ExpTrialLoop = function (expData) {
 
 };
 
-ExpTrialLoop.prototype.addFactorGroup = function() {
+/**
+ * Is called to initialize a newly created exp trial loop (instead of initialization via loadJS)
+ */
+ExpTrialLoop.prototype.initNewInstance = function() {
+    var subsequence = new Sequence(this.expData);
+    this.subSequence(subsequence);
+    this.subSequencePerFactorGroup([subsequence]);
+    subsequence.parent = this;
 
+};
+
+ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
+    var self = this;
+
+    this.subSequencePerFactorGroup(jQuery.map(this.subSequencePerFactorGroup(), function (subSequenceId) {
+        var subSequence = entitiesArr.byId[subSequenceId];
+        subSequence.parent = self;
+        return subSequence;
+    }));
+    this.subSequence(this.subSequencePerFactorGroup()[0]);
+
+    this.trialUniqueIdVar(entitiesArr.byId[this.trialUniqueIdVar()]);
+    this.trialTypeIdVar(entitiesArr.byId[this.trialTypeIdVar()]);
+    this.trialOrderVar(entitiesArr.byId[this.trialOrderVar()]);
+
+    this.eventVariables(jQuery.map( this.eventVariables(), function( id ) {
+        return entitiesArr.byId[id];
+    } ));
+    this.isInitialized(true);
+
+    jQuery.each( this.factorGroups(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+
+};
+
+ExpTrialLoop.prototype.addFactorGroup = function() {
     var facGroup = new FactorGroup(this.expData,this);
     this.factorGroups.push(facGroup);
+
+    // add a new subSequence for the new group (if there are not already enough subSequences):
+    if (this.subSequencePerFactorGroup().length < this.factorGroups().length) {
+        this.subSequencePerFactorGroup().push(new Sequence(this.expData));
+    }
 };
 
 ExpTrialLoop.prototype.renameGroup = function(facGroupIdx,flag) {
@@ -90,7 +130,7 @@ ExpTrialLoop.prototype.renameGroup = function(facGroupIdx,flag) {
 
 ExpTrialLoop.prototype.removeGroup = function(facGroupIdx,idx) {
     this.factorGroups.splice(facGroupIdx,1);
-
+    this.subSequencePerFactorGroup().splice(facGroupIdx,1);
 };
 
 
@@ -98,23 +138,6 @@ ExpTrialLoop.prototype.addNewFrame = function() {
     var frame = new FrameData(this.expData);
     this.subSequence().addNewSubElement(frame);
     frame.parent = this.subSequence();
-};
-
-ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
-    var self = this;
-
-    // convert id of subSequence to actual pointer:
-    this.subSequence(entitiesArr.byId[this.subSequence()]);
-    this.subSequence().parent = this;
-
-    this.trialUniqueIdVar(entitiesArr.byId[this.trialUniqueIdVar()]);
-    this.trialTypeIdVar(entitiesArr.byId[this.trialTypeIdVar()]);
-    this.trialOrderVar(entitiesArr.byId[this.trialOrderVar()]);
-
-    this.eventVariables(jQuery.map( this.eventVariables(), function( id ) {
-        return entitiesArr.byId[id];
-    } ));
-    this.isInitialized(true);
 };
 
 ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
@@ -163,6 +186,8 @@ ExpTrialLoop.prototype.doubleClick = function() {
 
 
 ExpTrialLoop.prototype.fromJS = function(data) {
+    var self = this;
+
     this.id(data.id);
     this.name(data.name);
     this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
@@ -174,8 +199,18 @@ ExpTrialLoop.prototype.fromJS = function(data) {
         this.displayInitialCountdown(data.displayInitialCountdown);
     }
     this.type =  data.type;
-    this.subSequence(data.subSequence);
 
+    if (data.hasOwnProperty('subSequence')){
+        // convert from old version:
+        this.subSequencePerFactorGroup([data.subSequence]);
+    }
+    else {
+        // new version:
+        this.factorGroups(jQuery.map(data.factorGroups, function (factorGroup) {
+            return (new FactorGroup(self.expData, self)).fromJS(factorGroup);
+        }));
+        this.subSequencePerFactorGroup(data.subSequencePerFactorGroup);
+    }
 
     this.repsPerTrialType(data.repsPerTrialType);
     this.isActive(data.isActive);
@@ -204,7 +239,8 @@ ExpTrialLoop.prototype.toJS = function() {
         editorHeight: this.editorHeight(),
         displayInitialCountdown: this.displayInitialCountdown(),
         type: this.type,
-        subSequence: this.subSequence().id(),
+        factorGroups: jQuery.map( this.factorGroups(), function( factorGroup ) { return factorGroup.toJS(); }),
+        subSequencePerFactorGroup: jQuery.map( this.subSequencePerFactorGroup(), function( subSequence ) { return subSequence.id(); }),
 
         repsPerTrialType:  this.repsPerTrialType(),
         isActive:  this.isActive(),

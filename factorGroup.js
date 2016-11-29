@@ -7,7 +7,7 @@ var FactorGroup= function(expData, task) {
     this.task = task;
 
     // serialized
-    this.name = "factor_group" + (this.task.factorGroups().length+1);
+    this.name = ko.observable("factor_group");
     this.factors = ko.observableArray([]);
     this.conditions = ko.observableArray([]);
 
@@ -18,7 +18,7 @@ var FactorGroup= function(expData, task) {
 
     var self = this;
     this.conditionsLinear = ko.computed(function() {
-        var LinearArray = [];
+        var linearArray = [];
         var conditions = self.conditions();
         var trialStartIdx = 1;
 
@@ -36,11 +36,10 @@ var FactorGroup= function(expData, task) {
                     var existingCond = arr[t];
                     existingCond.trialStartIdx(trialStartIdx);
                     trialStartIdx += existingCond.trials().length;
-                    existingCond.conditionIdx(LinearArray.length+1);
-                    LinearArray.push(existingCond);
+                    existingCond.conditionIdx(linearArray.length+1);
+                    linearArray.push(existingCond);
                 }
             }
-
         }
 
         // one more dimension of interacting trialTypes with all combinations:
@@ -48,19 +47,31 @@ var FactorGroup= function(expData, task) {
             deepDive(conditions, conditions.length);
         }
 
-
-
-        return LinearArray;
+        return linearArray;
 
     }, this);
 
 
 };
 
-FactorGroup.prototype.addFactorToCondition= function(factor) {
+FactorGroup.prototype.initNewInstance = function () {
+    this.name("factor_group" + (this.task.factorGroups().length+1));
+};
+
+FactorGroup.prototype.setPointers = function (entitiesArr) {
+    jQuery.each( this.factors(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+    jQuery.each( this.conditions(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+};
+
+FactorGroup.prototype.addFactorToCondition = function(factor) {
 
     if (this.task.isInitialized()){
         var factors = this.factors();
+        var levels = factor.globalVar().levels();
         var conditionArray = this.conditions();
 
         // for first factor only
@@ -80,7 +91,7 @@ FactorGroup.prototype.addFactorToCondition= function(factor) {
                         var existingCond = arr[t];
 
                         // add all levels of this new interacting factor:
-                        var nrLevels = factor.levels().length;
+                        var nrLevels = levels.length;
                         var conditions = [];
                         var tmpObj=existingCond.toJS();
 
@@ -89,7 +100,7 @@ FactorGroup.prototype.addFactorToCondition= function(factor) {
                             var condi = new Condition(self.expData);
                             condi.fromJS(tmpObj);
                             condi.factorLevels(existingCond.factorLevels().slice());
-                            condi.factorLevels.push(factor.levels()[l]);
+                            condi.factorLevels.push(levels[l]);
                             condi.factors(existingCond.factors().slice());
                             condi.factors.push(factor);
                             conditions.push(condi);
@@ -102,16 +113,16 @@ FactorGroup.prototype.addFactorToCondition= function(factor) {
             }
 
             // one more dimension of interacting trialTypes with all combinations:
-            deepClone(conditionArray, factor.levels().length);
-
+            deepClone(conditionArray, levels.length);
         }
 
         else{
-            for (var l = 0; l < factor.levels().length; l++) {
+            for (var l = 0; l < levels.length; l++) {
 
                 var condi = new Condition(this.expData);
+                condi.initNewInstance();
                // condi.factorLevelNames.push(condi.levels()[l].name());
-                condi.factorLevels.push(factor.levels()[l]);
+                condi.factorLevels.push(levels[l]);
                 condi.factors.push(factor);
                 conditionArray.push(condi);
             }
@@ -120,14 +131,6 @@ FactorGroup.prototype.addFactorToCondition= function(factor) {
 
     this.conditions(conditionArray);
 };
-
-
-
-FactorGroup.prototype.removeFactorFromCondition= function() {
-
-
-};
-
 
 FactorGroup.prototype.addLevelToCondition = function() {
 
@@ -188,18 +191,9 @@ FactorGroup.prototype.addLevelToCondition = function() {
 
 };
 
-
-FactorGroup.prototype.removeLevelFromCondition= function() {
-
-
-};
-
-
-
 FactorGroup.prototype.closeFactorDialog = function() {
     $("#addFactorDialog").dialog( "close" );
 };
-
 
 FactorGroup.prototype.addFactor = function(factor) {
 
@@ -223,19 +217,27 @@ FactorGroup.prototype.renameFactor= function(idx,flag) {
 
 
 FactorGroup.prototype.removeFactor = function(idx) {
-
-
     this.factors.splice(idx,1);
 };
 
-
-
 FactorGroup.prototype.fromJS = function(data) {
-
+    var self = this;
+    this.name(data.name);
+    this.factors(jQuery.map( data.factors, function( factor ) {
+        return (new Factor(self.expData)).fromJS(factor);
+    }));
+    this.conditions(jQuery.map( data.conditions, function( condition ) {
+        return (new Condition()).fromJS(condition);
+    }));
+    return this;
 };
 
 FactorGroup.prototype.toJS = function() {
-
+    return {
+        name: this.name(),
+        factors: jQuery.map( this.factors(), function( factor ) { return factor.toJS(); }),
+        conditions: jQuery.map( this.conditions(), function( condition ) { return condition.toJS(); })
+    };
 };
 
 

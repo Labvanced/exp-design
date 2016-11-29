@@ -3,24 +3,26 @@
  */
 
 
-var Condition= function(expData) {
+var Condition = function() {
 
     // serialized
     this.trials = ko.observableArray([]);
 
     // not serialized
-    this.expData = expData;
     this.factorLevels = ko.observableArray([]); // 0, 1
     this.factors = ko.observableArray([]); // factor1Obj, factor2Obj
     this.trialStartIdx = ko.observable(0);
     this.conditionIdx = ko.observable();
-    this.addTrial();
 
 };
 
+Condition.prototype.initNewInstance = function() {
+    this.addTrial();
+};
 
+Condition.prototype.setPointers = function(entitiesArr) {
 
-
+};
 
 Condition.prototype.setNumTrials = function(numTrialVariations) {
 
@@ -69,16 +71,9 @@ Condition.prototype.fromJS = function(data) {
 
     var self = this;
 
-    if (data.hasOwnProperty('repetitions')) {
-        this.trials(jQuery.map(data.repetitions, function (repetition) {
-            return (new TrialVariation(self)).fromJS(repetition);
-        }));
-    }
-    else {
-        this.trials(jQuery.map(data.trials, function (repetition) {
-            return (new TrialVariation(self)).fromJS(repetition);
-        }));
-    }
+    this.trials(jQuery.map(data.trials, function (trial) {
+        return (new TrialVariation(self)).fromJS(trial);
+    }));
 
     return this;
 };
@@ -86,7 +81,7 @@ Condition.prototype.fromJS = function(data) {
 
 Condition.prototype.toJS = function() {
     return {
-        trials: jQuery.map( this.trials(), function(repetition ) { return repetition.toJS(); })
+        trials: jQuery.map( this.trials(), function(trial ) { return trial.toJS(); })
     }
 };
 

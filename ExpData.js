@@ -170,6 +170,7 @@ ExpData.prototype.addNewSubjGroup = function() {
 ExpData.prototype.addNewBlock = function() {
 
     var expTrialLoop = new ExpTrialLoop(this);
+    expTrialLoop.initNewInstance();
     expTrialLoop.isInitialized(true);
     expTrialLoop.addNewFrame();
 
