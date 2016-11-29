@@ -6,9 +6,7 @@
 var Condition= function(expData) {
 
     // serialized
-    this.repetitions = ko.observableArray([]);
-
-    var self = this;
+    this.trials = ko.observableArray([]);
 
     // not serialized
     this.expData = expData;
@@ -16,7 +14,7 @@ var Condition= function(expData) {
     this.factors = ko.observableArray([]); // factor1Obj, factor2Obj
     this.trialStartIdx = ko.observable(0);
     this.conditionIdx = ko.observable();
-    this.addRepetition()
+    this.addTrial();
 
 };
 
@@ -24,44 +22,44 @@ var Condition= function(expData) {
 
 
 
-Condition.prototype.setRepetitions = function(nrRepetitions) {
+Condition.prototype.setNumTrials = function(numTrialVariations) {
 
-   var currentLength=  this.repetitions().length;
-   var lengthToBe =  nrRepetitions;
-   var repetitions =  this.repetitions();
+   var currentLength=  this.trials().length;
+   var lengthToBe =  numTrialVariations;
+   var trialVariations =  this.trials();
 
      if(currentLength > lengthToBe){
          var diff = currentLength -lengthToBe;
          for (var i =0; i<diff;i++){
-             this.removeRepetition()
+             this.removeTrialVariation()
          }
-         this.repetitions(repetitions);
+         this.trials(trialVariations);
      }
 
     else if(currentLength < lengthToBe){
          var diff = lengthToBe -currentLength;
 
-         var RepToCopy = this.repetitions()[this.repetitions().length-1];
+         var RepToCopy = this.trials()[this.trials().length-1];
 
          for (var i =0; i<diff;i++){
-             this.addRepetition()
+             this.addTrial()
          }
-        this.repetitions(repetitions);
+        this.trials(trialVariations);
     }
 
 };
 
 
-Condition.prototype.addRepetition = function() {
+Condition.prototype.addTrial = function() {
 
-    var repetition = new Repetition(this);
-    this.repetitions.push(repetition);
+    var trialVariations = new TrialVariation(this);
+    this.trials.push(trialVariations);
 };
 
 
-Condition.prototype.removeRepetition = function() {
+Condition.prototype.removeTrialVariation = function() {
 
-    this.repetitions.pop();
+    this.trials.pop();
 };
 
 
@@ -70,56 +68,53 @@ Condition.prototype.removeRepetition = function() {
 Condition.prototype.fromJS = function(data) {
 
     var self = this;
-    this.repetitions(jQuery.map( data.repetitions, function( repetition ) {
-        return (new Repetition(self)).fromJS(repetition);
-    } ));
 
+    if (data.hasOwnProperty('repetitions')) {
+        this.trials(jQuery.map(data.repetitions, function (repetition) {
+            return (new TrialVariation(self)).fromJS(repetition);
+        }));
+    }
+    else {
+        this.trials(jQuery.map(data.trials, function (repetition) {
+            return (new TrialVariation(self)).fromJS(repetition);
+        }));
+    }
 
     return this;
 };
 
 
 Condition.prototype.toJS = function() {
-
     return {
-        repetitions: jQuery.map( this.repetitions(), function( repetition ) { return repetition.toJS(); })
+        trials: jQuery.map( this.trials(), function(repetition ) { return repetition.toJS(); })
     }
 };
 
 
-var Repetition= function(condition) {
-    this.variations = ko.observableArray([]);
+var TrialVariation= function(condition) {
     this.condition = condition;
     this.isSelected = ko.observable(false);
 };
 
 
 
-Repetition.prototype.selectTrial = function(){
+TrialVariation.prototype.selectTrial = function(){
 
     // TODo Select single trials
 
 };
 
-Repetition.prototype.setVariations= function() {
+TrialVariation.prototype.setVariations= function() {
     this.factorLevels = [];
     this.conditionIdx = null;
 };
 
-Repetition.prototype.toJS= function() {
+TrialVariation.prototype.toJS= function() {
 
     return {}
 };
 
-Repetition.prototype.fromJS= function(data) {
+TrialVariation.prototype.fromJS= function(data) {
 
     return this;
-};
-
-
-
-var Variation= function() {
-
-
-
 };

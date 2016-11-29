@@ -35,7 +35,7 @@ var FactorGroup= function(expData, task) {
                 for (var t = 0; t < arr.length; t++) {
                     var existingCond = arr[t];
                     existingCond.trialStartIdx(trialStartIdx);
-                    trialStartIdx += existingCond.repetitions().length;
+                    trialStartIdx += existingCond.trials().length;
                     existingCond.conditionIdx(LinearArray.length+1);
                     LinearArray.push(existingCond);
                 }
