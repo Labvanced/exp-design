@@ -191,10 +191,6 @@ FactorGroup.prototype.addLevelToCondition = function() {
 
 };
 
-FactorGroup.prototype.closeFactorDialog = function() {
-    $("#addFactorDialog").dialog( "close" );
-};
-
 FactorGroup.prototype.addFactor = function(factor) {
 
     this.expData.entities.push(factor.globalVar());
@@ -218,6 +214,19 @@ FactorGroup.prototype.renameFactor= function(idx,flag) {
 
 FactorGroup.prototype.removeFactor = function(idx) {
     this.factors.splice(idx,1);
+};
+
+
+FactorGroup.prototype.reAddEntities = function(entitiesArr) {
+    var self = this;
+
+    // add the direct child nodes:
+    jQuery.each( this.factors(), function( index, factor ) {
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (factor.reAddEntities)
+            factor.reAddEntities(entitiesArr);
+    } );
+
 };
 
 FactorGroup.prototype.fromJS = function(data) {

@@ -36,6 +36,11 @@ Factor.prototype.addLevel = function() {
     this.globalVar().addLevel();
 };
 
+Factor.prototype.reAddEntities = function(entitiesArr) {
+    if (!entitiesArr.byId.hasOwnProperty(this.globalVar().id()))
+        entitiesArr.push(this.globalVar());
+};
+
 Factor.prototype.fromJS = function(data) {
     this.factorType(data.factorType);
     this.globalVar(data.globalVar);

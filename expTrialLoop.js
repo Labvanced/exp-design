@@ -168,9 +168,19 @@ ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
         }
     });
 
+    jQuery.each(this.factorGroups(), function( index, factorGroup ) {
+        factorGroup.reAddEntities(entitiesArr);
+    });
 
     // recursively make sure that all deep tree nodes are in the entities list:
-    this.subSequence().reAddEntities(entitiesArr);
+    jQuery.each(this.subSequencePerFactorGroup(), function( index, subSequence ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(subSequence.id())) {
+            entitiesArr.push(subSequence);
+        }
+        subSequence.reAddEntities(entitiesArr);
+    });
+
 };
 
 ExpTrialLoop.prototype.doubleClick = function() {
