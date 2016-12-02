@@ -6,10 +6,13 @@
  * @param {string} name - the name of the level
  * @constructor
  */
-var Level = function (name) {
+var Level = function (name,factor) {
     this.type = "Level";
     this.name = ko.observable(name);
     this.editName =  ko.observable(false);
+
+    // not serialized
+    this.factor = factor;
 
 };
 
@@ -21,7 +24,7 @@ var Level = function (name) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 Level.prototype.setPointers = function(entitiesArr) {
-
+    // TODo Set factor reference from id to object instance
 };
 
 /**
@@ -34,6 +37,8 @@ Level.prototype.fromJS = function(data) {
     this.name(data.name);
     this.type = data.type;
     this.editName(data.editName);
+    this.factor(data.factor);
+
     return this;
 };
 
@@ -46,7 +51,8 @@ Level.prototype.toJS = function() {
 
         name: this.name(),
         type: this.type,
-        editName: this.editName()
+        editName: this.editName(),
+        factor: this.factor.globalVar().id()
     };
 };
 

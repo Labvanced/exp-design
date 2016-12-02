@@ -36,7 +36,7 @@ Factor.prototype.updateLevels = function() {
 };
 
 Factor.prototype.addLevel = function() {
-    this.globalVar().addLevel();
+    this.globalVar().addLevel(this);
 };
 
 /**

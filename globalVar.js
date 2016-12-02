@@ -106,9 +106,9 @@ GlobalVar.prototype.getValue = function() {
     return this.value();
 };
 
-GlobalVar.prototype.addLevel = function() {
+GlobalVar.prototype.addLevel = function(factor) {
     var name = "level_"+(this.levels().length+1);
-    var level = new Level(name);
+    var level = new Level(name,factor);
     this.levels.push(level);
     return level;
 };
