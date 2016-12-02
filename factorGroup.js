@@ -20,7 +20,7 @@ var FactorGroup= function(expData, task) {
     this.conditions = ko.observableArray([]);
 
     // not serialized
-    this.editName =  ko.observable(false);
+   // this.editName =  ko.observable(false);
 
 
 
@@ -199,17 +199,6 @@ FactorGroup.prototype.addFactor = function(factor) {
    // this.addLevelsToCondition();
 
 };
-
-FactorGroup.prototype.renameFactor= function(idx,flag) {
-
-    if (flag == "true"){
-        this.factors()[idx].editName(true);
-    }
-    else if (flag == "false"){
-        this.factors()[idx].editName(false);
-    }
-};
-
 
 FactorGroup.prototype.removeFactor = function(idx) {
     this.factors.splice(idx,1);
