@@ -2,7 +2,6 @@
 
 
 var PageView = function(pageData,parent,type) {
-    var self = this;
 
     this.pageData = pageData;
     this.pageDataObs = ko.observable(pageData);
@@ -35,7 +34,6 @@ PageView.prototype.init = function(size) {
 
 PageView.prototype.setDataModel = function(pageData) {
 
-    var self = this;
     this.pageData = pageData;
     this.pageDataObs(pageData);
 
@@ -68,53 +66,19 @@ PageView.prototype.setSize = function(size) {
 };
 
 PageView.prototype.removeElemFromView = function(elementData,index) {
-
-    console.log("this.viewElements().length = "+this.viewElements().length);
-    var elemDiv = this.viewElements()[index].div;
-
-    // remove div from DOM:
-    elemDiv.remove();
-
-    // remove from viewElements:
-    this.viewElements.splice(index,1);
+    // TODO
 };
-
-
-PageView.prototype.selectElement = function(index){
-    if(this.currSelectedElement() != this.currentPage().elements()[index]) {
-        if (typeof(this.currSelectedElement()) !== 'undefined') {
-            this.currSelectedElement().selected(false);
-        }
-
-        this.currSelectedElement(this.currentPage().elements()[index]);
-
-        if (typeof(this.currSelectedElement()) !== 'undefined') {
-            this.currSelectedElement().selected(true);
-        }
-    }
-};
-
 
 PageView.prototype.setSelectedElement = function(elem) {
 
     // change selection state of previously selected canvas element:
-    var prevSelectedElem = this.pageData.currSelectedElement();
-
-    if (prevSelectedElem){
-        var formerIndex = this.pageData.elements.indexOf(prevSelectedElem);
-        if (formerIndex>=0) {
-            this.viewElements()[formerIndex].isSelected(false);
-        }
-    }
+    //var prevSelectedElem = this.pageData.currSelectedElement();
 
     if (elem) {
         if (elem.type == "Event") {
             // element is an event
-            // check if element is really a child of this frame:
-            if (this.pageData.events.byId[elem.id()]) {
-                // change currently selected element:
-                this.pageData.currSelectedElement(elem);
-            }
+            // change currently selected element:
+            this.pageData.currSelectedElement(elem);
         }
         else if (elem.type == "GlobalVar") {
             this.pageData.currSelectedElement(elem);
@@ -123,10 +87,10 @@ PageView.prototype.setSelectedElement = function(elem) {
             // element is an object
             // check if element is really a child of this frame:
             if (this.pageData.elements.byId[elem.id()]) {
-                var index = this.pageData.elements.indexOf(elem);
+                //var index = this.pageData.elements.indexOf(elem);
 
                 // change selection state of newly selected canvas element:
-                this.viewElements()[index].isSelected(true);
+                //this.viewElements()[index].isSelected(true);
 
                 // change currently selected element:
                 this.pageData.currSelectedElement(elem);
@@ -169,19 +133,3 @@ PageView.prototype.moveDownElement = function (index) {
         this.renderElements();
     }
 };
-
-PageView.prototype.selectElement = function(index){
-    if(this.currSelectedElement() != this.currentPage().elements()[index]) {
-        if (typeof(this.currSelectedElement()) !== 'undefined') {
-            this.currSelectedElement().selected(false);
-        }
-
-        this.currSelectedElement(this.currentPage().elements()[index]);
-
-        if (typeof(this.currSelectedElement()) !== 'undefined') {
-            this.currSelectedElement().selected(true);
-        }
-    }
-};
-
-

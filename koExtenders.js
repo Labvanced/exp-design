@@ -110,7 +110,6 @@ if (typeof CKEDITOR !== 'undefined') {
                 viewModel.dataModel.ckInstance = instance;
             }
 
-
             instance.setData(ckEditorValue());
 
             ckEditorValue.subscribe(function (newValue) {

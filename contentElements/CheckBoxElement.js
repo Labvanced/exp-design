@@ -6,9 +6,9 @@ var CheckBoxElement= function(expData) {
 
     //serialized
     this.type= "CheckBoxElement";
-    this.questionText= ko.observable("Your Question");
+    this.questionText= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
 
-    this.choices= ko.observableArray([ko.observable("check")]);
+    this.choices= ko.observableArray([ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">check</span></span>')]);
     this.answer = ko.observableArray([false]);
     this.variable = ko.observable();
     this.margin = ko.observable('5pt');

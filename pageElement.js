@@ -10,7 +10,7 @@ var PageElement = function(expData) {
     this.type = "PageElement";
     this.content = ko.observable();
     this.parent = null;
-    this.name = ko.observable("questionnaire");
+    this.name = ko.observable("pageElement");
     this.id = ko.observable(guid());
     this.selected = ko.observable(false);
 

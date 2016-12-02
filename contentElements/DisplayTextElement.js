@@ -6,7 +6,7 @@ var DisplayTextElement = function(expData) {
 
     //serialized
     this.type = "DisplayTextElement";
-    this.text = ko.observable("You can display your custom text here.");
+    this.text = ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">You can display your custom text here.</span></span>');
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -42,7 +42,7 @@ function createDisplayTextComponents() {
                     this.name = dataModel.parent.name;
 
                     this.focus = function () {
-                        this.dataModel.ckInstance.focus()
+                        this.dataModel.ckInstance.focus();
                     };
                 };
                 return new viewModel(dataModel);

@@ -19,7 +19,7 @@ var PageData = function(expData) {
     this.name = ko.observable("PageData");
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);
-    this.elements = ko.observableArray([]);
+    this.elements = ko.observableArray([]).extend({sortById: null});
     this.answerTime = ko.observable(Infinity);
     this.shuffleAll = ko.observable(false);
 

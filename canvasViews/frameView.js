@@ -243,11 +243,8 @@ FrameView.prototype.setSelectedElement = function(elem) {
     if (elem) {
         if (elem.type == "Event") {
             // element is an event
-            // check if element is really a child of this frame:
-            if (this.frameData.events.byId[elem.id()]) {
-                // change currently selected element:
-                this.frameData.currSelectedElement(elem);
-            }
+            // change currently selected element:
+            this.frameData.currSelectedElement(elem);
         }
         else if (elem.type == "GlobalVar") {
             this.frameData.currSelectedElement(elem);

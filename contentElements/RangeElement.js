@@ -6,11 +6,11 @@ var RangeElement= function(expData) {
 
     //serialized
     this.type= "RangeElement";
-    this.questionText= ko.observable("Your Question");
+    this.questionText= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
     this.minChoice= ko.observable(1);
     this.maxChoice= ko.observable(5);
-    this.startLabel= ko.observable("start label");
-    this.endLabel= ko.observable("end label");
+    this.startLabel= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">start label</span></span>');
+    this.endLabel= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">end label</span></span>');
     this.answer = ko.observable(1);
     this.newPage = ko.observable(false);
     this.selected = ko.observable(false);

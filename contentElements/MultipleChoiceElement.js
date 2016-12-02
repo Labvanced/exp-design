@@ -6,10 +6,10 @@ var MultipleChoiceElement = function(expData) {
 
     //serialized
     this.type= "MultipleChoiceElement";
-    this.questionText= ko.observable("Your Question");
+    this.questionText= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
 
     this.openQuestion=  ko.observable(false);
-    this.choices= ko.observableArray([ko.observable("choice 1"),ko.observable("choice 2")]);
+    this.choices= ko.observableArray([ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">choice 1</span></span>'),ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">choice 2</span></span>')]);
     this.selected = ko.observable(false);
     this.variable = ko.observable();
     this.answer = ko.observable("");

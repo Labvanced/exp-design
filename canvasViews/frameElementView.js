@@ -41,7 +41,8 @@ FrameElementView.prototype.setupDiv = function() {
     this.content = document.createElement('div');
     $(this.content).css({
         "position": "absolute",
-        "opacity": this.dataModel.visibility()
+        "opacity": this.dataModel.visibility(),
+        "overflow": "hidden"
     });
 
     this.text = document.createElement('p');
