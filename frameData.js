@@ -1,7 +1,12 @@
-
+/**
+ * This class stores all information about one frame in a sequence (trial) of frames or pages. A frame allows free
+ * positioning of content elements on a canvas.
+ *
+ * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
+ * @constructor
+ */
 var FrameData = function(expData) {
-    
-    var self = this;
+
     this.expData = expData;
     this.currSelectedElement = ko.observable(null);
     this.parent = null;
@@ -131,6 +136,26 @@ FrameData.prototype.addNewSubElement = function(elem) {
     elem.parent = this;
 };
 
+FrameData.prototype.selectTrialType = function(selectionSpec) {
+    var elements = this.elements();
+    for (var i=0; i<elements.length; i++){
+        if (typeof elements[i].selectTrialType === 'function') {
+            elements[i].selectTrialType(selectionSpec);
+        }
+    }
+};
+
+FrameData.prototype.getElementById = function(id) {
+    return  this.elements.byId[id];
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 FrameData.prototype.setPointers = function(entitiesArr) {
     var self = this;
 
@@ -153,23 +178,12 @@ FrameData.prototype.setPointers = function(entitiesArr) {
     } );
 };
 
-FrameData.prototype.selectTrialType = function(selectionSpec) {
-    var elements = this.elements();
-    for (var i=0; i<elements.length; i++){
-        if (typeof elements[i].selectTrialType === 'function') {
-            elements[i].selectTrialType(selectionSpec);
-        }
-    }
-};
-
-FrameData.prototype.getElementById = function(id) {
-    return  this.elements.byId[id];
-};
-
-
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 FrameData.prototype.reAddEntities = function(entitiesArr) {
-    var self = this;
-
     // add the direct child nodes:
     jQuery.each( this.elements(), function( index, elem ) {
         // check if they are not already in the list:
@@ -201,6 +215,11 @@ FrameData.prototype.reAddEntities = function(entitiesArr) {
 
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {FrameData}
+ */
 FrameData.prototype.fromJS = function(data) {
     var self = this;
 
@@ -234,6 +253,10 @@ FrameData.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 FrameData.prototype.toJS = function() {
     return {
         id: this.id(),

@@ -1,6 +1,10 @@
 // � by Caspar Goeke and Holger Finger
 
-
+/**
+ * Manages the ports of an element on a canvas.
+ * @param parentDataModel
+ * @constructor
+ */
 var PortHandler = function(parentDataModel) {
 
     var self = this;
@@ -40,7 +44,11 @@ var PortHandler = function(parentDataModel) {
 
 };
 
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {PortHandler}
+ */
 PortHandler.prototype.fromJS = function(data) {
 
     var ports = [];
@@ -54,7 +62,10 @@ PortHandler.prototype.fromJS = function(data) {
     return this;
 };
 
-
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 PortHandler.prototype.toJS = function() {
     var ports = this.ports();
     var portsSerialized = [];

@@ -1,8 +1,9 @@
+
 /**
- * Created by cgoeke on 10/6/16.
+ * This class stores a condition with the associated factors and levels
+ *
+ * @constructor
  */
-
-
 var Condition = function() {
 
     // serialized
@@ -16,57 +17,76 @@ var Condition = function() {
 
 };
 
+/**
+ * Initializes a new instance with just one trial variation. This function is usually called after the constructor
+ * created a new instance.
+ */
 Condition.prototype.initNewInstance = function() {
     this.addTrial();
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 Condition.prototype.setPointers = function(entitiesArr) {
 
 };
 
-Condition.prototype.setNumTrials = function(numTrialVariations) {
+/**
+ * This function sets the number of trials in this condition to a specified value.
+ * @param {number} numTrialVariations - The new total number of trials in this condition.
+ */
+Condition.prototype.setNumTrials = function (numTrialVariations) {
 
-   var currentLength=  this.trials().length;
-   var lengthToBe =  numTrialVariations;
-   var trialVariations =  this.trials();
+    var currentLength = this.trials().length;
+    var lengthToBe = numTrialVariations;
+    var trialVariations = this.trials();
 
-     if(currentLength > lengthToBe){
-         var diff = currentLength -lengthToBe;
-         for (var i =0; i<diff;i++){
-             this.removeTrialVariation()
-         }
-         this.trials(trialVariations);
-     }
+    var diff, i;
+    if (currentLength > lengthToBe) {
+        diff = currentLength - lengthToBe;
+        for (i = 0; i < diff; i++) {
+            this.removeTrialVariation();
+        }
+        this.trials(trialVariations);
+    }
 
-    else if(currentLength < lengthToBe){
-         var diff = lengthToBe -currentLength;
-
-         var RepToCopy = this.trials()[this.trials().length-1];
-
-         for (var i =0; i<diff;i++){
-             this.addTrial()
-         }
+    else if (currentLength < lengthToBe) {
+        diff = lengthToBe - currentLength;
+        for (i = 0; i < diff; i++) {
+            this.addTrial();
+        }
         this.trials(trialVariations);
     }
 
 };
 
-
+/**
+ * adds a new trial to this condition.
+ */
 Condition.prototype.addTrial = function() {
 
     var trialVariations = new TrialVariation(this);
     this.trials.push(trialVariations);
 };
 
-
+/**
+ * removes the last trial from this condition.
+ */
 Condition.prototype.removeTrialVariation = function() {
 
     this.trials.pop();
 };
 
-
-
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {Condition}
+ */
 Condition.prototype.fromJS = function(data) {
 
     var self = this;
@@ -78,38 +98,13 @@ Condition.prototype.fromJS = function(data) {
     return this;
 };
 
-
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {{trials: *}}
+ */
 Condition.prototype.toJS = function() {
     return {
         trials: jQuery.map( this.trials(), function(trial ) { return trial.toJS(); })
-    }
+    };
 };
 
-
-var TrialVariation= function(condition) {
-    this.condition = condition;
-    this.isSelected = ko.observable(false);
-};
-
-
-
-TrialVariation.prototype.selectTrial = function(){
-
-    // TODo Select single trials
-
-};
-
-TrialVariation.prototype.setVariations= function() {
-    this.factorLevels = [];
-    this.conditionIdx = null;
-};
-
-TrialVariation.prototype.toJS= function() {
-
-    return {}
-};
-
-TrialVariation.prototype.fromJS= function(data) {
-
-    return this;
-};

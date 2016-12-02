@@ -1,4 +1,9 @@
 
+/**
+ * A frameElement is a wrapper for different content elements that are placed on a frame (frameData).
+ * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
+ * @constructor
+ */
 var FrameElement= function(expData) {
 
     this.expData = expData;
@@ -38,19 +43,6 @@ FrameElement.prototype.addContent = function(element){
 FrameElement.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","string","string","boolean","string","boolean","boolean","boolean","boolean"];
 FrameElement.prototype.modifiableProp = ["visibility","editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","contentScaling"];
 
-FrameElement.prototype.setPointers = function(entitiesArr) {
-    this.modifier().setPointers(entitiesArr);
-
-    jQuery.each( this.responses(), function(idx, resp ) {
-        resp.setPointers(entitiesArr);
-    } );
-
-    if(this.content().setPointers){
-        this.content().setPointers(entitiesArr);
-    }
-
-};
-
 FrameElement.prototype.addNewResponse = function() {
     var resp = new Response(this);
     resp.responseType("mouse");
@@ -68,15 +60,44 @@ FrameElement.prototype.selectTrialType = function(selectionSpec) {
     this.content().modifier().selectTrialType(selectionSpec);
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+FrameElement.prototype.setPointers = function(entitiesArr) {
+    this.modifier().setPointers(entitiesArr);
+
+    jQuery.each( this.responses(), function(idx, resp ) {
+        resp.setPointers(entitiesArr);
+    } );
+
+    if(this.content().setPointers){
+        this.content().setPointers(entitiesArr);
+    }
+
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 FrameElement.prototype.reAddEntities = function(entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 
     if(this.content().reAddEntities){
         this.content().reAddEntities(entitiesArr);
     }
-
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {FrameElement}
+ */
 FrameElement.prototype.fromJS = function(data) {
     var self = this;
     this.id(data.id);
@@ -117,6 +138,10 @@ FrameElement.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 FrameElement.prototype.toJS = function() {
     if(this.content()){
         var contentData = this.content().toJS();

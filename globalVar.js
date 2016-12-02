@@ -1,5 +1,12 @@
 // � by Caspar Goeke and Holger Finger
 
+/**
+ * global variables are used to store recordings and experimental state within the player. Variables are defined in the
+ * editor to specify logical operations and recordings for experiments.
+ *
+ * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
+ * @constructor
+ */
 var GlobalVar = function (expData) {
     this.expData = expData;
 
@@ -69,10 +76,6 @@ GlobalVar.prototype.resetValue = function() {
     this.value(this.startValue());
 };
 
-GlobalVar.prototype.setPointers = function(entitiesArr) {
-
-};
-
 GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, isRead, refLabel) {
     this.backRefs.push({
         entity: entity,
@@ -128,7 +131,22 @@ GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
     }
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+GlobalVar.prototype.setPointers = function(entitiesArr) {
 
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {GlobalVar}
+ */
 GlobalVar.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
@@ -154,6 +172,10 @@ GlobalVar.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 GlobalVar.prototype.toJS = function() {
     return {
         id: this.id(),

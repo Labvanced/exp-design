@@ -1,6 +1,10 @@
 // � by Caspar Goeke and Holger Finger
 
-
+/**
+ * This class is the data-model of a connection that can connect two objects in the canvas.
+ * @param expData
+ * @constructor
+ */
 var Connection = function(expData) {
     this.expData = expData;
     this.parent = null;
@@ -13,6 +17,9 @@ var Connection = function(expData) {
     this.id = ko.observable(guid());
 };
 
+/**
+ * sets the state of other ports to relect this connection.
+ */
 Connection.prototype.makeConnection = function() {
     var conn1 = this.conn1();
     var conn2 = this.conn2();
@@ -26,11 +33,22 @@ Connection.prototype.makeConnection = function() {
     }
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 Connection.prototype.setPointers = function(entitiesArr) {
-    var self = this;
     this.makeConnection();
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {Connection}
+ */
 Connection.prototype.fromJS = function(data) {
     this.id(data.id);
     this.conn1(data.conn1);
@@ -39,6 +57,10 @@ Connection.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {{id: *, type: *, name: *, conn1: *, conn2: *}}
+ */
 Connection.prototype.toJS = function() {
     return {
         id: this.id(),

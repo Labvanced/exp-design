@@ -1,7 +1,12 @@
 // � by Caspar Goeke and Holger Finger
 
 
-
+/**
+ * This class stores the port that handles the connection between items on a canvas.
+ *
+ * @param portHandler
+ * @constructor
+ */
 var Port = function(portHandler) {
 
     this.portHandler = portHandler;
@@ -16,7 +21,11 @@ var Port = function(portHandler) {
     this.connectedToPorts = [];
 };
 
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {Port}
+ */
 Port.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
@@ -26,7 +35,10 @@ Port.prototype.fromJS = function(data) {
     return this;
 };
 
-
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 Port.prototype.toJS = function() {
     return {
         id: this.id(),

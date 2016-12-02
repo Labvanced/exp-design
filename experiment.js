@@ -1,6 +1,9 @@
 // � by Caspar Goeke and Holger Finger
 
-
+/**
+ * This class stores the exp_data together with all meta states
+ * @constructor
+ */
 var Experiment = function () {
     this.exp_id = ko.observable(0);
     this.guid = ko.observable(guid());
@@ -15,36 +18,6 @@ var Experiment = function () {
     this.description = ko.observable("");
     this.category_id = ko.observable(0);
     this.exp_data = new ExpData();
-};
-
-
-Experiment.prototype.setPointers = function() {
-    if (this.exp_data instanceof ExpData) {
-        this.exp_data.setPointers();
-    }
-};
-
-Experiment.prototype.fromJS = function(data) {
-    this.guid(data.guid);
-    this.exp_id(data.exp_id);
-    this.exp_series_id(data.exp_series_id);
-    this.exp_name(data.exp_name);
-    this.version(data.version);
-    this.is_editing(data.is_editing);
-    this.is_recording(data.is_recording);
-    this.is_published(data.is_published);
-    this.description(data.description);
-    this.category_id(data.category_id);
-    this.img_file_id(data.img_file_id);
-    this.img_file_orig_name(data.img_file_orig_name);
-    if (data.hasOwnProperty("exp_data")){
-        this.exp_data = new ExpData();
-        this.exp_data.fromJS(data.exp_data);
-    }
-    else {
-        this.exp_data = "not loaded";
-    }
-    return this;
 };
 
 Experiment.prototype.editExp = function() {
@@ -88,6 +61,64 @@ Experiment.prototype.finishEditing = function() {
     this.save();
 };
 
+Experiment.prototype.save = function() {
+    console.log("update experiment " + this.exp_name());
+    var serializedExp = this.toJS();
+    uc.socket.emit('updateExperiment', serializedExp, function(response){
+        if (response.success){
+            console.log("saved experiment success");
+        }
+        else {
+            console.log("error: could not save experiment.")
+        }
+    });
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+Experiment.prototype.setPointers = function() {
+    if (this.exp_data instanceof ExpData) {
+        this.exp_data.setPointers();
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {Experiment}
+ */
+Experiment.prototype.fromJS = function(data) {
+    this.guid(data.guid);
+    this.exp_id(data.exp_id);
+    this.exp_series_id(data.exp_series_id);
+    this.exp_name(data.exp_name);
+    this.version(data.version);
+    this.is_editing(data.is_editing);
+    this.is_recording(data.is_recording);
+    this.is_published(data.is_published);
+    this.description(data.description);
+    this.category_id(data.category_id);
+    this.img_file_id(data.img_file_id);
+    this.img_file_orig_name(data.img_file_orig_name);
+    if (data.hasOwnProperty("exp_data")){
+        this.exp_data = new ExpData();
+        this.exp_data.fromJS(data.exp_data);
+    }
+    else {
+        this.exp_data = "not loaded";
+    }
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 Experiment.prototype.toJS = function() {
 
     if (this.exp_data instanceof ExpData){
@@ -112,17 +143,4 @@ Experiment.prototype.toJS = function() {
         img_file_orig_name: this.img_file_orig_name(),
         exp_data: exp_data_serialized
     };
-};
-
-Experiment.prototype.save = function() {
-    console.log("update experiment " + this.exp_name());
-    var serializedExp = this.toJS();
-    uc.socket.emit('updateExperiment', serializedExp, function(response){
-        if (response.success){
-            console.log("saved experiment success");
-        }
-        else {
-            console.log("error: could not save experiment.")
-        }
-    });
 };

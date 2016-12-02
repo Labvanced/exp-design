@@ -3,6 +3,12 @@
 
 ////////////////////////
 
+/**
+ * This Trigger handles mouse interactions with stimulus elements.
+ *
+ * @param {Event} event - the parent event where this requirements is used.
+ * @constructor
+ */
 var TriggerMouse = function(event) {
     this.event = event;
 
@@ -17,21 +23,24 @@ TriggerMouse.prototype.label = "Mouse Trigger";
 TriggerMouse.prototype.buttonTypes = ["Left", "Right"];
 TriggerMouse.prototype.interactionTypes = ["Click", "PressDown", "PressUp", "Hover"];
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 TriggerMouse.prototype.isValid = function() {
     if (this.event.trigger() && this.targets().length>0){
-        return true
+        return true;
     }
     else{
-        return false
+        return false;
     }
 };
 
-TriggerMouse.prototype.setPointers = function(entitiesArr) {
-    this.targets(jQuery.map( this.targets(), function( id ) {
-        return entitiesArr.byId[id];
-    } ));
-};
-
+/**
+ * Returns the parameters that this trigger will pass on to the requirements and actions.
+ *
+ * @returns {string[]}
+ */
 TriggerMouse.prototype.getParameterSpec = function() {
     return [
         'elementName',
@@ -61,6 +70,11 @@ TriggerMouse.prototype.triggerOnTarget = function(playerFrame,target) {
     ]);
 };
 
+/**
+ * this function is called in the player when the frame starts. It sets up the corresponding click handlers.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
 TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
 
     var self = this;
@@ -132,10 +146,32 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
     }
 };
 
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
 TriggerMouse.prototype.destroyOnPlayerFrame = function(playerFrame) {
 
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerMouse.prototype.setPointers = function(entitiesArr) {
+    this.targets(jQuery.map( this.targets(), function( id ) {
+        return entitiesArr.byId[id];
+    } ));
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {TriggerMouse}
+ */
 TriggerMouse.prototype.fromJS = function(data) {
     this.buttonType(data.buttonType);
     this.interactionType(data.interactionType);
@@ -143,6 +179,10 @@ TriggerMouse.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 TriggerMouse.prototype.toJS = function() {
     return {
         type: this.type,
@@ -155,7 +195,12 @@ TriggerMouse.prototype.toJS = function() {
 ////////////////////////
 
 
-
+/**
+ * This Trigger handles keyboard interactions of the participant with the experiment.
+ *
+ * @param {Event} event - the parent event where this requirements is used.
+ * @constructor
+ */
 var TriggerKeyboard = function(event) {
     this.event = event;
 
@@ -177,7 +222,10 @@ TriggerKeyboard.prototype.buttonTypesNumbersCode = [48,49,50,51,52,53,54,55,56,5
 TriggerKeyboard.prototype.buttonTypesLettersCode = [65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90];
 TriggerKeyboard.prototype.buttonTypesSpecialCode= [32,13,17,9,16];
 
-
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 TriggerKeyboard.prototype.isValid = function() {
     if (this.event.trigger() && this.buttons().length>0){
         return true;
@@ -187,22 +235,30 @@ TriggerKeyboard.prototype.isValid = function() {
     }
 };
 
-TriggerKeyboard.prototype.getKeys = function() {
-    this.allKeys = this.buttonTypesSpecial.concat(this.buttonTypesLetters.concat(this.buttonTypesArrows.concat(this.buttonTypesNumbers)));
-    this.allKeysCode = this.buttonTypesSpecialCode.concat(this.buttonTypesLettersCode.concat(this.buttonTypesArrowsCode.concat(this.buttonTypesNumbersCode)));
+/**
+ * returns the validKeyCodes to which the player should listen.
+ *
+ * @returns {string[]}
+ */
+TriggerKeyboard.prototype.getValidKeyCodes = function() {
+    var allKeys = this.buttonTypesSpecial.concat(this.buttonTypesLetters.concat(this.buttonTypesArrows.concat(this.buttonTypesNumbers)));
+    var allKeysCode = this.buttonTypesSpecialCode.concat(this.buttonTypesLettersCode.concat(this.buttonTypesArrowsCode.concat(this.buttonTypesNumbersCode)));
 
-    this.validKeyCodes = [];
-    this.validKeys = this.buttons();
-    for (var i = 0; i<this.buttons().length; i++){
-        var index =  this.allKeys.indexOf(this.validKeys[i]);
-        this.validKeyCodes.push(this.allKeysCode[index]);
+    validKeyCodes = [];
+    var validKeys = this.buttons();
+    for (var i = 0; i<this.buttons().length; i++) {
+        var index =  allKeys.indexOf(validKeys[i]);
+        validKeyCodes.push(allKeysCode[index]);
     }
+
+    return validKeyCodes;
 };
 
-TriggerKeyboard.prototype.setPointers = function(entitiesArr) {
-
-};
-
+/**
+ * Returns the parameters that this trigger will pass on to the requirements and actions.
+ *
+ * @returns {string[]}
+ */
 TriggerKeyboard.prototype.getParameterSpec = function() {
     return [
         'buttonPressed',
@@ -210,18 +266,22 @@ TriggerKeyboard.prototype.getParameterSpec = function() {
     ];
 };
 
+/**
+ * this function is called in the player when the frame starts. It sets up the corresponding keyboard handlers.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
 TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
     // TODO: to trigger call function this.event.triggerActions(variables)
-
-    var self =this;
+    var self = this;
+    var validKeyCodes = this.getValidKeyCodes();
 
     if (this.interactionType() == "PressDown"){
         (function(event) {
-            self.getKeys();
             $(document).on("keydown", function (ev){
-                var key = self.validKeyCodes.indexOf(ev.keyCode);
-                if (key>=0){
-                    self.event.triggerActions([self.validKeys[key],playerFrame.getFrameTime()]);
+                var keyIdx = validKeyCodes.indexOf(ev.keyCode);
+                if (keyIdx>=0){
+                    self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
                 }
 
             });
@@ -230,27 +290,50 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
 
     else if (this.interactionType() == "PressUp"){
         (function(event) {
-            self.getKeys();
             $(document).on("keyup", function (ev){
-                var key = self.validKeyCodes.indexOf(ev.keyCode);
-                if (key>=0){
-                    self.event.triggerActions([self.validKeys[key],playerFrame.getFrameTime()]);
+                var keyIdx = validKeyCodes.indexOf(ev.keyCode);
+                if (keyIdx>=0){
+                    self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
                 }
             });
         })(event);
     }
 };
 
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
 TriggerKeyboard.prototype.destroyOnPlayerFrame = function(playerFrame) {
 
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerKeyboard.prototype.setPointers = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {TriggerKeyboard}
+ */
 TriggerKeyboard.prototype.fromJS = function(data) {
     this.buttons(data.buttons);
     this.interactionType(data.interactionType);
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 TriggerKeyboard.prototype.toJS = function() {
     return {
         type: this.type,
@@ -261,6 +344,13 @@ TriggerKeyboard.prototype.toJS = function() {
 
 ////////////////////////
 
+
+/**
+ * This Trigger is executed when the frame starts.
+ *
+ * @param {Event} event - the parent event where this requirements is used.
+ * @constructor
+ */
 var TriggerOnFrameStart = function(event) {
     this.event = event;
 
@@ -271,33 +361,67 @@ var TriggerOnFrameStart = function(event) {
 TriggerOnFrameStart.prototype.type = "TriggerOnFrameStart";
 TriggerOnFrameStart.prototype.label = "On Frame Start Trigger";
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 TriggerOnFrameStart.prototype.isValid = function() {
     return true;
 };
 
-TriggerOnFrameStart.prototype.setPointers = function(entitiesArr) {
-
-};
-
+/**
+ * Returns the parameters that this trigger will pass on to the requirements and actions.
+ *
+ * @returns {string[]}
+ */
 TriggerOnFrameStart.prototype.getParameterSpec = function() {
     return [
     ];
 };
 
+/**
+ * this function is called in the player when the frame starts. It directly triggers the actions.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
 TriggerOnFrameStart.prototype.setupOnPlayerFrame = function(playerFrame) {
     // just trigger directly, because this function is called on frame start:
     this.event.triggerActions([]);
 };
 
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
 TriggerOnFrameStart.prototype.destroyOnPlayerFrame = function(playerFrame) {
 
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerOnFrameStart.prototype.setPointers = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {TriggerOnFrameStart}
+ */
 TriggerOnFrameStart.prototype.fromJS = function(data) {
     this.timeDelayInMs(data.timeDelayInMs);
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 TriggerOnFrameStart.prototype.toJS = function() {
     return {
         type: this.type,
@@ -309,7 +433,12 @@ TriggerOnFrameStart.prototype.toJS = function() {
 ////////////////////////
 
 
-
+/**
+ * This Trigger is executed when the frame ends.
+ *
+ * @param {Event} event - the parent event where this requirements is used.
+ * @constructor
+ */
 var TriggerOnFrameEnd = function(event) {
     this.event = event;
 
@@ -319,20 +448,30 @@ var TriggerOnFrameEnd = function(event) {
 TriggerOnFrameEnd.prototype.type = "TriggerOnFrameEnd";
 TriggerOnFrameEnd.prototype.label = "On Frame End Trigger";
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 TriggerOnFrameEnd.prototype.isValid = function() {
     return true;
 };
 
-TriggerOnFrameEnd.prototype.setPointers = function(entitiesArr) {
-
-};
-
+/**
+ * Returns the parameters that this trigger will pass on to the requirements and actions.
+ *
+ * @returns {string[]}
+ */
 TriggerOnFrameEnd.prototype.getParameterSpec = function() {
     return [
         "totalFrameTime"
     ];
 };
 
+/**
+ * this function is called in the player when the frame starts. It sets up the frame end callback.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
 TriggerOnFrameEnd.prototype.setupOnPlayerFrame = function(playerFrame) {
     var self = this;
     playerFrame.onFrameEndCallbacks.push(function(){
@@ -340,14 +479,38 @@ TriggerOnFrameEnd.prototype.setupOnPlayerFrame = function(playerFrame) {
     });
 };
 
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
 TriggerOnFrameEnd.prototype.destroyOnPlayerFrame = function(playerFrame) {
 
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerOnFrameEnd.prototype.setPointers = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {TriggerOnFrameEnd}
+ */
 TriggerOnFrameEnd.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 TriggerOnFrameEnd.prototype.toJS = function() {
     return {
         type: this.type
@@ -357,6 +520,12 @@ TriggerOnFrameEnd.prototype.toJS = function() {
 
 ////////////////////////
 
+/**
+ * This Trigger is executed when a timer reaches a specific value.
+ *
+ * @param {Event} event - the parent event where this requirements is used.
+ * @constructor
+ */
 var TriggerTimerReached = function(event) {
     this.event = event;
 
@@ -368,35 +537,69 @@ var TriggerTimerReached = function(event) {
 TriggerTimerReached.prototype.type = "TriggerTimerReached";
 TriggerTimerReached.prototype.label = "Timer Reached Trigger";
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 TriggerTimerReached.prototype.isValid = function() {
     return true;
 };
 
+/**
+ * Returns the parameters that this trigger will pass on to the requirements and actions.
+ *
+ * @returns {string[]}
+ */
+TriggerTimerReached.prototype.getParameterSpec = function() {
+    return [
+    ];
+};
+
+/**
+ * this function is called in the player when the frame starts. It sets up the corresponding timer callbacks.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+TriggerTimerReached.prototype.setupOnPlayerFrame = function(playerFrame) {
+    // TODO: to trigger call function this.event.triggerActions(variables)
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+TriggerTimerReached.prototype.destroyOnPlayerFrame = function(playerFrame) {
+
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 TriggerTimerReached.prototype.setPointers = function(entitiesArr) {
     if (this.timerVar()){
         this.timerVar(entitiesArr.byId[this.timerVar()]);
     }
 };
 
-TriggerTimerReached.prototype.getParameterSpec = function() {
-    return [
-    ];
-};
-
-TriggerTimerReached.prototype.setupOnPlayerFrame = function(playerFrame) {
-    // TODO: to trigger call function this.event.triggerActions(variables)
-};
-
-TriggerTimerReached.prototype.destroyOnPlayerFrame = function(playerFrame) {
-
-};
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {TriggerTimerReached}
+ */
 TriggerTimerReached.prototype.fromJS = function(data) {
     this.timerVar(data.timerVar);
     this.timeInMs(data.timeInMs);
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 TriggerTimerReached.prototype.toJS = function() {
     var timerVarId = null;
     if (this.timerVar()) {
@@ -413,6 +616,13 @@ TriggerTimerReached.prototype.toJS = function() {
 
 ////////////////////////
 
+
+/**
+ * This Trigger is executed when the value of a specific variable is changed.
+ *
+ * @param {Event} event - the parent event where this requirements is used.
+ * @constructor
+ */
 var TriggerVariableValueChanged = function(event) {
     this.event = event;
 
@@ -430,10 +640,58 @@ TriggerVariableValueChanged.prototype.setVariableBackRef = function(variable){
     variable.addBackRef(this, this.event, false, true, 'Trigger On Variable Change');
 };
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 TriggerVariableValueChanged.prototype.isValid = function() {
     return true;
 };
 
+/**
+ * Returns the parameters that this trigger will pass on to the requirements and actions.
+ *
+ * @returns {string[]}
+ */
+TriggerVariableValueChanged.prototype.getParameterSpec = function() {
+    return [
+        "newValue"
+    ];
+};
+
+/**
+ * this function is called in the player when the frame starts. It sets up the knockout subscribers at the globalVars.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+TriggerVariableValueChanged.prototype.setupOnPlayerFrame = function(playerFrame) {
+    var self = this;
+    var variables = this.variables();
+    for (var i=0; i<variables.length; i++) {
+        var subscribeHandle = variables[i].value.subscribe(function(newVal){
+            self.event.triggerActions(newVal);
+        });
+        this.subscriberHandles.push(subscribeHandle);
+    }
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+TriggerVariableValueChanged.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    for (var i=0; i<this.subscriberHandles.length; i++) {
+        this.subscriberHandles[i].dispose();
+    }
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 TriggerVariableValueChanged.prototype.setPointers = function(entitiesArr) {
     var variableIds = this.variables();
     var variables = [];
@@ -445,6 +703,11 @@ TriggerVariableValueChanged.prototype.setPointers = function(entitiesArr) {
     this.variables(variables);
 };
 
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 TriggerVariableValueChanged.prototype.reAddEntities = function(entitiesArr) {
     jQuery.each( this.variables(), function( index, elem ) {
         // check if they are not already in the list:
@@ -453,34 +716,20 @@ TriggerVariableValueChanged.prototype.reAddEntities = function(entitiesArr) {
     } );
 };
 
-TriggerVariableValueChanged.prototype.getParameterSpec = function() {
-    return [
-        "newValue"
-    ];
-};
-
-TriggerVariableValueChanged.prototype.setupOnPlayerFrame = function(playerFrame) {
-    var self = this;
-    var variables = this.variables();
-    for (var i=0; i<variables.length; i++) {
-        var subscribeHandle = variables[i].value.subscribe(function(newVal){
-            self.event.triggerActions(newVal)
-        });
-        this.subscriberHandles.push(subscribeHandle);
-    }
-};
-
-TriggerVariableValueChanged.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    for (var i=0; i<this.subscriberHandles.length; i++) {
-        this.subscriberHandles[i].dispose();
-    }
-};
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {TriggerVariableValueChanged}
+ */
 TriggerVariableValueChanged.prototype.fromJS = function(data) {
     this.variables(data.variables);
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 TriggerVariableValueChanged.prototype.toJS = function() {
     var variableIds = [];
     var variables = this.variables();
@@ -496,7 +745,13 @@ TriggerVariableValueChanged.prototype.toJS = function() {
 
 ///////////////////////////
 
-
+/**
+ * Factory method that creates a new trigger based on the given trigger type.
+ *
+ * @param {Event} event - the parent event of the new action.
+ * @param {string} type - the type of the Trigger (i.e. "TriggerVariableValueChanged")
+ * @returns {Trigger}
+ */
 function triggerFactory(event,type) {
     var trigger = new window[type](event);
     return trigger;

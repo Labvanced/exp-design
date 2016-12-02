@@ -5,6 +5,13 @@ if (!Date.now) {
     Date.now = function() { return new Date().getTime(); }
 }
 
+/**
+ * This class is a specific type of GlobalVar, which can automatically count up or down and trigger events when the
+ * timer reaches a certain value.
+ *
+ * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
+ * @constructor
+ */
 var TimerVar = function (expData) {
     this.expData = expData;
 
@@ -24,10 +31,6 @@ var TimerVar = function (expData) {
 
 // enum definitions:
 TimerVar.states = ['pause','up','down'];
-
-TimerVar.prototype.setPointers = function(entitiesArr) {
-
-};
 
 /**
  * private function:
@@ -102,12 +105,32 @@ TimerVar.prototype.addTimerReachedCallback = function(onValueReached) {
 
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TimerVar.prototype.setPointers = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {TimerVar}
+ */
 TimerVar.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 TimerVar.prototype.toJS = function() {
     return {
         id: this.id(),

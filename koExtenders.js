@@ -1,5 +1,12 @@
 // � by Caspar Goeke and Holger Finger
 
+/**
+ * extends a knockout observableArray with the ability to retrieve elements by their id.
+ *
+ * @param target - ko.observableArray
+ * @param option -
+ * @returns {*}
+ */
 ko.extenders.sortById = function(target, option) {
     target.byId = {};
     target.subscribe(function(changes) {
@@ -29,19 +36,22 @@ ko.extenders.sortById = function(target, option) {
         }
 
         /* this is the bruteforce approach where we rebuild the full list, instead of only the changes:
-
-         target.byId = {};
-         var arrayElem = target();
-         for (var i= 0, len=arrayElem.length; i<len; i++) {
-            target.byId[arrayElem[i].id()] = arrayElem[i];
-         }
-         */
-
+        target.byId = {};
+        var arrayElem = target();
+        for (var i= 0, len=arrayElem.length; i<len; i++) {
+           target.byId[arrayElem[i].id()] = arrayElem[i];
+        }
+        */
     }, null, "arrayChange");
     return target;
 };
 
-
+/**
+ * extend a ko.observable so that it is numeric and rounded to a specific precision.
+ *
+ * @param {ko.observable} target - the observable where this is applied
+ * @param {number} precision - the number of floating point digits
+ */
 ko.extenders.numeric = function(target, precision) {
     //create a writable computed observable to intercept writes to our observable
     var result = ko.pureComputed({

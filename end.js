@@ -1,6 +1,11 @@
 // � by Caspar Goeke and Holger Finger
 
-
+/**
+ * Representing the end of a sequence of tasks.
+ *
+ * @param expData
+ * @constructor
+ */
 var EndBlock = function(expData) {
 
     this.expData = expData;
@@ -25,11 +30,22 @@ var EndBlock = function(expData) {
 
 };
 
-
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 EndBlock.prototype.setPointers = function() {
 
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {EndBlock}
+ */
 EndBlock.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
@@ -42,7 +58,10 @@ EndBlock.prototype.fromJS = function(data) {
     return this;
 };
 
-
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {{id: *, type: *, name: *, portHandler, editorX: *, editorY: *, editorWidth: *, editorHeight: *}}
+ */
 EndBlock.prototype.toJS = function() {
     return {
         id: this.id(),

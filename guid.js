@@ -1,5 +1,10 @@
 // � by Caspar Goeke and Holger Finger
 
+/**
+ * generated a global unique id.
+ *
+ * @returns {string}
+ */
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)

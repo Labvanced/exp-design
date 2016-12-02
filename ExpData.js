@@ -1,5 +1,9 @@
 // � by Caspar Goeke and Holger Finger
 
+/**
+ * Stores all specifications of an experiment.
+ * @constructor
+ */
 var ExpData = function () {
     this.expData = this; // self reference for consistency with other classes..
     this.entities = ko.observableArray([]).extend({sortById: null});
@@ -28,21 +32,6 @@ var ExpData = function () {
     }, this);
 };
 
-
-ExpData.prototype.setPointers = function() {
-    var self = this;
-    var allEntitiesArray = this.entities();
-    jQuery.each( allEntitiesArray, function( index, elem ) {
-        elem.setPointers(self.entities);
-    } );
-
-    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
-        var varId = this[ExpData.prototype.fixedVarNames[i]]();
-        var varInstance = this.entities.byId[varId];
-        this[ExpData.prototype.fixedVarNames[i]](varInstance);
-    }
-};
-
 ExpData.prototype.fixedVarNames = [
     'varSubjectId',
     'varSubjectIndex',
@@ -56,6 +45,9 @@ ExpData.prototype.fixedVarNames = [
     'varTaskIndex'
 ];
 
+/**
+ * creates all predefined (fixed) variables
+ */
 ExpData.prototype.createVars = function() {
     this.varSubjectId((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Subject Id'));
     this.varSubjectIndex((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'nominal', 'Subject Index'));
@@ -69,38 +61,12 @@ ExpData.prototype.createVars = function() {
     this.varTaskIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Task Index'));
 };
 
-
+/**
+ * adds a new subject group to the experiment.
+ * @param group
+ */
 ExpData.prototype.addGroup = function(group) {
     return this.groups.push(group);
-};
-
-ExpData.prototype.fromJS = function(data) {
-    var self = this;
-
-    this.groups([]);
-    if (data.hasOwnProperty('entities')) {
-        this.entities(jQuery.map(data.entities, function (entityJson) {
-            var entity = entityFactory(entityJson, self);
-
-            switch (entityJson.type) {
-                case 'SubjectGroup':
-                    self.groups.push(entity);
-                    break;
-                case 'ExpBlock':
-                    self.expBlocks.push(entity);
-                    break;
-            }
-
-            return entity;
-        }));
-    }
-
-    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
-        var varName = ExpData.prototype.fixedVarNames[i];
-        this[varName](data[varName]);
-    }
-
-    return this;
 };
 
 ExpData.prototype.rebuildEntities = function() {
@@ -109,56 +75,6 @@ ExpData.prototype.rebuildEntities = function() {
 
     this.reAddEntities();
 };
-
-ExpData.prototype.reAddEntities = function() {
-    var self = this;
-
-    var entitiesArr = this.entities;
-
-    // add the groups and their child nodes to entities:
-    jQuery.each( this.groups(), function( index, elem ) {
-        // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
-            entitiesArr.push(elem);
-
-        // recursively make sure that all deep tree nodes are in the entities list:
-        elem.reAddEntities(entitiesArr);
-    } );
-
-    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
-        var varInstance = this[ExpData.prototype.fixedVarNames[i]]();
-        if (!entitiesArr.byId.hasOwnProperty(varInstance.id())) {
-            entitiesArr.push(varInstance);
-        }
-    }
-};
-
-ExpData.prototype.toJS = function() {
-    // make sure that we have an up to date global list of all entities:
-    this.rebuildEntities();
-
-    var sessionsPerGroup = [];
-    var groups = this.groups();
-    for (var i=0; i<groups.length; i++){
-        sessionsPerGroup.push(groups[i].sessions().length);
-    }
-
-    var data = {
-        entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
-        numGroups: this.groups().length,
-        sessionsPerGroup: sessionsPerGroup
-    };
-
-    // add all variable ids:
-    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
-        var varName = ExpData.prototype.fixedVarNames[i];
-        data[varName] = this[varName]().id();
-    }
-
-    return data;
-};
-
-
 
 ExpData.prototype.addNewSubjGroup = function() {
     var group = new SubjectGroup(this);
@@ -302,4 +218,114 @@ ExpData.prototype.addNewBlock = function() {
     this.expBlocks.push(block);
 
     this.reAddEntities();
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ExpData.prototype.setPointers = function() {
+    var self = this;
+    var allEntitiesArray = this.entities();
+    jQuery.each( allEntitiesArray, function( index, elem ) {
+        elem.setPointers(self.entities);
+    } );
+
+    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+        var varId = this[ExpData.prototype.fixedVarNames[i]]();
+        var varInstance = this.entities.byId[varId];
+        this[ExpData.prototype.fixedVarNames[i]](varInstance);
+    }
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ExpData.prototype.reAddEntities = function() {
+    var entitiesArr = this.entities;
+
+    // add the groups and their child nodes to entities:
+    jQuery.each( this.groups(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        elem.reAddEntities(entitiesArr);
+    } );
+
+    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+        var varInstance = this[ExpData.prototype.fixedVarNames[i]]();
+        if (!entitiesArr.byId.hasOwnProperty(varInstance.id())) {
+            entitiesArr.push(varInstance);
+        }
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ExpData}
+ */
+ExpData.prototype.fromJS = function(data) {
+    var self = this;
+
+    this.groups([]);
+    if (data.hasOwnProperty('entities')) {
+        this.entities(jQuery.map(data.entities, function (entityJson) {
+            var entity = entityFactory(entityJson, self);
+
+            switch (entityJson.type) {
+                case 'SubjectGroup':
+                    self.groups.push(entity);
+                    break;
+                case 'ExpBlock':
+                    self.expBlocks.push(entity);
+                    break;
+            }
+
+            return entity;
+        }));
+    }
+
+    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+        var varName = ExpData.prototype.fixedVarNames[i];
+        this[varName](data[varName]);
+    }
+
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ExpData.prototype.toJS = function() {
+    // make sure that we have an up to date global list of all entities:
+    this.rebuildEntities();
+
+    var sessionsPerGroup = [];
+    var groups = this.groups();
+    for (var i=0; i<groups.length; i++){
+        sessionsPerGroup.push(groups[i].sessions().length);
+    }
+
+    var data = {
+        entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
+        numGroups: this.groups().length,
+        sessionsPerGroup: sessionsPerGroup
+    };
+
+    // add all variable ids:
+    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+        var varName = ExpData.prototype.fixedVarNames[i];
+        data[varName] = this[varName]().id();
+    }
+
+    return data;
 };

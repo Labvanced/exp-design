@@ -2,6 +2,13 @@
 
 ////////////////////////
 
+
+/**
+ * This class stores several subrequirements and combines them with a logical OR operation.
+ *
+ * @param {Event} event - the parent event where this requirements is used.
+ * @constructor
+ */
 var RequirementOR = function(event) {
     this.event = event;
 
@@ -12,12 +19,12 @@ var RequirementOR = function(event) {
 RequirementOR.prototype.type = "RequirementOR";
 RequirementOR.prototype.label = "OR";
 
-RequirementOR.prototype.setPointers = function(entitiesArr) {
-    jQuery.each( this.childRequirements(), function( index, elem ) {
-        elem.setPointers(entitiesArr);
-    } );
-};
-
+/**
+ * checks if either one of the sub-requriements is true.
+ *
+ * @param {object} parameters - the parameters passed by the trigger.
+ * @returns {boolean}
+ */
 RequirementOR.prototype.checkIfTrue = function(parameters) {
     var childRequirements = this.childRequirements();
     for (var i=0; i<childRequirements.length; i++) {
@@ -28,7 +35,24 @@ RequirementOR.prototype.checkIfTrue = function(parameters) {
     return false;
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+RequirementOR.prototype.setPointers = function(entitiesArr) {
+    jQuery.each( this.childRequirements(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+};
 
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 RequirementOR.prototype.reAddEntities = function(entitiesArr) {
     jQuery.each( this.childRequirements(), function( index, req ) {
         // recursively make sure that all deep tree nodes are in the entities list:
@@ -37,6 +61,11 @@ RequirementOR.prototype.reAddEntities = function(entitiesArr) {
     } );
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {RequirementOR}
+ */
 RequirementOR.prototype.fromJS = function(data) {
     var childRequirements = [];
     for (var i=0; i<data.childRequirements.length; i++) {
@@ -48,6 +77,10 @@ RequirementOR.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 RequirementOR.prototype.toJS = function() {
     var data = {
         type: this.type,
@@ -60,6 +93,12 @@ RequirementOR.prototype.toJS = function() {
 ///////////////////////
 
 
+/**
+ * This class stores several subrequirements and combines them with a logical AND operation.
+ *
+ * @param {Event} event - the parent event where this requirements is used.
+ * @constructor
+ */
 var RequirementAND = function(event) {
     this.event = event;
 
@@ -70,12 +109,12 @@ var RequirementAND = function(event) {
 RequirementAND.prototype.type = "RequirementAND";
 RequirementAND.prototype.label = "OR";
 
-RequirementAND.prototype.setPointers = function(entitiesArr) {
-    jQuery.each( this.childRequirements(), function( index, elem ) {
-        elem.setPointers(entitiesArr);
-    } );
-};
-
+/**
+ * checks if all the sub-requriements are true.
+ *
+ * @param {object} parameters - the parameters passed by the trigger.
+ * @returns {boolean}
+ */
 RequirementAND.prototype.checkIfTrue = function(parameters) {
     var childRequirements = this.childRequirements();
     for (var i=0; i<childRequirements.length; i++) {
@@ -86,6 +125,24 @@ RequirementAND.prototype.checkIfTrue = function(parameters) {
     return true;
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+RequirementAND.prototype.setPointers = function(entitiesArr) {
+    jQuery.each( this.childRequirements(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 RequirementAND.prototype.reAddEntities = function(entitiesArr) {
     jQuery.each( this.childRequirements(), function( index, req ) {
         // recursively make sure that all deep tree nodes are in the entities list:
@@ -94,6 +151,11 @@ RequirementAND.prototype.reAddEntities = function(entitiesArr) {
     } );
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {RequirementAND}
+ */
 RequirementAND.prototype.fromJS = function(data) {
     var childRequirements = [];
     for (var i=0; i<data.childRequirements.length; i++) {
@@ -105,6 +167,10 @@ RequirementAND.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 RequirementAND.prototype.toJS = function() {
     var data = {
         type: this.type,
@@ -116,6 +182,14 @@ RequirementAND.prototype.toJS = function() {
 
 ////////////////////////////
 
+
+
+/**
+ * This class is a requirement that checks a boolean expression.
+ *
+ * @param {Event} event - the parent event where this requirements is used.
+ * @constructor
+ */
 var RequirementVariableHasValue = function(event) {
     this.event = event;
 
@@ -129,15 +203,12 @@ RequirementVariableHasValue.prototype.type = "RequirementVariableHasValue";
 RequirementVariableHasValue.prototype.label = "Variable Has Value";
 RequirementVariableHasValue.prototype.comparisonTypes = ["==", "!=", ">", "<", ">=", "<="];
 
-RequirementVariableHasValue.prototype.setPointers = function(entitiesArr) {
-    if (this.operandLeft()){
-        this.operandLeft().setPointers(entitiesArr);
-    }
-    if (this.operandRight()){
-        this.operandRight().setPointers(entitiesArr);
-    }
-};
-
+/**
+ * checks if the boolean expression evaluates to true.
+ *
+ * @param {object} parameters - the parameters passed by the trigger.
+ * @returns {boolean}
+ */
 RequirementVariableHasValue.prototype.checkIfTrue = function(parameters) {
 
     var operandLeftValue = this.operandLeft().getValue(parameters);
@@ -160,6 +231,27 @@ RequirementVariableHasValue.prototype.checkIfTrue = function(parameters) {
     return true;
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+RequirementVariableHasValue.prototype.setPointers = function(entitiesArr) {
+    if (this.operandLeft()){
+        this.operandLeft().setPointers(entitiesArr);
+    }
+    if (this.operandRight()){
+        this.operandRight().setPointers(entitiesArr);
+    }
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 RequirementVariableHasValue.prototype.reAddEntities = function(entitiesArr) {
     if (this.operandLeft() && this.operandLeft().reAddEntities){
         this.operandLeft().reAddEntities(entitiesArr);
@@ -169,6 +261,11 @@ RequirementVariableHasValue.prototype.reAddEntities = function(entitiesArr) {
     }
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {RequirementVariableHasValue}
+ */
 RequirementVariableHasValue.prototype.fromJS = function(data) {
     this.comparisonType(data.comparisonType);
     if (data.operandLeft) {
@@ -182,6 +279,10 @@ RequirementVariableHasValue.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 RequirementVariableHasValue.prototype.toJS = function() {
     var data = {
         type: this.type,
@@ -203,7 +304,13 @@ RequirementVariableHasValue.prototype.toJS = function() {
 //////////////////////
 
 
-
+/**
+ * This class represents an operand that can be used in logical or boolean expressions. The operand could be either a
+ * globalVar, but also object properties or trigger parameters or constants.
+ *
+ * @param {Event} event - the parent event where this requirements is used.
+ * @constructor
+ */
 var OperandVariable = function(event) {
     this.event = event;
 
@@ -216,27 +323,20 @@ OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
 OperandVariable.prototype.operandTypes = ['undefined', "variable", "objectProperty", "triggerParameter", "constantString", "constantNumeric"];
 
+/**
+ * This function is used to associate a global variable with this operand, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
 OperandVariable.prototype.setVariableBackRef = function(variable){
     variable.addBackRef(this, this.event, false, true, 'In Boolean Expression');
 };
 
-OperandVariable.prototype.setPointers = function(entitiesArr) {
-    if (this.operandType() == "variable"){
-        var globVar = entitiesArr.byId[this.operandValueOrObject()];
-        this.operandValueOrObject(globVar);
-        this.setVariableBackRef(globVar);
-    }
-    if (this.operandType() == "objectProperty") {
-        this.operandValueOrObject().setPointers(entitiesArr);
-    }
-};
-
-OperandVariable.prototype.reAddEntities = function(entitiesArr) {
-    if (this.operandType() == "variable"){
-        entitiesArr.push(this.operandValueOrObject());
-    }
-};
-
+/**
+ * calculates the current value of the operand. This is used in the player to evaluate logical or boolean expressions.
+ *
+ * @param {object} parameters - the values that are passed by the trigger.
+ * @returns {number | string}
+ */
 OperandVariable.prototype.getValue = function(parameters) {
 
     var value = this.operandValueOrObject();
@@ -267,6 +367,40 @@ OperandVariable.prototype.getValue = function(parameters) {
     }
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+OperandVariable.prototype.setPointers = function(entitiesArr) {
+    if (this.operandType() == "variable"){
+        var globVar = entitiesArr.byId[this.operandValueOrObject()];
+        this.operandValueOrObject(globVar);
+        this.setVariableBackRef(globVar);
+    }
+    if (this.operandType() == "objectProperty") {
+        this.operandValueOrObject().setPointers(entitiesArr);
+    }
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+OperandVariable.prototype.reAddEntities = function(entitiesArr) {
+    if (this.operandType() == "variable"){
+        entitiesArr.push(this.operandValueOrObject());
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {OperandVariable}
+ */
 OperandVariable.prototype.fromJS = function(data) {
     this.operandType(data.operandType);
     if (data.operandType == "objectProperty") {
@@ -280,6 +414,10 @@ OperandVariable.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 OperandVariable.prototype.toJS = function() {
     var data = {
         type: this.type,
@@ -297,6 +435,12 @@ OperandVariable.prototype.toJS = function() {
 
 ///////////////////////
 
+/**
+ * This class represents a specific property of a specific stimulus element. It can be used as an operand variable.
+ *
+ * @param {Event} event - the parent event where this is used.
+ * @constructor
+ */
 var RefToObjectProperty = function(event) {
     this.event = event;
 
@@ -305,6 +449,22 @@ var RefToObjectProperty = function(event) {
     this.property = ko.observable(null);
 };
 
+/**
+ * calculate the current value of the object property.
+ *
+ * @returns {number | string}
+ */
+RefToObjectProperty.prototype.getValue = function() {
+    return this.target().modifier().selectedTrialView[this.property()]();
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 RefToObjectProperty.prototype.setPointers = function(entitiesArr) {
     if (this.target()) {
         var target = entitiesArr.byId[this.target()];
@@ -312,16 +472,21 @@ RefToObjectProperty.prototype.setPointers = function(entitiesArr) {
     }
 };
 
-RefToObjectProperty.prototype.getValue = function() {
-    return this.target().modifier().selectedTrialView[this.property()]();
-};
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {RefToObjectProperty}
+ */
 RefToObjectProperty.prototype.fromJS = function(data) {
     this.target(data.target);
     this.property(data.property);
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 RefToObjectProperty.prototype.toJS = function() {
     var target = this.target();
     if (target) { // convert to id if target is set
@@ -335,6 +500,13 @@ RefToObjectProperty.prototype.toJS = function() {
 
 ///////////////////////
 
+/**
+ * Factory method that creates a new requirement based on the given requirement type.
+ *
+ * @param {Event} event - the parent event of the new action.
+ * @param {string} type - the type of the Requirement (i.e. "RequirementOR")
+ * @returns {Requirement}
+ */
 function requirementFactory(event,type) {
     var requirement = new window[type](event);
     return requirement;

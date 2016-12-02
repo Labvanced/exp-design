@@ -1,5 +1,11 @@
 // � by Caspar Goeke and Holger Finger
 
+/**
+ * Stores the specification of one experimental session.
+ *
+ * @param expData
+ * @constructor
+ */
 var ExpSession = function (expData) {
     this.expData = expData;
 
@@ -42,18 +48,26 @@ ExpSession.prototype.rename = function(idx,flag,data,event) {
 
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 ExpSession.prototype.setPointers = function(entitiesArr) {
-    var self = this;
-
     // convert ids to actual pointers:
     this.blocks(jQuery.map( this.blocks(), function( id ) {
         return entitiesArr.byId[id];
     } ));
 };
 
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 ExpSession.prototype.reAddEntities = function(entitiesArr) {
-    var self = this;
-
     // add the direct child nodes:
     jQuery.each( this.blocks(), function( index, elem ) {
         // check if they are not already in the list:
@@ -65,6 +79,11 @@ ExpSession.prototype.reAddEntities = function(entitiesArr) {
     } );
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ExpSession}
+ */
 ExpSession.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
@@ -72,6 +91,10 @@ ExpSession.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 ExpSession.prototype.toJS = function() {
 
     return {
