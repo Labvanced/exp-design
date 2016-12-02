@@ -3,18 +3,22 @@
 
 /////////////////////////////////////////////////  ActionRecord  ///////////////////////////////////////////////////
 
+/**
+ * This action can record values (i.e. elementTag or reactiontime) into variables and sends them to the server.
+ * @param {Event} event - the parent event
+ * @constructor
+ */
 var ActionRecord = function(event) {
     this.event = event;
 
-
     var specialRecs = this.event.trigger().getParameterSpec();
     var specR =  [];
-    for (var i = 0; i<specialRecs.length; i++){
+    for (var i = 0; i < specialRecs.length; i++) {
         specR.push({
-                recType: specialRecs[i],
-                variable :ko.observable(null),
-                isRecorded: ko.observable(false)
-            });
+            recType: specialRecs[i],
+            variable: ko.observable(null),
+            isRecorded: ko.observable(false)
+        });
     }
 
     // serialized
@@ -25,14 +29,26 @@ var ActionRecord = function(event) {
 ActionRecord.prototype.type = "ActionRecord";
 ActionRecord.prototype.label = "Record";
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 ActionRecord.prototype.isValid = function(){
     return true;
 };
 
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
 ActionRecord.prototype.setVariableBackRef = function(variable){
     variable.addBackRef(this, this.event, true, false, 'recording variable');
 };
 
+/**
+ * add a new recording to the list.
+ * @param {string} type - the type of the recording, such as "elementTag" or "reactionTime"
+ */
 ActionRecord.prototype.addRecording = function(type){
     var newRec={
         recType: type,
@@ -43,62 +59,33 @@ ActionRecord.prototype.addRecording = function(type){
 
 };
 
-
-ActionRecord.prototype.setPointers = function(entitiesArr) {
-    var specialRecordings = this.specialRecordings();
-    for (var i = 0; i<specialRecordings.length; i++){
-        if (specialRecordings[i].variable()) {
-            var globVar = entitiesArr.byId[specialRecordings[i].variable()];
-            specialRecordings[i].variable(globVar);
-            this.setVariableBackRef(globVar);
-        }
-    }
-
-    var selectedRecordings = this.selectedRecordings();
-    for (var i = 0; i<selectedRecordings.length; i++){
-        if (selectedRecordings[i].variable()) {
-            var globVar = entitiesArr.byId[selectedRecordings[i].variable()];
-            selectedRecordings[i].variable(globVar);
-            this.setVariableBackRef(globVar);
-        }
-    }
-};
-
-ActionRecord.prototype.reAddEntities = function(entitiesArr) {
-    var specialRec = this.specialRecordings();
-    for (var i = 0; i<specialRec.length; i++){
-        if (specialRec[i].variable()) {
-            entitiesArr.push(specialRec[i].variable());
-        }
-    }
-    var selectedRec = this.selectedRecordings();
-    for (var i = 0; i<selectedRec.length; i++){
-        if (selectedRec[i].variable()) {
-            entitiesArr.push(selectedRec[i].variable());
-        }
-    }
-};
-
-ActionRecord.prototype.run = function(recInput) {
-
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It creates the RecData and
+ * sends them to the server.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionRecord.prototype.run = function(triggerParams) {
+    var i;
+    var recData;
     var blockId = player.getBlockId();
     var trialId = player.getTrialId();
 
     var specialRecs = this.specialRecordings();
-    for (var i = 0; i < specialRecs.length; i++) {
-        var valueToRecord = recInput[i];
+    for (i = 0; i < specialRecs.length; i++) {
+        var valueToRecord = triggerParams[i];
         var varToSave = specialRecs[i].variable();
         if (varToSave) {
             varToSave.value(valueToRecord);
         }
         if (specialRecs[i].isRecorded()) {
-            var recData = new RecData(varToSave.id(), valueToRecord);
+            recData = new RecData(varToSave.id(), valueToRecord);
             player.addRecording(blockId, trialId, recData.toJS());
         }
     }
 
     var selectedRecs = this.selectedRecordings();
-    for (var i = 0; i < selectedRecs.length; i++) {
+    for (i = 0; i < selectedRecs.length; i++) {
         var name = selectedRecs[i].recType;
         var shouldBeRec = selectedRecs[i].isRecorded();
         var varToSave = selectedRecs[i].variable();
@@ -107,14 +94,14 @@ ActionRecord.prototype.run = function(recInput) {
             case "elementTag":
                 if (shouldBeRec) {
                     var tag = "TODO";
-                    var recData = new RecData(varToSave.id(), tag);
+                    recData = new RecData(varToSave.id(), tag);
                     player.addRecording(blockId, trialId, recData.toJS());
                 }
                 break;
             case "reactionTime":
                 if (shouldBeRec) {
                     var reactionTime = "TODO";
-                    var recData = new RecData(varToSave.id(), reactionTime);
+                    recData = new RecData(varToSave.id(), reactionTime);
                     player.addRecording(blockId, trialId, recData.toJS());
                 }
                 break;
@@ -122,37 +109,100 @@ ActionRecord.prototype.run = function(recInput) {
     }
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionRecord.prototype.setPointers = function(entitiesArr) {
+    var i;
+    var globVar;
+
+    var specialRecordings = this.specialRecordings();
+    for (i = 0; i<specialRecordings.length; i++){
+        if (specialRecordings[i].variable()) {
+            globVar = entitiesArr.byId[specialRecordings[i].variable()];
+            specialRecordings[i].variable(globVar);
+            this.setVariableBackRef(globVar);
+        }
+    }
+
+    var selectedRecordings = this.selectedRecordings();
+    for (i = 0; i<selectedRecordings.length; i++){
+        if (selectedRecordings[i].variable()) {
+            globVar = entitiesArr.byId[selectedRecordings[i].variable()];
+            selectedRecordings[i].variable(globVar);
+            this.setVariableBackRef(globVar);
+        }
+    }
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionRecord.prototype.reAddEntities = function(entitiesArr) {
+    var i;
+    var specialRec = this.specialRecordings();
+    for (i = 0; i<specialRec.length; i++){
+        if (specialRec[i].variable()) {
+            entitiesArr.push(specialRec[i].variable());
+        }
+    }
+    var selectedRec = this.selectedRecordings();
+    for (i = 0; i<selectedRec.length; i++){
+        if (selectedRec[i].variable()) {
+            entitiesArr.push(selectedRec[i].variable());
+        }
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionRecord}
+ */
 ActionRecord.prototype.fromJS = function(data) {
     var specialRecordings = [];
-    for (var i = 0; i < data.specialRecordings.length; i++) {
-        var tmp = data.specialRecordings[i];
+    var i, tmp;
+    for (i = 0; i < data.specialRecordings.length; i++) {
+        tmp = data.specialRecordings[i];
         specialRecordings.push({
             recType: tmp.recType,
             variable: ko.observable(tmp.variable),
             isRecorded: ko.observable(tmp.isRecorded)
-        })
+        });
     }
     this.specialRecordings(specialRecordings);
 
     var selectedRecordings = [];
-    for (var i = 0; i < data.selectedRecordings.length; i++) {
-        var tmp = data.selectedRecordings[i];
+    for (i = 0; i < data.selectedRecordings.length; i++) {
+        tmp = data.selectedRecordings[i];
         selectedRecordings.push({
             recType: tmp.recType,
             variable: ko.observable(tmp.variable),
             isRecorded: ko.observable(tmp.isRecorded)
-        })
+        });
     }
     this.selectedRecordings(selectedRecordings);
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 ActionRecord.prototype.toJS = function() {
+    var rec, varId, i;
+
     var specialRecordings = [];
     var specialRec = this.specialRecordings();
-    for (var i = 0; i<specialRec.length; i++){
-        var rec = specialRec[i];
-        var varId = null;
+    for (i = 0; i<specialRec.length; i++){
+        rec = specialRec[i];
+        varId = null;
         if (rec.variable()) {
             varId = rec.variable().id();
         }
@@ -165,9 +215,9 @@ ActionRecord.prototype.toJS = function() {
 
     var selectedRecordings = [];
     var selectedRec = this.selectedRecordings();
-    for (var i = 0; i<selectedRec.length; i++){
-        var rec = selectedRec[i];
-        var varId = null;
+    for (i = 0; i<selectedRec.length; i++){
+        rec = selectedRec[i];
+        varId = null;
         if (rec.variable()) {
             varId = rec.variable().id();
         }
@@ -188,6 +238,11 @@ ActionRecord.prototype.toJS = function() {
 
 ////////////////////////////////////////  ActionSetElementProp  ///////////////////////////////////////////////////
 
+/**
+ * This action changes properties of a contentElement.
+ * @param {Event} event - the parent event
+ * @constructor
+ */
 var ActionSetElementProp = function(event) {
     this.event = event;
     this.target = ko.observable(null);
@@ -208,15 +263,21 @@ var ActionSetElementProp = function(event) {
     });
 };
 
-
 ActionSetElementProp.prototype.operatorTypes = ["%", "+", "set", "variable"];
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
 ActionSetElementProp.prototype.label = "Set Element Prop.";
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 ActionSetElementProp.prototype.isValid = function(){
     return true;
 };
 
+/**
+ * adds a new property that shall be changed.
+ */
 ActionSetElementProp.prototype.addProperty = function() {
 
     var prop = ko.observable(null);
@@ -251,37 +312,26 @@ ActionSetElementProp.prototype.addProperty = function() {
         property: prop,
         operatorType: operator,
         value: value
-
     };
 
     this.changes.push(addObj);
 };
 
-ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
-    var target = entitiesArr.byId[this.target()];
-    this.target(target);
-
-    var changes = this.changes();
-    for (var i=0; i<changes.length; i++) {
-        if (changes[i].operatorType() == "variable") {
-            var varId = changes[i].value();
-            var globVar = entitiesArr.byId[varId];
-            changes[i].value(globVar);
-            this.setVariableBackRef(globVar);
-        }
-    }
-};
-
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
 ActionSetElementProp.prototype.setVariableBackRef = function(variable){
     variable.addBackRef(this, this.event, false, true, 'Action Set Element Prop');
 };
 
-ActionSetElementProp.prototype.reAddEntities = function(entitiesArr) {
-
-};
-
-
-ActionSetElementProp.prototype.run = function() {
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It reads out the desired
+ * changes and applies them to the properties.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionSetElementProp.prototype.run = function(triggerParams) {
 
     var changes = this.changes();
     var target = this.target();
@@ -302,17 +352,18 @@ ActionSetElementProp.prototype.run = function() {
             value = Number(value);
         }
 
+        var newValue;
         if (operatorType== '+'){
-            var newValue = oldValue + value;
+            newValue = oldValue + value;
         }
         else if (operatorType== '%'){
-            var newValue = oldValue * (value/100);
+            newValue = oldValue * (value/100);
         }
         else if (operatorType== 'set'){
-            var newValue = value;
+            newValue = value;
         }
         else if (operatorType== 'variable'){
-            var newValue = parseFloat(value.value());
+            newValue = parseFloat(value.value());
         }
         //target[property](newValue);
         target.modifier().selectedTrialView[property](newValue);
@@ -320,6 +371,42 @@ ActionSetElementProp.prototype.run = function() {
 
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
+    var target = entitiesArr.byId[this.target()];
+    this.target(target);
+
+    var changes = this.changes();
+    for (var i=0; i<changes.length; i++) {
+        if (changes[i].operatorType() == "variable") {
+            var varId = changes[i].value();
+            var globVar = entitiesArr.byId[varId];
+            changes[i].value(globVar);
+            this.setVariableBackRef(globVar);
+        }
+    }
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionSetElementProp.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionSetElementProp}
+ */
 ActionSetElementProp.prototype.fromJS = function(data) {
     this.animate(data.animate);
     this.animationTime(data.animationTime);
@@ -340,6 +427,10 @@ ActionSetElementProp.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 ActionSetElementProp.prototype.toJS = function() {
 
     var changes= [];
@@ -370,7 +461,12 @@ ActionSetElementProp.prototype.toJS = function() {
 
 ////////////////////////////////////////////   ActionJumpTo   /////////////////////////////////////////////////////
 
-
+/**
+ * This action jumps to another frame or next trial.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
 var ActionJumpTo = function(event) {
     this.event = event;
     this.jumpType = ko.observable(null);
@@ -380,35 +476,61 @@ var ActionJumpTo = function(event) {
 ActionJumpTo.prototype.type = "ActionJumpTo";
 ActionJumpTo.prototype.label = "Jump To";
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 ActionJumpTo.prototype.isValid = function(){
     return true;
 };
 
-ActionJumpTo.prototype.setPointers = function(entitiesArr) {
-    var frame = entitiesArr.byId[this.frameToJump()];
-    this.frameToJump(frame);
-};
-
-ActionJumpTo.prototype.run = function() {
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It either jumps to the
+ * next frame or to specific frame or next trial.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionJumpTo.prototype.run = function(triggerParams) {
     if (this.jumpType() == "nextFrame"){
         player.currentFrame.endFrame();
     }
 
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionJumpTo.prototype.setPointers = function(entitiesArr) {
+    var frame = entitiesArr.byId[this.frameToJump()];
+    this.frameToJump(frame);
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionJumpTo}
+ */
 ActionJumpTo.prototype.fromJS = function(data) {
     this.jumpType(data.jumpType);
     this.frameToJump(data.frameToJump);
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 ActionJumpTo.prototype.toJS = function() {
-
+    var frameToJump;
     if (this.frameToJump()){
-        var frameToJump = this.frameToJump().id()
+        frameToJump = this.frameToJump().id();
     }
-    else{
-        var frameToJump = null;
+    else {
+        frameToJump = null;
     }
 
     return {
@@ -426,6 +548,12 @@ ActionJumpTo.prototype.toJS = function() {
 
 /////////////////////////////////////////////   ActionSetVariable    ////////////////////////////////////////////////
 
+/**
+ * This action allows to change the value of a variable.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
 var ActionSetVariable = function(event) {
     this.event = event;
 
@@ -439,18 +567,40 @@ ActionSetVariable.prototype.type = "ActionSetVariable";
 ActionSetVariable.prototype.label = "Set Variable";
 ActionSetVariable.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 ActionSetVariable.prototype.isValid = function(){
     return true;
 };
 
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionSetVariable.prototype.run = function(triggerParams) {
+
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 ActionSetVariable.prototype.setPointers = function(entitiesArr) {
 
 };
 
-ActionSetVariable.prototype.run = function() {
-
-};
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionSetVariable}
+ */
 ActionSetVariable.prototype.fromJS = function(data) {
     this.variableId(data.variableId);
     this.operatorType(data.operatorType);
@@ -458,6 +608,10 @@ ActionSetVariable.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 ActionSetVariable.prototype.toJS = function() {
     return {
         type: this.type,
@@ -471,6 +625,12 @@ ActionSetVariable.prototype.toJS = function() {
 
 /////////////////////////////////////////////   ActionDrawRandomNumber    ////////////////////////////////////////////////
 
+/**
+ * This action sets the value of a variable to a random number drawn from a specified distribution.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
 var ActionDrawRandomNumber = function(event) {
     this.event = event;
 
@@ -488,34 +648,48 @@ ActionDrawRandomNumber.prototype.distributionParamLabels = {
     "Gaussian": ["mean", "std"]
 };
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 ActionDrawRandomNumber.prototype.isValid = function(){
     return true;
 };
 
-ActionDrawRandomNumber.prototype.setPointers = function(entitiesArr) {
-    if (this.variable()){
-        var globVar = entitiesArr.byId[this.variable()];
-        this.variable(globVar);
-        this.setVariableBackRef(globVar);
-    }
-};
-
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
 ActionDrawRandomNumber.prototype.setVariableBackRef = function(variable){
     variable.addBackRef(this, this.event, true, false, 'Action Draw Random Number');
 };
 
-// Standard Normal variate using Box-Muller transform.
+/**
+ * draws a Gaussian distributed random number (randn) using Box-Muller transform.
+ *
+ * @returns {number}
+ */
 function randn_bm() {
     var u = 1 - Math.random(); // Subtraction to flip [0, 1) to (0, 1].
     var v = 1 - Math.random();
     return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
 }
 
-// randn with marsaglia_polar algorithm:
+/**
+ * creates a Gaussian random number generator (randn) with marsaglia_polar algorithm.
+ *
+ * randn_marsaglia_polar is a function that generates and returns new randn numbers.
+ */
 var randn_marsaglia_polar = (function() {
     var y2;
     var isSpareReady = false;
-    return function() {
+
+    /**
+     * draws a gaussian distributed random number (randn) with marsaglia_polar algorithm
+     *
+     * @returns {number}
+     */
+    function randn_mp() {
         var y1;
         if(isSpareReady) {
             y1 = y2;
@@ -535,23 +709,52 @@ var randn_marsaglia_polar = (function() {
         }
         return y1;
     }
+
+    return randn_mp;
 })();
 
-ActionDrawRandomNumber.prototype.run = function() {
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It draws a random number
+ * and saves it into the globalVar.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionDrawRandomNumber.prototype.run = function(triggerParams) {
+    var value;
     if (this.distribution() == "Uniform") {
         var min = this.distributionParam1();
         var max = this.distributionParam2();
-        var value = Math.random() * (max - min) + min;
+        value = Math.random() * (max - min) + min;
         this.variable().value(value);
     }
     else if (this.distribution() == "Gaussian") {
         var mean = this.distributionParam1();
         var std = this.distributionParam2();
-        var value = mean + randn_marsaglia_polar() * std;
+        value = mean + randn_marsaglia_polar() * std;
         this.variable().value(value);
     }
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionDrawRandomNumber.prototype.setPointers = function(entitiesArr) {
+    if (this.variable()){
+        var globVar = entitiesArr.byId[this.variable()];
+        this.variable(globVar);
+        this.setVariableBackRef(globVar);
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionDrawRandomNumber}
+ */
 ActionDrawRandomNumber.prototype.fromJS = function(data) {
     this.variable(data.variable);
     this.distribution(data.distribution);
@@ -560,6 +763,10 @@ ActionDrawRandomNumber.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 ActionDrawRandomNumber.prototype.toJS = function() {
     var variableId = null;
     if (this.variable()) {
@@ -578,6 +785,13 @@ ActionDrawRandomNumber.prototype.toJS = function() {
 
 
 /////////////////////////////////////////////////  ActionControlAV/  //////////////////////////////////////////////
+
+/**
+ * This action allows to start or stop the playback of audio or video elements.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
 var ActionControlAV = function(event) {
     this.event = event;
 
@@ -585,22 +799,48 @@ var ActionControlAV = function(event) {
 ActionControlAV.prototype.type = "ActionControlAV";
 ActionControlAV.prototype.label = "Control AV";
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 ActionControlAV.prototype.isValid = function(){
     return true;
 };
 
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It starts or stops
+ * playback of audio or video files in the player.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionControlAV.prototype.run = function(triggerParams) {
+
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 ActionControlAV.prototype.setPointers = function(entitiesArr) {
 
 };
 
-ActionControlAV.prototype.run = function() {
-
-};
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionControlAV}
+ */
 ActionControlAV.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 ActionControlAV.prototype.toJS = function() {
     return {
         type: this.type
@@ -613,7 +853,12 @@ ActionControlAV.prototype.toJS = function() {
 
 /////////////////////////////////////////////////  ActionControlTimer  //////////////////////////////////////////////
 
-
+/**
+ * This action allows to start a timer variable to count down or up.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
 var ActionControlTimer = function(event) {
     this.event = event;
 
@@ -621,22 +866,48 @@ var ActionControlTimer = function(event) {
 ActionControlTimer.prototype.type = "ActionControlTimer";
 ActionControlTimer.prototype.label = "Control Timer";
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 ActionControlTimer.prototype.isValid = function(){
     return true;
 };
 
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It starts a timer
+ * countdown or countup.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionControlTimer.prototype.run = function(triggerParams) {
+
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 ActionControlTimer.prototype.setPointers = function(entitiesArr) {
 
 };
 
-ActionControlTimer.prototype.run = function() {
-
-};
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionControlTimer}
+ */
 ActionControlTimer.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 ActionControlTimer.prototype.toJS = function() {
     return {
         type: this.type
@@ -649,6 +920,12 @@ ActionControlTimer.prototype.toJS = function() {
 
 //////////////////////////////////////  ActionRecordQuestionaireResponse  //////////////////////////////////////////
 
+/**
+ * This action records the response from a questionaire element.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
 var ActionRecordQuestionaireResponse = function(event) {
     this.event = event;
 
@@ -660,32 +937,53 @@ var ActionRecordQuestionaireResponse = function(event) {
 ActionRecordQuestionaireResponse.prototype.type = "ActionRecordQuestionaireResponse";
 ActionRecordQuestionaireResponse.prototype.label = "Record Questionaire Answer";
 
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
 ActionRecordQuestionaireResponse.prototype.isValid = function(){
     return true;
 };
 
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It records the answers
+ * of a questionaire and directly sends them to the server.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionRecordQuestionaireResponse.prototype.run = function(triggerParams) {
+    var blockId = player.getBlockId();
+    var trialId = player.getTrialId();
+    var resp = triggerParams.questionElement.content.answer;
+    var recData = new RecData(this.variableId(), resp);
+    player.addRecording(blockId,trialId,recData.toJS());
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 ActionRecordQuestionaireResponse.prototype.setPointers = function(entitiesArr) {
 
 };
 
-ActionRecordQuestionaireResponse.prototype.run = function(dataModel) {
-
-    var blockId = player.getBlockId();
-    var trialId = player.getTrialId();
-    var resp = dataModel.content.answer;
-    var recData = new RecData(this.variableId(), resp);
-    player.addRecording(blockId,trialId,recData.toJS());
-
-};
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionRecordQuestionaireResponse}
+ */
 ActionRecordQuestionaireResponse.prototype.fromJS = function(data) {
     this.variableId(data.variableId);
     return this;
 };
 
-
-
-
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 ActionRecordQuestionaireResponse.prototype.toJS = function() {
     return {
         type: this.type,
@@ -694,7 +992,13 @@ ActionRecordQuestionaireResponse.prototype.toJS = function() {
 };
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+/**
+ * Factory method that creates a new action based on the given action type.
+ *
+ * @param {Event} event - the parent event of the new action.
+ * @param {string} type - the type of the Action (i.e. "ActionRecordQuestionaireResponse")
+ * @returns {Action}
+ */
 function actionFactory(event,type) {
     var action = new window[type](event);
     return action;

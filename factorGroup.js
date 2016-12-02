@@ -1,5 +1,13 @@
 // � by Caspar Goeke and Holger Finger
 
+/**
+ * A factor group is a container of several factors that are interacting. Each factorGroup has a corresponding sequence
+ * of frames and / or pages.
+ *
+ * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
+ * @param {ExpTrialLoop} task - The corresponding parent task.
+ * @constructor
+ */
 var FactorGroup= function(expData, task) {
     var self = this;
 
@@ -56,15 +64,6 @@ var FactorGroup= function(expData, task) {
 
 FactorGroup.prototype.initNewInstance = function () {
     this.name("factor_group" + (this.task.factorGroups().length+1));
-};
-
-FactorGroup.prototype.setPointers = function (entitiesArr) {
-    jQuery.each( this.factors(), function( index, elem ) {
-        elem.setPointers(entitiesArr);
-    } );
-    jQuery.each( this.conditions(), function( index, elem ) {
-        elem.setPointers(entitiesArr);
-    } );
 };
 
 FactorGroup.prototype.addFactorToCondition = function(factor) {
@@ -216,10 +215,28 @@ FactorGroup.prototype.removeFactor = function(idx) {
     this.factors.splice(idx,1);
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+FactorGroup.prototype.setPointers = function (entitiesArr) {
+    jQuery.each( this.factors(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+    jQuery.each( this.conditions(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+};
 
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 FactorGroup.prototype.reAddEntities = function(entitiesArr) {
-    var self = this;
-
     // add the direct child nodes:
     jQuery.each( this.factors(), function( index, factor ) {
         // recursively make sure that all deep tree nodes are in the entities list:
@@ -229,6 +246,11 @@ FactorGroup.prototype.reAddEntities = function(entitiesArr) {
 
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {FactorGroup}
+ */
 FactorGroup.prototype.fromJS = function(data) {
     var self = this;
     this.name(data.name);
@@ -241,6 +263,10 @@ FactorGroup.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 FactorGroup.prototype.toJS = function() {
     return {
         name: this.name(),

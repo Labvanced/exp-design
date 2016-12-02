@@ -1,4 +1,9 @@
 
+/**
+ * A page element is a wrapper for different content elements that are placed on a page (pageData).
+ * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
+ * @constructor
+ */
 var PageElement = function(expData) {
 
     this.expData = expData;
@@ -20,6 +25,13 @@ PageElement.prototype.addContent = function(element){
 
 PageElement.prototype.modifiableProp = ["name"];
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 PageElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 
@@ -27,19 +39,26 @@ PageElement.prototype.setPointers = function(entitiesArr) {
     if(this.content().setPointers){
         this.content().setPointers(entitiesArr);
     }
-
 };
 
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 PageElement.prototype.reAddEntities = function(entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 
     if(this.content().reAddEntities){
         this.content().reAddEntities(entitiesArr);
     }
-
 };
 
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {PageElement}
+ */
 PageElement.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
@@ -52,7 +71,10 @@ PageElement.prototype.fromJS = function(data) {
     return this;
 };
 
-
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 PageElement.prototype.toJS = function() {
     if(this.content()){
         var contentData = this.content().toJS();

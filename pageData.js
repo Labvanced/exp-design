@@ -1,4 +1,11 @@
 
+/**
+ * This class stores all information about one page in a sequence (trial) of frames or pages. A page automatically
+ * positions all content elements from top to bottom like a normal html page.
+ *
+ * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
+ * @constructor
+ */
 var PageData = function(expData) {
     this.expData = expData;
     this.parent = null;
@@ -30,13 +37,21 @@ var PageData = function(expData) {
 
 };
 
+PageData.prototype.modifiableProp = ["returnButton"];
+
+/**
+ * add a new page element to this page.
+ * @param {PageElement} elem - the new element
+ */
 PageData.prototype.addElem = function (elem) {
     this.elements.push(elem);
 };
 
-PageData.prototype.modifiableProp = ["returnButton"];
-
-
+/**
+ * adds a variable to the local workspace of this page.
+ *
+ * @param {GlobalVar} variable - the variable to add.
+ */
 PageData.prototype.addVariableToLocalWorkspace = function(variable) {
     var isExisting = this.localWorkspaceVars.byId[variable.id()];
     if (!isExisting) {
@@ -45,6 +60,34 @@ PageData.prototype.addVariableToLocalWorkspace = function(variable) {
     }
 };
 
+/**
+ * retrieve a pageElement by id.
+ * @param id
+ * @returns {*}
+ */
+PageData.prototype.getElementById = function(id) {
+    return this.elements.byId[id];
+};
+
+PageData.prototype.previousPage = function() {
+    player.currQuestionnaireView.previousPage();
+};
+
+PageData.prototype.nextPage = function() {
+    player.currQuestionnaireView.nextPage();
+};
+
+PageData.prototype.submitQuestionnaire = function() {
+    player.currQuestionnaireView.submitQuestionnaire()
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 PageData.prototype.setPointers = function(entitiesArr) {
 
     var self = this;
@@ -57,14 +100,12 @@ PageData.prototype.setPointers = function(entitiesArr) {
     } ));
 };
 
-PageData.prototype.getElementById = function(id) {
-    return  this.elements.byId[id];
-};
-
-
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 PageData.prototype.reAddEntities = function(entitiesArr) {
-    var self = this;
-
     // add the direct child nodes:
     jQuery.each( this.elements(), function( index, elem ) {
         // check if they are not already in the list:
@@ -75,34 +116,30 @@ PageData.prototype.reAddEntities = function(entitiesArr) {
         if (elem.reAddEntities)
             elem.reAddEntities(entitiesArr);
     } );
-
 };
 
-PageData.prototype.previousPage = function() {
- player.currQuestionnaireView.previousPage()
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {PageData}
+ */
+PageData.prototype.fromJS = function(data) {
+    this.id(data.id);
+    this.type=data.type;
+    this.elements(data.elements);
+    return this;
 };
 
-PageData.prototype.nextPage = function() {
-    player.currQuestionnaireView.nextPage()
-};
-
-PageData.prototype.submitQuestionnaire = function() {
-    player.currQuestionnaireView.submitQuestionnaire()
-};
-
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 PageData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
     };
-};
-
-PageData.prototype.fromJS = function(data) {
-    this.id(data.id);
-    this.type=data.type;
-    this.elements(data.elements);
-
 };
 
 ko.components.register('page-element-edit', {

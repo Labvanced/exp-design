@@ -1,7 +1,13 @@
 // � by Caspar Goeke and Holger Finger
 
+/**
+ * stores the modifications of properties for different trials.
+ *
+ * @param {ExpData} expData - the global expData where instances can be retrieved.
+ * @param objToModify - the content element of which the properties should be modified.
+ * @constructor
+ */
 var Modifier = function (expData, objToModify) {
-    var self = this;
 
     this.expData = expData;
     this.parent = null;
@@ -27,6 +33,14 @@ var Modifier = function (expData, objToModify) {
 
 };
 
+/**
+ * Recursive function to select an element from a multidimensional array.
+ * For example selectFromMultiDimArr(arr, [2,6,3]) will return the value of arr[2][6][3].
+ *
+ * @param {Array} arr - the multidimensional array
+ * @param {Array} indices - the indices of each dimension
+ * @returns {*}
+ */
 function selectFromMultiDimArr(arr, indices){
     if (indices.length > 1){
         var curIndex = indices.shift();
@@ -37,9 +51,19 @@ function selectFromMultiDimArr(arr, indices){
     }
 }
 
+/**
+ * adds a new modification to this object in the currently selected trial type.
+ *
+ * @param {string} propName - the name of the property to be modified.
+ */
 Modifier.prototype.addProp = function(propName) {
 
     this.selectedTrialView[propName] = ko.pureComputed({
+
+        /**
+         * returns the value of the property based on the currently selected trial.
+         * @returns {number | string}
+         */
         read: function () {
             var selectedTrialType = this.selectedTrialType();
             var selectionType = selectedTrialType.type;
@@ -156,6 +180,11 @@ Modifier.prototype.addProp = function(propName) {
                 return this.objToModify[propName]();
             }
         },
+
+        /**
+         * writes the value of the property for the currently selected trial type.
+         * @returns {number | string}
+         */
         write: function (value) {
 
             var selectedTrialType = this.selectedTrialType();
@@ -263,6 +292,11 @@ Modifier.prototype.addProp = function(propName) {
     });
 };
 
+/**
+ * recursively removes the modification of a property from the multidimensional array
+ * @param objArr
+ * @param propName
+ */
 Modifier.prototype.removeModificationRecursive = function(objArr,propName) {
     if (objArr.constructor === Array){
         for (var i=0; i<objArr.length; i++){
@@ -284,18 +318,6 @@ Modifier.prototype.getIdsOfFactors = function(factorArr) {
         }
     });
     return factorIds;
-};
-
-Modifier.prototype.setPointers = function(entitiesArr) {
-    var self = this;
-
-    // convert ids to actual pointers:
-    this.interactingFactors(jQuery.map( this.interactingFactors(), function( id ) {
-        return entitiesArr.byId[id];
-    } ));
-    this.noninteractFactors(jQuery.map( this.noninteractFactors(), function( id ) {
-        return entitiesArr.byId[id];
-    } ));
 };
 
 Modifier.prototype.selectTrialType = function(selectionSpec){
@@ -370,6 +392,10 @@ Modifier.prototype.addInteractingLevels = function() {
     addLevels(this.interactingTrialTypes, this.interactingFactors());
 };
 
+/**
+ * add a dependency on a new factor variable.
+ * @param factorVar
+ */
 Modifier.prototype.addFactorDependency = function(factorVar) {
 
     //if (!(factorVar instanceof GlobalVar)){
@@ -425,8 +451,31 @@ Modifier.prototype.addFactorDependency = function(factorVar) {
 
 };
 
-Modifier.prototype.reAddEntities = function(entitiesArr) {
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+Modifier.prototype.setPointers = function(entitiesArr) {
+    var self = this;
 
+    // convert ids to actual pointers:
+    this.interactingFactors(jQuery.map( this.interactingFactors(), function( id ) {
+        return entitiesArr.byId[id];
+    } ));
+    this.noninteractFactors(jQuery.map( this.noninteractFactors(), function( id ) {
+        return entitiesArr.byId[id];
+    } ));
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+Modifier.prototype.reAddEntities = function(entitiesArr) {
     // add the direct child nodes:
     jQuery.each( this.interactingFactors(), function( index, elem ) {
         // check if they are not already in the list:
@@ -447,12 +496,14 @@ Modifier.prototype.reAddEntities = function(entitiesArr) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
             elem.reAddEntities(entitiesArr);
-    } );
-
-
-
+    });
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {Modifier}
+ */
 Modifier.prototype.fromJS = function(data) {
     var self =this;
 
@@ -485,6 +536,10 @@ Modifier.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 Modifier.prototype.toJS = function() {
 
     function modifierSerializeArray(objArr){

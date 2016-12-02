@@ -1,6 +1,10 @@
 // � by Caspar Goeke and Holger Finger
 
-
+/**
+ * @deprecated
+ * @param parent
+ * @constructor
+ */
 var Response= function(parent) {
     var self = this;
 
@@ -66,12 +70,24 @@ var Response= function(parent) {
     });
 };
 
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 Response.prototype.setPointers = function(entitiesArr) {
     if (this.action()) {
         this.action().setPointers(entitiesArr);
     }
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {Response}
+ */
 Response.prototype.fromJS = function(data) {
     var self = this;
 
@@ -90,6 +106,10 @@ Response.prototype.fromJS = function(data) {
     return this;
 };
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 Response.prototype.toJS = function() {
     if (this.action()){
         var actionData = this.action().toJS();

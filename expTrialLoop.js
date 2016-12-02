@@ -1,5 +1,12 @@
 // � by Caspar Goeke and Holger Finger
 
+/**
+ * This class stores all informations of a task. Most importantly, it has one or more sequences of frames and pages.
+ * It stores the factorGroups and per factorGroup one subSequence.
+ *
+ * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
+ * @constructor
+ */
 var ExpTrialLoop = function (expData) {
     this.expData = expData;
     this.parent = null;
@@ -83,31 +90,6 @@ ExpTrialLoop.prototype.initNewInstance = function() {
 
 };
 
-ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
-    var self = this;
-
-    this.subSequencePerFactorGroup(jQuery.map(this.subSequencePerFactorGroup(), function (subSequenceId) {
-        var subSequence = entitiesArr.byId[subSequenceId];
-        subSequence.parent = self;
-        return subSequence;
-    }));
-    this.subSequence(this.subSequencePerFactorGroup()[0]);
-
-    this.trialUniqueIdVar(entitiesArr.byId[this.trialUniqueIdVar()]);
-    this.trialTypeIdVar(entitiesArr.byId[this.trialTypeIdVar()]);
-    this.trialOrderVar(entitiesArr.byId[this.trialOrderVar()]);
-
-    this.eventVariables(jQuery.map( this.eventVariables(), function( id ) {
-        return entitiesArr.byId[id];
-    } ));
-    this.isInitialized(true);
-
-    jQuery.each( this.factorGroups(), function( index, elem ) {
-        elem.setPointers(entitiesArr);
-    } );
-
-};
-
 ExpTrialLoop.prototype.addFactorGroup = function() {
     var facGroup = new FactorGroup(this.expData,this);
     this.factorGroups.push(facGroup);
@@ -140,9 +122,44 @@ ExpTrialLoop.prototype.addNewFrame = function() {
     frame.parent = this.subSequence();
 };
 
-ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
     var self = this;
 
+    this.subSequencePerFactorGroup(jQuery.map(this.subSequencePerFactorGroup(), function (subSequenceId) {
+        var subSequence = entitiesArr.byId[subSequenceId];
+        subSequence.parent = self;
+        return subSequence;
+    }));
+    this.subSequence(this.subSequencePerFactorGroup()[0]);
+
+    this.trialUniqueIdVar(entitiesArr.byId[this.trialUniqueIdVar()]);
+    this.trialTypeIdVar(entitiesArr.byId[this.trialTypeIdVar()]);
+    this.trialOrderVar(entitiesArr.byId[this.trialOrderVar()]);
+
+    this.eventVariables(jQuery.map( this.eventVariables(), function( id ) {
+        return entitiesArr.byId[id];
+    } ));
+    this.isInitialized(true);
+
+    jQuery.each( this.factorGroups(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
     // add the direct child nodes:
     // check if they are not already in the list:
     if (!entitiesArr.byId.hasOwnProperty(this.subSequence().id())) {
@@ -194,7 +211,11 @@ ExpTrialLoop.prototype.doubleClick = function() {
     }
 };
 
-
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ExpTrialLoop}
+ */
 ExpTrialLoop.prototype.fromJS = function(data) {
     var self = this;
 
@@ -237,7 +258,10 @@ ExpTrialLoop.prototype.fromJS = function(data) {
 
 };
 
-
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
 ExpTrialLoop.prototype.toJS = function() {
     return {
         id: this.id(),
