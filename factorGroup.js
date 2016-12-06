@@ -17,14 +17,11 @@ var FactorGroup= function(expData, task) {
     // serialized
     this.name = ko.observable("factor_group");
     this.factors = ko.observableArray([]);
-    this.conditions = ko.observableArray([]);
+    this.conditions = ko.observableArray([]); // multidimensional array
 
     // not serialized
    // this.editName =  ko.observable(false);
 
-
-
-    var self = this;
     this.conditionsLinear = ko.computed(function() {
         var linearArray = [];
         var conditions = self.conditions();
@@ -96,33 +93,28 @@ FactorGroup.prototype.addFactorToCondition = function(factor) {
 
                         for (var l = 0; l < nrLevels; l++) {
                             // deepCopy
-                            var condi = new Condition(self.expData);
+                            var condi = new Condition(self);
                             condi.fromJS(tmpObj);
                             condi.factorLevels(existingCond.factorLevels().slice());
                             condi.factorLevels.push(levels[l]);
-                            condi.factors(existingCond.factors().slice());
-                            condi.factors.push(factor);
                             conditions.push(condi);
                         }
 
                         arr[t] = conditions;
                     }
                 }
-
             }
 
             // one more dimension of interacting trialTypes with all combinations:
             deepClone(conditionArray, levels.length);
         }
-
         else{
             for (var l = 0; l < levels.length; l++) {
 
-                var condi = new Condition(this.expData);
+                var condi = new Condition(this);
                 condi.initNewInstance();
                // condi.factorLevelNames.push(condi.levels()[l].name());
                 condi.factorLevels.push(levels[l]);
-                condi.factors.push(factor);
                 conditionArray.push(condi);
             }
         }
@@ -146,17 +138,16 @@ FactorGroup.prototype.addLevelToCondition = function() {
         }
         else if (arrOrCondition.constructor === Condition) {
             // create new array of new interacting trialTypes with all combinations:
-            clonedArrOrCondition = new Condition(self.expData);
+            clonedArrOrCondition = new Condition(self);
             clonedArrOrCondition.fromJS(arrOrCondition.toJS());
             clonedArrOrCondition.factorLevels(arrOrCondition.factorLevels().slice());
-            clonedArrOrCondition.factors(arrOrCondition.factors().slice());
 
             // set new level of cloned condition:
             var indexOfModifiedFactor = clonedArrOrCondition.factors().indexOf(factorToModify);
             clonedArrOrCondition.factorLevels()[indexOfModifiedFactor] = newLevel;
         }
         else {
-            console.log("error")
+            console.log("error");
         }
 
         return clonedArrOrCondition;
@@ -215,9 +206,35 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
     jQuery.each( this.factors(), function( index, elem ) {
         elem.setPointers(entitiesArr);
     } );
-    jQuery.each( this.conditions(), function( index, elem ) {
+    jQuery.each( this.conditionsLinear(), function( index, elem ) {
         elem.setPointers(entitiesArr);
     } );
+
+    var factors = this.factors();
+    var levels = [];
+    for (var t = 0; t < factors.length; t++) {
+        levels.push(null);
+    }
+
+    var condMultiDim = this.conditions();
+
+    function deepDive(condMultiDim, factors, levels, depth){
+        var t;
+        if (condMultiDim.constructor === Array) {
+            // recursive call:
+            for (t = 0; t < condMultiDim.length; t++) {
+                levels[depth] = factors[depth].globalVar().levels()[t];
+                deepDive(condMultiDim[t], factors, levels, depth+1);
+            }
+        }
+        else {
+            // set level links:
+            condMultiDim.factorLevels(levels.slice(0));
+        }
+    }
+
+    deepDive(condMultiDim, factors, levels, 0);
+    this.conditions(condMultiDim);
 };
 
 /**
@@ -244,11 +261,28 @@ FactorGroup.prototype.fromJS = function(data) {
     var self = this;
     this.name(data.name);
     this.factors(jQuery.map( data.factors, function( factor ) {
-        return (new Factor(self.expData)).fromJS(factor);
+        var fac = new Factor(self.expData, self);
+        fac.fromJS(factor);
+        return fac;
     }));
-    this.conditions(jQuery.map( data.conditions, function( condition ) {
-        return (new Condition()).fromJS(condition);
-    }));
+
+    function deepLoadConditions(condMultiDimData){
+        if (condMultiDimData.constructor === Array) {
+            // recursive call:
+            var condObj = [];
+            for (var t = 0; t < condMultiDimData.length; t++) {
+                condObj.push( deepLoadConditions(condMultiDimData[t]) );
+            }
+            return condObj;
+        }
+        else {
+            var cond = new Condition(self);
+            cond.fromJS(condMultiDimData);
+            return cond;
+        }
+    }
+
+    this.conditions(deepLoadConditions( data.conditions));
     return this;
 };
 
@@ -257,10 +291,27 @@ FactorGroup.prototype.fromJS = function(data) {
  * @returns {object}
  */
 FactorGroup.prototype.toJS = function() {
+
+    function deepSaveConditions(condMultiDim){
+        if (condMultiDim.constructor === Array) {
+            // recursive call:
+            var savedJson = [];
+            for (var t = 0; t < condMultiDim.length; t++) {
+                savedJson.push(deepSaveConditions(condMultiDim[t]));
+            }
+            return savedJson;
+        }
+        else {
+            return condMultiDim.toJS();
+        }
+    }
+
     return {
         name: this.name(),
-        factors: jQuery.map( this.factors(), function( factor ) { return factor.toJS(); }),
-        conditions: jQuery.map( this.conditions(), function( condition ) { return condition.toJS(); })
+        factors: jQuery.map( this.factors(), function( factor ) {
+            return factor.toJS();
+        }),
+        conditions: deepSaveConditions(this.conditions())
     };
 };
 
