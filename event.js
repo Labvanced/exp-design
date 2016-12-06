@@ -14,10 +14,13 @@ var Event= function(parent) {
     //this.id = ko.observable(guid());
     this.type = "Event";
     this.trigger = ko.observable(null);
-    this.requirement = ko.observable(null);
+    this.requirement = ko.observable(new RequirementAND(this));
     this.actions = ko.observableArray([]);
     this.name =  ko.observable(null);
+
+
 };
+
 
 /**
  * deletes all requirements.

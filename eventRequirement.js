@@ -107,7 +107,7 @@ var RequirementAND = function(event) {
 };
 
 RequirementAND.prototype.type = "RequirementAND";
-RequirementAND.prototype.label = "OR";
+RequirementAND.prototype.label = "AND";
 
 /**
  * checks if all the sub-requriements are true.
