@@ -106,9 +106,10 @@ GlobalVar.prototype.getValue = function() {
     return this.value();
 };
 
-GlobalVar.prototype.addLevel = function(factor) {
-    var name = "level_"+(this.levels().length+1);
-    var level = new Level(name,factor);
+GlobalVar.prototype.addLevel = function() {
+    var level = new Level(this);
+    level.name("level_"+(this.levels().length+1));
+    level.levelIdx = this.levels().length;
     this.levels.push(level);
     return level;
 };
@@ -148,6 +149,7 @@ GlobalVar.prototype.setPointers = function(entitiesArr) {
  * @returns {GlobalVar}
  */
 GlobalVar.prototype.fromJS = function(data) {
+    var self = this;
     this.id(data.id);
     this.name(data.name);
     this.dataType(data.dataType);
@@ -166,8 +168,11 @@ GlobalVar.prototype.fromJS = function(data) {
         this.startValue(data.startValue);
     }
 
-    this.levels(jQuery.map( data.levels, function( lvlData ) {
-        return (new Level()).fromJS(lvlData);
+    this.levels(jQuery.map( data.levels, function( lvlData, index ) {
+        var lvl = new Level(self);
+        lvl.levelIdx = index;
+        lvl.fromJS(lvlData);
+        return lvl;
     } ));
     return this;
 };

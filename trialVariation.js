@@ -5,20 +5,10 @@
  */
 var TrialVariation= function(condition) {
     this.condition = condition;
-    this.isSelected = ko.observable(false);
-};
 
+    // not serialized:
+    this.nr = ko.observable(0);
 
-
-TrialVariation.prototype.selectTrial = function(){
-
-    // TODo Select single trials
-
-};
-
-TrialVariation.prototype.setVariations= function() {
-    this.factorLevels = [];
-    this.conditionIdx = null;
 };
 
 /**
@@ -27,7 +17,6 @@ TrialVariation.prototype.setVariations= function() {
  * @returns {TrialVariation}
  */
 TrialVariation.prototype.fromJS= function(data) {
-
     return this;
 };
 
@@ -36,6 +25,5 @@ TrialVariation.prototype.fromJS= function(data) {
  * @returns {object}
  */
 TrialVariation.prototype.toJS= function() {
-
     return {};
 };

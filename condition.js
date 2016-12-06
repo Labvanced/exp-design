@@ -4,14 +4,14 @@
  *
  * @constructor
  */
-var Condition = function() {
+var Condition = function(factorGroup) {
+    this.factorGroup = factorGroup;
 
     // serialized
     this.trials = ko.observableArray([]);
 
     // not serialized
-    this.factorLevels = ko.observableArray([]); // 0, 1
-    this.factors = ko.observableArray([]); // factor1Obj, factor2Obj
+    this.factorLevels = ko.observableArray([]); // level_obj1, level_ob2
     this.trialStartIdx = ko.observable(0);
     this.conditionIdx = ko.observable();
 
@@ -41,11 +41,9 @@ Condition.prototype.setPointers = function(entitiesArr) {
  * @param {number} numTrialVariations - The new total number of trials in this condition.
  */
 Condition.prototype.setNumTrials = function (numTrialVariations) {
-
-    var currentLength = this.trials().length;
-    var lengthToBe = numTrialVariations;
     var trialVariations = this.trials();
-
+    var currentLength = trialVariations.length;
+    var lengthToBe = numTrialVariations;
     var diff, i;
     if (currentLength > lengthToBe) {
         diff = currentLength - lengthToBe;
@@ -54,15 +52,12 @@ Condition.prototype.setNumTrials = function (numTrialVariations) {
         }
         this.trials(trialVariations);
     }
-
     else if (currentLength < lengthToBe) {
         diff = lengthToBe - currentLength;
         for (i = 0; i < diff; i++) {
             this.addTrial();
         }
-        this.trials(trialVariations);
     }
-
 };
 
 /**
@@ -71,6 +66,7 @@ Condition.prototype.setNumTrials = function (numTrialVariations) {
 Condition.prototype.addTrial = function() {
 
     var trialVariations = new TrialVariation(this);
+    trialVariations.nr(this.trials().length);
     this.trials.push(trialVariations);
 };
 
@@ -91,8 +87,11 @@ Condition.prototype.fromJS = function(data) {
 
     var self = this;
 
-    this.trials(jQuery.map(data.trials, function (trial) {
-        return (new TrialVariation(self)).fromJS(trial);
+    this.trials(jQuery.map(data.trials, function (trial, index) {
+        var trialVariation = new TrialVariation(self);
+        trialVariation.fromJS(trial);
+        trialVariation.nr(index);
+        return trialVariation;
     }));
 
     return this;

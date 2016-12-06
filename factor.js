@@ -6,8 +6,9 @@
  * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
  * @constructor
  */
-var Factor = function(expData) {
+var Factor = function(expData, factorGroup) {
     this.expData = expData;
+    this.factorGroup = factorGroup;
 
     // serialized
     this.globalVar = ko.observable(null);
@@ -16,7 +17,6 @@ var Factor = function(expData) {
     // not serialized:
     this.nrLevels =  ko.observable(1);
     this.editName = ko.observable(false);
-    this.subLevelEdit = ko.observable(false);
 };
 
 Factor.prototype.init = function(name) {
@@ -36,7 +36,7 @@ Factor.prototype.updateLevels = function() {
 };
 
 Factor.prototype.addLevel = function() {
-    this.globalVar().addLevel(this);
+    this.globalVar().addLevel();
 };
 
 /**
