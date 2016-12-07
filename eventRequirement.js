@@ -321,7 +321,7 @@ var OperandVariable = function(event) {
 
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
-OperandVariable.prototype.operandTypes = ['undefined', "variable", "objectProperty", "triggerParameter", "constantString", "constantNumeric"];
+OperandVariable.prototype.operandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric"];
 
 /**
  * This function is used to associate a global variable with this operand, so that the variable knows where it is used.
@@ -347,9 +347,9 @@ OperandVariable.prototype.getValue = function(parameters) {
             return null;
         case "variable":
             return value.getValue();
-        case "objectProperty":
+        case "objProperty":
             return this.operandValueOrObject().getValue();
-        case "triggerParameter":
+        case "eventParam":
             return parameters[value];
         case "constantString":
             if (typeof value != "string") {
@@ -380,7 +380,7 @@ OperandVariable.prototype.setPointers = function(entitiesArr) {
         this.operandValueOrObject(globVar);
         this.setVariableBackRef(globVar);
     }
-    if (this.operandType() == "objectProperty") {
+    if (this.operandType() == "objProperty") {
         this.operandValueOrObject().setPointers(entitiesArr);
     }
 };
@@ -403,7 +403,7 @@ OperandVariable.prototype.reAddEntities = function(entitiesArr) {
  */
 OperandVariable.prototype.fromJS = function(data) {
     this.operandType(data.operandType);
-    if (data.operandType == "objectProperty") {
+    if (data.operandType == "objProperty") {
         var refToObjectProperty = new RefToObjectProperty(this.event);
         refToObjectProperty.fromJS(data.operandValueOrObject);
         this.operandValueOrObject(refToObjectProperty);
@@ -427,7 +427,7 @@ OperandVariable.prototype.toJS = function() {
     if (data.operandType == "variable" && data.operandValueOrObject) {
         data.operandValueOrObject = data.operandValueOrObject.id();
     }
-    if (data.operandType == "objectProperty") {
+    if (data.operandType == "objProperty") {
         data.operandValueOrObject = data.operandValueOrObject.toJS();
     }
     return data;
