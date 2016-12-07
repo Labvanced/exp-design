@@ -191,7 +191,37 @@ FactorGroup.prototype.addFactor = function(factor) {
 
 };
 
-FactorGroup.prototype.removeFactor = function(idx) {
+FactorGroup.prototype.removeFactor = function(factor) {
+
+    var idx = this.factors().indexOf(factor);
+
+    function deepRemove(arrMultiDim,subIndex,depth) {
+        var t;
+        if (depth == idx) {
+            arrMultiDim[subIndex] = arrMultiDim[subIndex][0];
+        }
+        else {
+            for (t = 0; t < arrMultiDim[subIndex].length; t++) {
+                deepRemove(arrMultiDim[subIndex], t, depth+1);
+            }
+        }
+    }
+
+    var arrMultiDim = this.conditions();
+    if (idx==0) {
+        arrMultiDim = arrMultiDim[0];
+    }
+    else {
+        for (var t = 0; t < arrMultiDim.length; t++) {
+            deepRemove(arrMultiDim, t, 1);
+        }
+    }
+    this.conditions(arrMultiDim);
+
+    jQuery.each( this.conditionsLinear(), function(index, cond) {
+        cond.factorLevels.splice(idx,1);
+    } );
+
     this.factors.splice(idx,1);
 };
 
