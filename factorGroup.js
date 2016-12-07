@@ -143,7 +143,7 @@ FactorGroup.prototype.addLevelToCondition = function() {
             clonedArrOrCondition.factorLevels(arrOrCondition.factorLevels().slice());
 
             // set new level of cloned condition:
-            var indexOfModifiedFactor = clonedArrOrCondition.factors().indexOf(factorToModify);
+            var indexOfModifiedFactor = clonedArrOrCondition.factorGroup.factors().indexOf(factorToModify);
             clonedArrOrCondition.factorLevels()[indexOfModifiedFactor] = newLevel;
         }
         else {
@@ -164,9 +164,9 @@ FactorGroup.prototype.addLevelToCondition = function() {
         }
 
         // make sure that this factor (factorVars[0]) has all it's levels:
-        var desired_len = factorVars[0].levels().length;
+        var desired_len = factorVars[0].globalVar().levels().length;
         for (var i = subarr.length; i<desired_len; i++) {
-            subarr[i] = deepCopyOfSubArrays(subarr[subarr.length-1], factorVars[0], factorVars[0].levels()[i]); // adding new level with all sub-levels here
+            subarr[i] = deepCopyOfSubArrays(subarr[subarr.length-1], factorVars[0], factorVars[0].globalVar().levels()[i]); // adding new level with all sub-levels here
         }
     }
 

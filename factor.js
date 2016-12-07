@@ -31,11 +31,18 @@ Factor.prototype.init = function(name) {
 Factor.prototype.updateLevels = function() {
     this.globalVar().levels([]);
     for(var i = 0;i<this.nrLevels();i++){
-        this.addLevel();
+        this._addLevel();
     }
 };
 
 Factor.prototype.addLevel = function() {
+    this._addLevel();
+    if (this.factorGroup) {
+        this.factorGroup.addLevelToCondition();
+    }
+};
+
+Factor.prototype._addLevel = function() {
     this.globalVar().addLevel();
 };
 
