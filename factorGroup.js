@@ -59,10 +59,17 @@ var FactorGroup= function(expData, task) {
 
 };
 
+/**
+ * initializes a new instance with a name
+ */
 FactorGroup.prototype.initNewInstance = function () {
     this.name("factor_group" + (this.task.factorGroups().length+1));
 };
 
+/**
+ * adds a new factor to the tree.
+ * @param {Factor} factor - the new factor
+ */
 FactorGroup.prototype.addFactorToCondition = function(factor) {
 
     if (this.task.isInitialized()){
@@ -123,6 +130,9 @@ FactorGroup.prototype.addFactorToCondition = function(factor) {
     this.conditions(conditionArray);
 };
 
+/**
+ * updates the multi dimensional array with all new levels.
+ */
 FactorGroup.prototype.addLevelToCondition = function() {
 
     function deepCopyOfSubArrays(arrOrCondition, factorToModify, newLevel){
@@ -181,6 +191,10 @@ FactorGroup.prototype.addLevelToCondition = function() {
 
 };
 
+/**
+ * add a new factor to the tree.
+ * @param {Factor} factor - the new factor
+ */
 FactorGroup.prototype.addFactor = function(factor) {
 
     this.expData.entities.push(factor.globalVar());
@@ -191,6 +205,10 @@ FactorGroup.prototype.addFactor = function(factor) {
 
 };
 
+/**
+ * remove the factor from the tree and remove the corresponding conditions.
+ * @param {Factor} factor - the factor to remove
+ */
 FactorGroup.prototype.removeFactor = function(factor) {
 
     var idx = this.factors().indexOf(factor);
