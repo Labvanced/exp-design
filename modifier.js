@@ -14,6 +14,7 @@ var Modifier = function (expData, objToModify) {
     this.objToModify = objToModify;
 
     // serialized:
+    this.factorGroup = new FactorGroup(this.expData);
     this.interactingFactors = ko.observableArray([]); // list of N interacting factors
     this.interactingTrialTypes = []; // N-dim Array of ModifierTrialTypes (each dimension corresponds to one factor)
     this.noninteractFactors = ko.observableArray([]); // list of M non-interacting factors

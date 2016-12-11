@@ -91,7 +91,8 @@ ExpTrialLoop.prototype.initNewInstance = function() {
 };
 
 ExpTrialLoop.prototype.addFactorGroup = function() {
-    var facGroup = new FactorGroup(this.expData,this);
+    var facGroup = new FactorGroup(this.expData);
+    facGroup.name("group_" + (this.factorGroups().length+1));
     this.factorGroups.push(facGroup);
 
     // add a new subSequence for the new group (if there are not already enough subSequences):
@@ -238,7 +239,7 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     else {
         // new version:
         this.factorGroups(jQuery.map(data.factorGroups, function (factorGroup) {
-            return (new FactorGroup(self.expData, self)).fromJS(factorGroup);
+            return (new FactorGroup(self.expData)).fromJS(factorGroup);
         }));
         this.subSequencePerFactorGroup(data.subSequencePerFactorGroup);
     }

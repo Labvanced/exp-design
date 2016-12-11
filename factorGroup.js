@@ -5,14 +5,12 @@
  * of frames and / or pages.
  *
  * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
- * @param {ExpTrialLoop} task - The corresponding parent task.
  * @constructor
  */
-var FactorGroup= function(expData, task) {
+var FactorGroup= function(expData) {
     var self = this;
 
     this.expData = expData;
-    this.task = task;
 
     // serialized
     this.name = ko.observable("factor_group");
@@ -60,70 +58,61 @@ var FactorGroup= function(expData, task) {
 };
 
 /**
- * initializes a new instance with a name
- */
-FactorGroup.prototype.initNewInstance = function () {
-    this.name("factor_group" + (this.task.factorGroups().length+1));
-};
-
-/**
  * adds a new factor to the tree.
  * @param {Factor} factor - the new factor
  */
 FactorGroup.prototype.addFactorToCondition = function(factor) {
 
-    if (this.task.isInitialized()){
-        var factors = this.factors();
-        var levels = factor.globalVar().levels();
-        var conditionArray = this.conditions();
+    var factors = this.factors();
+    var levels = factor.globalVar().levels();
+    var conditionArray = this.conditions();
 
-        // for first factor only
-        if (factors.length> 1) {
-            var self = this;
-            function deepClone(arr){
+    // for first factor only
+    if (factors.length> 1) {
+        var self = this;
+        function deepClone(arr){
 
-                if (arr[0].constructor === Array) {
-                    // recursive call:
-                    for (var t = 0; t < arr.length; t++) {
-                        deepClone(arr[t]);
-                    }
-                }
-                else {
-                    // create new array of new interacting trialTypes with all combinations:
-                    for (var t = 0; t < arr.length; t++) {
-                        var existingCond = arr[t];
-
-                        // add all levels of this new interacting factor:
-                        var nrLevels = levels.length;
-                        var conditions = [];
-                        var tmpObj=existingCond.toJS();
-
-                        for (var l = 0; l < nrLevels; l++) {
-                            // deepCopy
-                            var condi = new Condition(self);
-                            condi.fromJS(tmpObj);
-                            condi.factorLevels(existingCond.factorLevels().slice());
-                            condi.factorLevels.push(levels[l]);
-                            conditions.push(condi);
-                        }
-
-                        arr[t] = conditions;
-                    }
+            if (arr[0].constructor === Array) {
+                // recursive call:
+                for (var t = 0; t < arr.length; t++) {
+                    deepClone(arr[t]);
                 }
             }
+            else {
+                // create new array of new interacting trialTypes with all combinations:
+                for (var t = 0; t < arr.length; t++) {
+                    var existingCond = arr[t];
 
-            // one more dimension of interacting trialTypes with all combinations:
-            deepClone(conditionArray, levels.length);
+                    // add all levels of this new interacting factor:
+                    var nrLevels = levels.length;
+                    var conditions = [];
+                    var tmpObj=existingCond.toJS();
+
+                    for (var l = 0; l < nrLevels; l++) {
+                        // deepCopy
+                        var condi = new Condition(self);
+                        condi.fromJS(tmpObj);
+                        condi.factorLevels(existingCond.factorLevels().slice());
+                        condi.factorLevels.push(levels[l]);
+                        conditions.push(condi);
+                    }
+
+                    arr[t] = conditions;
+                }
+            }
         }
-        else{
-            for (var l = 0; l < levels.length; l++) {
 
-                var condi = new Condition(this);
-                condi.initNewInstance();
-               // condi.factorLevelNames.push(condi.levels()[l].name());
-                condi.factorLevels.push(levels[l]);
-                conditionArray.push(condi);
-            }
+        // one more dimension of interacting trialTypes with all combinations:
+        deepClone(conditionArray, levels.length);
+    }
+    else{
+        for (var l = 0; l < levels.length; l++) {
+
+            var condi = new Condition(this);
+            condi.initNewInstance();
+           // condi.factorLevelNames.push(condi.levels()[l].name());
+            condi.factorLevels.push(levels[l]);
+            conditionArray.push(condi);
         }
     }
 
@@ -180,14 +169,10 @@ FactorGroup.prototype.addLevelToCondition = function() {
         }
     }
 
-    var self = this;
-    if (this.task.isInitialized()){
-        var factors = this.factors();
-        //var depth = factors.indexOf(factor);
-        var conditionArray = this.conditions();
-        addLevels(conditionArray, factors);
-        this.conditions(conditionArray);
-    }
+    var factors = this.factors();
+    var conditionArray = this.conditions();
+    addLevels(conditionArray, factors);
+    this.conditions(conditionArray);
 
 };
 
