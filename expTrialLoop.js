@@ -116,6 +116,48 @@ ExpTrialLoop.prototype.removeGroup = function(facGroupIdx,idx) {
     this.subSequencePerFactorGroup().splice(facGroupIdx,1);
 };
 
+/**
+ * Select a specific or multiple trial types.
+ *
+ * @param {object} selectionSpec - the specification of the trials that are selected:
+ * 4 types possible:
+ * { type: 'allTrials', factorGroup: facGroup_obj }
+ * { type: 'factorLevel', factor: factor_obj, level: level_obj}
+ * { type: 'condition', condition: condition_obj }
+ * { type: 'trialVariation', trialVariation: trialVariation_obj }
+ */
+ExpTrialLoop.prototype.selectTrialType = function(selectionSpec) {
+
+    // add the factor group to the specification to make later calculations easier:
+    if (selectionSpec.type == 'factorLevel') {
+        selectionSpec.factorGroup = selectionSpec.factor.factorGroup;
+
+        // add level index for later use:
+        selectionSpec.levelIdx = selectionSpec.factor.globalVar().levels().indexOf(selectionSpec.level);
+    }
+    if (selectionSpec.type == 'condition') {
+        selectionSpec.factorGroup = selectionSpec.condition.factorGroup;
+
+        // add the selected factors and levels and level indices for later use:
+        selectionSpec.allFactors = selectionSpec.factorGroup.factors();
+        selectionSpec.allLevels = selectionSpec.condition.factorLevels();
+        selectionSpec.allLevelIdx = [];
+        for (var i = 0; i < selectionSpec.allLevels.length; i++) {
+            var levelIdx = selectionSpec.allFactors[i].globalVar().levels().indexOf(selectionSpec.allLevels[i]);
+            selectionSpec.allLevelIdx.push(levelIdx);
+        }
+    }
+    if (selectionSpec.type == 'trialVariation') {
+        selectionSpec.factorGroup = selectionSpec.trialVariation.condition.factorGroup;
+    }
+
+    var factorGroupIdx = this.factorGroups().indexOf( selectionSpec.factorGroup );
+    var selectedSubSequence = this.subSequencePerFactorGroup()[factorGroupIdx];
+    if (selectedSubSequence != this.subSequence()) {
+        this.subSequence(selectedSubSequence);
+    }
+    this.subSequence().selectTrialType(selectionSpec);
+};
 
 ExpTrialLoop.prototype.addNewFrame = function() {
     var frame = new FrameData(this.expData);
@@ -208,7 +250,7 @@ ExpTrialLoop.prototype.doubleClick = function() {
         uc.currentEditorView.setDataModel(this.subSequence());
     }
     else {
-        page("/page/editors/trialEditor/"+uc.experiment.exp_id()+"/"+this.subSequence().id());
+        page("/page/editors/trialEditor/"+uc.experiment.exp_id()+"/"+this.id());
     }
 };
 

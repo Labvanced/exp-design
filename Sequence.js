@@ -25,6 +25,16 @@ var Sequence = function (expData) {
     this.startBlock = null;
 };
 
+/**
+ * Select a specific or multiple trial types.
+ *
+ * @param {object} selectionSpec - the specification of the trials that are selected:
+ * 4 types possible:
+ * { type: 'allTrials', factorGroup: facGroup_obj }
+ * { type: 'factorLevel', factor: factor_obj, level: level_obj}
+ * { type: 'condition', condition: condition_obj }
+ * { type: 'trialVariation', trialVariation: trialVariation_obj }
+ */
 Sequence.prototype.selectTrialType = function(selectionSpec) {
     var elements = this.elements();
     for (var i=0; i<elements.length; i++){
