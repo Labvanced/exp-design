@@ -187,6 +187,7 @@ FactorGroup.prototype.addFactor = function(factor) {
     this.factors.push(factor);
     this.addFactorToCondition(factor);
    // this.addLevelsToCondition();
+    
 
 };
 
