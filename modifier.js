@@ -41,13 +41,21 @@ var Modifier = function (expData, objToModify) {
  * @returns {*}
  */
 function selectFromMultiDimArr(arr, indices){
-    if (indices.length > 1){
-        var curIndex = indices.shift();
-        return selectFromMultiDimArr(arr[curIndex], indices);
+    var current_array = arr;
+    for (var i=0; i<indices.length; i++) {
+        current_array = current_array[indices[i]];
     }
-    else {
-        return arr[indices[0]];
-    }
+    return current_array;
+
+    // old way:
+    // var curDepth = 0; // initially start at 0 depth
+    // var curIndex = indices[curDepth];
+    // if (indices.length > curDepth){
+    //     return selectFromMultiDimArr(arr[curIndex], indices, curDepth+1);
+    // }
+    // else {
+    //     return arr[curIndex];
+    // }
 }
 
 /**
@@ -60,13 +68,19 @@ function selectFromMultiDimArr(arr, indices){
  * @returns {*}
  */
 function setMultiDimArr(arr, indices, elem){
-    if (indices.length > 1){
-        var curIndex = indices.shift();
-        setMultiDimArr(arr[curIndex], indices, elem);
+    var current_array = arr;
+    for (var i=0; i<indices.length-1; i++) {
+        current_array = current_array[indices[i]];
     }
-    else {
-        arr[indices[0]] = elem;
-    }
+    current_array[indices[indices.length-1]] = elem;
+
+    // if (indices.length > 1){
+    //     var curIndex = indices.shift();
+    //     setMultiDimArr(arr[curIndex], indices, elem);
+    // }
+    // else {
+    //     arr[indices[0]] = elem;
+    // }
 }
 
 /**
@@ -75,6 +89,10 @@ function setMultiDimArr(arr, indices, elem){
  * @param {string} propName - the name of the property to be modified.
  */
 Modifier.prototype.addProp = function(propName) {
+
+    // TODO: performance improvement so that the pureComputed is only executed for properties that were really modified
+    // in some condtion/trial. For example use the following to save if a property depends on trials at all:
+    // Example: this.propIsModifiedSomewhere[propName] = ko.observable(false);
 
     this.selectedTrialView[propName] = ko.pureComputed({
 

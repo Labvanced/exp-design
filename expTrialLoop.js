@@ -166,6 +166,17 @@ ExpTrialLoop.prototype.addNewFrame = function() {
     frame.parent = this.subSequence();
 };
 
+ExpTrialLoop.prototype.doubleClick = function() {
+    // this trial loop was double clicked in the editor:
+    uc.currentEditorData = this.subSequence();
+    if (uc.currentEditorView instanceof TrialEditor){
+        uc.currentEditorView.setDataModel(this.subSequence());
+    }
+    else {
+        page("/page/editors/trialEditor/"+uc.experiment.exp_id()+"/"+this.id());
+    }
+};
+
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
@@ -242,17 +253,6 @@ ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
         subSequence.reAddEntities(entitiesArr);
     });
 
-};
-
-ExpTrialLoop.prototype.doubleClick = function() {
-    // this trial loop was double clicked in the editor:
-    uc.currentEditorData = this.subSequence();
-    if (uc.currentEditorView instanceof TrialEditor){
-        uc.currentEditorView.setDataModel(this.subSequence());
-    }
-    else {
-        page("/page/editors/trialEditor/"+uc.experiment.exp_id()+"/"+this.id());
-    }
 };
 
 /**
