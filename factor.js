@@ -11,6 +11,7 @@ var Factor = function(expData, factorGroup) {
     this.factorGroup = factorGroup;
 
     // serialized
+    this.id = ko.observable(guid());
     this.globalVar = ko.observable(null);
     this.factorType =  ko.observable('fixed');
 
@@ -73,6 +74,7 @@ Factor.prototype.reAddEntities = function(entitiesArr) {
  * @returns {Factor}
  */
 Factor.prototype.fromJS = function(data) {
+    this.id(data.id);
     this.factorType(data.factorType);
     this.globalVar(data.globalVar);
     return this;
@@ -84,6 +86,8 @@ Factor.prototype.fromJS = function(data) {
  */
 Factor.prototype.toJS = function() {
     return {
+        type: "Factor",
+        id: this.id(),
         factorType: this.factorType(),
         globalVar: this.globalVar().id()
     };

@@ -128,17 +128,21 @@ ExpTrialLoop.prototype.removeGroup = function(facGroupIdx,idx) {
  */
 ExpTrialLoop.prototype.selectTrialType = function(selectionSpec) {
 
-    // add the factor group to the specification to make later calculations easier:
+    // add some meta data to the specification to make later calculations easier:
     if (selectionSpec.type == 'factorLevel') {
         selectionSpec.factorGroup = selectionSpec.factor.factorGroup;
 
         // add level index for later use:
         selectionSpec.levelIdx = selectionSpec.factor.globalVar().levels().indexOf(selectionSpec.level);
     }
-    if (selectionSpec.type == 'condition') {
+    if (selectionSpec.type == 'condition' || selectionSpec.type == 'trialVariation') {
+        if (selectionSpec.type == 'trialVariation') {
+            selectionSpec.condition = selectionSpec.trialVariation.condition;
+        }
+
         selectionSpec.factorGroup = selectionSpec.condition.factorGroup;
 
-        // add the selected factors and levels and level indices for later use:
+        // add the selected factors and levels and level indices for later use...
         selectionSpec.allFactors = selectionSpec.factorGroup.factors();
         selectionSpec.allLevels = selectionSpec.condition.factorLevels();
         selectionSpec.allLevelIdx = [];
@@ -146,9 +150,6 @@ ExpTrialLoop.prototype.selectTrialType = function(selectionSpec) {
             var levelIdx = selectionSpec.allFactors[i].globalVar().levels().indexOf(selectionSpec.allLevels[i]);
             selectionSpec.allLevelIdx.push(levelIdx);
         }
-    }
-    if (selectionSpec.type == 'trialVariation') {
-        selectionSpec.factorGroup = selectionSpec.trialVariation.condition.factorGroup;
     }
 
     var factorGroupIdx = this.factorGroups().indexOf( selectionSpec.factorGroup );

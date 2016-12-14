@@ -12,6 +12,7 @@ var Modifier = function (expData, objToModify) {
     this.expData = expData;
     this.parent = null;
     this.objToModify = objToModify;
+    this.factorGroup = null; // TODO: set this variable and use it everywhere below...
 
     // serialized:
     this.factors = ko.observableArray([]); // list of N interacting factors
@@ -50,6 +51,25 @@ function selectFromMultiDimArr(arr, indices){
 }
 
 /**
+ * Recursive function to set an element in a multidimensional array.
+ * For example setMultiDimArr(arr, [2,6,3], elem) will set the value of arr[2][6][3] to elem.
+ *
+ * @param {Array} arr - the multidimensional array
+ * @param {Array} indices - the indices of each dimension
+ * @param {Array} elem - the element to set
+ * @returns {*}
+ */
+function setMultiDimArr(arr, indices, elem){
+    if (indices.length > 1){
+        var curIndex = indices.shift();
+        setMultiDimArr(arr[curIndex], indices, elem);
+    }
+    else {
+        arr[indices[0]] = elem;
+    }
+}
+
+/**
  * adds a new modification to this object in the currently selected trial type.
  *
  * @param {string} propName - the name of the property to be modified.
@@ -70,10 +90,10 @@ Modifier.prototype.addProp = function(propName) {
             if (selectionType=='factorLevel'){
 
                 var factorSelected = selectedTrialType.factor;
-                var factorId = factors.indexOf(factorSelected);
+                var factorIdx = factors.indexOf(factorSelected);
 
                 // check if this element depends on the selected factor:
-                if (!(factorId > -1)) {
+                if (!(factorIdx > -1)) {
                     // return the property of parent:
                     return this.objToModify[propName]();
                 }
@@ -83,7 +103,7 @@ Modifier.prototype.addProp = function(propName) {
                 for (var t=0; t<factors.length; t++){
                     indices.push(0);
                 }
-                indices[factorId] = selectedTrialType.levelIdx;
+                indices[factorIdx] = selectedTrialType.levelIdx;
 
                 // find first matching modifierTrialType with the given level of the selected factor:
                 var modifierTrialType = selectFromMultiDimArr(this.ndimModifierTrialTypes, indices);
@@ -95,6 +115,11 @@ Modifier.prototype.addProp = function(propName) {
                     modifierTrialType = selectFromMultiDimArr(this.ndimModifierTrialTypes, indices);
                 }
 
+                // if there were modifications of specific trialVariations:
+                if (modifierTrialType instanceof Array){
+                    modifierTrialType = modifierTrialType[0];
+                }
+
                 // check if this property is modified:
                 if (modifierTrialType.propIsModified[propName]()) {
                     return modifierTrialType.modifiedProp[propName]();
@@ -104,12 +129,10 @@ Modifier.prototype.addProp = function(propName) {
                 }
 
             }
-            else if (selectionType=='condition'){
+            else if (selectionType=='condition' || selectionType=='trialVariation'){
 
                 var factorsSelected = selectedTrialType.allFactors;
                 var levelsSelected = selectedTrialType.allLevelIdx;
-
-                //console.log("read factorsSelected="+JSON.stringify(jQuery.map(factorsSelected,function(val){return val.name()}))+ " levelsSelected="+levelsSelected)
 
                 if (factors.length == 0){
                     var val = this.objToModify[propName]();
@@ -120,8 +143,8 @@ Modifier.prototype.addProp = function(propName) {
                 // construct indices:
                 var indices = [];
                 for (var t=0; t<factors.length; t++){
-                    var factorId = factorsSelected.indexOf(factors[t]);
-                    indices.push(levelsSelected[factorId]);
+                    var factorIdx = factorsSelected.indexOf(factors[t]);
+                    indices.push(levelsSelected[factorIdx]);
                 }
 
                 // find matching modifierTrialType with the given levels of the selected factors:
@@ -132,6 +155,16 @@ Modifier.prototype.addProp = function(propName) {
                     this.addInteractingLevels();
                     // repeat:
                     modifierTrialType = selectFromMultiDimArr(this.ndimModifierTrialTypes, indices);
+                }
+
+                // if there were modifications of specific trialVariations:
+                if (modifierTrialType instanceof Array){
+                    if (selectionType=='trialVariation') {
+                        modifierTrialType = modifierTrialType[selectedTrialType.trialVariation.nr()];
+                    }
+                    else {
+                        modifierTrialType = modifierTrialType[0];
+                    }
                 }
 
                 // check if this property is modified:
@@ -166,25 +199,25 @@ Modifier.prototype.addProp = function(propName) {
             if (selectionType=='factorLevel'){
 
                 var factorSelected = selectedTrialType.factor;
-                var factorId = factors.indexOf(factorSelected);
+                var factorIdx = factors.indexOf(factorSelected);
 
                 // check if this element already depends on the selected factor:
-                if (!(factorId > -1)) {
+                if (!(factorIdx > -1)) {
                     // add new factor dependency:
                     this.addFactorDependency(factorSelected);
-                    factorId = factors.indexOf(factorSelected);
+                    factorIdx = factors.indexOf(factorSelected);
                 }
 
                 // modify all existing modifierTrialTypes with the given level of the selected factor:
-                function modifyAll(modifierTrialTypes, factorId, levelIdx, value){
+                function modifyAll(modifierTrialTypes, factorIdx, levelIdx, value){
 
                     if (modifierTrialTypes.constructor === Array){
-                        if (factorId==0) {
+                        if (factorIdx==0) {
                             modifyAll(modifierTrialTypes[levelIdx], null, null, value);
                         }
                         else {
                             for (var l = 0; l < modifierTrialTypes.length; l++) {
-                                modifyAll(modifierTrialTypes[l], factorId-1, levelIdx, value);
+                                modifyAll(modifierTrialTypes[l], factorIdx-1, levelIdx, value);
                             }
                         }
                     }
@@ -193,30 +226,22 @@ Modifier.prototype.addProp = function(propName) {
                     }
                 }
 
-                modifyAll(this.ndimModifierTrialTypes, factorId, selectedTrialType.levelIdx, value);
+                modifyAll(this.ndimModifierTrialTypes, factorIdx, selectedTrialType.levelIdx, value);
 
             }
-            else if (selectionType=='condition'){
+            else if (selectionType=='condition' || selectionType=='trialVariation'){
 
                 var factorsSelected = selectedTrialType.allFactors;
                 var levelsSelected = selectedTrialType.allLevelIdx;
 
-                //console.log("write factorsSelected="+JSON.stringify(jQuery.map(factorsSelected,function(val){return val.name()}))+ " levelsSelected="+levelsSelected)
-
                 // make sure to add all dependencies of all factors:
-                for (var f=0; f<factorsSelected.length; f++){
-                    if (!(factors.indexOf(factorsSelected[f]) > -1)) {
-                        // add new factor dependency:
-                        this.addFactorDependency(factorsSelected[f]);
-                        factors = this.getIdsOfFactors(this.factors()); // update with new list
-                    }
-                }
+                this._addAllConditionDep(factorsSelected);
 
                 // construct indices:
                 var indices = [];
                 for (var t=0; t<factors.length; t++){
-                    var factorId = factorsSelected.indexOf(factors[t]);
-                    indices.push(levelsSelected[factorId]);
+                    var factorIdx = factorsSelected.indexOf(factors[t]);
+                    indices.push(levelsSelected[factorIdx]);
                 }
 
                 // find matching modifierTrialType with the given levels of the selected factors:
@@ -229,7 +254,34 @@ Modifier.prototype.addProp = function(propName) {
                     modifierTrialType = selectFromMultiDimArr(this.ndimModifierTrialTypes, indices);
                 }
 
-                modifierTrialType.setModification(propName, value);
+                if (selectionType=='condition') {
+
+                    if (modifierTrialType instanceof Array) {
+                        for (var t=0; t<modifierTrialType.length; t++) {
+                            modifierTrialType[t].setModification(propName, value);
+                        }
+                    }
+                    else {
+                        modifierTrialType.setModification(propName, value);
+                    }
+
+                }
+                else { // selectionType=='trialVariation'
+
+                    // check if modifierTrialType is not already an array of trialVariations:
+                    if (!(modifierTrialType instanceof Array)) {
+                        // add dependency on trialVariations:
+                        var newSubArray = [];
+                        var nrTrials = selectedTrialType.condition.trials().length;
+                        for (var t=0; t<nrTrials; t++) {
+                            newSubArray.push(modifierTrialType.deepCopy())
+                        }
+                        setMultiDimArr(this.ndimModifierTrialTypes, indices, newSubArray);
+                        modifierTrialType = newSubArray;
+                    }
+                    modifierTrialType[selectedTrialType.trialVariation.nr()].setModification(propName, value);
+
+                }
 
             }
             else {
@@ -242,6 +294,21 @@ Modifier.prototype.addProp = function(propName) {
         },
         owner: this
     });
+};
+
+/**
+ * make sure that this modifier depends on all factors...
+ * @param allFactors
+ * @private
+ */
+Modifier.prototype._addAllConditionDep = function(allFactors) {
+    var factors = this.factors();
+    for (var f=0; f<allFactors.length; f++){
+        if (!(factors.indexOf(allFactors[f]) > -1)) {
+            // add new factor dependency:
+            this.addFactorDependency(allFactors[f]);
+        }
+    }
 };
 
 /**
@@ -258,18 +325,6 @@ Modifier.prototype.removeModificationRecursive = function(objArr,propName) {
     else {
         objArr.removeModification(propName);
     }
-};
-
-Modifier.prototype.getIdsOfFactors = function(factorArr) {
-    var factorIds = $.map(factorArr, function(factor) {
-        if (factor instanceof GlobalVar) {
-            return factor.id();
-        }
-        else {
-            return factor;
-        }
-    });
-    return factorIds;
 };
 
 /**
@@ -331,10 +386,6 @@ Modifier.prototype.addInteractingLevels = function() {
  * @param factorVar
  */
 Modifier.prototype.addFactorDependency = function(factorVar) {
-
-    //if (!(factorVar instanceof GlobalVar)){
-    //    factorVar = this.expData.entities.byId[factorVar];
-    //}
 
     if (this.factors().length == 0) {
         // special case, because this is the first interacting factor. Therefore just add all levels to top array:
