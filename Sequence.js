@@ -12,6 +12,7 @@ var Sequence = function (expData) {
     this.expData = expData;
     this.currSelectedElement = ko.observable();
     this.parent = null;
+    this.factorGroup = null;
 
     // serialized
     this.id = ko.observable(guid());
@@ -42,6 +43,13 @@ Sequence.prototype.selectTrialType = function(selectionSpec) {
             elements[i].selectTrialType(selectionSpec);
         }
     }
+};
+
+/**
+ * sets the factor group:
+ */
+Sequence.prototype.setFactorGroup = function(factorGroup) {
+    this.factorGroup = factorGroup;
 };
 
 Sequence.prototype.selectNextElement = function() {

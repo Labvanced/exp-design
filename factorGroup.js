@@ -124,6 +124,8 @@ FactorGroup.prototype.addFactorToCondition = function(factor) {
  */
 FactorGroup.prototype.addLevelToCondition = function() {
 
+    var self = this;
+
     function deepCopyOfSubArrays(arrOrCondition, factorToModify, newLevel){
 
         var clonedArrOrCondition = null;
@@ -237,9 +239,14 @@ FactorGroup.prototype.removeFactor = function(factor) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 FactorGroup.prototype.setPointers = function (entitiesArr) {
-    jQuery.each( this.factors(), function( index, elem ) {
-        elem.setPointers(entitiesArr);
-    } );
+    var self = this;
+
+    this.factors(jQuery.map(this.factors(), function (factorIds) {
+        var factor = entitiesArr.byId[factorIds];
+        factor.factorGroup = self;
+        return factor;
+    }));
+
     jQuery.each( this.conditionsLinear(), function( index, elem ) {
         elem.setPointers(entitiesArr);
     } );
@@ -257,7 +264,11 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
         if (condMultiDim.constructor === Array) {
             // recursive call:
             for (t = 0; t < condMultiDim.length; t++) {
-                levels[depth] = factors[depth].globalVar().levels()[t];
+                var globalVar = factors[depth].globalVar();
+                if (!(globalVar instanceof GlobalVar)){
+                    globalVar = entitiesArr.byId[globalVar];
+                }
+                levels[depth] = globalVar.levels()[t];
                 deepDive(condMultiDim[t], factors, levels, depth+1);
             }
         }
@@ -279,6 +290,10 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
 FactorGroup.prototype.reAddEntities = function(entitiesArr) {
     // add the direct child nodes:
     jQuery.each( this.factors(), function( index, factor ) {
+        if (!entitiesArr.byId.hasOwnProperty(factor.id())) {
+            entitiesArr.push(factor);
+        }
+
         // recursively make sure that all deep tree nodes are in the entities list:
         if (factor.reAddEntities)
             factor.reAddEntities(entitiesArr);
@@ -294,11 +309,7 @@ FactorGroup.prototype.reAddEntities = function(entitiesArr) {
 FactorGroup.prototype.fromJS = function(data) {
     var self = this;
     this.name(data.name);
-    this.factors(jQuery.map( data.factors, function( factor ) {
-        var fac = new Factor(self.expData, self);
-        fac.fromJS(factor);
-        return fac;
-    }));
+    this.factors(data.factors);
 
     function deepLoadConditions(condMultiDimData){
         if (condMultiDimData.constructor === Array) {
@@ -343,7 +354,7 @@ FactorGroup.prototype.toJS = function() {
     return {
         name: this.name(),
         factors: jQuery.map( this.factors(), function( factor ) {
-            return factor.toJS();
+            return factor.id();
         }),
         conditions: deepSaveConditions(this.conditions())
     };

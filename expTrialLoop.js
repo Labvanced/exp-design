@@ -83,21 +83,25 @@ var ExpTrialLoop = function (expData) {
  * Is called to initialize a newly created exp trial loop (instead of initialization via loadJS)
  */
 ExpTrialLoop.prototype.initNewInstance = function() {
+    this.addFactorGroup();
     var subsequence = new Sequence(this.expData);
     this.subSequence(subsequence);
     this.subSequencePerFactorGroup([subsequence]);
     subsequence.parent = this;
-
+    subsequence.setFactorGroup(this.factorGroups()[0]);
 };
 
 ExpTrialLoop.prototype.addFactorGroup = function() {
-    var facGroup = new FactorGroup(this.expData);
-    facGroup.name("group_" + (this.factorGroups().length+1));
-    this.factorGroups.push(facGroup);
+    var factorGroup = new FactorGroup(this.expData);
+    factorGroup.name("group_" + (this.factorGroups().length+1));
+    this.factorGroups.push(factorGroup);
 
     // add a new subSequence for the new group (if there are not already enough subSequences):
     if (this.subSequencePerFactorGroup().length < this.factorGroups().length) {
-        this.subSequencePerFactorGroup().push(new Sequence(this.expData));
+        var subsequence = new Sequence(this.expData);
+        subsequence.parent = this;
+        subsequence.setFactorGroup(factorGroup);
+        this.subSequencePerFactorGroup().push(subsequence);
     }
 };
 
@@ -128,17 +132,21 @@ ExpTrialLoop.prototype.removeGroup = function(facGroupIdx,idx) {
  */
 ExpTrialLoop.prototype.selectTrialType = function(selectionSpec) {
 
-    // add the factor group to the specification to make later calculations easier:
+    // add some meta data to the specification to make later calculations easier:
     if (selectionSpec.type == 'factorLevel') {
         selectionSpec.factorGroup = selectionSpec.factor.factorGroup;
 
         // add level index for later use:
         selectionSpec.levelIdx = selectionSpec.factor.globalVar().levels().indexOf(selectionSpec.level);
     }
-    if (selectionSpec.type == 'condition') {
+    if (selectionSpec.type == 'condition' || selectionSpec.type == 'trialVariation') {
+        if (selectionSpec.type == 'trialVariation') {
+            selectionSpec.condition = selectionSpec.trialVariation.condition;
+        }
+
         selectionSpec.factorGroup = selectionSpec.condition.factorGroup;
 
-        // add the selected factors and levels and level indices for later use:
+        // add the selected factors and levels and level indices for later use...
         selectionSpec.allFactors = selectionSpec.factorGroup.factors();
         selectionSpec.allLevels = selectionSpec.condition.factorLevels();
         selectionSpec.allLevelIdx = [];
@@ -146,9 +154,6 @@ ExpTrialLoop.prototype.selectTrialType = function(selectionSpec) {
             var levelIdx = selectionSpec.allFactors[i].globalVar().levels().indexOf(selectionSpec.allLevels[i]);
             selectionSpec.allLevelIdx.push(levelIdx);
         }
-    }
-    if (selectionSpec.type == 'trialVariation') {
-        selectionSpec.factorGroup = selectionSpec.trialVariation.condition.factorGroup;
     }
 
     var factorGroupIdx = this.factorGroups().indexOf( selectionSpec.factorGroup );
@@ -159,10 +164,15 @@ ExpTrialLoop.prototype.selectTrialType = function(selectionSpec) {
     this.subSequence().selectTrialType(selectionSpec);
 };
 
-ExpTrialLoop.prototype.addNewFrame = function() {
-    var frame = new FrameData(this.expData);
-    this.subSequence().addNewSubElement(frame);
-    frame.parent = this.subSequence();
+ExpTrialLoop.prototype.doubleClick = function() {
+    // this trial loop was double clicked in the editor:
+    uc.currentEditorData = this.subSequence();
+    if (uc.currentEditorView instanceof TrialEditor){
+        uc.currentEditorView.setDataModel(this.subSequence());
+    }
+    else {
+        page("/page/editors/trialEditor/"+uc.experiment.exp_id()+"/"+this.id());
+    }
 };
 
 /**
@@ -175,12 +185,18 @@ ExpTrialLoop.prototype.addNewFrame = function() {
 ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
     var self = this;
 
-    this.subSequencePerFactorGroup(jQuery.map(this.subSequencePerFactorGroup(), function (subSequenceId) {
-        var subSequence = entitiesArr.byId[subSequenceId];
+    var factorGroups = this.factorGroups();
+    var subSequences = this.subSequencePerFactorGroup();
+
+    var subSequencesObj = [];
+    for (var i=0; i<subSequences.length; i++) {
+        var subSequence = entitiesArr.byId[subSequences[i]];
         subSequence.parent = self;
-        return subSequence;
-    }));
-    this.subSequence(this.subSequencePerFactorGroup()[0]);
+        subSequence.setFactorGroup(factorGroups[i]);
+        subSequencesObj.push(subSequence)
+    }
+    this.subSequencePerFactorGroup(subSequencesObj);
+    this.subSequence(subSequencesObj[0]);
 
     this.trialUniqueIdVar(entitiesArr.byId[this.trialUniqueIdVar()]);
     this.trialTypeIdVar(entitiesArr.byId[this.trialTypeIdVar()]);
@@ -241,17 +257,6 @@ ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
         subSequence.reAddEntities(entitiesArr);
     });
 
-};
-
-ExpTrialLoop.prototype.doubleClick = function() {
-    // this trial loop was double clicked in the editor:
-    uc.currentEditorData = this.subSequence();
-    if (uc.currentEditorView instanceof TrialEditor){
-        uc.currentEditorView.setDataModel(this.subSequence());
-    }
-    else {
-        page("/page/editors/trialEditor/"+uc.experiment.exp_id()+"/"+this.id());
-    }
 };
 
 /**
