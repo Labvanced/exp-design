@@ -124,6 +124,8 @@ FactorGroup.prototype.addFactorToCondition = function(factor) {
  */
 FactorGroup.prototype.addLevelToCondition = function() {
 
+    var self = this;
+
     function deepCopyOfSubArrays(arrOrCondition, factorToModify, newLevel){
 
         var clonedArrOrCondition = null;
