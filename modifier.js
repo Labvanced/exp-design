@@ -564,7 +564,7 @@ Modifier.prototype.addInteractingLevels = function() {
 
     function updateLevels(multiDimTrialTypes, multiDimConditions, depFactors, allFactors) {
 
-        while (depFactors[0] != allFactors[0]) {
+        while (depFactors[0] != allFactors[0] && depFactors[0] != 'trialVariation') {
             allFactors = allFactors.slice(1);
             multiDimConditions = multiDimConditions.slice(1);
         }
