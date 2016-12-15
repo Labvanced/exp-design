@@ -579,11 +579,11 @@ Modifier.prototype.addInteractingLevels = function() {
             var desired_len = depFactors[0].globalVar().levels().length;
         }
 
-        if (desired_len > multiDimTrialTypes.length) {
+        if (desired_len < multiDimTrialTypes.length) {
             // remove the levels that are not required:
             multiDimTrialTypes.splice(desired_len, desired_len-multiDimTrialTypes.length);
         }
-        else {
+        else if (desired_len > multiDimTrialTypes.length) {
             // fill this dimension with the corresponding number of levels as dependencies:
             var lastElem = multiDimTrialTypes[multiDimTrialTypes.length - 1];
             for (var i = multiDimTrialTypes.length; i < desired_len; i++) {
