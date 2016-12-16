@@ -88,10 +88,10 @@ ExpData.prototype.addNewBlock = function() {
     var expTrialLoop = new ExpTrialLoop(this);
     expTrialLoop.initNewInstance();
     expTrialLoop.isInitialized(true);
-    expTrialLoop.addNewFrame();
+    //expTrialLoop.addNewFrame();
 
-    var frame = new FrameData(this);
-    expTrialLoop.subSequence().addNewSubElement(frame);
+   // var frame = new FrameData(this);
+   // expTrialLoop.subSequence().addNewSubElement(frame);
 
     // define instance of block element
     var blockElements = [

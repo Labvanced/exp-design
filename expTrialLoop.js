@@ -84,11 +84,18 @@ var ExpTrialLoop = function (expData) {
  */
 ExpTrialLoop.prototype.initNewInstance = function() {
     this.addFactorGroup();
-    var subsequence = new Sequence(this.expData);
-    this.subSequence(subsequence);
-    this.subSequencePerFactorGroup([subsequence]);
-    subsequence.parent = this;
-    subsequence.setFactorGroup(this.factorGroups()[0]);
+    this.addNewFrame();
+ //   var subsequence = new Sequence(this.expData);
+ //   this.subSequence(subsequence);
+ //   this.subSequencePerFactorGroup([subsequence]);
+ //   subsequence.parent = this;
+ //   subsequence.setFactorGroup(this.factorGroups()[0]);
+};
+
+ExpTrialLoop.prototype.addNewFrame = function() {
+    var frame = new FrameData(this.expData);
+    this.subSequence().addNewSubElement(frame);
+    frame.parent = this.subSequence();
 };
 
 ExpTrialLoop.prototype.addFactorGroup = function() {
@@ -101,6 +108,7 @@ ExpTrialLoop.prototype.addFactorGroup = function() {
         var subsequence = new Sequence(this.expData);
         subsequence.parent = this;
         subsequence.setFactorGroup(factorGroup);
+        this.subSequence(subsequence);
         this.subSequencePerFactorGroup().push(subsequence);
     }
 };
