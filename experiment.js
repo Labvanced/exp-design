@@ -12,15 +12,18 @@ var Experiment = function () {
     this.version = ko.observable(1);
     this.is_editing = ko.observable(true);
     this.is_recording = ko.observable(false);
+    this.is_analyzing = ko.observable(false);
     this.is_published = ko.observable(false);
     this.img_file_id = ko.observable(null);
     this.img_file_orig_name = ko.observable(null);
     this.description = ko.observable("");
     this.category_id = ko.observable(0);
     this.exp_data = new ExpData();
+    this.exp_data_obs = ko.observable(this.exp_data);
 };
 
 Experiment.prototype.editExp = function() {
+    
     page("/page/editors/mainExperimentPage/"+this.exp_id());
 };
 
@@ -100,6 +103,7 @@ Experiment.prototype.fromJS = function(data) {
     this.version(data.version);
     this.is_editing(data.is_editing);
     this.is_recording(data.is_recording);
+    this.is_analyzing(data.is_analyzing);
     this.is_published(data.is_published);
     this.description(data.description);
     this.category_id(data.category_id);
@@ -136,6 +140,7 @@ Experiment.prototype.toJS = function() {
         version: this.version(),
         is_editing: this.is_editing(),
         is_recording: this.is_recording(),
+        is_analyzing: this.is_analyzing(),
         is_published: this.is_published(),
         description: this.description(),
         category_id: this.category_id(),

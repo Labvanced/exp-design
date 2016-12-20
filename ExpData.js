@@ -20,7 +20,7 @@ var ExpData = function () {
     this.varSessionIndex =  ko.observable();
     this.varBlockId =  ko.observable();
     this.varBlockIndex =  ko.observable();
-    this.varTaskId =  ko.observable();
+    this.varTaskId =  ko.observable('test');
     this.varTaskIndex =  ko.observable();
 
     this.vars = ko.computed(function() {
