@@ -23,8 +23,8 @@ var Experiment = function () {
 };
 
 Experiment.prototype.editExp = function() {
-    
-    page("/page/editors/mainExperimentPage/"+this.exp_id());
+    page("/page/editors/experimentView/"+this.exp_id());
+  //  page("/page/editors/mainExperimentPage/"+this.exp_id());
 };
 
 Experiment.prototype.viewRecordings = function() {

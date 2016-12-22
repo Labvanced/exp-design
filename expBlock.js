@@ -13,6 +13,7 @@ var ExpBlock = function (expData) {
     this.id = ko.observable(guid());
     this.name = ko.observable("block_1");
     this.type = "ExpBlock";
+    this.taskArray = ko.observableArray([]).extend({sortById: null});
     this.subSequence = ko.observable(new Sequence(expData));
     this.subSequence().parent = this;
     this.editName =  ko.observable(false);
@@ -66,6 +67,16 @@ ExpBlock.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
     this.subSequence(data.subSequence);
+     var self = this;
+
+    if (data.hasOwnProperty('taskArray')) {
+        this.taskArray(jQuery.map(data.taskArray, function (taskJson) {
+            var task = entityFactory(taskJson, self);
+            self.taskArray.push(task);
+            return task;
+        }));
+    }
+    
     return this;
 };
 
@@ -75,8 +86,14 @@ ExpBlock.prototype.fromJS = function(data) {
  */
 ExpBlock.prototype.toJS = function() {
 
+    var taskArray = [];
+    for (var i=0; i<this.taskArray().length; i++){
+        taskArray.push(this.taskArray()[i].sessions().length);
+    }
+
     return {
         id: this.id(),
+        taskArray: jQuery.map( this.taskArray(), function( task ) { return task.toJS(); }),
         name: this.name(),
         type: this.type,
         subSequence: this.subSequence().id()

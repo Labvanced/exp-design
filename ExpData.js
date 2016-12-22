@@ -8,6 +8,7 @@ var ExpData = function () {
     this.expData = this; // self reference for consistency with other classes..
     this.entities = ko.observableArray([]).extend({sortById: null});
     this.groups = ko.observableArray([]).extend({sortById: null});
+    this.availableTasks  = ko.observableArray([]).extend({sortById: null});
     this.expBlocks = ko.observableArray([]).extend({sortById: null});
 
     // the following variables are recorded once per subject:
@@ -20,7 +21,7 @@ var ExpData = function () {
     this.varSessionIndex =  ko.observable();
     this.varBlockId =  ko.observable();
     this.varBlockIndex =  ko.observable();
-    this.varTaskId =  ko.observable('test');
+    this.varTaskId =  ko.observable();
     this.varTaskIndex =  ko.observable();
 
     this.vars = ko.computed(function() {
@@ -82,6 +83,49 @@ ExpData.prototype.addNewSubjGroup = function() {
     group.addSession(session);
     this.addGroup(group);
 };
+
+
+ExpData.prototype.addTask = function() {
+
+    var expTrialLoop = new ExpTrialLoop(this);
+    expTrialLoop.initNewInstance();
+    expTrialLoop.isInitialized(true);
+
+    // trial randomization, premade variable per exp trial loop
+    var trialUniqueId = new GlobalVar(this.expData);
+    trialUniqueId.dataType('numeric');
+    trialUniqueId.scope('trial');
+    trialUniqueId.scale('nominal');
+    trialUniqueId.name("Trial Id");
+    expTrialLoop.trialUniqueIdVar(trialUniqueId);
+
+    var trialTypeIdVar = new GlobalVar(this.expData);
+    trialTypeIdVar.dataType('numeric');
+    trialTypeIdVar.scope('trial');
+    trialTypeIdVar.scale('nominal');
+    trialTypeIdVar.name("Trial Type");
+    expTrialLoop.trialTypeIdVar(trialTypeIdVar);
+
+    var trialOrderVar = new GlobalVar(this.expData);
+    trialOrderVar.dataType('numeric');
+    trialOrderVar.scope('trial');
+    trialOrderVar.scale('interval');
+    trialOrderVar.name("Presentation Order");
+    expTrialLoop.trialOrderVar(trialOrderVar);
+    
+    this.availableTasks.push(expTrialLoop);
+};
+
+
+ExpData.prototype.addNewBlock_Refactored = function() {
+    
+    // add fixed instances of block into sequence
+    var block = new ExpBlock(this);
+    var name= "block_"+(this.expBlocks().length+1);
+    block.name(name);
+    this.expBlocks.push(block);
+};
+
 
 ExpData.prototype.addNewBlock = function() {
 
@@ -236,7 +280,7 @@ ExpData.prototype.setPointers = function() {
     jQuery.each( allEntitiesArray, function( index, elem ) {
         elem.setPointers(self.entities);
     } );
-
+    
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varId = this[ExpData.prototype.fixedVarNames[i]]();
         var varInstance = this.entities.byId[varId];
@@ -254,6 +298,15 @@ ExpData.prototype.reAddEntities = function() {
 
     // add the groups and their child nodes to entities:
     jQuery.each( this.groups(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        elem.reAddEntities(entitiesArr);
+    } );
+
+    jQuery.each( this.availableTasks(), function( index, elem ) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(elem.id()))
             entitiesArr.push(elem);
@@ -296,6 +349,22 @@ ExpData.prototype.fromJS = function(data) {
         }));
     }
 
+
+    if (data.hasOwnProperty('availableTasks')) {
+        this.availableTasks(jQuery.map(data.availableTasks, function (taskJson) {
+            var entity = entityFactory(taskJson, self);
+
+            switch (taskJson.type) {
+                case 'ExpTrialLoop':
+                    self.availableTasks.push(entity);
+                    break;
+            }
+
+            return entity;
+        }));
+    }
+
+
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varName = ExpData.prototype.fixedVarNames[i];
         this[varName](data[varName]);
@@ -319,7 +388,13 @@ ExpData.prototype.toJS = function() {
     }
 
     var data = {
-        entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
+        entities: jQuery.map( this.entities(), function( entity ) {
+            return entity.toJS();
+        }),
+        availableTasks: jQuery.map( this.availableTasks(),
+            function( task ) { 
+                return task.toJS(); 
+            }),
         numGroups: this.groups().length,
         sessionsPerGroup: sessionsPerGroup
     };
