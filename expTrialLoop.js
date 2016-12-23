@@ -18,7 +18,7 @@ var ExpTrialLoop = function (expData) {
     this.editorHeight = ko.observable(60);
     this.id = ko.observable(guid());
     this.displayInitialCountdown = ko.observable(true);
-    this.name = ko.observable("TrialLoop");
+    this.name = ko.observable("New Task");
     this.type = "ExpTrialLoop";
     this.subSequence = ko.observable(null);
     this.subSequencePerFactorGroup = ko.observableArray([]);
@@ -229,10 +229,12 @@ ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
 ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
     // add the direct child nodes:
     // check if they are not already in the list:
+
     if (!entitiesArr.byId.hasOwnProperty(this.subSequence().id())) {
         entitiesArr.push(this.subSequence());
     }
 
+    
     if (!entitiesArr.byId.hasOwnProperty(this.trialUniqueIdVar().id())) {
         entitiesArr.push(this.trialUniqueIdVar());
     }

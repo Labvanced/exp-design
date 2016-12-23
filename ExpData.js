@@ -8,8 +8,8 @@ var ExpData = function () {
     this.expData = this; // self reference for consistency with other classes..
     this.entities = ko.observableArray([]).extend({sortById: null});
     this.groups = ko.observableArray([]).extend({sortById: null});
-    this.availableTasks  = ko.observableArray([]).extend({sortById: null});
     this.expBlocks = ko.observableArray([]).extend({sortById: null});
+    this.availableTasks  = ko.observableArray([]).extend({sortById: null});
 
     // the following variables are recorded once per subject:
     this.varSubjectId =  ko.observable();
@@ -85,11 +85,14 @@ ExpData.prototype.addNewSubjGroup = function() {
 };
 
 
-ExpData.prototype.addTask = function() {
+ExpData.prototype.addTask = function(taskName) {
 
     var expTrialLoop = new ExpTrialLoop(this);
     expTrialLoop.initNewInstance();
     expTrialLoop.isInitialized(true);
+    if (taskName){
+        expTrialLoop.name(taskName);
+    }
 
     // trial randomization, premade variable per exp trial loop
     var trialUniqueId = new GlobalVar(this.expData);
@@ -114,16 +117,25 @@ ExpData.prototype.addTask = function() {
     expTrialLoop.trialOrderVar(trialOrderVar);
     
     this.availableTasks.push(expTrialLoop);
+    this.reAddEntities();
+    
 };
 
 
-ExpData.prototype.addNewBlock_Refactored = function() {
+ExpData.prototype.addNewBlock_Refactored = function(tasks) {
     
     // add fixed instances of block into sequence
     var block = new ExpBlock(this);
     var name= "block_"+(this.expBlocks().length+1);
     block.name(name);
+
+    var subSequence = block.subSequence();
+    for(var i = 0;i<tasks.length;i++){
+        subSequence.addNewSubElement(tasks[i]);
+    }
+    
     this.expBlocks.push(block);
+
 };
 
 
@@ -280,7 +292,7 @@ ExpData.prototype.setPointers = function() {
     jQuery.each( allEntitiesArray, function( index, elem ) {
         elem.setPointers(self.entities);
     } );
-    
+
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varId = this[ExpData.prototype.fixedVarNames[i]]();
         var varInstance = this.entities.byId[varId];
@@ -295,7 +307,7 @@ ExpData.prototype.setPointers = function() {
  */
 ExpData.prototype.reAddEntities = function() {
     var entitiesArr = this.entities;
-
+    
     // add the groups and their child nodes to entities:
     jQuery.each( this.groups(), function( index, elem ) {
         // check if they are not already in the list:
