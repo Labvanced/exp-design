@@ -18,9 +18,21 @@ var Experiment = function () {
     this.img_file_orig_name = ko.observable(null);
     this.description = ko.observable("");
     this.category_id = ko.observable(0);
+
+    // setup class instances for experiment functions
     this.exp_data = new ExpData();
     this.exp_data_obs = ko.observable(this.exp_data);
+    
+    this.variableOverview = new VariableOverview(this);
+    this.translations = new Translations(this);
+    this.publishingData = new PublishExperiment(this);
+    this.dataOverview = new RecordingView(this);
+    this.dataExport = new DataExport(this);
+    this.dataAnalysis = new DataAnalysis(this);
 };
+
+
+
 
 Experiment.prototype.editExp = function() {
     page("/page/editors/experimentView/"+this.exp_id());
