@@ -263,7 +263,8 @@ var ActionSetElementProp = function(event) {
     });
 };
 
-ActionSetElementProp.prototype.operatorTypes = ["%", "+", "set", "variable"];
+ActionSetElementProp.prototype.operatorTypes = ["=", "+", "-"];
+ActionSetElementProp.prototype.changeTypes = ["value", "%","variable"];
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
 ActionSetElementProp.prototype.label = "Set Element Prop.";
 
@@ -281,36 +282,38 @@ ActionSetElementProp.prototype.isValid = function(){
 ActionSetElementProp.prototype.addProperty = function() {
 
     var prop = ko.observable(null);
-    var operator = ko.observable(null);
+    var operatorType = ko.observable(null);
+    var changeType = ko.observable(null);
     var value = ko.observable(0);
     var self = this;
 
     prop.subscribe(function(newVal) {
-        operator(null);
+        operatorType(null);
+        changeType(null);
         value(0);
     });
 
-    operator.subscribe(function(newVal) {
-
-        if (newVal == "%") {
-            value(100);
+    operatorType.subscribe(function(newVal) {
+        if (newVal == "=") {
+            value(self.target()[prop()]());
         }
-        else  if (newVal == "+") {
+        else{
             value(0);
-        }
-        else  if (newVal == "set") {
-            var currentValue = self.target()[prop()]();
-            value(currentValue);
-        }
-        else  if (newVal == "variable") {
-            value(null);
         }
 
     });
 
+    changeType.subscribe(function(newVal) {
+        if (newVal == "%" && operatorType()=="=") {
+            value(100);
+        }
+    });
+    
+
     var addObj = {
         property: prop,
-        operatorType: operator,
+        operatorType: operatorType,
+        changeType: changeType,
         value: value
     };
 
@@ -331,6 +334,8 @@ ActionSetElementProp.prototype.setVariableBackRef = function(variable){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
+
+// TODO make changes according to new structure
 ActionSetElementProp.prototype.run = function(triggerParams) {
 
     var changes = this.changes();
@@ -384,7 +389,7 @@ ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
 
     var changes = this.changes();
     for (var i=0; i<changes.length; i++) {
-        if (changes[i].operatorType() == "variable") {
+        if (changes[i].changeType() == "variable") {
             var varId = changes[i].value();
             var globVar = entitiesArr.byId[varId];
             changes[i].value(globVar);
@@ -418,6 +423,7 @@ ActionSetElementProp.prototype.fromJS = function(data) {
         var obj = {
             property :   ko.observable(tmp.property),
             operatorType :   ko.observable(tmp.operatorType),
+            changeType :   ko.observable(tmp.changeType),
             value:   ko.observable(tmp.value)
         };
         changes.push(obj);
@@ -438,12 +444,13 @@ ActionSetElementProp.prototype.toJS = function() {
     for (var i = 0; i<origChanges.length; i++){
         var currChanges = origChanges[i];
         var value = currChanges.value();
-        if (currChanges.operatorType() == "variable" && value) {
+        if (currChanges.changeType() == "variable" && value) {
             value = value.id();
         }
         var obj = {
             property: currChanges.property(),
             operatorType: currChanges.operatorType(),
+            changeType: currChanges.changeType(),
             value: value
         };
         changes.push(obj);
@@ -565,7 +572,7 @@ var ActionSetVariable = function(event) {
 };
 ActionSetVariable.prototype.type = "ActionSetVariable";
 ActionSetVariable.prototype.label = "Set Variable";
-ActionSetVariable.prototype.operatorTypes = ["Set to", "Increment by", "Decrement by", "Multiply by", "Divide by"];
+ActionSetVariable.prototype.operatorTypes = ["Set", "Plus", "Minus", "Multiply", "Divide"];
 
 /**
  * returns true if all settings are valid (used in the editor).
