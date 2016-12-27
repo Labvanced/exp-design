@@ -100,7 +100,7 @@ ExpTrialLoop.prototype.addNewFrame = function() {
 
 ExpTrialLoop.prototype.addFactorGroup = function() {
     var factorGroup = new FactorGroup(this.expData);
-    factorGroup.name("group_" + (this.factorGroups().length+1));
+    factorGroup.name("trial_group_" + (this.factorGroups().length+1));
     this.factorGroups.push(factorGroup);
 
     // add a new subSequence for the new group (if there are not already enough subSequences):

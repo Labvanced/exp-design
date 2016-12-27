@@ -82,6 +82,23 @@ ko.extenders.numeric = function(target, precision) {
 };
 
 
+ko.bindingHandlers.disableOptionsCaption = {
+    init: function (element,valueAccessor, allBindingsAccessor, viewModel) {
+
+        ko.applyBindingsToNode(element, {
+            options: viewModel.items,
+            optionsCaption: 'please select',
+            optionsAfterRender: function (option, item) {
+
+                ko.applyBindingsToNode(option, {
+                    disable: !item
+                }, item);
+
+            }
+        });
+    }
+};
+
 // CKEDITOR is not defined in player:
 if (typeof CKEDITOR !== 'undefined') {
 

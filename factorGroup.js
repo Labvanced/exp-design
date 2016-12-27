@@ -13,7 +13,7 @@ var FactorGroup= function(expData) {
     this.expData = expData;
 
     // serialized
-    this.name = ko.observable("factor_group");
+    this.name = ko.observable("trial_group");
     this.factors = ko.observableArray([]);
     this.conditions = ko.observableArray([]); // multidimensional array
 

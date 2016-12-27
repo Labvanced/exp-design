@@ -14,8 +14,8 @@ var GlobalVar = function (expData) {
     this.id = ko.observable(guid());
     this.type = "GlobalVar";
     this.name = ko.observable("newVariable");
-    this.dataType = ko.observable("undefined");
-    this.scale = ko.observable("undefined");
+    this.dataType = ko.observable(null);
+    this.scale = ko.observable(null);
     this.scope = ko.observable("undefined");
     this.isFactor =  ko.observable(false);
     this.isInteracting = ko.observable(false);
@@ -37,32 +37,33 @@ var GlobalVar = function (expData) {
 };
 
 // enum definitions:
-GlobalVar.scales = ['undefined', 'nominal', 'ordinal', 'interval', 'ratio'];
-GlobalVar.dataTypes = ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime', 'timer', 'structure'];
+GlobalVar.scales = ['nominal', 'ordinal', 'interval', 'ratio','undefined'];
+GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'timer', 'structure','undefined'];
 GlobalVar.scopes = ['subject','task','trial'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];
 
-// definition of what dataTypes are allowed for each scale:
-GlobalVar.allowedDataTypePerScale = {
-    'undefined': ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime', 'timer'],
-    'nominal': ['undefined', 'string', 'numeric', 'boolean', 'categorical'],
-    'ordinal': ['undefined', 'numeric', 'boolean', 'categorical', 'datetime'],
-    'interval': ['undefined', 'numeric', 'datetime', 'timer'],
-    'ratio': ['undefined', 'numeric', 'datetime', 'timer']
+
+// definition of what scalesallowed for each datatype:
+GlobalVar.allowedScalePerDataType = {
+    'undefined': ['nominal', 'ordinal', 'interval', 'ratio','undefined'],
+    'string': ['nominal', 'ordinal','undefined'],
+    'numeric': ['ordinal', 'interval', 'ratio','undefined'],
+    'boolean': ['nominal','undefined'],
+    'categorical': ['nominal','undefined'],
+    'datetime': ['ordinal', 'interval', 'ratio','undefined'],
+    'timer': ['interval', 'ratio','undefined'],
+    'structure': ['undefined']
 };
 // now create the inverted mapping:
-GlobalVar.allowedScalePerDataType = {};
-for (var i=0; i<GlobalVar.dataTypes.length; i++){
-    GlobalVar.allowedScalePerDataType[GlobalVar.dataTypes[i]] = [];
-}
-for (var i=0; i<GlobalVar.scales.length; i++){
-    var allowedDataTypes = GlobalVar.allowedDataTypePerScale[GlobalVar.scales[i]];
-    for (var j=0; j<allowedDataTypes.length; j++){
-        GlobalVar.allowedScalePerDataType[allowedDataTypes[j]].push(GlobalVar.scales[i]);
-    }
-}
+GlobalVar.allowedDataTypePerScale = {
+    'undefined': ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime', 'timer','structure'],
+    'nominal': ['string', 'boolean', 'categorical'],
+    'ordinal': ['string', 'numeric', 'datetime'],
+    'interval': ['numeric', 'datetime', 'timer'],
+    'ratio': ['numeric', 'datetime', 'timer']
+};
 
 GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
     this.dataType(dataType);
