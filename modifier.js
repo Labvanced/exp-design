@@ -42,7 +42,10 @@ var Modifier = function (expData, objToModify) {
 function selectFromMultiDimArr(arr, indices){
     var current_array = arr;
     for (var i=0; i<indices.length; i++) {
-        current_array = current_array[indices[i]];
+        if (current_array[indices[i]]){
+            current_array = current_array[indices[i]];
+        }
+        
     }
     return current_array;
 }
@@ -435,16 +438,20 @@ Modifier.prototype._addTrialVariationDep = function() {
             // create new array of new interacting trialTypes with all combinations:
             for (var t = 0; t < multiDimArrConditions.length; t++) {
                 var oldMod = multiDimArr[t];
-                var numTrials = multiDimArrConditions[t].trials().length;
+                var indermediate = multiDimArrConditions[t];
+                for (var k = 0; k < indermediate.length; k++) {
+                   
+                    var numTrials = indermediate[k].trials().length;
 
-                // add all trials:
-                var newModfiers = [];
-                for (var l = 0; l < numTrials; l++) {
-                    newModfiers.push(oldMod.deepCopy());
+                    // add all trials:
+                    var newModfiers = [];
+                    for (var l = 0; l < numTrials; l++) {
+                        newModfiers.push(oldMod.deepCopy());
+                    }
+
+                    // overwrite object in multiDimArr[t] with array of cloned objects:
+                    multiDimArr[t][k] = newModfiers;
                 }
-
-                // overwrite object in multiDimArr[t] with array of cloned objects:
-                multiDimArr[t] = newModfiers;
             }
         }
 
@@ -479,7 +486,8 @@ Modifier.prototype.addFactorDependency = function(factorVar) {
             }
 
             // clear the original array and instead add the newly cloned sub arrays:
-            multiDimArr.splice(0, multiDimArr.length);
+           // multiDimArr.splice(0, multiDimArr.length);
+            multiDimArr = [];
             for (t = 0; t < clonedMultiDimArr.length; t++) {
                 multiDimArr.push(clonedMultiDimArr[t]);
             }
