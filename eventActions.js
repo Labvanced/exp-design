@@ -249,6 +249,8 @@ var ActionSetElementProp = function(event) {
     this.changes = ko.observableArray([]);
     this.animate=ko.observable(false);
     this.animationTime=ko.observable(0);
+    this.operatorTypes = ko.observableArray(["=", "+", "-", "*", "/"]);
+    this.changeTypes =  ko.observableArray(["value", "%","variable"]);
 
     this.addProperty();
 
@@ -263,8 +265,7 @@ var ActionSetElementProp = function(event) {
     });
 };
 
-ActionSetElementProp.prototype.operatorTypes = ["=", "+", "-"];
-ActionSetElementProp.prototype.changeTypes = ["value", "%","variable"];
+
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
 ActionSetElementProp.prototype.label = "Set Element Prop.";
 
@@ -295,9 +296,15 @@ ActionSetElementProp.prototype.addProperty = function() {
 
     operatorType.subscribe(function(newVal) {
         if (newVal == "=") {
+            self.changeTypes(["value","%","variable"]);
             value(self.target()[prop()]());
         }
+        else if (newVal == "*" || newVal == "/") {
+            self.changeTypes(["value", "variable"]);
+            value(1);
+        }
         else{
+            self.changeTypes(["value","%", "variable"]);
             value(0);
         }
 
@@ -306,6 +313,9 @@ ActionSetElementProp.prototype.addProperty = function() {
     changeType.subscribe(function(newVal) {
         if (newVal == "%" && operatorType()=="=") {
             value(100);
+        }
+        else if (newVal == "value" && operatorType()=="=") {
+            value(self.target()[prop()]());
         }
     });
     
@@ -335,7 +345,6 @@ ActionSetElementProp.prototype.setVariableBackRef = function(variable){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 
-// TODO make changes according to new structure
 ActionSetElementProp.prototype.run = function(triggerParams) {
 
     var changes = this.changes();
@@ -343,6 +352,7 @@ ActionSetElementProp.prototype.run = function(triggerParams) {
     for (var i = 0; i <changes.length; i++){
         var property =  changes[i].property();
         var operatorType =  changes[i].operatorType();
+        var changeType =  changes[i].changeType();
 
         // make sure to calculate on numeric
         var value =  changes[i].value();
@@ -358,18 +368,64 @@ ActionSetElementProp.prototype.run = function(triggerParams) {
         }
 
         var newValue;
-        if (operatorType== '+'){
-            newValue = oldValue + value;
+
+
+        if (operatorType== '='){
+            if (changeType== 'value'){
+                newValue = value;
+            }
+            else if (operatorType== '%'){
+                newValue = oldValue * (value/100);
+            }
+            else if (operatorType== 'variable'){
+                newValue = parseFloat(value.value());
+            }
         }
-        else if (operatorType== '%'){
-            newValue = oldValue * (value/100);
+        else if (operatorType== '+'){
+            if (changeType== 'value'){
+                newValue = oldValue + value;
+            }
+            else if (operatorType== '%'){
+                newValue = oldValue + (oldValue * (value/100));
+            }
+            else if (operatorType== 'variable'){
+                newValue = oldValue + parseFloat(value.value());
+            }
         }
-        else if (operatorType== 'set'){
-            newValue = value;
+        else if (operatorType== '-'){
+            if (changeType== 'value'){
+                newValue = oldValue - value;
+            }
+            else if (operatorType== '%'){
+                newValue = oldValue - (oldValue * (value/100));
+            }
+            else if (operatorType== 'variable'){
+                newValue = oldValue - parseFloat(value.value());
+            }
         }
-        else if (operatorType== 'variable'){
-            newValue = parseFloat(value.value());
+        else if (operatorType== '*'){
+            if (changeType== 'value'){
+                newValue = oldValue * value;
+            }
+            else if (operatorType== '%'){
+                newValue = oldValue * (oldValue * (value/100));
+            }
+            else if (operatorType== 'variable'){
+                newValue = oldValue * parseFloat(value.value());
+            }
         }
+        else if (operatorType== '/'){
+            if (changeType== 'value'){
+                newValue = oldValue / value;
+            }
+            else if (operatorType== '%'){
+                newValue = oldValue / (oldValue * (value/100));
+            }
+            else if (operatorType== 'variable'){
+                newValue = oldValue / parseFloat(value.value());
+            }
+        }
+
         //target[property](newValue);
         target.modifier().selectedTrialView[property](newValue);
     }
@@ -416,6 +472,8 @@ ActionSetElementProp.prototype.fromJS = function(data) {
     this.animate(data.animate);
     this.animationTime(data.animationTime);
     this.target(data.target);
+    this.operatorTypes(data.operatorTypes);
+    this.changeTypes(data.changeTypes);
 
     var changes = [];
     for (var i = 0 ;i <data.changes.length;i++){
@@ -457,6 +515,8 @@ ActionSetElementProp.prototype.toJS = function() {
     }
 
     return {
+        operatorTypes:this.operatorTypes,
+        changeTypes:this.changeTypes,
         type: this.type,
         target: this.target().id(),
         animate: this.animate(),
@@ -564,15 +624,53 @@ ActionJumpTo.prototype.toJS = function() {
 var ActionSetVariable = function(event) {
     this.event = event;
 
-    // serialized
-    // this.variableId = ko.observable(undefined);
-    //  this.argument = ko.observable('');
+    this.variable = ko.observable(null);
+    this.operatorType = ko.observable(null);
+    this.changeType = ko.observable(null);
+    this.value = ko.observable(null);
+    this.operatorTypes = ko.observableArray(["=", "+", "-", "*", "/"]);
+    this.changeTypes =  ko.observableArray(["value", "%","variable"]);
+    
+    var self= this;
+    
+    this.variable.subscribe(function(newVal) {
+        if (self.variable() != newVal){
+            self.operatorType(null);
+            self.changeType(null);
+            self.value(null);
+        }
+    });
+    
 
+    
+    this.operatorType.subscribe(function(newVal) {
+        if (newVal == "=") {
+            self.changeTypes(["value","%","variable"]);
+            self.value(self.variable().startValue());
+        }
+        else if (newVal == "*" || newVal == "/") {
+            self.changeTypes(["value", "variable"]);
+            self.value(1);
+        }
+        else if (newVal){
+            self.changeTypes(["value","%", "variable"]);
+            self.value(0);
+        }
+
+    });
+
+    this.changeType.subscribe(function(newVal) {
+        if (newVal == "%" && self.operatorType()=="=") {
+            self.value(100);
+        }
+        else if (newVal == "value" && self.operatorType()=="=") {
+            self.value(self.variable().startValue());
+        }
+    });
 
 };
 ActionSetVariable.prototype.type = "ActionSetVariable";
 ActionSetVariable.prototype.label = "Set Variable";
-ActionSetVariable.prototype.operatorTypes = ["Set", "Plus", "Minus", "Multiply", "Divide"];
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -590,6 +688,78 @@ ActionSetVariable.prototype.isValid = function(){
  */
 ActionSetVariable.prototype.run = function(triggerParams) {
 
+
+    var operatorType =  this.operatorType();
+    var changeType =  this.changeType();
+    // make sure to calculate on numeric
+    var value =  this.value();
+
+    // make sure to calculate on numeric
+    var oldValue = this.variable().value();
+    if (typeof oldValue  === 'string'){
+        oldValue = Number(oldValue);
+    }
+    if (typeof value  === 'string'){
+        value = Number(value);
+    }
+    var newValue;
+    
+    if (operatorType== '='){
+        if (changeType== 'value'){
+            newValue = value;
+        }
+        else if (operatorType== '%'){
+            newValue = oldValue * (value/100);
+        }
+        else if (operatorType== 'variable'){
+            newValue = parseFloat(value.value());
+        }
+    }
+    else if (operatorType== '+'){
+        if (changeType== 'value'){
+            newValue = oldValue + value;
+        }
+        else if (operatorType== '%'){
+            newValue = oldValue + (oldValue * (value/100));
+        }
+        else if (operatorType== 'variable'){
+            newValue = oldValue + parseFloat(value.value());
+        }
+    }
+    else if (operatorType== '-'){
+        if (changeType== 'value'){
+            newValue = oldValue - value;
+        }
+        else if (operatorType== '%'){
+            newValue = oldValue - (oldValue * (value/100));
+        }
+        else if (operatorType== 'variable'){
+            newValue = oldValue - parseFloat(value.value());
+        }
+    }
+    else if (operatorType== '*'){
+        if (changeType== 'value'){
+            newValue = oldValue * value;
+        }
+        else if (operatorType== '%'){
+            newValue = oldValue * (oldValue * (value/100));
+        }
+        else if (operatorType== 'variable'){
+            newValue = oldValue * parseFloat(value.value());
+        }
+    }
+    else if (operatorType== '/'){
+        if (changeType== 'value'){
+            newValue = oldValue / value;
+        }
+        else if (operatorType== '%'){
+            newValue = oldValue / (oldValue * (value/100));
+        }
+        else if (operatorType== 'variable'){
+            newValue = oldValue / parseFloat(value.value());
+        }
+    }
+    this.variable().value(newValue);
 };
 
 /**
@@ -601,6 +771,13 @@ ActionSetVariable.prototype.run = function(triggerParams) {
  */
 ActionSetVariable.prototype.setPointers = function(entitiesArr) {
 
+    var mainVariable = entitiesArr.byId[this.variable()];
+    this.variable(mainVariable);
+
+    if (entitiesArr.byId[this.value()]){
+        var valueVariable = entitiesArr.byId[this.value()];
+        this.value(valueVariable);
+    }
 };
 
 /**
@@ -609,9 +786,13 @@ ActionSetVariable.prototype.setPointers = function(entitiesArr) {
  * @returns {ActionSetVariable}
  */
 ActionSetVariable.prototype.fromJS = function(data) {
-    this.variableId(data.variableId);
+
+    this.variable(data.variable);
     this.operatorType(data.operatorType);
-    this.argument(data.argument);
+    this.changeType(data.changeType);
+    this.value(data.value);
+    this.operatorTypes(data.operatorTypes);
+    this.changeTypes(data.changeTypes);
     return this;
 };
 
@@ -620,14 +801,24 @@ ActionSetVariable.prototype.fromJS = function(data) {
  * @returns {object}
  */
 ActionSetVariable.prototype.toJS = function() {
+
+    if (this.value().id()){
+        this.value(this.value.id());
+    }
     return {
-        type: this.type,
-        variableId: this.variableId(),
+        variable: this.variable.id(),
         operatorType: this.operatorType(),
-        argument: this.argument()
+        changeType: this.changeType(),
+        value: this.value(),
+        operatorTypes: this.operatorTypes(),
+        changeTypes: this.changeTypes(),
+        type: this.type
+
     };
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 /////////////////////////////////////////////   ActionDrawRandomNumber    ////////////////////////////////////////////////
