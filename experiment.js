@@ -22,13 +22,8 @@ var Experiment = function () {
     // setup class instances for experiment functions
     this.exp_data = new ExpData();
     this.exp_data_obs = ko.observable(this.exp_data);
-    
-    this.variableOverview = new VariableOverview(this);
-    this.translations = new Translations(this);
-    this.publishingData = new PublishExperiment(this);
-    this.dataOverview = new RecordingView(this);
-    this.dataExport = new DataExport(this);
-    this.dataAnalysis = new DataAnalysis(this);
+    this.publishingData = new PublishingData(this,this.exp_data);
+    this.analysisData = new AnalysisData(this,this.exp_data);
 };
 
 

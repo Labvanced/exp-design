@@ -10,6 +10,9 @@ var ExpData = function () {
     this.groups = ko.observableArray([]).extend({sortById: null});
     this.expBlocks = ko.observableArray([]).extend({sortById: null});
     this.availableTasks  = ko.observableArray([]).extend({sortById: null});
+    
+    //TODO  need to serialize / deserialize
+    this.translations = ko.observableArray([]).extend({sortById: null});
 
     // the following variables are recorded once per subject:
     this.varSubjectId =  ko.observable();
