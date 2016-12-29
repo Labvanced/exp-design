@@ -9,6 +9,7 @@ var ExpData = function () {
     this.entities = ko.observableArray([]).extend({sortById: null});
     this.groups = ko.observableArray([]).extend({sortById: null});
     this.expBlocks = ko.observableArray([]).extend({sortById: null});
+    this.availableSessions = ko.observableArray([]).extend({sortById: null});
     this.availableTasks  = ko.observableArray([]).extend({sortById: null});
     
     //TODO  need to serialize / deserialize
@@ -82,8 +83,8 @@ ExpData.prototype.rebuildEntities = function() {
 
 ExpData.prototype.addNewSubjGroup = function() {
     var group = new SubjectGroup(this);
-    var session = new ExpSession(this);
-    group.addSession(session);
+    var name = "group_" + (this.groups().length+1);
+    group.name(name);
     this.addGroup(group);
 };
 
@@ -139,6 +140,19 @@ ExpData.prototype.addNewBlock_Refactored = function(tasks) {
     
     this.expBlocks.push(block);
 
+};
+
+ExpData.prototype.addNewSession = function(blocks) {
+
+    // add fixed instances of block into sequence
+    var session = new ExpSession(this);
+    var name= "session_"+(this.availableSessions().length+1);
+    session.name(name);
+
+    for(var i = 0;i<blocks.length;i++){
+        session.addBlock(blocks[i]);
+    }
+    this.availableSessions.push(session);
 };
 
 
