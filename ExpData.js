@@ -8,14 +8,17 @@ var ExpData = function (parentExperiment) {
     this.parentExperiment = parentExperiment;
 
     this.expData = this; // self reference for consistency with other classes..
+
+    // entities hold all instances that have an id field:
     this.entities = ko.observableArray([]).extend({sortById: null});
-    this.groups = ko.observableArray([]).extend({sortById: null});
-    this.expBlocks = ko.observableArray([]).extend({sortById: null});
-    this.availableSessions = ko.observableArray([]).extend({sortById: null});
-    this.availableTasks  = ko.observableArray([]).extend({sortById: null});
+
+    this.availableTasks  = ko.observableArray([]);
+    this.availableBlocks = ko.observableArray([]);
+    this.availableSessions = ko.observableArray([]);
+    this.availableGroups = ko.observableArray([]);
     
     //TODO  need to serialize / deserialize
-    this.translations = ko.observableArray([]).extend({sortById: null});
+    this.translations = ko.observableArray([]);
 
     // the following variables are recorded once per subject:
     this.varSubjectId =  ko.observable();
@@ -80,25 +83,22 @@ ExpData.prototype.notifyChanged = function() {
  * @param group
  */
 ExpData.prototype.addGroup = function(group) {
-    this.groups.push(group);
+    this.availableGroups.push(group);
     this.notifyChanged();
 };
 
 ExpData.prototype.rebuildEntities = function() {
     // first empty the entities list:
     this.entities([]);
-
     this.reAddEntities();
 };
 
 ExpData.prototype.addNewSubjGroup = function() {
     var group = new SubjectGroup(this);
-    var name = "group_" + (this.groups().length+1);
+    var name = "group_" + (this.availableGroups().length+1);
     group.name(name);
     this.addGroup(group);
-    this.notifyChanged();
 };
-
 
 ExpData.prototype.addTask = function(taskName) {
 
@@ -141,15 +141,10 @@ ExpData.prototype.addNewBlock_Refactored = function(tasks) {
     
     // add fixed instances of block into sequence
     var block = new ExpBlock(this);
-    var name= "block_"+(this.expBlocks().length+1);
+    var name= "block_"+(this.availableBlocks().length+1);
     block.name(name);
-
-    var subSequence = block.subSequence();
-    for(var i = 0;i<tasks.length;i++){
-        subSequence.addNewSubElement(tasks[i]);
-    }
-    
-    this.expBlocks.push(block);
+    block.subTasks(tasks);
+    this.availableBlocks.push(block);
     this.notifyChanged();
 };
 
@@ -176,6 +171,7 @@ ExpData.prototype.addNewSession = function(blocks) {
  */
 ExpData.prototype.setPointers = function() {
     var self = this;
+    var i;
     var allEntitiesArray = this.entities();
 
     // recursively call all setPointers:
@@ -186,13 +182,37 @@ ExpData.prototype.setPointers = function() {
     // relink availableTasks:
     var availableTaskIds = this.availableTasks();
     var availableTasks = [];
-    for (var i=0; i<availableTaskIds.length; i++) {
+    for (i=0; i<availableTaskIds.length; i++) {
         availableTasks.push(this.entities.byId[availableTaskIds[i]]);
     }
     this.availableTasks(availableTasks);
 
+    // relink availableBlocks:
+    var availableBlockIds = this.availableBlocks();
+    var availableBlocks = [];
+    for (i=0; i<availableBlockIds.length; i++) {
+        availableBlocks.push(this.entities.byId[availableBlockIds[i]]);
+    }
+    this.availableBlocks(availableBlocks);
+
+    // relink availableSessions:
+    var availableSessionIds = this.availableSessions();
+    var availableSessions = [];
+    for (i=0; i<availableSessionIds.length; i++) {
+        availableSessions.push(this.entities.byId[availableSessionIds[i]]);
+    }
+    this.availableSessions(availableSessions);
+
+    // relink availableGroups:
+    var availableGroupIds = this.availableGroups();
+    var availableGroups = [];
+    for (i=0; i<availableGroupIds.length; i++) {
+        availableGroups.push(this.entities.byId[availableGroupIds[i]]);
+    }
+    this.availableGroups(availableGroups);
+
     // relink variables
-    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+    for (i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varId = this[ExpData.prototype.fixedVarNames[i]]();
         var varInstance = this.entities.byId[varId];
         this[ExpData.prototype.fixedVarNames[i]](varInstance);
@@ -206,25 +226,41 @@ ExpData.prototype.setPointers = function() {
  */
 ExpData.prototype.reAddEntities = function() {
     var entitiesArr = this.entities;
-    
-    // add the groups and their child nodes to entities:
-    jQuery.each( this.groups(), function( index, elem ) {
-        // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
-            entitiesArr.push(elem);
 
+    jQuery.each( this.availableTasks(), function( index, task ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(task.id())) {
+            entitiesArr.push(task);
+        }
         // recursively make sure that all deep tree nodes are in the entities list:
-        elem.reAddEntities(entitiesArr);
+        task.reAddEntities(entitiesArr);
     } );
 
-    jQuery.each( this.availableTasks(), function( index, elem ) {
+    jQuery.each( this.availableBlocks(), function( index, block ) {
         // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
-            entitiesArr.push(elem);
+        if (!entitiesArr.byId.hasOwnProperty(block.id())) {
+            entitiesArr.push(block);
         }
+        // recursively make sure that all deep tree nodes are in the entities list:
+        block.reAddEntities(entitiesArr);
+    } );
+
+    jQuery.each( this.availableSessions(), function( index, session ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(session.id())) {
+            entitiesArr.push(session);
+        }
+        // recursively make sure that all deep tree nodes are in the entities list:
+        session.reAddEntities(entitiesArr);
+    } );
+
+    jQuery.each( this.availableGroups(), function( index, group ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(group.id()))
+            entitiesArr.push(group);
 
         // recursively make sure that all deep tree nodes are in the entities list:
-        elem.reAddEntities(entitiesArr);
+        group.reAddEntities(entitiesArr);
     } );
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
@@ -243,25 +279,16 @@ ExpData.prototype.reAddEntities = function() {
 ExpData.prototype.fromJS = function(data) {
     var self = this;
 
-    this.groups([]);
     if (data.hasOwnProperty('entities')) {
         this.entities(jQuery.map(data.entities, function (entityJson) {
-            var entity = entityFactory(entityJson, self);
-
-            switch (entityJson.type) {
-                case 'SubjectGroup':
-                    self.groups.push(entity);
-                    break;
-                case 'ExpBlock':
-                    self.expBlocks.push(entity);
-                    break;
-            }
-
-            return entity;
+            return entityFactory(entityJson, self);
         }));
     }
 
     this.availableTasks(data.availableTasks);
+    this.availableBlocks(data.availableBlocks);
+    this.availableSessions(data.availableSessions);
+    this.availableGroups(data.availableGroups);
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varName = ExpData.prototype.fixedVarNames[i];
@@ -276,29 +303,29 @@ ExpData.prototype.fromJS = function(data) {
  * @returns {object}
  */
 ExpData.prototype.toJS = function() {
+    var i;
+
     // make sure that we have an up to date global list of all entities:
     this.rebuildEntities();
 
     var sessionsPerGroup = [];
-    var groups = this.groups();
-    for (var i=0; i<groups.length; i++){
+    var groups = this.availableGroups();
+    for (i=0; i<groups.length; i++){
         sessionsPerGroup.push(groups[i].sessions().length);
     }
 
     var data = {
-        entities: jQuery.map( this.entities(), function( entity ) {
-            return entity.toJS();
-        }),
-        availableTasks: jQuery.map( this.availableTasks(),
-            function( task ) {
-                return task.id();
-            }),
-        numGroups: this.groups().length,
+        entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
+        availableTasks: jQuery.map( this.availableTasks(), function( task ) { return task.id(); }),
+        availableBlocks: jQuery.map( this.availableBlocks(), function( block ) { return block.id(); }),
+        availableSessions: jQuery.map( this.availableSessions(), function( session ) { return session.id(); }),
+        availableGroups: jQuery.map( this.availableGroups(), function( group ) { return group.id(); }),
+        numGroups: this.availableGroups().length,
         sessionsPerGroup: sessionsPerGroup
     };
 
     // add all variable ids:
-    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+    for (i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varName = ExpData.prototype.fixedVarNames[i];
         data[varName] = this[varName]().id();
     }

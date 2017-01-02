@@ -13,8 +13,7 @@ var ExpBlock = function (expData) {
     this.id = ko.observable(guid());
     this.name = ko.observable("block_1");
     this.type = "ExpBlock";
-    this.subSequence = ko.observable(new Sequence(expData));
-    this.subSequence().parent = this;
+    this.subTasks = ko.observableArray([]);
     this.editName =  ko.observable(false);
 };
 
@@ -36,9 +35,11 @@ ExpBlock.prototype.rename = function(idx,flag,data,event) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ExpBlock.prototype.setPointers = function(entitiesArr) {
-    // convert id of subSequence to actual pointer:
-    this.subSequence(entitiesArr.byId[this.subSequence()]);
-    this.subSequence().parent = this;
+    // convert ids to actual pointers:
+    this.subTasks(jQuery.map( this.subTasks(), function( id ) {
+        var subTask = entitiesArr.byId[id];
+        return subTask;
+    } ));
 };
 
 /**
@@ -48,13 +49,15 @@ ExpBlock.prototype.setPointers = function(entitiesArr) {
  */
 ExpBlock.prototype.reAddEntities = function(entitiesArr) {
     // add the direct child nodes:
-    // check if they are not already in the list:.
-    if (!entitiesArr.byId.hasOwnProperty(this.subSequence().id())) {
-        entitiesArr.push(this.subSequence());
-    }
+    jQuery.each( this.subTasks(), function( index, subTask ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(subTask.id()))
+            entitiesArr.push(subTask);
 
-    // recursively make sure that all deep tree nodes are in the entities list:
-    this.subSequence().reAddEntities(entitiesArr);
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (subTask.reAddEntities)
+            subTask.reAddEntities(entitiesArr);
+    } );
 };
 
 /**
@@ -65,8 +68,7 @@ ExpBlock.prototype.reAddEntities = function(entitiesArr) {
 ExpBlock.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
-    this.subSequence(data.subSequence);
-
+    this.subTasks(data.subTasks);
     return this;
 };
 
@@ -80,7 +82,7 @@ ExpBlock.prototype.toJS = function() {
         id: this.id(),
         name: this.name(),
         type: this.type,
-        subSequence: this.subSequence().id()
+        subTasks: jQuery.map( this.subTasks(), function( subTask ) { return subTask.id(); } )
     };
 
 };
