@@ -20,10 +20,14 @@ var Experiment = function () {
     this.category_id = ko.observable(0);
 
     // setup class instances for experiment functions
-    this.exp_data = new ExpData();
+    this.exp_data = new ExpData(this);
     this.exp_data_obs = ko.observable(this.exp_data);
     this.publishingData = new PublishingData(this,this.exp_data);
     this.analysisData = new AnalysisData(this,this.exp_data);
+
+    this.hasLocalChanges = false;
+    this.changesInTransit = false;
+    this.autoSaveEnabled = true;
 };
 
 
@@ -71,17 +75,68 @@ Experiment.prototype.finishEditing = function() {
     this.save();
 };
 
+/**
+ * should be called by the ui classes after a change was made to some sub datamodels of this expData.
+ */
+Experiment.prototype.notifyChanged = function() {
+    this.hasLocalChanges = true;
+
+    // only automatically save if there is not already a saving process in transit:
+    if (this.autoSaveEnabled && !this.changesInTransit) {
+        this.save();
+    }
+};
+
+/**
+ * save this experiment and send to server
+ */
 Experiment.prototype.save = function() {
-    console.log("update experiment " + this.exp_name());
-    var serializedExp = this.toJS();
-    uc.socket.emit('updateExperiment', serializedExp, function(response){
-        if (response.success){
-            console.log("saved experiment success");
-        }
-        else {
-            console.log("error: could not save experiment.")
-        }
-    });
+    var self = this;
+    console.log("save experiment " + this.exp_name() + " and send to server...");
+
+    try {
+        var serializedExp = this.toJS();
+        this.changesInTransit = true;
+        this.hasLocalChanges = false;
+        uc.socket.emit('updateExperiment', serializedExp, function(response){
+            if (response.success){
+                self.changesInTransit = false;
+                console.log("saved experiment success");
+                if (self.hasLocalChanges) {
+                    // restart saving process for the new local changes that were made in the meantime
+                    self.save();
+                }
+            }
+            else {
+                console.log("error: could not transmit experiment to server.");
+            }
+        });
+    }
+    catch (err) {
+        var tempDialog = $('<div><p>Error message:</p><p class="error text-danger">'+err.message+'</p></div>');
+        tempDialog.dialog({
+            modal: true,
+            title: "Error Saving Experiment",
+            resizable: false,
+            width: 300,
+            buttons: [
+                {
+                    text: "Retry",
+                    click: function () {
+                        self.toJS();
+                    }
+                },
+                {
+                    text: "Reload from Server",
+                    click: function () {
+                        window.location.reload(false);
+                        $( this ).dialog( "close" );
+                    }
+                }
+            ]
+        });
+    }
+
 };
 
 /**
@@ -117,7 +172,7 @@ Experiment.prototype.fromJS = function(data) {
     this.img_file_id(data.img_file_id);
     this.img_file_orig_name(data.img_file_orig_name);
     if (data.hasOwnProperty("exp_data")){
-        this.exp_data = new ExpData();
+        this.exp_data = new ExpData(this);
         this.exp_data.fromJS(data.exp_data);
     }
     else {

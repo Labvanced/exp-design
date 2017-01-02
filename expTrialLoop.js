@@ -201,7 +201,7 @@ ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
         var subSequence = entitiesArr.byId[subSequences[i]];
         subSequence.parent = self;
         subSequence.setFactorGroup(factorGroups[i]);
-        subSequencesObj.push(subSequence)
+        subSequencesObj.push(subSequence);
     }
     this.subSequencePerFactorGroup(subSequencesObj);
     this.subSequence(subSequencesObj[0]);
@@ -230,11 +230,6 @@ ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
     // add the direct child nodes:
     // check if they are not already in the list:
 
-    if (!entitiesArr.byId.hasOwnProperty(this.subSequence().id())) {
-        entitiesArr.push(this.subSequence());
-    }
-
-    
     if (!entitiesArr.byId.hasOwnProperty(this.trialUniqueIdVar().id())) {
         entitiesArr.push(this.trialUniqueIdVar());
     }
@@ -344,5 +339,5 @@ ExpTrialLoop.prototype.toJS = function() {
         trialOrderVar: this.trialOrderVar().id(),
 
         eventVariables: jQuery.map( this.eventVariables(), function( eventVariables ) { return eventVariables.id(); })
-    }
+    };
 };

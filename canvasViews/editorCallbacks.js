@@ -26,7 +26,11 @@ EditorCallbacks.prototype.addCallbacks = function() {
             self2.frameElementView.setCoord(ui.position.left * (1 / self2.frameView.scale()), ui.position.top * (1 / self2.frameView.scale()));
         },
         start: function(event, ui) {
-            self2.frameView.setSelectedElement(self2.dataModel)
+            self2.frameView.setSelectedElement(self2.dataModel);
+        },
+        stop: function(event, ui) {
+            self2.frameElementView.setCoord(ui.position.left * (1 / self2.frameView.scale()), ui.position.top * (1 / self2.frameView.scale()));
+            self2.dataModel.expData.notifyChanged();
         }
     });
 
@@ -65,6 +69,7 @@ EditorCallbacks.prototype.addResize = function() {
             var width = sizeInPx.width * (1 / self2.frameView.scale());
             var height = sizeInPx.height * (1 / self2.frameView.scale());
             self2.frameElementView.setWidthAndHeight(width, height);
+            self2.dataModel.expData.notifyChanged();
         },
         aspectRatio: self2.dataModel.keepAspectRatio(),
     });

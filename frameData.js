@@ -76,11 +76,6 @@ FrameData.prototype.getDeepCopy = function() {
     return deepCopy;
 };
 
-FrameData.prototype.addNewEvent = function() {
-    var event = new Event(this);
-    this.events.push(event);
-};
-
 FrameData.prototype.deleteChildEntity = function(entity) {
     var obsArr;
     if (entity instanceof Event) {

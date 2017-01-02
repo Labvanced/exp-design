@@ -4,7 +4,9 @@
  * Stores all specifications of an experiment.
  * @constructor
  */
-var ExpData = function () {
+var ExpData = function (parentExperiment) {
+    this.parentExperiment = parentExperiment;
+
     this.expData = this; // self reference for consistency with other classes..
     this.entities = ko.observableArray([]).extend({sortById: null});
     this.groups = ko.observableArray([]).extend({sortById: null});
@@ -67,11 +69,19 @@ ExpData.prototype.createVars = function() {
 };
 
 /**
+ * should be called by the ui classes after a change was made to some sub datamodels of this expData.
+ */
+ExpData.prototype.notifyChanged = function() {
+    this.parentExperiment.notifyChanged();
+};
+
+/**
  * adds a new subject group to the experiment.
  * @param group
  */
 ExpData.prototype.addGroup = function(group) {
-    return this.groups.push(group);
+    this.groups.push(group);
+    this.notifyChanged();
 };
 
 ExpData.prototype.rebuildEntities = function() {
@@ -86,6 +96,7 @@ ExpData.prototype.addNewSubjGroup = function() {
     var name = "group_" + (this.groups().length+1);
     group.name(name);
     this.addGroup(group);
+    this.notifyChanged();
 };
 
 
@@ -122,7 +133,7 @@ ExpData.prototype.addTask = function(taskName) {
     
     this.availableTasks.push(expTrialLoop);
     this.reAddEntities();
-    
+    this.notifyChanged();
 };
 
 
@@ -139,7 +150,7 @@ ExpData.prototype.addNewBlock_Refactored = function(tasks) {
     }
     
     this.expBlocks.push(block);
-
+    this.notifyChanged();
 };
 
 ExpData.prototype.addNewSession = function(blocks) {
@@ -153,147 +164,7 @@ ExpData.prototype.addNewSession = function(blocks) {
         session.addBlock(blocks[i]);
     }
     this.availableSessions.push(session);
-};
-
-
-ExpData.prototype.addNewBlock = function() {
-
-    var expTrialLoop = new ExpTrialLoop(this);
-    expTrialLoop.initNewInstance();
-    expTrialLoop.isInitialized(true);
-    //expTrialLoop.addNewFrame();
-
-   // var frame = new FrameData(this);
-   // expTrialLoop.subSequence().addNewSubElement(frame);
-
-    // define instance of block element
-    var blockElements = [
-        new StartBlock(this),
-        new TextEditorData(this),
-        new QuestionnaireEditorData(this),
-        expTrialLoop,
-        new QuestionnaireEditorData(this),
-        new TextEditorData(this),
-        new EndBlock(this)
-    ];
-
-    // define the names of each of the elements
-    var blockNames = [
-
-        'Start',
-        'Instructions',
-        'Pre-Questionaire',
-        'Trial-Loop',
-        'Post-Questionaire',
-        'Feedback',
-        'End'
-
-    ];
-
-    // add fixed instances of block into sequence
-    var block = new ExpBlock(this);
-
-
-
-    var name= "block_"+(this.expBlocks().length+1);
-    block.name(name);
-    var subSequence = block.subSequence();
-    var xPosition = -60;
-    var yPosition = 100;
-    for (var i = 0; i<blockElements.length;i++){
-        blockElements[i].name(blockNames[i]);
-        xPosition += 160;
-        blockElements[i].editorX(xPosition);
-        blockElements[i].editorY(yPosition);
-        subSequence.addNewSubElement(blockElements[i]);
-
-        if (i<blockElements.length-1) {
-            // add connection to next element:
-            var conn = new Connection(this);
-
-            // specify executeOut port:
-            var portId = null;
-            var ports = blockElements[i].portHandler.ports();
-            for (var k=0; k<ports.length; k++){
-                if (ports[k].portType() == 'executeOut'){
-                    portId = ports[k].id();
-                    break;
-                }
-            }
-            conn.conn1({
-                id: blockElements[i].id(),
-                portId: portId
-            });
-
-            if (blockNames[i] == 'Trial-Loop'){
-                // trial randomization, premade variable per exp trial loop
-                var trialUniqueId = new GlobalVar(this.expData);
-                trialUniqueId.dataType('numeric');
-                trialUniqueId.scope('trial');
-                trialUniqueId.scale('nominal');
-                trialUniqueId.name("Trial Id");
-                blockElements[i].trialUniqueIdVar(trialUniqueId);
-
-                var trialTypeIdVar = new GlobalVar(this.expData);
-                trialTypeIdVar.dataType('numeric');
-                trialTypeIdVar.scope('trial');
-                trialTypeIdVar.scale('nominal');
-                trialTypeIdVar.name("Trial Type");
-                blockElements[i].trialTypeIdVar(trialTypeIdVar);
-
-                var trialOrderVar = new GlobalVar(this.expData);
-                trialOrderVar.dataType('numeric');
-                trialOrderVar.scope('trial');
-                trialOrderVar.scale('interval');
-                trialOrderVar.name("Presentation Order");
-                blockElements[i].trialOrderVar(trialOrderVar);
-
-            }
-            // specify executeIn port:
-            var portId = null;
-            var ports = blockElements[i+1].portHandler.ports();
-            for (var k=0; k<ports.length; k++){
-                if (ports[k].portType() == 'executeIn'){
-                    portId = ports[k].id();
-                    break;
-                }
-            }
-            conn.conn2({
-                id: blockElements[i + 1].id(),
-                portId: portId
-            });
-
-            conn.parent = subSequence;
-
-            
-            subSequence.addNewSubElement(conn);
-        }
-
-    }
-
-
-
-    for (var i = 0; i<subSequence.elements().length;i++){
-
-        if (subSequence.elements()[i].type == "Connection"){
-            conn.makeConnection();
-        }
-
-    }
-
-
-    // link block into all sessions
-    var groups = this.groups();
-    for (var i = 0;i<groups.length;i++){
-        var sessions = groups[i].sessions();
-        for (var k = 0;k<sessions.length;k++){
-            sessions[k].addBlock(block);
-        }
-    }
-
-    this.expBlocks.push(block);
-
-    this.reAddEntities();
+    this.notifyChanged();
 };
 
 /**
@@ -306,10 +177,21 @@ ExpData.prototype.addNewBlock = function() {
 ExpData.prototype.setPointers = function() {
     var self = this;
     var allEntitiesArray = this.entities();
+
+    // recursively call all setPointers:
     jQuery.each( allEntitiesArray, function( index, elem ) {
         elem.setPointers(self.entities);
     } );
 
+    // relink availableTasks:
+    var availableTaskIds = this.availableTasks();
+    var availableTasks = [];
+    for (var i=0; i<availableTaskIds.length; i++) {
+        availableTasks.push(this.entities.byId[availableTaskIds[i]]);
+    }
+    this.availableTasks(availableTasks);
+
+    // relink variables
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varId = this[ExpData.prototype.fixedVarNames[i]]();
         var varInstance = this.entities.byId[varId];
@@ -337,8 +219,9 @@ ExpData.prototype.reAddEntities = function() {
 
     jQuery.each( this.availableTasks(), function( index, elem ) {
         // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
             entitiesArr.push(elem);
+        }
 
         // recursively make sure that all deep tree nodes are in the entities list:
         elem.reAddEntities(entitiesArr);
@@ -378,21 +261,7 @@ ExpData.prototype.fromJS = function(data) {
         }));
     }
 
-
-    if (data.hasOwnProperty('availableTasks')) {
-        this.availableTasks(jQuery.map(data.availableTasks, function (taskJson) {
-            var entity = entityFactory(taskJson, self);
-
-            switch (taskJson.type) {
-                case 'ExpTrialLoop':
-                    self.availableTasks.push(entity);
-                    break;
-            }
-
-            return entity;
-        }));
-    }
-
+    this.availableTasks(data.availableTasks);
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varName = ExpData.prototype.fixedVarNames[i];
@@ -421,8 +290,8 @@ ExpData.prototype.toJS = function() {
             return entity.toJS();
         }),
         availableTasks: jQuery.map( this.availableTasks(),
-            function( task ) { 
-                return task.toJS(); 
+            function( task ) {
+                return task.id();
             }),
         numGroups: this.groups().length,
         sessionsPerGroup: sessionsPerGroup
