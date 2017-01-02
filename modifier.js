@@ -378,6 +378,9 @@ Modifier.prototype.addProp = function(propName) {
                 // remove all modifications that were made to this property in any trial types:
                 this.removeModificationRecursive(this.ndimModifierTrialTypes, propName);
             }
+
+            this.expData.notifyChanged();
+
         },
         owner: this
     });

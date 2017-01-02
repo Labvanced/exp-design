@@ -27,9 +27,13 @@ EditorCallbacks.prototype.addCallbacks = function() {
         },
         start: function(event, ui) {
             self2.frameView.setSelectedElement(self2.dataModel);
+            // temporarily disable autosaving during dragging:
+            self2.dataModel.expData.parentExperiment.tempDisableAutosave = true;
         },
         stop: function(event, ui) {
             self2.frameElementView.setCoord(ui.position.left * (1 / self2.frameView.scale()), ui.position.top * (1 / self2.frameView.scale()));
+            // remove the temporary disabled autosaving:
+            self2.dataModel.expData.parentExperiment.tempDisableAutosave = false;
             self2.dataModel.expData.notifyChanged();
         }
     });
@@ -69,9 +73,17 @@ EditorCallbacks.prototype.addResize = function() {
             var width = sizeInPx.width * (1 / self2.frameView.scale());
             var height = sizeInPx.height * (1 / self2.frameView.scale());
             self2.frameElementView.setWidthAndHeight(width, height);
-            self2.dataModel.expData.notifyChanged();
         },
         aspectRatio: self2.dataModel.keepAspectRatio(),
+        start: function(event, ui) {
+            // temporarily disable autosaving during dragging:
+            self2.dataModel.expData.parentExperiment.tempDisableAutosave = true;
+        },
+        stop: function(event, ui) {
+            // remove the temporary disabled autosaving:
+            self2.dataModel.expData.parentExperiment.tempDisableAutosave = false;
+            self2.dataModel.expData.notifyChanged();
+        }
     });
 
 };

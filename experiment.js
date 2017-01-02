@@ -28,6 +28,7 @@ var Experiment = function () {
     this.hasLocalChanges = false;
     this.changesInTransit = false;
     this.autoSaveEnabled = true;
+    this.tempDisableAutosave = false;
 };
 
 
@@ -82,7 +83,7 @@ Experiment.prototype.notifyChanged = function() {
     this.hasLocalChanges = true;
 
     // only automatically save if there is not already a saving process in transit:
-    if (this.autoSaveEnabled && !this.changesInTransit) {
+    if (this.autoSaveEnabled && !this.tempDisableAutosave && !this.changesInTransit) {
         this.save();
     }
 };
