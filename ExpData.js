@@ -137,13 +137,12 @@ ExpData.prototype.addTask = function(taskName) {
 };
 
 
-ExpData.prototype.addNewBlock_Refactored = function(tasks) {
+ExpData.prototype.addNewBlock_Refactored = function() {
     
     // add fixed instances of block into sequence
     var block = new ExpBlock(this);
     var name= "block_"+(this.availableBlocks().length+1);
     block.name(name);
-    block.subTasks(tasks);
     this.availableBlocks.push(block);
     this.notifyChanged();
 };

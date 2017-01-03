@@ -27,6 +27,19 @@ ExpBlock.prototype.rename = function(idx,flag,data,event) {
     }
 };
 
+
+ExpBlock.prototype.addTask = function(task) {
+    this.subTasks.push(task)
+};
+
+ExpBlock.prototype.removeTask = function(task) {
+    var idx = this.subTasks().indexOf(task);
+    if (idx>-1){
+        this.subTasks.splice(idx,1);
+    }
+};
+
+
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
