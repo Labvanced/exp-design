@@ -147,16 +147,12 @@ ExpData.prototype.addNewBlock_Refactored = function() {
     this.notifyChanged();
 };
 
-ExpData.prototype.addNewSession = function(blocks) {
+ExpData.prototype.addNewSession = function() {
 
     // add fixed instances of block into sequence
     var session = new ExpSession(this);
     var name= "session_"+(this.availableSessions().length+1);
     session.name(name);
-
-    for(var i = 0;i<blocks.length;i++){
-        session.addBlock(blocks[i]);
-    }
     this.availableSessions.push(session);
     this.notifyChanged();
 };
