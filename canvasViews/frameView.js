@@ -19,6 +19,14 @@ var FrameView = function(divContainer,frameData,parent,type) {
 
     this.scale = ko.observable(1);
 
+    this.scale.subscribe(function(scale){
+        if (self.type== "editorView") {
+            $(self.divContainer).css({
+                "width": self.frameData.frameWidth() * scale + 4,
+                "height": self.frameData.frameHeight() * scale + 4
+            });
+        }
+    });
 
 
     this.selectedTrialType = ko.observable({ type: 'default'});
