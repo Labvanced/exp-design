@@ -45,13 +45,6 @@ SubjectGroup.prototype.rename = function(idx,flag,data,event) {
     }
 };
 
-SubjectGroup.prototype.createSession = function() {
-    var session = new ExpSession(this.expData);
-    var name = "session_" + (this.sessions().length+1);
-    session.name(name);
-    this.addSession(session);
-};
-
 SubjectGroup.prototype.renameSession = function(idx,flag) {
 
     if (flag == "true"){
