@@ -75,11 +75,21 @@ BgFrameElement.prototype.drawBg = function() {
         this.stage.removeChild(child);
     }
 
+    var grid_scale = 1;
+    if (this.scale() > 3) {
+        grid_scale = 0.1;
+    }
+    if (this.scale() < 0.1) {
+        grid_scale = 10;
+    }
+
     var bgShape = new createjs.Shape();
     bgShape.name = "background";
-    bgShape.graphics.beginBitmapFill(this.bgImg).drawRect(0,0,this.width(), this.height());
+    bgShape.graphics.beginBitmapFill(this.bgImg).drawRect(0,0,this.width()/grid_scale, this.height()/grid_scale);
 
     var container = new createjs.Container();
+    container.scaleX = this.scale() * grid_scale;
+    container.scaleY = this.scale() * grid_scale;
     container.name = "background";
     container.addChild(bgShape);
 

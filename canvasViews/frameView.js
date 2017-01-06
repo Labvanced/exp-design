@@ -56,6 +56,8 @@ FrameView.prototype.init = function(size) {
             }
             self.scale( newScale );
 
+            e.preventDefault();
+
             return false;
         }
 
@@ -217,7 +219,7 @@ FrameView.prototype.addElem = function(elementData,index) {
 FrameView.prototype.updateElements = function() {
 
     if (this.type!="sequenceView"){
-         this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
+        this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
     }
     var elements = this.viewElements();
     for (var i = 0; i< elements.length; i++){
