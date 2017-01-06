@@ -37,6 +37,12 @@ var FrameElement= function(expData) {
 
 FrameElement.prototype.addContent = function(element){
     this.content(element);
+    if (element.initWidth) {
+        this.editorWidth(element.initWidth);
+    }
+    if (element.initHeight) {
+        this.editorHeight(element.initHeight);
+    }
     element.parent = this;
 };
 

@@ -10,20 +10,22 @@ var ScaleElement= function(expData) {
     this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
     this.startChoice= ko.observable(1);
     this.endChoice= ko.observable(5);
-    this.startLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">start label</span></span>');
-    this.endLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">end label</span></span>');
+    this.startLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">Left Label</span></span>');
+    this.endLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">Right Label</span></span>');
     this.choices= ko.observableArray([1,2,3,4,5]);
     this.selected = ko.observable(false);
     this.variable = ko.observable();
     this.answer = ko.observableArray([]);
     this.showNums = ko.observable(true);
-    this.margin = ko.observable('0pt');
+    this.margin = ko.observable('2pt');
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
 };
 
 ScaleElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
+ScaleElement.prototype.initWidth = 340;
+ScaleElement.prototype.initHeight = 140;
 
 ScaleElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
