@@ -6,7 +6,7 @@ var DisplayTextElement = function(expData) {
 
     //serialized
     this.type = "DisplayTextElement";
-    this.text = ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">You can display your custom text here.</span></span>');
+    this.text = ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">You can display your custom text here.</span></span>');
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));

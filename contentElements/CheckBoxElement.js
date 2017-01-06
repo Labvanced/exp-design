@@ -6,7 +6,7 @@ var CheckBoxElement= function(expData) {
 
     //serialized
     this.type= "CheckBoxElement";
-    this.questionText= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
 
     this.choices= ko.observableArray([ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">check</span></span>')]);
     this.answer = ko.observableArray([false]);

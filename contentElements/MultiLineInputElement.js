@@ -6,7 +6,7 @@ var MultiLineInputElement = function(expData) {
 
     //serialized
     this.type= "MultiLineInputElement";
-    this.questionText= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
     this.selected = ko.observable(false);
     this.variable = ko.observable();
     this.answer = ko.observable("");

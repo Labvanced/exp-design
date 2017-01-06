@@ -7,7 +7,7 @@ var ScaleElement= function(expData) {
     //serialized
     this.type= "ScaleElement";
     this.id = ko.observable(guid());
-    this.questionText= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
     this.startChoice= ko.observable(1);
     this.endChoice= ko.observable(5);
     this.startLabel= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">start label</span></span>');
