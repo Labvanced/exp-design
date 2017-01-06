@@ -46,6 +46,7 @@ var ExpTrialLoop = function (expData) {
     this.shape = "square";
     this.label = "Experiment";
     this.portTypes = ["executeIn", "executeOut"];
+    this.selectionSpec = ko.observable(null);
 
     this.totalNrTrials = ko.computed(function() {
 
@@ -170,6 +171,7 @@ ExpTrialLoop.prototype.selectTrialType = function(selectionSpec) {
         this.subSequence(selectedSubSequence);
     }
     this.subSequence().selectTrialType(selectionSpec);
+    this.selectionSpec(selectionSpec);
 };
 
 /**
