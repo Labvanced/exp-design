@@ -129,6 +129,7 @@ function createScaleComponents() {
                     this.margin = dataModel.margin;
                     this.startChoice = dataModel.startChoice;
                     this.choices = dataModel.choices;
+                    this.variable = dataModel.variable;
                     this.startLabel = dataModel.startLabel;
                     this.endLabel = dataModel.endLabel;
                 };
@@ -149,6 +150,7 @@ function createScaleComponents() {
                     this.startLabel = dataModel.startLabel;
                     this.endLabel = dataModel.endLabel;
                     this.choices = dataModel.choices;
+                    this.variable = dataModel.variable;
                     this.answer = dataModel.answer;
                     this.showNums = dataModel.showNums;
                     this.margin = dataModel.margin;
