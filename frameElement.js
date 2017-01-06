@@ -12,7 +12,7 @@ var FrameElement= function(expData) {
     // serialized
     this.editorX = ko.observable(100).extend({ numeric: 2 });
     this.editorY = ko.observable(100).extend({ numeric: 2 });
-    this.editorWidth = ko.observable(320).extend({ numeric: 2 });
+    this.editorWidth = ko.observable(360).extend({ numeric: 2 });
     this.editorHeight = ko.observable(180).extend({ numeric: 2 });
     this.contentScaling = ko.observable(1).extend({ numeric: 2 });
     this.anchorPointX = ko.observable('low');
