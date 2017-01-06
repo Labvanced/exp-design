@@ -27,7 +27,7 @@ ScaleElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"]
 
 ScaleElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[2]);
+    globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[2]);
     globalVar.name(this.parent.name());
