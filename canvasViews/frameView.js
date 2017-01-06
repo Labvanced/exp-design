@@ -49,10 +49,10 @@ FrameView.prototype.init = function(size) {
             var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
             var oldScale = self.scale();
             if (delta>0){
-                var newScale = oldScale * (1+delta/10.0);
+                var newScale = oldScale * (1+delta/20.0);
             }
             else {
-                var newScale = oldScale / (1-delta/10.0);
+                var newScale = oldScale / (1-delta/20.0);
             }
             self.scale( newScale );
 

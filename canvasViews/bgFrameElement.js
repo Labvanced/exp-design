@@ -13,6 +13,8 @@ var BgFrameElement = function(frameData,editor) {
     this.stage = new createjs.Stage(this.canvas);
     this.bgImg = new Image();
     this.bgImg.src = '/resources/bgGrid.png';
+    this.bgImgSubgrid = new Image();
+    this.bgImgSubgrid.src = '/resources/bgGrid3.png';
 
     this.dataModel= frameData;
     this.editor = editor;
@@ -38,9 +40,6 @@ var BgFrameElement = function(frameData,editor) {
         this.bgImg.addEventListener('load', function() {
             self.drawBg();
         });
-        this.bgImg.addEventListener('error', function() {
-            alert('error')
-        })
     }
 
     createjs.Ticker.addEventListener("tick", function() {
@@ -75,17 +74,33 @@ BgFrameElement.prototype.drawBg = function() {
         this.stage.removeChild(child);
     }
 
-    var grid_scale = 1;
-    if (this.scale() > 3) {
+    console.log(this.scale());
+    var grid_scale = null;
+    var gridImgType = null;
+    if (this.scale() > 1.7) { // very zoomed in
         grid_scale = 0.1;
+        gridImgType = this.bgImg;
     }
-    if (this.scale() < 0.1) {
+    else if (this.scale() > 0.7) {
+        grid_scale = 1;
+        gridImgType = this.bgImgSubgrid;
+    }
+    else if (this.scale() > 0.3) {
+        grid_scale = 1;
+        gridImgType = this.bgImg;
+    }
+    else if (this.scale() > 0.1) {
         grid_scale = 10;
+        gridImgType = this.bgImgSubgrid;
+    }
+    else { // this.scale() <= 0.1 // very zoomed out
+        grid_scale = 10;
+        gridImgType = this.bgImg;
     }
 
     var bgShape = new createjs.Shape();
     bgShape.name = "background";
-    bgShape.graphics.beginBitmapFill(this.bgImg).drawRect(0,0,this.width()/grid_scale, this.height()/grid_scale);
+    bgShape.graphics.beginBitmapFill(gridImgType).drawRect(0,0,this.width()/grid_scale, this.height()/grid_scale);
 
     var container = new createjs.Container();
     container.scaleX = this.scale() * grid_scale;
