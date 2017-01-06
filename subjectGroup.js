@@ -13,6 +13,7 @@ var SubjectGroup = function (expData) {
     this.name = ko.observable("group_1");
     this.type = "SubjectGroup";
     this.sessions = ko.observableArray([]).extend({sortById: null});
+    this.sessionTimeData = ko.observableArray([]).extend({sortById: null});
     this.editName =  ko.observable(false);
     
     this.genderRequirement = ko.observable('all');
@@ -32,6 +33,9 @@ SubjectGroup.prototype.country_list = ["Afghanistan","Albania","Algeria","Andorr
 
 
 SubjectGroup.prototype.addSession = function(session) {
+    var sessionTimeSettings  = new SessionTimeData(this.expData);
+    this.sessionTimeData.push(sessionTimeSettings);
+    
     return this.sessions.push(session);
 };
 
@@ -57,6 +61,7 @@ SubjectGroup.prototype.renameSession = function(idx,flag) {
 
 
 SubjectGroup.prototype.removeSession= function(idx) {
+    this.sessionTimeData.splice(idx,1);
     this.sessions.splice(idx,1);
 };
 
@@ -70,6 +75,10 @@ SubjectGroup.prototype.removeSession= function(idx) {
 SubjectGroup.prototype.setPointers = function(entitiesArr) {
     // convert ids to actual pointers:
     this.sessions(jQuery.map( this.sessions(), function( id ) {
+        return entitiesArr.byId[id];
+    } ));
+
+    this.sessionTimeData(jQuery.map( this.sessionTimeData(), function( id ) {
         return entitiesArr.byId[id];
     } ));
 };
@@ -90,6 +99,16 @@ SubjectGroup.prototype.reAddEntities = function(entitiesArr) {
         // recursively make sure that all deep tree nodes are in the entities list:
         elem.reAddEntities(entitiesArr);
     } );
+
+    // add the direct child nodes:
+    jQuery.each( this.sessionTimeData(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+            entitiesArr.push(elem);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        elem.reAddEntities(entitiesArr);
+    } );
 };
 
 /**
@@ -101,6 +120,7 @@ SubjectGroup.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
     this.sessions(data.sessions);
+    this.sessionTimeData(data.sessionTimeData);
     
     this.genderRequirement(data.genderRequirement);
     this.ageRequirement(data.ageRequirement);
@@ -124,7 +144,8 @@ SubjectGroup.prototype.toJS = function() {
         countryRequirement: this.countryRequirement(),
         languageRequirement: this.languageRequirement(),
         selfDefinedRequirements: this.selfDefinedRequirements(),
-        sessions: jQuery.map( this.sessions(), function( elem ) { return elem.id(); } )
+        sessions: jQuery.map( this.sessions(), function( elem ) { return elem.id(); } ),
+        sessionTimeData: jQuery.map( this.sessionTimeData(), function( elem ) { return elem.id(); } )
     };
 };
 

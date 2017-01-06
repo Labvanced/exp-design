@@ -12,8 +12,8 @@ var ExpSession = function (expData) {
     this.id = ko.observable(guid());
     this.name = ko.observable("session_1");
     this.type = "ExpSession";
+    this.blockRandomization = ko.observable('fixed');
     this.blocks = ko.observableArray([]).extend({sortById: null});
-    this.editName =  ko.observable(false);
 };
 
 ExpSession.prototype.addBlock = function(block) {
@@ -34,17 +34,6 @@ ExpSession.prototype.removeBlock = function(data,event) {
         this.blocks(tmpArr);
     }
 
-
-};
-
-ExpSession.prototype.rename = function(idx,flag,data,event) {
-    event.stopImmediatePropagation();
-    if (flag == "true"){
-        this.editName(true);
-    }
-    else if (flag == "false"){
-        this.editName(false);
-    }
 
 };
 
@@ -88,6 +77,7 @@ ExpSession.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
     this.blocks(data.blocks);
+    this.blockRandomization(data.blockRandomization);
     return this;
 };
 
@@ -101,6 +91,7 @@ ExpSession.prototype.toJS = function() {
         id: this.id(),
         name: this.name(),
         type: this.type,
+        blockRandomization:this.blockRandomization(),
         blocks: jQuery.map( this.blocks(), function( elem ) { return elem.id(); } )
     };
 
