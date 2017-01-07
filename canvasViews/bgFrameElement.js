@@ -11,10 +11,12 @@ var BgFrameElement = function(frameData,editor) {
     $(this.div).append(this.canvas);
     this.canvas.id = "canvasBG";
     this.stage = new createjs.Stage(this.canvas);
-    this.bgImg = new Image();
-    this.bgImg.src = '/resources/bgGrid.png';
-    this.bgImgSubgrid = new Image();
-    this.bgImgSubgrid.src = '/resources/bgGrid3.png';
+    this.bgImgSubgrid10 = new Image();
+    this.bgImgSubgrid10.src = '/resources/bgGridSubgrid10.png';
+    this.bgImgSubgrid2 = new Image();
+    this.bgImgSubgrid2.src = '/resources/bgGridSubgrid2.png';
+    this.bgImgSubgrid5 = new Image();
+    this.bgImgSubgrid5.src = '/resources/bgGridSubgrid5.png';
 
     this.dataModel= frameData;
     this.editor = editor;
@@ -33,14 +35,18 @@ var BgFrameElement = function(frameData,editor) {
 
     this.update();
 
-    if (this.bgImg.complete) {
-        this.drawBg();
-    }
-    else {
-        this.bgImg.addEventListener('load', function() {
+
+    this.drawBg();
+
+        this.bgImgSubgrid10.addEventListener('load', function() {
             self.drawBg();
         });
-    }
+        this.bgImgSubgrid5.addEventListener('load', function() {
+            self.drawBg();
+        });
+        this.bgImgSubgrid2.addEventListener('load', function() {
+            self.drawBg();
+        });
 
     createjs.Ticker.addEventListener("tick", function() {
         self.stage.update();
@@ -62,54 +68,76 @@ BgFrameElement.prototype.update = function() {
         "height": this.height() * self.scale()
     });
 
-    if (this.bgImg.complete) {
-        this.drawBg();
-    }
+    this.drawBg();
 
 };
 
 BgFrameElement.prototype.drawBg = function() {
-    var child= this.stage.getChildByName("background");
-    if (child){
-        this.stage.removeChild(child);
-    }
 
-    console.log(this.scale());
-    var grid_scale = null;
-    var gridImgType = null;
-    if (this.scale() > 1.7) { // very zoomed in
-        grid_scale = 0.1;
-        gridImgType = this.bgImg;
-    }
-    else if (this.scale() > 0.7) {
-        grid_scale = 1;
-        gridImgType = this.bgImgSubgrid;
-    }
-    else if (this.scale() > 0.3) {
-        grid_scale = 1;
-        gridImgType = this.bgImg;
-    }
-    else if (this.scale() > 0.1) {
-        grid_scale = 10;
-        gridImgType = this.bgImgSubgrid;
-    }
-    else { // this.scale() <= 0.1 // very zoomed out
-        grid_scale = 10;
-        gridImgType = this.bgImg;
-    }
+    if (this.bgImgSubgrid10.complete && this.bgImgSubgrid5.complete && this.bgImgSubgrid2.complete) {
 
-    var bgShape = new createjs.Shape();
-    bgShape.name = "background";
-    bgShape.graphics.beginBitmapFill(gridImgType).drawRect(0,0,this.width()/grid_scale, this.height()/grid_scale);
+        var child = this.stage.getChildByName("background");
+        if (child) {
+            this.stage.removeChild(child);
+        }
 
-    var container = new createjs.Container();
-    container.scaleX = this.scale() * grid_scale;
-    container.scaleY = this.scale() * grid_scale;
-    container.name = "background";
-    container.addChild(bgShape);
+        //console.log(this.scale());
+        var grid_scale = null;
+        var gridImgType = null;
+        if (this.scale() > 37) { // very zoomed in
+            grid_scale = 0.01;
+            gridImgType = this.bgImgSubgrid2;
+        }
+        else if (this.scale() > 17.2) {
+            grid_scale = 0.1;
+            gridImgType = this.bgImgSubgrid10;
+        }
+        else if (this.scale() > 8) {
+            grid_scale = 0.1;
+            gridImgType = this.bgImgSubgrid5;
+        }
+        else if (this.scale() > 3.7) {
+            grid_scale = 0.1;
+            gridImgType = this.bgImgSubgrid2;
+        }
+        else if (this.scale() > 1.72) {
+            grid_scale = 1;
+            gridImgType = this.bgImgSubgrid10;
+        }
+        else if (this.scale() > 0.8) {
+            grid_scale = 1;
+            gridImgType = this.bgImgSubgrid5;
+        }
+        else if (this.scale() > 0.37) {
+            grid_scale = 1;
+            gridImgType = this.bgImgSubgrid2;
+        }
+        else if (this.scale() > 0.172) {
+            grid_scale = 10;
+            gridImgType = this.bgImgSubgrid10;
+        }
+        else if (this.scale() > 0.08) {
+            grid_scale = 10;
+            gridImgType = this.bgImgSubgrid5;
+        }
+        else { // this.scale() <= 0.08 // very zoomed out
+            grid_scale = 10;
+            gridImgType = this.bgImgSubgrid2;
+        }
 
-    this.stage.addChildAt(container, 0);
-    this.stage.update();
+        var bgShape = new createjs.Shape();
+        bgShape.name = "background";
+        bgShape.graphics.beginBitmapFill(gridImgType).drawRect(0, 0, this.width() / grid_scale, this.height() / grid_scale);
+
+        var container = new createjs.Container();
+        container.scaleX = this.scale() * grid_scale;
+        container.scaleY = this.scale() * grid_scale;
+        container.name = "background";
+        container.addChild(bgShape);
+
+        this.stage.addChildAt(container, 0);
+        this.stage.update();
+    }
 };
 
 
