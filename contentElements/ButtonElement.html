@@ -1,12 +1,12 @@
 <template id="button-editview-template">
     Button Text:
-    <input style="max-width:50%" type="text" data-bind="textInput: buttonText" class="taskeditor-input" placeholder="Button Text">
+    <input style="max-width:50%" type="text" data-bind="textInput: dataModel.modifier().selectedTrialView.buttonText" class="taskeditor-input" placeholder="Button Text">
 </template>
 
 <template id="button-preview-template">
     <div class="ok-button" style="position: absolute; left: 0; top:0; bottom: 0; right: 0;">
         <div style="display: table; width:100%; height: 100%;">
-            <span data-bind="text: buttonText" style="display: table-cell; vertical-align: middle; text-align: center;">Button</span>
+            <span data-bind="text: dataModel.modifier().selectedTrialView.buttonText" style="display: table-cell; vertical-align: middle; text-align: center;">Button</span>
         </div>
     </div>
 </template>
@@ -14,7 +14,7 @@
 <template id="button-playerview-template">
     <div class="ok-button" style="position: absolute; left: 0; top:0; bottom: 0; right: 0;">
         <div style="display: table; width:100%; height: 100%;">
-            <span data-bind="text: buttonText" style="display: table-cell; vertical-align: middle; text-align: center;">Button</span>
+            <span data-bind="text: dataModel.modifier().selectedTrialView.buttonText" style="display: table-cell; vertical-align: middle; text-align: center;">Button</span>
         </div>
     </div>
 </template>

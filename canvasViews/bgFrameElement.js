@@ -38,15 +38,15 @@ var BgFrameElement = function(frameData,editor) {
 
     this.drawBg();
 
-        this.bgImgSubgrid10.addEventListener('load', function() {
-            self.drawBg();
-        });
-        this.bgImgSubgrid5.addEventListener('load', function() {
-            self.drawBg();
-        });
-        this.bgImgSubgrid2.addEventListener('load', function() {
-            self.drawBg();
-        });
+    this.bgImgSubgrid10.addEventListener('load', function() {
+        self.drawBg();
+    });
+    this.bgImgSubgrid5.addEventListener('load', function() {
+        self.drawBg();
+    });
+    this.bgImgSubgrid2.addEventListener('load', function() {
+        self.drawBg();
+    });
 
     createjs.Ticker.addEventListener("tick", function() {
         self.stage.update();

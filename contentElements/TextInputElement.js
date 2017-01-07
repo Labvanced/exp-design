@@ -30,12 +30,18 @@ TextInputElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
+    this.modifier().setPointers(entitiesArr);
 };
 
 TextInputElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
+    this.modifier().reAddEntities(entitiesArr);
+};
+
+TextInputElement.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
 };
 
 TextInputElement.prototype.toJS = function() {
@@ -47,7 +53,8 @@ TextInputElement.prototype.toJS = function() {
         type: this.type,
         questionText: this.questionText(),
         variable: variableId,
-        answer: this.answer()
+        answer: this.answer(),
+        modifier: this.modifier().toJS()
     };
 };
 
@@ -56,6 +63,8 @@ TextInputElement.prototype.fromJS = function(data) {
     this.questionText(data.questionText);
     this.variable(data.variable);
     this.answer(data.answer);
+    this.modifier(new Modifier(this.expData, this));
+    this.modifier().fromJS(data.modifier);
 };
 
 

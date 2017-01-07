@@ -12,7 +12,6 @@ var RangeElement= function(expData) {
     this.startLabel= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">start label</span></span>');
     this.endLabel= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">end label</span></span>');
     this.answer = ko.observable(1);
-    this.newPage = ko.observable(false);
     this.selected = ko.observable(false);
     this.variable = ko.observable();
 
@@ -37,12 +36,18 @@ RangeElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
+    this.modifier().setPointers(entitiesArr);
 };
 
 RangeElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
+    this.modifier().reAddEntities(entitiesArr);
+};
+
+RangeElement.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
 };
 
 RangeElement.prototype.toJS = function() {
@@ -59,7 +64,8 @@ RangeElement.prototype.toJS = function() {
         startLabel: this.startLabel(),
         endLabel: this.endLabel(),
         variable: variableId,
-        answer: this.answer()
+        answer: this.answer(),
+        modifier: this.modifier().toJS()
     };
 };
 
@@ -72,6 +78,8 @@ RangeElement.prototype.fromJS = function(data) {
     this.endLabel(data.endLabel);
     this.variable(data.variable);
     this.answer(data.answer);
+    this.modifier(new Modifier(this.expData, this));
+    this.modifier().fromJS(data.modifier);
 };
 
 
@@ -135,7 +143,6 @@ function createRangeComponents() {
                     this.startLabel = dataModel.startLabel;
                     this.endLabel = dataModel.endLabel;
                     this.answer = dataModel.answer;
-                    this.newPage = dataModel.newPage;
                 };
                 return new viewModel(dataModel);
             }

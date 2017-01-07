@@ -30,7 +30,6 @@ CheckBoxElement.prototype.changeCheck = function(index) {
     }
 };
 
-
 CheckBoxElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[3]);
@@ -50,12 +49,19 @@ CheckBoxElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
+
+    this.modifier().setPointers(entitiesArr);
 };
 
 CheckBoxElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
+    this.modifier().reAddEntities(entitiesArr);
+};
+
+CheckBoxElement.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
 };
 
 CheckBoxElement.prototype.toJS = function() {
@@ -74,7 +80,8 @@ CheckBoxElement.prototype.toJS = function() {
         questionText: this.questionText(),
         choices: choices,
         variable: variableId,
-        answer: this.answer()
+        answer: this.answer(),
+        modifier: this.modifier().toJS()
     };
 };
 
@@ -84,6 +91,8 @@ CheckBoxElement.prototype.fromJS = function(data) {
     this.choices(data.choices);
     this.variable(data.variable);
     this.answer(data.answer);
+    this.modifier(new Modifier(this.expData, this));
+    this.modifier().fromJS(data.modifier);
 };
 
 console.log("register checkbox element edit...");

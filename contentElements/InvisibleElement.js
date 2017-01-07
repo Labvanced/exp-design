@@ -12,25 +12,32 @@ var InvisibleElement= function(expData) {
 
 };
 
-InvisibleElement.prototype.modifiableProp = ["questionText"];
+InvisibleElement.prototype.modifiableProp = [];
 
 InvisibleElement.prototype.setPointers = function(entitiesArr) {
-
+    this.modifier().setPointers(entitiesArr);
 };
 
 InvisibleElement.prototype.reAddEntities = function(entitiesArr) {
+    this.modifier().reAddEntities(entitiesArr);
+};
 
+InvisibleElement.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
 };
 
 InvisibleElement.prototype.toJS = function() {
 
     return {
-        type: this.type
+        type: this.type,
+        modifier: this.modifier().toJS()
     };
 };
 
 InvisibleElement.prototype.fromJS = function(data) {
     this.type=data.type;
+    this.modifier(new Modifier(this.expData, this));
+    this.modifier().fromJS(data.modifier);
 };
 
 console.log("register invisible element edit...");

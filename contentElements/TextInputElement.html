@@ -1,12 +1,6 @@
 <template id='text-input-editview-template'>
     <div class="panel-body" style="height: 100%; margin-top: -10px">
     <div>
-        <span>Element Tag:</span>
-        <br>
-        <input style="max-width:50%;" type="text" data-bind="textInput: $parent.name">
-    </div>
-    <br>
-    <div>
         <span style="display: inline-block">Question Text</span>
         <span style="display: inline-block"><img style="cursor: pointer" width="20" height="20" src="/resources/edit.png" data-bind="click: focus"></span>
     </div>
@@ -15,7 +9,7 @@
 </template>
 
 <template id='text-input-preview-template'>
-    <div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: 'afterkeydown'">
+    <div class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
         <p>Your Question</p>
     </div>
     <br>
@@ -26,7 +20,7 @@
 </template>
 
 <template id='text-input-playerview-template'>
-    <div data-bind="html: questionText"></div>
+    <div data-bind="html: dataModel.modifier().selectedTrialView.questionText"></div>
     <br>
     <div>
         <input style="position:relative;left: 0%; max-width:50%" type="text" class="form-control" placeholder="Participant Answer" data-bind="textInput: answer">

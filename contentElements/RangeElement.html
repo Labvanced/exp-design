@@ -15,13 +15,13 @@
 </template>
 
 <template id="range-preview-template">
-    <div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: 'afterkeydown'">
+    <div class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
         <p>Your Question</p>
     </div>
     <br>
     <div>
-        <div style="float: left;" class="notDraggable" data-bind="wysiwyg: startLabel, valueUpdate: afterkeydown"></div>
-        <div style="float: right; margin-right: 25%;" class="notDraggable" data-bind="wysiwyg: endLabel, valueUpdate: afterkeydown"></div>
+        <div style="float: left;" class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.startLabel, valueUpdate: afterkeydown"></div>
+        <div style="float: right; margin-right: 25%;" class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.endLabel, valueUpdate: afterkeydown"></div>
         <br><br>
             <span style="display: inline-block; width: 80%">
                 <span style="margin-right: auto; margin-top: 1%; float: left" data-bind="text: minChoice"></span>
@@ -34,11 +34,11 @@
 </template>
 
 <template id="range-playerview-template">
-    <div style="font-size: 200%" data-bind="text: questionText"></div>
+    <div style="font-size: 200%" data-bind="text: dataModel.modifier().selectedTrialView.questionText"></div>
     <br>
     <div>
-        <span style="float: left;" data-bind="text: startLabel"></span>
-        <span style="float: right; margin-right: 25%;" data-bind="text: endLabel"></span>
+        <span style="float: left;" data-bind="text: dataModel.modifier().selectedTrialView.startLabel"></span>
+        <span style="float: right; margin-right: 25%;" data-bind="text: dataModel.modifier().selectedTrialView.endLabel"></span>
         <br><br>
         <span style="display: inline-block; width: 80%">
             <span style="margin-right: auto; margin-top: 1%; float: left" data-bind="text: minChoice"></span>
@@ -47,9 +47,6 @@
         </span>
         <br><br>
         <output style="margin-left: 37% !important;" data-bind="text: answer"></output>
-    </div>
-    <div data-bind="visible: newPage">
-        <img style="float: right" src="/resources/next.png">
     </div>
     <br>
 </template>

@@ -24,7 +24,7 @@ var ImageElement= function(expData) {
             return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
         else {
-            return false
+            return false;
         }
     }, this);
 
@@ -32,7 +32,7 @@ var ImageElement= function(expData) {
 
 
 ImageElement.prototype.dataType =      [ "string", "string", "string","string"];
-ImageElement.prototype.modifiableProp = ["name","file_id","file_orig_name", "stretchImageToFitBoundingBox"];
+ImageElement.prototype.modifiableProp = ["file_id","file_orig_name", "stretchImageToFitBoundingBox"];
 ImageElement.prototype.initWidth = 300;
 ImageElement.prototype.initHeight = 200;
 

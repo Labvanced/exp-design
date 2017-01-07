@@ -40,12 +40,19 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
+
+    this.modifier().setPointers(entitiesArr);
 };
 
 MultipleChoiceElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
+    this.modifier().reAddEntities(entitiesArr);
+};
+
+MultipleChoiceElement.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
 };
 
 MultipleChoiceElement.prototype.toJS = function() {
@@ -64,7 +71,8 @@ MultipleChoiceElement.prototype.toJS = function() {
         questionText: this.questionText(),
         choices: choices,
         variable: variableId,
-        answer: this.answer()
+        answer: this.answer(),
+        modifier: this.modifier().toJS()
     };
 };
 
@@ -74,6 +82,8 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
     this.choices(data.choices);
     this.variable(data.variable);
     this.answer(data.answer);
+    this.modifier(new Modifier(this.expData, this));
+    this.modifier().fromJS(data.modifier);
 };
 
 function createMultipleChoiceComponents() {

@@ -40,12 +40,18 @@ ScaleElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
+    this.modifier().setPointers(entitiesArr);
 };
 
 ScaleElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
+    this.modifier().reAddEntities(entitiesArr);
+};
+
+ScaleElement.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
 };
 
 ScaleElement.prototype.toJS = function() {
@@ -64,7 +70,8 @@ ScaleElement.prototype.toJS = function() {
         endLabel: this.endLabel(),
         choices: this.choices(),
         variable: variableId,
-        answer: this.answer()
+        answer: this.answer(),
+        modifier: this.modifier().toJS()
     };
 };
 
@@ -79,6 +86,8 @@ ScaleElement.prototype.fromJS = function(data) {
     this.choices(data.choices);
     this.variable(data.variable);
     this.answer(data.answer);
+    this.modifier(new Modifier(this.expData, this));
+    this.modifier().fromJS(data.modifier);
 };
 
 
