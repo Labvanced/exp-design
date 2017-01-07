@@ -9,7 +9,7 @@ var FrameElementView = function(dataModel, editor) {
     this.fullWidth = ko.observable(0);
     this.fullHeight = ko.observable(0);
     this.isSelected = ko.observable(false);
-    this.div = null;
+    this.div = document.createElement('div');
     this.content = null;
     this.scale = ko.computed(function() {
         return this.editor.scale();
@@ -31,8 +31,7 @@ var FrameElementView = function(dataModel, editor) {
 
 FrameElementView.prototype.setupDiv = function() {
     var self = this;
-    // setup canvas, stage and container
-    this.div = document.createElement('div');
+
     $(this.div).css({
         "position": "absolute",
         //"opacity": this.dataModel.visibility()
@@ -64,31 +63,15 @@ FrameElementView.prototype.setupDiv = function() {
 
 
 FrameElementView.prototype.recreatePlaceHolderBoxAndLabel = function() {
-    this.contentScaling = $("<div></div>");
-    this.contentInside = new Image;
-
-    // create box
-    var self = this;
+    /*this.contentScaling = $("<div></div>");
     this.contentInside = document.createElement('p');
     $(this.contentInside).text(this.dataModel.name());
-
-
-    /* this should not be used??? could not be used because this.scale is only usable as this.scale()....???
-
-    if (this.scale){
-        $(this.contentInside).css({
-            "width":this.width() * self.scale,
-            "height":  this.height() * self.scale,
-            "backgroundColor": "white",
-            "textAlign": "center",
-            "border": " 1px solid black"
-        })
-    }*/
-
-
     $(this.contentScaling).append(this.contentInside);
     $(this.content).children().remove();
-    $(this.content).append(this.contentScaling);
+    $(this.content).append(this.contentScaling);*/
+
+    $(this.div).children().remove();
+    this.setupDiv();
 };
 
 
@@ -435,7 +418,9 @@ FrameElementView.prototype.replaceWithContent = function(data) {
                 this.content.preload = "auto";
             }
         }
-
+        else {
+            this.recreatePlaceHolderBoxAndLabel();
+        }
     }
     else if (data.type == "ImageElement") {
         if (data.imgSource()){
@@ -460,6 +445,9 @@ FrameElementView.prototype.replaceWithContent = function(data) {
             $(this.content).children().remove();
             $(this.content).append(this.contentInside);
 
+        }
+        else {
+            this.recreatePlaceHolderBoxAndLabel();
         }
     }
 };
