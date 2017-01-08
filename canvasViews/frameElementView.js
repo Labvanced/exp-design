@@ -394,6 +394,7 @@ FrameElementView.prototype.renderContent = function(data) {
 };
 
 FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function() {
+    var self = this;
     $(this.divContent).children().remove();
 
     this.text = document.createElement('p');
