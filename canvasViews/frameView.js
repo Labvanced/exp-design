@@ -61,21 +61,23 @@ FrameView.prototype.init = function(size) {
             return false;
         }
 
-        if (this.divContainer.addEventListener) {
+        var outerDiv = $('#editorFrameView')[0];
+        if (outerDiv.addEventListener) {
             // IE9, Chrome, Safari, Opera
-            this.divContainer.addEventListener("mousewheel", MouseWheelHandler, false);
+            outerDiv.addEventListener("mousewheel", MouseWheelHandler, false);
             // Firefox
-            this.divContainer.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+            outerDiv.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
         }
         else {
             // IE 6/7/8
-            this.divContainer.attachEvent("onmousewheel", MouseWheelHandler);
+            outerDiv.attachEvent("onmousewheel", MouseWheelHandler);
         }
 
     }
 
     // resize once and set dataModel
     this.resize(size);
+
     if (this.type != "playerView") {
         this.setDataModel(this.frameData);
     }
@@ -133,6 +135,11 @@ FrameView.prototype.setDataModel = function(frameData) {
     });
 
     this.renderElements();
+
+    // initialize the scale of the frame:
+    if (this.type != "sequenceView"){
+        this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
+    }
 };
 
 
@@ -217,10 +224,6 @@ FrameView.prototype.addElem = function(elementData,index) {
 };
 
 FrameView.prototype.updateElements = function() {
-
-    if (this.type!="sequenceView"){
-        this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
-    }
     var elements = this.viewElements();
     for (var i = 0; i< elements.length; i++){
         elements[i].update(true,true);

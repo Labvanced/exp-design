@@ -9,74 +9,33 @@ var FrameElementView = function(dataModel, editor) {
     this.fullWidth = ko.observable(0);
     this.fullHeight = ko.observable(0);
     this.isSelected = ko.observable(false);
+
     this.div = document.createElement('div');
-    this.content = null;
-    this.scale = ko.computed(function() {
-        return this.editor.scale();
-    }, this);
-
-    // setup canvas, stage and subscriber
-    this.setupDiv();
-    this.setupSubscriber();
-
-    // create box, label and resizeIcon
-   // this.recreatePlaceHolderBoxAndLabel();
-
-    // render Elements
-    this.renderElements(this.dataModel.content());
-
-    this.replaceWithContent(this.dataModel.content());
-};
-
-
-FrameElementView.prototype.setupDiv = function() {
-    var self = this;
-
     $(this.div).css({
         "position": "absolute",
-        //"opacity": this.dataModel.visibility()
-        //"backgroundColor": "white"
+        "opacity": this.dataModel.visibility()
     });
-    this.content = document.createElement('div');
-    $(this.content).css({
+
+    this.divContent = document.createElement('div');
+    $(this.divContent).css({
         "position": "absolute",
-        "opacity": this.dataModel.visibility(),
         "overflow": "hidden"
     });
+    $(this.div).append(this.divContent);
 
-    this.text = document.createElement('p');
-    $(this.text).css({
-        "position": "absolute",
-        //"backgroundColor": "white",
-        "textAlign": "center",
-        "border": " 1px solid black"
-    });
-    $(this.text).text(this.dataModel.name());
-    this.dataModel.name.subscribe(function(newName) {
-        $(self.text).text(newName);
-    });
-
-    $(this.content).append($(this.text));
-    $(this.div).append($(this.content));
-
-};
-
-
-FrameElementView.prototype.recreatePlaceHolderBoxAndLabel = function() {
-    /*this.contentScaling = $("<div></div>");
-    this.contentInside = document.createElement('p');
-    $(this.contentInside).text(this.dataModel.name());
-    $(this.contentScaling).append(this.contentInside);
-    $(this.content).children().remove();
-    $(this.content).append(this.contentScaling);*/
-
-    $(this.div).children().remove();
-    this.setupDiv();
+    // setup canvas, stage and subscriber
+    this.setupSubscriber();
+    this.renderContent(this.dataModel.content());
 };
 
 
 FrameElementView.prototype.setupSubscriber = function() {
     var self = this;
+
+    this.scale = ko.computed(function() {
+        return this.editor.scale();
+    }, this);
+
     // set height and width and subscirbe
     if (this.dataModel.hasOwnProperty('modifier')) {
         this.x = ko.computed(function() {
@@ -141,9 +100,6 @@ FrameElementView.prototype.setupSubscriber = function() {
         $(self.div).css({
             "opacity": self.visibility()
         });
-        $(self.content).css({
-            "opacity": self.visibility()
-        });
     });
 
     this.width.subscribe(function(w) {
@@ -180,22 +136,21 @@ FrameElementView.prototype.setupSubscriber = function() {
     });
 
     this.dataModel.content.subscribe(function(newValue){
-        self.renderElements(newValue)
+        self.renderContent(newValue)
     });
 
     if(this.dataModel.content().vidSource){
         this.dataModel.content().vidSource.subscribe(function(vidSource) {
-            self.replaceWithContent(self.dataModel.content());
+            self.renderContent(self.dataModel.content());
         });
     }
 
     if(this.dataModel.content().imgSource) {
         this.dataModel.content().imgSource.subscribe(function(imgSource) {
-            self.replaceWithContent(self.dataModel.content);
+            self.renderContent(self.dataModel.content);
         });
     }
 };
-
 
 FrameElementView.prototype.update = function(size, position){
 
@@ -208,7 +163,7 @@ FrameElementView.prototype.update = function(size, position){
             "height": self.height() * self.scale()
         });
 
-        $(this.content).css({
+        $(this.divContent).css({
             "width": self.width() * self.scale(),
             "height": self.height() * self.scale(),
             "position": "absolute"
@@ -224,19 +179,19 @@ FrameElementView.prototype.update = function(size, position){
             'transform': 'scale(' + scale + ')'
         });
 
-        $(this.contentInside).css({
+        $(this.divContentInside).css({
             "width": self.width(),
             "height": self.height(),
             "position": "absolute"
         });
 
         $(this.text).css({
-            "width":self.width() * self.scale(),
-            "height":  self.height() * self.scale()
+            "width": self.width() * self.scale(),
+            "height": self.height() * self.scale()
         });
 
         if (this.dataModel.content().type == "ImageElement"){
-            var image = this.contentInside;
+            var image = this.divContentInside;
             if (image) {
                 // this.width is the bounding box in virtual frame coordinates
                 // this.fullWidth is the raw image width
@@ -299,8 +254,6 @@ FrameElementView.prototype.update = function(size, position){
 
 };
 
-
-
 FrameElementView.prototype.setWidthAndHeight = function(w, h) {
 
     if (this.dataModel.hasOwnProperty('modifier')) {
@@ -350,104 +303,110 @@ FrameElementView.prototype.setCoord = function(left, top) {
     return this;
 };
 
-FrameElementView.prototype.renderElements = function(data) {
-    var self = this;
-    if (ko.isObservable(data)){
-        data = data();
-    }
-
-    if (data.type != "ImageElement" && data.type !="VideoElement"){
-        $(this.content).children().remove();
-        this.contentScaling = $("<div></div>");
-
-        if (this.editor.type == "editorView") {
-            this.contentInside = $("<div data-bind='component: {name : \"contentElementPreview\", params : $data}'></div>");
-        }
-        else {
-            this.contentInside = $("<div data-bind='component: {name : \"contentElementPlayerview\", params : $data}'></div>");
-        }
-
-        $(this.contentScaling).append(this.contentInside);
-        $(this.content).append(this.contentScaling);
-        ko.applyBindings(data, $(this.content)[0]);
-        this.update(true, false);
-        $(this.div).append(this.content);
-    }
-};
-
-
-FrameElementView.prototype.replaceWithContent = function(data) {
+FrameElementView.prototype.renderContent = function(data) {
     var self = this;
     if (ko.isObservable(data)){
         data = data();
     }
 
     if (data.type == "VideoElement") {
-
         if (data.vidSource()){
-            $(this.content).remove();
 
-            var dispWidth = self.width() * self.scale();
-            var dispHeight = self.height() * self.scale();
+            this.divContentInside = document.createElement('video');
 
-            this.content = document.createElement('video');
-            $(this.content).css({
-                "width": dispWidth,
-                "height": dispHeight,
+            $(this.divContentInside).css({
+                "width": self.width() * self.scale(),
+                "height": self.height() * self.scale(),
                 "position": "absolute"
             });
-            $(this.div).append(this.content);
 
-            this.content.src = data.vidSource();
-            this.content.oncanplaythrough = function () {
+            this.divContentInside.src = data.vidSource();
+            this.divContentInside.oncanplaythrough = function () {
                 // initialize original size:
                 self.fullWidth($(this).width());
                 self.fullHeight($(this).height());
                 self.update(true,true);
             };
-            $(this.content).append(this.content);
+
+            $(this.divContent).children().remove();
+            $(this.divContent).append(this.divContentInside);
 
             if (this.editor.type == "editorView") {
-                this.content.controls = true;
+                this.divContentInside.controls = true;
             }
             else if (this.editor.type == "sequenceView") {
-                this.content.controls = false;
+                this.divContentInside.controls = false;
             }
             else if(this.editor.type == "playerView"){
-                this.content.controls = false;
-                this.content.preload = "auto";
+                this.divContentInside.controls = false;
+                this.divContentInside.preload = "auto";
             }
         }
         else {
-            this.recreatePlaceHolderBoxAndLabel();
+            this.renderPlaceHolderBoxAndLabel();
         }
     }
     else if (data.type == "ImageElement") {
         if (data.imgSource()){
 
-            this.contentInside = new Image;
+            this.divContentInside = new Image;
 
-            $(this.contentInside).css({
+            $(this.divContentInside).css({
                 "width":self.width() * self.scale(),
                 "height": self.height() * self.scale(),
                 "position": "absolute",
                 "backgroundColor": "transparent"
             });
 
-            this.contentInside.src = data.imgSource();
-            this.contentInside.onload = function () {
+            this.divContentInside.src = data.imgSource();
+            this.divContentInside.onload = function () {
                 // initialize original size:
                 self.fullWidth(this.naturalWidth);
                 self.fullHeight(this.naturalHeight);
                 self.update(true,true);
             };
 
-            $(this.content).children().remove();
-            $(this.content).append(this.contentInside);
+            $(this.divContent).children().remove();
+            $(this.divContent).append(this.divContentInside);
 
         }
         else {
-            this.recreatePlaceHolderBoxAndLabel();
+            this.renderPlaceHolderBoxAndLabel();
         }
     }
+    else {
+        $(this.divContent).children().remove();
+
+        this.contentScaling = $("<div></div>");
+
+        if (this.editor.type == "editorView") {
+            this.divContentInside = $("<div data-bind='component: {name : \"contentElementPreview\", params : $data}'></div>");
+        }
+        else {
+            this.divContentInside = $("<div data-bind='component: {name : \"contentElementPlayerview\", params : $data}'></div>");
+        }
+
+        $(this.contentScaling).append(this.divContentInside);
+        $(this.divContent).append(this.contentScaling);
+        ko.applyBindings(data, $(this.divContent)[0]);
+        this.update(true, false);
+    }
+};
+
+FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function() {
+    $(this.divContent).children().remove();
+
+    this.text = document.createElement('p');
+    $(this.text).css({
+        "position": "absolute",
+        "textAlign": "center",
+        "border": " 1px solid black"
+    });
+    $(this.text).text(this.dataModel.name());
+    this.dataModel.name.subscribe(function(newName) {
+        $(self.text).text(newName);
+    });
+
+    $(this.divContent).append($(this.text));
+    this.update(true,true);
 };
