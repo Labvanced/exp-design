@@ -29,6 +29,25 @@ var Experiment = function () {
     this.changesInTransit = false;
     this.autoSaveEnabled = true;
     this.tempDisableAutosave = false;
+
+    var self = this; 
+
+    this.status = ko.computed(function() {
+
+        if (self.is_editing()){
+            return "Construction"
+        }
+        else if (self.is_recording()){
+            return "Published"
+        }
+        else if(self.is_analyzing()){
+            return "Analyzing"
+        }
+        else if(self.is_published()){
+            return "Finished"
+        }
+
+    }, this);
 };
 
 
