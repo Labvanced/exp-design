@@ -34,6 +34,9 @@ ScaleElement.prototype.addVar = function() {
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[2]);
     globalVar.name(this.parent.name());
+    globalVar.startValue(0);
+    globalVar.resetAtTrialStart(true);
+    globalVar.recordAtTrialEnd(true);
     this.variable(globalVar);
 };
 
