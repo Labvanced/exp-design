@@ -13,6 +13,7 @@ var DisplayTextElement = function(expData) {
 };
 
 DisplayTextElement.prototype.modifiableProp = ["text"];
+DisplayTextElement.prototype.dataType =      [ "string"];
 
 DisplayTextElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);

@@ -20,6 +20,7 @@ var CheckBoxElement= function(expData) {
 };
 
 CheckBoxElement.prototype.modifiableProp = ["questionText"];
+CheckBoxElement.prototype.dataType =      [ "string"];
 
 CheckBoxElement.prototype.changeCheck = function(index) {
     if (this.answer()[index]){

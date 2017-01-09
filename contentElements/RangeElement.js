@@ -21,6 +21,7 @@ var RangeElement= function(expData) {
 };
 
 RangeElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
+RangeElement.prototype.dataType =      [ "string","string","string"];
 
 RangeElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);

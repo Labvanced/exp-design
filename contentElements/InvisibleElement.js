@@ -13,6 +13,7 @@ var InvisibleElement= function(expData) {
 };
 
 InvisibleElement.prototype.modifiableProp = [];
+InvisibleElement.prototype.dataType =      [];
 
 InvisibleElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);

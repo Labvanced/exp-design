@@ -16,6 +16,7 @@ var TextInputElement = function(expData) {
 };
 
 TextInputElement.prototype.modifiableProp = ["questionText"];
+TextInputElement.prototype.dataType =      [ "string"];
 
 TextInputElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);

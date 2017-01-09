@@ -16,6 +16,7 @@ var MultiLineInputElement = function(expData) {
 };
 
 MultiLineInputElement.prototype.modifiableProp = ["questionText"];
+MultiLineInputElement.prototype.dataType =      [ "string"];
 
 
 MultiLineInputElement.prototype.addVar = function() {
