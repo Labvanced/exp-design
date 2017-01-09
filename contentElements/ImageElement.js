@@ -31,7 +31,7 @@ var ImageElement= function(expData) {
 };
 
 
-ImageElement.prototype.dataType =      [ "string", "string", "string","string"];
+ImageElement.prototype.dataType =      [ "string", "string", "boolean"];
 ImageElement.prototype.modifiableProp = ["file_id","file_orig_name", "stretchImageToFitBoundingBox"];
 ImageElement.prototype.initWidth = 300;
 ImageElement.prototype.initHeight = 200;

@@ -17,6 +17,8 @@ var ButtonElement = function(expData) {
 };
 
 ButtonElement.prototype.modifiableProp = ["buttonText"];
+ButtonElement.prototype.dataType =      [ "string"];
+
 ButtonElement.prototype.initWidth = 80;
 ButtonElement.prototype.initHeight = 38;
 

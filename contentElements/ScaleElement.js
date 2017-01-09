@@ -24,6 +24,7 @@ var ScaleElement= function(expData) {
 };
 
 ScaleElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
+ScaleElement.prototype.dataType =      [ "string","string","string"];
 ScaleElement.prototype.initWidth = 340;
 ScaleElement.prototype.initHeight = 140;
 

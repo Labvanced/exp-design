@@ -20,6 +20,7 @@ var MultipleChoiceElement = function(expData) {
 };
 
 MultipleChoiceElement.prototype.modifiableProp = ["questionText"];
+MultipleChoiceElement.prototype.dataType =      [ "string"];
 
 MultipleChoiceElement.prototype.addVar = function() {
     var globalVar = new GlobalVar(this.expData);

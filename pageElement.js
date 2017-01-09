@@ -24,6 +24,7 @@ PageElement.prototype.addContent = function(element){
 };
 
 PageElement.prototype.modifiableProp = ["name"];
+PageElement.prototype.dataType =      [ "string"];
 
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
