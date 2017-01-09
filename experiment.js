@@ -29,6 +29,7 @@ var Experiment = function () {
     this.changesInTransit = false;
     this.autoSaveEnabled = true;
     this.tempDisableAutosave = false;
+    this.lastSavedJsons = [];
 
     var self = this; 
 
@@ -105,6 +106,17 @@ Experiment.prototype.notifyChanged = function() {
     if (this.autoSaveEnabled && !this.tempDisableAutosave && !this.changesInTransit) {
         this.save();
     }
+    else {
+        var serializedExp = this.toJS();
+        this.addToHistory(serializedExp);
+    }
+};
+
+Experiment.prototype.addToHistory = function(serializedExp) {
+    this.lastSavedJsons.push(serializedExp);
+    if (this.lastSavedJsons.length > 6) {
+        this.lastSavedJsons.shift();
+    }
 };
 
 /**
@@ -116,6 +128,7 @@ Experiment.prototype.save = function() {
 
     try {
         var serializedExp = this.toJS();
+        this.addToHistory(serializedExp);
         this.changesInTransit = true;
         this.hasLocalChanges = false;
         uc.socket.emit('updateExperiment', serializedExp, function(response){
@@ -157,6 +170,24 @@ Experiment.prototype.save = function() {
         });
     }
 
+};
+
+/**
+ * revert last step
+ */
+Experiment.prototype.revertLastSave = function() {
+    if (this.lastSavedJsons.length > 1) {
+        console.log("revert last step");
+        if (uc.currentEditorView instanceof TrialEditor) {
+            var task_id = uc.currentEditorView.expTrialLoop().id();
+            this.lastSavedJsons.pop();
+            var temp = this.lastSavedJsons[this.lastSavedJsons.length - 1];
+            this.fromJS(temp);
+            this.setPointers();
+            var task = this.exp_data.entities.byId[task_id];
+            uc.currentEditorView.setTask(task);
+        }
+    }
 };
 
 /**
