@@ -102,13 +102,15 @@ Experiment.prototype.finishEditing = function() {
 Experiment.prototype.notifyChanged = function() {
     this.hasLocalChanges = true;
 
-    // only automatically save if there is not already a saving process in transit:
-    if (this.autoSaveEnabled && !this.tempDisableAutosave && !this.changesInTransit) {
-        this.save();
-    }
-    else {
-        var serializedExp = this.toJS();
-        this.addToHistory(serializedExp);
+    if (!this.tempDisableAutosave) {
+        // only automatically save if there is not already a saving process in transit:
+        if (this.autoSaveEnabled && !this.changesInTransit) {
+            this.save();
+        }
+        else {
+            var serializedExp = this.toJS();
+            this.addToHistory(serializedExp);
+        }
     }
 };
 
