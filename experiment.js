@@ -27,7 +27,6 @@ var Experiment = function () {
 
     this.hasLocalChanges = false;
     this.changesInTransit = false;
-    this.autoSaveEnabled = true;
     this.tempDisableAutosave = false;
     this.lastSavedJsons = [];
 
@@ -36,16 +35,16 @@ var Experiment = function () {
     this.status = ko.computed(function() {
 
         if (self.is_editing()){
-            return "Construction"
+            return "Construction";
         }
         else if (self.is_recording()){
-            return "Published"
+            return "Published";
         }
         else if(self.is_analyzing()){
-            return "Analyzing"
+            return "Analyzing";
         }
         else if(self.is_published()){
-            return "Finished"
+            return "Finished";
         }
 
     }, this);
@@ -104,19 +103,21 @@ Experiment.prototype.notifyChanged = function() {
 
     if (!this.tempDisableAutosave) {
         // only automatically save if there is not already a saving process in transit:
-        if (this.autoSaveEnabled && !this.changesInTransit) {
+        if (uc.autoSaveEnabled() && !this.changesInTransit) {
             this.save();
         }
         else {
-            var serializedExp = this.toJS();
-            this.addToHistory(serializedExp);
+            if (uc.ctrlZenabled()) {
+                var serializedExp = this.toJS();
+                this.addToHistory(serializedExp);
+            }
         }
     }
 };
 
 Experiment.prototype.addToHistory = function(serializedExp) {
     this.lastSavedJsons.push(serializedExp);
-    if (this.lastSavedJsons.length > 6) {
+    if (this.lastSavedJsons.length > 4) {
         this.lastSavedJsons.shift();
     }
 };
@@ -130,7 +131,9 @@ Experiment.prototype.save = function() {
 
     try {
         var serializedExp = this.toJS();
-        this.addToHistory(serializedExp);
+        if (uc.ctrlZenabled()) {
+            this.addToHistory(serializedExp);
+        }
         this.changesInTransit = true;
         this.hasLocalChanges = false;
         uc.socket.emit('updateExperiment', serializedExp, function(response){
@@ -178,7 +181,7 @@ Experiment.prototype.save = function() {
  * revert last step
  */
 Experiment.prototype.revertLastSave = function() {
-    if (this.lastSavedJsons.length > 1) {
+    if (uc.ctrlZenabled() && this.lastSavedJsons.length > 1) {
         console.log("revert last step");
         if (uc.currentEditorView instanceof TrialEditor) {
             var task_id = uc.currentEditorView.expTrialLoop().id();

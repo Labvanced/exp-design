@@ -21,7 +21,7 @@ var Modifier = function (expData, objToModify) {
     this.type = "Modifier";
 
     // helpers:
-    this.selectedTrialType = ko.observable({ type: 'allTrials'});
+    this.selectedTrialType = ko.observable({ type: 'allTrials' });
     this.selectedTrialView = {};
 
     var modifiableProp = objToModify.modifiableProp;
@@ -378,9 +378,6 @@ Modifier.prototype.addProp = function(propName) {
                 // remove all modifications that were made to this property in any trial types:
                 this.removeModificationRecursive(this.ndimModifierTrialTypes, propName);
             }
-
-            this.expData.notifyChanged();
-
         },
         owner: this
     });
