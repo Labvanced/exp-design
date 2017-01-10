@@ -63,7 +63,26 @@ function createDisplayTextComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
+                    var self = this;
                     this.dataModel = dataModel;
+                    this.subscriber = null;
+                    this.editText = ko.observable(false);
+                    this.editText.subscribe(function (val) {
+                        if (val) {
+                            console.log("start editing inline text...");
+
+                            // the following does not work because ckInstance is only created later...
+                            //self.dataModel.ckInstance.execCommand( 'selectAll' );
+
+                            self.subscriber = self.dataModel.parent.parent.currSelectedElement.subscribe(function(newVal) {
+                                if (newVal != self.dataModel.parent) {
+                                    console.log("other element was selected...");
+                                    self.editText(false);
+                                    self.subscriber.dispose();
+                                }
+                            });
+                        }
+                    });
                 };
                 return new viewModel(dataModel);
             }

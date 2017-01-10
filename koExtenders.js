@@ -135,12 +135,18 @@ if (typeof CKEDITOR !== 'undefined') {
                 }
             });
 
-            ko.utils.domNodeDisposal.addDisposeCallback(element,
-                function () {
-                    instance.updateElement();
-                    instance.destroy();
-                });
+            ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+                instance.updateElement();
+                instance.destroy();
+            });
 
+            instance.focus( );
+            instance.execCommand( 'selectAll' );
+
+            // stop
+            setTimeout(function() {
+                instance.execCommand( 'selectAll' );
+            }, 1);
         }
     };
 }

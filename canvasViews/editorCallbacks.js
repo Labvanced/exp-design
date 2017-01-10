@@ -15,7 +15,7 @@ EditorCallbacks.prototype.addCallbacks = function() {
     var self2 = this;
 
     $(this.div).click(function() {
-        self2.frameView.setSelectedElement(self2.dataModel);
+        self2.frameView.parent.selectElement(self2.dataModel);
     });
 
     // Draggable On Frame in Editor View:
