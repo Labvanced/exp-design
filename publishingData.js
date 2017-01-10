@@ -17,10 +17,18 @@ var PublishingData = function(experiment,exp_data) {
     this.publishSecretly = ko.observable(false);
     this.publishExternal= ko.observable(false);
 
-    this.categories = ko.observable();
+    this.categories = ko.observableArray([]);
+    this.currentCategory= ko.observable(null);
 
     this.brandingType= ko.observable('LabVanced');
     this.secrecyType= ko.observable('link');
     this.passwordType= ko.observable('oneForAll');
+
+    this.advertisement = ko.observable(null);
+    this.addHighlight= ko.observable(false);
+    this.addLabVancedSearch= ko.observable(false);
+
+    this.postOnAMT = ko.observable(null);
+
 
 };
