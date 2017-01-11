@@ -12,14 +12,14 @@
 
 <template id="display-text-element-preview-template">
     <div style="width: 100%; height: 100%; overflow: hidden;">
-        <!-- ko if: editText -->
-            <div style="margin: auto;" class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.text, valueUpdate: 'afterkeydown'"></div>
+        <!-- ko if: dataModel.editText -->
+            <div style="margin: auto;" class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.text, selectAll: true, valueUpdate: 'afterkeydown'"></div>
         <!-- /ko -->
-        <!-- ko ifnot: editText -->
+        <!-- ko ifnot: dataModel.editText -->
             <!-- ko if: dataModel.modifier().selectedTrialView.text()=="" -->
-                <div style="margin: auto; color: lightgrey" data-bind="click: function(data,event) {uc.currentEditorView.checkDblClick(data,event,function(){ editText(true) },['true'])}">text</div>
+                <div style="margin: auto; color: lightgrey" data-bind="click: function(data,event) {uc.currentEditorView.checkDblClick(data,event,function(){ dataModel.editText(true) },['true'])}">text</div>
             <!-- /ko -->
-        <div style="margin: auto;" data-bind="html: dataModel.modifier().selectedTrialView.text, click: function(data,event) {uc.currentEditorView.checkDblClick(data,event,function(){ editText(true) },['true'])}"></div>
+        <div style="margin: auto;" data-bind="html: dataModel.modifier().selectedTrialView.text, click: function(data,event) {uc.currentEditorView.checkDblClick(data,event,function(){ dataModel.editText(true) },['true'])}"></div>
         <!-- /ko -->
     </div>
 </template>
