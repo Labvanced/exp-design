@@ -3,8 +3,6 @@ var PublishingData = function(experiment,exp_data) {
     this.experiment = experiment;
     this.exp_data = exp_data;
 
-    this.paymentData = new PaymentData();
-
     var self = this;
 
     this.exp_name = ko.observable(experiment.exp_name());
@@ -94,27 +92,3 @@ var PublishingData = function(experiment,exp_data) {
 };
 
 
-var PaymentData = function() {
-
-
-    this.licensesBought = ko.observableArray(null);
-    this.amountForLicense= ko.observable(null);
-
-    this.storagesBought = ko.observableArray(null);
-    this.amountForStorage= ko.observable(null);
-
-    this.publicationsBought = ko.observableArray(null);
-    this.amountForPublications= ko.observable(null);
-
-    this.recordingsBought = ko.observableArray(null);
-    this.amountForRecordings = ko.observable(null);
-
-    this.privatePublicationBought = ko.observableArray(null);
-    this.amountForPrivatePublication= ko.observable(null);
-
-    this.advertisementsBought = ko.observableArray(null);
-    this.amountForAdvertisement= ko.observable(null);
-
-    this.subjectPaymentBought = ko.observableArray(null);
-    this.amountForSubjectPayment= ko.observable(null);
-};
