@@ -82,6 +82,37 @@ ko.extenders.numeric = function(target, precision) {
 };
 
 
+
+ko.bindingHandlers.tooltip = {
+    init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+        if ($(element) != undefined) {
+            var contElem = $(valueAccessor());
+            $(element).tooltip({
+                items: 'span',
+                track: true,
+                content: function () {
+                    return   contElem.html();
+                }
+            });
+        }
+    },
+    update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
+        if ($(element) != undefined) {
+            $(element).tooltip( "destroy" );
+            var contElem = $(valueAccessor());
+            $(element).tooltip({
+                items: 'span',
+                track: true,
+                content: function () {
+                    return contElem.html();
+                }
+            });
+        }
+    }
+};
+
+
+
 ko.bindingHandlers.disableOptionsCaption = {
     init: function (element,valueAccessor, allBindingsAccessor, viewModel) {
 

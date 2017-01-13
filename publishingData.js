@@ -3,6 +3,9 @@ var PublishingData = function(experiment,exp_data) {
     this.experiment = experiment;
     this.exp_data = exp_data;
 
+    this.paymentData = new PaymentData();
+
+    var self = this;
 
     this.exp_name = ko.observable(experiment.exp_name());
     this.description = ko.observable(experiment.description());
@@ -31,4 +34,75 @@ var PublishingData = function(experiment,exp_data) {
     this.postOnAMT = ko.observable(null);
 
 
+    this.amountOfSubjects = ko.observable(0);
+    this.amountPerSubject1 =  ko.observable(0);
+    this.amountPerSubject2 =  ko.observable(3);
+    this.moneyPerSubject =  ko.computed( function() {
+        return self.amountPerSubject1()+self.amountPerSubject2();
+
+    }, this);
+
+    this.moneySumOverSubjects =  ko.computed( function() {
+        return Math.ceil((self.amountPerSubject1()+self.amountPerSubject2()) *self.amountOfSubjects()*100)/100;
+
+    }, this);
+
+    this.amazonFees=  ko.computed( function() {
+        return Math.ceil((((self.amountPerSubject1()+self.amountPerSubject2()) *self.amountOfSubjects())*0.4)*100)/100;
+    }, this);
+
+    this.serviceFee=  ko.computed( function() {
+        return Math.ceil((((self.amountPerSubject1()+self.amountPerSubject2()) *self.amountOfSubjects())*0.08)*100)/100;
+    }, this);
+    
+    this.transactionFeePart =  ko.computed( function() {
+        var interim =  (((self.amountPerSubject1()+self.amountPerSubject2()) *self.amountOfSubjects()) + self.amazonFees() +self.serviceFee())*0.05 ;
+        return (Math.ceil(interim*100))/100;
+    }, this);
+
+
+    this.totalFees =  ko.computed( function() {
+        return  Math.ceil((self.amazonFees() +self.serviceFee() +self.transactionFeePart())*100)/100;
+    }, this);
+    
+
+    this.totalTaxes =  ko.computed( function() {
+        var interim =  (((self.amountPerSubject1()+self.amountPerSubject2()) *self.amountOfSubjects()) +self.totalFees())*0.19;
+        return (Math.ceil(interim*100))/100;
+    }, this);
+    
+    this.moneyTotalRecruitment =  ko.computed( function() {
+        var interim =  ((self.amountPerSubject1()+self.amountPerSubject2()) *self.amountOfSubjects()) +self.totalFees() + self.totalTaxes();
+        return (Math.ceil(interim*100))/100;
+    }, this);
+
+
+
+
+};
+
+
+var PaymentData = function() {
+
+
+    this.licensesBought = ko.observableArray(null);
+    this.amountForLicense= ko.observable(null);
+
+    this.storagesBought = ko.observableArray(null);
+    this.amountForStorage= ko.observable(null);
+
+    this.publicationsBought = ko.observableArray(null);
+    this.amountForPublications= ko.observable(null);
+
+    this.recordingsBought = ko.observableArray(null);
+    this.amountForRecordings = ko.observable(null);
+
+    this.privatePublicationBought = ko.observableArray(null);
+    this.amountForPrivatePublication= ko.observable(null);
+
+    this.advertisementsBought = ko.observableArray(null);
+    this.amountForAdvertisement= ko.observable(null);
+
+    this.subjectPaymentBought = ko.observableArray(null);
+    this.amountForSubjectPayment= ko.observable(null);
 };
