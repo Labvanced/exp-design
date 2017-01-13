@@ -35,6 +35,8 @@ var PublishingData = function(experiment,exp_data) {
     this.recordingStopDate= ko.observable(null);
     this.recordingStopTime= ko.observable(null);
     this.recordingStopNrSubjects =  ko.observable(null);
+
+    this.hasToPay =  ko.observable(true);
     
     
     this.postOnAMT = ko.observable(null);
