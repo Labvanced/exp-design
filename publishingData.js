@@ -31,17 +31,25 @@ var PublishingData = function(experiment,exp_data) {
     this.addHighlight= ko.observable(false);
     this.addLabVancedSearch= ko.observable(false);
 
+    this.stopCondition= ko.observable('none');
+    this.recordingStopDate= ko.observable(null);
+    this.recordingStopTime= ko.observable(null);
+    this.recordingStopNrSubjects =  ko.observable(null);
+    
+    
     this.postOnAMT = ko.observable(null);
-
 
     this.amountOfSubjects = ko.observable(0);
     this.amountPerSubject1 =  ko.observable(0);
     this.amountPerSubject2 =  ko.observable(3);
+    
     this.moneyPerSubject =  ko.computed( function() {
-        return self.amountPerSubject1()+self.amountPerSubject2();
+        return Math.ceil((self.amountPerSubject1()+self.amountPerSubject2())*100)/100;
 
     }, this);
 
+    this.moneyPerSubject2 =  ko.observable(self.moneyPerSubject());
+    
     this.moneySumOverSubjects =  ko.computed( function() {
         return Math.ceil((self.amountPerSubject1()+self.amountPerSubject2()) *self.amountOfSubjects()*100)/100;
 
