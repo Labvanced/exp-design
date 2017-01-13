@@ -142,6 +142,7 @@ if (typeof CKEDITOR !== 'undefined') {
             var $element = $(element);
             $element.attr('contenteditable', true);
             var ignoreChanges = false;
+            var selectAll = allBindings.get('selectAll');
 
             var instance = CKEDITOR.inline(element, {
                 customConfig: '/assets/js/ckeditor_config.js',
@@ -150,16 +151,17 @@ if (typeof CKEDITOR !== 'undefined') {
                         ignoreChanges = true;
                         ckEditorValue(instance.getData());
                         ignoreChanges = false;
+                    },
+                    instanceReady: function() {
+                        if (selectAll) {
+                            instance.execCommand( 'selectAll' );
+                        }
                     }
                 }
             });
 
-            if(viewModel.dataModel){
-                viewModel.dataModel.ckInstance = instance;
-            }
-
+            viewModel.ckInstance = instance;
             instance.setData(ckEditorValue());
-
             ckEditorValue.subscribe(function (newValue) {
                 if (!ignoreChanges) {
                     instance.setData(newValue);
@@ -172,12 +174,6 @@ if (typeof CKEDITOR !== 'undefined') {
             });
 
             instance.focus( );
-            instance.execCommand( 'selectAll' );
-
-            // stop
-            setTimeout(function() {
-                instance.execCommand( 'selectAll' );
-            }, 1);
         }
     };
 }

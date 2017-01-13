@@ -10,6 +10,8 @@ var DisplayTextElement = function(expData) {
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
+
+    this.editText = ko.observable(false);
 };
 
 DisplayTextElement.prototype.modifiableProp = ["text"];
@@ -66,18 +68,14 @@ function createDisplayTextComponents() {
                     var self = this;
                     this.dataModel = dataModel;
                     this.subscriber = null;
-                    this.editText = ko.observable(false);
-                    this.editText.subscribe(function (val) {
+
+                    this.dataModel.editText.subscribe(function (val) {
                         if (val) {
                             console.log("start editing inline text...");
-
-                            // the following does not work because ckInstance is only created later...
-                            //self.dataModel.ckInstance.execCommand( 'selectAll' );
-
                             self.subscriber = self.dataModel.parent.parent.currSelectedElement.subscribe(function(newVal) {
                                 if (newVal != self.dataModel.parent) {
                                     console.log("other element was selected...");
-                                    self.editText(false);
+                                    self.dataModel.editText(false);
                                     self.subscriber.dispose();
                                 }
                             });
