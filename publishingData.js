@@ -5,6 +5,11 @@ var PublishingData = function(experiment,exp_data) {
 
     var self = this;
 
+    // page 4 //
+    this.termsAccepted = ko.observable(false);
+    this.copyrightsOk = ko.observable(false);
+    this.materialOk = ko.observable(false);
+
 
     // page 1 //
     this.publishInLibrary = ko.observable(true);
@@ -16,7 +21,7 @@ var PublishingData = function(experiment,exp_data) {
     this.stopCondition= ko.observable('none');
     this.recordingStopDate= ko.observable(null);
     this.recordingStopTime= ko.observable(null);
-    this.recordingStopNrSubjects =  ko.observable(null);
+    this.recordingStopNrSubjects =  ko.observable(1);
 
     this.secretPublicationCosts =  ko.computed( function() {
         if(self.publishSecretly()){
@@ -55,6 +60,7 @@ var PublishingData = function(experiment,exp_data) {
     this.addHighlight= ko.observable(false);
     this.addLabVancedSearch= ko.observable(false);
     this.postOnAMT = ko.observable(null);
+    this.termsCrowdsourcing = ko.observable(false);
     this.amountOfSubjects = ko.observable(0);
     this.amountPerSubject1 =  ko.observable(0);
     this.amountPerSubject2 =  ko.observable(3);
@@ -62,9 +68,7 @@ var PublishingData = function(experiment,exp_data) {
         return Math.ceil((self.amountPerSubject1()+self.amountPerSubject2())*100)/100;
     }, this);
     this.moneyPerSubject2 =  ko.observable(self.moneyPerSubject());
-    
-    this.termsAccepted = ko.observable(false);
-    this.copyrightsOk = ko.observable(false);
+
 
     this.advertisementFee =  ko.computed( function() {
         if (self.addHighlight()){
