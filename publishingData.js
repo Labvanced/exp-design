@@ -19,6 +19,16 @@ var PublishingData = function(experiment,exp_data) {
     this.category_id = ko.observable(experiment.category_id());
     this.img_file_id = ko.observable(experiment.img_file_id());
     this.img_file_orig_name = ko.observable(experiment.img_file_orig_name());
+    this.jdenticonHash = ko.observable(guid());
+    this.imageType = ko.observable("jdenticon"); // "jdenticon" or "imgfile"
+
+    this.termsAccepted = ko.observable(false);
+    this.copyrightsOk = ko.observable(false);
+
+    this.publishInLibrary = ko.observable(true);
+    this.publishSecretly = ko.observable(false);
+    this.publishExternal= ko.observable(false);
+
     this.categories = ko.observableArray([]);
     this.currentCategory= ko.observable(null);
     this.stopCondition= ko.observable('none');
