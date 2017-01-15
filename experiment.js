@@ -30,7 +30,11 @@ var Experiment = function () {
     this.tempDisableAutosave = false;
     this.lastSavedJsons = [];
 
-    var self = this; 
+    var self = this;
+
+    this.exp_name.subscribe(function(value) {
+        self.publishingData.exp_name(value)
+    });
 
     this.status = ko.computed(function() {
 
@@ -234,6 +238,14 @@ Experiment.prototype.fromJS = function(data) {
     else {
         this.exp_data = "not loaded";
     }
+
+    if (data.hasOwnProperty("publishingData")){
+        this.publishingData = new PublishingData(this, this.exp_data);
+        this.publishingData.fromJS(data.publishingData);
+    }
+    else {
+        // this.publishingData = "not loaded";
+    }
     return this;
 };
 
@@ -250,6 +262,15 @@ Experiment.prototype.toJS = function() {
         var exp_data_serialized = null;
     }
 
+    if (this.publishingData instanceof PublishingData){
+        var publishing_data_serialized = this.publishingData.toJS();
+    }
+    else {
+        var publishing_data_serialized = null;
+    }
+
+
+    
     return {
         guid: this.guid(),
         exp_id: this.exp_id(),
@@ -264,6 +285,7 @@ Experiment.prototype.toJS = function() {
         category_id: this.category_id(),
         img_file_id: this.img_file_id(),
         img_file_orig_name: this.img_file_orig_name(),
-        exp_data: exp_data_serialized
+        exp_data: exp_data_serialized,
+        publishingData: publishing_data_serialized
     };
 };

@@ -156,3 +156,95 @@ var PublishingData = function(experiment,exp_data) {
 };
 
 
+
+PublishingData.prototype.fromJS = function(data) {
+
+        // page 4 //
+        this.termsAccepted(data.termsAccepted);
+        this.copyrightsOk(data.copyrightsOk);
+        this.materialOk(data.materialOk);
+
+        // page 1 //
+        this.publishInLibrary(data.publishInLibrary);
+        this.publishSecretly(data.publishSecretly);
+        this.publishExternal(data.publishExternal);
+        this.brandingType(data.brandingType);
+        this.secrecyType(data.secrecyType);
+        this.passwordType(data.passwordType);
+        this.stopCondition(data.stopCondition);
+        this.recordingStopDate(data.recordingStopDate);
+        this.recordingStopTime(data.recordingStopTime);
+        this.recordingStopNrSubjects(data.recordingStopNrSubjects);
+
+        // page 2  //
+        this.exp_name(data.exp_name);
+        this.description(data.description);
+        this.category_id(data.category_id);
+        this.img_file_id(data.img_file_id);
+        this.img_file_orig_name(data.img_file_orig_name);
+        this.jdenticonHash(data.jdenticonHash);
+        this.imageType(data.imageType);
+        this.categories(data.categories);
+        this.currentCategory(data.currentCategory);
+
+        // page 3 //
+        this.advertisement(data.advertisement);
+        this.addHighlight(data.addHighlight);
+        this.addLabVancedSearch(data.addLabVancedSearch);
+        this.postOnAMT(data.postOnAMT);
+        this.termsCrowdsourcing(data.termsCrowdsourcing);
+        this.amountOfSubjects(data.amountOfSubjects);
+        this.amountPerSubject1(data.amountPerSubject1);
+        this.amountPerSubject2(data.amountPerSubject2);
+        this.moneyPerSubject2(data.moneyPerSubject2);
+
+};
+
+
+
+PublishingData.prototype.toJS = function() {
+
+    return {
+        // page 4 //
+        termsAccepted: this.termsAccepted(),
+        copyrightsOk: this.copyrightsOk(),
+        materialOk: this.materialOk(),
+
+        // page 1 //
+        publishInLibrary: this.publishInLibrary(),
+        publishSecretly: this.publishSecretly(),
+        publishExternal: this.publishExternal(),
+        brandingType: this.brandingType(),
+        secrecyType: this.secrecyType(),
+        passwordType: this.passwordType(),
+        stopCondition: this.stopCondition(),
+        recordingStopDate: this.recordingStopDate(),
+        recordingStopTime: this.recordingStopTime(),
+        recordingStopNrSubjects: this.recordingStopNrSubjects(),
+
+        // page 2  //
+        exp_name: this.exp_name(),
+        description: this.description(),
+        category_id: this. category_id(),
+        img_file_id: this.img_file_id(),
+        img_file_orig_name: this.img_file_orig_name(),
+        jdenticonHash: this.jdenticonHash(),
+        imageType: this.imageType(),
+        categories: this.categories(),
+        currentCategory: this.currentCategory(),
+
+        // page 3 //
+        advertisement: this.advertisement(),
+        addHighlight: this.addHighlight(),
+        addLabVancedSearch: this.addLabVancedSearch(),
+        postOnAMT : this.postOnAMT(),
+        termsCrowdsourcing: this.termsCrowdsourcing(),
+        amountOfSubjects: this.amountOfSubjects(),
+        amountPerSubject1: this.amountPerSubject1(),
+        amountPerSubject2: this.amountPerSubject2(),
+        moneyPerSubject2: this.moneyPerSubject2()
+    };
+};
+
+
+
