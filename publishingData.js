@@ -1,7 +1,6 @@
-var PublishingData = function(experiment,exp_data) {
+var publishing_data = function(experiment) {
 
     this.experiment = experiment;
-    this.exp_data = exp_data;
 
     var self = this;
 
@@ -164,7 +163,7 @@ var PublishingData = function(experiment,exp_data) {
 
 
 
-PublishingData.prototype.fromJS = function(data) {
+publishing_data.prototype.fromJS = function(data) {
 
         // page 4 //
         this.termsAccepted(data.termsAccepted);
@@ -216,7 +215,7 @@ PublishingData.prototype.fromJS = function(data) {
 
 
 
-PublishingData.prototype.toJS = function() {
+publishing_data.prototype.toJS = function() {
 
     return {
         // page 4 //

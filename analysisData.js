@@ -1,6 +1,13 @@
-var AnalysisData = function(experiment,exp_data) {
+var AnalysisData = function(experiment) {
 
     this.experiment = experiment;
-    this.exp_data = exp_data;
 
+};
+
+AnalysisData.prototype.fromJS = function(data) {
+};
+
+AnalysisData.prototype.toJS = function() {
+    return {
+    };
 };

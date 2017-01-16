@@ -22,9 +22,10 @@ var Experiment = function () {
     // setup class instances for experiment functions
     this.exp_data = new ExpData(this);
     this.exp_data_obs = ko.observable(this.exp_data);
-    this.publishingData = new PublishingData(this,this.exp_data);
-    this.analysisData = new AnalysisData(this,this.exp_data);
+    this.publishing_data = new publishing_data(this,this.exp_data);
+    this.analysis_data = new AnalysisData(this);
 
+    // local temporary member variables:
     this.hasLocalChanges = false;
     this.changesInTransit = false;
     this.tempDisableAutosave = false;
@@ -33,7 +34,7 @@ var Experiment = function () {
     var self = this;
 
     this.exp_name.subscribe(function(value) {
-        self.publishingData.exp_name(value)
+        self.publishing_data.exp_name(value)
     });
 
     this.status = ko.computed(function() {
@@ -239,12 +240,14 @@ Experiment.prototype.fromJS = function(data) {
         this.exp_data = "not loaded";
     }
 
-    if (data.hasOwnProperty("publishingData")){
-        this.publishingData = new PublishingData(this, this.exp_data);
-        this.publishingData.fromJS(data.publishingData);
+    if (data.hasOwnProperty("publishing_data")){
+        this.publishing_data = new publishing_data(this);
+        this.publishing_data.fromJS(data.publishing_data);
     }
-    else {
-        // this.publishingData = "not loaded";
+
+    if (data.hasOwnProperty("analysis_data")){
+        this.analysis_data = new AnalysisData(this);
+        this.analysis_data.fromJS(data.analysis_data);
     }
     return this;
 };
@@ -262,14 +265,19 @@ Experiment.prototype.toJS = function() {
         var exp_data_serialized = null;
     }
 
-    if (this.publishingData instanceof PublishingData){
-        var publishing_data_serialized = this.publishingData.toJS();
+    if (this.publishing_data instanceof publishing_data){
+        var publishing_data_serialized = this.publishing_data.toJS();
     }
     else {
         var publishing_data_serialized = null;
     }
 
-
+    if (this.analysis_data instanceof AnalysisData){
+        var analysisData_serialized = this.analysis_data.toJS();
+    }
+    else {
+        var analysisData_serialized = null;
+    }
     
     return {
         guid: this.guid(),
@@ -286,6 +294,7 @@ Experiment.prototype.toJS = function() {
         img_file_id: this.img_file_id(),
         img_file_orig_name: this.img_file_orig_name(),
         exp_data: exp_data_serialized,
-        publishingData: publishing_data_serialized
+        publishing_data: publishing_data_serialized,
+        analysis_data: analysisData_serialized
     };
 };
