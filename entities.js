@@ -127,6 +127,10 @@ function entityFactory(entityJson, expData) {
             entity = new Factor(expData,null);
             entity.fromJS(entityJson);
             break;
+        case 'SessionTimeSettings':
+            entity = new SessionTimeData(expData);
+            entity.fromJS(entityJson);
+            break;
         default:
             console.error("type " + entityJson.type + " is not defined in factory method.")
     }

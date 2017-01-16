@@ -28,6 +28,26 @@ var SessionTimeData= function (expData) {
 };
 
 /**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+SessionTimeData.prototype.setPointers = function(entitiesArr) {
+
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+SessionTimeData.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
  * @returns {ExpSession}
