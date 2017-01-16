@@ -58,7 +58,6 @@ var publishing_data = function(experiment) {
     this.jdenticonHash = ko.observable(guid());
     this.imageType = ko.observable("jdenticon"); // "jdenticon" or "imgfile"
     this.categories = ko.observableArray([]);
-    this.currentCategory= ko.observable(null);
 
 
     // page 3 //
@@ -198,7 +197,6 @@ publishing_data.prototype.fromJS = function(data) {
         this.jdenticonHash(data.jdenticonHash);
         this.imageType(data.imageType);
         this.categories(data.categories);
-        this.currentCategory(data.currentCategory);
 
         // page 3 //
         this.advertisement(data.advertisement);
@@ -252,7 +250,6 @@ publishing_data.prototype.toJS = function() {
         jdenticonHash: this.jdenticonHash(),
         imageType: this.imageType(),
         categories: this.categories(),
-        currentCategory: this.currentCategory(),
 
         // page 3 //
         advertisement: this.advertisement(),
