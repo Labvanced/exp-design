@@ -9,16 +9,23 @@ var PublishingData = function(experiment,exp_data) {
     this.termsAccepted = ko.observable(false);
     this.copyrightsOk = ko.observable(false);
     this.materialOk = ko.observable(false);
+    this.moneyforAccountUpgrade = ko.observable(0);
+    this.moneyforLicense = ko.observable(0);
+    this.addSpaceInMB = ko.observable(0);
+    this.addNrStudiesToPublish= ko.observable(0);
+    this.addRecordingsPerWeek= ko.observable(0);
+    this.upgradeLevel= ko.observable(0);
 
 
     // page 1 //
-    this.publishInLibrary = ko.observable(true);
+    this.sharing = ko.observable('onRequest');
+    this.publishInLibrary = ko.observable(false);
     this.publishSecretly = ko.observable(false);
     this.publishExternal= ko.observable(false);
     this.brandingType= ko.observable('LabVanced');
     this.secrecyType= ko.observable('link');
     this.passwordType= ko.observable('oneForAll');
-    this.stopCondition= ko.observable('none');
+    this.stopCondition= ko.observable(null);
     this.recordingStopDate= ko.observable(null);
     this.recordingStopTime= ko.observable(null);
     this.recordingStopNrSubjects =  ko.observable(1);
@@ -163,8 +170,15 @@ PublishingData.prototype.fromJS = function(data) {
         this.termsAccepted(data.termsAccepted);
         this.copyrightsOk(data.copyrightsOk);
         this.materialOk(data.materialOk);
+        this.moneyforAccountUpgrade(data.moneyforAccountUpgrade);
+        this.moneyforLicense(data.moneyforLicense);
+        this.addSpaceInMB(data.addSpaceInMB);
+        this.addNrStudiesToPublish(data.addNrStudiesToPublish);
+        this.addRecordingsPerWeek(data.addRecordingsPerWeek);
+        this.upgradeLevel(data.upgradeLevel);
 
         // page 1 //
+        this.sharing(data.sharing);
         this.publishInLibrary(data.publishInLibrary);
         this.publishSecretly(data.publishSecretly);
         this.publishExternal(data.publishExternal);
@@ -209,8 +223,16 @@ PublishingData.prototype.toJS = function() {
         termsAccepted: this.termsAccepted(),
         copyrightsOk: this.copyrightsOk(),
         materialOk: this.materialOk(),
+        moneyforAccountUpgrade: this.moneyforAccountUpgrade(),
+        moneyforLicense:this.moneyforLicense(),
+        addSpaceInMB:this.addSpaceInMB(),
+        addNrStudiesToPublish:this.addNrStudiesToPublish(),
+        addRecordingsPerWeek:this.addRecordingsPerWeek(),
+        upgradeLevel:this.upgradeLevel(),
+
 
         // page 1 //
+        sharing:this.sharing(),
         publishInLibrary: this.publishInLibrary(),
         publishSecretly: this.publishSecretly(),
         publishExternal: this.publishExternal(),
