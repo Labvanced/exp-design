@@ -88,6 +88,10 @@ Sequence.prototype.addNewSubElement = function(elem) {
     if (elem.type == "StartBlock"){
         this.startBlock = elem;
     }
+
+    if (this.parent.selectionSpec()) {
+        elem.selectTrialType(this.parent.selectionSpec());
+    }
 };
 
 Sequence.prototype.getElementById = function(id) {

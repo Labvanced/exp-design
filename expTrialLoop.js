@@ -76,7 +76,7 @@ var ExpTrialLoop = function (expData) {
         if (newVal == true) {
             self.trialsPerSub(self.totalNrTrials())
         }
-    })
+    });
 
 };
 
