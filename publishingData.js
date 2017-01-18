@@ -1,4 +1,4 @@
-var publishing_data = function(experiment) {
+var PublishingData = function(experiment) {
 
     this.experiment = experiment;
   
@@ -47,7 +47,7 @@ var publishing_data = function(experiment) {
 };
 
 
-publishing_data.prototype.fromJS = function(data) {
+PublishingData.prototype.fromJS = function(data) {
 
         // page 1 //
         this.sharing(data.sharing);
@@ -98,7 +98,7 @@ publishing_data.prototype.fromJS = function(data) {
 
 
 
-publishing_data.prototype.toJS = function() {
+PublishingData.prototype.toJS = function() {
 
     return {
         // page 1 //

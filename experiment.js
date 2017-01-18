@@ -22,7 +22,7 @@ var Experiment = function () {
     // setup class instances for experiment functions
     this.exp_data = new ExpData(this);
     this.exp_data_obs = ko.observable(this.exp_data);
-    this.publishing_data = new publishing_data(this,this.exp_data);
+    this.publishing_data = new PublishingData(this,this.exp_data);
     this.analysis_data = new AnalysisData(this);
 
     // local temporary member variables:
@@ -241,7 +241,7 @@ Experiment.prototype.fromJS = function(data) {
     }
 
     if (data.hasOwnProperty("publishing_data")){
-        this.publishing_data = new publishing_data(this);
+        this.publishing_data = new PublishingData(this);
         this.publishing_data.fromJS(data.publishing_data);
     }
 
@@ -265,7 +265,7 @@ Experiment.prototype.toJS = function() {
         var exp_data_serialized = null;
     }
 
-    if (this.publishing_data instanceof publishing_data){
+    if (this.publishing_data instanceof PublishingData){
         var publishing_data_serialized = this.publishing_data.toJS();
     }
     else {
