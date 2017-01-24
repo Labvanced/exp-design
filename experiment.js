@@ -22,8 +22,9 @@ var Experiment = function () {
     // setup class instances for experiment functions
     this.exp_data = new ExpData(this);
     this.exp_data_obs = ko.observable(this.exp_data);
-    this.publishing_data = new PublishingData(this,this.exp_data);
+    this.publishing_data = new PublishingData(this);
     this.analysis_data = new AnalysisData(this);
+    this.payment_data = new PaymentData(this);
 
     // local temporary member variables:
     this.hasLocalChanges = false;
@@ -241,14 +242,17 @@ Experiment.prototype.fromJS = function(data) {
     }
 
     if (data.hasOwnProperty("publishing_data")){
-        this.publishing_data = new PublishingData(this);
         this.publishing_data.fromJS(data.publishing_data);
     }
 
     if (data.hasOwnProperty("analysis_data")){
-        this.analysis_data = new AnalysisData(this);
         this.analysis_data.fromJS(data.analysis_data);
     }
+
+    if (data.hasOwnProperty("payment_data")){
+        this.payment_data.fromJS(data.payment_data);
+    }
+
     return this;
 };
 
@@ -278,6 +282,13 @@ Experiment.prototype.toJS = function() {
     else {
         var analysisData_serialized = null;
     }
+
+    if (this.payment_data instanceof PaymentData){
+        var payment_data_serialized = this.payment_data.toJS();
+    }
+    else {
+        var payment_data_serialized = null;
+    }
     
     return {
         guid: this.guid(),
@@ -295,6 +306,7 @@ Experiment.prototype.toJS = function() {
         img_file_orig_name: this.img_file_orig_name(),
         exp_data: exp_data_serialized,
         publishing_data: publishing_data_serialized,
-        analysis_data: analysisData_serialized
+        analysis_data: analysisData_serialized,
+        payment_data: payment_data_serialized
     };
 };

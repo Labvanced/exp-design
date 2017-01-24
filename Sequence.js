@@ -20,8 +20,6 @@ var Sequence = function (expData) {
     // sub-Structures (serialized below)
     this.elements = ko.observableArray().extend({sortById: null});
 
-    // helper:
-    this.startBlock = null;
 };
 
 /**
@@ -51,30 +49,20 @@ Sequence.prototype.setFactorGroup = function(factorGroup) {
 };
 
 Sequence.prototype.selectNextElement = function() {
-    if (this.startBlock){
-        // this sequence uses connections for the control flow:
-        if (!this.currSelectedElement()){
-            var nextElement = this.startBlock;
-        }
-        else {
-            var executeOutPort = this.currSelectedElement().portHandler.portsByType['executeOut'][0];
-            var executeInPortOfNextElem = executeOutPort.connectedToPorts[0];
-            var nextElement = executeInPortOfNextElem.portHandler.parentDataModel;
-        }
+
+    var elements = this.elements();
+    var nextElement;
+
+    if (!this.currSelectedElement()){
+        nextElement = elements[0];
     }
     else {
-        // this sequence has just a linear control flow in array order:
-        var elements = this.elements();
-        if (!this.currSelectedElement()){
-            var nextElement = elements[0];
-        }
-        else {
-            var index = elements.indexOf(this.currSelectedElement());
-            var nextElement = elements[index+1];
-        }
-        if (nextElement === undefined) {
-            nextElement = "EndOfSequence";
-        }
+        var index = elements.indexOf(this.currSelectedElement());
+        nextElement = elements[index+1];
+    }
+
+    if (nextElement === undefined) {
+        nextElement = "EndOfSequence";
     }
 
     this.currSelectedElement(nextElement);
@@ -85,10 +73,6 @@ Sequence.prototype.addNewSubElement = function(elem) {
     this.elements.push(elem);
     this.expData.entities.push(elem);
     elem.parent = this;
-    if (elem.type == "StartBlock"){
-        this.startBlock = elem;
-    }
-
     if (this.parent.selectionSpec()) {
         elem.selectTrialType(this.parent.selectionSpec());
     }
@@ -112,9 +96,6 @@ Sequence.prototype.setPointers = function(entitiesArr) {
     this.elements(jQuery.map( this.elements(), function( id ) {
         var elem = entitiesArr.byId[id];
         elem.parent = self;
-        if (elem.type == "StartBlock"){
-            self.startBlock = elem;
-        }
         return elem;
     } ));
 };

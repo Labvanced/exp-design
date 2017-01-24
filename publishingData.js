@@ -1,7 +1,6 @@
 var PublishingData = function(experiment) {
 
     this.experiment = experiment;
-  
     
     // page 1 //
     this.sharing = ko.observable('onRequest');
@@ -43,7 +42,6 @@ var PublishingData = function(experiment) {
     this.addRecordingsPerWeek= ko.observable(0);
     this.upgradeLevel= ko.observable(0);
 
-    this.paymentData= ko.observable(new PaymentData(this));
 };
 
 
@@ -88,11 +86,6 @@ PublishingData.prototype.fromJS = function(data) {
         this.addNrStudiesToPublish(data.addNrStudiesToPublish);
         this.addRecordingsPerWeek(data.addRecordingsPerWeek);
         this.upgradeLevel(data.upgradeLevel);
-
-        if (data.hasOwnProperty("paymentData")){
-            this.paymentData = ko.observable(new PaymentData(this));
-            this.paymentData().fromJS(data.paymentData);
-        }
 
 };
 
@@ -140,8 +133,6 @@ PublishingData.prototype.toJS = function() {
         addNrStudiesToPublish:this.addNrStudiesToPublish(),
         addRecordingsPerWeek:this.addRecordingsPerWeek(),
         upgradeLevel:this.upgradeLevel(),
-
-        paymentData: this.paymentData().toJS()
 
     };
 };

@@ -104,7 +104,7 @@ PlayerQuestView.prototype.submitQuestionnaire = function() {
     }
 
     var recData = new RecData(varIds,answers);
-    this.player.addRecording(this.player.currentBlock, 0, recData.toJS());
+    this.player.addRecording(this.player.currentBlockIdx, 0, recData.toJS());
 
     this.player.currentSequence.selectNextElement();
     // empty div and make new frame

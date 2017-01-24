@@ -68,13 +68,11 @@ var ExpTrialLoop = function (expData) {
 
     }, this);
 
-    this.portHandler = new PortHandler(this);
-
     var self = this;
 
     this.betweenSubjectDesign.subscribe(function(newVal) {
         if (newVal == true) {
-            self.trialsPerSub(self.totalNrTrials())
+            self.trialsPerSub(self.totalNrTrials());
         }
     });
 
@@ -265,7 +263,6 @@ ExpTrialLoop.prototype.fromJS = function(data) {
 
     this.id(data.id);
     this.name(data.name);
-    this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.editorX(data.editorX);
     this.editorY(data.editorY);
     this.editorWidth(data.editorWidth);
@@ -310,7 +307,6 @@ ExpTrialLoop.prototype.toJS = function() {
     return {
         id: this.id(),
         name: this.name(),
-        portHandler:this.portHandler.toJS(),
         editorX:  this.editorX(),
         editorY:  this.editorY(),
         editorWidth: this.editorWidth(),
