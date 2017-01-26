@@ -39,7 +39,6 @@ var FrameData = function(expData) {
 
     // sub-Structures (serialized below)
     this.elements = ko.observableArray([]).extend({sortById: null});
-    this.portHandler = new PortHandler(this);
     this.events = ko.observableArray([]).extend({sortById: null});
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
 
@@ -55,7 +54,7 @@ FrameData.prototype.getDeepCopy = function() {
 
     // loop through array and create deep copies
     var entitiesArrCopy = jQuery.map(entitiesArr(), function (entity) {
-        if (entity instanceof GlobalVar) { // no deep copy of global variables so that we can keep state across frames.
+        if (entity instanceof GlobalVar || entity instanceof Factor) { // no deep copy of global variables so that we can keep state across frames.
             return entity;
         }
         else {
@@ -225,7 +224,6 @@ FrameData.prototype.fromJS = function(data) {
     this.onsetEnabled(data.onsetEnabled);
     this.offset(data.offset);
     this.offsetEnabled(data.offsetEnabled);
-    this.portHandler.fromJS(data.portHandler); // order is important: first portHandler then canvasElement!
     this.bgColor(data.bgColor);
     this.bgColorEnabled(data.bgColorEnabled);
     this.frameWidth(data.frameWidth);
@@ -261,7 +259,6 @@ FrameData.prototype.toJS = function() {
         onsetEnabled: this.onsetEnabled(),
         offset: this.offset(),
         offsetEnabled: this.offsetEnabled(),
-        portHandler: this.portHandler.toJS(),
         bgColor: this.bgColor(),
         bgColorEnabled: this.bgColorEnabled(),
         frameWidth: this.frameWidth(),

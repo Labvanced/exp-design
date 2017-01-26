@@ -5,6 +5,8 @@
  * @constructor
  */
 var Condition = function(factorGroup) {
+    var self = this;
+
     this.factorGroup = factorGroup;
 
     // serialized
@@ -14,6 +16,13 @@ var Condition = function(factorGroup) {
     this.factorLevels = ko.observableArray([]); // level_obj1, level_ob2
     this.trialStartIdx = ko.observable(0);
     this.conditionIdx = ko.observable();
+
+    this.trialStartIdx.subscribe(function(newTrialStartIdx) {
+        var trialVariations = self.trials();
+        for (var i=1; i<trialVariations.length; i++) {
+            trialVariations[i].trialIdx(newTrialStartIdx+i);
+        }
+    });
 
 };
 

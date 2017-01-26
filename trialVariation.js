@@ -8,6 +8,7 @@ var TrialVariation= function(condition) {
 
     // not serialized:
     this.nr = ko.observable(0);
+    this.trialIdx = ko.observable(0);
 
 };
 

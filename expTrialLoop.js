@@ -34,11 +34,11 @@ var ExpTrialLoop = function (expData) {
     //properties
     this.trialsPerSub = ko.observable(0);
     this.betweenSubjectDesign = ko.observable(false);
-
     this.repsPerTrialType = ko.observable(1).extend({ numeric: 0 });
     this.minIntervalBetweenRep = ko.observable(0).extend({ numeric: 0 });
     this.isActive = ko.observable(false);
     this.randomization = ko.observable("reshuffle");
+    this.webcamEnabled = ko.observable(false);
 
 
     // not serialized
@@ -122,23 +122,94 @@ ExpTrialLoop.prototype.renameGroup = function(facGroupIdx,flag) {
     }
 };
 
+ExpTrialLoop.prototype.getRandomizedTrials = function() {
+
+    // first read out all trialVariations from all TrialGroups into one Array:
+    var allTrials = [];
+    for (var facGrpIdx=0; facGrpIdx < this.factorGroups().length; facGrpIdx++) {
+        var conditions = this.factorGroups()[facGrpIdx].conditionsLinear();
+        for (var condIdx=0; condIdx < conditions.length; condIdx++) {
+            Array.prototype.push.apply( allTrials, conditions[condIdx].trials() );
+        }
+    }
+
+    // create trial_randomization first with increasing integer:
+    var numRep = this.repsPerTrialType();
+    if (numRep>1) {
+        var orig_allTrials = allTrials;
+        allTrials = [];
+        for (var j = 0; j < numRep; j++) {
+            Array.prototype.push.apply( allTrials, orig_allTrials );
+        }
+    }
+
+    // now randomize:
+    console.log("do randomization...");
+    for (var i = allTrials.length - 1; i > 0; i--) {
+        var permuteWithIdx = Math.floor(Math.random() * (i + 1)); // random number between 0 and i
+        var temp1 = allTrials[i];
+        allTrials[i] = allTrials[permuteWithIdx];
+        allTrials[permuteWithIdx] = temp1;
+    }
+
+    // TODO: use this.trialsPerSub() to restrict number of trials
+
+    // TODO: make sure that there is spacing between repetitions:
+    /*var minIntervalBetweenRep = this.minIntervalBetweenRep();
+    if (minIntervalBetweenRep>0) {
+        console.log("try to satify all constraints...");
+        for (var j = 0; j < 1000; j++) {
+            var constraintsSatisfied = true;
+            for (var i = 0; i < this.trial_randomization.length; i++) {
+                var stepsToLookBack = Math.min(i, minIntervalBetweenRep);
+                for (var k = 1; k <= stepsToLookBack; k++) {
+                    // look back k steps:
+                    if (this.trial_randomization[i] == this.trial_randomization[i-k]) {
+                        constraintsSatisfied = false;
+                        // permute trial i with any random other trial:
+                        var permuteWithIdx = Math.floor(Math.random() * this.trial_randomization.length);
+                        var temp1 = this.trial_randomization[i];
+                        this.trial_randomization[i] = this.trial_randomization[permuteWithIdx];
+                        this.trial_randomization[permuteWithIdx] = temp1;
+                    }
+                }
+            }
+            if (constraintsSatisfied) {
+                console.log("all constraints were satisfied in iteration "+j);
+                break;
+            }
+            else {
+                console.log("not all constraints were satisfied in iteration "+j);
+            }
+        }
+        if (!constraintsSatisfied){
+            console.log("constraints could not be satisfied!");
+        }
+    }*/
+
+    // TODO: use the following variables:
+    // this.betweenSubjectDesign(false);
+    // this.randomization();
+
+
+    // convert to full trial specification:
+    for (var trialIdx=0; trialIdx < allTrials.length; trialIdx++) {
+        allTrials[trialIdx] = {
+            type: 'trialVariation',
+            trialVariation: allTrials[trialIdx]
+        };
+        this.completeSelectionSpec(allTrials[trialIdx]);
+    }
+
+    return allTrials;
+};
+
 ExpTrialLoop.prototype.removeGroup = function(facGroupIdx,idx) {
     this.factorGroups.splice(facGroupIdx,1);
     this.subSequencePerFactorGroup().splice(facGroupIdx,1);
 };
 
-/**
- * Select a specific or multiple trial types.
- *
- * @param {object} selectionSpec - the specification of the trials that are selected:
- * 4 types possible:
- * { type: 'allTrials', factorGroup: facGroup_obj }
- * { type: 'factorLevel', factor: factor_obj, level: level_obj}
- * { type: 'condition', condition: condition_obj }
- * { type: 'trialVariation', trialVariation: trialVariation_obj }
- */
-ExpTrialLoop.prototype.selectTrialType = function(selectionSpec) {
-
+ExpTrialLoop.prototype.completeSelectionSpec = function(selectionSpec) {
     // add some meta data to the specification to make later calculations easier:
     if (selectionSpec.type == 'factorLevel') {
         selectionSpec.factorGroup = selectionSpec.factor.factorGroup;
@@ -162,6 +233,21 @@ ExpTrialLoop.prototype.selectTrialType = function(selectionSpec) {
             selectionSpec.allLevelIdx.push(levelIdx);
         }
     }
+};
+
+/**
+ * Select a specific or multiple trial types.
+ *
+ * @param {object} selectionSpec - the specification of the trials that are selected:
+ * 4 types possible:
+ * { type: 'allTrials', factorGroup: facGroup_obj }
+ * { type: 'factorLevel', factor: factor_obj, level: level_obj}
+ * { type: 'condition', condition: condition_obj }
+ * { type: 'trialVariation', trialVariation: trialVariation_obj }
+ */
+ExpTrialLoop.prototype.selectTrialType = function(selectionSpec) {
+
+    this.completeSelectionSpec(selectionSpec);
 
     var factorGroupIdx = this.factorGroups().indexOf( selectionSpec.factorGroup );
     var selectedSubSequence = this.subSequencePerFactorGroup()[factorGroupIdx];
@@ -288,6 +374,7 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.isActive(data.isActive);
     this.randomization(data.randomization);
     this.minIntervalBetweenRep(data.minIntervalBetweenRep);
+    this.webcamEnabled(data.webcamEnabled);
 
     this.trialUniqueIdVar(data.trialUniqueIdVar);
     this.trialTypeIdVar(data.trialTypeIdVar);
@@ -320,6 +407,7 @@ ExpTrialLoop.prototype.toJS = function() {
         isActive:  this.isActive(),
         randomization:  this.randomization(),
         minIntervalBetweenRep: this.minIntervalBetweenRep(),
+        webcamEnabled: this.webcamEnabled(),
 
         trialUniqueIdVar: this.trialUniqueIdVar().id(),
         trialTypeIdVar: this.trialTypeIdVar().id(),

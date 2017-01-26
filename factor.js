@@ -13,7 +13,8 @@ var Factor = function(expData, factorGroup) {
     // serialized
     this.id = ko.observable(guid());
     this.globalVar = ko.observable(null);
-    this.factorType =  ko.observable('fixed');
+    this.factorType =  ko.observable('fixed'); // either 'fixed' or 'random'
+    // or maybe better: either 'allFactorialInteractions' or 'redrawRandomPerTrial' or 'balancedBetweenSubjects'
 
     // not serialized:
     this.nrLevels =  ko.observable(1);
