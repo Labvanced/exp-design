@@ -18,7 +18,7 @@ var GlobalVar = function (expData) {
     this.scale = ko.observable(null);
     this.scope = ko.observable("undefined");
     this.isFactor =  ko.observable(false);
-    this.isInteracting = ko.observable(false);
+    this.isInteracting = ko.observable(false); // TODO: remove
     this.levels = ko.observableArray([]);
 
     this.resetAtTrialStart = ko.observable(false);
