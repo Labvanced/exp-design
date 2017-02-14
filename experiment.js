@@ -14,6 +14,8 @@ var Experiment = function () {
     this.is_recording = ko.observable(false);
     this.is_analyzing = ko.observable(false);
     this.is_published = ko.observable(false);
+    
+    // might be obsoluent 
     this.img_file_id = ko.observable(null);
     this.img_file_orig_name = ko.observable(null);
     this.description = ko.observable("");
@@ -24,7 +26,7 @@ var Experiment = function () {
     this.exp_data_obs = ko.observable(this.exp_data);
     this.publishing_data = new PublishingData(this);
     this.analysis_data = new AnalysisData(this);
-    this.payment_data = new PaymentData(this);
+    this.payment_data = new PrivateData(this);
 
     // local temporary member variables:
     this.hasLocalChanges = false;
@@ -283,7 +285,7 @@ Experiment.prototype.toJS = function() {
         var analysisData_serialized = null;
     }
 
-    if (this.payment_data instanceof PaymentData){
+    if (this.payment_data instanceof PrivateData){
         var payment_data_serialized = this.payment_data.toJS();
     }
     else {
