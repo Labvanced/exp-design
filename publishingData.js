@@ -41,6 +41,9 @@ var PublishingData = function(experiment) {
     this.addNrStudiesToPublish= ko.observable(0);
     this.addRecordingsPerWeek= ko.observable(0);
     this.upgradeLevel= ko.observable(0);
+    
+    // After publication
+    this.individualizedLinks =  ko.observableArray([]);
 
 };
 

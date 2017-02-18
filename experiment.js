@@ -13,7 +13,7 @@ var Experiment = function () {
     this.is_editing = ko.observable(true);
     this.is_recording = ko.observable(false);
     this.is_analyzing = ko.observable(false);
-    this.is_published = ko.observable(false);
+    this.is_finished = ko.observable(false);
     
     // might be obsoluent 
     this.img_file_id = ko.observable(null);
@@ -51,7 +51,7 @@ var Experiment = function () {
         else if(self.is_analyzing()){
             return "Analyzing";
         }
-        else if(self.is_published()){
+        else if(self.is_finished()){
             return "Finished";
         }
 
@@ -80,7 +80,7 @@ Experiment.prototype.publish = function() {
 };
 
 Experiment.prototype.unpublish = function() {
-    this.is_published(false);
+    this.is_recording(false);
     this.save();
 };
 
@@ -93,7 +93,6 @@ Experiment.prototype.enableRec = function() {
 
 Experiment.prototype.stopRec = function() {
     this.is_recording(false);
-    this.is_published(false);
     this.save();
 };
 
@@ -230,7 +229,7 @@ Experiment.prototype.fromJS = function(data) {
     this.is_editing(data.is_editing);
     this.is_recording(data.is_recording);
     this.is_analyzing(data.is_analyzing);
-    this.is_published(data.is_published);
+    this.is_finished(data.is_finished);
     this.description(data.description);
     this.category_id(data.category_id);
     this.img_file_id(data.img_file_id);
@@ -301,7 +300,7 @@ Experiment.prototype.toJS = function() {
         is_editing: this.is_editing(),
         is_recording: this.is_recording(),
         is_analyzing: this.is_analyzing(),
-        is_published: this.is_published(),
+        is_finished: this.is_finished(),
         description: this.description(),
         category_id: this.category_id(),
         img_file_id: this.img_file_id(),
