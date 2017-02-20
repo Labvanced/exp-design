@@ -26,7 +26,7 @@ var Experiment = function () {
     this.exp_data_obs = ko.observable(this.exp_data);
     this.publishing_data = new PublishingData(this);
     this.analysis_data = new AnalysisData(this);
-    this.payment_data = new PrivateData(this);
+    this.private_data = new PrivateData(this);
 
     // local temporary member variables:
     this.hasLocalChanges = false;
@@ -250,8 +250,8 @@ Experiment.prototype.fromJS = function(data) {
         this.analysis_data.fromJS(data.analysis_data);
     }
 
-    if (data.hasOwnProperty("payment_data")){
-        this.payment_data.fromJS(data.payment_data);
+    if (data.hasOwnProperty("private_data")){
+        this.private_data.fromJS(data.private_data);
     }
 
     return this;
@@ -284,11 +284,11 @@ Experiment.prototype.toJS = function() {
         var analysisData_serialized = null;
     }
 
-    if (this.payment_data instanceof PrivateData){
-        var payment_data_serialized = this.payment_data.toJS();
+    if (this.private_data instanceof PrivateData){
+        var private_data_serialized = this.private_data.toJS();
     }
     else {
-        var payment_data_serialized = null;
+        var private_data_serialized = null;
     }
     
     return {
@@ -308,6 +308,6 @@ Experiment.prototype.toJS = function() {
         exp_data: exp_data_serialized,
         publishing_data: publishing_data_serialized,
         analysis_data: analysisData_serialized,
-        payment_data: payment_data_serialized
+        private_data: private_data_serialized
     };
 };
