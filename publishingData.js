@@ -18,7 +18,10 @@ var PublishingData = function(experiment) {
     this.recordingStopNrSubjects =  ko.observable(1);
 
     // page 2  //
-    this.exp_name = ko.observable(experiment.exp_name());
+    this.exp_name = ko.observable(null);
+    if (experiment){
+        this.exp_name(experiment.exp_name());
+    }
     this.description = ko.observable(null);
     this.img_file_id = ko.observable(null);
     this.img_file_orig_name = ko.observable(null);
@@ -48,6 +51,7 @@ var PublishingData = function(experiment) {
     this.ratingValues =  ko.observableArray([]);
     this.raterUserIds=  ko.observableArray([]);
     this.authorId = ko.observable(uc.userdata.username());
+    this.publicationDate =  ko.observable(null);
 
     // test
     this.ratingValues.push(4);
@@ -101,6 +105,7 @@ PublishingData.prototype.fromJS = function(data) {
         this.ratingValues(data.ratingValues);
         this.raterUserIds(data.raterUserIds);
         this.authorId(data.authorId);
+        this.publicationDate(data.publicationDate);
 
 };
 
@@ -152,7 +157,8 @@ PublishingData.prototype.toJS = function() {
         individualizedLinks:  this.individualizedLinks(),
         ratingValues:  this.ratingValues(),
         raterUserIds:  this.raterUserIds(),
-        authorId: this.authorId()
+        authorId: this.authorId(),
+        publicationDate: this.publicationDate()
 
     };
 };
