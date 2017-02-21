@@ -1,6 +1,8 @@
 var PublishingData = function(experiment) {
 
     this.experiment = experiment;
+
+    var self = this;
     
     // page 1 //
     this.sharing = ko.observable('onRequest');
@@ -17,10 +19,9 @@ var PublishingData = function(experiment) {
 
     // page 2  //
     this.exp_name = ko.observable(experiment.exp_name());
-    this.description = ko.observable(experiment.description());
-    this.category_id = ko.observable(experiment.category_id());
-    this.img_file_id = ko.observable(experiment.img_file_id());
-    this.img_file_orig_name = ko.observable(experiment.img_file_orig_name());
+    this.description = ko.observable(null);
+    this.img_file_id = ko.observable(null);
+    this.img_file_orig_name = ko.observable(null);
     this.jdenticonHash = ko.observable(guid());
     this.imageType = ko.observable("jdenticon"); // "jdenticon" or "imgfile"
     this.categories = ko.observableArray([]);
@@ -44,7 +45,13 @@ var PublishingData = function(experiment) {
     
     // After publication
     this.individualizedLinks =  ko.observableArray([]);
+    this.ratingValues =  ko.observableArray([]);
+    this.raterUserIds=  ko.observableArray([]);
+    this.authorId = ko.observable(uc.userdata.username());
 
+    // test
+    this.ratingValues.push(4);
+    this.raterUserIds.push(uc.userdata.userid());
 };
 
 
@@ -66,7 +73,6 @@ PublishingData.prototype.fromJS = function(data) {
         // page 2  //
         this.exp_name(data.exp_name);
         this.description(data.description);
-        this.category_id(data.category_id);
         this.img_file_id(data.img_file_id);
         this.img_file_orig_name(data.img_file_orig_name);
         this.jdenticonHash(data.jdenticonHash);
@@ -89,6 +95,12 @@ PublishingData.prototype.fromJS = function(data) {
         this.addNrStudiesToPublish(data.addNrStudiesToPublish);
         this.addRecordingsPerWeek(data.addRecordingsPerWeek);
         this.upgradeLevel(data.upgradeLevel);
+
+        // After publication
+        this.individualizedLinks(data.individualizedLinks);
+        this.ratingValues(data.ratingValues);
+        this.raterUserIds(data.raterUserIds);
+        this.authorId(data.authorId);
 
 };
 
@@ -113,7 +125,6 @@ PublishingData.prototype.toJS = function() {
         // page 2  //
         exp_name: this.exp_name(),
         description: this.description(),
-        category_id: this. category_id(),
         img_file_id: this.img_file_id(),
         img_file_orig_name: this.img_file_orig_name(),
         jdenticonHash: this.jdenticonHash(),
@@ -136,6 +147,12 @@ PublishingData.prototype.toJS = function() {
         addNrStudiesToPublish:this.addNrStudiesToPublish(),
         addRecordingsPerWeek:this.addRecordingsPerWeek(),
         upgradeLevel:this.upgradeLevel(),
+
+        // After publication
+        individualizedLinks:  this.individualizedLinks(),
+        ratingValues:  this.ratingValues(),
+        raterUserIds:  this.raterUserIds(),
+        authorId: this.authorId()
 
     };
 };
