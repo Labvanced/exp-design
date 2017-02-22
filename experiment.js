@@ -240,15 +240,15 @@ Experiment.prototype.fromJS = function(data) {
         this.exp_data = "not loaded";
     }
 
-    if (data.hasOwnProperty("publishing_data")){
+    if (data.hasOwnProperty("publishing_data") && data.publishing_data != null){
         this.publishing_data.fromJS(data.publishing_data);
     }
 
-    if (data.hasOwnProperty("analysis_data")){
+    if (data.hasOwnProperty("analysis_data") && data.analysis_data != null){
         this.analysis_data.fromJS(data.analysis_data);
     }
 
-    if (data.hasOwnProperty("private_data")){
+    if (data.hasOwnProperty("private_data") && data.private_data != null){
         this.private_data.fromJS(data.private_data);
     }
 
