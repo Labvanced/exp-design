@@ -7,7 +7,6 @@
 var Experiment = function () {
     this.exp_id = ko.observable(0);
     this.guid = ko.observable(guid());
-    this.exp_series_id = ko.observable(0);
     this.exp_name = ko.observable('');
     this.version = ko.observable(1);
     this.is_editing = ko.observable(true);
@@ -223,7 +222,6 @@ Experiment.prototype.setPointers = function() {
 Experiment.prototype.fromJS = function(data) {
     this.guid(data.guid);
     this.exp_id(data.exp_id);
-    this.exp_series_id(data.exp_series_id);
     this.exp_name(data.exp_name);
     this.version(data.version);
     this.is_editing(data.is_editing);
@@ -294,7 +292,6 @@ Experiment.prototype.toJS = function() {
     return {
         guid: this.guid(),
         exp_id: this.exp_id(),
-        exp_series_id: this.exp_series_id(),
         exp_name: this.exp_name(),
         version: this.version(),
         is_editing: this.is_editing(),
