@@ -50,12 +50,12 @@ var PublishingData = function(experiment) {
     this.individualizedLinks =  ko.observableArray([]);
     this.ratingValues =  ko.observableArray([]);
     this.raterUserIds=  ko.observableArray([]);
-    this.authorId = ko.observable(uc.userdata.username());
+    this.authorId = ko.observable('user');
     this.publicationDate =  ko.observable(null);
 
     // test
     this.ratingValues.push(4);
-    this.raterUserIds.push(uc.userdata.userid());
+    this.raterUserIds.push('test');
 };
 
 
