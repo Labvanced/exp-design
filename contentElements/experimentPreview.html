@@ -1,0 +1,16 @@
+<div id="experimentPreview" style="position: absolute; top: 0px; left: 0px; height:400px; width:950px">
+
+    <div style="position: absolute; top: 0; left: 0; height:50px; width:950px; text-align: center; font-size: 35px" data-bind="text: exp_name()" >My great experiment</div>
+    <div style="position:absolute; top: 60px; left:0; height: 300px; width:300px; border: 1px solid lightgrey">
+             <!-- ko if: (imageType() == 'imgfile') -->
+            <img width="300" height="300" data-bind="attr:{src: imgSource}"/>
+            <!-- /ko -->
+            <!-- ko if: (imageType() == 'jdenticon') -->
+            <svg  id="identicon" width="300" height="300" data-bind="attr:{'data-jdenticon-hash': jdenticonHash()}"></svg>
+            <!-- /ko -->
+    </div>
+
+    <div style="position:absolute; top:60px; left:350px; height: 300px; width:600px; border: 1px solid lightgrey" data-bind="text:description()">description text </div>
+
+</div>
+
