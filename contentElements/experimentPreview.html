@@ -1,16 +1,16 @@
-<div id="experimentPreview" style="position: absolute; top: 0px; left: 0px; height:400px; width:950px">
+<div id="experimentPreview" style="position: absolute; top: 0px; left: 0px;">
 
-    <div style="position: absolute; top: 0; left: 0; height:50px; width:950px; text-align: center; font-size: 35px" data-bind="text: exp_name()" >My great experiment</div>
-    <div style="position:absolute; top: 60px; left:0; height: 300px; width:300px; border: 1px solid lightgrey">
-             <!-- ko if: (imageType() == 'imgfile') -->
-            <img width="300" height="300" data-bind="attr:{src: imgSource}"/>
-            <!-- /ko -->
-            <!-- ko if: (imageType() == 'jdenticon') -->
-            <svg  id="identicon" width="300" height="300"></svg>
-            <!-- /ko -->
+    <div id="heading" style="position: absolute; top: 0; left: 0; height:12.5%; width:100%; text-align: center;" data-bind="text: exp_name()" ></div>
+    <div style="position:absolute; top: 15%; left:0; height: 75%; width:30%;">
+        <!-- ko if: (imageType() == 'imgfile') -->
+        <img id="ownImage" data-bind="attr:{src: imgSource}"/>
+        <!-- /ko -->
+        <!-- ko if: (imageType() == 'jdenticon') -->
+        <svg id="identicon"></svg>
+        <!-- /ko -->
     </div>
 
-    <div style="position:absolute; top:60px; left:350px; height: 300px; width:600px; border: 1px solid lightgrey" data-bind="text:description()">description text </div>
+    <div style="position:absolute; top:15%; left:33%; height: 75%; width:67%;" data-bind="text:description()"></div>
 
 </div>
 
