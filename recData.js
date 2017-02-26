@@ -4,15 +4,19 @@
 
 /**
  * this class stores the data that should be recorded.
- * @param variableId
- * @param data
  * @constructor
  */
-var RecData = function(variableId,data) {
+var RecData = function() {
+    this.data = {};
+};
 
-    this.variableId = variableId;
-    this.data = data;
 
+/**
+ * add the recording of a variable to data
+ * @param {globalVar} globalVar - variable to be recorded
+ */
+RecData.prototype.addRecording = function(globalVar){
+    this.data[globalVar.id()] = globalVar.recValue;
 };
 
 /**
@@ -21,7 +25,6 @@ var RecData = function(variableId,data) {
  * @returns {RecData}
  */
 RecData.prototype.fromJS = function(data) {
-    this.variableId =data.variableId;
     this.data = data.data;
     return this;
 };
@@ -32,7 +35,6 @@ RecData.prototype.fromJS = function(data) {
  */
 RecData.prototype.toJS = function() {
     return {
-        variableId: this.variableId,
         data: this.data
     };
 };

@@ -93,17 +93,15 @@ PlayerQuestView.prototype.start= function() {
 
 PlayerQuestView.prototype.submitQuestionnaire = function() {
 
-    var answers = [];
-    var varIds = [];
+
+    var recData = new RecData();
     for (var p = 0; p<this.nrOfPages; p++) {
         var questions = this.questionnairePages[p].elements();
         for (var q=0; q<questions.length; q++) {
-            varIds.push(questions[q].content().variable().id());
-            answers.push(questions[q].content().answer());
+            recData.addRecording(questions[q].content().variable());
         }
     }
 
-    var recData = new RecData(varIds,answers);
     this.player.addRecording(this.player.currentBlockIdx, 0, recData.toJS());
 
     this.player.currentSequence.selectNextElement();

@@ -24,6 +24,11 @@ TextInputElement.prototype.addVar = function() {
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
     globalVar.name(this.parent.name());
+
+    this.answer.subscribe(function (newValue) {
+        this.setValue(newValue);
+    }, globalVar);
+    
     this.variable(globalVar);
 };
 

@@ -67,9 +67,10 @@ ActionRecord.prototype.addRecording = function(type){
  */
 ActionRecord.prototype.run = function(triggerParams) {
     var i;
-    var recData;
+    var recData = new RecData();
     var blockId = player.getBlockId();
     var trialId = player.getTrialId();
+
 
     var specialRecs = this.specialRecordings();
     for (i = 0; i < specialRecs.length; i++) {
@@ -79,8 +80,7 @@ ActionRecord.prototype.run = function(triggerParams) {
             varToSave.value(valueToRecord);
         }
         if (specialRecs[i].isRecorded()) {
-            recData = new RecData(varToSave.id(), valueToRecord);
-            player.addRecording(blockId, trialId, recData.toJS());
+            recData.addRecording(varToSave);
         }
     }
 
@@ -89,24 +89,25 @@ ActionRecord.prototype.run = function(triggerParams) {
         var name = selectedRecs[i].recType;
         var shouldBeRec = selectedRecs[i].isRecorded();
         var varToSave = selectedRecs[i].variable();
-
         switch (name) {
             case "elementTag":
                 if (shouldBeRec) {
                     var tag = "TODO";
-                    recData = new RecData(varToSave.id(), tag);
-                    player.addRecording(blockId, trialId, recData.toJS());
+                    varToSave.recValue = tag;
                 }
                 break;
             case "reactionTime":
                 if (shouldBeRec) {
                     var reactionTime = "TODO";
-                    recData = new RecData(varToSave.id(), reactionTime);
-                    player.addRecording(blockId, trialId, recData.toJS());
+                    varToSave.recValue = reactionTime;
                 }
                 break;
         }
+        recData.addRecording(varToSave);
+
     }
+
+    player.addRecording(blockId, trialId, recData.toJS());
 };
 
 /**
@@ -1153,7 +1154,8 @@ ActionRecordQuestionaireResponse.prototype.run = function(triggerParams) {
     var blockId = player.getBlockId();
     var trialId = player.getTrialId();
     var resp = triggerParams.questionElement.content.answer;
-    var recData = new RecData(this.variableId(), resp);
+    var recData = new RecData();
+    recData.addRecording(this.variable);
     player.addRecording(blockId,trialId,recData.toJS());
 };
 

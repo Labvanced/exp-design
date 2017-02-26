@@ -34,6 +34,28 @@ var GlobalVar = function (expData) {
     this.subLevelEdit = ko.observable(false);
     this.value = ko.observable(null);
     this.backRefs = ko.observableArray([]).extend({sortById: null});
+
+    this.recType = ko.observable('last'); // maybe last and series?
+    this.recValue = null; // takes care of buffering
+
+    // subscribe to value for buffering
+    this.value.subscribe(function (newValue) {
+        if(this.recType=='last'){
+            this.recValue = newValue;
+        } else if(this.recType=='series'){
+            if(!this.recValue){
+                this.recValue = [];
+            }
+
+            var rec = {
+              timeStamp:    new Date().getTime(),
+              value:        newValue
+            };
+
+            this.recValue.push(rec);
+        }
+    }, this);
+
 };
 
 // enum definitions:
@@ -43,7 +65,7 @@ GlobalVar.scopes = ['subject','task','trial'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];
-
+GlobalVar.recTypes = ['last', 'series']; // open to discussion
 
 // definition of what scalesallowed for each datatype:
 GlobalVar.allowedScalePerDataType = {

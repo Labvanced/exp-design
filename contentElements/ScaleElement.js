@@ -37,6 +37,11 @@ ScaleElement.prototype.addVar = function() {
     globalVar.startValue(0);
     globalVar.resetAtTrialStart(true);
     globalVar.recordAtTrialEnd(true);
+
+    this.answer.subscribe(function (newValue) {
+        this.setValue(newValue);
+    }, globalVar);
+    
     this.variable(globalVar);
 };
 
