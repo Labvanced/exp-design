@@ -11,6 +11,8 @@
  */
 var TriggerMouse = function(event) {
     this.event = event;
+    this.mouseX = null;
+    this.mouseY = null;
 
     // serialized
     this.buttonType = ko.observable("Left");
@@ -43,13 +45,13 @@ TriggerMouse.prototype.isValid = function() {
  */
 TriggerMouse.prototype.getParameterSpec = function() {
     return [
-        'elementName',
-        'elementVisibility',
-        'elementX',
-        'elementY',
-        'elementWidth',
-        'elementHeight',
-        'reactionTime'
+        'Stimulus Name',
+        'Time From Stimulus Onset',
+        'Stimulus Visibility',
+        'Stimulus X-Position',
+        'Stimulus Y-Position',
+        'Stimulus Width',
+        'Stimulus Height',
     ];
 };
 
@@ -61,12 +63,12 @@ TriggerMouse.prototype.getParameterSpec = function() {
 TriggerMouse.prototype.triggerOnTarget = function(playerFrame,target) {
     this.event.triggerActions([
         target.modifier().selectedTrialView.name(),
+        playerFrame.getFrameTime(),  // TODO need to change when stimulus is set invisible
         target.modifier().selectedTrialView.visibility(),
         target.modifier().selectedTrialView.editorX(),
         target.modifier().selectedTrialView.editorY(),
         target.modifier().selectedTrialView.editorWidth(),
-        target.modifier().selectedTrialView.editorHeight(),
-        playerFrame.getFrameTime()
+        target.modifier().selectedTrialView.editorHeight()
     ]);
 };
 
@@ -88,6 +90,8 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 if (this.buttonType() == "Left"){
                     (function(event,target) {
                         $(playerFrame.frameView.viewElements.byId[target.id()].div).click(function(ev) {
+                            self.mouseX = playerFrame.mouseX;
+                            self.mouseY = playerFrame.mouseY;
                             self.triggerOnTarget(playerFrame,target);
                         });
                     })(event,target);
@@ -96,6 +100,8 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 else if (this.buttonType() == "Right"){
                     (function(event,target) {
                         $(playerFrame.frameView.viewElements.byId[target.id()].div).contextmenu(function(ev) {
+                            self.mouseX = playerFrame.mouseX;
+                            self.mouseY = playerFrame.mouseY;
                             self.triggerOnTarget(playerFrame,target);
                         });
                     })(event,target);
@@ -111,6 +117,8 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 (function(event,target) {
                     $(playerFrame.frameView.viewElements.byId[target.id()].div).on('mousedown',function(ev) {
                         if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
+                            self.mouseX = playerFrame.mouseX;
+                            self.mouseY = playerFrame.mouseY;
                             self.triggerOnTarget(playerFrame,target);
                         }
                     });
@@ -125,6 +133,8 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 (function(event,target) {
                     $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseup(function(ev) {
                         if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
+                            self.mouseX = playerFrame.mouseX;
+                            self.mouseY = playerFrame.mouseY;
                             self.triggerOnTarget(playerFrame,target);
                         }
                     });
@@ -138,6 +148,8 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 // closure to make event persistent over loop:
                 (function (event, target) {
                     $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseover(function (ev) {
+                        self.mouseX = playerFrame.mouseX;
+                        self.mouseY = playerFrame.mouseY;
                         self.triggerOnTarget(playerFrame,target);
                     });
                 })(event, target);
@@ -261,8 +273,7 @@ TriggerKeyboard.prototype.getValidKeyCodes = function() {
  */
 TriggerKeyboard.prototype.getParameterSpec = function() {
     return [
-        'buttonPressed',
-        'reactionTime'
+        'Id of Key',
     ];
 };
 
@@ -281,6 +292,8 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
             $(document).on("keydown", function (ev){
                 var keyIdx = validKeyCodes.indexOf(ev.keyCode);
                 if (keyIdx>=0){
+                    self.mouseX = playerFrame.mouseX;
+                    self.mouseY = playerFrame.mouseY;
                     self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
                 }
 
@@ -293,6 +306,8 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
             $(document).on("keyup", function (ev){
                 var keyIdx = validKeyCodes.indexOf(ev.keyCode);
                 if (keyIdx>=0){
+                    self.mouseX = playerFrame.mouseX;
+                    self.mouseY = playerFrame.mouseY;
                     self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
                 }
             });

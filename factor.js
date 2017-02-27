@@ -56,7 +56,10 @@ Factor.prototype._addLevel = function() {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 Factor.prototype.setPointers = function(entitiesArr) {
-    this.globalVar(entitiesArr.byId[this.globalVar()]);
+    if (entitiesArr.byId[this.globalVar()]){
+        this.globalVar(entitiesArr.byId[this.globalVar()]);
+    }
+
 };
 
 /**

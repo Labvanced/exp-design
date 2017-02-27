@@ -8,6 +8,7 @@
  * @constructor
  */
 var GlobalVar = function (expData) {
+    var self = this;
     this.expData = expData;
 
     // serialized:
@@ -35,18 +36,22 @@ var GlobalVar = function (expData) {
     this.value = ko.observable(null);
     this.backRefs = ko.observableArray([]).extend({sortById: null});
 
-    this.recType = ko.observable('last'); // maybe last and series?
+    this.recType = ko.observable('overwrite'); // maybe last and series?
     this.recValue = null; // takes care of buffering
 
     // subscribe to value for buffering
     this.value.subscribe(function (newValue) {
-        if(this.recType=='last'){
-            this.recValue = newValue;
-        } else if(this.recType=='series'){
-            if(!this.recValue){
-                this.recValue = [];
+        if(self.recType()=='overwrite'){
+            if(!self.recValue){
+                self.recValue = ko.observable(newValue);
             }
-
+            else{
+                self.recValue(newValue);
+            }
+        } else if(self.recType()=='stack'){
+            if(!self.recValue){
+                self.recValue = ko.observableArray([]);
+            }
             var rec = {
               timeStamp:    new Date().getTime(),
               value:        newValue
@@ -65,7 +70,7 @@ GlobalVar.scopes = ['subject','task','trial'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];
-GlobalVar.recTypes = ['last', 'series']; // open to discussion
+GlobalVar.recTypes = ['overwrite', 'stack']; // open to discussion
 
 // definition of what scalesallowed for each datatype:
 GlobalVar.allowedScalePerDataType = {

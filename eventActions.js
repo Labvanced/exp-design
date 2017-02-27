@@ -8,8 +8,20 @@
  * @param {Event} event - the parent event
  * @constructor
  */
-var ActionRecord = function(event) {
+var ActionSaveObjProp = function(event) {
     this.event = event;
+    var self = this;
+
+    this.availableStimuli = ko.computed(function() {
+        var  definiteStims =  self.event.parent.elements();
+        var currTarget = {
+            name: 'currentTarget',
+            id: null
+        };
+        definiteStims.push(currTarget);
+
+    }, this);
+
 
     var specialRecs = this.event.trigger().getParameterSpec();
     var specR =  [];
@@ -26,14 +38,14 @@ var ActionRecord = function(event) {
     this.selectedRecordings =  ko.observableArray([]);
 };
 
-ActionRecord.prototype.type = "ActionRecord";
-ActionRecord.prototype.label = "Record";
+ActionSaveObjProp.prototype.type = "ActionRecord";
+ActionSaveObjProp.prototype.label = "Record";
 
 /**
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionRecord.prototype.isValid = function(){
+ActionSaveObjProp.prototype.isValid = function(){
     return true;
 };
 
@@ -41,7 +53,7 @@ ActionRecord.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionRecord.prototype.setVariableBackRef = function(variable){
+ActionSaveObjProp.prototype.setVariableBackRef = function(variable){
     variable.addBackRef(this, this.event, true, false, 'recording variable');
 };
 
@@ -49,11 +61,12 @@ ActionRecord.prototype.setVariableBackRef = function(variable){
  * add a new recording to the list.
  * @param {string} type - the type of the recording, such as "elementTag" or "reactionTime"
  */
-ActionRecord.prototype.addRecording = function(type){
+ActionSaveObjProp.prototype.addRecording = function(targetId){
     var newRec={
-        recType: type,
+        targetId: targetId,
+        recType: null,
         variable :ko.observable(null),
-        isRecorded: ko.observable(false)
+        isRecorded: ko.observable(true)
     };
     this.selectedRecordings.push(newRec);
 
@@ -65,7 +78,7 @@ ActionRecord.prototype.addRecording = function(type){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionRecord.prototype.run = function(triggerParams) {
+ActionSaveObjProp.prototype.run = function(triggerParams) {
     var i;
     var recData = new RecData();
     var blockId = player.getBlockId();
@@ -110,6 +123,133 @@ ActionRecord.prototype.run = function(triggerParams) {
     player.addRecording(blockId, trialId, recData.toJS());
 };
 
+
+
+
+
+
+
+/////////////////////////////////////////////////  ActionRecord  ///////////////////////////////////////////////////
+
+/**
+ * This action can record values (i.e. elementTag or reactiontime) into variables and sends them to the server.
+ * @param {Event} event - the parent event
+ * @constructor
+ */
+var ActionRecord = function(event) {
+    this.event = event;
+    
+   this.specialRecs = this.event.trigger().getParameterSpec();
+    
+    /**
+    var specR =  [];
+    for (var i = 0; i < specialRecs.length; i++) {
+        specR.push({
+            recType: specialRecs[i],
+            variable: ko.observable(null),
+            isRecorded: ko.observable(false)
+        });
+    }
+
+    // serialized
+    this.specialRecordings = ko.observableArray(specR);
+     **/
+    this.selectedRecordings =  ko.observableArray([]);
+};
+
+ActionRecord.prototype.type = "ActionRecord";
+ActionRecord.prototype.label = "Save Response or Property";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionRecord.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionRecord.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'recording variable');
+};
+
+/**
+ * add a new recording to the list.
+ * @param {string} type - the type of the recording, such as "elementTag" or "reactionTime"
+ */
+ActionRecord.prototype.addRecording = function(type){
+    var newRec={
+        recType: type,
+        variable :ko.observable(null),
+        isRecorded: ko.observable(true)
+    };
+    this.selectedRecordings.push(newRec);
+
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It creates the RecData and
+ * sends them to the server.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionRecord.prototype.run = function(triggerParams) {
+    var self = this;
+    var selectedRecs = this.selectedRecordings();
+    for (i = 0; i < selectedRecs.length; i++) {
+        var name = selectedRecs[i].recType;
+        var varToSave = selectedRecs[i].variable();
+        var val;
+        switch (name) {
+            // mouse events
+            case "Stimulus Name":
+                val = triggerParams[0];
+                break;
+            case "Time From Stimulus Onset":  // change to onset of stimulus
+                val = triggerParams[1];
+                break;
+            case "Stimulus Visibility":
+                val = triggerParams[2];
+                break;
+            case "Stimulus X-Position":
+                val = triggerParams[3];
+                break;
+            case "Stimulus Y-Position":
+                val = triggerParams[4];
+                break;
+            case "Stimulus Width":
+                val = triggerParams[5];
+                break;
+            case "Stimulus Height":
+                val = triggerParams[6];
+                break;
+            // keyboard events
+            case "Id of Key":
+                val = triggerParams[0];
+                break;
+            // frame properties
+            case "Time From Frame Onset":
+                val = triggerParams[1];
+                break;
+            // mouse properties
+            case "Mouse X-Position":
+                val = self.event.trigger().mouseX;
+                break;
+            // mouse properties
+            case "Mouse Y-Position":
+                val = self.event.trigger().mouseX;
+                break;
+        }
+
+        varToSave.value(val);
+    }
+
+
+};
+
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
@@ -120,7 +260,7 @@ ActionRecord.prototype.run = function(triggerParams) {
 ActionRecord.prototype.setPointers = function(entitiesArr) {
     var i;
     var globVar;
-
+/**
     var specialRecordings = this.specialRecordings();
     for (i = 0; i<specialRecordings.length; i++){
         if (specialRecordings[i].variable()) {
@@ -129,6 +269,7 @@ ActionRecord.prototype.setPointers = function(entitiesArr) {
             this.setVariableBackRef(globVar);
         }
     }
+ **/
 
     var selectedRecordings = this.selectedRecordings();
     for (i = 0; i<selectedRecordings.length; i++){
@@ -146,13 +287,16 @@ ActionRecord.prototype.setPointers = function(entitiesArr) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionRecord.prototype.reAddEntities = function(entitiesArr) {
+
     var i;
+    /**
     var specialRec = this.specialRecordings();
     for (i = 0; i<specialRec.length; i++){
         if (specialRec[i].variable()) {
             entitiesArr.push(specialRec[i].variable());
         }
     }
+     **/
     var selectedRec = this.selectedRecordings();
     for (i = 0; i<selectedRec.length; i++){
         if (selectedRec[i].variable()) {
@@ -167,8 +311,10 @@ ActionRecord.prototype.reAddEntities = function(entitiesArr) {
  * @returns {ActionRecord}
  */
 ActionRecord.prototype.fromJS = function(data) {
-    var specialRecordings = [];
+
     var i, tmp;
+    /**
+     * var specialRecordings = [];
     for (i = 0; i < data.specialRecordings.length; i++) {
         tmp = data.specialRecordings[i];
         specialRecordings.push({
@@ -178,6 +324,7 @@ ActionRecord.prototype.fromJS = function(data) {
         });
     }
     this.specialRecordings(specialRecordings);
+     **/
 
     var selectedRecordings = [];
     for (i = 0; i < data.selectedRecordings.length; i++) {
@@ -199,6 +346,7 @@ ActionRecord.prototype.fromJS = function(data) {
 ActionRecord.prototype.toJS = function() {
     var rec, varId, i;
 
+    /**
     var specialRecordings = [];
     var specialRec = this.specialRecordings();
     for (i = 0; i<specialRec.length; i++){
@@ -213,6 +361,7 @@ ActionRecord.prototype.toJS = function() {
             isRecorded: rec.isRecorded()
         });
     }
+     **/
 
     var selectedRecordings = [];
     var selectedRec = this.selectedRecordings();
@@ -231,7 +380,7 @@ ActionRecord.prototype.toJS = function() {
 
     return {
         type: this.type,
-        specialRecordings: specialRecordings,
+        // specialRecordings: specialRecordings,
         selectedRecordings: selectedRecordings
     };
 };
@@ -268,7 +417,7 @@ var ActionSetElementProp = function(event) {
 
 
 ActionSetElementProp.prototype.type = "ActionSetElementProp";
-ActionSetElementProp.prototype.label = "Set Element Prop.";
+ActionSetElementProp.prototype.label = "Set Stimulus Property";
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -671,7 +820,7 @@ var ActionSetVariable = function(event) {
 
 };
 ActionSetVariable.prototype.type = "ActionSetVariable";
-ActionSetVariable.prototype.label = "Set Variable";
+ActionSetVariable.prototype.label = "Save Variable";
 
 /**
  * returns true if all settings are valid (used in the editor).

@@ -62,7 +62,9 @@ Sequence.prototype.selectNextElement = function() {
     }
 
     if (nextElement === undefined) {
-        nextElement = "EndOfSequence";
+        nextElement = {
+            type:"EndOfSequence"
+        }
     }
 
     this.currSelectedElement(nextElement);
