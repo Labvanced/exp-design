@@ -1,12 +1,12 @@
 
-var VideoElement= function(expData) {
+var AudioElement= function(expData) {
 
-    var self = this; 
+    var self = this;
     this.expData = expData;
     this.parent = null;
 
-    this.type = "VideoElement";
-    this.name = ko.observable("Video");
+    this.type = "AudioElement";
+    this.name = ko.observable("Audio");
 
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
@@ -16,17 +16,16 @@ var VideoElement= function(expData) {
             return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
         }
         else return ''
-       
+
     });
+
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
+    
+    this.label = "Audio";
 
-    // not serialized
-    this.shape = "square";
-    this.label = "Video";
-
-    this.vidSource = ko.computed( function() {
+    this.audioSource = ko.computed( function() {
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
             return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
@@ -37,22 +36,22 @@ var VideoElement= function(expData) {
 };
 
 
-VideoElement.prototype.dataType =      [ "string", "string", "string"];
-VideoElement.prototype.modifiableProp = ["name","file_id","file_orig_name"];
+AudioElement.prototype.dataType =      [ "string", "string", "string"];
+AudioElement.prototype.modifiableProp = ["name","file_id","file_orig_name"];
 
-VideoElement.prototype.setPointers = function(entitiesArr) {
+AudioElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 };
 
-VideoElement.prototype.reAddEntities = function(entitiesArr) {
+AudioElement.prototype.reAddEntities = function(entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 };
 
-VideoElement.prototype.selectTrialType = function(selectionSpec) {
+AudioElement.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
-VideoElement.prototype.fromJS = function(data) {
+AudioElement.prototype.fromJS = function(data) {
     var self = this;
     this.type = data.type;
     this.dataType = data.dataType;
@@ -67,7 +66,7 @@ VideoElement.prototype.fromJS = function(data) {
     return this;
 };
 
-VideoElement.prototype.toJS = function() {
+AudioElement.prototype.toJS = function() {
 
     return {
 
@@ -81,3 +80,6 @@ VideoElement.prototype.toJS = function() {
     };
 };
 
+/**
+ * Created by cgoeke on 28.02.2017.
+ */

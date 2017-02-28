@@ -99,6 +99,8 @@ FrameElement.prototype.reAddEntities = function(entitiesArr) {
     }
 };
 
+
+
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.

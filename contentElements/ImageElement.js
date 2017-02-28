@@ -1,6 +1,7 @@
 
 var ImageElement= function(expData) {
 
+    var self = this; 
     this.expData = expData;
     this.parent = null;
 
@@ -10,6 +11,15 @@ var ImageElement= function(expData) {
     //this.name = ko.observable("ImageHtml");
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
+    
+    this.shortName = ko.computed(function() {
+        if (self.file_orig_name()){
+            return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
+        }
+        else return ''
+
+    });
+    
     this.stretchImageToFitBoundingBox = ko.observable(false);
 
     // modifier:

@@ -208,18 +208,21 @@ FrameView.prototype.removeElemFromView = function(elementData,index) {
 
 FrameView.prototype.addElem = function(elementData,index) {
 
-    var elemView = new FrameElementView(elementData,this);
+    var elemView = new FrameElementView(elementData, this);
     // var elemView = new CanvasFrameElementView(elementData,this); // deprecated easeljs canvas elements
 
     var callbacks = null;
-    if (this.type=="editorView") {
-        var callbacks = new EditorCallbacks(elemView,this);
+    if (this.type == "editorView") {
+        var callbacks = new EditorCallbacks(elemView, this);  // is this used?
     }
-    else if (this.type=="playerView") {
-        var callbacks = new PlayerCallbacks(elemView,this);
+    else if (this.type == "playerView") {
+        var callbacks = new PlayerCallbacks(elemView, this);    // is this used?
     }
     this.viewElements.splice(index, 0, elemView);
-    $(this.divContainer).append(elemView.div);
+
+    if (elemView.dataModel.content().type != 'AudioElement') {   // exclude audio elements from DOM
+        $(this.divContainer).append(elemView.div);
+    }
 
 };
 
