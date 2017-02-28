@@ -45,13 +45,13 @@ TriggerMouse.prototype.isValid = function() {
  */
 TriggerMouse.prototype.getParameterSpec = function() {
     return [
-        'Stimulus Name',
+        'Stimulus Tag',
         'Time From Stimulus Onset',
         'Stimulus Visibility',
         'Stimulus X-Position',
         'Stimulus Y-Position',
         'Stimulus Width',
-        'Stimulus Height',
+        'Stimulus Height'
     ];
 };
 
@@ -755,6 +755,95 @@ TriggerVariableValueChanged.prototype.toJS = function() {
     return {
         type: this.type,
         variables: variableIds
+    };
+};
+
+///////////////////////////
+
+
+
+////////////////////////
+
+
+
+var TriggerAudioVideoEvent= function(event) {
+    this.event = event;
+
+    // serialized
+    this.target = ko.observable(null);
+    this.triggerType = ko.observable(null);
+
+
+};
+
+TriggerAudioVideoEvent.prototype.type = "TriggerAudioVideoEvent";
+TriggerAudioVideoEvent.prototype.label = "Audio / Video Event Trigger";
+TriggerAudioVideoEvent.prototype.triggerTypes = ["started","paused", "ended"];
+
+
+TriggerAudioVideoEvent.prototype.getParameterSpec = function() {
+    return [
+        "timeOfAudioVideo"
+    ];
+};
+
+TriggerAudioVideoEvent.prototype.isValid = function() {
+    return true;
+};
+
+TriggerAudioVideoEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
+
+    var self = this;
+    switch (this.triggerType()) {
+        case "started":
+            $(playerFrame.frameView.viewElements.byId[this.target.id()].div).bind("play", function() {
+                alert("I'm staring!");
+                self.event.triggerActions(0)
+            });
+            break;
+        case "paused":
+            $(playerFrame.frameView.viewElements.byId[this.target.id()].div).bind("pause", function() {
+                alert("I'm doing a pause!");
+                var currTime =  $(playerFrame.frameView.viewElements.byId[this.target.id()].div).currentTime;
+                self.event.triggerActions(currTime);
+              
+            });
+            break;
+        case "ended":
+            $(playerFrame.frameView.viewElements.byId[this.target.id()].div).bind("ended", function() {
+                alert("I'm done!");
+                var duration =  $(playerFrame.frameView.viewElements.byId[this.target.id()].div).duration;
+                self.event.triggerActions(duration);
+            });
+            break;
+    }
+
+};
+
+
+TriggerAudioVideoEvent.prototype.destroyOnPlayerFrame = function(playerFrame) {
+
+};
+
+
+TriggerAudioVideoEvent.prototype.setPointers = function(entitiesArr) {
+    this.target(entitiesArr.byId[this.target()]);
+};
+
+
+
+TriggerAudioVideoEvent.prototype.fromJS = function(data) {
+    this.target(data.target);
+    this.triggerType(data.triggerType);
+    return this;
+};
+
+TriggerAudioVideoEvent.prototype.toJS = function() {
+
+    return {
+        type: this.type,
+        target: this.target(),
+        triggerType: this.triggerType()
     };
 };
 

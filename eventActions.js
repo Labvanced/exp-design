@@ -138,22 +138,7 @@ ActionSaveObjProp.prototype.run = function(triggerParams) {
  */
 var ActionRecord = function(event) {
     this.event = event;
-    
    this.specialRecs = this.event.trigger().getParameterSpec();
-    
-    /**
-    var specR =  [];
-    for (var i = 0; i < specialRecs.length; i++) {
-        specR.push({
-            recType: specialRecs[i],
-            variable: ko.observable(null),
-            isRecorded: ko.observable(false)
-        });
-    }
-
-    // serialized
-    this.specialRecordings = ko.observableArray(specR);
-     **/
     this.selectedRecordings =  ko.observableArray([]);
 };
 
@@ -181,11 +166,22 @@ ActionRecord.prototype.setVariableBackRef = function(variable){
  * @param {string} type - the type of the recording, such as "elementTag" or "reactionTime"
  */
 ActionRecord.prototype.addRecording = function(type){
+    var self = this; 
     var newRec={
         recType: type,
-        variable :ko.observable(null),
-        isRecorded: ko.observable(true)
+        variable :ko.observable({
+            isRecorded: ko.observable(true)
+        }),
+       tmpRecState: null
     };
+    newRec.variable.subscribe(function(oldValue) {
+        newRec.tmpRecState = oldValue.isRecorded();
+    }, null, "beforeChange");
+
+    newRec.variable.subscribe(function(oldValue) {
+        oldValue.isRecorded(newRec.tmpRecState);
+    }, this);
+    
     this.selectedRecordings.push(newRec);
 
 };
@@ -260,16 +256,6 @@ ActionRecord.prototype.run = function(triggerParams) {
 ActionRecord.prototype.setPointers = function(entitiesArr) {
     var i;
     var globVar;
-/**
-    var specialRecordings = this.specialRecordings();
-    for (i = 0; i<specialRecordings.length; i++){
-        if (specialRecordings[i].variable()) {
-            globVar = entitiesArr.byId[specialRecordings[i].variable()];
-            specialRecordings[i].variable(globVar);
-            this.setVariableBackRef(globVar);
-        }
-    }
- **/
 
     var selectedRecordings = this.selectedRecordings();
     for (i = 0; i<selectedRecordings.length; i++){
@@ -289,14 +275,6 @@ ActionRecord.prototype.setPointers = function(entitiesArr) {
 ActionRecord.prototype.reAddEntities = function(entitiesArr) {
 
     var i;
-    /**
-    var specialRec = this.specialRecordings();
-    for (i = 0; i<specialRec.length; i++){
-        if (specialRec[i].variable()) {
-            entitiesArr.push(specialRec[i].variable());
-        }
-    }
-     **/
     var selectedRec = this.selectedRecordings();
     for (i = 0; i<selectedRec.length; i++){
         if (selectedRec[i].variable()) {
@@ -313,18 +291,7 @@ ActionRecord.prototype.reAddEntities = function(entitiesArr) {
 ActionRecord.prototype.fromJS = function(data) {
 
     var i, tmp;
-    /**
-     * var specialRecordings = [];
-    for (i = 0; i < data.specialRecordings.length; i++) {
-        tmp = data.specialRecordings[i];
-        specialRecordings.push({
-            recType: tmp.recType,
-            variable: ko.observable(tmp.variable),
-            isRecorded: ko.observable(tmp.isRecorded)
-        });
-    }
-    this.specialRecordings(specialRecordings);
-     **/
+
 
     var selectedRecordings = [];
     for (i = 0; i < data.selectedRecordings.length; i++) {
@@ -332,7 +299,6 @@ ActionRecord.prototype.fromJS = function(data) {
         selectedRecordings.push({
             recType: tmp.recType,
             variable: ko.observable(tmp.variable),
-            isRecorded: ko.observable(tmp.isRecorded)
         });
     }
     this.selectedRecordings(selectedRecordings);
@@ -346,22 +312,6 @@ ActionRecord.prototype.fromJS = function(data) {
 ActionRecord.prototype.toJS = function() {
     var rec, varId, i;
 
-    /**
-    var specialRecordings = [];
-    var specialRec = this.specialRecordings();
-    for (i = 0; i<specialRec.length; i++){
-        rec = specialRec[i];
-        varId = null;
-        if (rec.variable()) {
-            varId = rec.variable().id();
-        }
-        specialRecordings.push({
-            recType: rec.recType,
-            variable:  varId,
-            isRecorded: rec.isRecorded()
-        });
-    }
-     **/
 
     var selectedRecordings = [];
     var selectedRec = this.selectedRecordings();
@@ -373,14 +323,12 @@ ActionRecord.prototype.toJS = function() {
         }
         selectedRecordings.push({
             recType: rec.recType,
-            variable:  varId,
-            isRecorded: rec.isRecorded()
+            variable:  varId
         });
     }
 
     return {
         type: this.type,
-        // specialRecordings: specialRecordings,
         selectedRecordings: selectedRecordings
     };
 };
@@ -711,6 +659,15 @@ ActionJumpTo.prototype.run = function(triggerParams) {
     if (this.jumpType() == "nextFrame"){
         player.currentFrame.endFrame();
     }
+    else if (this.jumpType() == "nextTrial"){
+        player.currentFrame.finishFrame();
+        player.startNextTrial()
+    }
+    else if (this.jumpType() == "nextTask"){
+        player.currentFrame.finishFrame();
+        player.recordData();
+        player.startNextTask();
+    }
 
 };
 
@@ -820,7 +777,7 @@ var ActionSetVariable = function(event) {
 
 };
 ActionSetVariable.prototype.type = "ActionSetVariable";
-ActionSetVariable.prototype.label = "Save Variable";
+ActionSetVariable.prototype.label = "Set Variable";
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -1143,9 +1100,18 @@ ActionDrawRandomNumber.prototype.toJS = function() {
 var ActionControlAV = function(event) {
     this.event = event;
 
+    // serialized
+    this.target = ko.observable(null);
+    this.actionType = ko.observable(null);
+
 };
+
+
 ActionControlAV.prototype.type = "ActionControlAV";
 ActionControlAV.prototype.label = "Control AV";
+ActionControlAV.prototype.actionTypes = ["start","pause","end"];
+
+
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -1173,8 +1139,9 @@ ActionControlAV.prototype.run = function(triggerParams) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionControlAV.prototype.setPointers = function(entitiesArr) {
-
+    this.target(entitiesArr.byId[this.target()]);
 };
+
 
 /**
  * load from a json object to deserialize the states.
@@ -1182,6 +1149,8 @@ ActionControlAV.prototype.setPointers = function(entitiesArr) {
  * @returns {ActionControlAV}
  */
 ActionControlAV.prototype.fromJS = function(data) {
+    this.target(data.target);
+    this.actionType(data.actionType);
     return this;
 };
 
@@ -1191,7 +1160,9 @@ ActionControlAV.prototype.fromJS = function(data) {
  */
 ActionControlAV.prototype.toJS = function() {
     return {
-        type: this.type
+        type: this.type,
+        target: this.target(),
+        actionType: this.actionType()
     };
 };
 

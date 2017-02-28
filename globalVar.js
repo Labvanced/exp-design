@@ -22,6 +22,8 @@ var GlobalVar = function (expData) {
     this.isInteracting = ko.observable(false); // TODO: remove
     this.levels = ko.observableArray([]);
 
+    this.isRecorded = ko.observable(null);
+
     this.resetAtTrialStart = ko.observable(false);
     this.recordAtTrialEnd = ko.observable(false);
     this.startValue = ko.observable(null);
@@ -184,6 +186,7 @@ GlobalVar.prototype.fromJS = function(data) {
     this.scale(data.scale);
     this.scope(data.scope);
     this.isFactor(data.isFactor);
+    this.isRecorded(data.isRecorded);
     this.isInteracting(data.isInteracting);
 
     if (data.hasOwnProperty('resetAtTrialStart')) {
@@ -222,6 +225,7 @@ GlobalVar.prototype.toJS = function() {
         resetAtTrialStart: this.resetAtTrialStart(),
         recordAtTrialEnd: this.recordAtTrialEnd(),
         startValue: this.startValue(),
+        isRecorded:this.isRecorded(),
 
         type: this.type,
         levels: jQuery.map( this.levels(), function( lvl ) { return lvl.toJS(); } )
