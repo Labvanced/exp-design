@@ -23,6 +23,10 @@ PageElement.prototype.addContent = function(element){
     element.parent = this;
 };
 
+PageElement.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
+};
+
 PageElement.prototype.modifiableProp = ["name"];
 PageElement.prototype.dataType =      [ "string"];
 

@@ -1,0 +1,46 @@
+<template id='section-editview-template'>
+    <div id="questionaireElements2" data-bind="sortable: {data: section.elements, options: {handle: '.handle'}} ">
+
+
+        <div style="position:relative;left: 0%; max-width:100%" data-bind="style: {backgroundColor: selected() ? '#deedf7' : ''}, click: function(){i = $index(); $root.selectElement($data)}">
+            <div style=" margin: 5pt; width: 100%" data-bind='component: {name : "contentElementPreview", params : $data.content()}'></div>
+            <span style="float: right;">
+                <a href="#" data-bind="click: function(data,event) {$root.removeElement($data)}, clickBubble: false">
+                    <img style="margin-left: 1%" width="20" height="20" src="/resources/trash.png"/>
+                </a>
+            </span>
+        </div>
+
+    </div>
+</template>
+
+<template id='section-preview-template'>
+    <div id="questionaireElements3" data-bind="sortable: {data: section.elements, options: {handle: '.handle'}} ">
+
+        <div style=";position:relative;left: 0%; max-width:100%" data-bind="style: {backgroundColor: selected() ? '#deedf7' : ''}, click: function(){i = $index(); $root.selectElement($data)}">
+            <div style="margin: 5pt; width: 100%" data-bind='component: {name : "contentElementPreview", params : $data.content()}'></div>
+            <span style="float: right;">
+                <a href="#" data-bind="click: function(data,event) {$root.removeElement($data)}, clickBubble: false">
+                    <img style="margin-left: 1%" width="20" height="20" src="/resources/trash.png"/>
+                </a>
+            </span>
+        </div>
+
+    </div>
+</template>
+
+<template id='section-playerview-template'>
+    <div id="questionaireElements4" data-bind="sortable: {data: section.elements, options: {handle: '.handle'}} ">
+
+        <div class="panel panel-default" style="border: thick;position:relative;left: 0%; max-width:100%" data-bind="style: {backgroundColor: selected() ? '#deedf7' : ''}, click: function(){i = $index(); $root.selectElement($data)}">
+
+            <div style="display: inline-block; margin: 5pt; width: 90%" data-bind='component: {name : "contentElementPreview", params : $data.content()}'></div>
+            <span style="float: right;">
+                <a href="#" data-bind="click: function(data,event) {$root.removeElement($data)}, clickBubble: false">
+                    <img style="margin-left: 1%" width="20" height="20" src="/resources/trash.png"/>
+                </a>
+            </span>
+        </div>
+
+    </div>
+</template>

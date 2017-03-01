@@ -48,6 +48,10 @@ var createExpDesignComponents = (function() {
                 {
                     filepath: "/html_views/EditableText.html",
                     createCompFcn: createEditableTextComponents
+                },
+                {
+                    filepath: "/html_views/SectionElement.html",
+                    createCompFcn: createSectionElementComponents
                 }
             ];
 
