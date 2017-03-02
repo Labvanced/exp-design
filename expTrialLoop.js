@@ -57,8 +57,14 @@ var ExpTrialLoop = function (expData) {
     var self = this;
     
     this.totalNrTrials = ko.computed(function() {
-
-        return 5; // TODo
+        var l = 0;
+        for (var i = 0; i<self.factorGroups().length; i++){
+            var facGroup = self.factorGroups()[i];
+            for (var k = 0; k<facGroup.conditionsLinear().length; k++){
+                l = l+ facGroup.conditionsLinear()[k].trials().length;
+            }
+        }
+        return l
     }, this);
     
     this.vars = ko.computed(function() {
