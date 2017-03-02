@@ -16,8 +16,14 @@ var ExpTrialLoop = function (expData) {
     this.editorY = ko.observable(0);
     this.editorWidth = ko.observable(120);
     this.editorHeight = ko.observable(60);
+
+   
     this.id = ko.observable(guid());
     this.displayInitialCountdown = ko.observable(true);
+    
+    this.zoomMode = ko.observable('fullscreen');
+    this.visualDegreeToUnit = ko.observable(20);
+    
     this.name = ko.observable("New Task");
     this.type = "ExpTrialLoop";
     this.subSequence = ko.observable(null);
@@ -48,12 +54,13 @@ var ExpTrialLoop = function (expData) {
     this.portTypes = ["executeIn", "executeOut"];
     this.selectionSpec = ko.observable(null);
 
+    var self = this;
+    
     this.totalNrTrials = ko.computed(function() {
 
         return 5; // TODo
     }, this);
-
-
+    
     this.vars = ko.computed(function() {
         var array = [];
         array.push(this.trialUniqueIdVar());
@@ -68,7 +75,7 @@ var ExpTrialLoop = function (expData) {
 
     }, this);
 
-    var self = this;
+   
 
     this.betweenSubjectDesign.subscribe(function(newVal) {
         if (newVal == true) {
