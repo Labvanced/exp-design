@@ -908,15 +908,18 @@ ActionSetVariable.prototype.fromJS = function(data) {
  * @returns {object}
  */
 ActionSetVariable.prototype.toJS = function() {
-
-    if (this.value().id()){
-        this.value(this.value.id());
+    var value = null;
+    if (this.value() && this.value().hasOwnProperty("id")){
+        value = this.value.id();
+    }
+    else {
+        value = this.value();
     }
     return {
-        variable: this.variable.id(),
+        variable: this.variable().id(),
         operatorType: this.operatorType(),
         changeType: this.changeType(),
-        value: this.value(),
+        value: value,
         operatorTypes: this.operatorTypes(),
         changeTypes: this.changeTypes(),
         type: this.type
