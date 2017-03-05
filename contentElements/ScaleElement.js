@@ -38,11 +38,12 @@ ScaleElement.prototype.addVar = function() {
     globalVar.resetAtTrialStart(true);
     globalVar.recordAtTrialEnd(true);
 
-    this.answer.subscribe(function (newValue) {
-        this.setValue(newValue);
-    }, globalVar);
-    
     this.variable(globalVar);
+
+    this.answer.subscribe(function (newValue) {
+        this.variable().setValue(newValue);
+    }, this);
+
 };
 
 ScaleElement.prototype.setPointers = function(entitiesArr) {
@@ -95,6 +96,11 @@ ScaleElement.prototype.fromJS = function(data) {
     this.choices(data.choices);
     this.variable(data.variable);
     this.answer(data.answer);
+
+    this.answer.subscribe(function (newValue) {
+        this.variable().setValue(newValue);
+    }, this);
+
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };

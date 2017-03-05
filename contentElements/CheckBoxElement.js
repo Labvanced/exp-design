@@ -38,11 +38,11 @@ CheckBoxElement.prototype.addVar = function() {
     globalVar.scale(GlobalVar.scales[1]);
     globalVar.name(this.parent.name());
 
-    this.answer.subscribe(function (newValue) {
-        this.setValue(newValue);
-    }, globalVar);
-    
     this.variable(globalVar);
+
+    this.answer.subscribe(function (newValue) {
+        this.variable().setValue(newValue);
+    }, this);
 };
 
 CheckBoxElement.prototype.setPointers = function(entitiesArr) {
@@ -97,8 +97,14 @@ CheckBoxElement.prototype.fromJS = function(data) {
     this.choices(data.choices);
     this.variable(data.variable);
     this.answer(data.answer);
+
+    this.answer.subscribe(function (newValue) {
+        this.variable().setValue(newValue);
+    }, this);
+
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
+
 };
 
 console.log("register checkbox element edit...");

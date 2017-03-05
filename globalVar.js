@@ -199,6 +199,7 @@ GlobalVar.prototype.fromJS = function(data) {
         this.startValue(data.startValue);
     }
 
+
     this.levels(jQuery.map( data.levels, function( lvlData, index ) {
         var lvl = new Level(self);
         lvl.levelIdx = index;

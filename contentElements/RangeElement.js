@@ -30,11 +30,11 @@ RangeElement.prototype.addVar = function() {
     globalVar.scale(GlobalVar.scales[3]);
     globalVar.name(this.parent.name());
 
-    this.answer.subscribe(function (newValue) {
-        this.setValue(newValue);
-    }, globalVar);
-    
     this.variable(globalVar);
+
+    this.answer.subscribe(function (newValue) {
+        this.variable().setValue(newValue);
+    }, this);
 };
 
 
@@ -84,6 +84,12 @@ RangeElement.prototype.fromJS = function(data) {
     this.endLabel(data.endLabel);
     this.variable(data.variable);
     this.answer(data.answer);
+
+    this.answer.subscribe(function (newValue) {
+        this.variable().setValue(newValue);
+    }, this);
+
+
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };

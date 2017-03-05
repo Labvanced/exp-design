@@ -142,6 +142,7 @@ FrameElement.prototype.fromJS = function(data) {
         content.fromJS(data.content);
         content.parent = this;
         this.content(content);
+
     }
     return this;
 };
