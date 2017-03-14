@@ -65,7 +65,7 @@ var createExpDesignComponents = (function() {
                         templates[i].createCompFcn();
                         numRemainingItems--;
                         if (numRemainingItems==0) {
-                            console.log('finished loading all knockout components and templates.')
+                            console.log('finished loading all knockout ExpDesign components and templates.');
                             expDesignComponentsLoaded = true;
                             callback();
                         }

@@ -107,8 +107,6 @@ CheckBoxElement.prototype.fromJS = function(data) {
 
 };
 
-console.log("register checkbox element edit...");
-
 function createCheckBoxComponents() {
     ko.components.register('checkbox-editview', {
         viewModel: {
