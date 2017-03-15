@@ -5,10 +5,10 @@ var PublishingData = function(experiment) {
     var self = this;
     
     // page 1 //
-    this.sharing = ko.observable('onRequest');
-    this.publishInLibrary = ko.observable(false);
-    this.publishSecretly = ko.observable(false);
-    this.publishExternal= ko.observable(false);
+    this.sharingDesign = ko.observable('onRequest'); // 'none', 'public'
+    this.recruitInLibrary = ko.observable(false);
+    this.recruitSecretly = ko.observable(false);
+    this.recruitExternal= ko.observable(false);
     this.brandingType= ko.observable('LabVanced');
     this.secrecyType= ko.observable('link');
     this.passwordType= ko.observable('oneForAll');
@@ -62,10 +62,10 @@ var PublishingData = function(experiment) {
 PublishingData.prototype.fromJS = function(data) {
 
         // page 1 //
-        this.sharing(data.sharing);
-        this.publishInLibrary(data.publishInLibrary);
-        this.publishSecretly(data.publishSecretly);
-        this.publishExternal(data.publishExternal);
+        this.sharingDesign(data.sharingDesign);
+        this.recruitInLibrary(data.recruitInLibrary);
+        this.recruitSecretly(data.recruitSecretly);
+        this.recruitExternal(data.recruitExternal);
         this.brandingType(data.brandingType);
         this.secrecyType(data.secrecyType);
         this.passwordType(data.passwordType);
@@ -115,10 +115,10 @@ PublishingData.prototype.toJS = function() {
 
     return {
         // page 1 //
-        sharing:this.sharing(),
-        publishInLibrary: this.publishInLibrary(),
-        publishSecretly: this.publishSecretly(),
-        publishExternal: this.publishExternal(),
+        sharingDesign:this.sharingDesign(),
+        recruitInLibrary: this.recruitInLibrary(),
+        recruitSecretly: this.recruitSecretly(),
+        recruitExternal: this.recruitExternal(),
         brandingType: this.brandingType(),
         secrecyType: this.secrecyType(),
         passwordType: this.passwordType(),
