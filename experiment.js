@@ -9,11 +9,8 @@ var Experiment = function () {
     this.guid = ko.observable(guid());
     this.exp_name = ko.observable('');
     this.version = ko.observable(1);
-    this.is_editing = ko.observable(true);
-    this.is_recording = ko.observable(false);
-    this.is_analyzing = ko.observable(false);
-    this.is_finished = ko.observable(false);
-
+    this.status = ko.observable('Create'); //  "Create";"Record";"Analyze";"Finshied"
+    this.numExpSubjects = ko.observable(null);
     this.dateLastModified = ko.observable(this.getCurrentDate());
     
     // might be obsoluent 
@@ -40,23 +37,7 @@ var Experiment = function () {
     this.exp_name.subscribe(function(value) {
         self.publishing_data.exp_name(value)
     });
-
-    this.status = ko.computed(function() {
-
-        if (self.is_editing()){
-            return "Construction";
-        }
-        else if (self.is_recording()){
-            return "Published";
-        }
-        else if(self.is_analyzing()){
-            return "Analyzing";
-        }
-        else if(self.is_finished()){
-            return "Finished";
-        }
-
-    }, this);
+    ;
 };
 
 
@@ -81,25 +62,13 @@ Experiment.prototype.publish = function() {
 };
 
 Experiment.prototype.unpublish = function() {
-    this.is_recording(false);
+    this.status('Create');
     this.save();
 };
 
 
-Experiment.prototype.enableRec = function() {
-    this.is_recording(true);
-    this.save();
-};
-
-
-Experiment.prototype.stopRec = function() {
-    this.is_recording(false);
-    this.save();
-};
-
-Experiment.prototype.finishEditing = function() {
-    this.is_editing(false);
-    this.is_recording(true);
+Experiment.prototype.publish = function() {
+    this.status('Record');
     this.save();
 };
 
@@ -247,10 +216,8 @@ Experiment.prototype.fromJS = function(data) {
     this.exp_id(data.exp_id);
     this.exp_name(data.exp_name);
     this.version(data.version);
-    this.is_editing(data.is_editing);
-    this.is_recording(data.is_recording);
-    this.is_analyzing(data.is_analyzing);
-    this.is_finished(data.is_finished);
+    this.status(data.status);
+    this.numExpSubjects(data.nrExpSubjects);
     this.description(data.description);
     this.category_id(data.category_id);
     this.img_file_id(data.img_file_id);
@@ -318,10 +285,8 @@ Experiment.prototype.toJS = function() {
         exp_id: this.exp_id(),
         exp_name: this.exp_name(),
         version: this.version(),
-        is_editing: this.is_editing(),
-        is_recording: this.is_recording(),
-        is_analyzing: this.is_analyzing(),
-        is_finished: this.is_finished(),
+        status: this.status(),
+        numExpSubjects: this.nrExpSubjects(),
         description: this.description(),
         category_id: this.category_id(),
         img_file_id: this.img_file_id(),
