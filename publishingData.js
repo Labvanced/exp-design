@@ -5,7 +5,7 @@ var PublishingData = function(experiment) {
     var self = this;
     
     // page 1 //
-    this.sharing = ko.observable('onRequest');
+    this.sharing = ko.observable('none');
     this.publishInLibrary = ko.observable(false);
     this.publishSecretly = ko.observable(false);
     this.publishExternal= ko.observable(false);

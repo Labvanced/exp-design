@@ -9,7 +9,7 @@ var Experiment = function () {
     this.guid = ko.observable(guid());
     this.exp_name = ko.observable('');
     this.version = ko.observable(1);
-    this.status = ko.observable('Create'); //  "Create";"Record";"Analyze";"Finshied"
+    this.status = ko.observable('Create'); //  "Create";"Record";"Analyze";"Finished"
     this.numExpSubjects = ko.observable(null);
     this.dateLastModified = ko.observable(this.getCurrentDate());
     
@@ -217,7 +217,7 @@ Experiment.prototype.fromJS = function(data) {
     this.exp_name(data.exp_name);
     this.version(data.version);
     this.status(data.status);
-    this.numExpSubjects(data.nrExpSubjects);
+    this.numExpSubjects(data.numExpSubjects);
     this.description(data.description);
     this.category_id(data.category_id);
     this.img_file_id(data.img_file_id);
@@ -286,7 +286,7 @@ Experiment.prototype.toJS = function() {
         exp_name: this.exp_name(),
         version: this.version(),
         status: this.status(),
-        numExpSubjects: this.nrExpSubjects(),
+        numExpSubjects: this.numExpSubjects(),
         description: this.description(),
         category_id: this.category_id(),
         img_file_id: this.img_file_id(),
