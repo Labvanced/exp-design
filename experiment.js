@@ -10,14 +10,8 @@ var Experiment = function () {
     this.exp_name = ko.observable('');
     this.version = ko.observable(1);
     this.status = ko.observable('Create'); //  "Create";"Record";"Analyze";"Finished"
-    this.numExpSubjects = ko.observable(null);
+    this.num_exp_subjects = ko.observable(null);
     this.dateLastModified = ko.observable(this.getCurrentDate());
-    
-    // might be obsoluent 
-    this.img_file_id = ko.observable(null);
-    this.img_file_orig_name = ko.observable(null);
-    this.description = ko.observable("");
-    this.category_id = ko.observable(0);
 
     // setup class instances for experiment functions
     this.exp_data = new ExpData(this);
@@ -37,7 +31,6 @@ var Experiment = function () {
     this.exp_name.subscribe(function(value) {
         self.publishing_data.exp_name(value)
     });
-    ;
 };
 
 
@@ -217,7 +210,7 @@ Experiment.prototype.fromJS = function(data) {
     this.exp_name(data.exp_name);
     this.version(data.version);
     this.status(data.status);
-    this.numExpSubjects(data.numExpSubjects);
+    this.num_exp_subjects(data.num_exp_subjects);
     this.description(data.description);
     this.category_id(data.category_id);
     this.img_file_id(data.img_file_id);
@@ -286,7 +279,7 @@ Experiment.prototype.toJS = function() {
         exp_name: this.exp_name(),
         version: this.version(),
         status: this.status(),
-        numExpSubjects: this.numExpSubjects(),
+        num_exp_subjects: this.num_exp_subjects(),
         description: this.description(),
         category_id: this.category_id(),
         img_file_id: this.img_file_id(),
