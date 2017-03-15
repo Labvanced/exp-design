@@ -211,11 +211,7 @@ Experiment.prototype.fromJS = function(data) {
     this.version(data.version);
     this.status(data.status);
     this.num_exp_subjects(data.num_exp_subjects);
-    this.description(data.description);
-    this.category_id(data.category_id);
-    this.img_file_id(data.img_file_id);
     this.dateLastModified(data.dateLastModified);
-    this.img_file_orig_name(data.img_file_orig_name);
     if (data.hasOwnProperty("exp_data")){
         this.exp_data = new ExpData(this);
         this.exp_data.fromJS(data.exp_data);
@@ -280,11 +276,7 @@ Experiment.prototype.toJS = function() {
         version: this.version(),
         status: this.status(),
         num_exp_subjects: this.num_exp_subjects(),
-        description: this.description(),
-        category_id: this.category_id(),
-        img_file_id: this.img_file_id(),
         dateLastModified: this.dateLastModified(),
-        img_file_orig_name: this.img_file_orig_name(),
         exp_data: exp_data_serialized,
         publishing_data: publishing_data_serialized,
         analysis_data: analysisData_serialized,
