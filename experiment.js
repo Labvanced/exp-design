@@ -9,16 +9,10 @@ var Experiment = function () {
     this.guid = ko.observable(guid());
     this.exp_name = ko.observable('');
     this.version = ko.observable(1);
-    this.status = ko.observable('create'); //  "create";"record";"analyze";"finished"
-    this.numExpSubjects = ko.observable(null);
-
+    this.status = ko.observable('create'); //  "Create";"Record";"Analyze";"Finished"
+    this.num_exp_subjects = ko.observable(null);
+    this.dateLastModified = ko.observable(this.getCurrentDate());
     
-    // might be obsoluent 
-    this.img_file_id = ko.observable(null);
-    this.img_file_orig_name = ko.observable(null);
-    this.description = ko.observable("");
-    this.category_id = ko.observable(0);
-
     // setup class instances for experiment functions
     this.exp_data = new ExpData(this);
     this.exp_data_obs = ko.observable(this.exp_data);
@@ -37,7 +31,6 @@ var Experiment = function () {
     this.exp_name.subscribe(function(value) {
         self.publishing_data.exp_name(value)
     });
-
 };
 
 
@@ -199,11 +192,8 @@ Experiment.prototype.fromJS = function(data) {
     this.exp_name(data.exp_name);
     this.version(data.version);
     this.status(data.status);
-    this.numExpSubjects(data.numExpSubjects);
-    this.description(data.description);
-    this.category_id(data.category_id);
-    this.img_file_id(data.img_file_id);
-    this.img_file_orig_name(data.img_file_orig_name);
+    this.num_exp_subjects(data.num_exp_subjects);
+    this.dateLastModified(data.dateLastModified);
     if (data.hasOwnProperty("exp_data")){
         this.exp_data = new ExpData(this);
         this.exp_data.fromJS(data.exp_data);
@@ -267,11 +257,8 @@ Experiment.prototype.toJS = function() {
         exp_name: this.exp_name(),
         version: this.version(),
         status: this.status(),
-        numExpSubjects: this.numExpSubjects(),
-        description: this.description(),
-        category_id: this.category_id(),
-        img_file_id: this.img_file_id(),
-        img_file_orig_name: this.img_file_orig_name(),
+        num_exp_subjects: this.num_exp_subjects(),
+        dateLastModified: this.dateLastModified(),
         exp_data: exp_data_serialized,
         publishing_data: publishing_data_serialized,
         analysis_data: analysisData_serialized,
