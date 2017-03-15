@@ -11,7 +11,7 @@ var Experiment = function () {
     this.version = ko.observable(1);
     this.status = ko.observable('create'); //  "Create";"Record";"Analyze";"Finished"
     this.num_exp_subjects = ko.observable(null);
-    this.dateLastModified = ko.observable(this.getCurrentDate());
+
     
     // setup class instances for experiment functions
     this.exp_data = new ExpData(this);
@@ -19,6 +19,8 @@ var Experiment = function () {
     this.publishing_data = new PublishingData(this);
     this.analysis_data = new AnalysisData(this);
     this.private_data = new PrivateData(this);
+
+    this.dateLastModified = ko.observable(this.publishing_data.getCurrentDate());
 
     // local temporary member variables:
     this.hasLocalChanges = false;
