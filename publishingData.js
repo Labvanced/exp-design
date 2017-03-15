@@ -3,6 +3,9 @@ var PublishingData = function(experiment) {
     this.experiment = experiment;
 
     var self = this;
+
+    // others
+    this.dateLastModified = ko.observable(this.getCurrentDate());
     
     // page 1 //
     this.sharingDesign = ko.observable('none'); // 'none', 'public'
@@ -107,6 +110,22 @@ PublishingData.prototype.fromJS = function(data) {
         this.authorId(data.authorId);
         this.publicationDate(data.publicationDate);
 
+};
+
+
+PublishingData.prototype.getCurrentDate = function() {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+    if(dd<10){
+        dd='0'+dd;
+    }
+    if(mm<10){
+        mm='0'+mm;
+    }
+    var today = dd+'/'+mm+'/'+yyyy;
+    return today
 };
 
 

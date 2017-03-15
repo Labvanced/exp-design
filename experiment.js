@@ -9,9 +9,9 @@ var Experiment = function () {
     this.guid = ko.observable(guid());
     this.exp_name = ko.observable('');
     this.version = ko.observable(1);
-    this.status = ko.observable('Create'); //  "Create";"Record";"Analyze";"Finished"
+    this.status = ko.observable('create'); //  "create";"record";"analyze";"finished"
     this.numExpSubjects = ko.observable(null);
-    this.dateLastModified = ko.observable(this.getCurrentDate());
+
     
     // might be obsoluent 
     this.img_file_id = ko.observable(null);
@@ -37,7 +37,7 @@ var Experiment = function () {
     this.exp_name.subscribe(function(value) {
         self.publishing_data.exp_name(value)
     });
-    ;
+
 };
 
 
@@ -56,19 +56,14 @@ Experiment.prototype.copyExp = function() {
 
 };
 
-Experiment.prototype.publish = function() {
-    uc.experiment = this;
-    page("/page/publishExperiment/"+this.exp_id());
-};
-
 Experiment.prototype.unpublish = function() {
-    this.status('Create');
+    this.status('create');
     this.save();
 };
 
 
 Experiment.prototype.publish = function() {
-    this.status('Record');
+    this.status('record');
     this.save();
 };
 
@@ -105,7 +100,7 @@ Experiment.prototype.addToHistory = function(serializedExp) {
 Experiment.prototype.save = function() {
     var self = this;
 
-    this.dateLastModified(this.getCurrentDate()); // set currentDate
+    this.publishing_data.dateLastModified(this.publishing_data.getCurrentDate()); // set currentDate
 
     console.log("save experiment " + this.exp_name() + " and send to server...");
 
@@ -158,20 +153,7 @@ Experiment.prototype.save = function() {
 };
 
 
-Experiment.prototype.getCurrentDate = function() {
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
-    var yyyy = today.getFullYear();
-    if(dd<10){
-        dd='0'+dd;
-    }
-    if(mm<10){
-        mm='0'+mm;
-    }
-    var today = dd+'/'+mm+'/'+yyyy;
-    return today
-};
+
 
 
 
@@ -221,7 +203,6 @@ Experiment.prototype.fromJS = function(data) {
     this.description(data.description);
     this.category_id(data.category_id);
     this.img_file_id(data.img_file_id);
-    this.dateLastModified(data.dateLastModified);
     this.img_file_orig_name(data.img_file_orig_name);
     if (data.hasOwnProperty("exp_data")){
         this.exp_data = new ExpData(this);
@@ -290,7 +271,6 @@ Experiment.prototype.toJS = function() {
         description: this.description(),
         category_id: this.category_id(),
         img_file_id: this.img_file_id(),
-        dateLastModified: this.dateLastModified(),
         img_file_orig_name: this.img_file_orig_name(),
         exp_data: exp_data_serialized,
         publishing_data: publishing_data_serialized,
