@@ -39,5 +39,5 @@ ExperimentPreview.prototype.init = function(divWidth,divHeight) {
         "font-size", Math.round(35*divWidth/1000)
     );
     jdenticon();
-    jdenticon.update("#identicon", this.jdenticonHash());
+    //jdenticon.update("#identicon", this.jdenticonHash());
 };

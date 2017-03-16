@@ -6,7 +6,7 @@
         <img id="ownImage" data-bind="attr:{src: imgSource}"/>
         <!-- /ko -->
         <!-- ko if: (imageType() == 'jdenticon') -->
-        <svg id="identicon"></svg>
+        <svg id="identicon" data-bind="attr:{'data-jdenticon-hash': jdenticonHash() }"></svg>
         <!-- /ko -->
     </div>
 
