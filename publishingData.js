@@ -65,10 +65,10 @@ var PublishingData = function(experiment) {
 
     this.isDescriptionValid = ko.computed(function () {
 
-        if (this.exp_name().length == 0)
+        if (this.exp_name() && this.exp_name().length == 0)
             return false;
 
-        if (this.description().length == 0)
+        if (this.description() && this.description().length == 0)
             return false;
 
         if (this.categories().length == 0)
