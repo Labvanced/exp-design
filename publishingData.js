@@ -21,11 +21,11 @@ var PublishingData = function(experiment) {
     this.recordingStopNrSubjects =  ko.observable(1);
 
     // page 2  //
-    this.exp_name = ko.observable(null);
+    this.exp_name = ko.observable("");
     if (experiment){
         this.exp_name(experiment.exp_name());
     }
-    this.description = ko.observable(null);
+    this.description = ko.observable("");
     this.img_file_id = ko.observable(null);
     this.img_file_orig_name = ko.observable(null);
     this.jdenticonHash = ko.observable(guid());
@@ -61,6 +61,33 @@ var PublishingData = function(experiment) {
     // test
     this.ratingValues.push(4);
     this.raterUserIds.push('test');
+
+
+    this.isDescriptionValid = ko.computed(function () {
+
+        if (this.exp_name().length == 0)
+            return false;
+
+        if (this.description().length == 0)
+            return false;
+
+        if (this.categories().length == 0)
+            return false;
+
+        if (this.imageType() == "jdenticon") {
+            if (!this.jdenticonHash())
+                return false;
+        }
+        else if (this.imageType() == "imgfile") {
+            if (!this.img_file_id())
+                return false;
+            if (!this.img_file_orig_name())
+                return false;
+        }
+
+        return true;
+    }, this);
+
 };
 
 
