@@ -63,6 +63,12 @@ Experiment.prototype.endRecs = function() {
     this.save();
 };
 
+Experiment.prototype.restartRecordings = function(){
+    this.status('record');
+    this.publishing_data.status('editing');
+    this.save();
+};
+
 
 Experiment.prototype.editSettings = function() {
     this.publishing_data.status('editing');
