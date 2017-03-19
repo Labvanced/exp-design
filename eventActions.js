@@ -1132,6 +1132,18 @@ ActionControlAV.prototype.isValid = function(){
  */
 ActionControlAV.prototype.run = function(triggerParams) {
 
+   var elem =  player.currentFrame.frameView.viewElements.byId[this.target().id()].divContentInside;
+
+   if (this.actionType() == 'start'){
+       elem.play();
+   }
+    else if (this.actionType() == 'stop'){
+       elem.stop();
+    }
+    else if (this.actionType() == 'pause'){
+       elem.pause();
+    }
+
 };
 
 /**
@@ -1164,7 +1176,7 @@ ActionControlAV.prototype.fromJS = function(data) {
 ActionControlAV.prototype.toJS = function() {
     return {
         type: this.type,
-        target: this.target(),
+        target: this.target().id(),
         actionType: this.actionType()
     };
 };

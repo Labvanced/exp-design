@@ -794,25 +794,23 @@ TriggerAudioVideoEvent.prototype.isValid = function() {
 TriggerAudioVideoEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
 
     var self = this;
+    var elem = $(playerFrame.frameView.viewElements.byId[this.target().id()].divContentInside);
     switch (this.triggerType()) {
         case "started":
-            $(playerFrame.frameView.viewElements.byId[this.target.id()].div).bind("play", function() {
-                alert("I'm staring!");
+            elem.bind("play", function() {
                 self.event.triggerActions(0)
             });
             break;
         case "paused":
-            $(playerFrame.frameView.viewElements.byId[this.target.id()].div).bind("pause", function() {
-                alert("I'm doing a pause!");
-                var currTime =  $(playerFrame.frameView.viewElements.byId[this.target.id()].div).currentTime;
+            elem.bind("pause", function() {
+                var currTime =  elem.currentTime;
                 self.event.triggerActions(currTime);
               
             });
             break;
         case "ended":
-            $(playerFrame.frameView.viewElements.byId[this.target.id()].div).bind("ended", function() {
-                alert("I'm done!");
-                var duration =  $(playerFrame.frameView.viewElements.byId[this.target.id()].div).duration;
+            elem.bind("ended", function() {
+                var duration =  elem.duration;
                 self.event.triggerActions(duration);
             });
             break;
@@ -842,7 +840,7 @@ TriggerAudioVideoEvent.prototype.toJS = function() {
 
     return {
         type: this.type,
-        target: this.target(),
+        target: this.target().id(),
         triggerType: this.triggerType()
     };
 };
