@@ -752,8 +752,10 @@ var ActionSetVariable = function(event) {
     
     this.operatorType.subscribe(function(newVal) {
         if (newVal == "=") {
-            self.changeTypes(["value","%","variable"]);
-            self.value(self.variable().startValue());
+            self.changeTypes(["value", "%", "variable"]);
+            if (self.variable() && self.variable() instanceof GlobalVar) {
+                self.value(self.variable().startValue());
+            }
         }
         else if (newVal == "*" || newVal == "/") {
             self.changeTypes(["value", "variable"]);
@@ -771,7 +773,9 @@ var ActionSetVariable = function(event) {
             self.value(100);
         }
         else if (newVal == "value" && self.operatorType()=="=") {
-            self.value(self.variable().startValue());
+            if (self.variable() && self.variable() instanceof GlobalVar) {
+                self.value(self.variable().startValue());
+            }
         }
     });
 
