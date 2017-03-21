@@ -56,8 +56,6 @@ var PublishingData = function(experiment) {
     this.authorId = ko.observable('user');
     this.publicationDate =  ko.observable(null);
 
-    this.status = ko.observable('editing');
-
     // test
     this.ratingValues.push(4);
     this.raterUserIds.push('test');
@@ -138,7 +136,6 @@ PublishingData.prototype.fromJS = function(data) {
         this.raterUserIds(data.raterUserIds);
         this.authorId(data.authorId);
         this.publicationDate(data.publicationDate);
-        this.status(data.status);
 
 };
 
@@ -208,7 +205,6 @@ PublishingData.prototype.toJS = function() {
         raterUserIds:  this.raterUserIds(),
         authorId: this.authorId(),
         publicationDate: this.publicationDate(),
-        status: this.status()
 
     };
 };

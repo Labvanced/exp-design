@@ -53,19 +53,16 @@ Experiment.prototype.copyExp = function() {
 
 Experiment.prototype.publish = function() {
     this.status('record');
-    this.publishing_data.status('published');
     this.save();
 };
 
 Experiment.prototype.endRecs = function() {
     this.status('analyze');
-    this.publishing_data.status('done');
     this.save();
 };
 
 Experiment.prototype.restartRecordings = function(){
     this.status('record');
-    this.publishing_data.status('editing');
     this.save();
 };
 
