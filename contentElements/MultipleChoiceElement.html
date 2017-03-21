@@ -25,10 +25,10 @@
 </template>
 
 <template id="choice-playerview-template">
-    <div style="font-size: 200%" data-bind="text: questionText"></div>
+    <div style="font-size: 200%" data-bind="html: questionText"></div>
     <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">
         <input style="margin-bottom: inherit; margin-top: inherit" type="radio" data-bind="attr: {value:$data}, checked: $root.answer, click: function(){return true}, clickBubble: false">
-        <span style="margin-bottom: inherit; margin-top: inherit" data-bind="text: $data"></span>
+        <span style="margin-bottom: inherit; margin-top: inherit" data-bind="html: $data"></span>
     </div>
     <br>
 </template>
