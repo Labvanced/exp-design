@@ -78,10 +78,13 @@ FrameView.prototype.init = function(size) {
     // resize once and set dataModel
     this.resize(size);
 
-    if (this.type != "playerView") {
+    if (this.type != "playerView") { // sequenceView und editorView
         this.setDataModel(this.frameData);
     }
-    else{
+    else{ // playerView
+        // render in fullscreen:
+        this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
+
         this.dataElements = this.frameData.elements;
         this.renderElements();
     }
@@ -137,7 +140,7 @@ FrameView.prototype.setDataModel = function(frameData) {
     this.renderElements();
 
     // initialize the scale of the frame:
-    if (this.type != "sequenceView"){
+    if (this.type != "sequenceView"){ // this is only executed for editorView?
         this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
     }
 };
@@ -164,6 +167,8 @@ FrameView.prototype.setDiv= function(div) {
 
 
 FrameView.prototype.resize = function(size) {
+
+    console.log('set FrameView size to '+size);
 
     this.setSize(size);
 
