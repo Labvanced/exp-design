@@ -35,8 +35,10 @@
 <template id="checkbox-playerview-template">
     <div data-bind="html: questionText"></div>
     <div data-bind="foreach: choices, style: {marginTop: margin, marginBottom: margin}">
-        <input style="margin-top: inherit; margin-bottom: inherit" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">
-        <div style="display: inline-block; margin-bottom: inherit; margin-top: inherit;" data-bind="html: $data"></div>
+        <div>
+            <input style="margin-top: inherit; margin-bottom: inherit" type="checkbox" data-bind="click: function(){ $root.changeCheck($index()); return true}, clickBubble: false">
+            <div style="display: inline-block; margin-bottom: inherit; margin-top: inherit;" data-bind="html: $data"></div>
+        </div>
     </div>
     <br>
 </template>
