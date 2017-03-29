@@ -15,6 +15,7 @@ var FrameElement= function(expData) {
     this.editorWidth = ko.observable(360).extend({ numeric: 2 });
     this.editorHeight = ko.observable(180).extend({ numeric: 2 });
     this.contentScaling = ko.observable(1).extend({ numeric: 2 });
+    this.contentRotation = ko.observable(0).extend({ numeric: 0 });
     this.anchorPointX = ko.observable('low');
     this.anchorPointY = ko.observable('low');
     this.visibility = ko.observable(1).extend({ numeric: 2 });
@@ -46,8 +47,8 @@ FrameElement.prototype.addContent = function(element){
     element.parent = this;
 };
 
-FrameElement.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","string","string","boolean","string","boolean","boolean","boolean","boolean"];
-FrameElement.prototype.modifiableProp = ["visibility","editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","contentScaling"];
+FrameElement.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","string","string","boolean","string","boolean","boolean","boolean","numeric","numeric"];
+FrameElement.prototype.modifiableProp = ["visibility","editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","contentScaling","contentRotation"];
 
 FrameElement.prototype.addNewResponse = function() {
     var resp = new Response(this);
@@ -128,6 +129,9 @@ FrameElement.prototype.fromJS = function(data) {
     if(data.contentScaling) {
         this.contentScaling(data.contentScaling);
     }
+    if (data.contentRotation) {
+        this.contentRotation(data.contentRotation);
+    }
     if(data.anchorPointX) {
         this.anchorPointX(data.anchorPointX);
     }
@@ -174,6 +178,7 @@ FrameElement.prototype.toJS = function() {
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
         contentScaling: this.contentScaling(),
+        contentRotation: this.contentRotation(),
         anchorPointX: this.anchorPointX(),
         anchorPointY: this.anchorPointY(),
         visibility: this.visibility(),

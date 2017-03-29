@@ -114,6 +114,10 @@ FrameElementView.prototype.setupSubscriber = function() {
         self.update(true,false);
     });
 
+    this.dataModel.contentRotation.subscribe(function(newValue){
+        self.update(true,false);
+    });
+
     this.dataModel.anchorPointX.subscribe(function(newVal) {
         self.update(false,true);
     });
@@ -159,9 +163,29 @@ FrameElementView.prototype.update = function(size, position){
     if (size){
 
         $(this.div).css({
-            "width":self.width() * self.scale(),
+            "width": self.width() * self.scale(),
             "height": self.height() * self.scale()
         });
+
+        var contentRotation = self.dataModel.contentRotation();
+        if (contentRotation) {
+            $(this.div).css({
+                '-webkit-transform': 'rotate(' + contentRotation + 'deg)',
+                '-moz-transform': 'rotate(' + contentRotation + 'deg)',
+                '-ms-transform': 'rotate(' + contentRotation + 'deg)',
+                '-o-transform': 'rotate(' + contentRotation + 'deg)',
+                'transform': 'rotate(' + contentRotation + 'deg)'
+            });
+        }
+        else {
+            $(this.div).css({
+                '-webkit-transform': '',
+                '-moz-transform': '',
+                '-ms-transform': '',
+                '-o-transform': '',
+                'transform': ''
+            });
+        }
 
         $(this.divContent).css({
             "width": self.width() * self.scale(),
