@@ -14,8 +14,7 @@ var VideoElement= function(expData) {
     this.showMediaControls = ko.observable(true);
 
     this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
-    this.currentTime = ko.observable(0);
-    this.maxTime = ko.observable(1);
+    this.currentTimeAsFraction = ko.observable(0);
 
     this.shortName = ko.computed(function() {
         if (self.file_orig_name()){
@@ -40,6 +39,8 @@ var VideoElement= function(expData) {
             return false;
         }
     }, this);
+
+    this.subscribersForJumpEvents = [];
 };
 
 
@@ -53,10 +54,16 @@ VideoElement.prototype.switchPlayState = function() {
 
 VideoElement.prototype.jumpToByFraction = function(fraction) {
     console.log("jump to fraction "+fraction);
+    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({jumpToFraction: fraction});
+    }
 };
 
 VideoElement.prototype.jumpToByTime = function(time) {
     console.log("jump to time "+time);
+    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({jumpToTime: time});
+    }
 };
 
 VideoElement.prototype.setPointers = function(entitiesArr) {
@@ -127,15 +134,19 @@ function createVideoComponents() {
     });
 
 
-    var VideoPreviewViewModel = function(dataModel, componentInfo){
+    var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
+        var self = this;
         this.element = componentInfo.element;
         this.dataModel = dataModel;
+
+        var myVideo = $(this.element).find('video')[0];
         var seekBar = $(this.element).find('.seek-bar')[0];
+
         seekBar.addEventListener("change", function() {
             dataModel.jumpToByFraction(seekBar.value / 100);
         });
+
         this.dataModel.currentlyPlaying.subscribe(function (value) {
-            var myVideo = $(this.element).find('video')[0];
             if (value) {
                 myVideo.play();
             }
@@ -143,45 +154,47 @@ function createVideoComponents() {
                 myVideo.pause();
             }
         });
+
+        // add subscriber to be notified when the video should jump to specific time:
+        this.listenForJumpTo = function(evtParam) {
+            if (evtParam.jumpToFraction) {
+                var time = myVideo.duration * evtParam.jumpToFraction;
+                console.log("setting video time to "+time);
+                myVideo.currentTime = 5;
+            }
+        };
+        this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
+
+        // Update the seek bar as the video plays
+        myVideo.addEventListener("timeupdate", function() {
+            var value = myVideo.currentTime / myVideo.duration;
+            self.dataModel.currentTimeAsFraction(value);
+            console.log("current time as fraction: "+value);
+            seekBar.value = value * 100;
+        });
     };
-    VideoPreviewViewModel.prototype.dispose = function() {
-        console.log("disposing VideoPreviewViewModel");
+    VideoPreviewAndPlayerViewModel.prototype.dispose = function() {
+        console.log("disposing VideoPreviewAndPlayerViewModel");
+        // remove subscriber to be notified when the video should jump to specific time:
+        var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
+        if (index > -1) {
+            this.dataModel.subscribersForJumpEvents.splice(index, 1);
+        }
     };
 
     ko.components.register('video-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                return new VideoPreviewViewModel(dataModel, componentInfo);
+                return new VideoPreviewAndPlayerViewModel(dataModel, componentInfo);
             }
         },
         template: { element: 'video-preview-template' }
     });
 
-    var VideoPlayerViewModel = function(dataModel, componentInfo){
-        this.element = componentInfo.element;
-        this.dataModel = dataModel;
-        var seekBar = $(this.element).find('.seek-bar')[0];
-        seekBar.addEventListener("change", function() {
-            dataModel.jumpToByFraction(seekBar.value / 100);
-        });
-        this.dataModel.currentlyPlaying.subscribe(function (value) {
-            var myVideo = $(this.element).find('video')[0];
-            if (value) {
-                myVideo.play();
-            }
-            else {
-                myVideo.pause();
-            }
-        });
-    };
-    VideoPlayerViewModel.prototype.dispose = function() {
-        console.log("disposing VideoPlayerViewModel");
-    };
-
     ko.components.register('video-playerview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                return new VideoPlayerViewModel(dataModel, componentInfo);
+                return new VideoPreviewAndPlayerViewModel(dataModel, componentInfo);
             }
         },
         template: {element: 'video-playerview-template'}

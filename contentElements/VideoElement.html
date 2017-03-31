@@ -18,7 +18,7 @@
         <source data-bind="attr: {src: dataModel.vidSource()}">
         Your browser does not support HTML5 video.
     </video>
-    <span class="form-group video-controls-floating video-controls" data-bind="if: dataModel.showMediaControls">
+    <span class="video-controls-floating video-controls" data-bind="if: dataModel.showMediaControls">
         <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Pause</button></span>
         <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Play</button></span>
         <span><input type="range" class="seek-bar" value="0"></span>
@@ -30,9 +30,9 @@
         <source data-bind="attr: {src: dataModel.vidSource()}">
         Your browser does not support HTML5 video.
     </video>
-    <span class="form-group video-controls-floating video-controls" data-bind="if: dataModel.showMediaControls">
+    <span class="video-controls-floating video-controls" data-bind="if: dataModel.showMediaControls">
         <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Pause</button></span>
-            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Play</button></span>
-            <span><input type="range" class="seek-bar" value="0"></span>
+        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Play</button></span>
+        <span><input type="range" class="seek-bar" value="0"></span>
     </span>
 </template>

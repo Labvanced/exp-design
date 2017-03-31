@@ -143,12 +143,6 @@ FrameElementView.prototype.setupSubscriber = function() {
         self.renderContent(newValue)
     });
 
-    if(this.dataModel.content().vidSource){
-        this.dataModel.content().vidSource.subscribe(function(vidSource) {
-            self.renderContent(self.dataModel.content());
-        });
-    }
-
     if(this.dataModel.content().imgSource) {
         this.dataModel.content().imgSource.subscribe(function(imgSource) {
             self.renderContent(self.dataModel.content);

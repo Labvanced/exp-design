@@ -41,50 +41,53 @@ var FrameView = function(divContainer,frameData,parent,type) {
 
 
 FrameView.prototype.init = function(size) {
-    var self = this;
 
-    this.setSize(size);
+    if (!this.isInitialized) {
+        var self = this;
 
-    if (this.type=="editorView") {
-        function MouseWheelHandler(e) {
+        this.setSize(size);
 
-            // cross-browser wheel delta
-            var e = window.event || e; // old IE support
-            var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-            var oldScale = self.scale();
-            if (delta>0){
-                var newScale = oldScale * (1+delta/20.0);
+        if (this.type == "editorView") {
+            function MouseWheelHandler(e) {
+
+                // cross-browser wheel delta
+                var e = window.event || e; // old IE support
+                var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+                var oldScale = self.scale();
+                if (delta > 0) {
+                    var newScale = oldScale * (1 + delta / 20.0);
+                }
+                else {
+                    var newScale = oldScale / (1 - delta / 20.0);
+                }
+                self.scale(newScale);
+
+                e.preventDefault();
+
+                return false;
+            }
+
+
+            var outerDiv = $('#editorFrameView')[0];
+            $(outerDiv).css({
+                "overflow": "auto"
+            });
+
+            if (outerDiv.addEventListener) {
+                // IE9, Chrome, Safari, Opera
+                outerDiv.addEventListener("mousewheel", MouseWheelHandler, false);
+                // Firefox
+                outerDiv.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
             }
             else {
-                var newScale = oldScale / (1-delta/20.0);
+                // IE 6/7/8
+                outerDiv.attachEvent("onmousewheel", MouseWheelHandler);
             }
-            self.scale( newScale );
 
-            e.preventDefault();
-
-            return false;
         }
 
-
-        var outerDiv = $('#editorFrameView')[0];
-        $(outerDiv).css({
-            "overflow": "auto"
-        });
-
-        if (outerDiv.addEventListener) {
-            // IE9, Chrome, Safari, Opera
-            outerDiv.addEventListener("mousewheel", MouseWheelHandler, false);
-            // Firefox
-            outerDiv.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
-        }
-        else {
-            // IE 6/7/8
-            outerDiv.attachEvent("onmousewheel", MouseWheelHandler);
-        }
-
+        this.isInitialized = true;
     }
-
-    this.isInitialized = true;
 };
 
 FrameView.prototype.setDataModel = function(frameData) {
@@ -143,6 +146,9 @@ FrameView.prototype.recalcScale = function() {
     // can only be done if frameData is set:
     if (this.frameData) {
         this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
+        if (this.type== "editorView" && this.bgElement){
+            this.bgElement.update();
+        }
     }
 };
 
@@ -158,32 +164,9 @@ FrameView.prototype.setSize = function(size) {
     this.recalcScale();
 };
 
-FrameView.prototype.resetFrame = function() {
-
-    if (this.type== "sequenceView") {
-        if (this.parent.resetting == false){
-            this.parent.resetting = true;
-            if(this.frameWidthSubscription) {
-                this.frameWidthSubscription.dispose();
-            }
-            if(this.frameHeightSubscription) {
-                this.frameHeightSubscription.dispose();
-            }
-            this.parent.setDataModel(this.parent.dataModel);
-        }
-        else {
-            this.parent.resetting = false;
-        }
-
-    }
-
-
-};
-
 FrameView.prototype.setDiv= function(div) {
     this.divContainer = div;
 };
-
 
 FrameView.prototype.resize = function(size) {
     console.log('set FrameView size to '+size);
