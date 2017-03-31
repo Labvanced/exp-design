@@ -61,7 +61,12 @@ FrameView.prototype.init = function(size) {
             return false;
         }
 
+
         var outerDiv = $('#editorFrameView')[0];
+        $(outerDiv).css({
+            "overflow": "auto"
+        });
+
         if (outerDiv.addEventListener) {
             // IE9, Chrome, Safari, Opera
             outerDiv.addEventListener("mousewheel", MouseWheelHandler, false);
@@ -76,7 +81,7 @@ FrameView.prototype.init = function(size) {
     }
 
     // resize once and set dataModel
-    this.resize(size);
+  //  this.resize(size);
 
     if (this.type != "playerView") { // sequenceView und editorView
         this.setDataModel(this.frameData);
@@ -119,15 +124,21 @@ FrameView.prototype.setDataModel = function(frameData) {
     if(this.frameWidthSubscription) {
         this.frameWidthSubscription.dispose();
     }
-    this.frameWidthSubscription =  this.frameData.frameWidth.subscribe(function(newVal){
-        self.resize();
+
+    this.frameWidthSubscription = this.frameData.frameWidth.subscribe(function(newVal){
+        if (self.type == "sequenceView"){
+            self.resize([parseInt(newVal),parseInt(self.frameData.frameHeight())]);
+        }
     });
+
 
     if(this.frameHeightSubscription) {
         this.frameHeightSubscription.dispose();
     }
     this.frameHeightSubscription =  this.frameData.frameHeight.subscribe(function(newVal){
-        self.resize();
+        if (self.type == "sequenceView") {
+            self.resize([parseInt(self.frameData.frameWidth()), parseInt(newVal)]);
+        }
     });
 
     if(this.bgColorSubscription) {
@@ -157,7 +168,31 @@ FrameView.prototype.setSize = function(size) {
     if (size){
         this.width = size[0];
         this.height = size[1];
+        this.resetFrame();
     }
+
+};
+
+
+FrameView.prototype.resetFrame = function(task) {
+
+    if (this.type== "sequenceView") {
+        if (this.parent.resetting == false){
+            this.parent.resetting = true;
+            if(this.frameWidthSubscription) {
+                this.frameWidthSubscription.dispose();
+            }
+            if(this.frameHeightSubscription) {
+                this.frameHeightSubscription.dispose();
+            }
+            this.parent.setDataModel(this.parent.dataModel);
+        }
+        else {
+            this.parent.resetting = false;
+        }
+
+    }
+
 
 };
 
@@ -167,13 +202,10 @@ FrameView.prototype.setDiv= function(div) {
 
 
 FrameView.prototype.resize = function(size) {
-
     console.log('set FrameView size to '+size);
-
     this.setSize(size);
-
     this.updateElements();
-    this.updateStages();
+  //  this.updateStages();
 };
 
 
@@ -195,7 +227,7 @@ FrameView.prototype.renderElements = function() {
     }
 
     this.updateElements();
-    this.updateStages();
+   // this.updateStages();
 };
 
 
