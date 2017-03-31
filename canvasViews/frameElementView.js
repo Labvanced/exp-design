@@ -438,3 +438,12 @@ FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function() {
     $(this.divContent).append($(this.text));
     this.update(true,true);
 };
+
+/**
+ * dispose ko component and remove dom div...
+ */
+FrameElementView.prototype.dispose = function() {
+    var componentDiv = $(this.divContentInside)[0];
+    ko.cleanNode(componentDiv);
+    $(this.div).remove();
+};

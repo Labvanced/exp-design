@@ -7,7 +7,7 @@ var FrameView = function(divContainer,frameData,parent,type) {
     this.divContainer = divContainer;
 
     this.parent = parent;
-    this.type= type;
+    this.type = type;
     this.frameData = frameData;
     this.dataElements = null;
 
@@ -35,11 +35,15 @@ var FrameView = function(divContainer,frameData,parent,type) {
     // { type: 'interacting', factors: [factor1_obj, factor2_obj], levels: [4 2] } // the index of array ExpTrialLoop.trialTypesInteracting
     // { type: 'noninteract', factor: noninteracting_factor2_obj, level: 5}
     // { type: 'wildcard', factor: factor1_obj, level: 3}
+
+    this.isInitialized = false;
 };
 
 
 FrameView.prototype.init = function(size) {
-    var self =this;
+    var self = this;
+
+    this.setSize(size);
 
     if (this.type=="editorView") {
         function MouseWheelHandler(e) {
@@ -80,19 +84,7 @@ FrameView.prototype.init = function(size) {
 
     }
 
-    // resize once and set dataModel
-  //  this.resize(size);
-
-    if (this.type != "playerView") { // sequenceView und editorView
-        this.setDataModel(this.frameData);
-    }
-    else{ // playerView
-        // render in fullscreen:
-        this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
-
-        this.dataElements = this.frameData.elements;
-        this.renderElements();
-    }
+    this.isInitialized = true;
 };
 
 FrameView.prototype.setDataModel = function(frameData) {
@@ -124,21 +116,15 @@ FrameView.prototype.setDataModel = function(frameData) {
     if(this.frameWidthSubscription) {
         this.frameWidthSubscription.dispose();
     }
-
     this.frameWidthSubscription = this.frameData.frameWidth.subscribe(function(newVal){
-        if (self.type == "sequenceView"){
-            self.resize([parseInt(newVal),parseInt(self.frameData.frameHeight())]);
-        }
+        self.recalcScale();
     });
-
 
     if(this.frameHeightSubscription) {
         this.frameHeightSubscription.dispose();
     }
     this.frameHeightSubscription =  this.frameData.frameHeight.subscribe(function(newVal){
-        if (self.type == "sequenceView") {
-            self.resize([parseInt(self.frameData.frameWidth()), parseInt(newVal)]);
-        }
+        self.recalcScale();
     });
 
     if(this.bgColorSubscription) {
@@ -148,14 +134,17 @@ FrameView.prototype.setDataModel = function(frameData) {
         self.renderElements();
     });
 
-    this.renderElements();
-
     // initialize the scale of the frame:
-    if (this.type != "sequenceView"){ // this is only executed for editorView?
+    this.recalcScale();
+    this.renderElements();
+};
+
+FrameView.prototype.recalcScale = function() {
+    // can only be done if frameData is set:
+    if (this.frameData) {
         this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
     }
 };
-
 
 FrameView.prototype.setupBackground = function() {
     var bgFrameElement = new BgFrameElement(this.frameData,this);
@@ -164,17 +153,12 @@ FrameView.prototype.setupBackground = function() {
 };
 
 FrameView.prototype.setSize = function(size) {
-
-    if (size){
-        this.width = size[0];
-        this.height = size[1];
-        this.resetFrame();
-    }
-
+    this.width = size[0];
+    this.height = size[1];
+    this.recalcScale();
 };
 
-
-FrameView.prototype.resetFrame = function(task) {
+FrameView.prototype.resetFrame = function() {
 
     if (this.type== "sequenceView") {
         if (this.parent.resetting == false){
@@ -205,29 +189,32 @@ FrameView.prototype.resize = function(size) {
     console.log('set FrameView size to '+size);
     this.setSize(size);
     this.updateElements();
-  //  this.updateStages();
 };
 
-
-
-
 FrameView.prototype.renderElements = function() {
+    console.log("renderElements on this frame...");
+    var i,len;
+
+    // dispose all previous view elements (removing ko components and other clean up):
+    var viewElements = this.viewElements();
+    for (i= 0, len=viewElements.length; i<len; i++) {
+        viewElements[i].dispose();
+    }
 
     $(this.divContainer).children().remove();
-    this.viewElements = ko.observableArray([]).extend({sortById: null});
+    this.viewElements([]);
 
     if (this.type== "editorView") {
         this.setupBackground();
     }
 
     var elements =this.frameData.elements();
-    for (var i= 0, len=elements.length; i<len; i++) {
+    for (i= 0, len=elements.length; i<len; i++) {
         var elem = elements[i];
         this.addElem(elem,i);
     }
 
     this.updateElements();
-   // this.updateStages();
 };
 
 
