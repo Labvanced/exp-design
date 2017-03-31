@@ -8,6 +8,9 @@ function ContentElementPreviewViewModel (contentElement) {
     this.contentElement = contentElement;
     this.isSelected = ko.observable(false);
 }
+ContentElementPreviewViewModel.prototype.dispose = function() {
+    console.log("disposing ContentElementPreviewViewModel");
+};
 
 ko.components.register('contentElementPreview', {
     viewModel: {
@@ -44,6 +47,9 @@ ko.components.register('contentElementPreview', {
             else if (contentElement instanceof InvisibleElement) {
                 elem = $("<div data-bind='component: {name : \"invisible-preview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof VideoElement) {
+                elem = $("<div data-bind='component: {name : \"video-preview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
             return viewModel;
         }
@@ -62,6 +68,9 @@ ko.components.register('contentElementPreview', {
 function ContentElementPlayerViewModel (contentElement) {
     this.contentElement = contentElement;
 }
+ContentElementPlayerViewModel.prototype.dispose = function() {
+    console.log("disposing ContentElementPlayerViewModel");
+};
 
 ko.components.register('contentElementPlayerview', {
     viewModel: {
@@ -98,6 +107,9 @@ ko.components.register('contentElementPlayerview', {
             else if (contentElement instanceof InvisibleElement) {
                 elem = $("<div data-bind='component: {name : \"invisible-playerview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof VideoElement) {
+                elem = $("<div data-bind='component: {name : \"video-playerview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
 
             return viewModel;
@@ -116,6 +128,9 @@ ko.components.register('contentElementPlayerview', {
 function ContentElementEditViewModel (contentElement) {
     this.contentElement = contentElement;
 }
+ContentElementEditViewModel.prototype.dispose = function() {
+    console.log("disposing ContentElementEditViewModel");
+};
 
 ko.components.register('contentElementEditview', {
     viewModel: {
@@ -151,6 +166,9 @@ ko.components.register('contentElementEditview', {
             }
             else if (contentElement instanceof InvisibleElement) {
                 elem = $("<div data-bind='component: {name : \"invisible-editview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof VideoElement) {
+                elem = $("<div data-bind='component: {name : \"video-editview\", params : $data.contentElement}'></div>");
             }
             $(divElem).append(elem);
 

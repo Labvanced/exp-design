@@ -14,6 +14,10 @@ var createExpDesignComponents = (function() {
                     createCompFcn: createTextInputComponents
                 },
                 {
+                    filepath: "/html_views/VideoElement.html",
+                    createCompFcn: createVideoComponents
+                },
+                {
                     filepath: "/html_views/ScaleElement.html",
                     createCompFcn: createScaleComponents
                 },

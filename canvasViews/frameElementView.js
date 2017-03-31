@@ -333,6 +333,7 @@ FrameElementView.prototype.renderContent = function(data) {
         data = data();
     }
 
+    /*
     if (data.type == "VideoElement") {
         if (data.vidSource()){
 
@@ -347,9 +348,9 @@ FrameElementView.prototype.renderContent = function(data) {
             this.divContentInside.src = data.vidSource();
             this.divContentInside.oncanplaythrough = function () {
                 // initialize original size:
-                self.fullWidth($(this).width());
-                self.fullHeight($(this).height());
-                self.update(true,true);
+                //self.fullWidth($(this).width());
+                //self.fullHeight($(this).height());
+                //self.update(true,true);
             };
 
             $(this.divContent).children().remove();
@@ -370,7 +371,9 @@ FrameElementView.prototype.renderContent = function(data) {
             this.renderPlaceHolderBoxAndLabel();
         }
     }
-    else if (data.type == "ImageElement") {
+    */
+
+    if (data.type == "ImageElement") {
         if (data.imgSource()){
 
             this.divContentInside = new Image;

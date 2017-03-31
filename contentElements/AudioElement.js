@@ -10,12 +10,15 @@ var AudioElement= function(expData) {
 
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
+    this.showMediaControls = ko.observable(true);
+
+    this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
 
     this.shortName = ko.computed(function() {
         if (self.file_orig_name()){
             return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
         }
-        else return ''
+        else return '';
 
     });
 
@@ -30,7 +33,7 @@ var AudioElement= function(expData) {
             return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
         else {
-            return false
+            return false;
         }
     }, this);
 };
@@ -58,8 +61,9 @@ AudioElement.prototype.fromJS = function(data) {
     this.name(data.name);
     this.file_id(data.file_id);
     this.file_orig_name(data.file_orig_name);
-
-
+    if (data.hasOwnProperty('showMediaControls')) {
+        this.showMediaControls(data.showMediaControls);
+    }
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 
@@ -75,6 +79,7 @@ AudioElement.prototype.toJS = function() {
         name: this.name(),
         file_id: this.file_id(),
         file_orig_name: this.file_orig_name(),
+        showMediaControls: this.showMediaControls(),
         modifier: this.modifier().toJS()
 
     };

@@ -1,4 +1,5 @@
 
+
 var VideoElement= function(expData) {
 
     var self = this; 
@@ -10,12 +11,17 @@ var VideoElement= function(expData) {
 
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
+    this.showMediaControls = ko.observable(true);
+
+    this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
+    this.currentTime = ko.observable(0);
+    this.maxTime = ko.observable(1);
 
     this.shortName = ko.computed(function() {
         if (self.file_orig_name()){
             return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
         }
-        else return ''
+        else return '';
        
     });
 
@@ -31,7 +37,7 @@ var VideoElement= function(expData) {
             return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
         else {
-            return false
+            return false;
         }
     }, this);
 };
@@ -39,6 +45,19 @@ var VideoElement= function(expData) {
 
 VideoElement.prototype.dataType =      [ "string", "string", "string"];
 VideoElement.prototype.modifiableProp = ["name","file_id","file_orig_name"];
+
+VideoElement.prototype.switchPlayState = function() {
+    // see http://blog.teamtreehouse.com/building-custom-controls-for-html5-videos
+    this.currentlyPlaying(!this.currentlyPlaying());
+};
+
+VideoElement.prototype.jumpToByFraction = function(fraction) {
+    console.log("jump to fraction "+fraction);
+};
+
+VideoElement.prototype.jumpToByTime = function(time) {
+    console.log("jump to time "+time);
+};
 
 VideoElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
@@ -59,8 +78,9 @@ VideoElement.prototype.fromJS = function(data) {
     this.name(data.name);
     this.file_id(data.file_id);
     this.file_orig_name(data.file_orig_name);
-
-
+    if (data.hasOwnProperty('showMediaControls')) {
+        this.showMediaControls(data.showMediaControls);
+    }
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 
@@ -76,8 +96,96 @@ VideoElement.prototype.toJS = function() {
         name: this.name(),
         file_id: this.file_id(),
         file_orig_name: this.file_orig_name(),
+        showMediaControls: this.showMediaControls(),
         modifier: this.modifier().toJS()
 
     };
 };
+
+function createVideoComponents() {
+
+    var VideoEditViewModel = function(dataModel, componentInfo){
+        this.element = componentInfo.element;
+        this.dataModel = dataModel;
+        var seekBar = $(this.element).find('.seek-bar')[0];
+        seekBar.addEventListener("change", function() {
+            dataModel.jumpToByFraction(seekBar.value / 100);
+        });
+        this.name = dataModel.parent.name;
+    };
+    VideoEditViewModel.prototype.dispose = function() {
+        console.log("disposing VideoEditViewModel");
+    };
+
+    ko.components.register('video-editview', {
+        viewModel: {
+            createViewModel: function (dataModel, componentInfo) {
+                return new VideoEditViewModel(dataModel, componentInfo);
+            }
+        },
+        template: {element: 'video-editview-template'}
+    });
+
+
+    var VideoPreviewViewModel = function(dataModel, componentInfo){
+        this.element = componentInfo.element;
+        this.dataModel = dataModel;
+        var seekBar = $(this.element).find('.seek-bar')[0];
+        seekBar.addEventListener("change", function() {
+            dataModel.jumpToByFraction(seekBar.value / 100);
+        });
+        this.dataModel.currentlyPlaying.subscribe(function (value) {
+            var myVideo = $(this.element).find('video')[0];
+            if (value) {
+                myVideo.play();
+            }
+            else {
+                myVideo.pause();
+            }
+        });
+    };
+    VideoPreviewViewModel.prototype.dispose = function() {
+        console.log("disposing VideoPreviewViewModel");
+    };
+
+    ko.components.register('video-preview',{
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+                return new VideoPreviewViewModel(dataModel, componentInfo);
+            }
+        },
+        template: { element: 'video-preview-template' }
+    });
+
+    var VideoPlayerViewModel = function(dataModel, componentInfo){
+        this.element = componentInfo.element;
+        this.dataModel = dataModel;
+        var seekBar = $(this.element).find('.seek-bar')[0];
+        seekBar.addEventListener("change", function() {
+            dataModel.jumpToByFraction(seekBar.value / 100);
+        });
+        this.dataModel.currentlyPlaying.subscribe(function (value) {
+            var myVideo = $(this.element).find('video')[0];
+            if (value) {
+                myVideo.play();
+            }
+            else {
+                myVideo.pause();
+            }
+        });
+    };
+    VideoPlayerViewModel.prototype.dispose = function() {
+        console.log("disposing VideoPlayerViewModel");
+    };
+
+    ko.components.register('video-playerview',{
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+                return new VideoPlayerViewModel(dataModel, componentInfo);
+            }
+        },
+        template: {element: 'video-playerview-template'}
+    });
+}
+
 
