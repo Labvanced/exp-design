@@ -12,6 +12,15 @@ var PublishingData = function(experiment) {
     this.recruitInLibrary = ko.observable(false);
     this.recruitSecretly = ko.observable(false);
     this.recruitExternal= ko.observable(false);
+    this.recruitingEnabled= ko.computed(function () {
+        if (self.recruitInLibrary() || self.recruitSecretly() || self.recruitExternal()) {
+            return true;
+        }
+        else  {
+            return false;
+        }
+    }, this);
+
     this.brandingType= ko.observable('LabVanced');
     this.secrecyType= ko.observable('link');
     this.passwordType= ko.observable('oneForAll');

@@ -11,7 +11,6 @@ var Experiment = function () {
     this.version = ko.observable(1);
     this.status = ko.observable('create'); //  "Create";"Record";"Analyze";"Finished"
     this.num_exp_subjects = ko.observable(null);
-
     
     // setup class instances for experiment functions
     this.exp_data = new ExpData(this);
@@ -29,6 +28,17 @@ var Experiment = function () {
     this.lastSavedJsons = [];
 
     var self = this;
+
+    this.canBeModifiedOrDeleted = ko.computed(function () {
+        if (!self.publishing_data.recruitingEnabled() && self.publishing_data.sharingDesign()== 'none'){
+            return true
+        }
+        else{
+            return false;
+        }
+    }, this);
+
+
 
     this.exp_name.subscribe(function(value) {
         self.publishing_data.exp_name(value)
@@ -53,7 +63,7 @@ Experiment.prototype.copyExp = function() {
 
 Experiment.prototype.publish = function() {
     this.status('record');
-    this.save();
+    this.save(null,this.status());
 };
 
 Experiment.prototype.endRecs = function() {
@@ -102,57 +112,60 @@ Experiment.prototype.addToHistory = function(serializedExp) {
 /**
  * save this experiment and send to server
  */
-Experiment.prototype.save = function() {
+Experiment.prototype.save = function(sharing,recruiting) {
     var self = this;
 
-    this.publishing_data.dateLastModified(this.publishing_data.getCurrentDate()); // set currentDate
+    // save only if not recruting or sharing
+    if (this.canBeModifiedOrDeleted() || sharing || recruiting){
+        this.publishing_data.dateLastModified(this.publishing_data.getCurrentDate()); // set currentDate
 
-    console.log("save experiment " + this.exp_name() + " and send to server...");
+        console.log("save experiment " + this.exp_name() + " and send to server...");
 
-    try {
-        var serializedExp = this.toJS();
-        if (uc.ctrlZenabled()) {
-            this.addToHistory(serializedExp);
+        try {
+            var serializedExp = this.toJS();
+            if (uc.ctrlZenabled()) {
+                this.addToHistory(serializedExp);
+            }
+            this.changesInTransit = true;
+            this.hasLocalChanges = false;
+            uc.socket.emit('updateExperiment', serializedExp, function(response){
+                if (response.success){
+                    self.changesInTransit = false;
+                    console.log("saved experiment success");
+                    if (self.hasLocalChanges) {
+                        // restart saving process for the new local changes that were made in the meantime
+                        self.save();
+                    }
+                }
+                else {
+                    console.log("error: could not transmit experiment to server.");
+                }
+            });
         }
-        this.changesInTransit = true;
-        this.hasLocalChanges = false;
-        uc.socket.emit('updateExperiment', serializedExp, function(response){
-            if (response.success){
-                self.changesInTransit = false;
-                console.log("saved experiment success");
-                if (self.hasLocalChanges) {
-                    // restart saving process for the new local changes that were made in the meantime
-                    self.save();
-                }
-            }
-            else {
-                console.log("error: could not transmit experiment to server.");
-            }
-        });
-    }
-    catch (err) {
-        var tempDialog = $('<div><p>Error message:</p><p class="error text-danger">'+err.message+'</p></div>');
-        tempDialog.dialog({
-            modal: true,
-            title: "Error Saving Experiment",
-            resizable: false,
-            width: 300,
-            buttons: [
-                {
-                    text: "Retry",
-                    click: function () {
-                        self.toJS();
+        catch (err) {
+            var tempDialog = $('<div><p>Error message:</p><p class="error text-danger">'+err.message+'</p></div>');
+            tempDialog.dialog({
+                modal: true,
+                title: "Error Saving Experiment",
+                resizable: false,
+                width: 300,
+                buttons: [
+                    {
+                        text: "Retry",
+                        click: function () {
+                            self.toJS();
+                        }
+                    },
+                    {
+                        text: "Reload from Server",
+                        click: function () {
+                            window.location.reload(false);
+                            $( this ).dialog( "close" );
+                        }
                     }
-                },
-                {
-                    text: "Reload from Server",
-                    click: function () {
-                        window.location.reload(false);
-                        $( this ).dialog( "close" );
-                    }
-                }
-            ]
-        });
+                ]
+            });
+        }
     }
 
 };
