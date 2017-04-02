@@ -6,6 +6,7 @@
  */
 var FrameElement= function(expData) {
 
+    var self = this;
     this.expData = expData;
     this.parent = null;
 
@@ -30,6 +31,14 @@ var FrameElement= function(expData) {
     this.responses = ko.observableArray([]);
     this.isActive = ko.observable(true);
     this.content = ko.observable();
+
+    this.shortName = ko.computed(function() {
+        if (self.name()){
+            return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
+        }
+        else return ''
+
+    });
 
 
     // modifier:
