@@ -145,7 +145,7 @@ function createAudioComponents() {
         // only add playback functionality if not in sequence view:
         if ($(this.element).parents('#sequenceView').length == 0) {
 
-            var myVideo = $(this.element).find('audio')[0];
+            var myAudio = $(this.element).find('audio')[0];
             var seekBar = $(this.element).find('.seek-bar')[0];
 
             seekBar.addEventListener("change", function () {
@@ -154,37 +154,42 @@ function createAudioComponents() {
 
             this.dataModel.currentlyPlaying.subscribe(function (value) {
                 if (value) {
-                    myVideo.play();
+                    myAudio.play();
                 }
                 else {
-                    myVideo.pause();
+                    myAudio.pause();
                 }
             });
 
             // add subscriber to be notified when the video should jump to specific time:
             this.listenForJumpTo = function (evtParam) {
                 if (evtParam.jumpToFraction) {
-                    var time = myVideo.duration * evtParam.jumpToFraction;
+                    var time = myAudio.duration * evtParam.jumpToFraction;
                     console.log("setting audio time to " + time);
-                    myVideo.currentTime = 5;
+                    myAudio.currentTime = 5;
                 }
             };
             this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
 
             // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
             this.timeUpdateListener = function () {
-                if (!isNaN(myVideo.duration)) {
-                    var percentage = Math.floor(100 * myVideo.currentTime / myVideo.duration);
+                if (!isNaN(myAudio.duration)) {
+                    var percentage = Math.floor(100 * myAudio.currentTime / myAudio.duration);
                     self.dataModel.currentTimePercentage(percentage);
                 }
             };
             // Update the seek bar as the audio plays
-            myVideo.addEventListener("timeupdate", this.timeUpdateListener);
+            myAudio.addEventListener("timeupdate", this.timeUpdateListener);
 
             this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
                 seekBar.value = percentage;
             });
         }
+
+        this.dataModel.audioSource.subscribe(function() {
+            var myAudio = $(self.element).find('audio')[0];
+            myAudio.load();
+        });
     };
     AudioPreviewAndPlayerViewModel.prototype.dispose = function() {
         console.log("disposing AudioPreviewAndPlayerViewModel");
@@ -194,8 +199,8 @@ function createAudioComponents() {
             this.dataModel.subscribersForJumpEvents.splice(index, 1);
         }
         this.subscriberTimePercentage.dispose();
-        var myVideo = $(this.element).find('audio')[0];
-        myVideo.removeEventListener("timeupdate", this.timeUpdateListener);
+        var myAudio = $(this.element).find('audio')[0];
+        myAudio.removeEventListener("timeupdate", this.timeUpdateListener);
     };
 
     ko.components.register('audio-preview',{

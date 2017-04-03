@@ -183,6 +183,11 @@ function createVideoComponents() {
                 seekBar.value = percentage;
             });
         }
+
+        this.dataModel.vidSource.subscribe(function() {
+            var myVideo = $(self.element).find('video')[0];
+            myVideo.load();
+        });
     };
     VideoPreviewAndPlayerViewModel.prototype.dispose = function() {
         console.log("disposing VideoPreviewAndPlayerViewModel");

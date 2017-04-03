@@ -398,6 +398,8 @@ FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function() {
  */
 FrameElementView.prototype.dispose = function() {
     var componentDiv = $(this.divContentInside)[0];
-    ko.cleanNode(componentDiv);
+    if (componentDiv) {
+        ko.cleanNode(componentDiv);
+    }
     $(this.div).remove();
 };
