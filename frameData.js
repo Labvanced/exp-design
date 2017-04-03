@@ -119,7 +119,11 @@ FrameData.prototype.copyChildEntity = function(entity) {
     }
     var index = obsArr.indexOf(entity);
     var entityCopy = entityFactory(entity.toJS(), this.expData);
-    entityCopy.id(guid());
+
+    if (!entityCopy instanceof Event) {
+        entityCopy.id(guid());
+    }
+
     entityCopy.name(entityCopy.name() + "_copy");
     entityCopy.parent = this;
     entityCopy.setPointers(this.expData.entities);
