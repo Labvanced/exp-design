@@ -50,6 +50,9 @@ ko.components.register('contentElementPreview', {
             else if (contentElement instanceof VideoElement) {
                 elem = $("<div data-bind='component: {name : \"video-preview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof AudioElement) {
+                elem = $("<div data-bind='component: {name : \"audio-preview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
             return viewModel;
         }
@@ -110,6 +113,9 @@ ko.components.register('contentElementPlayerview', {
             else if (contentElement instanceof VideoElement) {
                 elem = $("<div data-bind='component: {name : \"video-playerview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof AudioElement) {
+                elem = $("<div data-bind='component: {name : \"audio-playerview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
 
             return viewModel;
@@ -169,6 +175,9 @@ ko.components.register('contentElementEditview', {
             }
             else if (contentElement instanceof VideoElement) {
                 elem = $("<div data-bind='component: {name : \"video-editview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof AudioElement) {
+                elem = $("<div data-bind='component: {name : \"audio-editview\", params : $data.contentElement}'></div>");
             }
             $(divElem).append(elem);
 

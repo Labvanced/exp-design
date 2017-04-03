@@ -1,14 +1,14 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var FrameView = function(divContainer,frameData,parent,type) {
+var FrameView = function(divContainer,parent,type) {
     var self = this;
 
     this.divContainer = divContainer;
 
     this.parent = parent;
     this.type = type;
-    this.frameData = frameData;
+    this.frameData = null;
     this.dataElements = null;
 
     this.bgElement = null;
@@ -227,10 +227,7 @@ FrameView.prototype.addElem = function(elementData,index) {
     }
     this.viewElements.splice(index, 0, elemView);
 
-    if (elemView.dataModel.content().type != 'AudioElement') {   // exclude audio elements from DOM
-        $(this.divContainer).append(elemView.div);
-    }
-
+    $(this.divContainer).append(elemView.div);
 };
 
 FrameView.prototype.updateElements = function() {

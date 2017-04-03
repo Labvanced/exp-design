@@ -1076,17 +1076,19 @@ ActionControlAV.prototype.isValid = function(){
  */
 ActionControlAV.prototype.run = function(triggerParams) {
 
-   var elem =  player.currentFrame.frameView.viewElements.byId[this.target().id()].divContentInside;
+   var elem =  $(player.currentFrame.frameView.viewElements.byId[this.target().id()].divContentInside).find("audio, video");
 
-   if (this.actionType() == 'start'){
-       elem.play();
+   if (elem.length > 0) {
+       if (this.actionType() == 'start') {
+           elem[0].play();
+       }
+       else if (this.actionType() == 'stop') {
+           elem[0].stop();
+       }
+       else if (this.actionType() == 'pause') {
+           elem[0].pause();
+       }
    }
-    else if (this.actionType() == 'stop'){
-       elem.stop();
-    }
-    else if (this.actionType() == 'pause'){
-       elem.pause();
-    }
 
 };
 

@@ -18,6 +18,10 @@ var createExpDesignComponents = (function() {
                     createCompFcn: createVideoComponents
                 },
                 {
+                    filepath: "/html_views/AudioElement.html",
+                    createCompFcn: createAudioComponents
+                },
+                {
                     filepath: "/html_views/ScaleElement.html",
                     createCompFcn: createScaleComponents
                 },

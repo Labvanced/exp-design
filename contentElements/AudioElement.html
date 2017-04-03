@@ -1,4 +1,4 @@
-<template id='video-editview-template'>
+<template id='audio-editview-template'>
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <span class="property-description">
             Show Media Controls:
@@ -13,24 +13,30 @@
     </div>
 </template>
 
-<template id='video-preview-template'>
-    <video data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}" preload="auto">
-        <source data-bind="attr: {src: dataModel.vidSource()}">
-        Your browser does not support HTML5 video.
-    </video>
-    <span class="media-controls-floating media-controls" data-bind="if: dataModel.showMediaControls">
+<template id='audio-preview-template'>
+    <audio data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}" preload="auto">
+        <source data-bind="attr: {src: dataModel.audioSource()}">
+        Your browser does not support HTML5 audio.
+    </audio>
+    <span data-bind="ifnot: dataModel.showMediaControls">
+        <img src="/resources/icons/tool_sound.svg">
+    </span>
+    <span data-bind="if: dataModel.showMediaControls" class="media-controls">
         <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Pause</button></span>
         <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Play</button></span>
         <span><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
     </span>
 </template>
 
-<template id='video-playerview-template'>
-    <video preload="auto">
-        <source data-bind="attr: {src: dataModel.vidSource()}">
-        Your browser does not support HTML5 video.
-    </video>
-    <span class="media-controls-floating media-controls" data-bind="if: dataModel.showMediaControls">
+<template id='audio-playerview-template'>
+    <audio preload="auto">
+        <source data-bind="attr: {src: dataModel.audioSource()}">
+        Your browser does not support HTML5 audio.
+    </audio>
+    <div data-bind="ifnot: dataModel.showMediaControls" style="max-height: 100%">
+        <img src="/resources/icons/tool_sound.svg" max-height="100%" style="max-height: 100%">
+    </div>
+    <span data-bind="if: dataModel.showMediaControls" class="media-controls">
         <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Pause</button></span>
         <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Play</button></span>
         <span><progress class='seek-bar' min='0' max='100' value='0'></progress></span>

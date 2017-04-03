@@ -13,6 +13,7 @@ var AudioElement= function(expData) {
     this.showMediaControls = ko.observable(true);
 
     this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
+    this.currentTimePercentage = ko.observable(0);
 
     this.shortName = ko.computed(function() {
         if (self.file_orig_name()){
@@ -21,7 +22,6 @@ var AudioElement= function(expData) {
         else return '';
 
     });
-
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -36,11 +36,31 @@ var AudioElement= function(expData) {
             return false;
         }
     }, this);
+
+    this.subscribersForJumpEvents = [];
 };
 
 
 AudioElement.prototype.dataType =      [ "string", "string", "string"];
 AudioElement.prototype.modifiableProp = ["name","file_id","file_orig_name"];
+
+AudioElement.prototype.switchPlayState = function() {
+    this.currentlyPlaying(!this.currentlyPlaying());
+};
+
+AudioElement.prototype.jumpToByFraction = function(fraction) {
+    console.log("jump to fraction "+fraction);
+    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({jumpToFraction: fraction});
+    }
+};
+
+AudioElement.prototype.jumpToByTime = function(time) {
+    console.log("jump to time "+time);
+    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({jumpToTime: time});
+    }
+};
 
 AudioElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
@@ -71,9 +91,7 @@ AudioElement.prototype.fromJS = function(data) {
 };
 
 AudioElement.prototype.toJS = function() {
-
     return {
-
         type: this.type,
         dataType: this.dataType,
         name: this.name(),
@@ -81,10 +99,120 @@ AudioElement.prototype.toJS = function() {
         file_orig_name: this.file_orig_name(),
         showMediaControls: this.showMediaControls(),
         modifier: this.modifier().toJS()
-
     };
 };
 
-/**
- * Created by cgoeke on 28.02.2017.
- */
+
+
+function createAudioComponents() {
+
+    var AudioEditViewModel = function(dataModel, componentInfo){
+        var self = this;
+
+        this.element = componentInfo.element;
+        this.dataModel = dataModel;
+        var seekBar = $(this.element).find('.seek-bar')[0];
+        seekBar.addEventListener("change", function() {
+            dataModel.jumpToByFraction(seekBar.value / 100);
+        });
+        this.name = dataModel.parent.name;
+
+        this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function(percentage) {
+            seekBar.value = percentage;
+        });
+        seekBar.value = this.dataModel.currentTimePercentage();
+    };
+    AudioEditViewModel.prototype.dispose = function() {
+        console.log("disposing AudioEditViewModel");
+        this.subscriberTimePercentage.dispose();
+    };
+
+    ko.components.register('audio-editview', {
+        viewModel: {
+            createViewModel: function (dataModel, componentInfo) {
+                return new AudioEditViewModel(dataModel, componentInfo);
+            }
+        },
+        template: {element: 'audio-editview-template'}
+    });
+
+
+    var AudioPreviewAndPlayerViewModel = function(dataModel, componentInfo){
+        var self = this;
+        this.element = componentInfo.element;
+        this.dataModel = dataModel;
+
+        // only add playback functionality if not in sequence view:
+        if ($(this.element).parents('#sequenceView').length == 0) {
+
+            var myVideo = $(this.element).find('audio')[0];
+            var seekBar = $(this.element).find('.seek-bar')[0];
+
+            seekBar.addEventListener("change", function () {
+                dataModel.jumpToByFraction(seekBar.value / 100);
+            });
+
+            this.dataModel.currentlyPlaying.subscribe(function (value) {
+                if (value) {
+                    myVideo.play();
+                }
+                else {
+                    myVideo.pause();
+                }
+            });
+
+            // add subscriber to be notified when the video should jump to specific time:
+            this.listenForJumpTo = function (evtParam) {
+                if (evtParam.jumpToFraction) {
+                    var time = myVideo.duration * evtParam.jumpToFraction;
+                    console.log("setting audio time to " + time);
+                    myVideo.currentTime = 5;
+                }
+            };
+            this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
+
+            // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
+            this.timeUpdateListener = function () {
+                if (!isNaN(myVideo.duration)) {
+                    var percentage = Math.floor(100 * myVideo.currentTime / myVideo.duration);
+                    self.dataModel.currentTimePercentage(percentage);
+                }
+            };
+            // Update the seek bar as the audio plays
+            myVideo.addEventListener("timeupdate", this.timeUpdateListener);
+
+            this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
+                seekBar.value = percentage;
+            });
+        }
+    };
+    AudioPreviewAndPlayerViewModel.prototype.dispose = function() {
+        console.log("disposing AudioPreviewAndPlayerViewModel");
+        // remove subscriber to be notified when the audio should jump to specific time:
+        var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
+        if (index > -1) {
+            this.dataModel.subscribersForJumpEvents.splice(index, 1);
+        }
+        this.subscriberTimePercentage.dispose();
+        var myVideo = $(this.element).find('audio')[0];
+        myVideo.removeEventListener("timeupdate", this.timeUpdateListener);
+    };
+
+    ko.components.register('audio-preview',{
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+                return new AudioPreviewAndPlayerViewModel(dataModel, componentInfo);
+            }
+        },
+        template: { element: 'audio-preview-template' }
+    });
+
+    ko.components.register('audio-playerview',{
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+                return new AudioPreviewAndPlayerViewModel(dataModel, componentInfo);
+            }
+        },
+        template: {element: 'audio-playerview-template'}
+    });
+}
