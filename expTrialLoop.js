@@ -29,11 +29,6 @@ var ExpTrialLoop = function (expData) {
     this.subSequence = ko.observable(null);
     this.subSequencePerFactorGroup = ko.observableArray([]);
 
-    // Variables that are recorded per trial:
-    this.trialUniqueIdVar = ko.observable(null);
-    this.trialTypeIdVar = ko.observable(null);
-    this.trialOrderVar = ko.observable(null);
-
     this.factorGroups = ko.observableArray([]);
     this.eventVariables = ko.observableArray([]);
 
@@ -66,12 +61,11 @@ var ExpTrialLoop = function (expData) {
         }
         return l
     }, this);
-    
+
+
     this.vars = ko.computed(function() {
         var array = [];
-        array.push(this.trialUniqueIdVar());
-        array.push(this.trialTypeIdVar());
-        array.push(this.trialOrderVar());
+
         var eventList = this.eventVariables();
 
         for (var i = 0; i< eventList.length;i++ ){
@@ -80,7 +74,6 @@ var ExpTrialLoop = function (expData) {
         return array;
 
     }, this);
-
    
 
     this.betweenSubjectDesign.subscribe(function(newVal) {
@@ -294,10 +287,6 @@ ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
     this.subSequencePerFactorGroup(subSequencesObj);
     this.subSequence(subSequencesObj[0]);
 
-    this.trialUniqueIdVar(entitiesArr.byId[this.trialUniqueIdVar()]);
-    this.trialTypeIdVar(entitiesArr.byId[this.trialTypeIdVar()]);
-    this.trialOrderVar(entitiesArr.byId[this.trialOrderVar()]);
-
     this.eventVariables(jQuery.map( this.eventVariables(), function( id ) {
         return entitiesArr.byId[id];
     } ));
@@ -317,18 +306,6 @@ ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
 ExpTrialLoop.prototype.reAddEntities = function(entitiesArr) {
     // add the direct child nodes:
     // check if they are not already in the list:
-
-    if (!entitiesArr.byId.hasOwnProperty(this.trialUniqueIdVar().id())) {
-        entitiesArr.push(this.trialUniqueIdVar());
-    }
-
-    if (!entitiesArr.byId.hasOwnProperty(this.trialTypeIdVar().id())) {
-        entitiesArr.push(this.trialTypeIdVar());
-    }
-
-    if (!entitiesArr.byId.hasOwnProperty(this.trialOrderVar().id())) {
-        entitiesArr.push(this.trialOrderVar());
-    }
 
     jQuery.each(this.eventVariables(), function( index, elem ) {
         // check if they are not already in the list:
@@ -389,10 +366,6 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     this.minIntervalBetweenRep(data.minIntervalBetweenRep);
     this.webcamEnabled(data.webcamEnabled);
 
-    this.trialUniqueIdVar(data.trialUniqueIdVar);
-    this.trialTypeIdVar(data.trialTypeIdVar);
-    this.trialOrderVar(data.trialOrderVar);
-
     this.eventVariables(data.eventVariables);
 
     return this;
@@ -421,10 +394,6 @@ ExpTrialLoop.prototype.toJS = function() {
         randomization:  this.randomization(),
         minIntervalBetweenRep: this.minIntervalBetweenRep(),
         webcamEnabled: this.webcamEnabled(),
-
-        trialUniqueIdVar: this.trialUniqueIdVar().id(),
-        trialTypeIdVar: this.trialTypeIdVar().id(),
-        trialOrderVar: this.trialOrderVar().id(),
 
         eventVariables: jQuery.map( this.eventVariables(), function( eventVariables ) { return eventVariables.id(); })
     };

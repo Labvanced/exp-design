@@ -7,6 +7,7 @@
  */
 var FrameData = function(expData) {
 
+    var self = this;
     this.expData = expData;
     this.currSelectedElement = ko.observable(null);
     this.parent = null;
@@ -39,6 +40,12 @@ var FrameData = function(expData) {
 
     // sub-Structures (serialized below)
     this.elements = ko.observableArray([]).extend({sortById: null});
+
+
+  //  this.elementsReversed = ko.computed(function() {
+ //     return self.elements().reverse();
+  //  }, this);
+
     this.events = ko.observableArray([]).extend({sortById: null});
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
 
@@ -96,6 +103,9 @@ FrameData.prototype.deleteChildEntity = function(entity) {
     }
 };
 
+
+
+
 FrameData.prototype.copyChildEntity = function(entity) {
     var obsArr;
     if (entity instanceof Event) {
@@ -109,7 +119,11 @@ FrameData.prototype.copyChildEntity = function(entity) {
     }
     var index = obsArr.indexOf(entity);
     var entityCopy = entityFactory(entity.toJS(), this.expData);
-    entityCopy.id(guid());
+
+    if (!entityCopy instanceof Event) {
+        entityCopy.id(guid());
+    }
+
     entityCopy.name(entityCopy.name() + "_copy");
     entityCopy.parent = this;
     entityCopy.setPointers(this.expData.entities);

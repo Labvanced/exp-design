@@ -268,13 +268,32 @@ FrameView.prototype.updateStages = function() {
     }
 };
 
+
+FrameView.prototype.geIndexOfViewElement = function(dataModelElem) {
+
+    var l =this.viewElements().length-1;
+    var i = 0;
+    var found = false;
+    while (i<=l && !found ){
+        if (this.viewElements()[i].id ==  dataModelElem.id()){
+            found = true;
+            var index = i;
+            break;
+        }
+        i++
+    }
+    return index
+};
+
 FrameView.prototype.setSelectedElement = function(elem) {
 
     // change selection state of previously selected canvas element:
     var prevSelectedElem = this.frameData.currSelectedElement();
 
     if (prevSelectedElem){
-        var formerIndex = this.dataElements.indexOf(prevSelectedElem);
+     //   var formerIndex = this.dataElements.indexOf(prevSelectedElem);
+        var formerIndex= this.geIndexOfViewElement(prevSelectedElem);
+
         if (formerIndex>=0) {
             this.viewElements()[formerIndex].isSelected(false);
         }
@@ -293,11 +312,11 @@ FrameView.prototype.setSelectedElement = function(elem) {
             // element is an object
             // check if element is really a child of this frame:
             if (this.frameData.elements.byId[elem.id()]) {
-                var index = this.dataElements.indexOf(elem);
+               // var index = this.dataElements.indexOf(elem);
+                var index= this.geIndexOfViewElement(elem);
 
                 // change selection state of newly selected canvas element:
                 this.viewElements()[index].isSelected(true);
-
                 // change currently selected element:
                 this.frameData.currSelectedElement(elem);
             }

@@ -10,6 +10,7 @@
 var Event= function(parent) {
     this.parent = parent;
 
+    var self = this;
     // serialized
     //this.id = ko.observable(guid());
     this.type = "Event";
@@ -18,6 +19,14 @@ var Event= function(parent) {
     this.actions = ko.observableArray([]);
     this.name =  ko.observable(null);
 
+
+    this.shortName = ko.computed(function() {
+        if (self.name()){
+            return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
+        }
+        else return ''
+
+    });
 
 };
 

@@ -33,6 +33,10 @@ var ExpData = function (parentExperiment) {
     this.varTaskId =  ko.observable();
     this.varTaskIndex =  ko.observable();
 
+    this.varTrialId =  ko.observable();
+    this.varTaskIdx =  ko.observable();
+    this.varCondition =  ko.observable();
+
     this.vars = ko.computed(function() {
         var varArray = [];
         for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
@@ -52,7 +56,10 @@ ExpData.prototype.fixedVarNames = [
     'varBlockId',
     'varBlockIndex',
     'varTaskId',
-    'varTaskIndex'
+    'varTaskIndex',
+    'varTrialId',
+    'varTaskIdx',
+    'varCondition'
 ];
 
 /**
@@ -69,6 +76,9 @@ ExpData.prototype.createVars = function() {
     this.varBlockIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Block Index'));
     this.varTaskId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Task Id'));
     this.varTaskIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Task Index'));
+    this.varTrialId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Trial Id'));
+    this.varTaskIdx((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'Trial Index'));
+    this.varCondition((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Condition'));
 };
 
 /**
@@ -108,29 +118,6 @@ ExpData.prototype.addTask = function(taskName) {
     if (taskName){
         expTrialLoop.name(taskName);
     }
-
-    // trial randomization, premade variable per exp trial loop
-    var trialUniqueId = new GlobalVar(this.expData);
-    trialUniqueId.dataType('numeric');
-    trialUniqueId.scope('trial');
-    trialUniqueId.scale('nominal');
-    trialUniqueId.name("Trial Id");
-    expTrialLoop.trialUniqueIdVar(trialUniqueId);
-
-    var trialTypeIdVar = new GlobalVar(this.expData);
-    trialTypeIdVar.dataType('numeric');
-    trialTypeIdVar.scope('trial');
-    trialTypeIdVar.scale('nominal');
-    trialTypeIdVar.name("Trial Type");
-    expTrialLoop.trialTypeIdVar(trialTypeIdVar);
-
-    var trialOrderVar = new GlobalVar(this.expData);
-    trialOrderVar.dataType('numeric');
-    trialOrderVar.scope('trial');
-    trialOrderVar.scale('interval');
-    trialOrderVar.name("Presentation Order");
-    expTrialLoop.trialOrderVar(trialOrderVar);
-    
     this.availableTasks.push(expTrialLoop);
     this.reAddEntities();
     this.notifyChanged();

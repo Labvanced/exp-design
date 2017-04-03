@@ -22,7 +22,7 @@ var GlobalVar = function (expData) {
     this.isInteracting = ko.observable(false); // TODO: remove
     this.levels = ko.observableArray([]);
 
-    this.isRecorded = ko.observable(null);
+    this.isRecorded = ko.observable(true);
 
     this.resetAtTrialStart = ko.observable(false);
     this.recordAtTrialEnd = ko.observable(false);
@@ -40,6 +40,14 @@ var GlobalVar = function (expData) {
 
     this.recType = ko.observable('overwrite'); // maybe last and series?
     this.recValue = null; // takes care of buffering
+
+    this.shortName = ko.computed(function() {
+        if (self.name()){
+            return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
+        }
+        else return ''
+
+    });
 
     // subscribe to value for buffering
     this.value.subscribe(function (newValue) {
@@ -65,6 +73,7 @@ var GlobalVar = function (expData) {
 
 };
 
+
 // enum definitions:
 GlobalVar.scales = ['nominal', 'ordinal', 'interval', 'ratio','undefined'];
 GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'timer', 'structure','undefined'];
@@ -85,6 +94,11 @@ GlobalVar.allowedScalePerDataType = {
     'timer': ['interval', 'ratio','undefined'],
     'structure': ['undefined']
 };
+
+
+
+
+
 // now create the inverted mapping:
 GlobalVar.allowedDataTypePerScale = {
     'undefined': ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime', 'timer','structure'],
@@ -93,6 +107,8 @@ GlobalVar.allowedDataTypePerScale = {
     'interval': ['numeric', 'datetime', 'timer'],
     'ratio': ['numeric', 'datetime', 'timer']
 };
+
+
 
 GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
     this.dataType(dataType);
