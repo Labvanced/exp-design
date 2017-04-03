@@ -794,26 +794,27 @@ TriggerAudioVideoEvent.prototype.isValid = function() {
 TriggerAudioVideoEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
 
     var self = this;
-    var elem = $(playerFrame.frameView.viewElements.byId[this.target().id()].divContentInside);
-    switch (this.triggerType()) {
-        case "started":
-            elem.bind("play", function() {
-                self.event.triggerActions(0)
-            });
-            break;
-        case "paused":
-            elem.bind("pause", function() {
-                var currTime =  elem.currentTime;
-                self.event.triggerActions(currTime);
-              
-            });
-            break;
-        case "ended":
-            elem.bind("ended", function() {
-                var duration =  elem.duration;
-                self.event.triggerActions(duration);
-            });
-            break;
+    var elem =  $(player.currentFrame.frameView.viewElements.byId[this.target().id()].divContentInside).find("audio, video");
+    if (elem.length > 0) {
+        switch (this.triggerType()) {
+            case "started":
+                elem.bind("play", function () {
+                    self.event.triggerActions(0);
+                });
+                break;
+            case "paused":
+                elem.bind("pause", function () {
+                    var currTime = elem[0].currentTime;
+                    self.event.triggerActions(currTime);
+                });
+                break;
+            case "ended":
+                elem.bind("ended", function () {
+                    var duration = elem[0].duration;
+                    self.event.triggerActions(duration);
+                });
+                break;
+        }
     }
 
 };

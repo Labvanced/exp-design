@@ -1,5 +1,4 @@
 
-
 var VideoElement= function(expData) {
 
     var self = this; 
@@ -14,8 +13,7 @@ var VideoElement= function(expData) {
     this.showMediaControls = ko.observable(true);
 
     this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
-    this.currentTime = ko.observable(0);
-    this.maxTime = ko.observable(1);
+    this.currentTimePercentage = ko.observable(0);
 
     this.shortName = ko.computed(function() {
         if (self.file_orig_name()){
@@ -28,8 +26,6 @@ var VideoElement= function(expData) {
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
-    // not serialized
-    this.shape = "square";
     this.label = "Video";
 
     this.vidSource = ko.computed( function() {
@@ -40,6 +36,8 @@ var VideoElement= function(expData) {
             return false;
         }
     }, this);
+
+    this.subscribersForJumpEvents = [];
 };
 
 
@@ -47,16 +45,21 @@ VideoElement.prototype.dataType =      [ "string", "string", "string"];
 VideoElement.prototype.modifiableProp = ["name","file_id","file_orig_name"];
 
 VideoElement.prototype.switchPlayState = function() {
-    // see http://blog.teamtreehouse.com/building-custom-controls-for-html5-videos
     this.currentlyPlaying(!this.currentlyPlaying());
 };
 
 VideoElement.prototype.jumpToByFraction = function(fraction) {
     console.log("jump to fraction "+fraction);
+    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({jumpToFraction: fraction});
+    }
 };
 
 VideoElement.prototype.jumpToByTime = function(time) {
     console.log("jump to time "+time);
+    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({jumpToTime: time});
+    }
 };
 
 VideoElement.prototype.setPointers = function(entitiesArr) {
@@ -88,9 +91,7 @@ VideoElement.prototype.fromJS = function(data) {
 };
 
 VideoElement.prototype.toJS = function() {
-
     return {
-
         type: this.type,
         dataType: this.dataType,
         name: this.name(),
@@ -98,13 +99,14 @@ VideoElement.prototype.toJS = function() {
         file_orig_name: this.file_orig_name(),
         showMediaControls: this.showMediaControls(),
         modifier: this.modifier().toJS()
-
     };
 };
 
 function createVideoComponents() {
 
     var VideoEditViewModel = function(dataModel, componentInfo){
+        var self = this;
+
         this.element = componentInfo.element;
         this.dataModel = dataModel;
         var seekBar = $(this.element).find('.seek-bar')[0];
@@ -112,9 +114,15 @@ function createVideoComponents() {
             dataModel.jumpToByFraction(seekBar.value / 100);
         });
         this.name = dataModel.parent.name;
+
+        this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function(percentage) {
+            seekBar.value = percentage;
+        });
+        seekBar.value = this.dataModel.currentTimePercentage();
     };
     VideoEditViewModel.prototype.dispose = function() {
         console.log("disposing VideoEditViewModel");
+        this.subscriberTimePercentage.dispose();
     };
 
     ko.components.register('video-editview', {
@@ -127,61 +135,80 @@ function createVideoComponents() {
     });
 
 
-    var VideoPreviewViewModel = function(dataModel, componentInfo){
+    var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
+        var self = this;
         this.element = componentInfo.element;
         this.dataModel = dataModel;
-        var seekBar = $(this.element).find('.seek-bar')[0];
-        seekBar.addEventListener("change", function() {
-            dataModel.jumpToByFraction(seekBar.value / 100);
-        });
-        this.dataModel.currentlyPlaying.subscribe(function (value) {
+
+        // only add playback functionality if not in sequence view:
+        if ($(this.element).parents('#sequenceView').length == 0) {
+
             var myVideo = $(this.element).find('video')[0];
-            if (value) {
-                myVideo.play();
-            }
-            else {
-                myVideo.pause();
-            }
-        });
+            var seekBar = $(this.element).find('.seek-bar')[0];
+
+            seekBar.addEventListener("change", function () {
+                dataModel.jumpToByFraction(seekBar.value / 100);
+            });
+
+            this.dataModel.currentlyPlaying.subscribe(function (value) {
+                if (value) {
+                    myVideo.play();
+                }
+                else {
+                    myVideo.pause();
+                }
+            });
+
+            // add subscriber to be notified when the video should jump to specific time:
+            this.listenForJumpTo = function (evtParam) {
+                if (evtParam.jumpToFraction) {
+                    var time = myVideo.duration * evtParam.jumpToFraction;
+                    console.log("setting video time to " + time);
+                    myVideo.currentTime = 5;
+                }
+            };
+            this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
+
+            // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
+            this.timeUpdateListener = function () {
+                if (!isNaN(myVideo.duration)) {
+                    var percentage = Math.floor(100 * myVideo.currentTime / myVideo.duration);
+                    self.dataModel.currentTimePercentage(percentage);
+                }
+            };
+            // Update the seek bar as the video plays
+            myVideo.addEventListener("timeupdate", this.timeUpdateListener);
+
+            this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
+                seekBar.value = percentage;
+            });
+        }
     };
-    VideoPreviewViewModel.prototype.dispose = function() {
-        console.log("disposing VideoPreviewViewModel");
+    VideoPreviewAndPlayerViewModel.prototype.dispose = function() {
+        console.log("disposing VideoPreviewAndPlayerViewModel");
+        // remove subscriber to be notified when the video should jump to specific time:
+        var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
+        if (index > -1) {
+            this.dataModel.subscribersForJumpEvents.splice(index, 1);
+        }
+        this.subscriberTimePercentage.dispose();
+        var myVideo = $(this.element).find('video')[0];
+        myVideo.removeEventListener("timeupdate", this.timeUpdateListener);
     };
 
     ko.components.register('video-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                return new VideoPreviewViewModel(dataModel, componentInfo);
+                return new VideoPreviewAndPlayerViewModel(dataModel, componentInfo);
             }
         },
         template: { element: 'video-preview-template' }
     });
 
-    var VideoPlayerViewModel = function(dataModel, componentInfo){
-        this.element = componentInfo.element;
-        this.dataModel = dataModel;
-        var seekBar = $(this.element).find('.seek-bar')[0];
-        seekBar.addEventListener("change", function() {
-            dataModel.jumpToByFraction(seekBar.value / 100);
-        });
-        this.dataModel.currentlyPlaying.subscribe(function (value) {
-            var myVideo = $(this.element).find('video')[0];
-            if (value) {
-                myVideo.play();
-            }
-            else {
-                myVideo.pause();
-            }
-        });
-    };
-    VideoPlayerViewModel.prototype.dispose = function() {
-        console.log("disposing VideoPlayerViewModel");
-    };
-
     ko.components.register('video-playerview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                return new VideoPlayerViewModel(dataModel, componentInfo);
+                return new VideoPreviewAndPlayerViewModel(dataModel, componentInfo);
             }
         },
         template: {element: 'video-playerview-template'}

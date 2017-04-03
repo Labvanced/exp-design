@@ -143,12 +143,6 @@ FrameElementView.prototype.setupSubscriber = function() {
         self.renderContent(newValue)
     });
 
-    if(this.dataModel.content().vidSource){
-        this.dataModel.content().vidSource.subscribe(function(vidSource) {
-            self.renderContent(self.dataModel.content());
-        });
-    }
-
     if(this.dataModel.content().imgSource) {
         this.dataModel.content().imgSource.subscribe(function(imgSource) {
             self.renderContent(self.dataModel.content);
@@ -332,46 +326,6 @@ FrameElementView.prototype.renderContent = function(data) {
     if (ko.isObservable(data)){
         data = data();
     }
-
-    /*
-    if (data.type == "VideoElement") {
-        if (data.vidSource()){
-
-            this.divContentInside = document.createElement('video');
-
-            $(this.divContentInside).css({
-                "width": self.width() * self.scale(),
-                "height": self.height() * self.scale(),
-                "position": "absolute"
-            });
-
-            this.divContentInside.src = data.vidSource();
-            this.divContentInside.oncanplaythrough = function () {
-                // initialize original size:
-                //self.fullWidth($(this).width());
-                //self.fullHeight($(this).height());
-                //self.update(true,true);
-            };
-
-            $(this.divContent).children().remove();
-            $(this.divContent).append(this.divContentInside);
-
-            if (this.editor.type == "editorView") {
-                this.divContentInside.controls = true;
-            }
-            else if (this.editor.type == "sequenceView") {
-                this.divContentInside.controls = false;
-            }
-            else if(this.editor.type == "playerView"){
-                this.divContentInside.controls = false;
-                this.divContentInside.preload = "auto";
-            }
-        }
-        else {
-            this.renderPlaceHolderBoxAndLabel();
-        }
-    }
-    */
 
     if (data.type == "ImageElement") {
         if (data.imgSource()){
