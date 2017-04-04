@@ -271,12 +271,15 @@ FrameView.prototype.setSelectedElement = function(elem) {
     var prevSelectedElem = this.frameData.currSelectedElement();
 
     if (prevSelectedElem){
-     //   var formerIndex = this.dataElements.indexOf(prevSelectedElem);
-        var formerIndex= this.geIndexOfViewElement(prevSelectedElem);
+         if (!(prevSelectedElem instanceof Event)){
+             //   var formerIndex = this.dataElements.indexOf(prevSelectedElem);
+             var formerIndex= this.geIndexOfViewElement(prevSelectedElem);
 
-        if (formerIndex>=0) {
-            this.viewElements()[formerIndex].isSelected(false);
-        }
+             if (formerIndex>=0) {
+                 this.viewElements()[formerIndex].isSelected(false);
+             }
+         }
+
     }
 
     if (elem) {

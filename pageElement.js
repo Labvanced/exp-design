@@ -6,6 +6,7 @@
  */
 var PageElement = function(expData) {
 
+    var self = this;
     this.expData = expData;
     this.type = "PageElement";
     this.content = ko.observable();
@@ -13,6 +14,14 @@ var PageElement = function(expData) {
     this.name = ko.observable("pageElement");
     this.id = ko.observable(guid());
     this.selected = ko.observable(false);
+
+    this.shortName = ko.computed(function() {
+        if (self.name()){
+            return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
+        }
+        else return ''
+
+    });
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
