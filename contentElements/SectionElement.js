@@ -14,6 +14,9 @@ var SectionElement = function(expData) {
         this.dataModel.ckInstance.focus()
     };
 
+    ///// not serialized
+    this.selected = ko.observable(false);
+    /////
 };
 
 SectionElement.prototype.addElem = function (elem) {

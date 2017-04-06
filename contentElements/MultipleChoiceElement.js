@@ -17,6 +17,10 @@ var MultipleChoiceElement = function(expData) {
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
+
+    ///// not serialized
+    this.selected = ko.observable(false);
+    /////
 };
 
 MultipleChoiceElement.prototype.modifiableProp = ["questionText"];

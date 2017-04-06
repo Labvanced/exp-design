@@ -38,6 +38,10 @@ var ImageElement= function(expData) {
         }
     }, this);
 
+
+    ///// not serialized
+    this.selected = ko.observable(false);
+    /////
 };
 
 

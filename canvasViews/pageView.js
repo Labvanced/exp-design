@@ -84,17 +84,7 @@ PageView.prototype.setSelectedElement = function(elem) {
             this.pageData.currSelectedElement(elem);
         }
         else {
-            // element is an object
-            // check if element is really a child of this frame:
-            if (this.pageData.elements.byId[elem.id()]) {
-                //var index = this.pageData.elements.indexOf(elem);
-
-                // change selection state of newly selected canvas element:
-                //this.viewElements()[index].isSelected(true);
-
-                // change currently selected element:
-                this.pageData.currSelectedElement(elem);
-            }
+            this.setActiveObject(elem);
         }
     }
     else {// deselect:
@@ -103,6 +93,27 @@ PageView.prototype.setSelectedElement = function(elem) {
     }
 
 };
+
+PageView.prototype.setActiveObject = function(elem) {
+    // element is an object
+    // check if element is really a child of this frame:
+    if (this.pageData.elements.byId[elem.id()]) {
+        //var index = this.pageData.elements.indexOf(elem);
+        this.deselectElements();
+        elem.content().selected(true);
+        // change selection state of newly selected canvas element:
+        // change currently selected element:
+        this.pageData.currSelectedElement(elem);
+    }
+};
+
+PageView.prototype.deselectElements= function() {
+  for (var i = 0; i<this.pageData.elements().length;i++){
+      var elem = this.pageData.elements()[i];
+      elem.content().selected(false);
+  }
+};
+
 
 
 

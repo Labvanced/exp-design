@@ -21,6 +21,10 @@ var ScaleElement= function(expData) {
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
+
+    ///// not serialized
+    this.selected = ko.observable(false);
+    /////
 };
 
 ScaleElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];

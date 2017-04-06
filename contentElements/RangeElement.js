@@ -18,6 +18,9 @@ var RangeElement= function(expData) {
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
+    ///// not serialized
+    this.selected = ko.observable(false);
+    /////
 };
 
 RangeElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];

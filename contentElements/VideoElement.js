@@ -38,6 +38,10 @@ var VideoElement= function(expData) {
     }, this);
 
     this.subscribersForJumpEvents = [];
+
+    ///// not serialized
+    this.selected = ko.observable(false);
+    /////
 };
 
 

@@ -13,6 +13,10 @@ var TextInputElement = function(expData) {
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
+
+    ///// not serialized
+    this.selected = ko.observable(false);
+    /////
 };
 
 TextInputElement.prototype.modifiableProp = ["questionText"];

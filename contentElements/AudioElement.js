@@ -38,6 +38,10 @@ var AudioElement= function(expData) {
     }, this);
 
     this.subscribersForJumpEvents = [];
+
+    ///// not serialized
+    this.selected = ko.observable(false);
+    /////
 };
 
 
