@@ -48,22 +48,6 @@ var GlobalVar = function (expData) {
         else return '';
 
     });
-
-    // subscribe to value for buffering
-    this.value.subscribe(function (newValue) {
-        if(self.recType()=='overwrite'){
-            self.recValue = newValue;
-        } else if(self.recType()=='stack'){
-            if(!self.recValue){
-                self.recValue = [];
-            }
-            this.recValue.push({
-                timeStamp:    new Date().getTime(),
-                value:        newValue
-            });
-        }
-    }, this);
-
 };
 
 
@@ -138,6 +122,19 @@ GlobalVar.prototype.removeBackRef = function(entity) {
 GlobalVar.prototype.setValue = function(val) {
     // TODO: dataType conversions
     this.value(val);
+
+    if(this.recType()=='overwrite'){
+        this.recValue = val;
+    } else if(this.recType()=='stack'){
+        if(!this.recValue){
+            this.recValue = [];
+        }
+        this.recValue.push({
+            timeStamp:    new Date().getTime(),
+            value:        val
+        });
+    }
+
 };
 
 GlobalVar.prototype.getValue = function() {
