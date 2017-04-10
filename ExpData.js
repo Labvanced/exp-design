@@ -296,6 +296,7 @@ ExpData.prototype.toJS = function() {
         sessionsPerGroup.push(groups[i].sessions().length);
     }
 
+
     var data = {
         entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
         availableTasks: jQuery.map( this.availableTasks(), function( task ) { return task.id(); }),

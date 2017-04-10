@@ -12,7 +12,7 @@ if (!Date.now) {
  * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
  * @constructor
  */
-var TimerValue = function (parentGlobalVar) {
+var GlobalVarTimer = function (parentGlobalVar) {
     this.parentGlobalVar = parentGlobalVar;
 
     // serialized:
@@ -28,12 +28,12 @@ var TimerValue = function (parentGlobalVar) {
 };
 
 // enum definitions:
-TimerValue.states = ['pause','up','down'];
+GlobalVarTimer.states = ['pause','up','down'];
 
 /**
  * private function:
  */
-TimerValue.prototype.updateCurrentValue = function() {
+GlobalVarTimer.prototype.updateCurrentValue = function() {
     var curTime = Date.now();
     var newVal = this.getValue(curTime);
     this.timerValueAtStart = newVal;
@@ -43,7 +43,7 @@ TimerValue.prototype.updateCurrentValue = function() {
 /**
  * private function to update internal js timers
  */
-// TimerValue.prototype.updateTriggerCallbacks = function(currentTime) {
+// GlobalVarTimer.prototype.updateTriggerCallbacks = function(currentTime) {
 //
 //     // if currentTime is not provided, then use Date.now():
 //     currentTime = typeof currentTime === 'undefined' ? Date.now() : currentTime;
@@ -66,27 +66,27 @@ TimerValue.prototype.updateCurrentValue = function() {
 //     }
 // };
 
-TimerValue.prototype.pause = function() {
+GlobalVarTimer.prototype.pause = function() {
     this.updateCurrentValue();
     this.state('pause');
 };
 
-TimerValue.prototype.startCountdown = function() {
+GlobalVarTimer.prototype.startCountdown = function() {
     this.updateCurrentValue();
     this.state('down');
 };
 
-TimerValue.prototype.startCountup = function() {
+GlobalVarTimer.prototype.startCountup = function() {
     this.updateCurrentValue();
     this.state('up');
 };
 
-TimerValue.prototype.setValue = function(timeInMs) {
+GlobalVarTimer.prototype.setValue = function(timeInMs) {
     this.timerValueAtStart(timeInMs);
     this.startTimeInUTC(Date.now());
 };
 
-TimerValue.prototype.getValue = function(currentTime) {
+GlobalVarTimer.prototype.getValue = function(currentTime) {
     // if currentTime is not provided, then use Date.now():
     currentTime = typeof currentTime === 'undefined' ? Date.now() : currentTime;
     switch (this.state()) {
@@ -99,7 +99,7 @@ TimerValue.prototype.getValue = function(currentTime) {
     }
 };
 
-TimerValue.prototype.addTimerReachedCallback = function(onValueReached) {
+GlobalVarTimer.prototype.addTimerReachedCallback = function(onValueReached) {
 
 };
 
@@ -110,16 +110,16 @@ TimerValue.prototype.addTimerReachedCallback = function(onValueReached) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TimerValue.prototype.setPointers = function(entitiesArr) {
+GlobalVarTimer.prototype.setPointers = function(entitiesArr) {
 
 };
 
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {TimerValue}
+ * @returns {GlobalVarTimer}
  */
-TimerValue.prototype.fromJS = function(data) {
+GlobalVarTimer.prototype.fromJS = function(data) {
     this.state(data.state);
     this.timerValueAtStart(data.timerValueAtStart);
     return this;
@@ -129,7 +129,7 @@ TimerValue.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TimerValue.prototype.toJS = function() {
+GlobalVarTimer.prototype.toJS = function() {
     return {
         state: this.state(),
         timerValueAtStart: this.timerValueAtStart()
