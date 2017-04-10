@@ -18,6 +18,7 @@ var GlobalVar = function (expData) {
     this.dataType = ko.observable(null);
     this.scale = ko.observable(null);
     this.scope = ko.observable("undefined");
+
     this.isFactor =  ko.observable(false);
     this.isInteracting = ko.observable(false); // TODO: remove
     this.levels = ko.observableArray([]);
@@ -48,22 +49,6 @@ var GlobalVar = function (expData) {
         else return '';
 
     });
-
-    // subscribe to value for buffering
-    this.value.subscribe(function (newValue) {
-        if(self.recType()=='overwrite'){
-            self.recValue = newValue;
-        } else if(self.recType()=='stack'){
-            if(!self.recValue){
-                self.recValue = [];
-            }
-            this.recValue.push({
-                timeStamp:    new Date().getTime(),
-                value:        newValue
-            });
-        }
-    }, this);
-
 };
 
 
@@ -138,6 +123,19 @@ GlobalVar.prototype.removeBackRef = function(entity) {
 GlobalVar.prototype.setValue = function(val) {
     // TODO: dataType conversions
     this.value(val);
+
+    if(this.recType()=='overwrite'){
+        this.recValue = val;
+    } else if(this.recType()=='stack'){
+        if(!this.recValue){
+            this.recValue = [];
+        }
+        this.recValue.push({
+            timeStamp:    new Date().getTime(),
+            value:        val
+        });
+    }
+
 };
 
 GlobalVar.prototype.getValue = function() {
@@ -205,7 +203,35 @@ GlobalVar.prototype.fromJS = function(data) {
         this.recordAtTrialEnd(data.recordAtTrialEnd);
     }
     if (data.hasOwnProperty('startValue')) {
-        this.startValue(data.startValue);
+        var startValue = null;
+        switch (data.dataType) {
+            case 'string':
+                startValue = new GlobalVarValueString(self);
+                break;
+            case 'numeric':
+                startValue = new GlobalVarValueNumeric(self);
+                break;
+            case 'boolean':
+                startValue = new GlobalVarValueBoolean(self);
+                break;
+            case 'categorical':
+                startValue = new GlobalVarValueCategorical(self);
+                break;
+            case 'datetime':
+                startValue = new GlobalVarValueDatetime(self);
+                break;
+            case 'timer':
+                startValue = new GlobalVarValueTimer(self);
+                break;
+            case 'structure':
+                startValue = new GlobalVarValueStructure(self);
+                break;
+            case 'undefined':
+                startValue = new GlobalVarValueUndefined(self);
+                break;
+        }
+        startValue.fromJS(data.startValue);
+        this.startValue(startValue);
     }
 
 
@@ -234,7 +260,7 @@ GlobalVar.prototype.toJS = function() {
 
         resetAtTrialStart: this.resetAtTrialStart(),
         recordAtTrialEnd: this.recordAtTrialEnd(),
-        startValue: this.startValue(),
+        startValue: this.startValue().toJS(),
         isRecorded:this.isRecorded(),
 
         type: this.type,
