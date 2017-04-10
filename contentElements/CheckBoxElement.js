@@ -24,8 +24,14 @@ var CheckBoxElement= function(expData) {
 
 CheckBoxElement.prototype.modifiableProp = ["questionText"];
 
+CheckBoxElement.prototype.init = function() {
+    this.addEntry();
+};
+
+
 CheckBoxElement.prototype.addEntry = function() {
      var checkBoxEntry = new CheckBoxEntry(this);
+     checkBoxEntry.init();
      this.elements.push(checkBoxEntry);
 };
 
@@ -37,20 +43,9 @@ CheckBoxElement.prototype.removeEntry = function(idx) {
 
 CheckBoxElement.prototype.setPointers = function(entitiesArr) {
 
-
-    // relink variables:
-    var elements = this.elements();
-    var elems = [];
-    for (var i=0; i<elements.length; i++) {
-        var obj ={
-            variable: ko.observable(entitiesArr.byId[elements[i].variable]),
-            checkBoxText :  ko.observable(elements[i].checkBoxText)
-        };
-        elems.push(obj);
+    for (var i=0; i<this.elements().length; i++) {
+        this.elements()[i].setPointers();
     }
-    this.elements(elems);
-
-
 
     this.modifier().setPointers(entitiesArr);
 };
@@ -58,11 +53,7 @@ CheckBoxElement.prototype.setPointers = function(entitiesArr) {
 CheckBoxElement.prototype.reAddEntities = function(entitiesArr) {
 
     jQuery.each( this.elements(), function( index, elem ) {
-        // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.variable().id())) {
-            entitiesArr.push(elem.variable());
-        }
-        // recursively make sure that all deep tree nodes are in the entities list:
+        elem.reAddEntities(entitiesArr)
     } );
 
 
@@ -75,30 +66,25 @@ CheckBoxElement.prototype.selectTrialType = function(selectionSpec) {
 
 CheckBoxElement.prototype.toJS = function() {
 
-    var elems = [];
-
-    for (var i = 0; i< this.elements().length; i++){
-        var obj = {
-            variable:  this.elements()[i].variable().id(),
-            checkBoxText:  this.elements()[i].checkBoxText()
-        };
-        elems.push(obj);
-    }
-
-
     return {
         type: this.type,
         questionText: this.questionText(),
-        elements: elems,
-
+        elements: jQuery.map( this.elements(), function( elem ) {
+            return elem.toJS();
+        }),
         modifier: this.modifier().toJS()
     };
 };
 
 CheckBoxElement.prototype.fromJS = function(data) {
+    var self = this;
     this.type=data.type;
     this.questionText(data.questionText);
-    this.elements(data.elements);
+    this.elements(jQuery.map( data.elements, function( elemData ) {
+        return (new CheckBoxEntry(self)).fromJS(elemData);
+    } ));
+
+
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
@@ -108,23 +94,50 @@ CheckBoxElement.prototype.fromJS = function(data) {
 var CheckBoxEntry= function(checkBoxParent) {
     this.checkBoxParent = checkBoxParent;
     this.checkBoxText= ko.observable( '<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">check</span></span>');
-    this.variable =ko.observable(this.addVar());
+    this.variable=ko.observable(null);
 };
 
 
 CheckBoxEntry.prototype.dataType =[ "string"];
 
-CheckBoxEntry.prototype.addVar = function() {
+CheckBoxEntry.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[2]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
     var name = this.checkBoxParent.parent.name() +'_'+ this.checkBoxParent.elements().length;
     globalVar.name(name);
-    var startVal = createValueFromDataType();
-    globalVar.startValue(startVal);
-    return globalVar;
+    globalVar.resetStartValue();
+    this.variable(globalVar);
+
+    var PageData = this.checkBoxParent.parent.parent;
+    PageData.parent.parent.eventVariables.push(globalVar);
+    PageData.addVariableToLocalWorkspace(globalVar);
 };
+
+CheckBoxEntry.prototype.fromJS = function(data) {
+    this.checkBoxText(data.checkBoxText);
+    this.variable(data.variable);
+};
+
+CheckBoxEntry.prototype.toJS = function() {
+    return {
+        variable:  this.variable().id(),
+        checkBoxText:  this.checkBoxText()
+    };
+};
+
+CheckBoxEntry.prototype.setPointers = function(entitiesArr) {
+    this.variable(entitiesArr.byId[this.variable])
+};
+
+CheckBoxEntry.prototype.reAddEntities = function(entitiesArr) {
+    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+        entitiesArr.push(this.variable());
+    }
+};
+
+
 
 
 

@@ -43,8 +43,10 @@ PageData.prototype.modifiableProp = ["returnButton"];
  * add a new page element to this page.
  * @param {PageElement} elem - the new element
  */
-PageData.prototype.addElem = function (elem) {
+PageData.prototype.addNewSubElement = function (elem) {
     this.elements.push(elem);
+    this.expData.entities.push(elem);
+    elem.parent = this;
 };
 
 /**
