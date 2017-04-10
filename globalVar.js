@@ -249,6 +249,10 @@ GlobalVar.prototype.fromJS = function(data) {
  * @returns {object}
  */
 GlobalVar.prototype.toJS = function() {
+    var startValue = null;
+    if (this.startValue()){
+        startValue = this.startValue().toJS()
+    }
     return {
         id: this.id(),
         name: this.name(),
@@ -260,7 +264,7 @@ GlobalVar.prototype.toJS = function() {
 
         resetAtTrialStart: this.resetAtTrialStart(),
         recordAtTrialEnd: this.recordAtTrialEnd(),
-        startValue: this.startValue().toJS(),
+        startValue: startValue,
         isRecorded:this.isRecorded(),
 
         type: this.type,
