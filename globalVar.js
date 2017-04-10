@@ -45,29 +45,22 @@ var GlobalVar = function (expData) {
         if (self.name()){
             return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
         }
-        else return ''
+        else return '';
 
     });
 
     // subscribe to value for buffering
     this.value.subscribe(function (newValue) {
         if(self.recType()=='overwrite'){
-            if(!self.recValue){
-                self.recValue = ko.observable(newValue);
-            }
-            else{
-                self.recValue(newValue);
-            }
+            self.recValue = newValue;
         } else if(self.recType()=='stack'){
             if(!self.recValue){
-                self.recValue = ko.observableArray([]);
+                self.recValue = [];
             }
-            var rec = {
-              timeStamp:    new Date().getTime(),
-              value:        newValue
-            };
-
-            this.recValue.push(rec);
+            this.recValue.push({
+                timeStamp:    new Date().getTime(),
+                value:        newValue
+            });
         }
     }, this);
 

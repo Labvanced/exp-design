@@ -547,6 +547,7 @@ var TriggerTimerReached = function(event) {
     // serialized
     this.timerVar = ko.observable(null);
     this.timeInMs = ko.observable(0);
+    this.repeat = ko.observable(false);
 };
 
 TriggerTimerReached.prototype.type = "TriggerTimerReached";
