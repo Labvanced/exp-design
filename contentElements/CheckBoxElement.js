@@ -8,9 +8,8 @@ var CheckBoxElement= function(expData) {
     this.type= "CheckBoxElement";
     this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
 
-    this.choices= ko.observableArray([ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">check</span></span>')]);
-    this.answer = ko.observableArray([false]);
-    this.variable = ko.observable();
+    this.elements = ko.observableArray([]);
+
     this.margin = ko.observable('5pt');
     this.count = 0;
 
@@ -24,49 +23,49 @@ var CheckBoxElement= function(expData) {
 };
 
 CheckBoxElement.prototype.modifiableProp = ["questionText"];
-CheckBoxElement.prototype.dataType =      [ "string"];
 
-CheckBoxElement.prototype.changeCheck = function(index) {
-    if (this.answer()[index]){
-        this.answer.splice(index,1,false);
-    }
-    else {
-        this.answer.splice(index,1,true);
-    }
+CheckBoxElement.prototype.addEntry = function() {
+     var checkBoxEntry = new CheckBoxEntry(this);
+     this.elements.push(checkBoxEntry);
 };
 
-CheckBoxElement.prototype.addVar = function() {
-    var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[3]);
-    globalVar.scope(GlobalVar.scopes[4]);
-    globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name(this.parent.name());
-
-    this.variable(globalVar);
-
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
+CheckBoxElement.prototype.removeEntry = function(idx) {
+    this.elements.splice(idx,1);
 };
+
+
 
 CheckBoxElement.prototype.setPointers = function(entitiesArr) {
-    var choices =  this.choices();
-    this.choices = ko.observableArray([]);
-    for (var i = 0; i< choices.length; i++){
-        this.choices.push(ko.observable(choices[i]));
-    }
 
-    if (this.variable()) {
-        this.variable(entitiesArr.byId[this.variable()]);
+
+    // relink variables:
+    var elements = this.elements();
+    var elems = [];
+    for (var i=0; i<elements.length; i++) {
+        var obj ={
+            variable: ko.observable(entitiesArr.byId[elements[i].variable]),
+            checkBoxText :  ko.observable(elements[i].checkBoxText)
+        };
+        elems.push(obj);
     }
+    this.elements(elems);
+
+
 
     this.modifier().setPointers(entitiesArr);
 };
 
 CheckBoxElement.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
-    }
+
+    jQuery.each( this.elements(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.variable().id())) {
+            entitiesArr.push(elem.variable());
+        }
+        // recursively make sure that all deep tree nodes are in the entities list:
+    } );
+
+
     this.modifier().reAddEntities(entitiesArr);
 };
 
@@ -75,22 +74,23 @@ CheckBoxElement.prototype.selectTrialType = function(selectionSpec) {
 };
 
 CheckBoxElement.prototype.toJS = function() {
-    var choices = [];
-    for (var i = 0; i< this.choices().length; i++){
-        choices.push(this.choices()[i]());
+
+    var elems = [];
+
+    for (var i = 0; i< this.elements().length; i++){
+        var obj = {
+            variable :  this.elements()[i].variable().id(),
+            checkBoxText :  this.elements()[i].checkBoxText()
+        };
+        elems.push(obj);
     }
 
-    var variableId = null;
-    if (this.variable()) {
-        variableId = this.variable().id();
-    }
 
     return {
         type: this.type,
         questionText: this.questionText(),
-        choices: choices,
-        variable: variableId,
-        answer: this.answer(),
+        elements: elems,
+
         modifier: this.modifier().toJS()
     };
 };
@@ -98,18 +98,34 @@ CheckBoxElement.prototype.toJS = function() {
 CheckBoxElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.questionText(data.questionText);
-    this.choices(data.choices);
-    this.variable(data.variable);
-    this.answer(data.answer);
-
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
-
+    this.elements(data.elements);
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
-
 };
+
+
+
+var CheckBoxEntry= function(checkBoxParent) {
+    this.checkBoxParent = checkBoxParent;
+    this.checkBoxText= ko.observable( '<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">check</span></span>');
+    this.variable =ko.observable(this.addVar());
+};
+
+
+CheckBoxEntry.prototype.dataType =[ "string"];
+
+CheckBoxEntry.prototype.addVar = function() {
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.dataType(GlobalVar.dataTypes[2]);
+    globalVar.scope(GlobalVar.scopes[4]);
+    globalVar.scale(GlobalVar.scales[1]);
+    var name = this.checkBoxParent.parent.name() +'_'+ this.checkBoxParent.elements().length;
+    globalVar.name(name);
+    return globalVar;
+};
+
+
+
 
 function createCheckBoxComponents() {
     ko.components.register('checkbox-editview', {
@@ -117,21 +133,17 @@ function createCheckBoxComponents() {
             createViewModel: function(dataModel, componentInfo){
 
                 var viewModel = function(dataModel){
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
-                    this.choices = dataModel.choices;
-                    this.answer = dataModel.answer;
                     this.margin = dataModel.margin;
                     this.name = dataModel.parent.name;
 
                     this.addChoice = function() {
-                        this.choices.push(ko.observable("check"));
-                        this.answer.push(false);
+                        this.dataModel.addEntry();
                     };
 
                     this.removeChoice = function(idx) {
-                        this.choices.splice(idx,1);
-                        this.answer.splice(idx,1);
+                        this.dataModel.removeEntry(idx);
                     };
 
                     this.focus = function () {
@@ -151,12 +163,12 @@ function createCheckBoxComponents() {
             createViewModel: function(dataModel, componentInfo){
                 
                 var viewModel = function(dataModel){
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
-                    this.choices = dataModel.choices;
                     this.margin = dataModel.margin;
                     this.count = dataModel.count;
                 };
+
                 return new viewModel(dataModel);
             }
         },
@@ -168,10 +180,8 @@ function createCheckBoxComponents() {
             createViewModel: function(dataModel, componentInfo) {
 
                 var viewModel = function (dataModel) {
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
-                    this.choices = dataModel.choices;
-                    this.answer = dataModel.answer;
                     this.margin = dataModel.margin;
                 };
                 return new viewModel(dataModel);

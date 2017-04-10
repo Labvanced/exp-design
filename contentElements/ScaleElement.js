@@ -15,7 +15,6 @@ var ScaleElement= function(expData) {
     this.choices= ko.observableArray([1,2,3,4,5]);
     this.selected = ko.observable(false);
     this.variable = ko.observable();
-    this.answer = ko.observableArray([]);
     this.showNums = ko.observable(true);
     this.margin = ko.observable('2pt');
 
@@ -44,9 +43,6 @@ ScaleElement.prototype.addVar = function() {
 
     this.variable(globalVar);
 
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
 
 };
 
@@ -84,7 +80,6 @@ ScaleElement.prototype.toJS = function() {
         endLabel: this.endLabel(),
         choices: this.choices(),
         variable: variableId,
-        answer: this.answer(),
         modifier: this.modifier().toJS()
     };
 };
@@ -99,11 +94,6 @@ ScaleElement.prototype.fromJS = function(data) {
     this.endLabel(data.endLabel);
     this.choices(data.choices);
     this.variable(data.variable);
-    this.answer(data.answer);
-
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
 
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
@@ -181,7 +171,6 @@ function createScaleComponents() {
                     this.endLabel = dataModel.endLabel;
                     this.choices = dataModel.choices;
                     this.variable = dataModel.variable;
-                    this.answer = dataModel.answer;
                     this.showNums = dataModel.showNums;
                     this.margin = dataModel.margin;
                 };
