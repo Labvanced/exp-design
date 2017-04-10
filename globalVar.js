@@ -97,7 +97,35 @@ GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
 };
 
 GlobalVar.prototype.resetValue = function() {
-    this.value(this.startValue());
+    var value = this.createValueFromDataType();
+    value.fromJS(this.startValue().toJS());
+    this.value(value);
+};
+
+GlobalVar.prototype.resetStartValue = function() {
+    var startValue = this.createValueFromDataType();
+    this.startValue(startValue);
+};
+
+GlobalVar.prototype.createValueFromDataType = function() {
+    switch (this.dataType()) {
+        case 'string':
+            return new GlobalVarValueString(this);
+        case 'numeric':
+            return new GlobalVarValueNumeric(this);
+        case 'boolean':
+            return new GlobalVarValueBoolean(this);
+        case 'categorical':
+            return new GlobalVarValueCategorical(this);
+        case 'datetime':
+            return new GlobalVarValueDatetime(this);
+        case 'timer':
+            return new GlobalVarValueTimer(this);
+        case 'structure':
+            return new GlobalVarValueStructure(this);
+        case 'undefined':
+            return new GlobalVarValueUndefined(this);
+    }
 };
 
 GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, isRead, refLabel) {
