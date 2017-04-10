@@ -25,13 +25,13 @@
     </div>
     <div data-bind="foreach: dataModel().elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="attr: {value:$data}, checked: variable().startValue().value, click: function(){return true}, clickBubble: false">
+            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: variable().startValue().value()">
             <div   style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" class="notDraggable" data-bind="wysiwyg: checkBoxText, valueUpdate: 'afterkeydown'" ></div>
         </div>
     </div>
     <br>
 </template>
-w
+
 
 
 

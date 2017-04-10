@@ -79,8 +79,8 @@ CheckBoxElement.prototype.toJS = function() {
 
     for (var i = 0; i< this.elements().length; i++){
         var obj = {
-            variable :  this.elements()[i].variable().id(),
-            checkBoxText :  this.elements()[i].checkBoxText()
+            variable:  this.elements()[i].variable().id(),
+            checkBoxText:  this.elements()[i].checkBoxText()
         };
         elems.push(obj);
     }
@@ -121,6 +121,8 @@ CheckBoxEntry.prototype.addVar = function() {
     globalVar.scale(GlobalVar.scales[1]);
     var name = this.checkBoxParent.parent.name() +'_'+ this.checkBoxParent.elements().length;
     globalVar.name(name);
+    var startVal = createValueFromDataType();
+    globalVar.startValue(startVal);
     return globalVar;
 };
 
@@ -139,15 +141,15 @@ function createCheckBoxComponents() {
                     this.name = dataModel.parent.name;
 
                     this.addChoice = function() {
-                        this.dataModel.addEntry();
+                        this.dataModel().addEntry();
                     };
 
                     this.removeChoice = function(idx) {
-                        this.dataModel.removeEntry(idx);
+                        this.dataModel().removeEntry(idx);
                     };
 
                     this.focus = function () {
-                        this.dataModel.ckInstance.focus()
+                        this.dataModel().ckInstance.focus()
                     }
 
                 };
