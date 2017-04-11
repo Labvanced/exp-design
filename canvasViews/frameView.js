@@ -8,8 +8,9 @@ var FrameView = function(divContainer,parent,type) {
 
     this.parent = parent;
     this.type = type;
+
     this.frameData = null;
-    this.dataElements = null;
+    this.frameDataObs = ko.observable(null);
 
     this.bgElement = null;
     this.viewElements= ko.observableArray([]).extend({sortById: null});
@@ -18,7 +19,6 @@ var FrameView = function(divContainer,parent,type) {
     this.height = 0;
 
     this.scale = ko.observable(1);
-
     this.scale.subscribe(function(scale){
         if (self.type== "editorView") {
             $(self.divContainer).css({
@@ -28,14 +28,7 @@ var FrameView = function(divContainer,parent,type) {
         }
     });
 
-
     this.selectedTrialType = ko.observable({ type: 'default'});
-    // 4 types possible: COMMENT
-    // { type: 'default' }
-    // { type: 'interacting', factors: [factor1_obj, factor2_obj], levels: [4 2] } // the index of array ExpTrialLoop.trialTypesInteracting
-    // { type: 'noninteract', factor: noninteracting_factor2_obj, level: 5}
-    // { type: 'wildcard', factor: factor1_obj, level: 3}
-
     this.isInitialized = false;
 };
 
@@ -94,12 +87,11 @@ FrameView.prototype.setDataModel = function(frameData) {
 
     var self = this;
     this.frameData = frameData;
-    this.dataElements = this.frameData.elements;
 
     if(this.elementChangeSubscription) {
         this.elementChangeSubscription.dispose();
     }
-    this.elementChangeSubscription =this.dataElements.subscribe(function(changes){
+    this.elementChangeSubscription = this.frameData.elements.subscribe(function(changes){
         for (var i =0; i<changes.length;+i++){
             var obj = changes[i];
             if (obj.status=="added"){
@@ -268,14 +260,12 @@ FrameView.prototype.setSelectedElement = function(elem) {
 
     if (prevSelectedElem){
          if (!(prevSelectedElem instanceof Event)){
-             //   var formerIndex = this.dataElements.indexOf(prevSelectedElem);
              var formerIndex= this.geIndexOfViewElement(prevSelectedElem);
 
              if (formerIndex>=0) {
                  this.viewElements()[formerIndex].isSelected(false);
              }
          }
-
     }
 
     if (elem) {
@@ -291,7 +281,6 @@ FrameView.prototype.setSelectedElement = function(elem) {
             // element is an object
             // check if element is really a child of this frame:
             if (this.frameData.elements.byId[elem.id()]) {
-               // var index = this.dataElements.indexOf(elem);
                 var index= this.geIndexOfViewElement(elem);
 
                 // change selection state of newly selected canvas element:

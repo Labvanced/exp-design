@@ -10,6 +10,10 @@ var createExpDesignComponents = (function() {
         else {
             var templates = [
                 {
+                    filepath: "/html_views/pageView.html",
+                    createCompFcn: createPageComponents
+                },
+                {
                     filepath: "/html_views/TextInputElement.html",
                     createCompFcn: createTextInputComponents
                 },

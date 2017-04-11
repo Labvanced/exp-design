@@ -1,13 +1,16 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var PageView = function(pageData,parent,type) {
+var PageView = function(divContainer,parent,type) {
+    var self = this;
 
-    this.pageData = pageData;
-    this.pageDataObs = ko.observable(pageData);
+    this.divContainer = divContainer;
 
     this.parent = parent;
     this.type= type;
+
+    this.pageData = null;
+    this.pageDataObs = ko.observable(null);
 
     this.width = 0;
     this.height = 0;
@@ -15,20 +18,22 @@ var PageView = function(pageData,parent,type) {
     this.scale = ko.observable(1);
 
     this.selectedTrialType = ko.observable({ type: 'default'});
-
+    this.isInitialized = false;
 };
 
-
-
 PageView.prototype.init = function(size) {
+    if (!this.isInitialized) {
+        this.width = size[0];
+        this.height = size[1];
 
-    this.width = size[0];
-    this.height = size[1];
+        this.divContentInside = $("<div data-bind='component: {name : \"page-preview\", params : $data}'></div>");
+        $(this.divContainer).append(this.divContentInside);
+        ko.applyBindings(this, $(this.divContainer)[0]);
 
-    // resize once and set dataModel
-    this.resize(size);
-    if (this.type != "playerView") {
-        this.setDataModel(this.pageData);
+        // resize once and set dataModel
+        this.resize(size);
+
+        this.isInitialized = true;
     }
 };
 
@@ -42,27 +47,18 @@ PageView.prototype.setDataModel = function(pageData) {
     }
 };
 
-
-
-
-
 PageView.prototype.resize = function(size) {
-
     if (size){
         this.width = size[0];
         this.height = size[1];
     }
-
 };
 
-
 PageView.prototype.setSize = function(size) {
-
     if (size){
         this.width = size[0];
         this.height = size[1];
     }
-
 };
 
 PageView.prototype.removeElemFromView = function(elementData,index) {
@@ -70,10 +66,6 @@ PageView.prototype.removeElemFromView = function(elementData,index) {
 };
 
 PageView.prototype.setSelectedElement = function(elem) {
-
-    // change selection state of previously selected canvas element:
-    //var prevSelectedElem = this.pageData.currSelectedElement();
-
     if (elem) {
         if (elem.type == "Event") {
             // element is an event
@@ -84,43 +76,24 @@ PageView.prototype.setSelectedElement = function(elem) {
             this.pageData.currSelectedElement(elem);
         }
         else {
-            this.setActiveObject(elem);
+            // element is an object
+            // check if element is really a child of this frame:
+            if (this.pageData.elements.byId[elem.id()]) {
+                // change currently selected element:
+                this.pageData.currSelectedElement(elem);
+            }
         }
     }
     else {// deselect:
         // change currently selected element:
         this.pageData.currSelectedElement(null);
     }
-
 };
-
-PageView.prototype.setActiveObject = function(elem) {
-    // element is an object
-    // check if element is really a child of this frame:
-    if (this.pageData.elements.byId[elem.id()]) {
-        //var index = this.pageData.elements.indexOf(elem);
-        this.deselectElements();
-        elem.content().selected(true);
-        // change selection state of newly selected canvas element:
-        // change currently selected element:
-        this.pageData.currSelectedElement(elem);
-    }
-};
-
-PageView.prototype.deselectElements= function() {
-  for (var i = 0; i<this.pageData.elements().length;i++){
-      var elem = this.pageData.elements()[i];
-      elem.content().selected(false);
-  }
-};
-
-
-
 
 PageView.prototype.removeElement = function(elem) {
     //this.currentPage().elements.remove(elem);
     this.currentPage().elements.remove(elem);
-    this.selectElement(0);
+    this.setSelectedElement(null);
 };
 
 PageView.prototype.moveUpElement = function (index) {
@@ -144,3 +117,76 @@ PageView.prototype.moveDownElement = function (index) {
         this.renderElements();
     }
 };
+
+
+
+
+function createPageComponents() {
+    ko.components.register('page-editview', {
+        viewModel: {
+            createViewModel: function (pageView, componentInfo) {
+                var viewModel = function (pageView) {
+                    this.pageView = pageView;
+                };
+                return new viewModel(pageView);
+            }
+        },
+        template: {element: 'page-editview-template'}
+    });
+
+    ko.components.register('page-preview',{
+        viewModel: {
+            createViewModel: function (pageView, componentInfo) {
+                var viewModel = function (pageView) {
+                    this.pageView = pageView;
+                };
+                return new viewModel(pageView);
+            }
+        },
+        template: {element: 'page-preview-template'}
+    });
+
+
+    ko.components.register('page-playerview',{
+        viewModel: {
+            createViewModel: function (pageView, componentInfo) {
+                var viewModel = function (pageView) {
+                    this.pageView = pageView;
+                };
+                return new viewModel(pageView);
+            }
+        },
+        template: {element: 'page-playerview-template'}
+    });
+
+
+
+    ko.components.register('pageElement-preview',{
+        viewModel: {
+            createViewModel: function (data, componentInfo) {
+                var viewModel = function (pageView,pageElement) {
+                    this.pageView = pageView;
+                    this.pageElement = pageElement;
+                    this.selected = ko.observable(false);
+                };
+                return new viewModel(data.pageView,data.pageElement);
+            }
+        },
+        template: {element: 'pageElement-preview-template'}
+    });
+
+    ko.components.register('pageElement-playerview',{
+        viewModel: {
+            createViewModel: function (data, componentInfo) {
+                var viewModel = function (pageView,pageElement) {
+                    this.pageView = pageView;
+                    this.pageElement = pageElement;
+                };
+                return new viewModel(data.pageView,data.pageElement);
+            }
+        },
+        template: {element: 'pageElement-playerview-template'}
+    });
+}
+
+

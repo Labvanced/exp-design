@@ -36,28 +36,32 @@ FrameElementView.prototype.setupSubscriber = function() {
         return this.editor.scale();
     }, this);
 
+    var selectedTrialView = this.dataModel.modifier().selectedTrialView;
+
     // set height and width and subscirbe
     if (this.dataModel.hasOwnProperty('modifier')) {
         this.x = ko.computed(function() {
-            return this.dataModel.modifier().selectedTrialView.editorX();
+            return selectedTrialView.editorX();
         }, this);
         this.y = ko.computed(function() {
-            return this.dataModel.modifier().selectedTrialView.editorY();
+            return selectedTrialView.editorY();
         }, this);
         this.visibility = ko.computed(function() {
-            return this.dataModel.modifier().selectedTrialView.visibility();
+            return selectedTrialView.visibility();
         }, this);
         this.width = ko.computed(function() {
-            return this.dataModel.modifier().selectedTrialView.editorWidth();
+            return selectedTrialView.editorWidth();
         }, this);
         this.height = ko.computed(function() {
-            return this.dataModel.modifier().selectedTrialView.editorHeight();
+            return selectedTrialView.editorHeight();
         }, this);
         this.keepAspectRatio = ko.computed(function() {
-            return this.dataModel.modifier().selectedTrialView.keepAspectRatio();
+            return selectedTrialView.keepAspectRatio();
         }, this);
     }
     else {
+        console.error("where is the modifier??????????");
+        // TODO: remove this else block?
         this.x = ko.computed(function() {
             return this.dataModel.editorX();
         }, this);

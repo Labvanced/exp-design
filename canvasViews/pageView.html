@@ -1,0 +1,31 @@
+<template id="page-editview-template">
+
+</template>
+
+<template id="page-preview-template">
+    <div style="overflow: scroll" class="quest-form2"  data-bind="with: pageView">
+        <div style="margin-left: 5%; margin-right: 5%; width: 90%; min-height: 100%; background-color: white">
+            <!-- ko if: pageDataObs() -->
+            <div class="pageElementsList" data-bind="sortable: {data: pageDataObs().elements, options: {handle: '.pageElementHandle'}} ">
+
+                <div class="pageElementOuterBorder" data-bind="css: {selectedPageElement: $parent.pageDataObs().currSelectedElement()==$data}, click: function(){$parent.setSelectedElement($data)}">
+                    <div class="pageElementInnerBorder">
+                        <div class="pageElementHandle">
+                            <div style="position:absolute; top: 50%; margin-top: -20px; display: flex; flex-direction: column;  justify-content: space-between; height: 40px">
+                                <img style="display: block; margin-left: 7px; width: 14px" src="/resources/icons/arrowDownDark.svg">
+                                <img style="display: block; margin-left: 7px; width: 14px" src="/resources/icons/arrowDownDark.svg">
+                            </div>
+                        </div>
+                        <div style="margin: 5pt; margin-left: 35px" data-bind='component: {name : "contentElementPreview", params : $data.content()}'></div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /ko -->
+        </div>
+    </div>
+</template>
+
+<template id="page-playerview-template">
+
+</template>
