@@ -110,9 +110,13 @@ CheckBoxEntry.prototype.init = function() {
     globalVar.resetStartValue();
     this.variable(globalVar);
 
-    var PageData = this.checkBoxParent.parent.parent;
-    PageData.parent.parent.eventVariables.push(globalVar);
-    PageData.addVariableToLocalWorkspace(globalVar);
+    var frameOrPageElement = this.checkBoxParent.parent;
+    frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
+    this.setVariableBackRef();
+};
+
+CheckBoxEntry.prototype.setVariableBackRef = function() {
+    this.variable().addBackRef(this, this.checkBoxParent.parent, true, true, 'checkbox');
 };
 
 CheckBoxEntry.prototype.fromJS = function(data) {
@@ -130,6 +134,7 @@ CheckBoxEntry.prototype.toJS = function() {
 
 CheckBoxEntry.prototype.setPointers = function(entitiesArr) {
     this.variable(entitiesArr.byId[this.variable()]);
+    this.setVariableBackRef();
 };
 
 CheckBoxEntry.prototype.reAddEntities = function(entitiesArr) {

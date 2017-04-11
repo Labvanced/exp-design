@@ -8,81 +8,62 @@
  */
 var PageData = function(expData) {
     this.expData = expData;
-    this.parent = null;
-    this.label = "New_Page";
-    this.id = ko.observable(guid());
-
     this.currSelectedElement = ko.observable(null);
+    this.parent = null;
 
-    //serialized
+    // serialized (the same as in frameData):
+    this.id = ko.observable(guid());
     this.type= "PageData";
-    this.name = ko.observable("PageData");
-    this.returnButton = ko.observable(true);
-    this.selected = ko.observable(false);
-    this.elements = ko.observableArray([]).extend({sortById: null});
-    this.answerTime = ko.observable(Infinity);
-    this.shuffleAll = ko.observable(false);
-
+    this.name = ko.observable("Page");
+    this.offset = ko.observable(5000).extend({ numeric: 0 });
+    this.offsetEnabled = ko.observable(false);
     this.bgColor = ko.observable("#000000"); // hex color as string, i.e. "#ffffff"
     this.bgColorEnabled = ko.observable(false); // if false, then use experiment default background co
+    this.elements = ko.observableArray([]).extend({sortById: null});
+    this.events = ko.observableArray([]).extend({sortById: null});
+    this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
+
+    // serialized (specific for pageData):
+    this.shuffleAll = ko.observable(false);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
-    // sub-Structures (serialized below)
-    this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
-    this.events = ko.observableArray([]).extend({sortById: null});
-    this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
-
-
+    // not serialized
+    this.label = "PageData";
 };
 
-PageData.prototype.modifiableProp = ["returnButton"];
+PageData.prototype.modifiableProp = ["name","offset","offsetEnabled"];
 
-/**
- * add a new page element to this page.
- * @param {PageElement} elem - the new element
- */
-PageData.prototype.addNewSubElement = function (elem) {
-    this.elements.push(elem);
-    this.expData.entities.push(elem);
-    elem.parent = this;
+PageData.prototype.getDeepCopy = function() {
+    var self = this;
+
+    var entitiesArr = ko.observableArray([]).extend({sortById: null});
+    this.reAddEntities(entitiesArr);
+    entitiesArr.push(this);
+
+    // loop through array and create deep copies
+    var entitiesArrCopy = jQuery.map(entitiesArr(), function (entity) {
+        if ( (entity instanceof GlobalVar && !entity.isFactor()) || entity instanceof Factor) { // no deep copy of global variables so that we can keep state across frames.
+            return entity;
+        }
+        else {
+            var entityJson = entity.toJS();
+            return entityFactory(entityJson, self.expData);
+        }
+    });
+    var entitiesArrCopyObs = ko.observableArray([]).extend({sortById: null});
+    entitiesArrCopyObs(entitiesArrCopy);
+    jQuery.each( entitiesArrCopy, function( index, elem ) {
+        elem.setPointers(entitiesArrCopyObs);
+    } );
+
+    // find this frame:
+    var deepCopy = entitiesArrCopyObs.byId[this.id()];
+    deepCopy.parent = this.parent;
+
+    return deepCopy;
 };
-
-/**
- * adds a variable to the local workspace of this page.
- *
- * @param {GlobalVar} variable - the variable to add.
- */
-PageData.prototype.addVariableToLocalWorkspace = function(variable) {
-    var isExisting = this.localWorkspaceVars.byId[variable.id()];
-    if (!isExisting) {
-        this.localWorkspaceVars.push(variable);
-        variable.addBackRef(this, this, false, false, 'workspace variable');
-    }
-};
-
-/**
- * retrieve a pageElement by id.
- * @param id
- * @returns {*}
- */
-PageData.prototype.getElementById = function(id) {
-    return this.elements.byId[id];
-};
-
-PageData.prototype.previousPage = function() {
-    player.currQuestionnaireView.previousPage();
-};
-
-PageData.prototype.nextPage = function() {
-    player.currQuestionnaireView.nextPage();
-};
-
-PageData.prototype.submitQuestionnaire = function() {
-    player.currQuestionnaireView.submitQuestionnaire()
-};
-
 
 PageData.prototype.deleteChildEntity = function(entity) {
     var obsArr;
@@ -95,8 +76,6 @@ PageData.prototype.deleteChildEntity = function(entity) {
     else {
         obsArr = this.elements;
     }
-    //var index = obsArr.indexOf(entity);
-    //obsArr.splice(index, 1);
     obsArr.remove(entity);
 
     // if this element was selected, set selection to null
@@ -104,9 +83,6 @@ PageData.prototype.deleteChildEntity = function(entity) {
         this.currSelectedElement(null);
     }
 };
-
-
-
 
 PageData.prototype.copyChildEntity = function(entity) {
     var obsArr;
@@ -132,7 +108,46 @@ PageData.prototype.copyChildEntity = function(entity) {
     obsArr.splice(index+1, 0, entityCopy);
 };
 
+/**
+ * adds a variable to the local workspace of this page.
+ *
+ * @param {GlobalVar} variable - the variable to add.
+ */
+PageData.prototype.addVariableToLocalWorkspace = function(variable) {
+    var isExisting = this.localWorkspaceVars.byId[variable.id()];
+    if (!isExisting) {
+        this.localWorkspaceVars.push(variable);
+        variable.addBackRef(this, this, false, false, 'workspace variable');
+    }
+};
 
+/**
+ * add a new page element to this page.
+ * @param {PageElement} elem - the new element
+ */
+PageData.prototype.addNewSubElement = function (elem) {
+    this.elements.push(elem);
+    this.expData.entities.push(elem);
+    elem.parent = this;
+};
+
+PageData.prototype.selectTrialType = function(selectionSpec) {
+    var elements = this.elements();
+    for (var i=0; i<elements.length; i++){
+        if (typeof elements[i].selectTrialType === 'function') {
+            elements[i].selectTrialType(selectionSpec);
+        }
+    }
+};
+
+/**
+ * retrieve a pageElement by id.
+ * @param id
+ * @returns {*}
+ */
+PageData.prototype.getElementById = function(id) {
+    return this.elements.byId[id];
+};
 
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
@@ -142,7 +157,6 @@ PageData.prototype.copyChildEntity = function(entity) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 PageData.prototype.setPointers = function(entitiesArr) {
-
     var self = this;
 
     // convert ids to actual pointers:
@@ -151,6 +165,17 @@ PageData.prototype.setPointers = function(entitiesArr) {
         elem.parent = self;
         return elem;
     } ));
+
+    // convert ids to actual pointers:
+    this.localWorkspaceVars(jQuery.map( this.localWorkspaceVars(), function( id ) {
+        var localVar = entitiesArr.byId[id];
+        localVar.addBackRef(self, self, false, false, 'workspace variable');
+        return localVar;
+    } ));
+
+    jQuery.each( this.events(), function( idx, event ) {
+        event.setPointers(entitiesArr);
+    } );
 };
 
 /**
@@ -162,12 +187,30 @@ PageData.prototype.reAddEntities = function(entitiesArr) {
     // add the direct child nodes:
     jQuery.each( this.elements(), function( index, elem ) {
         // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
             entitiesArr.push(elem);
+        }
 
         // recursively make sure that all deep tree nodes are in the entities list:
-        if (elem.reAddEntities)
+        if (elem.reAddEntities) {
             elem.reAddEntities(entitiesArr);
+        }
+    } );
+
+    // add the direct child nodes:
+    jQuery.each( this.events(), function( index, evt ) {
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (evt.reAddEntities) {
+            evt.reAddEntities(entitiesArr);
+        }
+    } );
+
+    // add the direct child nodes:
+    jQuery.each( this.localWorkspaceVars(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
+            entitiesArr.push(elem);
+        }
     } );
 };
 
@@ -179,7 +222,32 @@ PageData.prototype.reAddEntities = function(entitiesArr) {
 PageData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type=data.type;
-    this.elements(data.elements);
+    if (data.hasOwnProperty("name")) {
+        this.name(data.name);
+    }
+    if (data.hasOwnProperty("offset")) {
+        this.offset(data.offset);
+    }
+    if (data.hasOwnProperty("offsetEnabled")) {
+        this.offsetEnabled(data.offsetEnabled);
+    }
+    if (data.hasOwnProperty("bgColor")) {
+        this.bgColor(data.bgColor);
+    }
+    if (data.hasOwnProperty("bgColorEnabled")) {
+        this.bgColorEnabled(data.bgColorEnabled);
+    }
+    if (data.hasOwnProperty("events")) {
+        this.events(jQuery.map(data.events, function (eventData) {
+            return (new Event(self)).fromJS(eventData);
+        }));
+    }
+    if (data.hasOwnProperty("elements")) {
+        this.elements(data.elements);
+    }
+    if (data.hasOwnProperty("localWorkspaceVars")) {
+        this.localWorkspaceVars(data.localWorkspaceVars);
+    }
     return this;
 };
 
@@ -191,67 +259,15 @@ PageData.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
+        name:  this.name(),
+        offset: this.offset(),
+        offsetEnabled: this.offsetEnabled(),
+        bgColor: this.bgColor(),
+        bgColorEnabled: this.bgColorEnabled(),
+        events: jQuery.map( this.events(), function( event ) {
+            return event.toJS();
+        } ),
+        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } ),
+        localWorkspaceVars: jQuery.map( this.localWorkspaceVars(), function( variable ) { return variable.id(); } )
     };
 };
-
-ko.components.register('page-element-edit', {
-    viewModel: function(dataModel){
-        this.returnButton = dataModel.returnButton;
-        this.previousMandatory = dataModel
-
-    } ,
-    template:
-        '<div class="panel-body">\
-            <span>\
-                <h5 style="display: inline-block; vertical-align: middle; font-size: medium">Return: </h5>\
-                <input style="display: inline-block; transform: scale(1.3); vertical-align: middle; margin-left: 5px" type="checkbox" data-bind="checked: returnButton">\
-            </span>\
-        </div>'
-});
-
-
-ko.components.register('page-element-preview',{
-    viewModel: function(dataModel){
-        this.dataModel = dataModel;
-        this.returnButton = dataModel.returnButton;
-    },
-    template:
-        '<div class="panel-body">' +
-        '<div style="text-align: center;">PAGE BREAK</div>   ' +
-        '<div style="margin: auto; max-width: 40%">' +
-        '       <img style="float: right;" src="/resources/next.png"/></img>' +
-        '       <img data-bind="visible: returnButton" style="float: left; -moz-transform: scale(-1, 1);' +
-        ' -webkit-transform: scale(-1, 1); -o-transform: scale(-1, 1); -ms-transform: scale(-1, 1); transform: scale(-1, 1);" src="/resources/next.png">' +
-        '   </div>' +
-        '</div>'
-});
-
-
-ko.components.register('page-playerview',{
-    viewModel: function(dataModel){
-        this.dataModel = dataModel;
-        this.returnButton = dataModel.returnButton;
-
-        this.backwards= false;
-        this.next= true;
-        this.submit= false;
-        if (dataModel.currPage>1){
-            this.backwards = true;
-        }
-        if (dataModel.currPage==dataModel.totalPages){
-            this.next = false;
-            this.submit = true;
-        }
-
-
-    },
-    template:
-    '<div class="panel-body">' +
-    '<span data-bind="if:backwards"><button class="btn-primary" data-bind="click: function() { dataModel.previousPage(); }">back</button></span>'+
-    '<span data-bind="if:next"><button class="btn-primary" data-bind="click: function() { dataModel.nextPage(); }">next</button></span>'+
-    '<span data-bind="text: $component.type"></span>' +
-    '<span data-bind="if:submit"><button class="btn-primary" data-bind="click: function() {dataModel.submitQuestionnaire(); }">submit</button></span>'+
-    '</div>'
-});
-
