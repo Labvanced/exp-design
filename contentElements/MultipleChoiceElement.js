@@ -32,9 +32,9 @@ MultipleChoiceElement.prototype.dataType =      [ "string"];
 MultipleChoiceElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[3]);
-    globalVar.scope(GlobalVar.scopes[4]);
+    globalVar.scope(GlobalVar.scopes[2]);
     globalVar.scale(GlobalVar.scales[1]);
-    var name = this.parent.name() +'_'+ this.elements().length;
+    var name = this.parent.name();
     globalVar.name(name);
     globalVar.resetStartValue();
     this.variable(globalVar);
@@ -106,10 +106,11 @@ MultipleChoiceElement.prototype.toJS = function() {
 };
 
 MultipleChoiceElement.prototype.fromJS = function(data) {
+    var self = this;
     this.type=data.type;
     this.questionText(data.questionText);
     this.elements(jQuery.map( data.elements, function( elemData ) {
-        return (new CheckBoxEntry(self)).fromJS(elemData);
+        return (new MultipleChoiceEntry(self)).fromJS(elemData);
     } ));
     this.variable(data.variable);
     this.modifier(new Modifier(this.expData, this));
@@ -123,7 +124,7 @@ var MultipleChoiceEntry= function(multChoiceParent) {
     this.multChoiceParent = multChoiceParent;
     var nrEntries = '<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">option_' +this.multChoiceParent.elements().length+'</span></span>'
     this.multChoiceText= ko.observable( nrEntries);
-    this.recValue = ko.observable();
+    this.recValue = ko.observable(null);
     this.modifier = ko.observable(new Modifier(this.multChoiceParent.expData, this));
 };
 
@@ -168,22 +169,21 @@ function createMultipleChoiceComponents() {
             createViewModel: function(dataModel, componentInfo){
 
                 var viewModel = function(dataModel){
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
-                    this.choices = dataModel.choices;
                     this.margin = dataModel.margin;
                     this.name = dataModel.parent.name;
 
                     this.addChoice = function() {
-                        this.choices.push(ko.observable("choice"));
+                        this.dataModel().addEntry();
                     };
 
                     this.removeChoice = function(idx) {
-                        this.choices.splice(idx,1);
+                        this.dataModel().removeEntry(idx);
                     };
 
                     this.focus = function () {
-                        this.dataModel.ckInstance.focus()
+                        this.dataModel().ckInstance.focus()
                     };
                 };
 
@@ -197,12 +197,9 @@ function createMultipleChoiceComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
-                    this.choices = dataModel.choices;
                     this.margin = dataModel.margin;
-                    this.count = dataModel.count;
-
                 };
                 return new viewModel(dataModel);
             }
@@ -215,11 +212,8 @@ function createMultipleChoiceComponents() {
             createViewModel: function(dataModel, componentInfo){
 
                 var viewModel = function (dataModel) {
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
-                   // this.openQuestion = dataModel.openQuestion;
-                    this.newChoice = dataModel.newChoice;
-                    this.choices = dataModel.choices;
                     this.margin = dataModel.margin;
                 };
                 return new viewModel(dataModel);

@@ -7,9 +7,7 @@ var TextInputElement = function(expData) {
     //serialized
     this.type = "TextInputElement";
     this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
-    this.selected = ko.observable(false);
     this.variable = ko.observable();
-    this.answer = ko.observable("");
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -22,19 +20,24 @@ var TextInputElement = function(expData) {
 TextInputElement.prototype.modifiableProp = ["questionText"];
 TextInputElement.prototype.dataType =      [ "string"];
 
-TextInputElement.prototype.addVar = function() {
+TextInputElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[1]);
+    globalVar.dataType(GlobalVar.dataTypes[0]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name(this.parent.name());
-
+    var name = this.parent.name();
+    globalVar.name(name);
+    globalVar.resetStartValue();
     this.variable(globalVar);
 
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
+    var frameOrPageElement = this.parent;
+    frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
+    this.setVariableBackRef();
 
+};
+
+TextInputElement.prototype.setVariableBackRef = function() {
+    this.variable().addBackRef(this, this.parent, true, true, 'textInput');
 };
 
 TextInputElement.prototype.setPointers = function(entitiesArr) {
@@ -64,7 +67,6 @@ TextInputElement.prototype.toJS = function() {
         type: this.type,
         questionText: this.questionText(),
         variable: variableId,
-        answer: this.answer(),
         modifier: this.modifier().toJS()
     };
 };
@@ -73,11 +75,6 @@ TextInputElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.questionText(data.questionText);
     this.variable(data.variable);
-    this.answer(data.answer);
-
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
 
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);

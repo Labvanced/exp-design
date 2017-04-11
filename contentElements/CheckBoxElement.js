@@ -149,10 +149,6 @@ CheckBoxEntry.prototype.toJS = function() {
 
 
 
-
-
-
-
 function createCheckBoxComponents() {
     ko.components.register('checkbox-editview', {
         viewModel: {

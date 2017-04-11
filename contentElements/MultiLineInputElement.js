@@ -7,7 +7,6 @@ var MultiLineInputElement = function(expData) {
     //serialized
     this.type= "MultiLineInputElement";
     this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
-    this.selected = ko.observable(false);
     this.variable = ko.observable();
 
     // modifier:
@@ -38,7 +37,9 @@ MultiLineInputElement.prototype.init = function() {
     this.setVariableBackRef();
 };
 
-
+MultiLineInputElement.prototype.setVariableBackRef = function() {
+    this.variable().addBackRef(this, this.parent, true, true, 'longTextInput');
+};
 
 MultiLineInputElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {

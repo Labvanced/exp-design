@@ -26,7 +26,7 @@ var NaviElement = function(expData) {
 NaviElement.prototype.modifiableProp = ["buttonText1", "buttonText2"];
 NaviElement.prototype.dataType =      [ "string"];
 
-NaviElement.prototype.initWidth = 80;
+NaviElement.prototype.initWidth = 400;
 NaviElement.prototype.initHeight = 50;
 
 NaviElement.prototype.setPointers = function(entitiesArr) {
