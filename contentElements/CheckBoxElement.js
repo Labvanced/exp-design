@@ -44,7 +44,7 @@ CheckBoxElement.prototype.removeEntry = function(idx) {
 CheckBoxElement.prototype.setPointers = function(entitiesArr) {
 
     for (var i=0; i<this.elements().length; i++) {
-        this.elements()[i].setPointers();
+        this.elements()[i].setPointers(entitiesArr);
     }
 
     this.modifier().setPointers(entitiesArr);
@@ -118,6 +118,7 @@ CheckBoxEntry.prototype.init = function() {
 CheckBoxEntry.prototype.fromJS = function(data) {
     this.checkBoxText(data.checkBoxText);
     this.variable(data.variable);
+    return this;
 };
 
 CheckBoxEntry.prototype.toJS = function() {
@@ -128,7 +129,7 @@ CheckBoxEntry.prototype.toJS = function() {
 };
 
 CheckBoxEntry.prototype.setPointers = function(entitiesArr) {
-    this.variable(entitiesArr.byId[this.variable])
+    this.variable(entitiesArr.byId[this.variable()]);
 };
 
 CheckBoxEntry.prototype.reAddEntities = function(entitiesArr) {
