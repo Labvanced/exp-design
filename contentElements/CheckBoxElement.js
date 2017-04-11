@@ -8,10 +8,11 @@ var CheckBoxElement= function(expData) {
     this.type= "CheckBoxElement";
     this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
 
+    // content
     this.elements = ko.observableArray([]);
 
+    // style
     this.margin = ko.observable('5pt');
-    this.count = 0;
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -39,14 +40,11 @@ CheckBoxElement.prototype.removeEntry = function(idx) {
     this.elements.splice(idx,1);
 };
 
-
-
 CheckBoxElement.prototype.setPointers = function(entitiesArr) {
 
     for (var i=0; i<this.elements().length; i++) {
         this.elements()[i].setPointers(entitiesArr);
     }
-
     this.modifier().setPointers(entitiesArr);
 };
 
@@ -55,8 +53,6 @@ CheckBoxElement.prototype.reAddEntities = function(entitiesArr) {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.reAddEntities(entitiesArr)
     } );
-
-
     this.modifier().reAddEntities(entitiesArr);
 };
 
@@ -83,8 +79,6 @@ CheckBoxElement.prototype.fromJS = function(data) {
     this.elements(jQuery.map( data.elements, function( elemData ) {
         return (new CheckBoxEntry(self)).fromJS(elemData);
     } ));
-
-
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
@@ -187,7 +181,6 @@ function createCheckBoxComponents() {
                     this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                     this.margin = dataModel.margin;
-                    this.count = dataModel.count;
                 };
 
                 return new viewModel(dataModel);

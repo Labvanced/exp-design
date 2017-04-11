@@ -6,7 +6,12 @@ var DisplayTextElement = function(expData) {
 
     //serialized
     this.type = "DisplayTextElement";
-    this.text = ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">You can display your custom text here.</span></span>');
+
+    // content
+    this.elements = ko.observableArray([]);
+
+    // style
+    this.margin = ko.observable('5pt');
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -20,11 +25,30 @@ var DisplayTextElement = function(expData) {
 DisplayTextElement.prototype.modifiableProp = ["text"];
 DisplayTextElement.prototype.dataType =      [ "string"];
 
+
+DisplayTextElement.prototype.addEntry = function() {
+    var DisplayTextEntry = new DisplayTextEntry(this);
+    DisplayTextEntry.init();
+    this.elements.push(DisplayTextEntry);
+};
+
+DisplayTextElement.prototype.removeEntry = function(idx) {
+    this.elements.splice(idx,1);
+};
+
 DisplayTextElement.prototype.setPointers = function(entitiesArr) {
+
+    for (var i=0; i<this.elements().length; i++) {
+        this.elements()[i].setPointers(entitiesArr);
+    }
     this.modifier().setPointers(entitiesArr);
 };
 
 DisplayTextElement.prototype.reAddEntities = function(entitiesArr) {
+
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.reAddEntities(entitiesArr)
+    } );
     this.modifier().reAddEntities(entitiesArr);
 };
 
@@ -36,6 +60,9 @@ DisplayTextElement.prototype.toJS = function() {
     return {
         type: this.type,
         text: this.text(),
+        elements: jQuery.map( this.elements(), function( elem ) {
+            return elem.toJS();
+        }),
         modifier: this.modifier().toJS()
     };
 };
@@ -43,9 +70,50 @@ DisplayTextElement.prototype.toJS = function() {
 DisplayTextElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.text(data.text);
+    this.elements(jQuery.map( data.elements, function( elemData ) {
+        return (new CheckBoxEntry(self)).fromJS(elemData);
+    } ));
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
+
+
+
+var DisplayTextEntry= function(displayTextParent) {
+    this.displayTextParent = displayTextParent;
+    this.text = ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">You can display your custom text here.</span></span>');
+};
+
+DisplayTextEntry.prototype.dataType =[ "string"];
+
+DisplayTextEntry.prototype.init = function() {
+};
+
+DisplayTextEntry.prototype.setVariableBackRef = function() {
+
+};
+
+DisplayTextEntry.prototype.fromJS = function(data) {
+    this.text(data.text);
+    return this;
+};
+
+DisplayTextEntry.prototype.toJS = function() {
+    return {
+        text:  this.text()
+    };
+};
+
+DisplayTextEntry.prototype.setPointers = function(entitiesArr) {
+
+};
+
+DisplayTextEntry.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+
+
 
 function createDisplayTextComponents() {
     ko.components.register('display-text-editview', {
