@@ -1,0 +1,20 @@
+<template id="navigation-editview-template">
+    Button 1 Text:
+    <input style="max-width:50%" type="text" data-bind="textInput: dataModel.modifier().selectedTrialView.buttonText1" class="taskeditor-input" placeholder="Button Text"><br>
+    Button 2 Text:
+    <input style="max-width:50%" type="text" data-bind="textInput: dataModel.modifier().selectedTrialView.buttonText2" class="taskeditor-input" placeholder="Button Text">
+</template>
+
+<template id="navigation-preview-template">
+    <div class="navigationWrapper">
+        <div class="navi-button" style="cursor: pointer; width: 30%; float: left; display: inline-block; display: table-cell; vertical-align: middle; text-align: center" data-bind="text: dataModel.modifier().selectedTrialView.buttonText1">Button</div>
+        <div class="navi-button" style="cursor: pointer; width: 30%; float: right; display: inline-block; display: table-cell; vertical-align: middle; text-align: center" data-bind="text: dataModel.modifier().selectedTrialView.buttonText2">Button</div>
+    </div>
+</template>
+
+<template id="navigation-playerview-template">
+    <div class="navigationWrapper">
+        <div class="navi-button" style="cursor: pointer; width: 30%; float: left; display: inline-block; display: table-cell; vertical-align: middle; text-align: center" data-bind="text: dataModel.modifier().selectedTrialView.buttonText1">Button</div>
+        <div class="navi-button" style="cursor: pointer; width: 30%; float: right; display: inline-block; display: table-cell; vertical-align: middle; text-align: center" data-bind="text: dataModel.modifier().selectedTrialView.buttonText2">Button</div>
+    </div>
+</template>

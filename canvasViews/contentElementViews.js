@@ -53,6 +53,9 @@ ko.components.register('contentElementPreview', {
             else if (contentElement instanceof AudioElement) {
                 elem = $("<div data-bind='component: {name : \"audio-preview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof NaviElement) {
+                elem = $("<div data-bind='component: {name : \"navigation-preview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
             return viewModel;
         }
@@ -116,6 +119,9 @@ ko.components.register('contentElementPlayerview', {
             else if (contentElement instanceof AudioElement) {
                 elem = $("<div data-bind='component: {name : \"audio-playerview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof NaviElement) {
+                elem = $("<div data-bind='component: {name : \"navigation-playerview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
 
             return viewModel;
@@ -178,6 +184,9 @@ ko.components.register('contentElementEditview', {
             }
             else if (contentElement instanceof AudioElement) {
                 elem = $("<div data-bind='component: {name : \"audio-editview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof NaviElement) {
+                elem = $("<div data-bind='component: {name : \"navigation-editview\", params : $data.contentElement}'></div>");
             }
             $(divElem).append(elem);
 
