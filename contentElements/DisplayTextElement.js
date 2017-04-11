@@ -12,7 +12,6 @@ var DisplayTextElement = function(expData) {
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
     ///// not serialized
-    this.editText = ko.observable(false);
     this.selected = ko.observable(false);
     /////
 };
@@ -69,23 +68,8 @@ function createDisplayTextComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
-                    var self = this;
                     this.dataModel = dataModel;
                     this.text = dataModel.text;
-
-                    this.subscriber = null;
-                    this.dataModel.editText.subscribe(function (val) {
-                        if (val) {
-                            console.log("start editing inline text...");
-                            self.subscriber = self.dataModel.parent.parent.currSelectedElement.subscribe(function(newVal) {
-                                if (newVal != self.dataModel.parent) {
-                                    console.log("other element was selected...");
-                                    self.dataModel.editText(false);
-                                    self.subscriber.dispose();
-                                }
-                            });
-                        }
-                    });
                 };
                 return new viewModel(dataModel);
             }
