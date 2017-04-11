@@ -43,7 +43,7 @@ MultiLineInputElement.prototype.removeEntry = function(idx) {
 MultiLineInputElement.prototype.setPointers = function(entitiesArr) {
 
     for (var i=0; i<this.elements().length; i++) {
-        this.elements()[i].setPointers();
+        this.elements()[i].setPointers(entitiesArr);
     }
 
     this.modifier().setPointers(entitiesArr);
@@ -88,21 +88,51 @@ MultiLineInputElement.prototype.fromJS = function(data) {
 
 
 
+var MultiLineInputElementEntry= function(MultLineParent) {
+    this.MultLineParent = MultLineParent;
+    this.variable=ko.observable(null);
+};
 
 
-MultiLineInputElement.prototype.addVar = function() {
+MultiLineInputElementEntry.prototype.dataType =[ "string"];
+
+MultiLineInputElementEntry.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name(this.parent.name());
-
+    var name = this.MultLineParent.parent.name() +'_'+ this.MultLineParent.elements().length;
+    globalVar.name(name);
+    globalVar.resetStartValue();
     this.variable(globalVar);
 
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
+    var PageData = this.MultLineParent.parent.parent;
+    PageData.parent.parent.eventVariables.push(globalVar);
+    PageData.addVariableToLocalWorkspace(globalVar);
 };
+
+MultiLineInputElementEntry.prototype.fromJS = function(data) {
+    this.variable(data.variable);
+    return this;
+};
+
+MultiLineInputElementEntry.prototype.toJS = function() {
+    return {
+        variable:  this.variable().id()
+    };
+};
+
+MultiLineInputElementEntry.prototype.setPointers = function(entitiesArr) {
+    this.variable(entitiesArr.byId[this.variable()]);
+};
+
+MultiLineInputElementEntry.prototype.reAddEntities = function(entitiesArr) {
+    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+        entitiesArr.push(this.variable());
+    }
+};
+
+
 
 
 

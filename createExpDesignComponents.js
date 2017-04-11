@@ -60,6 +60,10 @@ var createExpDesignComponents = (function() {
                 {
                     filepath: "/html_views/SectionElement.html",
                     createCompFcn: createSectionElementComponents
+                },
+                {
+                    filepath: "/html_views/NaviElement.html",
+                    createCompFcn: createNaviElementComponents
                 }
             ];
 
