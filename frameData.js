@@ -6,22 +6,23 @@
  * @constructor
  */
 var FrameData = function(expData) {
-
-    var self = this;
     this.expData = expData;
     this.currSelectedElement = ko.observable(null);
     this.parent = null;
 
-    // serialized
+    // serialized (the same as in pageData):
     this.id = ko.observable(guid());
     this.type = "FrameData";
-    this.name = ko.observable("MediaFrame");
-    this.onset = ko.observable(0).extend({ numeric: 0 });
-    this.onsetEnabled = ko.observable(false);
+    this.name = ko.observable("Frame");
     this.offset = ko.observable(5000).extend({ numeric: 0 });
     this.offsetEnabled = ko.observable(false);
     this.bgColor = ko.observable("#000000"); // hex color as string, i.e. "#ffffff"
     this.bgColorEnabled = ko.observable(false); // if false, then use experiment default background color.
+    this.elements = ko.observableArray([]).extend({sortById: null});
+    this.events = ko.observableArray([]).extend({sortById: null});
+    this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
+
+    // serialized (specific for frameData):
     this.frameWidth = ko.observable(800).extend({ rateLimit: { timeout: 50, method: "notifyWhenChangesStop" } });
     this.frameHeight = ko.observable(450).extend({ rateLimit: { timeout: 50, method: "notifyWhenChangesStop" } });
     this.zoomMode = ko.observable("fullscreen"); // "fullscreen" or "pixel" or "visualDegree"
@@ -33,24 +34,10 @@ var FrameData = function(expData) {
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
     // not serialized
-    this.shape = "square";
-    this.label = "MediaFrame";
-    this.portTypes = ["executeIn", "executeOut"];
-    this.trialTypeView = {};
-
-    // sub-Structures (serialized below)
-    this.elements = ko.observableArray([]).extend({sortById: null});
-
-
-  //  this.elementsReversed = ko.computed(function() {
- //     return self.elements().reverse();
-  //  }, this);
-
-    this.events = ko.observableArray([]).extend({sortById: null});
-    this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
-
+    this.label = "FrameData";
 };
-FrameData.prototype.modifiableProp = ["name","onset","onsetEnabled","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset"];
+
+FrameData.prototype.modifiableProp = ["name","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset"];
 
 FrameData.prototype.getDeepCopy = function() {
     var self = this;
@@ -93,8 +80,6 @@ FrameData.prototype.deleteChildEntity = function(entity) {
     else {
         obsArr = this.elements;
     }
-    //var index = obsArr.indexOf(entity);
-    //obsArr.splice(index, 1);
     obsArr.remove(entity);
 
     // if this element was selected, set selection to null
@@ -102,8 +87,6 @@ FrameData.prototype.deleteChildEntity = function(entity) {
         this.currSelectedElement(null);
     }
 };
-
-
 
 
 FrameData.prototype.copyChildEntity = function(entity) {
@@ -130,6 +113,11 @@ FrameData.prototype.copyChildEntity = function(entity) {
     obsArr.splice(index+1, 0, entityCopy);
 };
 
+/**
+ * adds a variable to the local workspace of this frame.
+ *
+ * @param {GlobalVar} variable - the variable to add.
+ */
 FrameData.prototype.addVariableToLocalWorkspace = function(variable) {
     var isExisting = this.localWorkspaceVars.byId[variable.id()];
     if (!isExisting) {
@@ -138,6 +126,10 @@ FrameData.prototype.addVariableToLocalWorkspace = function(variable) {
     }
 };
 
+/**
+ * add a new frame element to this frame.
+ * @param {FrameElement} elem - the new element
+ */
 FrameData.prototype.addNewSubElement = function(elem) {
     this.elements.push(elem);
     this.expData.entities.push(elem);
@@ -153,8 +145,13 @@ FrameData.prototype.selectTrialType = function(selectionSpec) {
     }
 };
 
+/**
+ * retrieve a frameElement by id.
+ * @param id
+ * @returns {*}
+ */
 FrameData.prototype.getElementById = function(id) {
-    return  this.elements.byId[id];
+    return this.elements.byId[id];
 };
 
 /**
@@ -195,30 +192,30 @@ FrameData.prototype.reAddEntities = function(entitiesArr) {
     // add the direct child nodes:
     jQuery.each( this.elements(), function( index, elem ) {
         // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
             entitiesArr.push(elem);
+        }
 
         // recursively make sure that all deep tree nodes are in the entities list:
-        if (elem.reAddEntities)
+        if (elem.reAddEntities) {
             elem.reAddEntities(entitiesArr);
+        }
     } );
 
     // add the direct child nodes:
     jQuery.each( this.events(), function( index, evt ) {
-        // check if they are not already in the list:
-        // if (!entitiesArr.byId.hasOwnProperty(elem.id()))
-        //     entitiesArr.push(elem);
-
         // recursively make sure that all deep tree nodes are in the entities list:
-        if (evt.reAddEntities)
+        if (evt.reAddEntities) {
             evt.reAddEntities(entitiesArr);
+        }
     } );
 
     // add the direct child nodes:
     jQuery.each( this.localWorkspaceVars(), function( index, elem ) {
         // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
+        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
             entitiesArr.push(elem);
+        }
     } );
 
 };
@@ -234,8 +231,6 @@ FrameData.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
-    this.onset(data.onset);
-    this.onsetEnabled(data.onsetEnabled);
     this.offset(data.offset);
     this.offsetEnabled(data.offsetEnabled);
     this.bgColor(data.bgColor);
@@ -269,8 +264,6 @@ FrameData.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         name:  this.name(),
-        onset: this.onset(),
-        onsetEnabled: this.onsetEnabled(),
         offset: this.offset(),
         offsetEnabled: this.offsetEnabled(),
         bgColor: this.bgColor(),
