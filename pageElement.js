@@ -34,6 +34,7 @@ PageElement.prototype.addContent = function(element){
 
 PageElement.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
+    this.content().modifier().selectTrialType(selectionSpec);
 };
 
 PageElement.prototype.modifiableProp = ["name"];
