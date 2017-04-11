@@ -7,8 +7,8 @@ var MultiLineInputElement = function(expData) {
     //serialized
     this.type= "MultiLineInputElement";
     this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
-    this.elements = ko.observableArray([]);
-
+    this.selected = ko.observable(false);
+    this.variable = ko.observable();
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -22,56 +22,56 @@ MultiLineInputElement.prototype.modifiableProp = ["questionText"];
 MultiLineInputElement.prototype.dataType =      [ "string"];
 
 
+
 MultiLineInputElement.prototype.init = function() {
-    this.addEntry();
-};
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.dataType(GlobalVar.dataTypes[0]);
+    globalVar.scope(GlobalVar.scopes[4]);
+    globalVar.scale(GlobalVar.scales[1]);
+    var name = this.parent.name();
+    globalVar.name(name);
+    globalVar.resetStartValue();
+    this.variable(globalVar);
 
-
-
-MultiLineInputElement.prototype.addEntry = function() {
-    var multLineEntry = new CheckBoxEntry(this);
-    multLineEntry.init();
-    this.elements.push(multLineEntry);
-};
-
-MultiLineInputElement.prototype.removeEntry = function(idx) {
-    this.elements.splice(idx,1);
+    var frameOrPageElement = this.parent;
+    frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
+    this.setVariableBackRef();
 };
 
 
 
 MultiLineInputElement.prototype.setPointers = function(entitiesArr) {
-
-    for (var i=0; i<this.elements().length; i++) {
-        this.elements()[i].setPointers(entitiesArr);
+    if (this.variable()) {
+        this.variable(entitiesArr.byId[this.variable()]);
     }
-
     this.modifier().setPointers(entitiesArr);
 };
 
 MultiLineInputElement.prototype.reAddEntities = function(entitiesArr) {
-
-    jQuery.each( this.elements(), function( index, elem ) {
-        elem.reAddEntities(entitiesArr)
-    } );
-
-
+    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+        entitiesArr.push(this.variable());
+    }
     this.modifier().reAddEntities(entitiesArr);
 };
-
 
 MultiLineInputElement.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
+MultiLineInputElement.prototype.setVariableBackRef = function() {
+    this.variable().addBackRef(this, this.parent, true, true, 'multiLineInput');
+};
+
 MultiLineInputElement.prototype.toJS = function() {
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
+
     return {
         type: this.type,
         questionText: this.questionText(),
-        elements: jQuery.map( this.elements(), function( elem ) {
-            return elem.toJS();
-        }),
-
+        variable: variableId,
         modifier: this.modifier().toJS()
     };
 };
@@ -79,62 +79,10 @@ MultiLineInputElement.prototype.toJS = function() {
 MultiLineInputElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.questionText(data.questionText);
-    this.elements(jQuery.map( data.elements, function( elemData ) {
-        return (new CheckBoxEntry(self)).fromJS(elemData);
-    } ));
+    this.variable(data.variable);
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
-
-
-
-var MultiLineInputElementEntry= function(MultLineParent) {
-    this.MultLineParent = MultLineParent;
-    this.variable=ko.observable(null);
-};
-
-
-MultiLineInputElementEntry.prototype.dataType =[ "string"];
-
-MultiLineInputElementEntry.prototype.init = function() {
-    var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[1]);
-    globalVar.scope(GlobalVar.scopes[4]);
-    globalVar.scale(GlobalVar.scales[1]);
-    var name = this.MultLineParent.parent.name() +'_'+ this.MultLineParent.elements().length;
-    globalVar.name(name);
-    globalVar.resetStartValue();
-    this.variable(globalVar);
-
-    var PageData = this.MultLineParent.parent.parent;
-    PageData.parent.parent.eventVariables.push(globalVar);
-    PageData.addVariableToLocalWorkspace(globalVar);
-};
-
-MultiLineInputElementEntry.prototype.fromJS = function(data) {
-    this.variable(data.variable);
-    return this;
-};
-
-MultiLineInputElementEntry.prototype.toJS = function() {
-    return {
-        variable:  this.variable().id()
-    };
-};
-
-MultiLineInputElementEntry.prototype.setPointers = function(entitiesArr) {
-    this.variable(entitiesArr.byId[this.variable()]);
-};
-
-MultiLineInputElementEntry.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
-    }
-};
-
-
-
-
 
 function createMultiLineInputComponents() {
     ko.components.register('multi-line-input-editview', {

@@ -17,7 +17,6 @@ var CheckBoxElement= function(expData) {
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
-
     ///// not serialized
     this.selected = ko.observable(false);
     /////
@@ -57,6 +56,9 @@ CheckBoxElement.prototype.reAddEntities = function(entitiesArr) {
 };
 
 CheckBoxElement.prototype.selectTrialType = function(selectionSpec) {
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.selectTrialType(selectionSpec)
+    } );
     this.modifier().selectTrialType(selectionSpec);
 };
 
@@ -85,14 +87,21 @@ CheckBoxElement.prototype.fromJS = function(data) {
 
 
 
+
+
 var CheckBoxEntry= function(checkBoxParent) {
     this.checkBoxParent = checkBoxParent;
     this.checkBoxText= ko.observable( '<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">check</span></span>');
     this.variable=ko.observable(null);
+    this.modifier = ko.observable(new Modifier(this.checkBoxParent.expData, this));
 };
 
-
+CheckBoxEntry.prototype.modifiableProp = ["checkBoxText"];
 CheckBoxEntry.prototype.dataType =[ "string"];
+
+CheckBoxEntry.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
+};
 
 CheckBoxEntry.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
@@ -113,6 +122,17 @@ CheckBoxEntry.prototype.setVariableBackRef = function() {
     this.variable().addBackRef(this, this.checkBoxParent.parent, true, true, 'checkbox');
 };
 
+CheckBoxEntry.prototype.setPointers = function(entitiesArr) {
+    this.variable(entitiesArr.byId[this.variable()]);
+    this.setVariableBackRef();
+};
+
+CheckBoxEntry.prototype.reAddEntities = function(entitiesArr) {
+    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+        entitiesArr.push(this.variable());
+    }
+};
+
 CheckBoxEntry.prototype.fromJS = function(data) {
     this.checkBoxText(data.checkBoxText);
     this.variable(data.variable);
@@ -126,16 +146,7 @@ CheckBoxEntry.prototype.toJS = function() {
     };
 };
 
-CheckBoxEntry.prototype.setPointers = function(entitiesArr) {
-    this.variable(entitiesArr.byId[this.variable()]);
-    this.setVariableBackRef();
-};
 
-CheckBoxEntry.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
-    }
-};
 
 
 

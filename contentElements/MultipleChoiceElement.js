@@ -8,11 +8,12 @@ var MultipleChoiceElement = function(expData) {
     this.type= "MultipleChoiceElement";
     this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
 
-    this.openQuestion=  ko.observable(false);
-    this.choices= ko.observableArray([ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">choice 1</span></span>'),ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">choice 2</span></span>')]);
-    this.selected = ko.observable(false);
+   // this.openQuestion=  ko.observable(false);
+
+    // content
+    this.elements = ko.observableArray([]);
     this.variable = ko.observable();
-    this.answer = ko.observable("");
+
     this.margin = ko.observable('5pt');
 
     // modifier:
@@ -26,26 +27,41 @@ var MultipleChoiceElement = function(expData) {
 MultipleChoiceElement.prototype.modifiableProp = ["questionText"];
 MultipleChoiceElement.prototype.dataType =      [ "string"];
 
-MultipleChoiceElement.prototype.addVar = function() {
+
+
+MultipleChoiceElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[1]);
+    globalVar.dataType(GlobalVar.dataTypes[3]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
-    globalVar.name(this.parent.name());
-
+    var name = this.parent.name() +'_'+ this.elements().length;
+    globalVar.name(name);
+    globalVar.resetStartValue();
     this.variable(globalVar);
 
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
+    var frameOrPageElement = this.parent;
+    frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
+    this.setVariableBackRef();
+
+    this.addEntry();
+    this.addEntry();
+};
+
+MultipleChoiceElement.prototype.addEntry = function() {
+    var multChoice = new MultipleChoiceEntry(this);
+    multChoice.init();
+    this.elements.push(multChoice);
+};
+
+MultipleChoiceElement.prototype.removeEntry = function(idx) {
+    this.elements.splice(idx,1);
+};
+
+MultipleChoiceElement.prototype.setVariableBackRef = function() {
+    this.variable().addBackRef(this, this.parent, true, true, 'multipleChoice');
 };
 
 MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
-    var choices =  this.choices();
-    this.choices = ko.observableArray([]);
-    for (var i = 0; i< choices.length; i++){
-        this.choices.push(ko.observable(choices[i]));
-    }
 
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
@@ -55,6 +71,8 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
 };
 
 MultipleChoiceElement.prototype.reAddEntities = function(entitiesArr) {
+
+
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
@@ -62,14 +80,14 @@ MultipleChoiceElement.prototype.reAddEntities = function(entitiesArr) {
 };
 
 MultipleChoiceElement.prototype.selectTrialType = function(selectionSpec) {
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.selectTrialType(selectionSpec)
+    } );
     this.modifier().selectTrialType(selectionSpec);
 };
 
 MultipleChoiceElement.prototype.toJS = function() {
-    var choices = [];
-    for (var i = 0; i< this.choices().length; i++){
-        choices.push(this.choices()[i]());
-    }
+
 
     var variableId = null;
     if (this.variable()) {
@@ -79,9 +97,10 @@ MultipleChoiceElement.prototype.toJS = function() {
     return {
         type: this.type,
         questionText: this.questionText(),
-        choices: choices,
+        elements: jQuery.map( this.elements(), function( elem ) {
+            return elem.toJS();
+        }),
         variable: variableId,
-        answer: this.answer(),
         modifier: this.modifier().toJS()
     };
 };
@@ -89,17 +108,59 @@ MultipleChoiceElement.prototype.toJS = function() {
 MultipleChoiceElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.questionText(data.questionText);
-    this.choices(data.choices);
+    this.elements(jQuery.map( data.elements, function( elemData ) {
+        return (new CheckBoxEntry(self)).fromJS(elemData);
+    } ));
     this.variable(data.variable);
-    this.answer(data.answer);
-
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
-
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
+
+
+
+
+var MultipleChoiceEntry= function(multChoiceParent) {
+    this.multChoiceParent = multChoiceParent;
+    var nrEntries = '<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">option_' +this.multChoiceParent.elements().length+'</span></span>'
+    this.multChoiceText= ko.observable( nrEntries);
+    this.recValue = ko.observable();
+    this.modifier = ko.observable(new Modifier(this.multChoiceParent.expData, this));
+};
+
+MultipleChoiceEntry.prototype.modifiableProp = ["multChoiceText"];
+MultipleChoiceEntry.prototype.dataType =[ "categorical"];
+
+MultipleChoiceEntry.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
+};
+
+MultipleChoiceEntry.prototype.init = function() {
+
+};
+
+
+MultipleChoiceEntry.prototype.fromJS = function(data) {
+    this.multChoiceText(data.multChoiceText);
+    this.recValue(data.recValue);
+    return this;
+};
+
+MultipleChoiceEntry.prototype.toJS = function() {
+    return {
+        recValue:  this.recValue(),
+        multChoiceText:  this.multChoiceText()
+    };
+};
+
+
+
+
+
+
+
+
+
+
 
 function createMultipleChoiceComponents() {
     ko.components.register('choice-editview', {
@@ -110,7 +171,6 @@ function createMultipleChoiceComponents() {
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.choices = dataModel.choices;
-                    this.answer = dataModel.answer;
                     this.margin = dataModel.margin;
                     this.name = dataModel.parent.name;
 
@@ -157,11 +217,9 @@ function createMultipleChoiceComponents() {
                 var viewModel = function (dataModel) {
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
-                    this.openQuestion = dataModel.openQuestion;
+                   // this.openQuestion = dataModel.openQuestion;
                     this.newChoice = dataModel.newChoice;
                     this.choices = dataModel.choices;
-                    this.newPage = dataModel.newPage;
-                    this.answer = dataModel.answer;
                     this.margin = dataModel.margin;
                 };
                 return new viewModel(dataModel);

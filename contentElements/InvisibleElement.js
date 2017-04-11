@@ -7,9 +7,6 @@ var InvisibleElement= function(expData) {
     //serialized
     this.type= "InvisibleElement";
 
-    // modifier:
-    this.modifier = ko.observable(new Modifier(this.expData, this));
-
     ///// not serialized
     this.selected = ko.observable(false);
     /////
@@ -18,30 +15,21 @@ var InvisibleElement= function(expData) {
 InvisibleElement.prototype.modifiableProp = [];
 InvisibleElement.prototype.dataType =      [];
 
-InvisibleElement.prototype.setPointers = function(entitiesArr) {
-    this.modifier().setPointers(entitiesArr);
-};
+InvisibleElement.prototype.addEntry = function() {
 
-InvisibleElement.prototype.reAddEntities = function(entitiesArr) {
-    this.modifier().reAddEntities(entitiesArr);
 };
+InvisibleElement.prototype.init = function(entitiesArr) {
 
-InvisibleElement.prototype.selectTrialType = function(selectionSpec) {
-    this.modifier().selectTrialType(selectionSpec);
 };
 
 InvisibleElement.prototype.toJS = function() {
-
     return {
-        type: this.type,
-        modifier: this.modifier().toJS()
+        type: this.type
     };
 };
 
 InvisibleElement.prototype.fromJS = function(data) {
     this.type=data.type;
-    this.modifier(new Modifier(this.expData, this));
-    this.modifier().fromJS(data.modifier);
 };
 
 function createInvisibleElementComponents() {

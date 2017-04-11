@@ -73,7 +73,10 @@ FrameElement.prototype.setAnchorPoint = function(horizontal, vertical) {
 
 FrameElement.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
-    this.content().modifier().selectTrialType(selectionSpec);
+    if  (this.content().hasOwnProperty("modifier")){
+        this.content().modifier().selectTrialType(selectionSpec);
+    }
+
 };
 
 /**
