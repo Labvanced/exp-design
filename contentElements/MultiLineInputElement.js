@@ -7,9 +7,8 @@ var MultiLineInputElement = function(expData) {
     //serialized
     this.type= "MultiLineInputElement";
     this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
-    this.selected = ko.observable(false);
-    this.variable = ko.observable();
-    this.answer = ko.observable("");
+    this.elements = ko.observableArray([]);
+
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -21,6 +20,74 @@ var MultiLineInputElement = function(expData) {
 
 MultiLineInputElement.prototype.modifiableProp = ["questionText"];
 MultiLineInputElement.prototype.dataType =      [ "string"];
+
+
+MultiLineInputElement.prototype.init = function() {
+    this.addEntry();
+};
+
+
+
+MultiLineInputElement.prototype.addEntry = function() {
+    var multLineEntry = new CheckBoxEntry(this);
+    multLineEntry.init();
+    this.elements.push(multLineEntry);
+};
+
+MultiLineInputElement.prototype.removeEntry = function(idx) {
+    this.elements.splice(idx,1);
+};
+
+
+
+MultiLineInputElement.prototype.setPointers = function(entitiesArr) {
+
+    for (var i=0; i<this.elements().length; i++) {
+        this.elements()[i].setPointers();
+    }
+
+    this.modifier().setPointers(entitiesArr);
+};
+
+MultiLineInputElement.prototype.reAddEntities = function(entitiesArr) {
+
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.reAddEntities(entitiesArr)
+    } );
+
+
+    this.modifier().reAddEntities(entitiesArr);
+};
+
+
+MultiLineInputElement.prototype.selectTrialType = function(selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
+};
+
+MultiLineInputElement.prototype.toJS = function() {
+    return {
+        type: this.type,
+        questionText: this.questionText(),
+        elements: jQuery.map( this.elements(), function( elem ) {
+            return elem.toJS();
+        }),
+
+        modifier: this.modifier().toJS()
+    };
+};
+
+MultiLineInputElement.prototype.fromJS = function(data) {
+    this.type=data.type;
+    this.questionText(data.questionText);
+    this.elements(jQuery.map( data.elements, function( elemData ) {
+        return (new CheckBoxEntry(self)).fromJS(elemData);
+    } ));
+    this.modifier(new Modifier(this.expData, this));
+    this.modifier().fromJS(data.modifier);
+};
+
+
+
 
 
 MultiLineInputElement.prototype.addVar = function() {
@@ -38,52 +105,6 @@ MultiLineInputElement.prototype.addVar = function() {
 };
 
 
-MultiLineInputElement.prototype.setPointers = function(entitiesArr) {
-    if (this.variable()) {
-        this.variable(entitiesArr.byId[this.variable()]);
-    }
-    this.modifier().setPointers(entitiesArr);
-};
-
-MultiLineInputElement.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
-    }
-    this.modifier().reAddEntities(entitiesArr);
-};
-
-MultiLineInputElement.prototype.selectTrialType = function(selectionSpec) {
-    this.modifier().selectTrialType(selectionSpec);
-};
-
-MultiLineInputElement.prototype.toJS = function() {
-    var variableId = null;
-    if (this.variable()) {
-        variableId = this.variable().id();
-    }
-
-    return {
-        type: this.type,
-        questionText: this.questionText(),
-        variable: variableId,
-        answer: this.answer(),
-        modifier: this.modifier().toJS()
-    };
-};
-
-MultiLineInputElement.prototype.fromJS = function(data) {
-    this.type=data.type;
-    this.questionText(data.questionText);
-    this.variable(data.variable);
-    this.answer(data.answer);
-
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
-
-    this.modifier(new Modifier(this.expData, this));
-    this.modifier().fromJS(data.modifier);
-};
 
 function createMultiLineInputComponents() {
     ko.components.register('multi-line-input-editview', {
