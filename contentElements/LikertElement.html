@@ -1,0 +1,52 @@
+<template id="likert-editview-template">
+    <div class="panel-body" style="height: 100%; margin-top: -10px">
+        <strong>Likert:</strong>
+        <br>
+        <select data-bind="options: values, value: startChoice, event: {change: finish}"></select>
+        To
+        <select data-bind="options: values, value: endChoice, event: {change: finish}">
+        </select>
+        <div>
+            <input type="checkbox" data-bind="checked: showNums">
+            Show numbers
+        </div>
+        <div>
+            Margins between components:
+            <input type="text" data-bind="textInput: margin">
+        </div>
+    </div>
+</template>
+
+<template id="likert-preview-template">
+    <div class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
+        <p>Your Question</p>
+    </div>
+    <br>
+    <div data-bind="style: {marginLeft: margin, marginRight: margin}">
+        <div class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.startLabel, valueUpdate: 'afterkeydown'"></div>
+        <div style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
+            <div style="display: inline-block; margin-left: inherit; margin-right: inherit ">
+                <span style="display:block; margin-left: 5px;  margin-right: 5px" data-bind="visible: $root.showNums, text: $data"></span>
+                <input style="display:block; margin-left: 5px; margin-right: 5px;" type="radio" value="$data" data-bind="attr: {value:$data}, checked: $parent.variable().startValue, click: function(){return true}, clickBubble: false">
+            </div>
+        </div>
+        <div style="display: inline-block; margin-left: inherit;  margin-right: inherit;  vertical-align: middle" class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.endLabel, valueUpdate: 'afterkeydown'"></div>
+    </div>
+    <br>
+</template>
+
+<template id="likert-playerview-template">
+    <div style="font-size: 200%" data-bind="text: dataModel.modifier().selectedTrialView.questionText"></div>
+    <br>
+    <div data-bind="style: {marginLeft: margin, marginRight: margin}">
+        <span style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="text: dataModel.modifier().selectedTrialView.startLabel"></span>
+        <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
+            <div style="display: inline-block; margin-left: inherit; margin-right: inherit ">
+                <span style="display:block; margin-left: 5px;  margin-right: 5px" data-bind="visible: $root.showNums,  text: $data"></span>
+                <input style="display:block; margin-left: 5px; margin-right: 5px;" type="radio" value="$data" data-bind="attr: {value:$data}, checked: $parent.variable().value, click: function(){return true}, clickBubble: false">
+            </div>
+        </span>
+        <span style="display: inline-block; margin-left: inherit;  margin-right: inherit;  vertical-align: middle" data-bind="text: dataModel.modifier().selectedTrialView.endLabel"></span>
+    </div>
+    <br>
+</template>
