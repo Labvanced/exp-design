@@ -10,67 +10,67 @@ var createExpDesignComponents = (function() {
         else {
             var templates = [
                 {
-                    filepath: "/html_views/pageView.html",
+                    filepath: "/html_views/pageView.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createPageComponents
                 },
                 {
-                    filepath: "/html_views/pageElementView.html",
+                    filepath: "/html_views/pageElementView.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createPageElementComponents
                 },
                 {
-                    filepath: "/html_views/TextInputElement.html",
+                    filepath: "/html_views/TextInputElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createTextInputComponents
                 },
                 {
-                    filepath: "/html_views/VideoElement.html",
+                    filepath: "/html_views/VideoElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createVideoComponents
                 },
                 {
-                    filepath: "/html_views/AudioElement.html",
+                    filepath: "/html_views/AudioElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createAudioComponents
                 },
                 {
-                    filepath: "/html_views/ScaleElement.html",
+                    filepath: "/html_views/ScaleElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createScaleComponents
                 },
                 {
-                    filepath: "/html_views/RangeElement.html",
+                    filepath: "/html_views/RangeElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createRangeComponents
                 },
                 {
-                    filepath: "/html_views/MultiLineInputElement.html",
+                    filepath: "/html_views/MultiLineInputElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createMultiLineInputComponents
                 },
                 {
-                    filepath: "/html_views/MultipleChoiceElement.html",
+                    filepath: "/html_views/MultipleChoiceElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createMultipleChoiceComponents
                 },
                 {
-                    filepath: "/html_views/InvisibleElement.html",
+                    filepath: "/html_views/InvisibleElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createInvisibleElementComponents
                 },
                 {
-                    filepath: "/html_views/DisplayTextElement.html",
+                    filepath: "/html_views/DisplayTextElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createDisplayTextComponents
                 },
                 {
-                    filepath: "/html_views/CheckBoxElement.html",
+                    filepath: "/html_views/CheckBoxElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createCheckBoxComponents
                 },
                 {
-                    filepath: "/html_views/ButtonElement.html",
+                    filepath: "/html_views/ButtonElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createButtonElementComponents
                 },
                 {
-                    filepath: "/html_views/EditableText.html",
+                    filepath: "/html_views/EditableText.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createEditableTextComponents
                 },
                 {
-                    filepath: "/html_views/SectionElement.html",
+                    filepath: "/html_views/SectionElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createSectionElementComponents
                 },
                 {
-                    filepath: "/html_views/NaviElement.html",
+                    filepath: "/html_views/NaviElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createNaviElementComponents
                 }
             ];
