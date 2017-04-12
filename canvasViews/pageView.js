@@ -12,6 +12,12 @@ var PageView = function(divContainer,parent,type) {
     this.pageData = null;
     this.pageDataObs = ko.observable(null);
 
+    this.bgElement = null;
+
+    this.viewElements = {
+        byId: {}
+    };
+
     this.width = 0;
     this.height = 0;
 
@@ -52,9 +58,6 @@ PageView.prototype.setDataModel = function(pageData) {
     this.pageData = pageData;
     this.pageDataObs(pageData);
 
-    if(this.bgColorSubscription) {
-        this.bgColorSubscription.dispose();
-    }
 };
 
 PageView.prototype.resize = function(size) {
@@ -69,10 +72,6 @@ PageView.prototype.setSize = function(size) {
         this.width = size[0];
         this.height = size[1];
     }
-};
-
-PageView.prototype.removeElemFromView = function(elementData,index) {
-    // TODO
 };
 
 PageView.prototype.setSelectedElement = function(elem) {
@@ -132,17 +131,6 @@ PageView.prototype.moveDownElement = function (index) {
 
 
 function createPageComponents() {
-    ko.components.register('page-editview', {
-        viewModel: {
-            createViewModel: function (pageView, componentInfo) {
-                var viewModel = function (pageView) {
-                    this.pageView = pageView;
-                };
-                return new viewModel(pageView);
-            }
-        },
-        template: {element: 'page-editview-template'}
-    });
 
     ko.components.register('page-preview',{
         viewModel: {

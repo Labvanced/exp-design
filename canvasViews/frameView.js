@@ -90,6 +90,7 @@ FrameView.prototype.setDataModel = function(frameData) {
 
     var self = this;
     this.frameData = frameData;
+    this.frameDataObs(frameData);
 
     if(this.elementChangeSubscription) {
         this.elementChangeSubscription.dispose();
@@ -211,7 +212,6 @@ FrameView.prototype.removeElemFromView = function(elementData,index) {
 FrameView.prototype.addElem = function(elementData,index) {
 
     var elemView = new FrameElementView(elementData, this);
-    // var elemView = new CanvasFrameElementView(elementData,this); // deprecated easeljs canvas elements
 
     if (this.type == "editorView") {
         var callbacks = new EditorCallbacks(elemView, this);  // is this used?
@@ -239,35 +239,17 @@ FrameView.prototype.updateStages = function() {
     }
 };
 
-
-FrameView.prototype.geIndexOfViewElement = function(dataModelElem) {
-
-    var l =this.viewElements().length-1;
-    var i = 0;
-    var found = false;
-    while (i<=l && !found ){
-        if (this.viewElements()[i].id ==  dataModelElem.id()){
-            found = true;
-            var index = i;
-            break;
-        }
-        i++
-    }
-    return index
-};
-
 FrameView.prototype.setSelectedElement = function(elem) {
+
+    if (!this.frameData) {
+        return;
+    }
 
     // change selection state of previously selected canvas element:
     var prevSelectedElem = this.frameData.currSelectedElement();
-
     if (prevSelectedElem){
          if (!(prevSelectedElem instanceof Event)){
-             var formerIndex= this.geIndexOfViewElement(prevSelectedElem);
-
-             if (formerIndex>=0) {
-                 this.viewElements()[formerIndex].isSelected(false);
-             }
+             this.viewElements.byId[prevSelectedElem.id()].isSelected(false);
          }
     }
 
@@ -284,16 +266,14 @@ FrameView.prototype.setSelectedElement = function(elem) {
             // element is an object
             // check if element is really a child of this frame:
             if (this.frameData.elements.byId[elem.id()]) {
-                var index= this.geIndexOfViewElement(elem);
+                this.viewElements.byId[elem.id()].isSelected(true);
 
-                // change selection state of newly selected canvas element:
-                this.viewElements()[index].isSelected(true);
                 // change currently selected element:
                 this.frameData.currSelectedElement(elem);
             }
         }
     }
-    else {// deselect:
+    else { // deselect:
         // change currently selected element:
         this.frameData.currSelectedElement(null);
     }
