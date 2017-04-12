@@ -606,7 +606,7 @@ ActionJumpTo.prototype.run = function(triggerParams) {
     else if (this.jumpType() == "nextTask"){
         player.currentFrame.finishFrame();
         player.recordData();
-        player.startNextTask();
+        player.jumpToNextTask();
     }
 
 };
