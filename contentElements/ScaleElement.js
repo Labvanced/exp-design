@@ -45,17 +45,17 @@ ScaleElement.prototype.init = function() {
     this.addEntry();
 
     this.labels([
-        ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif">totally agree</span></span>'),
-        ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly agree</span></span>'),
-        ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">undecided</span></span>'),
-        ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly disagree</span></span>'),
-        ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">totally disagree</span></span>')
+        ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">totally agree</span></span></p>'),
+        ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly agree</span></span></p>'),
+        ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">undecided</span></span></p>'),
+        ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly disagree</span></span></p>'),
+        ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">totally disagree</span></span></p>')
     ]);
 };
 
 
 ScaleElement.prototype.calculateWidth = function() {
-    var inter = 75/this.nrChoices()-2;
+    var inter = 100/this.nrChoices()-2;
     return inter +'%';
 };
 
@@ -133,10 +133,6 @@ var ScaleEntry= function(scaleParent) {
     this.modifier = ko.observable(new Modifier(this.scaleParent.expData, this));
 };
 
-ScaleEntry.prototype.calculateWidth = function() {
-    return 75/this.scaleParent.nrChoices()+'%';
-};
-
 ScaleEntry.prototype.modifiableProp = ["rowText"];
 ScaleEntry.prototype.dataType =[ "categorical"];
 
@@ -204,21 +200,31 @@ function createScaleComponents() {
                 };
 
                 viewModel.prototype.addColumn = function() {
-                    if (this.dataModel().addDeleteFromCol()=='right'){
+                    if (this.dataModel().addDeleteFromCol()=='left'){
                         this.dataModel().labels.splice(0,0,ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
                     }
                     else{
                         this.dataModel().labels.push(ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
                     }
+
+                    // force refresh of observable array to trigger refresh of view:
+                    var tmp = this.dataModel().labels();
+                    this.dataModel().labels([]);
+                    this.dataModel().labels(tmp);
                 };
 
                 viewModel.prototype.removeColumn = function() {
-                    if (this.dataModel().addDeleteFromCol()=='rsight'){
+                    if (this.dataModel().addDeleteFromCol()=='left'){
                         this.dataModel().labels.splice(0,1);
                     }
                     else{
                         this.dataModel().labels.splice(this.dataModel().nrChoices()-1,1);
                     }
+
+                    // force refresh of observable array to trigger refresh of view:
+                    var tmp = this.dataModel().labels();
+                    this.dataModel().labels([]);
+                    this.dataModel().labels(tmp);
                 };
 
                 viewModel.prototype.addRow = function() {
