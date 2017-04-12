@@ -18,10 +18,9 @@ var ScaleElement= function(expData) {
         return self.labels().length;
     }, this);
 
-    this.widthSeperation = ko.computed(function() {
-        return 100/self.nrChoices()+'%'
+    this.nrRows = ko.computed(function() {
+        return self.elements().length;
     }, this);
-
 
     this.margin = ko.observable('2pt');
 
@@ -35,6 +34,7 @@ var ScaleElement= function(expData) {
     /////
 };
 ScaleElement.prototype.addDeleteOptions = ["left","right"];
+ScaleElement.prototype.addDeleteOptions2 = ["top","bottom"];
 
 ScaleElement.prototype.modifiableProp = ["questionText","labels"];
 ScaleElement.prototype.dataType =      [ "string","string"];
@@ -51,6 +51,12 @@ ScaleElement.prototype.init = function() {
         ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly disagree</span></span>'),
         ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">totally disagree</span></span>')
     ]);
+};
+
+
+ScaleElement.prototype.calculateWidth = function() {
+    var inter = 70/this.nrChoices()-2;
+    return inter +'%';
 };
 
 ScaleElement.prototype.addEntry = function() {
@@ -127,6 +133,10 @@ var ScaleEntry= function(scaleParent) {
     this.modifier = ko.observable(new Modifier(this.scaleParent.expData, this));
 };
 
+ScaleEntry.prototype.calculateWidth = function() {
+    return 70/this.scaleParent.nrChoices()+'%';
+};
+
 ScaleEntry.prototype.modifiableProp = ["rowText"];
 ScaleEntry.prototype.dataType =[ "categorical"];
 
@@ -200,7 +210,6 @@ function createScaleComponents() {
                     else{
                         this.dataModel().labels.push(ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
                     }
-
                 };
 
                 viewModel.prototype.removeColumn = function() {
@@ -210,8 +219,24 @@ function createScaleComponents() {
                     else{
                         this.dataModel().labels.splice(this.dataModel().nrChoices()-1,1);
                     }
+                };
 
+                viewModel.prototype.addRow = function() {
+                    if (this.dataModel().addDeleteFrom()=='top'){
+                        this.dataModel().labels.splice(0,0,ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
+                    }
+                    else{
+                        this.dataModel().labels.push(ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
+                    }
+                };
 
+                viewModel.prototype.removeRow = function() {
+                    if (this.dataModel().addDeleteFrom()=='bottom'){
+                        this.dataModel().labels.splice(0,1);
+                    }
+                    else{
+                        this.dataModel().labels.splice(this.dataModel().nrChoices()-1,1);
+                    }
                 };
 
                 return new viewModel(dataModel);
