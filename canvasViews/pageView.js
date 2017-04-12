@@ -26,7 +26,7 @@ PageView.prototype.init = function(size) {
         this.width = size[0];
         this.height = size[1];
 
-        this.divContentInside = $("<div data-bind='component: {name : \"page-preview\", params : $data}'></div>");
+        this.divContentInside = $("<div style='position: relative; height: 100%;' data-bind='component: {name : \"page-preview\", params : $data}'></div>");
         $(this.divContainer).append(this.divContentInside);
         ko.applyBindings(this, $(this.divContainer)[0]);
 
