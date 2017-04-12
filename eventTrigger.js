@@ -47,11 +47,6 @@ TriggerMouse.prototype.getParameterSpec = function() {
     return [
         'Stimulus Tag',
         'Time From Stimulus Onset',
-        'Stimulus Visibility',
-        'Stimulus X-Position',
-        'Stimulus Y-Position',
-        'Stimulus Width',
-        'Stimulus Height'
     ];
 };
 
@@ -63,12 +58,7 @@ TriggerMouse.prototype.getParameterSpec = function() {
 TriggerMouse.prototype.triggerOnTarget = function(playerFrame,target) {
     this.event.triggerActions([
         target.modifier().selectedTrialView.name(),
-        playerFrame.getFrameTime(),  // TODO need to change when stimulus is set invisible
-        target.modifier().selectedTrialView.visibility(),
-        target.modifier().selectedTrialView.editorX(),
-        target.modifier().selectedTrialView.editorY(),
-        target.modifier().selectedTrialView.editorWidth(),
-        target.modifier().selectedTrialView.editorHeight()
+        playerFrame.getFrameTime()
     ]);
 };
 
@@ -795,7 +785,7 @@ TriggerAudioVideoEvent.prototype.isValid = function() {
 TriggerAudioVideoEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
 
     var self = this;
-    var elem =  $(player.currentFrame.frameView.viewElements.byId[this.target().id()].divContentInside).find("audio, video");
+    var elem =  $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
     if (elem.length > 0) {
         switch (this.triggerType()) {
             case "started":

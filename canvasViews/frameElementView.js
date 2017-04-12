@@ -1,8 +1,8 @@
 
-var FrameElementView = function(dataModel, editor) {
+var FrameElementView = function(dataModel, parentView) {
 
     this.dataModel = dataModel;
-    this.editor = editor;
+    this.parentView = parentView;
 
     // default values
     this.id = dataModel.id();
@@ -33,54 +33,29 @@ FrameElementView.prototype.setupSubscriber = function() {
     var self = this;
 
     this.scale = ko.computed(function() {
-        return this.editor.scale();
+        return this.parentView.scale();
     }, this);
 
     var selectedTrialView = this.dataModel.modifier().selectedTrialView;
 
-    // set height and width and subscirbe
-    if (this.dataModel.hasOwnProperty('modifier')) {
-        this.x = ko.computed(function() {
-            return selectedTrialView.editorX();
-        }, this);
-        this.y = ko.computed(function() {
-            return selectedTrialView.editorY();
-        }, this);
-        this.visibility = ko.computed(function() {
-            return selectedTrialView.visibility();
-        }, this);
-        this.width = ko.computed(function() {
-            return selectedTrialView.editorWidth();
-        }, this);
-        this.height = ko.computed(function() {
-            return selectedTrialView.editorHeight();
-        }, this);
-        this.keepAspectRatio = ko.computed(function() {
-            return selectedTrialView.keepAspectRatio();
-        }, this);
-    }
-    else {
-        console.error("where is the modifier??????????");
-        // TODO: remove this else block?
-        this.x = ko.computed(function() {
-            return this.dataModel.editorX();
-        }, this);
-        this.y = ko.computed(function() {
-            return this.dataModel.editorY();
-        }, this);
-        this.visibility = ko.computed(function() {
-            return this.dataModel.visibility();
-        }, this);
-        this.width = ko.computed(function() {
-            return this.dataModel.editorWidth();
-        }, this);
-        this.height = ko.computed(function() {
-            return this.dataModel.editorHeight();
-        }, this);
-        this.keepAspectRatio = ko.computed(function() {
-            return this.dataModel.content().keepAspectRatio();
-        }, this);
-    }
+    this.editorX = ko.computed(function() {
+        return selectedTrialView.editorX();
+    }, this);
+    this.editorY = ko.computed(function() {
+        return selectedTrialView.editorY();
+    }, this);
+    this.visibility = ko.computed(function() {
+        return selectedTrialView.visibility();
+    }, this);
+    this.editorWidth = ko.computed(function() {
+        return selectedTrialView.editorWidth();
+    }, this);
+    this.editorHeight = ko.computed(function() {
+        return selectedTrialView.editorHeight();
+    }, this);
+    this.keepAspectRatio = ko.computed(function() {
+        return selectedTrialView.keepAspectRatio();
+    }, this);
 
     if (this.dataModel.content().hasOwnProperty('stretchImageToFitBoundingBox')) {
         this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox.subscribe(function(newVal) {
@@ -92,11 +67,11 @@ FrameElementView.prototype.setupSubscriber = function() {
         self.update(true,true);
     });
 
-    this.x.subscribe(function(x) {
+    this.editorX.subscribe(function(x) {
         self.update(false,true);
     });
 
-    this.y.subscribe(function(y) {
+    this.editorY.subscribe(function(y) {
         self.update(false,true);
     });
 
@@ -106,11 +81,11 @@ FrameElementView.prototype.setupSubscriber = function() {
         });
     });
 
-    this.width.subscribe(function(w) {
+    this.editorWidth.subscribe(function(w) {
         self.update(true,false);
     });
 
-    this.height.subscribe(function(h) {
+    this.editorHeight.subscribe(function(h) {
         self.update(true,false);
     });
 
@@ -133,7 +108,7 @@ FrameElementView.prototype.setupSubscriber = function() {
     this.isSelected.subscribe(function(newVal){
         if (newVal) {
             $(self.div).css({
-                "outline": "1px dashed black"
+                "outline": "3px #74c9d6 solid"
             });
         }
         else {
@@ -161,8 +136,8 @@ FrameElementView.prototype.update = function(size, position){
     if (size){
 
         $(this.div).css({
-            "width": self.width() * self.scale(),
-            "height": self.height() * self.scale()
+            "width": self.editorWidth() * self.scale(),
+            "height": self.editorHeight() * self.scale()
         });
 
         var contentRotation = self.dataModel.contentRotation();
@@ -186,8 +161,8 @@ FrameElementView.prototype.update = function(size, position){
         }
 
         $(this.divContent).css({
-            "width": self.width() * self.scale(),
-            "height": self.height() * self.scale(),
+            "width": self.editorWidth() * self.scale(),
+            "height": self.editorHeight() * self.scale(),
             "position": "absolute"
         });
 
@@ -202,23 +177,23 @@ FrameElementView.prototype.update = function(size, position){
         });
 
         $(this.divContentInside).css({
-            "width": self.width(),
-            "height": self.height(),
+            "width": self.editorWidth(),
+            "height": self.editorHeight(),
             "position": "absolute"
         });
 
         $(this.text).css({
-            "width": self.width() * self.scale(),
-            "height": self.height() * self.scale()
+            "width": self.editorWidth() * self.scale(),
+            "height": self.editorHeight() * self.scale()
         });
 
         if (this.dataModel.content().type == "ImageElement"){
             var image = this.divContentInside;
             if (image) {
-                // this.width is the bounding box in virtual frame coordinates
+                // this.editorWidth is the bounding box in virtual frame coordinates
                 // this.fullWidth is the raw image width
                 if (!this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox()) {
-                    var scale = Math.min(self.width() / this.fullWidth(), self.height() / this.fullHeight());
+                    var scale = Math.min(self.editorWidth() / this.fullWidth(), self.editorHeight() / this.fullHeight());
                     var w = this.fullWidth() * scale * self.scale();
                     var h = this.fullHeight() * scale * self.scale();
 
@@ -226,14 +201,14 @@ FrameElementView.prototype.update = function(size, position){
                         "width": w,
                         "height": h,
                         "position": 'absolute',
-                        "left": (self.width() * self.scale() - w)/2,
-                        "top": (self.height() * self.scale() - h)/2
+                        "left": (self.editorWidth() * self.scale() - w)/2,
+                        "top": (self.editorHeight() * self.scale() - h)/2
                     });
                 }
                 else {
                     $(image).css({
-                        "width": self.width() * self.scale(),
-                        "height": self.height() * self.scale(),
+                        "width": self.editorWidth() * self.scale(),
+                        "height": self.editorHeight() * self.scale(),
                         "left": 0,
                         "top": 0
                     });
@@ -247,24 +222,24 @@ FrameElementView.prototype.update = function(size, position){
 
         var left = 0;
         if (this.dataModel.anchorPointX() == 'low'){
-            left = self.x();
+            left = self.editorX();
         }
         else if(this.dataModel.anchorPointX() == 'high'){
-            left = self.x() - self.width();
+            left = self.editorX() - self.editorWidth();
         }
         else { // center
-            left = self.x() - self.width()/2;
+            left = self.editorX() - self.editorWidth()/2;
         }
 
         var top = 0;
         if (this.dataModel.anchorPointY() == 'low'){
-            top = self.y();
+            top = self.editorY();
         }
         else if(this.dataModel.anchorPointY() == 'high'){
-            top = self.y() - self.height();
+            top = self.editorY() - self.editorHeight();
         }
         else { // center
-            top = self.y() - self.height()/2;
+            top = self.editorY() - self.editorHeight()/2;
         }
 
         $(this.div).css({
@@ -296,10 +271,10 @@ FrameElementView.prototype.setCoord = function(left, top) {
         x = left;
     }
     else if(this.dataModel.anchorPointX() == 'high'){
-        x = left + this.width();
+        x = left + this.editorWidth();
     }
     else { // center
-        x = left + this.width()/2;
+        x = left + this.editorWidth()/2;
     }
 
     var y = 0;
@@ -307,10 +282,10 @@ FrameElementView.prototype.setCoord = function(left, top) {
         y = top;
     }
     else if(this.dataModel.anchorPointY() == 'high'){
-        y = top + this.height();
+        y = top + this.editorHeight();
     }
     else { // center
-        y = top + this.height()/2;
+        y = top + this.editorHeight()/2;
     }
 
     if (this.dataModel.hasOwnProperty('modifier')) {
@@ -337,8 +312,8 @@ FrameElementView.prototype.renderContent = function(data) {
             this.divContentInside = new Image;
 
             $(this.divContentInside).css({
-                "width":self.width() * self.scale(),
-                "height": self.height() * self.scale(),
+                "width":self.editorWidth() * self.scale(),
+                "height": self.editorHeight() * self.scale(),
                 "position": "absolute",
                 "backgroundColor": "transparent"
             });
@@ -364,7 +339,7 @@ FrameElementView.prototype.renderContent = function(data) {
 
         this.contentScaling = $("<div></div>");
 
-        if (this.editor.type == "editorView") {
+        if (this.parentView.type == "editorView") {
             this.divContentInside = $("<div data-bind='component: {name : \"contentElementPreview\", params : $data}'></div>");
         }
         else {

@@ -220,6 +220,8 @@ PageData.prototype.reAddEntities = function(entitiesArr) {
  * @returns {PageData}
  */
 PageData.prototype.fromJS = function(data) {
+    var self = this;
+
     this.id(data.id);
     this.type=data.type;
     if (data.hasOwnProperty("name")) {

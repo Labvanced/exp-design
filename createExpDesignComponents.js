@@ -14,6 +14,10 @@ var createExpDesignComponents = (function() {
                     createCompFcn: createPageComponents
                 },
                 {
+                    filepath: "/html_views/pageElementView.html",
+                    createCompFcn: createPageElementComponents
+                },
+                {
                     filepath: "/html_views/TextInputElement.html",
                     createCompFcn: createTextInputComponents
                 },

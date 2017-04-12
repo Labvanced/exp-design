@@ -1076,7 +1076,7 @@ ActionControlAV.prototype.isValid = function(){
  */
 ActionControlAV.prototype.run = function(triggerParams) {
 
-   var elem =  $(player.currentFrame.frameView.viewElements.byId[this.target().id()].divContentInside).find("audio, video");
+   var elem =  $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
 
    if (elem.length > 0) {
        if (this.actionType() == 'start') {
