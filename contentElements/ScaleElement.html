@@ -3,21 +3,21 @@
         <strong>Scale:</strong>
         <br>
         <div>
-            <label>Nr of Columns: </label>
+            <label>Nr of Choices: </label>
             <span data-bind="text: dataModel().nrChoices"></span>
             <span style="cursor: pointer" data-bind="click:addColumn"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
             <span style="cursor: pointer" data-bind="click:removeColumn"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
         </div>
+        <label>Insert / Delete from: </label>
+        <select style="width: 40px" class="taskeditor-input" data-bind="options: ScaleElement.prototype.addDeleteOptionsCol, value:dataModel().addDeleteFromCol"></select>
 
         <div>
-            <label>Nr of Rows: </label>
+            <label>Nr of Questions: </label>
             <span data-bind="text: dataModel().nrRows"></span>
             <span style="cursor: pointer" data-bind="click:addRow"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
             <span style="cursor: pointer" data-bind="click:removeRow"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
         </div>
 
-        <label>Insert / Delete from: </label>
-        <select style="width: 40px" class="taskeditor-input" data-bind="options: ScaleElement.prototype.addDeleteOptions, value:dataModel().addDeleteFrom"> </select>
 
         <div>
             Margin: <input style="display: inline-block; width: 50px" type="text" data-bind="textInput: dataModel().margin">
@@ -40,8 +40,8 @@
 
         <div data-bind="foreach: dataModel().elements">
             <div style="display: inline-block; width: 100%">
-                <div style="max-width:30%; display: inline-block" class="notDraggable" data-bind="wysiwyg: rowText, valueUpdate: 'afterkeydown'" ></div>
-                <span style="max-width:70%; height:100%; vertical-align: middle" data-bind="foreach: scaleParent.labels">
+                <div style="max-width:25%; display: inline-block" class="notDraggable" data-bind="wysiwyg: rowText, valueUpdate: 'afterkeydown'" ></div>
+                <span style="max-width:75%; height:100%; vertical-align: middle" data-bind="foreach: scaleParent.labels">
                     <input style="float: right" type="radio" data-bind="style:{width:$parent.calculateWidth()},attr:{value:$index()+1},checked: $parent.variable().startValue().value,click:function(){return true},clickBubble: false">
                 </span>
             </div>

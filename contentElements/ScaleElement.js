@@ -10,7 +10,7 @@ var ScaleElement= function(expData) {
     this.id = ko.observable(guid());
 
     this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
-    this.addDeleteFrom = ko.observable(this.addDeleteOptions[1]);
+    this.addDeleteFromCol = ko.observable(this.addDeleteOptionsCol[1]);
 
     this.labels = ko.observableArray([]);
 
@@ -18,13 +18,14 @@ var ScaleElement= function(expData) {
         return self.labels().length;
     }, this);
 
+    this.elements = ko.observableArray([]);
     this.nrRows = ko.computed(function() {
         return self.elements().length;
     }, this);
 
     this.margin = ko.observable('2pt');
 
-    this.elements = ko.observableArray([]);
+
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -33,8 +34,7 @@ var ScaleElement= function(expData) {
     this.selected = ko.observable(false);
     /////
 };
-ScaleElement.prototype.addDeleteOptions = ["left","right"];
-ScaleElement.prototype.addDeleteOptions2 = ["top","bottom"];
+ScaleElement.prototype.addDeleteOptionsCol = ["left","right"];
 
 ScaleElement.prototype.modifiableProp = ["questionText","labels"];
 ScaleElement.prototype.dataType =      [ "string","string"];
@@ -55,7 +55,7 @@ ScaleElement.prototype.init = function() {
 
 
 ScaleElement.prototype.calculateWidth = function() {
-    var inter = 70/this.nrChoices()-2;
+    var inter = 75/this.nrChoices()-2;
     return inter +'%';
 };
 
@@ -134,7 +134,7 @@ var ScaleEntry= function(scaleParent) {
 };
 
 ScaleEntry.prototype.calculateWidth = function() {
-    return 70/this.scaleParent.nrChoices()+'%';
+    return 75/this.scaleParent.nrChoices()+'%';
 };
 
 ScaleEntry.prototype.modifiableProp = ["rowText"];
@@ -204,7 +204,7 @@ function createScaleComponents() {
                 };
 
                 viewModel.prototype.addColumn = function() {
-                    if (this.dataModel().addDeleteFrom()=='right'){
+                    if (this.dataModel().addDeleteFromCol()=='right'){
                         this.dataModel().labels.splice(0,0,ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
                     }
                     else{
@@ -213,7 +213,7 @@ function createScaleComponents() {
                 };
 
                 viewModel.prototype.removeColumn = function() {
-                    if (this.dataModel().addDeleteFrom()=='right'){
+                    if (this.dataModel().addDeleteFromCol()=='rsight'){
                         this.dataModel().labels.splice(0,1);
                     }
                     else{
@@ -222,22 +222,13 @@ function createScaleComponents() {
                 };
 
                 viewModel.prototype.addRow = function() {
-                    if (this.dataModel().addDeleteFrom()=='top'){
-                        this.dataModel().labels.splice(0,0,ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
-                    }
-                    else{
-                        this.dataModel().labels.push(ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
-                    }
+                    this.dataModel().addEntry();
                 };
 
                 viewModel.prototype.removeRow = function() {
-                    if (this.dataModel().addDeleteFrom()=='bottom'){
-                        this.dataModel().labels.splice(0,1);
-                    }
-                    else{
-                        this.dataModel().labels.splice(this.dataModel().nrChoices()-1,1);
-                    }
+                    this.dataModel().removeEntry();
                 };
+
 
                 return new viewModel(dataModel);
             }
