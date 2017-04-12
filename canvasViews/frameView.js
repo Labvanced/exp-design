@@ -32,7 +32,10 @@ var FrameView = function(divContainer,parent,type) {
     this.isInitialized = false;
 };
 
-
+/**
+ * this init function should only be called after setDataModel was called!
+ * @param size
+ */
 FrameView.prototype.init = function(size) {
 
     if (!this.isInitialized) {
