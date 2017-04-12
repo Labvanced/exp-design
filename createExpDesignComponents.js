@@ -72,6 +72,10 @@ var createExpDesignComponents = (function() {
                 {
                     filepath: "/html_views/NaviElement.html",
                     createCompFcn: createNaviElementComponents
+                },
+                {
+                    filepath: "/html_views/LikertElement.html",
+                    createCompFcn: createLikertElementComponents
                 }
             ];
 
