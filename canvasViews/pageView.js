@@ -21,12 +21,22 @@ var PageView = function(divContainer,parent,type) {
     this.isInitialized = false;
 };
 
+/**
+ * this init function should only be called after setDataModel was called!
+ * @param size
+ */
 PageView.prototype.init = function(size) {
     if (!this.isInitialized) {
         this.width = size[0];
         this.height = size[1];
 
-        this.divContentInside = $("<div data-bind='component: {name : \"page-preview\", params : $data}'></div>");
+        if (this.type == "editorView") {
+            this.divContentInside = $("<div style='position: relative; height: 100%;' data-bind='component: {name : \"page-preview\", params : $data}'></div>");
+        }
+        else {
+            this.divContentInside = $("<div style='position: relative; height: 100%;' data-bind='component: {name : \"page-playerview\", params : $data}'></div>");
+        }
+
         $(this.divContainer).append(this.divContentInside);
         ko.applyBindings(this, $(this.divContainer)[0]);
 
@@ -159,34 +169,6 @@ function createPageComponents() {
         template: {element: 'page-playerview-template'}
     });
 
-
-
-    ko.components.register('pageElement-preview',{
-        viewModel: {
-            createViewModel: function (data, componentInfo) {
-                var viewModel = function (pageView,pageElement) {
-                    this.pageView = pageView;
-                    this.pageElement = pageElement;
-                    this.selected = ko.observable(false);
-                };
-                return new viewModel(data.pageView,data.pageElement);
-            }
-        },
-        template: {element: 'pageElement-preview-template'}
-    });
-
-    ko.components.register('pageElement-playerview',{
-        viewModel: {
-            createViewModel: function (data, componentInfo) {
-                var viewModel = function (pageView,pageElement) {
-                    this.pageView = pageView;
-                    this.pageElement = pageElement;
-                };
-                return new viewModel(data.pageView,data.pageElement);
-            }
-        },
-        template: {element: 'pageElement-playerview-template'}
-    });
 }
 
 

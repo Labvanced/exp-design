@@ -3,8 +3,8 @@
 </template>
 
 <template id="page-preview-template">
-    <div style="overflow: scroll" class="quest-form2"  data-bind="with: pageView">
-        <div style="margin-left: 5%; margin-right: 5%; width: 90%; min-height: 100%; background-color: white">
+    <div class="pageOuterDiv" data-bind="with: pageView">
+        <div class="pageInnerDiv">
             <!-- ko if: pageDataObs() -->
             <div class="pageElementsList" data-bind="sortable: {data: pageDataObs().elements, options: {handle: '.pageElementHandle'}} ">
 
@@ -27,5 +27,19 @@
 </template>
 
 <template id="page-playerview-template">
+    <div class="pageOuterDiv" data-bind="with: pageView">
+        <div class="pageInnerDiv">
+            <!-- ko if: pageDataObs() -->
+            <div class="pageElementsList" data-bind="foreach: pageDataObs().elements">
 
+                <div class="pageElementOuterBorder">
+                    <div class="pageElementInnerBorder">
+                        <div style="margin: 5pt; margin-left: 35px" data-bind='component: {name : "contentElementPlayerview", params : $data.content()}'></div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /ko -->
+        </div>
+    </div>
 </template>
