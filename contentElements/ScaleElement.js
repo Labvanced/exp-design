@@ -10,22 +10,18 @@ var ScaleElement= function(expData) {
     this.id = ko.observable(guid());
 
     this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
-   // this.startLabel= ko.observable();
-   // this.endLabel= ko.observable();
+    this.addDeleteFrom = ko.observable(this.addDeleteOptions[1]);
 
+    this.labels = ko.observableArray([]);
 
-    this.labels = ko.observableArray([
-        ko.observable('<span style="font-size:20px"><span style="font-family:Arial,Helvetica,sans-serif">totally agree</span></span>'),
-        ko.observable('<span style="font-size:20px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly agree</span></span>'),
-        ko.observable('<span style="font-size:20px"><span style="font-family:Arial,Helvetica,sans-serif;">undecided</span></span>'),
-        ko.observable('<span style="font-size:20px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly disagree</span></span>'),
-        ko.observable('<span style="font-size:20px"><span style="font-family:Arial,Helvetica,sans-serif;">totally disagree</span></span>')
-    ]);
-
-    this.nrChoices= ko.observable(5);
-    this.widthSeperation = ko.computed(function() {
-       100/self.nrChoices()+'%'
+    this.nrChoices = ko.computed(function() {
+        return self.labels().length;
     }, this);
+
+    this.widthSeperation = ko.computed(function() {
+        return 100/self.nrChoices()+'%'
+    }, this);
+
 
     this.margin = ko.observable('2pt');
 
@@ -38,14 +34,23 @@ var ScaleElement= function(expData) {
     this.selected = ko.observable(false);
     /////
 };
+ScaleElement.prototype.addDeleteOptions = ["left","right"];
 
 ScaleElement.prototype.modifiableProp = ["questionText","labels"];
 ScaleElement.prototype.dataType =      [ "string","string"];
-ScaleElement.prototype.initWidth = 340;
-ScaleElement.prototype.initHeight = 140;
+ScaleElement.prototype.initWidth = 750;
+ScaleElement.prototype.initHeight = 300;
 
 ScaleElement.prototype.init = function() {
-    this.addEntry()
+    this.addEntry();
+
+    this.labels([
+        ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif">totally agree</span></span>'),
+        ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly agree</span></span>'),
+        ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">undecided</span></span>'),
+        ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly disagree</span></span>'),
+        ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">totally disagree</span></span>')
+    ]);
 };
 
 ScaleElement.prototype.addEntry = function() {
@@ -85,10 +90,13 @@ ScaleElement.prototype.selectTrialType = function(selectionSpec) {
 
 ScaleElement.prototype.toJS = function() {
 
+
+    var labels = jQuery.map( this.labels(), function( elem ) {return elem();});
+
     return {
         type: this.type,
         questionText: this.questionText(),
-        labels: this.labels(),
+        labels: labels,
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
         }),
@@ -97,11 +105,12 @@ ScaleElement.prototype.toJS = function() {
 };
 
 ScaleElement.prototype.fromJS = function(data) {
+    var self = this;
     this.type=data.type;
     this.questionText(data.questionText);
-    this.labels(data.labels);
+    this.labels(jQuery.map( data.labels, function( elem ) {return ko.observable(elem);}));
     this.elements(jQuery.map( data.elements, function( elemData ) {
-        return (new CheckBoxEntry(self)).fromJS(elemData);
+        return (new ScaleEntry(self)).fromJS(elemData);
     } ));
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
@@ -113,18 +122,8 @@ ScaleElement.prototype.fromJS = function(data) {
 var ScaleEntry= function(scaleParent) {
     var self = this;
     this.scaleParent = scaleParent;
-    this.rowText= ko.observable( '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">your question</span></span>');
+    this.rowText= ko.observable( '<span style="font-size:14px;"><span style="font-family:Arial,Helvetica,sans-serif;">your question</span></span>');
     this.variable=ko.observable(null);
-    this.nrChoices = ko.observableArray([1,2,3,4,5]);
-
-    this.nrChoices = ko.computed(function() {
-        var arr = [];
-        for (var i=0; i < self.scaleParent.nrChoices(); i++){
-            arr.push('a');
-        }
-        return arr;
-    }, this);
-
     this.modifier = ko.observable(new Modifier(this.scaleParent.expData, this));
 };
 
@@ -166,7 +165,7 @@ ScaleEntry.prototype.reAddEntities = function(entitiesArr) {
 };
 
 ScaleEntry.prototype.fromJS = function(data) {
-    this.scaleParent(data.scaleParent);
+    this.rowText(data.rowText);
     this.variable(data.variable);
     return this;
 };
@@ -174,7 +173,7 @@ ScaleEntry.prototype.fromJS = function(data) {
 ScaleEntry.prototype.toJS = function() {
     return {
         variable:  this.variable().id(),
-        scaleParent:  this.scaleParent
+        rowText:  this.rowText()
     };
 };
 
@@ -189,10 +188,29 @@ function createScaleComponents() {
                 var viewModel = function(dataModel){
 
                     this.dataModel = ko.observable(dataModel);
-
                     this.focus = function () {
                         this.dataModel.ckInstance.focus()
                     };
+                };
+
+                viewModel.prototype.addColumn = function() {
+                    if (this.dataModel().addDeleteFrom()=='right'){
+                        this.dataModel().labels.splice(0,0,ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
+                    }
+                    else{
+                        this.dataModel().labels.push(ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
+                    }
+
+                };
+
+                viewModel.prototype.removeColumn = function() {
+                    if (this.dataModel().addDeleteFrom()=='right'){
+                        this.dataModel().labels.splice(0,1);
+                    }
+                    else{
+                        this.dataModel().labels.splice(this.dataModel().nrChoices()-1,1);
+                    }
+
 
                 };
 
