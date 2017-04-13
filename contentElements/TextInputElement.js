@@ -82,7 +82,6 @@ TextInputElement.prototype.fromJS = function(data) {
 
 
 function createTextInputComponents() {
-    // TODO: @Holger Add image FileManager
     ko.components.register('text-input-editview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {

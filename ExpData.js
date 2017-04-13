@@ -16,8 +16,8 @@ var ExpData = function (parentExperiment) {
     this.availableBlocks = ko.observableArray([]);
     this.availableSessions = ko.observableArray([]);
     this.availableGroups = ko.observableArray([]);
-    
-    //TODO  need to serialize / deserialize
+
+    // TODO: need to serialize / deserialize
     this.translations = ko.observableArray([]);
 
     // the following variables are recorded once per subject:

@@ -273,7 +273,6 @@ TriggerKeyboard.prototype.getParameterSpec = function() {
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
 TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
-    // TODO: to trigger call function this.event.triggerActions(variables)
     var self = this;
     var validKeyCodes = this.getValidKeyCodes();
 
@@ -567,7 +566,6 @@ TriggerTimerReached.prototype.getParameterSpec = function() {
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
 TriggerTimerReached.prototype.setupOnPlayerFrame = function(playerFrame) {
-    // TODO: to trigger call function this.event.triggerActions(variables)
 };
 
 /**
