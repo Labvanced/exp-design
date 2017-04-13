@@ -145,6 +145,11 @@ BgFrameElement.prototype.addCallback = function() {
 
     var self = this;
     $(this.div).click(function() {
+        var instance = CKEDITOR.currentInstance;
+        if (instance) {
+            // TODO: try to find other method to really remove focus from previously selected ckeditor instance:
+            instance.focusManager.blur();
+        }
         self.editor.setSelectedElement(null);
     });
 

@@ -201,10 +201,10 @@ function createScaleComponents() {
 
                 viewModel.prototype.addColumn = function() {
                     if (this.dataModel().addDeleteFromCol()=='left'){
-                        this.dataModel().labels.splice(0,0,ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
+                        this.dataModel().labels.splice(0,0,ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">new option</span></span></p>'));
                     }
                     else{
-                        this.dataModel().labels.push(ko.observable('<span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">New Option</span></span>'));
+                        this.dataModel().labels.push(ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">new option</span></span></p>'));
                     }
 
                     // force refresh of observable array to trigger refresh of view:

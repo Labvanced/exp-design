@@ -133,10 +133,18 @@ ko.bindingHandlers.disableOptionsCaption = {
 // CKEDITOR is not defined in player:
 if (typeof CKEDITOR !== 'undefined') {
 
+    CKEDITOR.on( 'currentInstance', function() {
+        var instance = CKEDITOR.currentInstance;
+        if (instance!=null) {
+            $("#editorToolbar").show();
+        }
+    } );
+
     // disable auto inline editing for CKeditor, because the custom binding below is doing this manually:
     CKEDITOR.disableAutoInline = true;
 
     ko.bindingHandlers.wysiwyg = {
+
         init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
             var ckEditorValue = valueAccessor();
             var $element = $(element);
@@ -160,6 +168,10 @@ if (typeof CKEDITOR !== 'undefined') {
                 }
             });
 
+            instance.on('blur',function( e ){
+                $("#editorToolbar").hide();
+            });
+
             viewModel.ckInstance = instance;
             instance.setData(ckEditorValue());
             ckEditorValue.subscribe(function (newValue) {
@@ -173,7 +185,7 @@ if (typeof CKEDITOR !== 'undefined') {
                 instance.destroy();
             });
 
-            instance.focus( );
+            //instance.focus( );
         }
     };
 }

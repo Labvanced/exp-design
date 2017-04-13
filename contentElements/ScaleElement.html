@@ -26,6 +26,7 @@
 </template>
 
 <template id="scale-preview-template">
+
     <div class="notDraggable" data-bind="wysiwyg: dataModel().modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
         <p>Your Question</p>
     </div>
@@ -47,13 +48,30 @@
                 </span>
             </div>
         </div>
-
-
     </div>
-    <br>
+
 </template>
 
 <template id="scale-playerview-template">
 
+    <div data-bind="html: dataModel().modifier().selectedTrialView.questionText"></div>
+    <br>
+    <div data-bind="style: {marginLeft: dataModel().margin, marginRight: dataModel().margin}">
+        <div>
+            <div style="display: inline-block; width: 100%">
+                <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: dataModel().labels">
+                    <div class="notDraggable" style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" data-bind="style:{width:$parent.dataModel().calculateWidth()}, html: $rawData"></div>
+                </span>
+            </div>
+        </div>
+        <div data-bind="foreach: dataModel().elements">
+            <div style="display: inline-block; width: 100%">
+                <div style="float: left; width:25%; display: inline-block;" data-bind="html: rowText" ></div>
+                <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: scaleParent.labels">
+                    <input style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" type="radio" data-bind="style:{width:$parent.scaleParent.calculateWidth()},attr:{value:$index()},checked: $parent.variable().startValue().value, click:function(){return true},clickBubble: false">
+                </span>
+            </div>
+        </div>
+    </div>
 
 </template>

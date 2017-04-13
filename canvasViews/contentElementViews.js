@@ -147,7 +147,7 @@ function ContentElementEditViewModel (contentElement) {
     this.contentElement = contentElement;
 }
 ContentElementEditViewModel.prototype.dispose = function() {
-    console.log("disposing ContentElementEditViewModel");
+    //console.log("disposing ContentElementEditViewModel");
 };
 
 ko.components.register('contentElementEditview', {

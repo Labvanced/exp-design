@@ -32,16 +32,14 @@
     <br>
 </template>
 
-
-
-
-
 <template id="checkbox-playerview-template">
-    <div data-bind="html: questionText"></div>
+    <div data-bind="html: questionText">
+        <p>Your Question</p>
+    </div>
     <div data-bind="foreach: dataModel().elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-top: inherit; margin-bottom: inherit" type="checkbox" >
-            <div style="display: inline-block; margin-bottom: inherit; margin-top: inherit;"></div>
+            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" >
+            <div   style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" data-bind="html: checkBoxText"></div>
         </div>
     </div>
     <br>
