@@ -19,7 +19,7 @@ var DisplayTextElement = function(expData) {
 DisplayTextElement.prototype.modifiableProp = ["text"];
 DisplayTextElement.prototype.dataType =      [ "string"];
 DisplayTextElement.prototype.initWidth = 500;
-DisplayTextElement.prototype.initHeight = 50;
+DisplayTextElement.prototype.initHeight = 80;
 
 
 DisplayTextElement.prototype.init = function() {

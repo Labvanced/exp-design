@@ -23,7 +23,22 @@ function createPageElementComponents() {
     ko.components.register('pageElement-preview-component',{
         viewModel: {
             createViewModel: function (params, componentInfo) {
-                return new PageElementViewModel(params.dataModel, params.parentViewModel, componentInfo.element);
+                var pageViewModel = new PageElementViewModel(params.dataModel, params.parentViewModel, componentInfo.element);
+
+                $('.questionnaireElement').css(
+                    "background-color", params.parentViewModel.pageData.bgColor()
+                );
+
+                if (this.bgSubscrption){
+                    this.bgSubscrption.dispose()
+                }
+                this.bgSubscrption = params.parentViewModel.pageData.bgColor.subscribe(function(val){
+                    $('.questionnaireElement').css(
+                        "background-color",val
+                    );
+                });
+                return pageViewModel
+
             }
         },
         template: {element: 'pageElement-preview-template'}
@@ -32,7 +47,14 @@ function createPageElementComponents() {
     ko.components.register('pageElement-player-component',{
         viewModel: {
             createViewModel: function (params, componentInfo) {
-                return new PageElementViewModel(params.dataModel, params.parentViewModel, componentInfo.element);
+                var pageViewModel = new PageElementViewModel(params.dataModel, params.parentViewModel, componentInfo.element);
+
+                $('.questionnaireElement').css(
+                    "background-color", params.parentViewModel.pageData.bgColor()
+                );
+
+                return pageViewModel
+
             }
         },
         template: {element: 'pageElement-playerview-template'}

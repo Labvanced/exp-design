@@ -17,8 +17,9 @@ var PageData = function(expData) {
     this.name = ko.observable("Page");
     this.offset = ko.observable(5000).extend({ numeric: 0 });
     this.offsetEnabled = ko.observable(false);
-    this.bgColor = ko.observable("#000000"); // hex color as string, i.e. "#ffffff"
-    this.bgColorEnabled = ko.observable(false); // if false, then use experiment default background co
+    this.maxWidth = ko.observable(700);
+    this.bgColor = ko.observable("#ffffff"); // hex color as string, i.e. "#ffffff"
+    this.bgColorEnabled = ko.observable(true); // if false, then use experiment default background co
     this.elements = ko.observableArray([]).extend({sortById: null});
     this.events = ko.observableArray([]).extend({sortById: null});
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
@@ -33,7 +34,7 @@ var PageData = function(expData) {
     this.label = "PageData";
 };
 
-PageData.prototype.modifiableProp = ["name","offset","offsetEnabled"];
+PageData.prototype.modifiableProp = ["name","offset","offsetEnabled, "];
 
 PageData.prototype.getDeepCopy = function() {
     var self = this;
@@ -266,6 +267,10 @@ PageData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("localWorkspaceVars")) {
         this.localWorkspaceVars(data.localWorkspaceVars);
     }
+    if (data.hasOwnProperty("maxWidth")) {
+        this.maxWidth(parseInt(data.maxWidth));
+    }
+
     return this;
 };
 
@@ -286,6 +291,8 @@ PageData.prototype.toJS = function() {
             return event.toJS();
         } ),
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } ),
-        localWorkspaceVars: jQuery.map( this.localWorkspaceVars(), function( variable ) { return variable.id(); } )
+        localWorkspaceVars: jQuery.map( this.localWorkspaceVars(), function( variable ) { return variable.id(); } ),
+        maxWidth: parseInt(this.maxWidth())
+
     };
 };
