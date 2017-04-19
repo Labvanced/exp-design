@@ -12,7 +12,7 @@ var RangeElement= function(expData) {
     this.startLabel= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">start label</span></span>');
     this.endLabel= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">end label</span></span>');
 
-    this.selected = ko.observable(false);
+
     this.variable = ko.observable();
 
     // modifier:
@@ -26,19 +26,31 @@ var RangeElement= function(expData) {
 RangeElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
 RangeElement.prototype.dataType =      [ "string","string","string"];
 
-RangeElement.prototype.addVar = function() {
-    var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[2]);
-    globalVar.scope(GlobalVar.scopes[4]);
-    globalVar.scale(GlobalVar.scales[3]);
-    globalVar.name(this.parent.name());
+RangeElement.prototype.init = function() {
 
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.dataType(GlobalVar.dataTypes[3]);
+    globalVar.scope(GlobalVar.scopes[2]);
+    globalVar.scale(GlobalVar.scales[1]);
+    var name = this.parent.name();
+    globalVar.name(name);
+    globalVar.resetStartValue();
     this.variable(globalVar);
 
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
+    var frameOrPageElement = this.parent;
+    frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
+    this.setVariableBackRef();
+
+
+
 };
+
+
+
+RangeElement.prototype.setVariableBackRef = function() {
+    this.variable().addBackRef(this, this.parent, true, true, 'Likert');
+};
+
 
 
 RangeElement.prototype.setPointers = function(entitiesArr) {
@@ -73,7 +85,6 @@ RangeElement.prototype.toJS = function() {
         startLabel: this.startLabel(),
         endLabel: this.endLabel(),
         variable: variableId,
-        answer: this.answer(),
         modifier: this.modifier().toJS()
     };
 };
@@ -86,13 +97,6 @@ RangeElement.prototype.fromJS = function(data) {
     this.startLabel(data.startLabel);
     this.endLabel(data.endLabel);
     this.variable(data.variable);
-    this.answer(data.answer);
-
-    this.answer.subscribe(function (newValue) {
-        this.variable().setValue(newValue);
-    }, this);
-
-
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
