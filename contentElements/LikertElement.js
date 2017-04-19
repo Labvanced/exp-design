@@ -5,7 +5,7 @@ var LikertElement= function(expData) {
 
     //serialized
     this.type= "LikertElement";
-    this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
     this.startChoice= ko.observable(1);
     this.endChoice= ko.observable(5);
     this.startLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">Left Label</span></span>');
@@ -27,12 +27,12 @@ var LikertElement= function(expData) {
 
 LikertElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
 LikertElement.prototype.dataType =      [ "string","string","string"];
-LikertElement.prototype.initWidth = 340;
-LikertElement.prototype.initHeight = 140;
+LikertElement.prototype.initWidth = 350;
+LikertElement.prototype.initHeight = 120;
 
 LikertElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[3]);
+    globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[2]);
     globalVar.scale(GlobalVar.scales[1]);
     var name = this.parent.name();
@@ -108,7 +108,7 @@ function createLikertElementComponents() {
 
                 var viewModel = function(dataModel){
 
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                     this.choices = dataModel.choices;
                     this.startChoice = dataModel.startChoice;
@@ -145,7 +145,7 @@ function createLikertElementComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                     this.margin = dataModel.margin;
                     this.startChoice = dataModel.startChoice;
@@ -164,7 +164,7 @@ function createLikertElementComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function (dataModel) {
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                     this.startChoice = dataModel.startChoice;
                     this.endChoice = dataModel.endChoice;

@@ -6,7 +6,7 @@ var MultiLineInputElement = function(expData) {
 
     //serialized
     this.type= "MultiLineInputElement";
-    this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
     this.variable = ko.observable();
 
     // modifier:
@@ -19,7 +19,8 @@ var MultiLineInputElement = function(expData) {
 
 MultiLineInputElement.prototype.modifiableProp = ["questionText"];
 MultiLineInputElement.prototype.dataType =      [ "string"];
-
+MultiLineInputElement.prototype.initWidth = 500;
+MultiLineInputElement.prototype.initHeight = 100;
 
 
 MultiLineInputElement.prototype.init = function() {

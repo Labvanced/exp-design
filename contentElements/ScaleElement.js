@@ -39,7 +39,7 @@ ScaleElement.prototype.addDeleteOptionsCol = ["left","right"];
 ScaleElement.prototype.modifiableProp = ["questionText","labels"];
 ScaleElement.prototype.dataType =      [ "string","string"];
 ScaleElement.prototype.initWidth = 750;
-ScaleElement.prototype.initHeight = 300;
+ScaleElement.prototype.initHeight = 170;
 
 ScaleElement.prototype.init = function() {
     this.addEntry();
@@ -142,7 +142,7 @@ ScaleEntry.prototype.selectTrialType = function(selectionSpec) {
 
 ScaleEntry.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[2]);
+    globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[2]);
     globalVar.scale(GlobalVar.scales[1]);
     var name = this.scaleParent.parent.name() +'_'+ this.scaleParent.elements().length;

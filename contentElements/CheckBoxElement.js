@@ -6,7 +6,7 @@ var CheckBoxElement= function(expData) {
 
     //serialized
     this.type= "CheckBoxElement";
-    this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
 
     // content
     this.elements = ko.observableArray([]);
@@ -23,6 +23,8 @@ var CheckBoxElement= function(expData) {
 };
 
 CheckBoxElement.prototype.modifiableProp = ["questionText"];
+CheckBoxElement.prototype.initWidth = 180;
+CheckBoxElement.prototype.initHeight = 90;
 
 CheckBoxElement.prototype.init = function() {
     this.addEntry();
@@ -35,7 +37,11 @@ CheckBoxElement.prototype.addEntry = function() {
      this.elements.push(checkBoxEntry);
 };
 
-CheckBoxElement.prototype.removeEntry = function(idx) {
+CheckBoxElement.prototype.removeEntry = function() {
+    var idx = this.elements().length-1;
+    var entry =  this.elements()[idx];
+    // delete associated global vars
+    this.parent.parent.localWorkspaceVars.remove(entry.variable());
     this.elements.splice(idx,1);
 };
 
@@ -91,7 +97,7 @@ CheckBoxElement.prototype.fromJS = function(data) {
 
 var CheckBoxEntry= function(checkBoxParent) {
     this.checkBoxParent = checkBoxParent;
-    this.checkBoxText= ko.observable( '<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">check</span></span>');
+    this.checkBoxText= ko.observable( '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">check</span></span>');
     this.variable=ko.observable(null);
     this.modifier = ko.observable(new Modifier(this.checkBoxParent.expData, this));
 };
@@ -164,8 +170,8 @@ function createCheckBoxComponents() {
                         this.dataModel().addEntry();
                     };
 
-                    this.removeChoice = function(idx) {
-                        this.dataModel().removeEntry(idx);
+                    this.removeChoice = function() {
+                        this.dataModel().removeEntry();
                     };
 
                     this.focus = function () {

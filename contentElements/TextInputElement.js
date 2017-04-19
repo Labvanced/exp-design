@@ -6,7 +6,7 @@ var TextInputElement = function(expData) {
 
     //serialized
     this.type = "TextInputElement";
-    this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
     this.variable = ko.observable();
 
     // modifier:
@@ -19,6 +19,9 @@ var TextInputElement = function(expData) {
 
 TextInputElement.prototype.modifiableProp = ["questionText"];
 TextInputElement.prototype.dataType =      [ "string"];
+TextInputElement.prototype.initWidth = 300;
+TextInputElement.prototype.initHeight = 100;
+
 
 TextInputElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);

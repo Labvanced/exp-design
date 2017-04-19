@@ -79,7 +79,26 @@ FrameData.prototype.deleteChildEntity = function(entity) {
     }
     else {
         obsArr = this.elements;
+
+        // delete associated global vars
+        if (entity.content().hasOwnProperty('variable')){
+            this.localWorkspaceVars.remove(entity.content().variable())
+        }
+
+        // delete associated global vars
+        if (entity.content().hasOwnProperty('elements')){
+            var elems  = entity.content().elements();
+            for (var i = 0; i< elems.length; i++){
+                if (elems[i].hasOwnProperty('variable')){
+                    this.localWorkspaceVars.remove(elems[i].variable())
+                }
+
+            }
+        }
     }
+
+
+
     obsArr.remove(entity);
 
     // if this element was selected, set selection to null

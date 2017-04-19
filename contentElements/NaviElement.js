@@ -8,7 +8,7 @@ var NaviElement = function(expData) {
     this.type= "NaviElement";
     this.id = ko.observable(guid());
     this.buttonText1 = ko.observable("Back");
-    this.buttonText2 = ko.observable("Forward");
+    this.buttonText2 = ko.observable("Next");
 
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);

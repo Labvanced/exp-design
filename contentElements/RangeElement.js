@@ -6,11 +6,11 @@ var RangeElement= function(expData) {
 
     //serialized
     this.type= "RangeElement";
-    this.questionText= ko.observable('<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
     this.minChoice= ko.observable(1);
     this.maxChoice= ko.observable(5);
-    this.startLabel= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">start label</span></span>');
-    this.endLabel= ko.observable('<span style="font-size:22px;"><span style="font-family:Arial,Helvetica,sans-serif;">end label</span></span>');
+    this.startLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">label 1</span></span>');
+    this.endLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">label 2</span></span>');
 
 
     this.variable = ko.observable();
@@ -25,13 +25,15 @@ var RangeElement= function(expData) {
 
 RangeElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
 RangeElement.prototype.dataType =      [ "string","string","string"];
+RangeElement.prototype.initWidth = 500;
+RangeElement.prototype.initHeight = 100;
 
 RangeElement.prototype.init = function() {
 
     var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[3]);
+    globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[2]);
-    globalVar.scale(GlobalVar.scales[1]);
+    globalVar.scale(GlobalVar.scales[2]);
     var name = this.parent.name();
     globalVar.name(name);
     globalVar.resetStartValue();
@@ -48,7 +50,7 @@ RangeElement.prototype.init = function() {
 
 
 RangeElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'Likert');
+    this.variable().addBackRef(this, this.parent, true, true, 'Range');
 };
 
 

@@ -1,12 +1,10 @@
 <template id='choice-editview-template'>
     <div class="panel-body" style="height: 100%; margin-top: -10px">
+        <strong>Multiple Choice:</strong>
         <div>
-            <span style="display: inline-block">Question Text</span>
-            <span style="display: inline-block"><img style="cursor: pointer" width="20" height="20" src="/resources/edit.png" data-bind="click: focus"></span>
+            <span style="cursor: pointer" data-bind="click:addChoice"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
+            <span style="cursor: pointer" data-bind="click:removeChoice"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
         </div>
-        <span>
-            <a href="#" data-bind="click: addChoice"><img style="display: inline-block;" width="20" height="20"src="/resources/add.png"/> Add Choice</a>
-        </span>
         <br><br>
     </div>
 </template>
@@ -17,7 +15,7 @@
     </div>
     <div data-bind="foreach: dataModel().elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="radio" data-bind="attr:{value:multChoiceText}, checked: $parent.dataModel().variable().startValue().value, click:function(){return true}, clickBubble: false">
+            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="radio" data-bind="attr:{value:recValue},checked: $parent.dataModel().variable().startValue().value, click:function(){return true}, clickBubble: false">
             <div style="display: inline-block; margin-bottom: inherit; margin-top: inherit;" class="notDraggable" data-bind="wysiwyg: multChoiceText, valueUpdate: 'afterkeydown'"></div>
         </div>
     </div>
@@ -28,7 +26,7 @@
     <div data-bind="html: questionText"></div>
     <div data-bind="foreach: dataModel().elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="attr: {value:$data}, checked: $root.answer, click: function(){return true}, clickBubble: false">
+            <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="attr: {value:recValue},click: function(){return true}, clickBubble: false">
             <div style="display: inline-block; margin-bottom: inherit; margin-top: inherit" data-bind="html: $data"></div>
         </div>
     </div>
