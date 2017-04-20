@@ -1,0 +1,64 @@
+<template id='input-editview-template'>
+    <div class="panel-body" style="height: 100%; margin-top: -10px">
+        <strong>Input:</strong>
+        <label>Input type: </label>
+        <select data-bind="options: InputElement.prototype.typeOptions, value: dataModel().inputType"></select>
+    </div>
+</template>
+
+<template id='input-preview-template'>
+
+    <div class="notDraggable" data-bind="wysiwyg: dataModel().modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
+        <p>Your Question</p>
+    </div>
+    <div>
+        <!-- ko if: (dataModel().inputType()=='number')  -->
+        <div><input style="position:relative;left: 0%;" type="number" class="form-control"></div>
+        <!-- /ko -->
+        <!-- ko if: (dataModel().inputType()=='text')  -->
+        <div><input style="position:relative;left: 0%;" type="text" class="form-control" placeholder="Participant Answer"></div>
+        <!-- /ko -->
+        <!-- ko if: (dataModel().inputType()=='date')  -->
+        <div><input style="position:relative;left: 0%;" type="date"></div>
+        <!-- /ko -->
+        <!-- ko if: (dataModel().inputType()=='week')  -->
+        <div><input style="position:relative;left: 0%;" type="week"></div>
+        <!-- /ko -->
+        <!-- ko if: (dataModel().inputType()=='time')  -->
+        <div><input style="position:relative;left: 0%;" type="time"></div>
+        <!-- /ko -->
+        <!-- ko if: (dataModel().inputType()=='color')  -->
+        <div><input style="position:relative;left: 0%;" type="color"></div>
+        <!-- /ko -->
+    </div>
+
+
+    <br>
+
+</template>
+
+<template id='input-playerview-template'>
+    <div data-bind="html: dataModel().modifier().selectedTrialView.questionText"></div>
+    <br>
+    <div>
+        <!-- ko if: (dataModel().inputType()=='number')  -->
+        <div><input style="position:relative;left: 0%;" type="number" class="form-control"></div>
+        <!-- /ko -->
+        <!-- ko if: (dataModel().inputType()=='text')  -->
+        <div><input style="position:relative;left: 0%;" type="text" class="form-control" placeholder="Participant Answer"></div>
+        <!-- /ko -->
+        <!-- ko if: (dataModel().inputType()=='date')  -->
+        <div><input style="position:relative;left: 0%;" type="date"></div>
+        <!-- /ko -->
+        <!-- ko if: (dataModel().inputType()=='week')  -->
+        <div><input style="position:relative;left: 0%;" type="week"></div>
+        <!-- /ko -->
+        <!-- ko if: (dataModel().inputType()=='time')  -->
+        <div><input style="position:relative;left: 0%;" type="time"></div>
+        <!-- /ko -->
+        <!-- ko if: (dataModel().inputType()=='color')  -->
+        <div><input style="position:relative;left: 0%;" type="color"></div>
+        <!-- /ko -->
+    </div>
+    <br>
+</template>

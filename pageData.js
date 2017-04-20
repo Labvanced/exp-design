@@ -19,7 +19,6 @@ var PageData = function(expData) {
     this.offsetEnabled = ko.observable(false);
     this.maxWidth = ko.observable(700);
     this.bgColor = ko.observable("#ffffff"); // hex color as string, i.e. "#ffffff"
-    this.bgColorEnabled = ko.observable(true); // if false, then use experiment default background co
     this.elements = ko.observableArray([]).extend({sortById: null});
     this.events = ko.observableArray([]).extend({sortById: null});
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
@@ -253,9 +252,6 @@ PageData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("bgColor")) {
         this.bgColor(data.bgColor);
     }
-    if (data.hasOwnProperty("bgColorEnabled")) {
-        this.bgColorEnabled(data.bgColorEnabled);
-    }
     if (data.hasOwnProperty("events")) {
         this.events(jQuery.map(data.events, function (eventData) {
             return (new Event(self)).fromJS(eventData);
@@ -286,7 +282,6 @@ PageData.prototype.toJS = function() {
         offset: this.offset(),
         offsetEnabled: this.offsetEnabled(),
         bgColor: this.bgColor(),
-        bgColorEnabled: this.bgColorEnabled(),
         events: jQuery.map( this.events(), function( event ) {
             return event.toJS();
         } ),

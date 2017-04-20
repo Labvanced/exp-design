@@ -35,8 +35,8 @@ ko.components.register('contentElementPreview', {
             else if (contentElement instanceof ScaleElement) {
                 elem = $("<div data-bind='component: {name : \"scale-preview\", params : $data.contentElement}'></div>");
             }
-            else if (contentElement instanceof TextInputElement) {
-                elem = $("<div data-bind='component: {name : \"text-input-preview\", params : $data.contentElement}'></div>");
+            else if (contentElement instanceof InputElement) {
+                elem = $("<div data-bind='component: {name : \"input-preview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof DisplayTextElement) {
                 elem = $("<div data-bind='component: {name : \"display-text-element-preview\", params : $data.contentElement}'></div>");
@@ -104,8 +104,8 @@ ko.components.register('contentElementPlayerview', {
             else if (contentElement instanceof ScaleElement) {
                 elem = $("<div data-bind='component: {name : \"scale-playerview\", params : $data.contentElement}'></div>");
             }
-            else if (contentElement instanceof TextInputElement) {
-                elem = $("<div data-bind='component: {name : \"text-input-playerview\", params : $data.contentElement}'></div>");
+            else if (contentElement instanceof InputElement) {
+                elem = $("<div data-bind='component: {name : \"input-playerview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof DisplayTextElement) {
                 elem = $("<div data-bind='component: {name : \"display-text-element-playerview\", params : $data.contentElement}'></div>");
@@ -173,8 +173,8 @@ ko.components.register('contentElementEditview', {
             else if (contentElement instanceof ScaleElement) {
                 elem = $("<div data-bind='component: {name : \"scale-editview\", params : $data.contentElement}'></div>");
             }
-            else if (contentElement instanceof TextInputElement) {
-                elem = $("<div data-bind='component: {name : \"text-input-editview\", params : $data.contentElement}'></div>");
+            else if (contentElement instanceof InputElement) {
+                elem = $("<div data-bind='component: {name : \"input-editview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof DisplayTextElement) {
                 elem = $("<div data-bind='component: {name : \"display-text-editview\", params : $data.contentElement}'></div>");

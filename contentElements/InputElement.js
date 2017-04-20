@@ -1,12 +1,15 @@
 
-var TextInputElement = function(expData) {
+var InputElement = function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Text";
+    this.label = "Input";
 
     //serialized
-    this.type = "TextInputElement";
+    this.type = "InputElement";
     this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.inputType = ko.observable('number');
+
+
     this.variable = ko.observable();
 
     // modifier:
@@ -17,13 +20,15 @@ var TextInputElement = function(expData) {
     /////
 };
 
-TextInputElement.prototype.modifiableProp = ["questionText"];
-TextInputElement.prototype.dataType =      [ "string"];
-TextInputElement.prototype.initWidth = 300;
-TextInputElement.prototype.initHeight = 100;
+
+InputElement.prototype.modifiableProp = ["questionText"];
+InputElement.prototype.typeOptions = ["number","text","date","week","time","color"];
+InputElement.prototype.dataType =      [ "string"];
+InputElement.prototype.initWidth = 300;
+InputElement.prototype.initHeight = 100;
 
 
-TextInputElement.prototype.init = function() {
+InputElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[0]);
     globalVar.scope(GlobalVar.scopes[4]);
@@ -39,29 +44,29 @@ TextInputElement.prototype.init = function() {
 
 };
 
-TextInputElement.prototype.setVariableBackRef = function() {
+InputElement.prototype.setVariableBackRef = function() {
     this.variable().addBackRef(this, this.parent, true, true, 'textInput');
 };
 
-TextInputElement.prototype.setPointers = function(entitiesArr) {
+InputElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
     this.modifier().setPointers(entitiesArr);
 };
 
-TextInputElement.prototype.reAddEntities = function(entitiesArr) {
+InputElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
     this.modifier().reAddEntities(entitiesArr);
 };
 
-TextInputElement.prototype.selectTrialType = function(selectionSpec) {
+InputElement.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
-TextInputElement.prototype.toJS = function() {
+InputElement.prototype.toJS = function() {
     var variableId = null;
     if (this.variable()) {
         variableId = this.variable().id();
@@ -69,29 +74,33 @@ TextInputElement.prototype.toJS = function() {
     return {
         type: this.type,
         questionText: this.questionText(),
+        inputType: this.inputType(),
         variable: variableId,
         modifier: this.modifier().toJS()
     };
 };
 
-TextInputElement.prototype.fromJS = function(data) {
+InputElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.questionText(data.questionText);
     this.variable(data.variable);
-
+    if (data.hasOwnProperty('inputType')){
+        this.inputType(data.inputType);
+    }
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
 
 
-function createTextInputComponents() {
-    ko.components.register('text-input-editview', {
+function createInputComponents() {
+    ko.components.register('input-editview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                     this.name = dataModel.parent.name;
+
 
                     this.focus = function () {
                         this.dataModel.ckInstance.focus()
@@ -102,36 +111,36 @@ function createTextInputComponents() {
             }
 
         },
-        template: {element: 'text-input-editview-template'}
+        template: {element: 'input-editview-template'}
     });
 
 
-    ko.components.register('text-input-preview',{
+    ko.components.register('input-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                 };
                 return new viewModel(dataModel);
             }
         },
-        template: { element: 'text-input-preview-template' }
+        template: { element: 'input-preview-template' }
     });
 
 
-    ko.components.register('text-input-playerview',{
+    ko.components.register('input-playerview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                     this.answer = dataModel.answer;
                 };
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'text-input-playerview-template'}
+        template: {element: 'input-playerview-template'}
     });
 }
 

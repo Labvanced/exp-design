@@ -1,19 +1,7 @@
 <template id="multi-line-input-editview-template">
     <div class="panel-body" style="height: 100%; margin-top: -10px">
-        <div id="toolbar" class="ui-layout-content"></div>
-        <div>
-            <span>Element Tag:</span>
-            <br>
-            <input style="max-width:50%;" type="text" data-bind="textInput: $parent.name">
-        </div>
-        <br>
-        <div>
-            <span style="display: inline-block">Question Text</span>
-            <span style="display: inline-block">
-                <img style="cursor: pointer" width="20" height="20" src="/resources/edit.png" data-bind="click: focus">
-            </span>
-        </div>
-        <br><br>
+        <strong>Multiline Text:</strong>
+
     </div>
 </template>
 
@@ -22,7 +10,7 @@
         <p>Your Question</p>
     </div>
     <div>
-        <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" placeholder="Participant Answer" disabled></textarea>
+        <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" placeholder="Participant Answer"></textarea>
     </div>
     <br>
 </template>

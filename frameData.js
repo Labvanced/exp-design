@@ -17,7 +17,6 @@ var FrameData = function(expData) {
     this.offset = ko.observable(5000).extend({ numeric: 0 });
     this.offsetEnabled = ko.observable(false);
     this.bgColor = ko.observable("#ffffff"); // hex color as string, i.e. "#ffffff"
-    this.bgColorEnabled = ko.observable(true); // if false, then use experiment default background color.
     this.elements = ko.observableArray([]).extend({sortById: null});
     this.events = ko.observableArray([]).extend({sortById: null});
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
@@ -253,7 +252,6 @@ FrameData.prototype.fromJS = function(data) {
     this.offset(data.offset);
     this.offsetEnabled(data.offsetEnabled);
     this.bgColor(data.bgColor);
-    this.bgColorEnabled(data.bgColorEnabled);
     this.frameWidth(data.frameWidth);
     this.frameHeight(data.frameHeight);
     this.zoomMode(data.zoomMode);
@@ -286,7 +284,6 @@ FrameData.prototype.toJS = function() {
         offset: this.offset(),
         offsetEnabled: this.offsetEnabled(),
         bgColor: this.bgColor(),
-        bgColorEnabled: this.bgColorEnabled(),
         frameWidth: this.frameWidth(),
         frameHeight: this.frameHeight(),
         zoomMode: this.zoomMode(),

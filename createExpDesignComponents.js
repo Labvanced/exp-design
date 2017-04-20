@@ -18,8 +18,8 @@ var createExpDesignComponents = (function() {
                     createCompFcn: createPageElementComponents
                 },
                 {
-                    filepath: "/html_views/TextInputElement.html?FILE_VERSION_PLACEHOLDER",
-                    createCompFcn: createTextInputComponents
+                    filepath: "/html_views/InputElement.html?FILE_VERSION_PLACEHOLDER",
+                    createCompFcn: createInputComponents
                 },
                 {
                     filepath: "/html_views/VideoElement.html?FILE_VERSION_PLACEHOLDER",

@@ -99,8 +99,8 @@ function entityFactory(entityJson, expData) {
             entity.name(entityJson.name);
             entity.addContent(elem);
             break;
-        case 'TextInputElement':
-            var elem = new TextInputElement(expData);
+        case 'InputElement':
+            var elem = new InputElement(expData);
             elem.fromJS(entityJson);
             entity = new PageElement(expData);
             entity.id(entityJson.id);
