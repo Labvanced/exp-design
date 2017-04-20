@@ -1,14 +1,14 @@
 
-var InputElement = function(expData) {
+var SelectionElement = function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Input";
+    this.label = "Selection";
 
     //serialized
-    this.type = "InputElement";
+    this.type = "SelectionElement";
     this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
-    this.inputType = ko.observable('number');
 
+    this.availableOptions = ko.observableArray([]);
     this.variable = ko.observable();
 
     // modifier:
@@ -19,19 +19,27 @@ var InputElement = function(expData) {
     /////
 };
 
-
-InputElement.prototype.modifiableProp = ["questionText"];
-InputElement.prototype.typeOptions = ["number","text","date","week","time","color"];
-InputElement.prototype.dataType =      [ "string"];
-InputElement.prototype.initWidth = 300;
-InputElement.prototype.initHeight = 100;
+SelectionElement.prototype.modifiableProp = ["questionText"];
+SelectionElement.prototype.dataType =      [ "categorical"];
+SelectionElement.prototype.initWidth = 300;
+SelectionElement.prototype.initHeight = 100;
 
 
-InputElement.prototype.init = function() {
+
+SelectionElement.prototype.addEntry = function(newInput) {
+    this.availableOptions.push(newInput);
+};
+
+SelectionElement.prototype.removeEntry = function(idx) {
+    this.availableOptions.splice(idx,1);
+};
+
+
+SelectionElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[0]);
+    globalVar.dataType(GlobalVar.dataTypes[3]);
     globalVar.scope(GlobalVar.scopes[2]);
-    globalVar.scale(GlobalVar.scales[1]);
+    globalVar.scale(GlobalVar.scales[0]);
     var name = this.parent.name();
     globalVar.name(name);
     globalVar.resetStartValue();
@@ -40,32 +48,33 @@ InputElement.prototype.init = function() {
     var frameOrPageElement = this.parent;
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
+    this.availableOptions.push('please choose...');
 
 };
 
-InputElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'Input');
+SelectionElement.prototype.setVariableBackRef = function() {
+    this.variable().addBackRef(this, this.parent, true, true, 'Selection');
 };
 
-InputElement.prototype.setPointers = function(entitiesArr) {
+SelectionElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
     this.modifier().setPointers(entitiesArr);
 };
 
-InputElement.prototype.reAddEntities = function(entitiesArr) {
+SelectionElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
     this.modifier().reAddEntities(entitiesArr);
 };
 
-InputElement.prototype.selectTrialType = function(selectionSpec) {
+SelectionElement.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
-InputElement.prototype.toJS = function() {
+SelectionElement.prototype.toJS = function() {
     var variableId = null;
     if (this.variable()) {
         variableId = this.variable().id();
@@ -73,74 +82,87 @@ InputElement.prototype.toJS = function() {
     return {
         type: this.type,
         questionText: this.questionText(),
-        inputType: this.inputType(),
         variable: variableId,
+        availableOptions: this.availableOptions(),
         modifier: this.modifier().toJS()
     };
 };
 
-InputElement.prototype.fromJS = function(data) {
+SelectionElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.questionText(data.questionText);
     this.variable(data.variable);
-    if (data.hasOwnProperty('inputType')){
-        this.inputType(data.inputType);
-    }
+    this.availableOptions(data.availableOptions);
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
 
 
-function createInputComponents() {
-    ko.components.register('input-editview', {
+
+function createSelectionElementComponents() {
+    // TODO: @Holger Add image FileManager
+    ko.components.register('selection-editview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
                     this.dataModel = ko.observable(dataModel);
-                    this.questionText = dataModel.questionText;
-                    this.name = dataModel.parent.name;
+                    this.currentEntry = ko.observable('');
+                    this.focus = function () {
+                        this.dataModel().ckInstance.focus()
+                    };
+                };
 
+                viewModel.prototype.addEntry = function() {
+                  this.dataModel().addEntry(this.currentEntry());
+                  this.currentEntry('');
+                };
+                viewModel.prototype.removeEntry = function(idx) {
+                    this.dataModel().removeEntry(idx);
+                };
+
+                return new viewModel(dataModel);
+            }
+
+        },
+        template: {element: 'selection-editview-template'}
+    });
+
+
+    ko.components.register('selection-preview',{
+        viewModel: {
+            createViewModel: function(dataModel, componentInfo){
+                var viewModel = function(dataModel){
+                    this.dataModel = ko.observable(dataModel);
 
                     this.focus = function () {
-                        this.dataModel.ckInstance.focus()
+                        this.dataModel().ckInstance.focus()
                     };
                 };
 
                 return new viewModel(dataModel);
             }
-
         },
-        template: {element: 'input-editview-template'}
+        template: { element: 'selection-preview-template' }
     });
 
 
-    ko.components.register('input-preview',{
+    ko.components.register('selection-playerview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
                     this.dataModel = ko.observable(dataModel);
-                    this.questionText = dataModel.questionText;
+
+                    this.focus = function () {
+                        this.dataModel().ckInstance.focus()
+                    };
                 };
+
                 return new viewModel(dataModel);
             }
         },
-        template: { element: 'input-preview-template' }
-    });
-
-
-    ko.components.register('input-playerview',{
-        viewModel: {
-            createViewModel: function(dataModel, componentInfo){
-                var viewModel = function(dataModel){
-                    this.dataModel = ko.observable(dataModel);
-                    this.questionText = dataModel.questionText;
-                    this.answer = dataModel.answer;
-                };
-                return new viewModel(dataModel);
-            }
-        },
-        template: {element: 'input-playerview-template'}
+        template: {element: 'selection-playerview-template'}
     });
 }
+
 
 

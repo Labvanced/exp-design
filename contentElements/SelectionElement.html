@@ -1,0 +1,47 @@
+<template id='selection-editview-template'>
+    <div class="panel-body" style="height: 100%; margin-top: -10px">
+        <strong>Selection:</strong><br>
+        <label>Add New Option: </label><br>
+        <input style="width: 120px; display: inline-block" type="text" class="form-control" data-bind="value:currentEntry"> <span style="cursor: pointer" data-bind="click:addEntry"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
+        <br><br>
+
+        <label>Available Options: </label>
+        <div style="max-height: 200px; overflow: auto; margin-left: 20px; border: 1px solid black; padding:5px" data-bind="foreach: dataModel().availableOptions">
+            <div style="display: block; width: 100%">
+                <span>
+                    <span style="display: inline-block"  data-bind="text:$data"></span>
+                    <span style="cursor: pointer" data-bind=" event: {click: function(data,event) {$parent.removeEntry($index())}}"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</template>
+
+
+
+
+<template id='selection-preview-template'>
+    <div class="notDraggable" data-bind="wysiwyg: dataModel().modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
+        <p>Your Question</p>
+    </div>
+    <br>
+    <div>
+        <select style="width: 50%" data-bind="options: dataModel().availableOptions, value: dataModel().variable().startValue().value"></select>
+    </div>
+    <br>
+</template>
+
+
+
+
+<template id='selection-playerview-template'>
+    <div class="notDraggable" data-bind="html: dataModel().modifier().selectedTrialView.questionText">
+        <p>Your Question</p>
+    </div>
+    <br>
+    <div>
+        <select style="width: 50%" data-bind="options: dataModel().availableOptions, value: dataModel().variable().value"></select>
+    </div>
+    <br>
+</template>

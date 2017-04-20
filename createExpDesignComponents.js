@@ -66,16 +66,24 @@ var createExpDesignComponents = (function() {
                     createCompFcn: createEditableTextComponents
                 },
                 {
-                    filepath: "/html_views/SectionElement.html?FILE_VERSION_PLACEHOLDER",
-                    createCompFcn: createSectionElementComponents
-                },
-                {
                     filepath: "/html_views/NaviElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createNaviElementComponents
                 },
                 {
-                    filepath: "/html_views/LikertElement.html",
+                    filepath: "/html_views/LikertElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createLikertElementComponents
+                },
+                {
+                    filepath: "/html_views/SelectionElement.html?FILE_VERSION_PLACEHOLDER",
+                    createCompFcn: createSelectionElementComponents
+                },
+                {
+                    filepath: "/html_views/SectionElement.html?FILE_VERSION_PLACEHOLDER",
+                    createCompFcn: createSectionElementComponents
+                },
+                {
+                    filepath: "/html_views/SortableElement.html?FILE_VERSION_PLACEHOLDER",
+                    createCompFcn: createSortableElementComponents
                 }
             ];
 

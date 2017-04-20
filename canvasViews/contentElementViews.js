@@ -59,6 +59,15 @@ ko.components.register('contentElementPreview', {
             else if (contentElement instanceof LikertElement) {
                 elem = $("<div data-bind='component: {name : \"likert-preview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof SectionElement) {
+                elem = $("<div data-bind='component: {name : \"section-preview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof SelectionElement) {
+                elem = $("<div data-bind='component: {name : \"selection-preview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof SortableElement) {
+                elem = $("<div data-bind='component: {name : \"sortable-preview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
             return viewModel;
         }
@@ -128,6 +137,15 @@ ko.components.register('contentElementPlayerview', {
             else if (contentElement instanceof LikertElement) {
                 elem = $("<div data-bind='component: {name : \"likert-playerview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof SectionElement) {
+                elem = $("<div data-bind='component: {name : \"section-playerview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof SelectionElement) {
+                elem = $("<div data-bind='component: {name : \"selection-playerview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof SortableElement) {
+                elem = $("<div data-bind='component: {name : \"sortable-playerview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
 
             return viewModel;
@@ -196,6 +214,15 @@ ko.components.register('contentElementEditview', {
             }
             else if (contentElement instanceof LikertElement) {
                 elem = $("<div data-bind='component: {name : \"likert-editview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof SectionElement) {
+                elem = $("<div data-bind='component: {name : \"section-editview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof SelectionElement) {
+                elem = $("<div data-bind='component: {name : \"selection-editview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof SortableElement) {
+                elem = $("<div data-bind='component: {name : \"sortable-editview\", params : $data.contentElement}'></div>");
             }
             $(divElem).append(elem);
 
