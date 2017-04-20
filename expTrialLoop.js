@@ -89,7 +89,7 @@ var ExpTrialLoop = function (expData) {
  */
 ExpTrialLoop.prototype.initNewInstance = function() {
     this.addFactorGroup();
-    this.addNewFrame();
+    //  this.addNewFrame();
  //   var subsequence = new Sequence(this.expData);
  //   this.subSequence(subsequence);
  //   this.subSequencePerFactorGroup([subsequence]);
