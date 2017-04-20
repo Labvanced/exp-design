@@ -25,6 +25,10 @@ var FrameView = function(divContainer,parent,type) {
                 "width": self.frameData.frameWidth() * scale + 4,
                 "height": self.frameData.frameHeight() * scale + 4
             });
+            $(self.backgroundDiv).css({
+                "width":self.frameData.frameWidth() *   self.scale(),
+                "height": self.frameData.frameHeight()  * self.scale()
+            });
         }
     });
 
@@ -126,12 +130,14 @@ FrameView.prototype.setDataModel = function(frameData) {
         self.recalcScale();
     });
 
+    /**
     if(this.bgColorSubscription) {
         this.bgColorSubscription.dispose();
     }
     this.bgColorSubscription =  this.frameData.bgColor.subscribe(function(newVal){
         self.renderElements();
     });
+     **/
 
     // initialize the scale of the frame:
     this.recalcScale();
@@ -140,15 +146,47 @@ FrameView.prototype.setDataModel = function(frameData) {
 
 FrameView.prototype.recalcScale = function() {
     // can only be done if frameData is set:
+    var self = this;
     if (this.frameData) {
         this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
         if (this.type== "editorView" && this.bgElement){
             this.bgElement.update();
+
+            $(this.backgroundDiv).css({
+                "width":self.frameData.frameWidth() * self.scale(),
+                "height": self.frameData.frameHeight() * self.scale()
+            });
         }
     }
 };
 
-FrameView.prototype.setupBackground = function() {
+FrameView.prototype.setupBackground= function() {
+    var self = this;
+    this.backgroundDiv = document.createElement('div');
+    this.backgroundDiv.id = "background";
+    $(this.backgroundDiv).css({
+        "position": "absolute",
+        "left": 0,
+        "top": 0,
+        "width": self.frameData.frameWidth() * self.scale(),
+        "height": self.frameData.frameHeight() * self.scale(),
+        "background-color": self.frameData.bgColor()
+    });
+
+    if (this.colorSubscription ){
+        this.colorSubscription.dispose();
+    }
+    this.colorSubscription = this.frameData.bgColor.subscribe(function(val){
+        $(self.backgroundDiv).css({
+            "background-color":val
+        });
+    });
+
+
+    $(this.divContainer).append(this.backgroundDiv);
+};
+
+FrameView.prototype.setupGrid = function() {
     var bgFrameElement = new BgFrameElement(this.frameData,this);
     this.bgElement = bgFrameElement;
     $(this.divContainer).append(bgFrameElement.div);
@@ -184,6 +222,10 @@ FrameView.prototype.renderElements = function() {
     this.viewElements([]);
 
     if (this.type== "editorView") {
+        this.setupBackground();
+        this.setupGrid();
+    }
+    else {
         this.setupBackground();
     }
 

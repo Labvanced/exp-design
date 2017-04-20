@@ -8,7 +8,6 @@ var BgFrameElement = function(frameData,editor) {
         "top": 0
     });
     this.canvas = document.createElement('canvas');
-    $(this.div).append(this.canvas);
     this.canvas.id = "canvasBG";
     this.stage = new createjs.Stage(this.canvas);
     this.bgImgSubgrid10 = new Image();
@@ -29,7 +28,22 @@ var BgFrameElement = function(frameData,editor) {
         return this.editor.scale();
     }, this);
 
-    this.scale.subscribe(function() {
+    if (this.gridSubscription ){
+        this.gridSubscription.dispose();
+    }
+    this.gridSubscription = this.editor.parent.showGrid.subscribe(function(val){
+        if (val){
+            $(self.div).append(self.canvas);
+        }
+        else{
+            $($(self.div).children()).remove();
+        }
+    });
+
+    if (this.scaleSubscription ){
+        this.scaleSubscription.dispose();
+    }
+    this.scaleSubscription = this.scale.subscribe(function() {
         self.update();
     });
 
@@ -54,6 +68,9 @@ var BgFrameElement = function(frameData,editor) {
 
     this.addCallback();
 
+    if (this.editor.parent.showGrid()){
+        $(this.div).append(this.canvas);
+    }
 };
 
 BgFrameElement.prototype.update = function() {
