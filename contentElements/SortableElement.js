@@ -55,9 +55,9 @@ SortableElement.prototype.init = function() {
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
 
-    this.addElem('sortable content 1');
-    this.addElem('sortable content 2');
-    this.addElem('sortable content 3');
+    this.addElem('element1');
+    this.addElem('element2');
+    this.addElem('element3');
 
     this.variable().startValue().value(this.elementIdsCombined());
 };
@@ -67,7 +67,7 @@ SortableElement.prototype.setVariableBackRef = function() {
 };
 
 SortableElement.prototype.addElem = function (elemId) {
-    var text = 'sortable content ' + (this.elements().length+1);
+    var text = 'element' + (this.elements().length+1);
     var  elem = ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">'+text+'</span></span>');
     this.elements.push(elem);
     this.elementIds.push(elemId);

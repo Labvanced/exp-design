@@ -111,7 +111,7 @@ function createRangeComponents() {
 
                 var viewModel = function(dataModel){
 
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                     this.minChoice = dataModel.minChoice;
                     this.maxChoice = dataModel.maxChoice;
@@ -120,7 +120,7 @@ function createRangeComponents() {
                     this.name = dataModel.parent.name;
 
                     this.focus = function () {
-                        this.dataModel.ckInstance.focus()
+                        this.dataModel().ckInstance.focus()
                     };
                     
                 };
@@ -137,13 +137,16 @@ function createRangeComponents() {
 
                 var viewModel = function(dataModel){
 
-                    this.dataModel = dataModel;
+                    var self = this;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
+                    this.sliderValue =  ko.observable(this.dataModel().variable().startValue().value());
+
                     this.minChoice = dataModel.minChoice;
                     this.maxChoice = dataModel.maxChoice;
                     this.startLabel = dataModel.startLabel;
                     this.endLabel = dataModel.endLabel;
-                    
+
                 };
 
                 return new viewModel(dataModel);
@@ -157,7 +160,7 @@ function createRangeComponents() {
             createViewModel: function(dataModel, componentInfo){
 
                 var viewModel = function (dataModel) {
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                     this.minChoice = dataModel.minChoice;
                     this.maxChoice = dataModel.maxChoice;
