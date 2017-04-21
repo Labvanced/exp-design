@@ -48,7 +48,6 @@ SelectionElement.prototype.init = function() {
     var frameOrPageElement = this.parent;
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
-    this.availableOptions.push('please choose...');
 
 };
 
@@ -100,7 +99,6 @@ SelectionElement.prototype.fromJS = function(data) {
 
 
 function createSelectionElementComponents() {
-    // TODO: @Holger Add image FileManager
     ko.components.register('selection-editview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {

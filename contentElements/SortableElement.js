@@ -5,37 +5,71 @@ var SortableElement = function(expData) {
     this.label = "Sortable";
 
     //serialized
-    this.id = ko.observable(guid());
+
     this.type = "SortableElement";
-    this.selected = ko.observable(false);
+    this.margin = ko.observable('0pt');
+
     this.elements =  ko.observableArray([]).extend({sortById: null});
+    this.elementIds =  ko.observableArray([]).extend({sortById: null});
+    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.variable = ko.observable();
 
-    this.focus = function () {
-        this.dataModel.ckInstance.focus()
-    };
-
+    this.modifier = ko.observable(new Modifier(this.expData, this));
     ///// not serialized
     this.selected = ko.observable(false);
+    this.activeSorting = ko.observable(false);
+
     /////
 };
 
-SortableElement.prototype.addElem = function (elem) {
+SortableElement.prototype.modifiableProp = ["questionText"];
+SortableElement.prototype.dataType =   [ "categorical"];
+SortableElement.prototype.initWidth = 200;
+SortableElement.prototype.initHeight = 100;
 
+SortableElement.prototype.init = function() {
+    var globalVar = new GlobalVar(this.expData);
+    globalVar.dataType(GlobalVar.dataTypes[3]);
+    globalVar.scope(GlobalVar.scopes[2]);
+    globalVar.scale(GlobalVar.scales[0]);
+    var name = this.parent.name();
+    globalVar.name(name);
+    globalVar.resetStartValue();
+    this.variable(globalVar);
+
+    var frameOrPageElement = this.parent;
+    frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
+    this.setVariableBackRef();
+
+
+    this.addElem('sortable Element 1');
+    this.addElem('sortable Element 2');
+};
+
+SortableElement.prototype.setVariableBackRef = function() {
+    this.variable().addBackRef(this, this.parent, true, true, 'Sortable');
+};
+
+SortableElement.prototype.addElem = function (elemId) {
+    var  elem = ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">sortable content</span></span>');
     this.elements.push(elem);
+    this.elementIds.push(elemId);
+};
+
+SortableElement.prototype.removeElem = function () {
+    var idx = this.elements().length-1;
+    this.elements.splice(idx,1);
+    this.elementIds.splice(idx,1);
 };
 
 
-
 SortableElement.prototype.setPointers = function(entitiesArr) {
-
-    var self = this;
-
-    // convert ids to actual pointers:
-    this.elements(jQuery.map( this.elements(), function( id ) {
-        var elem = entitiesArr.byId[id];
-        elem.parent = self;
-        return elem;
-    } ));
+    var array = [];
+    for (var i=0; i<this.elements().length; i++) {
+        array[i] = ko.observable(this.elements()[i])
+    }
+    this.elements(array);
+    this.modifier().setPointers(entitiesArr);
 };
 
 /**
@@ -44,16 +78,7 @@ SortableElement.prototype.setPointers = function(entitiesArr) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 SortableElement.prototype.reAddEntities = function(entitiesArr) {
-    // add the direct child nodes:
-    jQuery.each( this.elements(), function( index, elem ) {
-        // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
-            entitiesArr.push(elem);
 
-        // recursively make sure that all deep tree nodes are in the entities list:
-        if (elem.reAddEntities)
-            elem.reAddEntities(entitiesArr);
-    } );
 };
 
 /**
@@ -62,10 +87,12 @@ SortableElement.prototype.reAddEntities = function(entitiesArr) {
  * @returns {PageData}
  */
 SortableElement.prototype.fromJS = function(data) {
-    this.id(data.id);
     this.type = data.type;
+    this.questionText(data.questionText);
     this.elements(data.elements);
-    return this;
+    this.elementIds(data.elementIds);
+    this.modifier(new Modifier(this.expData, this));
+    this.modifier().fromJS(data.modifier);
 };
 
 /**
@@ -74,9 +101,13 @@ SortableElement.prototype.fromJS = function(data) {
  */
 SortableElement.prototype.toJS = function() {
     return {
-        id: this.id(),
         type: this.type,
-        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
+        questionText: this.questionText(),
+        elements: jQuery.map( this.elements(), function( elem ) {
+            return elem();
+        }),
+        elementIds: this.elementIds(),
+        modifier: this.modifier().toJS()
     };
 };
 
@@ -84,18 +115,40 @@ SortableElement.prototype.toJS = function() {
 
 
 function createSortableElementComponents() {
-    // TODO: @Holger Add image FileManager
     ko.components.register('sortable-editview', {
         viewModel: {
-            createViewModel: function (section, componentInfo) {
-                var viewModel = function(section){
-                    this.section = section;
+            createViewModel: function (dataModel, componentInfo) {
+                var viewModel = function(dataModel){
+                    this.dataModel = ko.observable(dataModel);
+                    this.currentEntry = ko.observable('');
                     this.focus = function () {
-                        this.section.ckInstance.focus()
+                        this.dataModel().ckInstance.focus();
                     };
+
+                    if (this.enableSortingSubscription){
+                        this.enableSortingSubscription.dispose()
+                    }
+                    this.enableSortingSubscription = this.dataModel().activeSorting.subscribe(function(val){
+                        if (val){
+                            $(".sortableElement").sortable("enable");
+                        }
+                        else{
+                            $(".sortableElement").sortable("disable");
+                        }
+                    });
                 };
 
-                return new viewModel(section);
+                viewModel.prototype.addElem= function() {
+                    this.dataModel().addElem(this.currentEntry());
+                    this.currentEntry('');
+                };
+
+                viewModel.prototype.removeElem= function() {
+                    this.dataModel().removeElem()
+                };
+
+
+                return new viewModel(dataModel);
             }
 
         },
@@ -105,16 +158,39 @@ function createSortableElementComponents() {
 
     ko.components.register('sortable-preview',{
         viewModel: {
-            createViewModel: function(section, componentInfo){
-                var viewModel = function(section){
-                    this.section = section;
-
+            createViewModel: function(dataModel, componentInfo){
+                var viewModel = function(dataModel){
+                    var self = this;
+                    this.dataModel = ko.observable(dataModel);
+                    this.startPosition = ko.observable(null);
+                    this.stopPosition = ko.observable(null);
                     this.focus = function () {
-                        this.section.ckInstance.focus()
+                        this.dataModel().ckInstance.focus()
                     };
+                    $(".sortableElement" ).sortable({
+                        disabled: true,
+                        scrollSpeed: 20,
+                        scrollSensitivity: 10,
+                        start: function( event, ui ) {
+                            self.startPosition(ui.item.index());
+                        },
+                        stop: function( event, ui ) {
+                            self.stopPosition(ui.item.index());
+                            if (self.startPosition()){
+                                var elem =  self.dataModel().elementIds()[self.startPosition()];
+                                self.dataModel().elementIds.splice(self.startPosition(),1);
+                                self.dataModel().elementIds.splice(self.stopPosition(),0,elem);
+                                self.startPosition(null);
+                                self.stopPosition(null);
+                            }
+                        }
+                    });
+
                 };
 
-                return new viewModel(section);
+
+
+                return new viewModel(dataModel);
             }
         },
         template: { element: 'sortable-preview-template' }
@@ -123,16 +199,20 @@ function createSortableElementComponents() {
 
     ko.components.register('sortable-playerview',{
         viewModel: {
-            createViewModel: function(section, componentInfo){
-                var viewModel = function(section){
-                    this.section = section;
+            createViewModel: function(dataModel, componentInfo){
+                var viewModel = function(dataModel){
+                    this.dataModel = ko.observable(dataModel);
 
                     this.focus = function () {
-                        this.section.ckInstance.focus()
+                        this.dataModel().ckInstance.focus()
                     };
+                    $(".sortableElement" ).sortable({
+                        scrollSpeed: 2,
+                        scrollSensitivity: 2
+                    });
                 };
 
-                return new viewModel(section);
+                return new viewModel(dataModel);
             }
         },
         template: {element: 'sortable-playerview-template'}
