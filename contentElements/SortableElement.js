@@ -1,5 +1,7 @@
 
 var SortableElement = function(expData) {
+    var self = this;
+
     this.expData = expData;
     this.parent = null;
     this.label = "Sortable";
@@ -15,7 +17,18 @@ var SortableElement = function(expData) {
     this.variable = ko.observable();
 
     this.modifier = ko.observable(new Modifier(this.expData, this));
+
+
     ///// not serialized
+    this.elementIdsCombined = ko.computed(function() {
+        var elems = self.elementIds();
+        var output = '/***/';
+        for (var i =0; i<elems.length;i++){
+            output += self.elementIds()[i] + '/***/'
+        }
+        return output
+    });
+
     this.selected = ko.observable(false);
     this.activeSorting = ko.observable(false);
 
@@ -28,8 +41,9 @@ SortableElement.prototype.initWidth = 200;
 SortableElement.prototype.initHeight = 100;
 
 SortableElement.prototype.init = function() {
+
     var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[3]);
+    globalVar.dataType(GlobalVar.dataTypes[0]);
     globalVar.scope(GlobalVar.scopes[2]);
     globalVar.scale(GlobalVar.scales[0]);
     var name = this.parent.name();
@@ -41,9 +55,11 @@ SortableElement.prototype.init = function() {
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
 
+    this.addElem('sortable content 1');
+    this.addElem('sortable content 2');
+    this.addElem('sortable content 3');
 
-    this.addElem('sortable Element 1');
-    this.addElem('sortable Element 2');
+    this.variable().startValue().value(this.elementIdsCombined());
 };
 
 SortableElement.prototype.setVariableBackRef = function() {
@@ -51,7 +67,8 @@ SortableElement.prototype.setVariableBackRef = function() {
 };
 
 SortableElement.prototype.addElem = function (elemId) {
-    var  elem = ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">sortable content</span></span>');
+    var text = 'sortable content ' + (this.elements().length+1);
+    var  elem = ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">'+text+'</span></span>');
     this.elements.push(elem);
     this.elementIds.push(elemId);
 };
@@ -165,8 +182,10 @@ function createSortableElementComponents() {
                     this.startPosition = ko.observable(null);
                     this.stopPosition = ko.observable(null);
                     this.focus = function () {
-                        this.dataModel().ckInstance.focus()
+                        this.dataModel().ckInstance.focus();
+
                     };
+
                     $(".sortableElement" ).sortable({
                         disabled: true,
                         scrollSpeed: 20,
@@ -176,7 +195,7 @@ function createSortableElementComponents() {
                         },
                         stop: function( event, ui ) {
                             self.stopPosition(ui.item.index());
-                            if (self.startPosition()){
+                            if (self.startPosition()!=null){
                                 var elem =  self.dataModel().elementIds()[self.startPosition()];
                                 self.dataModel().elementIds.splice(self.startPosition(),1);
                                 self.dataModel().elementIds.splice(self.stopPosition(),0,elem);
@@ -184,6 +203,13 @@ function createSortableElementComponents() {
                                 self.stopPosition(null);
                             }
                         }
+                    });
+
+                    if (this.setVarSubscription){
+                        this.setVarSubscription.dispose();
+                    }
+                    this.setVarSubscription = this.dataModel().elementIdsCombined.subscribe(function(val){
+                       self.dataModel().variable().startValue().value(val)
                     });
 
                 };
@@ -201,14 +227,38 @@ function createSortableElementComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
+                    var self = this;
                     this.dataModel = ko.observable(dataModel);
-
+                    this.startPosition = ko.observable(null);
+                    this.stopPosition = ko.observable(null);
                     this.focus = function () {
-                        this.dataModel().ckInstance.focus()
+                        this.dataModel().ckInstance.focus();
+
                     };
+
                     $(".sortableElement" ).sortable({
-                        scrollSpeed: 2,
-                        scrollSensitivity: 2
+                        scrollSpeed: 20,
+                        scrollSensitivity: 10,
+                        start: function( event, ui ) {
+                            self.startPosition(ui.item.index());
+                        },
+                        stop: function( event, ui ) {
+                            self.stopPosition(ui.item.index());
+                            if (self.startPosition()!=null){
+                                var elem =  self.dataModel().elementIds()[self.startPosition()];
+                                self.dataModel().elementIds.splice(self.startPosition(),1);
+                                self.dataModel().elementIds.splice(self.stopPosition(),0,elem);
+                                self.startPosition(null);
+                                self.stopPosition(null);
+                            }
+                        }
+                    });
+
+                    if (this.setVarSubscription){
+                        this.setVarSubscription.dispose();
+                    }
+                    this.setVarSubscription = this.dataModel().elementIdsCombined.subscribe(function(val){
+                        self.dataModel().variable().value(val)
                     });
                 };
 

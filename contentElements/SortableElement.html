@@ -8,13 +8,11 @@
         <span style="cursor: pointer" data-bind="click:removeElem"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
     </div>
 
-
-    <label>Add New Item: </label><br>
-    <span>Idem Id:</span><input style="width: 120px; display: inline-block" type="text" class="form-control" data-bind="value:currentEntry">  <span style="cursor: pointer" data-bind="click:addElem"><img width="20" height="20" src="/resources/icons/add.svg"/></span></span>
-    <br><br>
+    <div>Add New Item: </div>
+    <span>Idem Id: </span><input style="width: 120px; margin-left:3px; display: inline-block" type="text" class="form-control" data-bind="value:currentEntry">  <span style="cursor: pointer" data-bind="click:addElem"><img width="20" height="20" src="/resources/icons/add.svg"/></span></span>
+    <br>
 
     <label>Sortable Elements: </label>
-
     <div style="max-height: 200px; overflow: auto; margin-left: 10px; border: 1px solid black; padding:5px">
         <div><span>Index:</span> <span style="margin-left: 30px">Element Ids:</span></div>
         <div data-bind="foreach: dataModel().elementIds">
@@ -29,8 +27,8 @@
     </div>
 
 
-    <div>
-        <label>Activate Sorting /Disable Text-Editing: </label>
+    <div style="margin-left: 10px">
+        <label>Activate Sorting / Disable Text-Editing: </label>
         <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: dataModel().activeSorting">
     </div>
 </template>
