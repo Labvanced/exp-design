@@ -2,7 +2,15 @@
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Progress Bar</div>
         <div>
-           Progress: <input type="number" min="0" max="100" data-bind="textInput: dataModel().progressValue">%
+            Progress: <input type="number" min="0" max="100" data-bind="textInput: dataModel().progressValue">%<br>
+
+            <!-- ko if: dataModel().variable()==null -->
+            Bind to  Variable: <span data-bind="click: selectVar" class="btn" style="margin-left: 10px; padding: 1px 3px; border: 1px solid darkgray;" role="button">select Var</span>
+            <!-- /ko -->
+            <!-- ko ifnot: dataModel().variable()==null -->
+            Bind to  Variable: <span data-bind="text:dataModel().variable().name"></span> <span data-bind="click: selectVar" class="btn" style="margin-left: 10px; padding: 1px 3px; border: 1px solid darkgray;" role="button">Change</span>
+            <!-- /ko -->
+
         </div>
     </div>
 </template>

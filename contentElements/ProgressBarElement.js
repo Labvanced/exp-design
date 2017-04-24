@@ -7,7 +7,7 @@ var ProgressBarElement = function(expData) {
     //serialized
     this.type = "ProgressBarElement";
     this.progressValue =  ko.observable(50);
-    this.id = ko.observable(guid());
+    this.variable = ko.observable(null);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -28,11 +28,33 @@ ProgressBarElement.prototype.init = function() {
 
 };
 
+
+ProgressBarElement.prototype.bindToVariable = function(variable) {
+
+    this.variable(variable);
+    this.setVariableBackRef();
+};
+
+ProgressBarElement.prototype.setVariableBackRef = function() {
+
+    this.variable().addBackRef(this, this.parent, true, true, 'Progress Bar');
+};
+
 ProgressBarElement.prototype.setPointers = function(entitiesArr) {
+    if (this.variable()) {
+        this.variable(entitiesArr.byId[this.variable()]);
+    }
+
     this.modifier().setPointers(entitiesArr);
 };
 
 ProgressBarElement.prototype.reAddEntities = function(entitiesArr) {
+    if (this.variable()){
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
+    }
+
     this.modifier().reAddEntities(entitiesArr);
 };
 
@@ -41,10 +63,14 @@ ProgressBarElement.prototype.selectTrialType = function(selectionSpec) {
 };
 
 ProgressBarElement.prototype.toJS = function() {
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
     return {
         type: this.type,
         progressValue: this.progressValue(),
-        id:this.id(),
+        variable: variableId,
         modifier: this.modifier().toJS()
     };
 };
@@ -52,8 +78,8 @@ ProgressBarElement.prototype.toJS = function() {
 ProgressBarElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.progressValue(data.progressValue);
-    this.id(data.id);
     this.modifier(new Modifier(this.expData, this));
+    this.variable(data.variable);
     this.modifier().fromJS(data.modifier);
 };
 
@@ -68,6 +94,18 @@ function createProgressBarComponents() {
                         this.dataModel.ckInstance.focus();
                     };
                 };
+
+                viewModel.prototype.selectVar = function (target) {
+                    var self = this;
+
+                    this.varTarget = target;
+                    var variableDialog = new AddNewVariable(this.dataModel().expData, function (newVariable) {
+                        self.dataModel().parent.parent.addVariableToLocalWorkspace(newVariable);
+                        self.dataModel().bindToVariable(newVariable);
+                    }, this.dataModel().parent.parent,true);
+                    variableDialog.show();
+                };
+
                 return new viewModel(dataModel);
             }
 
