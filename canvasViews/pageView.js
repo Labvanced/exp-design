@@ -43,19 +43,13 @@ PageView.prototype.init = function(size) {
             this.divContentInside = $("<div style='position: relative; height: 100%;' data-bind='component: {name : \"page-playerview\", params : $data}'></div>");
         }
 
-
-
-
         $(this.divContainer).append(this.divContentInside);
         ko.applyBindings(this, $(this.divContainer)[0]);
 
         // resize once and set dataModel
         this.resize(size);
 
-
-
         this.isInitialized = true;
-
     }
 };
 
@@ -63,9 +57,6 @@ PageView.prototype.setDataModel = function(pageData) {
 
     this.pageData = pageData;
     this.pageDataObs(pageData);
-
-    this.setFrameProperties(pageData);
-    this.setFrameSubscriptions(pageData);
 
 };
 
@@ -138,39 +129,6 @@ PageView.prototype.moveDownElement = function (index) {
 
 
 
-PageView.prototype.setFrameProperties = function (pageData) {
-    $('.pageInnerDiv').css(
-        "max-width", pageData.maxWidth(),
-        "background-color", pageData.bgColor()
-    );
-
-
-};
-
-
-PageView.prototype.setFrameSubscriptions = function (pageData) {
-    var self = this;
-    if (this.bgSubscrption){
-        this.bgSubscrption.dispose()
-    }
-    this.bgSubscrption = pageData.bgColor.subscribe(function(val){
-        $('.pageInnerDiv').css(
-            "background-color",val
-        );
-    });
-    if (this.widthSubscrption){
-        this.widthSubscrption.dispose()
-    }
-    this.widthSubscrption = pageData.maxWidth.subscribe(function(val){
-        $('.pageInnerDiv').css(
-            "max-width", val
-        );
-        // TODO with is not updated, reload required?!?
-
-    });
-};
-
-
 
 function createPageComponents() {
 
@@ -179,10 +137,7 @@ function createPageComponents() {
             createViewModel: function (pageView, componentInfo) {
                 var viewModel = function (pageView) {
                     this.pageView = pageView;
-                    this.pageView.setFrameProperties(pageView.pageData);
-                    this.pageView.setFrameSubscriptions(pageView.pageData);
                 };
-
                 return new viewModel(pageView);
             }
         },
@@ -195,7 +150,6 @@ function createPageComponents() {
             createViewModel: function (pageView, componentInfo) {
                 var viewModel = function (pageView) {
                     this.pageView = pageView;
-                    this.pageView.setFrameProperties(pageView.pageData);
                 };
                 return new viewModel(pageView);
             }

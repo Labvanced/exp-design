@@ -1,7 +1,7 @@
 
 <template id="page-preview-template">
     <div class="pageOuterDiv" data-bind="with: pageView">
-        <div class="pageInnerDiv">
+        <div class="pageInnerDiv" data-bind="style: { backgroundColor: pageDataObs().bgColor, maxWidth: pageDataObs().maxWidth()+'px' }">
             <!-- ko if: pageDataObs() -->
 
                 <!-- ko if: !parent.previewPlayerView() -->
@@ -27,7 +27,7 @@
 
 <template id="page-playerview-template">
     <div class="pageOuterDiv" data-bind="with: pageView">
-        <div class="pageInnerDiv">
+        <div class="pageInnerDiv" data-bind="style: { backgroundColor: pageDataObs().bgColor, maxWidth: pageDataObs().maxWidth }">
             <!-- ko if: pageDataObs() -->
             <div class="pageElementsList" data-bind="foreach: pageDataObs().elements">
                 <div class="pageElementOuterBorder">
