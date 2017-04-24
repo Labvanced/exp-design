@@ -6,7 +6,6 @@ var VideoElement= function(expData) {
     this.parent = null;
 
     this.type = "VideoElement";
-    this.name = ko.observable("Video");
 
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
@@ -20,7 +19,6 @@ var VideoElement= function(expData) {
             return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
         }
         else return '';
-       
     });
 
     // modifier:
@@ -45,8 +43,8 @@ var VideoElement= function(expData) {
 };
 
 
-VideoElement.prototype.dataType =      [ "string", "string", "string"];
-VideoElement.prototype.modifiableProp = ["name","file_id","file_orig_name"];
+VideoElement.prototype.dataType =      ["string", "string"];
+VideoElement.prototype.modifiableProp = ["file_id","file_orig_name"];
 
 VideoElement.prototype.switchPlayState = function() {
     this.currentlyPlaying(!this.currentlyPlaying());
@@ -82,7 +80,6 @@ VideoElement.prototype.fromJS = function(data) {
     var self = this;
     this.type = data.type;
     this.dataType = data.dataType;
-    this.name(data.name);
     this.file_id(data.file_id);
     this.file_orig_name(data.file_orig_name);
     if (data.hasOwnProperty('showMediaControls')) {
@@ -98,7 +95,6 @@ VideoElement.prototype.toJS = function() {
     return {
         type: this.type,
         dataType: this.dataType,
-        name: this.name(),
         file_id: this.file_id(),
         file_orig_name: this.file_orig_name(),
         showMediaControls: this.showMediaControls(),
@@ -117,7 +113,6 @@ function createVideoComponents() {
         seekBar.addEventListener("change", function() {
             dataModel.jumpToByFraction(seekBar.value / 100);
         });
-        this.name = dataModel.parent.name;
 
         this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function(percentage) {
             seekBar.value = percentage;

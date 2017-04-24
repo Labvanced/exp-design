@@ -37,8 +37,8 @@ PageElement.prototype.selectTrialType = function(selectionSpec) {
     this.content().modifier().selectTrialType(selectionSpec);
 };
 
-PageElement.prototype.modifiableProp = ["name"];
-PageElement.prototype.dataType =      [ "string"];
+PageElement.prototype.modifiableProp = [];
+PageElement.prototype.dataType =      [];
 
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually

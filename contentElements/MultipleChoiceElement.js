@@ -204,7 +204,6 @@ function createMultipleChoiceComponents() {
                     this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                     this.margin = dataModel.margin;
-                    this.name = dataModel.parent.name;
 
                     this.addChoice = function() {
                         this.dataModel().addEntry();

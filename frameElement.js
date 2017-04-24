@@ -56,8 +56,8 @@ FrameElement.prototype.addContent = function(element){
     element.parent = this;
 };
 
-FrameElement.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","string","string","boolean","string","boolean","boolean","boolean","numeric","numeric"];
-FrameElement.prototype.modifiableProp = ["visibility","editorX", "editorY", "editorWidth","editorHeight", "name","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","contentScaling","contentRotation"];
+FrameElement.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","string","boolean","string","boolean","boolean","boolean","numeric","numeric"];
+FrameElement.prototype.modifiableProp = ["visibility","editorX", "editorY", "editorWidth","editorHeight","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","contentScaling","contentRotation"];
 
 FrameElement.prototype.addNewResponse = function() {
     var resp = new Response(this);

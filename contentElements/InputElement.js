@@ -98,8 +98,6 @@ function createInputComponents() {
                 var viewModel = function(dataModel){
                     this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
-                    this.name = dataModel.parent.name;
-
 
                     this.focus = function () {
                         this.dataModel.ckInstance.focus()

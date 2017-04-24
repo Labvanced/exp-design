@@ -10,7 +10,6 @@ var ButtonElement = function(expData) {
     this.buttonText = ko.observable("Button");
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);
-    this.name = ko.observable("");
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));

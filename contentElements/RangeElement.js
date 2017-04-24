@@ -117,7 +117,6 @@ function createRangeComponents() {
                     this.maxChoice = dataModel.maxChoice;
                     this.startLabel = dataModel.startLabel;
                     this.endLabel = dataModel.endLabel;
-                    this.name = dataModel.parent.name;
 
                     this.focus = function () {
                         this.dataModel().ckInstance.focus()
