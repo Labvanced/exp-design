@@ -11,6 +11,8 @@ var ImageElement= function(expData) {
     //this.name = ko.observable("ImageHtml");
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
+
+    this.stimulusInformation  = ko.observable(null);
     
     this.shortName = ko.computed(function() {
         if (self.file_orig_name()){
@@ -45,8 +47,8 @@ var ImageElement= function(expData) {
 };
 
 
-ImageElement.prototype.dataType =      [ "string", "string", "boolean"];
-ImageElement.prototype.modifiableProp = ["file_id","file_orig_name", "stretchImageToFitBoundingBox"];
+ImageElement.prototype.dataType =      [ "string", "string", "boolean", "string"];
+ImageElement.prototype.modifiableProp = ["file_id","file_orig_name", "stretchImageToFitBoundingBox","stimulusInformation" ];
 ImageElement.prototype.initWidth = 300;
 ImageElement.prototype.initHeight = 200;
 
@@ -67,6 +69,9 @@ ImageElement.prototype.fromJS = function(data) {
     var self = this;
     this.type = data.type;
     this.dataType = data.dataType;
+    if (data.hasOwnProperty('stimulusInformation')){
+        this.stimulusInformation(data.stimulusInformation);
+    }
     //this.name(data.name);
     this.file_id(data.file_id);
     this.file_orig_name(data.file_orig_name);
@@ -83,6 +88,7 @@ ImageElement.prototype.toJS = function() {
     return {
         type: this.type,
         dataType: this.dataType,
+        stimulusInformation: this.stimulusInformation(),
         //name: this.name(),
         file_id: this.file_id(),
         file_orig_name: this.file_orig_name(),

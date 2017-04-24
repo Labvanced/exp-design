@@ -47,6 +47,7 @@ TriggerMouse.prototype.getParameterSpec = function() {
     return [
         'Stimulus Tag',
         'Time From Stimulus Onset',
+        'Stimulus Info'
     ];
 };
 

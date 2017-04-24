@@ -1,6 +1,10 @@
 <template id="button-editview-template">
-    Button Text:
-    <input style="max-width:50%" type="text" data-bind="textInput: dataModel.modifier().selectedTrialView.buttonText" class="taskeditor-input" placeholder="Button Text">
+    <div class="panel-body" style="height: 100%; margin-top: -10px">
+        <div class="taskeditor-header">Button</div>
+        Button Text:
+        <input style="max-width:50%" type="text" data-bind="textInput: dataModel.modifier().selectedTrialView.buttonText" class="taskeditor-input" placeholder="Button Text">
+    </div>
+
 </template>
 
 <template id="button-preview-template">
