@@ -43,7 +43,7 @@
     <br>
 
     <div data-bind="style: {marginLeft: dataModel().margin, marginRight: dataModel().margin}">
-        <ul class="sortableElement sortableOuter">
+        <ul class="sortableElement sortableOuter" id="sortableElementPrev">
             <!-- ko foreach: dataModel().elements -->
                 <li class="sortableInner ui-state-default">
                     <div data-bind="wysiwyg: $rawData, valueUpdate: 'afterkeydown'"></div>
@@ -63,7 +63,7 @@
     <br>
 
     <div data-bind="style: {marginLeft: dataModel().margin, marginRight: dataModel().margin}">
-        <ul class="sortableElement sortableOuter">
+        <ul class="sortableElement sortableOuter" id="sortableElementPlayer">
             <!-- ko foreach: dataModel().elements -->
             <li class="sortableInner ui-state-default">
                 <div data-bind="html: $rawData, valueUpdate: 'afterkeydown'"></div>

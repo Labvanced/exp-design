@@ -1,0 +1,22 @@
+<template id="progress-bar-editview-template">
+    <div class="panel-body" style="height: 100%; margin-top: -10px">
+        <div class="taskeditor-header">Progress Bar</div>
+        <div>
+           Progress: <input type="number" min="0" max="100" data-bind="textInput: dataModel().progressValue">%
+        </div>
+    </div>
+</template>
+
+<template id="progress-bar-preview-template">
+
+    <div class="myProgress">
+        <div class="myBar" id="progressBarPrev"><span data-bind="text: dataModel().progressValue()+'%'"></span></div>
+    </div>
+
+</template>
+
+<template id="progress-bar-playerview-template">
+    <div class="myProgress">
+        <div class="myBar" id="progressBarPlayer"><span data-bind="text: dataModel().progressValue()+'%'"></span></div>
+    </div>
+</template>

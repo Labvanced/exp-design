@@ -136,6 +136,7 @@ function createSortableElementComponents() {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
+                    var self = this;
                     this.dataModel = ko.observable(dataModel);
                     this.currentEntry = ko.observable('');
                     this.focus = function () {
@@ -147,10 +148,10 @@ function createSortableElementComponents() {
                     }
                     this.enableSortingSubscription = this.dataModel().activeSorting.subscribe(function(val){
                         if (val){
-                            $(".sortableElement").sortable("enable");
+                            self.sortableElement.sortable("enable");
                         }
                         else{
-                            $(".sortableElement").sortable("disable");
+                            self.sortableElement.sortable("disable");
                         }
                     });
                 };
@@ -186,7 +187,11 @@ function createSortableElementComponents() {
 
                     };
 
-                    $(".sortableElement" ).sortable({
+                    this.sortableElement = $('#sortableElementPrev');
+                    var varNewId  = guid();
+                    this.sortableElement.attr("id",varNewId);
+
+                    this.sortableElement.sortable({
                         disabled: true,
                         scrollSpeed: 20,
                         scrollSensitivity: 10,
@@ -236,7 +241,11 @@ function createSortableElementComponents() {
 
                     };
 
-                    $(".sortableElement" ).sortable({
+                    this.sortableElement = $('#sortableElementPlayer');
+                    var varNewId  = guid();
+                    this.sortableElement.attr("id",varNewId);
+
+                    this.sortableElement.sortable({
                         scrollSpeed: 20,
                         scrollSensitivity: 10,
                         start: function( event, ui ) {

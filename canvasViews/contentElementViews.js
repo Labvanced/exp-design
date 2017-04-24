@@ -68,6 +68,9 @@ ko.components.register('contentElementPreview', {
             else if (contentElement instanceof SortableElement) {
                 elem = $("<div data-bind='component: {name : \"sortable-preview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof ProgressBarElement) {
+                elem = $("<div data-bind='component: {name : \"progress-bar-preview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
             return viewModel;
         }
@@ -146,6 +149,9 @@ ko.components.register('contentElementPlayerview', {
             else if (contentElement instanceof SortableElement) {
                 elem = $("<div data-bind='component: {name : \"sortable-playerview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof ProgressBarElement) {
+                elem = $("<div data-bind='component: {name : \"progress-bar-playerview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
 
             return viewModel;
@@ -223,6 +229,9 @@ ko.components.register('contentElementEditview', {
             }
             else if (contentElement instanceof SortableElement) {
                 elem = $("<div data-bind='component: {name : \"sortable-editview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof ProgressBarElement) {
+                elem = $("<div data-bind='component: {name : \"progress-bar-editview\", params : $data.contentElement}'></div>");
             }
             $(divElem).append(elem);
 
