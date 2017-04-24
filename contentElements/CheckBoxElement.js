@@ -84,9 +84,11 @@ CheckBoxElement.prototype.fromJS = function(data) {
     var self = this;
     this.type=data.type;
     this.questionText(data.questionText);
-    this.elements(jQuery.map( data.elements, function( elemData ) {
-        return (new CheckBoxEntry(self)).fromJS(elemData);
-    } ));
+    if (data.elements) {
+        this.elements(jQuery.map(data.elements, function (elemData) {
+            return (new CheckBoxEntry(self)).fromJS(elemData);
+        }));
+    }
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };

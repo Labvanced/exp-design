@@ -118,9 +118,12 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
     this.questionText(data.questionText);
     this.variable(data.variable);
 
-    this.elements(jQuery.map( data.elements, function( elemData ) {
-        return (new MultipleChoiceEntry(self)).fromJS(elemData);
-    } ));
+    if (data.elements) {
+        this.elements(jQuery.map(data.elements, function (elemData) {
+            return (new MultipleChoiceEntry(self)).fromJS(elemData);
+        }));
+    }
+
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
