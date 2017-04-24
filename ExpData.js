@@ -66,19 +66,45 @@ ExpData.prototype.fixedVarNames = [
  * creates all predefined (fixed) variables
  */
 ExpData.prototype.createVars = function() {
-    this.varSubjectId((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Subject Id'));
-    this.varSubjectIndex((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'nominal', 'Subject Index'));
-    this.varGroupId((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group Id'));
-    this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session Start Time'));
-    this.varSessionId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Session Id'));
-    this.varSessionIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Session Index'));
-    this.varBlockId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Block Id'));
-    this.varBlockIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Block Index'));
-    this.varTaskId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Task Id'));
-    this.varTaskIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Task Index'));
-    this.varTrialId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Trial Id'));
-    this.varTaskIdx((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'Trial Index'));
-    this.varCondition((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Condition'));
+    if (!this.varSubjectId()) {
+        this.varSubjectId((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Subject Id'));
+    }
+    if (!this.varSubjectIndex()) {
+        this.varSubjectIndex((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'nominal', 'Subject Index'));
+    }
+    if (!this.varGroupId()) {
+        this.varGroupId((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group Id'));
+    }
+    if (!this.varSessionTimeStamp()) {
+        this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session Start Time'));
+    }
+    if (!this.varSessionId()) {
+        this.varSessionId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Session Id'));
+    }
+    if (!this.varSessionIndex()) {
+        this.varSessionIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Session Index'));
+    }
+    if (!this.varBlockId()) {
+        this.varBlockId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Block Id'));
+    }
+    if (!this.varBlockIndex()) {
+        this.varBlockIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Block Index'));
+    }
+    if (!this.varTaskId()) {
+        this.varTaskId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Task Id'));
+    }
+    if (!this.varTaskIndex()) {
+        this.varTaskIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Task Index'));
+    }
+    if (!this.varTrialId()) {
+        this.varTrialId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Trial Id'));
+    }
+    if (!this.varTaskIdx()) {
+        this.varTaskIdx((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'Trial Index'));
+    }
+    if (!this.varCondition()) {
+        this.varCondition((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Condition'));
+    }
 };
 
 /**
@@ -194,10 +220,19 @@ ExpData.prototype.setPointers = function() {
     this.availableGroups(availableGroups);
 
     // relink variables
+    var missingVar = false;
     for (i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varId = this[ExpData.prototype.fixedVarNames[i]]();
-        var varInstance = this.entities.byId[varId];
-        this[ExpData.prototype.fixedVarNames[i]](varInstance);
+        if (varId) {
+            var varInstance = this.entities.byId[varId];
+            this[ExpData.prototype.fixedVarNames[i]](varInstance);
+        }
+        else {
+            missingVar = true;
+        }
+    }
+    if (missingVar) {
+        this.createVars();
     }
 };
 
@@ -247,8 +282,10 @@ ExpData.prototype.reAddEntities = function() {
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varInstance = this[ExpData.prototype.fixedVarNames[i]]();
-        if (!entitiesArr.byId.hasOwnProperty(varInstance.id())) {
-            entitiesArr.push(varInstance);
+        if (varInstance) {
+            if (!entitiesArr.byId.hasOwnProperty(varInstance.id())) {
+                entitiesArr.push(varInstance);
+            }
         }
     }
 };
