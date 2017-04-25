@@ -1,7 +1,6 @@
 var LikertElement= function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Likert";
 
     //serialized
     this.type= "LikertElement";
@@ -25,6 +24,8 @@ var LikertElement= function(expData) {
     /////
 };
 
+LikertElement.prototype.label = "Likert";
+LikertElement.prototype.iconPath = "/resources/icons/tools/tool_rating.svg";
 LikertElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
 LikertElement.prototype.dataType =      [ "string","string","string"];
 LikertElement.prototype.initWidth = 350;

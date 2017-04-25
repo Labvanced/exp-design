@@ -26,9 +26,6 @@ var ImageElement= function(expData) {
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
-    this.shape = "square";
-    this.label = "Image";
-
     // not serialized
     this.imgSource = ko.computed( function() {
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
@@ -46,6 +43,8 @@ var ImageElement= function(expData) {
 };
 
 
+ImageElement.prototype.label = "Image";
+ImageElement.prototype.iconPath = "/resources/icons/tools/tool_image.svg";
 ImageElement.prototype.dataType =      [ "string", "string", "boolean", "string"];
 ImageElement.prototype.modifiableProp = ["file_id","file_orig_name", "stretchImageToFitBoundingBox","stimulusInformation" ];
 ImageElement.prototype.initWidth = 300;

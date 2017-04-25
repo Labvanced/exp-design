@@ -4,7 +4,6 @@ var SortableElement = function(expData) {
 
     this.expData = expData;
     this.parent = null;
-    this.label = "Sortable";
 
     //serialized
 
@@ -26,7 +25,7 @@ var SortableElement = function(expData) {
         for (var i =0; i<elems.length;i++){
             output += self.elementIds()[i] + '/***/'
         }
-        return output
+        return output;
     });
 
     this.selected = ko.observable(false);
@@ -35,6 +34,8 @@ var SortableElement = function(expData) {
     /////
 };
 
+SortableElement.prototype.label = "Sortable";
+SortableElement.prototype.iconPath = "/resources/icons/tools/sort.svg";
 SortableElement.prototype.modifiableProp = ["questionText"];
 SortableElement.prototype.dataType =   [ "categorical"];
 SortableElement.prototype.initWidth = 200;

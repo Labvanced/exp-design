@@ -2,7 +2,6 @@
 var CheckBoxElement= function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Checkbox";
 
     //serialized
     this.type= "CheckBoxElement";
@@ -22,6 +21,8 @@ var CheckBoxElement= function(expData) {
     /////
 };
 
+CheckBoxElement.prototype.label = "Checkbox";
+CheckBoxElement.prototype.iconPath = "/resources/icons/tools/tool_checkbox.svg";
 CheckBoxElement.prototype.modifiableProp = ["questionText"];
 CheckBoxElement.prototype.initWidth = 180;
 CheckBoxElement.prototype.initHeight = 90;

@@ -24,8 +24,7 @@ var AudioElement= function(expData) {
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
-    
-    this.label = "Audio";
+
 
     this.audioSource = ko.computed( function() {
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
@@ -44,6 +43,8 @@ var AudioElement= function(expData) {
 };
 
 
+AudioElement.prototype.label = "Audio";
+AudioElement.prototype.iconPath = "/resources/icons/tools/tool_sound.svg";
 AudioElement.prototype.dataType =      [ "string", "string"];
 AudioElement.prototype.modifiableProp = ["file_id","file_orig_name"];
 

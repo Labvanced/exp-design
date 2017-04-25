@@ -2,7 +2,6 @@
 var ButtonElement = function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Button";
 
     //serialized
     this.type= "ButtonElement";
@@ -20,6 +19,8 @@ var ButtonElement = function(expData) {
     /////
 };
 
+ButtonElement.prototype.label = "Button";
+ButtonElement.prototype.iconPath = "/resources/icons/tools/tool_button.svg";
 ButtonElement.prototype.modifiableProp = ["buttonText"];
 ButtonElement.prototype.dataType =      [ "string"];
 

@@ -2,7 +2,6 @@
 var RangeElement= function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Range";
 
     //serialized
     this.type= "RangeElement";
@@ -23,6 +22,8 @@ var RangeElement= function(expData) {
     /////
 };
 
+RangeElement.prototype.label = "Range";
+RangeElement.prototype.iconPath = "/resources/icons/tools/tool_slider.svg";
 RangeElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
 RangeElement.prototype.dataType =      [ "string","string","string"];
 RangeElement.prototype.initWidth = 500;

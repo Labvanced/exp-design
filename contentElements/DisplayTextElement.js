@@ -2,7 +2,6 @@
 var DisplayTextElement = function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "DisplayText";
 
     //serialized
     this.type = "DisplayTextElement";
@@ -16,6 +15,8 @@ var DisplayTextElement = function(expData) {
     /////
 };
 
+DisplayTextElement.prototype.label = "DisplayText";
+DisplayTextElement.prototype.iconPath = "/resources/icons/tools/textInput.svg";
 DisplayTextElement.prototype.modifiableProp = ["text"];
 DisplayTextElement.prototype.dataType =      [ "string"];
 DisplayTextElement.prototype.initWidth = 500;

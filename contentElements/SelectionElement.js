@@ -2,7 +2,6 @@
 var SelectionElement = function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Selection";
 
     //serialized
     this.type = "SelectionElement";
@@ -19,6 +18,8 @@ var SelectionElement = function(expData) {
     /////
 };
 
+SelectionElement.prototype.label = "Selection";
+SelectionElement.prototype.iconPath = "/resources/icons/tools/selection.svg";
 SelectionElement.prototype.modifiableProp = ["questionText"];
 SelectionElement.prototype.dataType =      [ "categorical"];
 SelectionElement.prototype.initWidth = 300;

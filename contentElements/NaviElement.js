@@ -2,7 +2,6 @@
 var NaviElement = function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Navigation";
 
     //serialized
     this.type= "NaviElement";
@@ -25,6 +24,8 @@ var NaviElement = function(expData) {
     /////
 };
 
+NaviElement.prototype.label = "Navigation";
+NaviElement.prototype.iconPath = "/resources/icons/tools/tool_navigation.svg";
 NaviElement.prototype.modifiableProp = ["buttonText1", "buttonText2"];
 NaviElement.prototype.dataType =      [ "string"];
 

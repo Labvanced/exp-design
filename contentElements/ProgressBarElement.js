@@ -2,7 +2,6 @@
 var ProgressBarElement = function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "ProgressBar";
 
     //serialized
     this.type = "ProgressBarElement";
@@ -17,6 +16,8 @@ var ProgressBarElement = function(expData) {
     /////
 };
 
+ProgressBarElement.prototype.label = "ProgressBar";
+ProgressBarElement.prototype.iconPath = "/resources/icons/tools/progressBar.svg";
 ProgressBarElement.prototype.modifiableProp = ["progressValue"];
 ProgressBarElement.prototype.dataType =      [ "numeric"];
 ProgressBarElement.prototype.initWidth = 500;

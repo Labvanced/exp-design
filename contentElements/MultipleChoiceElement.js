@@ -2,7 +2,6 @@
 var MultipleChoiceElement = function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Multiple Choice";
 
     //serialized
     this.type= "MultipleChoiceElement";
@@ -24,6 +23,8 @@ var MultipleChoiceElement = function(expData) {
     /////
 };
 
+MultipleChoiceElement.prototype.label = "Multiple Choice";
+MultipleChoiceElement.prototype.iconPath = "/resources/icons/tools/tool_multiplechoice.svg";
 MultipleChoiceElement.prototype.modifiableProp = ["questionText"];
 MultipleChoiceElement.prototype.dataType =      [ "string"];
 MultipleChoiceElement.prototype.initWidth = 180;

@@ -2,7 +2,6 @@
 var InvisibleElement= function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "InvisibleElement";
 
     //serialized
     this.type= "InvisibleElement";
@@ -12,6 +11,8 @@ var InvisibleElement= function(expData) {
     /////
 };
 
+InvisibleElement.prototype.label = "InvisibleElement";
+InvisibleElement.prototype.iconPath = "/resources/icons/tools/invisible.svg";
 InvisibleElement.prototype.modifiableProp = [];
 InvisibleElement.prototype.dataType =      [];
 

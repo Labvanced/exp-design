@@ -2,7 +2,6 @@
 var InputElement = function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Input";
 
     //serialized
     this.type = "InputElement";
@@ -20,6 +19,8 @@ var InputElement = function(expData) {
 };
 
 
+InputElement.prototype.label = "Input";
+InputElement.prototype.iconPath = "/resources/icons/tools/tool_input.svg";
 InputElement.prototype.modifiableProp = ["questionText"];
 InputElement.prototype.typeOptions = ["number","text","date","week","time","color"];
 InputElement.prototype.dataType =      [ "string"];

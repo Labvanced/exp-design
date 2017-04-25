@@ -24,8 +24,6 @@ var VideoElement= function(expData) {
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
-    this.label = "Video";
-
     this.vidSource = ko.computed( function() {
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
             return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
@@ -42,7 +40,8 @@ var VideoElement= function(expData) {
     /////
 };
 
-
+VideoElement.prototype.label = "Video";
+VideoElement.prototype.iconPath = "/resources/icons/tools/tool_video.svg";
 VideoElement.prototype.dataType =      ["string", "string"];
 VideoElement.prototype.modifiableProp = ["file_id","file_orig_name"];
 

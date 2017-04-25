@@ -2,7 +2,6 @@
 var MultiLineInputElement = function(expData) {
     this.expData = expData;
     this.parent = null;
-    this.label = "Paragraph";
 
     //serialized
     this.type= "MultiLineInputElement";
@@ -17,6 +16,8 @@ var MultiLineInputElement = function(expData) {
     /////
 };
 
+MultiLineInputElement.prototype.label = "Paragraph";
+MultiLineInputElement.prototype.iconPath = "/resources/icons/tools/textInput.svg";
 MultiLineInputElement.prototype.modifiableProp = ["questionText"];
 MultiLineInputElement.prototype.dataType =      [ "string"];
 MultiLineInputElement.prototype.initWidth = 500;

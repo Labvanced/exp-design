@@ -3,7 +3,6 @@ var ScaleElement= function(expData) {
     var self = this;
     this.expData = expData;
     this.parent = null;
-    this.label = "Scale";
 
     //serialized
     this.type= "ScaleElement";
@@ -34,12 +33,15 @@ var ScaleElement= function(expData) {
     this.selected = ko.observable(false);
     /////
 };
-ScaleElement.prototype.addDeleteOptionsCol = ["left","right"];
 
+
+ScaleElement.prototype.label = "Scale";
+ScaleElement.prototype.iconPath = "/resources/icons/tools/tool_rating.svg";
 ScaleElement.prototype.modifiableProp = ["questionText","labels"];
 ScaleElement.prototype.dataType =      [ "string","string"];
 ScaleElement.prototype.initWidth = 750;
 ScaleElement.prototype.initHeight = 170;
+ScaleElement.prototype.addDeleteOptionsCol = ["left","right"];
 
 ScaleElement.prototype.init = function() {
     this.addEntry();
