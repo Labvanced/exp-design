@@ -12,7 +12,6 @@ var NaviElement = function(expData) {
 
     this.returnButton = ko.observable(true);
     this.selected = ko.observable(false);
-    this.name = ko.observable("");
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));

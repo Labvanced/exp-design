@@ -1,13 +1,25 @@
 
 <template id="page-preview-template">
     <div class="pageOuterDiv" data-bind="with: pageView">
-        <div class="pageInnerDiv">
+        <div class="pageInnerDiv" data-bind="style: { backgroundColor: pageDataObs().bgColor, maxWidth: pageDataObs().maxWidth()+'px' }">
             <!-- ko if: pageDataObs() -->
-            <div class="pageElementsList" data-bind="sortable: {data: pageDataObs().elements, options: {handle: '.pageElementHandle'}} ">
-                <div class="pageElementOuterBorder" data-bind="css: {selectedPageElement: $parent.pageDataObs().currSelectedElement()==$data}, click: function(){$parent.setSelectedElement($data)}">
-                    <div data-bind='component: {name : "pageElement-preview-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
+
+                <!-- ko if: !parent.previewPlayerView() -->
+                <div class="pageElementsList" data-bind="sortable: {data: pageDataObs().elements, options: {handle: '.pageElementHandle'}} ">
+                    <div class="pageElementOuterBorder" data-bind="css: {selectedPageElement: $parent.pageDataObs().currSelectedElement()==$data}, click: function(){$parent.setSelectedElement($data)}">
+                        <div data-bind='component: {name : "pageElement-preview-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
+                    </div>
                 </div>
-            </div>
+                <!-- /ko -->
+
+                <!-- ko if: parent.previewPlayerView() -->
+                <div class="pageElementsList" data-bind="foreach: pageDataObs().elements">
+                    <div class="pageElementOuterBorder">
+                        <div data-bind='component: {name : "pageElement-player-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
+                    </div>
+                </div>
+                <!-- /ko -->
+
             <!-- /ko -->
         </div>
     </div>
@@ -15,7 +27,7 @@
 
 <template id="page-playerview-template">
     <div class="pageOuterDiv" data-bind="with: pageView">
-        <div class="pageInnerDiv">
+        <div class="pageInnerDiv" data-bind="style: { backgroundColor: pageDataObs().bgColor, maxWidth: pageDataObs().maxWidth }">
             <!-- ko if: pageDataObs() -->
             <div class="pageElementsList" data-bind="foreach: pageDataObs().elements">
                 <div class="pageElementOuterBorder">

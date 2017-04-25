@@ -6,7 +6,6 @@ var AudioElement= function(expData) {
     this.parent = null;
 
     this.type = "AudioElement";
-    this.name = ko.observable("Audio");
 
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
@@ -45,8 +44,8 @@ var AudioElement= function(expData) {
 };
 
 
-AudioElement.prototype.dataType =      [ "string", "string", "string"];
-AudioElement.prototype.modifiableProp = ["name","file_id","file_orig_name"];
+AudioElement.prototype.dataType =      [ "string", "string"];
+AudioElement.prototype.modifiableProp = ["file_id","file_orig_name"];
 
 AudioElement.prototype.switchPlayState = function() {
     this.currentlyPlaying(!this.currentlyPlaying());
@@ -82,7 +81,6 @@ AudioElement.prototype.fromJS = function(data) {
     var self = this;
     this.type = data.type;
     this.dataType = data.dataType;
-    this.name(data.name);
     this.file_id(data.file_id);
     this.file_orig_name(data.file_orig_name);
     if (data.hasOwnProperty('showMediaControls')) {
@@ -98,7 +96,6 @@ AudioElement.prototype.toJS = function() {
     return {
         type: this.type,
         dataType: this.dataType,
-        name: this.name(),
         file_id: this.file_id(),
         file_orig_name: this.file_orig_name(),
         showMediaControls: this.showMediaControls(),
@@ -119,7 +116,6 @@ function createAudioComponents() {
         seekBar.addEventListener("change", function() {
             dataModel.jumpToByFraction(seekBar.value / 100);
         });
-        this.name = dataModel.parent.name;
 
         this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function(percentage) {
             seekBar.value = percentage;

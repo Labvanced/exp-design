@@ -8,7 +8,6 @@ var ImageElement= function(expData) {
     // serialized
 
     this.type = "ImageElement";
-    //this.name = ko.observable("ImageHtml");
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
 
@@ -72,7 +71,6 @@ ImageElement.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('stimulusInformation')){
         this.stimulusInformation(data.stimulusInformation);
     }
-    //this.name(data.name);
     this.file_id(data.file_id);
     this.file_orig_name(data.file_orig_name);
     this.modifier(new Modifier(this.expData, this));
@@ -89,7 +87,6 @@ ImageElement.prototype.toJS = function() {
         type: this.type,
         dataType: this.dataType,
         stimulusInformation: this.stimulusInformation(),
-        //name: this.name(),
         file_id: this.file_id(),
         file_orig_name: this.file_orig_name(),
         stretchImageToFitBoundingBox: this.stretchImageToFitBoundingBox(),

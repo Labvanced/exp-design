@@ -92,7 +92,6 @@ function createMultiLineInputComponents() {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
                     this.questionText = dataModel.questionText;
-                    this.name = dataModel.parent.name;
 
                     this.focus = function () {
                         dataModel.ckInstance.focus()

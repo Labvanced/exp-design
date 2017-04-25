@@ -119,8 +119,6 @@ function createLikertElementComponents() {
                     this.showNums = dataModel.showNums;
                     this.margin = dataModel.margin;
 
-                    this.name = dataModel.parent.name;
-
                     this.finish = function() {
                         this.choices([]);
                         for (var i = this.startChoice();i<=this.endChoice();i++){
