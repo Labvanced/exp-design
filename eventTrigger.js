@@ -58,7 +58,7 @@ TriggerMouse.prototype.getParameterSpec = function() {
  */
 TriggerMouse.prototype.triggerOnTarget = function(playerFrame,target) {
     this.event.triggerActions([
-        target.modifier().selectedTrialView.name(),
+        target.name(),
         playerFrame.getFrameTime()
     ]);
 };
@@ -77,7 +77,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
 
             for (var i = 0; i<this.targets().length;i++){
                 var target = this.targets()[i];
-
+                var self = this;
                 if (this.buttonType() == "Left"){
                     (function(event,target) {
                         if (!(target.content() instanceof NaviElement)){
@@ -88,11 +88,26 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                             });
                         }
                         else {
-                            $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.navi-button')).click(function(ev) {
-                                self.mouseX = playerFrame.mouseX;
-                                self.mouseY = playerFrame.mouseY;
-                                self.triggerOnTarget(playerFrame,target);
-                            });
+                            if (self.event.actions()[0] instanceof ActionJumpTo){
+                                if(self.event.actions()[0].jumpType()=="previousFrame"){
+                                    $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventBackward')).click(function(ev) {
+                                        ev.stopImmediatePropagation();
+                                        self.mouseX = playerFrame.mouseX;
+                                        self.mouseY = playerFrame.mouseY;
+                                        self.triggerOnTarget(playerFrame,target);
+                                    });
+                                }
+
+                                else if(self.event.actions()[0].jumpType()=="nextFrame"){
+                                    $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventForward')).click(function(ev) {
+                                        ev.stopImmediatePropagation();
+                                        self.mouseX = playerFrame.mouseX;
+                                        self.mouseY = playerFrame.mouseY;
+                                        self.triggerOnTarget(playerFrame,target);
+
+                                    });
+                                }
+                            }
                         }
 
                     })(event,target);
@@ -100,11 +115,36 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
 
                 else if (this.buttonType() == "Right"){
                     (function(event,target) {
-                        $(playerFrame.frameView.viewElements.byId[target.id()].div).contextmenu(function(ev) {
-                            self.mouseX = playerFrame.mouseX;
-                            self.mouseY = playerFrame.mouseY;
-                            self.triggerOnTarget(playerFrame,target);
-                        });
+                        if (!(target.content() instanceof NaviElement)){
+                            $(playerFrame.frameView.viewElements.byId[target.id()].div).contextmenu(function(ev) {
+                                self.mouseX = playerFrame.mouseX;
+                                self.mouseY = playerFrame.mouseY;
+                                self.triggerOnTarget(playerFrame,target);
+                            });
+                        }
+                        else {
+                            if (self.event.actions()[0] instanceof ActionJumpTo){
+                                if(self.event.actions()[0].jumpType()=="previousFrame"){
+                                    $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventBackward')).contextmenu(function(ev) {
+                                        ev.stopImmediatePropagation();
+                                        self.mouseX = playerFrame.mouseX;
+                                        self.mouseY = playerFrame.mouseY;
+                                        self.triggerOnTarget(playerFrame,target);
+                                    });
+                                }
+
+                                else if(self.event.actions()[0].jumpType()=="nextFrame"){
+                                    $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventForward')).contextmenu(function(ev) {
+                                        ev.stopImmediatePropagation();
+                                        self.mouseX = playerFrame.mouseX;
+                                        self.mouseY = playerFrame.mouseY;
+                                        self.triggerOnTarget(playerFrame,target);
+
+                                    });
+                                }
+                            }
+                        }
+
                     })(event,target);
                 }
             }
@@ -116,13 +156,42 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 var target = this.targets()[i];
                 // closure to make event persistent over loop:
                 (function(event,target) {
-                    $(playerFrame.frameView.viewElements.byId[target.id()].div).on('mousedown',function(ev) {
-                        if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
-                            self.mouseX = playerFrame.mouseX;
-                            self.mouseY = playerFrame.mouseY;
-                            self.triggerOnTarget(playerFrame,target);
+                    if (!(target.content() instanceof NaviElement)){
+                        $(playerFrame.frameView.viewElements.byId[target.id()].div).on('mousedown',function(ev) {
+                            if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
+                                self.mouseX = playerFrame.mouseX;
+                                self.mouseY = playerFrame.mouseY;
+                                self.triggerOnTarget(playerFrame,target);
+                            }
+                        });
+                    }
+                    else {
+                        if (self.event.actions()[0] instanceof ActionJumpTo){
+                            if(self.event.actions()[0].jumpType()=="previousFrame"){
+                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventBackward')).on('mousedown',function(ev) {
+                                    if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
+                                        ev.stopImmediatePropagation();
+                                        self.mouseX = playerFrame.mouseX;
+                                        self.mouseY = playerFrame.mouseY;
+                                        self.triggerOnTarget(playerFrame,target);
+                                    }
+
+                                });
+                            }
+
+                            else if(self.event.actions()[0].jumpType()=="nextFrame"){
+                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventForward')).on('mousedown',function(ev) {
+                                    if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
+                                        ev.stopImmediatePropagation();
+                                        self.mouseX = playerFrame.mouseX;
+                                        self.mouseY = playerFrame.mouseY;
+                                        self.triggerOnTarget(playerFrame,target);
+                                    }
+                                });
+                            }
                         }
-                    });
+                    }
+
                 })(event,target);
             }
             break;
@@ -132,13 +201,41 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 var target = this.targets()[i];
                 // closure to make event persistent over loop:
                 (function(event,target) {
-                    $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseup(function(ev) {
-                        if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
-                            self.mouseX = playerFrame.mouseX;
-                            self.mouseY = playerFrame.mouseY;
-                            self.triggerOnTarget(playerFrame,target);
+                    if (!(target.content() instanceof NaviElement)){
+                        $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseup(function(ev) {
+                            if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
+                                self.mouseX = playerFrame.mouseX;
+                                self.mouseY = playerFrame.mouseY;
+                                self.triggerOnTarget(playerFrame,target);
+                            }
+                        });
+                    }
+                    else {
+                        if (self.event.actions()[0] instanceof ActionJumpTo){
+                            if(self.event.actions()[0].jumpType()=="previousFrame"){
+                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventBackward')).mouseup(function(ev) {
+                                    if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
+                                        ev.stopImmediatePropagation();
+                                        self.mouseX = playerFrame.mouseX;
+                                        self.mouseY = playerFrame.mouseY;
+                                        self.triggerOnTarget(playerFrame,target);
+                                    }
+
+                                });
+                            }
+
+                            else if(self.event.actions()[0].jumpType()=="nextFrame"){
+                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventForward')).mouseup(function(ev) {
+                                    if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
+                                        ev.stopImmediatePropagation();
+                                        self.mouseX = playerFrame.mouseX;
+                                        self.mouseY = playerFrame.mouseY;
+                                        self.triggerOnTarget(playerFrame,target);
+                                    }
+                                });
+                            }
                         }
-                    });
+                    }
                 })(event,target);
             }
             break;
@@ -148,11 +245,39 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 var target = this.targets()[i];
                 // closure to make event persistent over loop:
                 (function (event, target) {
-                    $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseover(function (ev) {
-                        self.mouseX = playerFrame.mouseX;
-                        self.mouseY = playerFrame.mouseY;
-                        self.triggerOnTarget(playerFrame,target);
-                    });
+
+                    if (!(target.content() instanceof NaviElement)){
+                        $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseover(function (ev) {
+                            self.mouseX = playerFrame.mouseX;
+                            self.mouseY = playerFrame.mouseY;
+                            self.triggerOnTarget(playerFrame,target);
+                        });
+                    }
+                    else {
+                        if (self.event.actions()[0] instanceof ActionJumpTo){
+                            if(self.event.actions()[0].jumpType()=="previousFrame"){
+                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventBackward')).mouseover(function(ev) {
+                                    ev.stopImmediatePropagation();
+                                    self.mouseX = playerFrame.mouseX;
+                                    self.mouseY = playerFrame.mouseY;
+                                    self.triggerOnTarget(playerFrame,target);
+                                });
+                            }
+
+                            else if(self.event.actions()[0].jumpType()=="nextFrame"){
+                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventForward')).mouseover(function(ev) {
+                                    ev.stopImmediatePropagation();
+                                    self.mouseX = playerFrame.mouseX;
+                                    self.mouseY = playerFrame.mouseY;
+                                    self.triggerOnTarget(playerFrame,target);
+
+                                });
+                            }
+                        }
+                    }
+
+
+
                 })(event, target);
             }
             break;

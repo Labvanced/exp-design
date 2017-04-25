@@ -39,8 +39,17 @@ NaviElement.prototype.init = function() {
     var newAction = actionFactory(event, "ActionJumpTo");
     newAction.jumpType("previousFrame");
     event.actions.push(newAction);
-    event.name("Navigation Event");
+    event.name("Go Backward");
     this.parent.parent.events.push(event);
+
+    var event2 = new Event(this.parent.parent);
+    event2.trigger(new TriggerMouse(event2));
+    event2.trigger().targets.push(this.parent);
+    var newAction2 = actionFactory(event2, "ActionJumpTo");
+    newAction2.jumpType("nextFrame");
+    event2.actions.push(newAction2);
+    event2.name("Go Forward");
+    this.parent.parent.events.push(event2);
 };
 
 

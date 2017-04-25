@@ -599,7 +599,7 @@ ActionJumpTo.prototype.run = function(triggerParams) {
     if (this.jumpType() == "previousFrame"){
         player.currentFrame.endFrameAndGoBack();
     }
-    if (this.jumpType() == "nextFrame"){
+    else if (this.jumpType() == "nextFrame"){
         player.currentFrame.endFrame();
     }
     else if (this.jumpType() == "nextTrial"){
