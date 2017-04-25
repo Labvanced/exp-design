@@ -18,8 +18,11 @@ var NaviElement = function(expData) {
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
 
+
     ///// not serialized
     this.selected = ko.observable(false);
+    //navigation event
+    this.event = ko.observable(null);
     /////
 };
 
@@ -28,6 +31,19 @@ NaviElement.prototype.dataType =      [ "string"];
 
 NaviElement.prototype.initWidth = 400;
 NaviElement.prototype.initHeight = 50;
+
+NaviElement.prototype.init = function() {
+
+    var event = new Event(this.parent.parent);
+    event.trigger(new TriggerMouse(event));
+    event.trigger().targets.push(this.parent);
+    var newAction = actionFactory(event, "ActionJumpTo");
+    newAction.jumpType("previousFrame");
+    event.actions.push(newAction);
+    event.name("Navigation Event");
+    this.parent.parent.events.push(event);
+};
+
 
 NaviElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
@@ -54,7 +70,7 @@ NaviElement.prototype.toJS = function() {
 NaviElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.id(data.id);
-    this.buttonText1(data.buttonText2);
+    this.buttonText1(data.buttonText1);
     this.buttonText2(data.buttonText2);
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);

@@ -143,10 +143,12 @@ function createSortableElementComponents() {
                         this.dataModel().ckInstance.focus();
                     };
 
+
                     if (this.enableSortingSubscription){
                         this.enableSortingSubscription.dispose()
                     }
                     this.enableSortingSubscription = this.dataModel().activeSorting.subscribe(function(val){
+                        self.sortableElement = $('#'+self.dataModel().tempId);
                         if (val){
                             self.sortableElement.sortable("enable");
                         }
@@ -189,6 +191,7 @@ function createSortableElementComponents() {
 
                     this.sortableElement = $('#sortableElementPrev');
                     var varNewId  = guid();
+                    this.dataModel().tempId = varNewId;
                     this.sortableElement.attr("id",varNewId);
 
                     this.sortableElement.sortable({

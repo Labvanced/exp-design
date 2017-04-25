@@ -48,6 +48,30 @@ Sequence.prototype.setFactorGroup = function(factorGroup) {
     this.factorGroup = factorGroup;
 };
 
+
+Sequence.prototype.selectPreviousElement = function() {
+
+    var elements = this.elements();
+    var nextElement;
+
+    if (!this.currSelectedElement()){
+        nextElement = elements[0];
+    }
+    else {
+        var index = elements.indexOf(this.currSelectedElement());
+        if (index >0){
+            nextElement = elements[index-1];
+        }
+        else{
+            nextElement = elements[index];
+        }
+    }
+
+    this.currSelectedElement(nextElement);
+    return nextElement;
+};
+
+
 Sequence.prototype.selectNextElement = function() {
 
     var elements = this.elements();

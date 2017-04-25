@@ -596,6 +596,9 @@ ActionJumpTo.prototype.isValid = function(){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionJumpTo.prototype.run = function(triggerParams) {
+    if (this.jumpType() == "previousFrame"){
+        player.currentFrame.endFrameAndGoBack();
+    }
     if (this.jumpType() == "nextFrame"){
         player.currentFrame.endFrame();
     }

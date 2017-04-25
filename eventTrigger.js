@@ -80,11 +80,21 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
 
                 if (this.buttonType() == "Left"){
                     (function(event,target) {
-                        $(playerFrame.frameView.viewElements.byId[target.id()].div).click(function(ev) {
-                            self.mouseX = playerFrame.mouseX;
-                            self.mouseY = playerFrame.mouseY;
-                            self.triggerOnTarget(playerFrame,target);
-                        });
+                        if (!(target.content() instanceof NaviElement)){
+                            $(playerFrame.frameView.viewElements.byId[target.id()].div).click(function(ev) {
+                                self.mouseX = playerFrame.mouseX;
+                                self.mouseY = playerFrame.mouseY;
+                                self.triggerOnTarget(playerFrame,target);
+                            });
+                        }
+                        else {
+                            $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.navi-button')).click(function(ev) {
+                                self.mouseX = playerFrame.mouseX;
+                                self.mouseY = playerFrame.mouseY;
+                                self.triggerOnTarget(playerFrame,target);
+                            });
+                        }
+
                     })(event,target);
                 }
 
