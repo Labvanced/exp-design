@@ -101,27 +101,107 @@ VideoElement.prototype.toJS = function() {
     };
 };
 
-function createVideoComponents() {
 
-    var VideoEditViewModel = function(dataModel, componentInfo){
-        var self = this;
 
-        this.element = componentInfo.element;
-        this.dataModel = dataModel;
+/******************* View Model for Properties ***********************/
+
+
+var VideoEditViewModel = function(dataModel, componentInfo){
+    var self = this;
+
+    this.element = componentInfo.element;
+    this.dataModel = dataModel;
+    var seekBar = $(this.element).find('.seek-bar')[0];
+    seekBar.addEventListener("change", function() {
+        dataModel.jumpToByFraction(seekBar.value / 100);
+    });
+
+    this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function(percentage) {
+        seekBar.value = percentage;
+    });
+    seekBar.value = this.dataModel.currentTimePercentage();
+};
+VideoEditViewModel.prototype.dispose = function() {
+    console.log("disposing VideoEditViewModel");
+    this.subscriberTimePercentage.dispose();
+};
+
+
+/******************* View Model for Preview and for Player ***********************/
+
+var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
+    var self = this;
+    this.element = componentInfo.element;
+    this.dataModel = dataModel;
+
+    // only add playback functionality if not in sequence view:
+    if ($(this.element).parents('#sequenceView').length == 0) {
+
+        var myVideo = $(this.element).find('video')[0];
         var seekBar = $(this.element).find('.seek-bar')[0];
-        seekBar.addEventListener("change", function() {
+
+        seekBar.addEventListener("change", function () {
             dataModel.jumpToByFraction(seekBar.value / 100);
         });
 
-        this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function(percentage) {
+        this.dataModel.currentlyPlaying.subscribe(function (value) {
+            if (value) {
+                myVideo.play();
+            }
+            else {
+                myVideo.pause();
+            }
+        });
+
+        // add subscriber to be notified when the video should jump to specific time:
+        this.listenForJumpTo = function (evtParam) {
+            if (evtParam.jumpToFraction) {
+                var time = myVideo.duration * evtParam.jumpToFraction;
+                console.log("setting video time to " + time);
+                myVideo.currentTime = 5;
+            }
+        };
+        this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
+
+        // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
+        this.timeUpdateListener = function () {
+            if (!isNaN(myVideo.duration)) {
+                var percentage = Math.floor(100 * myVideo.currentTime / myVideo.duration);
+                self.dataModel.currentTimePercentage(percentage);
+            }
+        };
+        // Update the seek bar as the video plays
+        myVideo.addEventListener("timeupdate", this.timeUpdateListener);
+
+        this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
             seekBar.value = percentage;
         });
-        seekBar.value = this.dataModel.currentTimePercentage();
-    };
-    VideoEditViewModel.prototype.dispose = function() {
-        console.log("disposing VideoEditViewModel");
+    }
+
+    this.dataModel.vidSource.subscribe(function() {
+        var myVideo = $(self.element).find('video')[0];
+        myVideo.load();
+    });
+};
+
+VideoPreviewAndPlayerViewModel.prototype.dispose = function() {
+    console.log("disposing VideoPreviewAndPlayerViewModel");
+    // remove subscriber to be notified when the video should jump to specific time:
+    var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
+    if (index > -1) {
+        this.dataModel.subscribersForJumpEvents.splice(index, 1);
+    }
+    if (this.subscriberTimePercentage) {
         this.subscriberTimePercentage.dispose();
-    };
+    }
+    var myVideo = $(this.element).find('video')[0];
+    myVideo.removeEventListener("timeupdate", this.timeUpdateListener);
+};
+
+
+/******************* CREATE COMPONENT METHOD ***********************/
+
+function createVideoComponents() {
 
     ko.components.register('video-editview', {
         viewModel: {
@@ -131,73 +211,6 @@ function createVideoComponents() {
         },
         template: {element: 'video-editview-template'}
     });
-
-
-    var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
-        var self = this;
-        this.element = componentInfo.element;
-        this.dataModel = dataModel;
-
-        // only add playback functionality if not in sequence view:
-        if ($(this.element).parents('#sequenceView').length == 0) {
-
-            var myVideo = $(this.element).find('video')[0];
-            var seekBar = $(this.element).find('.seek-bar')[0];
-
-            seekBar.addEventListener("change", function () {
-                dataModel.jumpToByFraction(seekBar.value / 100);
-            });
-
-            this.dataModel.currentlyPlaying.subscribe(function (value) {
-                if (value) {
-                    myVideo.play();
-                }
-                else {
-                    myVideo.pause();
-                }
-            });
-
-            // add subscriber to be notified when the video should jump to specific time:
-            this.listenForJumpTo = function (evtParam) {
-                if (evtParam.jumpToFraction) {
-                    var time = myVideo.duration * evtParam.jumpToFraction;
-                    console.log("setting video time to " + time);
-                    myVideo.currentTime = 5;
-                }
-            };
-            this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
-
-            // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
-            this.timeUpdateListener = function () {
-                if (!isNaN(myVideo.duration)) {
-                    var percentage = Math.floor(100 * myVideo.currentTime / myVideo.duration);
-                    self.dataModel.currentTimePercentage(percentage);
-                }
-            };
-            // Update the seek bar as the video plays
-            myVideo.addEventListener("timeupdate", this.timeUpdateListener);
-
-            this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
-                seekBar.value = percentage;
-            });
-        }
-
-        this.dataModel.vidSource.subscribe(function() {
-            var myVideo = $(self.element).find('video')[0];
-            myVideo.load();
-        });
-    };
-    VideoPreviewAndPlayerViewModel.prototype.dispose = function() {
-        console.log("disposing VideoPreviewAndPlayerViewModel");
-        // remove subscriber to be notified when the video should jump to specific time:
-        var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
-        if (index > -1) {
-            this.dataModel.subscribersForJumpEvents.splice(index, 1);
-        }
-        this.subscriberTimePercentage.dispose();
-        var myVideo = $(this.element).find('video')[0];
-        myVideo.removeEventListener("timeupdate", this.timeUpdateListener);
-    };
 
     ko.components.register('video-preview',{
         viewModel: {
