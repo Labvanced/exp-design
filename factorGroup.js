@@ -54,8 +54,63 @@ var FactorGroup= function(expData) {
 
     }, this);
 
-
 };
+
+
+
+FactorGroup.prototype.getFixedFactorConditions = function() {
+
+    var conditions = this.conditionsLinear();
+    var factors = this.factors();
+
+    // get factor type values (random or fixed)
+    var type = [];
+    for (var i = 0; i < factors.length; i++) {
+        type.push(factors[i].factorType());
+    }
+
+    // get factor levels for each condition, remove factors levels of random factors
+    var factorLevels = [];
+    for (var i = 0; i < conditions.length; i++) {
+        factorLevels.push([]);
+        var levels = conditions[i].factorLevels();
+        for (var k = 0; k < levels.length; k++) {
+            if (type[k] == "fixed") {
+                factorLevels[i].push(levels[k].name());
+            }
+        }
+    }
+
+    // join factor levels. Conditions which only differ in random factors now have the identical string
+    var factorLevelsCombined = [];
+    for (var i = 0; i < factorLevels.length; i++) {
+        factorLevelsCombined.push(factorLevels[i].join())
+    }
+
+    // find matching strings and save their indicies in output array
+    var fixedFactorCondGroups = [];
+    var count = -1;
+    for (var i = 0; i < factorLevelsCombined.length; i++) {
+        var match = factorLevelsCombined[i];
+        if (match != '*merelyACopy*') {
+            count++;
+            fixedFactorCondGroups.push([]);
+            for (var k = i; k < factorLevelsCombined.length; k++) {
+                if (factorLevelsCombined[k] == match) {
+                    fixedFactorCondGroups[count].push(k);
+                    factorLevelsCombined[k] = "*merelyACopy*";
+                }
+            }
+        }
+    }
+
+    return fixedFactorCondGroups;
+};
+
+
+
+
+
 
 /**
  * adds a new factor to the tree.

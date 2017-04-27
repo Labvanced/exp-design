@@ -23,22 +23,31 @@ var ExpTrialLoop = function (expData) {
     
     this.zoomMode = ko.observable('fullscreen');
     this.visualDegreeToUnit = ko.observable(20);
-    
+
+    //properties
     this.name = ko.observable("New Task");
     this.type = "ExpTrialLoop";
     this.subSequence = ko.observable(null);
     this.subSequencePerFactorGroup = ko.observableArray([]);
-
     this.factorGroups = ko.observableArray([]);
-    this.eventVariables = ko.observableArray([]);
+    this.eventVariables = ko.observableArray([]); // still needed?
 
     //properties
-    this.trialsPerSub = ko.observable(0);
-    this.betweenSubjectDesign = ko.observable(false);
     this.repsPerTrialType = ko.observable(1).extend({ numeric: 0 });
-    this.minIntervalBetweenRep = ko.observable(0).extend({ numeric: 0 });
     this.isActive = ko.observable(false);
-    this.randomization = ko.observable("reshuffle");
+
+
+    // randomization settings
+    this.randomizationOverview = ko.observable("standard");
+    this.blockFixedFactorConditions = ko.observable(false);
+    this.trialRandomization = ko.observable("permute");
+    this.fixedTrialOrder = ko.observableArray([]);
+    this.minIntervalBetweenRep = ko.observable(0).extend({ numeric: 0 });
+    this.orderOfConditions = ko.observable("fixed");
+    this.allTrialsToAllSubjects = ko.observable(true);
+    this.percentTrialsShown = ko.observable(100);
+
+    // external devices
     this.webcamEnabled = ko.observable(false);
 
 
@@ -74,13 +83,7 @@ var ExpTrialLoop = function (expData) {
         return array;
 
     }, this);
-   
 
-    this.betweenSubjectDesign.subscribe(function(newVal) {
-        if (newVal == true) {
-            self.trialsPerSub(self.totalNrTrials());
-        }
-    });
 
 };
 
@@ -158,7 +161,6 @@ ExpTrialLoop.prototype.getRandomizedTrials = function() {
         allTrials[permuteWithIdx] = temp1;
     }
 
-    // TODO: use this.trialsPerSub() to restrict number of trials
 
     // TODO: make sure that there is spacing between repetitions:
     /*var minIntervalBetweenRep = this.minIntervalBetweenRep();
@@ -362,10 +364,35 @@ ExpTrialLoop.prototype.fromJS = function(data) {
 
     this.repsPerTrialType(data.repsPerTrialType);
     this.isActive(data.isActive);
-    this.randomization(data.randomization);
-    this.minIntervalBetweenRep(data.minIntervalBetweenRep);
-    this.webcamEnabled(data.webcamEnabled);
 
+    if (data.hasOwnProperty('randomizationOverview')){
+        this.randomizationOverview(data.randomizationOverview);
+    }
+    if (data.hasOwnProperty('blockFixedFactorConditions')){
+        this.blockFixedFactorConditions(data.blockFixedFactorConditions);
+    }
+    if (data.hasOwnProperty('trialRandoization')){
+        this.trialRandomization(data.trialRandomization);
+    }
+    if (data.hasOwnProperty('minIntervalBetweenRep')){
+        this.minIntervalBetweenRep(data.minIntervalBetweenRep);
+    }
+    if (data.hasOwnProperty('orderOfConditions')){
+        this.orderOfConditions(data.orderOfConditions);
+    }
+    if (data.hasOwnProperty('fixedTrialOrder')){
+        this.fixedTrialOrder(data.fixedTrialOrder);
+    }
+    if (data.hasOwnProperty('allTrialsToAllSubjects')){
+        this.allTrialsToAllSubjects(data.allTrialsToAllSubjects);
+    }
+    if (data.hasOwnProperty('percentTrialsShown')){
+        this.percentTrialsShown(data.percentTrialsShown);
+    }
+
+
+
+    this.webcamEnabled(data.webcamEnabled);
     this.eventVariables(data.eventVariables);
 
     return this;
@@ -391,10 +418,17 @@ ExpTrialLoop.prototype.toJS = function() {
 
         repsPerTrialType:  this.repsPerTrialType(),
         isActive:  this.isActive(),
-        randomization:  this.randomization(),
-        minIntervalBetweenRep: this.minIntervalBetweenRep(),
-        webcamEnabled: this.webcamEnabled(),
 
+        randomizationOverview:this.randomizationOverview(),
+        minIntervalBetweenRep: this.minIntervalBetweenRep(),
+        blockFixedFactorConditions: this.blockFixedFactorConditions(),
+        trialRandomization: this.trialRandomization(),
+        orderOfConditions: this.orderOfConditions(),
+        fixedTrialOrder: this.fixedTrialOrder(),
+        allTrialsToAllSubjects: this.allTrialsToAllSubjects(),
+        percentTrialsShown: this.percentTrialsShown(),
+
+        webcamEnabled: this.webcamEnabled(),
         eventVariables: jQuery.map( this.eventVariables(), function( eventVariables ) { return eventVariables.id(); })
     };
 };
