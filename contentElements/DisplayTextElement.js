@@ -12,6 +12,7 @@ var DisplayTextElement = function(expData) {
 
     ///// not serialized
     this.selected = ko.observable(false);
+    this.editText = ko.observable(false);
     /////
 };
 
@@ -36,6 +37,7 @@ DisplayTextElement.prototype.reAddEntities = function(entitiesArr) {
 };
 
 DisplayTextElement.prototype.selectTrialType = function(selectionSpec) {
+    this.editText(false); // This line is important! Otherwise, bug resets text when clicking on DefaultTrial!
     this.modifier().selectTrialType(selectionSpec);
 };
 

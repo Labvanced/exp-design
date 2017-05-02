@@ -7,6 +7,17 @@ var BgFrameElement = function(frameData,editor) {
         "left": 0,
         "top": 0
     });
+    this.divClickOverlay = document.createElement('div');
+    $(this.divClickOverlay).click(function() {
+        console.log("bg clicked");
+    });
+    $(this.divClickOverlay).css({
+        position: "absolute",
+        left: 0,
+        top: 0,
+        width: "100%",
+        height: "100%"
+    });
     this.canvas = document.createElement('canvas');
     this.canvas.id = "canvasBG";
     this.stage = new createjs.Stage(this.canvas);
@@ -33,7 +44,7 @@ var BgFrameElement = function(frameData,editor) {
     }
     this.gridSubscription = this.editor.parent.showGrid.subscribe(function(val){
         if (val){
-            $(self.div).append(self.canvas);
+            self.addGridToDOM();
         }
         else{
             $($(self.div).children()).remove();
@@ -69,8 +80,13 @@ var BgFrameElement = function(frameData,editor) {
     this.addCallback();
 
     if (this.editor.parent.showGrid()){
-        $(this.div).append(this.canvas);
+        self.addGridToDOM();
     }
+};
+
+BgFrameElement.prototype.addGridToDOM = function() {
+    $(this.div).append(this.canvas);
+    $(this.div).append(this.divClickOverlay);
 };
 
 BgFrameElement.prototype.update = function() {
