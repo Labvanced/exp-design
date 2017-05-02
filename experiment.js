@@ -5,13 +5,22 @@
  * @constructor
  */
 var Experiment = function () {
+
+    //////////////////////////// WARNING ////////////////////////////
+    //                                                             //
+    //           DO NOT CHANGE THIS CLASS, BECAUSE IT              //
+    //           REQUIRES REFACTORING OF THE DATABASE!             //
+    //                                                             //
+    /////////////////////////////////////////////////////////////////
+
     this.exp_id = ko.observable(0);
     this.guid = ko.observable(guid());
     this.exp_name = ko.observable('');
     this.version = ko.observable(1);
-    this.status = ko.observable('create'); //  "Create";"Record";"Analyze";"Finished"
+    this.status = ko.observable('create'); //  "create";"record";"analyze";"finished"
     this.num_exp_subjects = ko.observable(null);
-    
+    this.rec_session_data = [];
+
     // setup class instances for experiment functions
     this.exp_data = new ExpData(this);
     this.exp_data_obs = ko.observable(this.exp_data);
@@ -19,26 +28,29 @@ var Experiment = function () {
     this.analysis_data = new AnalysisData(this);
     this.private_data = new PrivateData(this);
 
-    this.dateLastModified = ko.observable(this.publishing_data.getCurrentDate());
-
     // local temporary member variables:
     this.hasLocalChanges = false;
     this.changesInTransit = false;
     this.tempDisableAutosave = false;
     this.lastSavedJsons = [];
 
+    //////////////////////////// WARNING ////////////////////////////
+    //                                                             //
+    //           DO NOT CHANGE THIS CLASS, BECAUSE IT              //
+    //           REQUIRES REFACTORING OF THE DATABASE!             //
+    //                                                             //
+    /////////////////////////////////////////////////////////////////
+
     var self = this;
 
     this.canBeModifiedOrDeleted = ko.computed(function () {
-        if (!self.publishing_data.recruitingEnabled() && self.publishing_data.sharingDesign()== 'none'){
-            return true
+        if (this.status() == "create"){
+            return true;
         }
         else{
             return false;
         }
     }, this);
-
-
 
     this.exp_name.subscribe(function(value) {
         self.publishing_data.exp_name(value)
@@ -59,11 +71,6 @@ Experiment.prototype.viewRecordings = function() {
 
 Experiment.prototype.copyExp = function() {
 
-};
-
-Experiment.prototype.publish = function() {
-    this.status('record');
-    this.save(null,this.status());
 };
 
 Experiment.prototype.endRecs = function() {
@@ -109,18 +116,23 @@ Experiment.prototype.addToHistory = function(serializedExp) {
     }
 };
 
+
+/**
+ * This function is deprecated! Use saveExpData or savePublishingData or saveAnalysisData instead!
+ * @deprecated
+ */
+Experiment.prototype.save = function() {
+    this.saveExpData();
+};
+
 /**
  * save this experiment and send to server
  */
-Experiment.prototype.save = function(sharing,recruiting) {
+Experiment.prototype.saveExpData = function() {
     var self = this;
 
-    // save only if not recruting or sharing
-    if (this.canBeModifiedOrDeleted() || sharing || recruiting){
-        this.publishing_data.dateLastModified(this.publishing_data.getCurrentDate()); // set currentDate
-
+    if (this.status() == "create"){
         console.log("save experiment " + this.exp_name() + " and send to server...");
-
         try {
             var serializedExp = this.toJS();
             if (uc.ctrlZenabled()) {
@@ -167,13 +179,75 @@ Experiment.prototype.save = function(sharing,recruiting) {
             });
         }
     }
-
 };
 
+Experiment.prototype.saveMetaData = function() {
+    var saveData = {
+        exp_id: this.exp_id(),
+        exp_name: this.exp_name(),
+        version: this.version(),
+        status: this.status()
+    };
+    uc.socket.emit('updateExperiment', saveData, function(response){
+        if (response.success){
+            console.log("saved experiment meta data to server.");
+        }
+        else {
+            console.log("error: could not transmit experiment meta data to server.");
+        }
+    });
+};
 
+Experiment.prototype.savePublishingData = function() {
+    if (this.publishing_data instanceof PublishingData){
+        var saveData = {
+            exp_id: this.exp_id(),
+            publishing_data: this.publishing_data().toJS()
+        };
+        uc.socket.emit('updateExperiment', saveData, function(response){
+            if (response.success){
+                console.log("saved experiment publishing data to server.");
+            }
+            else {
+                console.log("error: could not transmit publishing data to server.");
+            }
+        });
+    }
+};
 
+Experiment.prototype.saveAnalysisData = function() {
+    if (this.analysis_data instanceof AnalysisData){
+        var saveData = {
+            exp_id: this.exp_id(),
+            analysis_data: this.analysis_data().toJS()
+        };
+        uc.socket.emit('updateExperiment', saveData, function(response){
+            if (response.success){
+                console.log("saved experiment analysis data to server.");
+            }
+            else {
+                console.log("error: could not transmit analysis data to server.");
+            }
+        });
+    }
+};
 
-
+Experiment.prototype.savePrivateData = function() {
+    if (this.private_data instanceof PrivateData){
+        var saveData = {
+            exp_id: this.exp_id(),
+            private_data: this.private_data().toJS()
+        };
+        uc.socket.emit('updateExperiment', saveData, function(response){
+            if (response.success){
+                console.log("saved experiment private data to server.");
+            }
+            else {
+                console.log("error: could not transmit private data to server.");
+            }
+        });
+    }
+};
 
 /**
  * revert last step
@@ -212,13 +286,14 @@ Experiment.prototype.setPointers = function() {
  * @returns {Experiment}
  */
 Experiment.prototype.fromJS = function(data) {
+    var self = this;
+
     this.guid(data.guid);
     this.exp_id(data.exp_id);
     this.exp_name(data.exp_name);
     this.version(data.version);
     this.status(data.status);
     this.num_exp_subjects(data.num_exp_subjects);
-    this.dateLastModified(data.dateLastModified);
     if (data.hasOwnProperty("exp_data")){
         this.exp_data = new ExpData(this);
         this.exp_data.fromJS(data.exp_data);
@@ -237,6 +312,14 @@ Experiment.prototype.fromJS = function(data) {
 
     if (data.hasOwnProperty("private_data") && data.private_data != null){
         this.private_data.fromJS(data.private_data);
+    }
+
+    if (data.hasOwnProperty("rec_session_data")) {
+        this.rec_session_data = jQuery.map(data.rec_session_data, function (entityJson) {
+            var instance = new RecSession(self);
+            instance.fromJS(entityJson);
+            return instance;
+        });
     }
 
     return this;
@@ -282,8 +365,6 @@ Experiment.prototype.toJS = function() {
         exp_name: this.exp_name(),
         version: this.version(),
         status: this.status(),
-        num_exp_subjects: this.num_exp_subjects(),
-        dateLastModified: this.dateLastModified(),
         exp_data: exp_data_serialized,
         publishing_data: publishing_data_serialized,
         analysis_data: analysisData_serialized,

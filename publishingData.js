@@ -5,7 +5,7 @@ var PublishingData = function(experiment) {
     var self = this;
 
     // others
-    this.dateLastModified = ko.observable(this.getCurrentDate());
+    this.dateLastModified = ko.observable(getCurrentDate());
     
     // page 1 //
     this.sharingDesign = ko.observable('none'); // 'none', 'public'
@@ -100,75 +100,64 @@ var PublishingData = function(experiment) {
 
 PublishingData.prototype.fromJS = function(data) {
 
-        // page 1 //
-        this.sharingDesign(data.sharingDesign);
-        this.recruitInLibrary(data.recruitInLibrary);
-        this.recruitSecretly(data.recruitSecretly);
-        this.recruitExternal(data.recruitExternal);
-        this.brandingType(data.brandingType);
-        this.secrecyType(data.secrecyType);
-        this.passwordType(data.passwordType);
-        this.stopCondition(data.stopCondition);
-        this.recordingStopDate(data.recordingStopDate);
-        this.recordingStopTime(data.recordingStopTime);
-        this.recordingStopNrSubjects(data.recordingStopNrSubjects);
+    if (data.hasOwnProperty('dateLastModified')) {
+        this.dateLastModified(data.dateLastModified);
+    }
 
-        // page 2  //
-        this.exp_name(data.exp_name);
-        this.description(data.description);
-        this.img_file_id(data.img_file_id);
-        this.img_file_orig_name(data.img_file_orig_name);
-        this.jdenticonHash(data.jdenticonHash);
-        this.imageType(data.imageType);
-        this.categories(data.categories);
+    // page 1 //
+    this.sharingDesign(data.sharingDesign);
+    this.recruitInLibrary(data.recruitInLibrary);
+    this.recruitSecretly(data.recruitSecretly);
+    this.recruitExternal(data.recruitExternal);
+    this.brandingType(data.brandingType);
+    this.secrecyType(data.secrecyType);
+    this.passwordType(data.passwordType);
+    this.stopCondition(data.stopCondition);
+    this.recordingStopDate(data.recordingStopDate);
+    this.recordingStopTime(data.recordingStopTime);
+    this.recordingStopNrSubjects(data.recordingStopNrSubjects);
 
-        // page 3 //
-        this.advertisement(data.advertisement);
-        this.addHighlight(data.addHighlight);
-        this.addLabVancedSearch(data.addLabVancedSearch);
-        this.postOnAMT(data.postOnAMT);
-        this.termsCrowdsourcing(data.termsCrowdsourcing);
-        this.amountOfSubjects(data.amountOfSubjects);
+    // page 2  //
+    this.exp_name(data.exp_name);
+    this.description(data.description);
+    this.img_file_id(data.img_file_id);
+    this.img_file_orig_name(data.img_file_orig_name);
+    this.jdenticonHash(data.jdenticonHash);
+    this.imageType(data.imageType);
+    this.categories(data.categories);
 
-        // page 4 //
-        this.termsAccepted(data.termsAccepted);
-        this.copyrightsOk(data.copyrightsOk);
-        this.materialOk(data.materialOk);
-        this.addSpaceInMB(data.addSpaceInMB);
-        this.addNrStudiesToPublish(data.addNrStudiesToPublish);
-        this.addRecordingsPerWeek(data.addRecordingsPerWeek);
-        this.upgradeLevel(data.upgradeLevel);
+    // page 3 //
+    this.advertisement(data.advertisement);
+    this.addHighlight(data.addHighlight);
+    this.addLabVancedSearch(data.addLabVancedSearch);
+    this.postOnAMT(data.postOnAMT);
+    this.termsCrowdsourcing(data.termsCrowdsourcing);
+    this.amountOfSubjects(data.amountOfSubjects);
 
-        // After publication
-        this.individualizedLinks(data.individualizedLinks);
-        this.ratingValues(data.ratingValues);
-        this.raterUserIds(data.raterUserIds);
-        this.authorId(data.authorId);
-        this.publicationDate(data.publicationDate);
+    // page 4 //
+    this.termsAccepted(data.termsAccepted);
+    this.copyrightsOk(data.copyrightsOk);
+    this.materialOk(data.materialOk);
+    this.addSpaceInMB(data.addSpaceInMB);
+    this.addNrStudiesToPublish(data.addNrStudiesToPublish);
+    this.addRecordingsPerWeek(data.addRecordingsPerWeek);
+    this.upgradeLevel(data.upgradeLevel);
+
+    // After publication
+    this.individualizedLinks(data.individualizedLinks);
+    this.ratingValues(data.ratingValues);
+    this.raterUserIds(data.raterUserIds);
+    this.authorId(data.authorId);
+    this.publicationDate(data.publicationDate);
 
 };
-
-
-PublishingData.prototype.getCurrentDate = function() {
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
-    var yyyy = today.getFullYear();
-    if(dd<10){
-        dd='0'+dd;
-    }
-    if(mm<10){
-        mm='0'+mm;
-    }
-    var today = dd+'/'+mm+'/'+yyyy;
-    return today
-};
-
 
 
 PublishingData.prototype.toJS = function() {
 
     return {
+        dateLastModified: this.dateLastModified(),
+
         // page 1 //
         sharingDesign:this.sharingDesign(),
         recruitInLibrary: this.recruitInLibrary(),
