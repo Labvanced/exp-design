@@ -28,6 +28,8 @@ var GlobalVar = function (expData) {
     this.resetAtTrialStart = ko.observable(false);
     this.recordAtTrialEnd = ko.observable(false);
     this.startValue = ko.observable(null);
+    this.recType = ko.observable('overwrite'); // overwrite or stack
+
 
     this.isNameEditable = true; // this is set to false for variables that are created by our platform
     this.isScaleEditable = true; // this is set to false for variables that are created by our platform
@@ -38,8 +40,6 @@ var GlobalVar = function (expData) {
     this.subLevelEdit = ko.observable(false);
     this.value = ko.observable(null);
     this.backRefs = ko.observableArray([]).extend({sortById: null});
-
-    this.recType = ko.observable('overwrite'); // maybe last and series?
     this.recValue = null; // takes care of buffering
 
     this.shortName = ko.computed(function() {
@@ -49,6 +49,7 @@ var GlobalVar = function (expData) {
         else return '';
 
     });
+
 };
 
 
@@ -258,8 +259,10 @@ GlobalVar.prototype.fromJS = function(data) {
                 startValue = new GlobalVarValueUndefined(self);
                 break;
         }
-        startValue.fromJS(data.startValue);
-        this.startValue(startValue);
+        if (startValue) {
+            startValue.fromJS(data.startValue);
+            this.startValue(startValue);
+        }
     }
 
 
