@@ -97,11 +97,11 @@ Experiment.prototype.notifyChanged = function() {
 
     if (!this.tempDisableAutosave) {
         // only automatically save if there is not already a saving process in transit:
-        if (uc.autoSaveEnabled() && !this.changesInTransit) {
+        if (uc.userdata.accountSettingsData.autoSaveEnabled() && !this.changesInTransit) {
             this.save();
         }
         else {
-            if (uc.ctrlZenabled()) {
+            if (uc.userdata.accountSettingsData.ctrlZenabled()) {
                 var serializedExp = this.toJS();
                 this.addToHistory(serializedExp);
             }
@@ -135,7 +135,7 @@ Experiment.prototype.saveExpData = function() {
         console.log("save experiment " + this.exp_name() + " and send to server...");
         try {
             var serializedExp = this.toJS();
-            if (uc.ctrlZenabled()) {
+            if (uc.userdata.accountSettingsData.ctrlZenabled()) {
                 this.addToHistory(serializedExp);
             }
             this.changesInTransit = true;
@@ -253,16 +253,27 @@ Experiment.prototype.savePrivateData = function() {
  * revert last step
  */
 Experiment.prototype.revertLastSave = function() {
-    if (uc.ctrlZenabled() && this.lastSavedJsons.length > 1) {
+    if (uc.userdata.accountSettingsData.ctrlZenabled() && this.lastSavedJsons.length > 1) {
         console.log("revert last step");
         if (uc.currentEditorView instanceof TrialEditor) {
+            // first save the current view state (which task, which trial, which frame are selected currently):
             var task_id = uc.currentEditorView.expTrialLoop().id();
+            var selectedTrialType = uc.currentEditorView.selectedTrialType();
+            var selectedFrameId = uc.currentEditorView.dataModel.currSelectedElement().id();
+
+            // now revert to the last checkpoint:
             this.lastSavedJsons.pop();
             var temp = this.lastSavedJsons[this.lastSavedJsons.length - 1];
             this.fromJS(temp);
             this.setPointers();
+
+            // now reinitialize the view to the previous state:
             var task = this.exp_data.entities.byId[task_id];
             uc.currentEditorView.setTask(task);
+            uc.currentEditorView.reinitTaskView();
+            // TODO: use selectedTrialType to reset the view, need to convert to new instances...
+            uc.currentEditorView.dataModel.currSelectedElement(this.exp_data.entities.byId[selectedFrameId]);
+
         }
     }
 };

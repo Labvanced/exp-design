@@ -48,6 +48,9 @@ Sequence.prototype.setFactorGroup = function(factorGroup) {
     this.factorGroup = factorGroup;
 };
 
+Sequence.prototype.selectFirstElement = function() {
+    this.currSelectedElement(this.elements()[0]);
+};
 
 Sequence.prototype.selectPreviousElement = function() {
 
