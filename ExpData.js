@@ -20,6 +20,8 @@ var ExpData = function (parentExperiment) {
     // TODO: need to serialize / deserialize
     this.translations = ko.observableArray([]);
 
+    this.dateLastModified = ko.observable(getCurrentDate());
+
     // the following variables are recorded once per subject:
     this.varSubjectId =  ko.observable();
     this.varSubjectIndex =  ko.observable();
@@ -298,6 +300,10 @@ ExpData.prototype.reAddEntities = function() {
 ExpData.prototype.fromJS = function(data) {
     var self = this;
 
+    if (data.hasOwnProperty('dateLastModified')) {
+        this.dateLastModified(data.dateLastModified);
+    }
+
     if (data.hasOwnProperty('entities')) {
         this.entities(jQuery.map(data.entities, function (entityJson) {
             return entityFactory(entityJson, self);
@@ -335,6 +341,7 @@ ExpData.prototype.toJS = function() {
 
 
     var data = {
+        dateLastModified: this.dateLastModified(),
         entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
         availableTasks: jQuery.map( this.availableTasks(), function( task ) { return task.id(); }),
         availableBlocks: jQuery.map( this.availableBlocks(), function( block ) { return block.id(); }),

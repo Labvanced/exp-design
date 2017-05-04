@@ -170,6 +170,11 @@ if (typeof CKEDITOR !== 'undefined') {
 
             instance.on('blur',function( e ){
                 $("#editorToolbar").hide();
+                if (viewModel.hasOwnProperty('dataModel') && viewModel.dataModel.hasOwnProperty("editText")) {
+                    // This snippet is needed, so that clicking somewhere else will disable the edit and reediting requires a new double click.
+                    // Otherwise there would be a bug where default trial could overwrite the edited text!
+                    viewModel.dataModel.editText(false);
+                }
             });
 
             viewModel.ckInstance = instance;
