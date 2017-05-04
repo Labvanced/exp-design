@@ -46,6 +46,7 @@ var ExpTrialLoop = function (expData) {
     this.orderOfConditions = ko.observable("fixed");
     this.allTrialsToAllSubjects = ko.observable(true);
     this.percentTrialsShown = ko.observable(100);
+    this.balanceAmountOfConditions = ko.observable(true);
 
     // external devices
     this.webcamEnabled = ko.observable(false);
@@ -92,12 +93,6 @@ var ExpTrialLoop = function (expData) {
  */
 ExpTrialLoop.prototype.initNewInstance = function() {
     this.addFactorGroup();
-    //  this.addNewFrame();
- //   var subsequence = new Sequence(this.expData);
- //   this.subSequence(subsequence);
- //   this.subSequencePerFactorGroup([subsequence]);
- //   subsequence.parent = this;
- //   subsequence.setFactorGroup(this.factorGroups()[0]);
 };
 
 ExpTrialLoop.prototype.addNewFrame = function() {
@@ -131,9 +126,349 @@ ExpTrialLoop.prototype.renameGroup = function(facGroupIdx,flag) {
     }
 };
 
-ExpTrialLoop.prototype.getRandomizedTrials = function() {
+
+ExpTrialLoop.prototype.getCondGroups = function () {
+    var factorGroups = this.factorGroups();
+    var fixedFactorCondGrops = [];
+    var fixedFactorConds =  [];
+    for (var i = 0; i < factorGroups.length; i++) {
+        fixedFactorCondGrops.push(factorGroups[i].getFixedFactorConditions());
+    }
+    var count = 0;
+    var totalNrTrialsMin = 0;
+    var totalNrTrialsMax = 0;
+    for (var i = 0; i < fixedFactorCondGrops.length; i++) {
+        var arrOfOneFacGroup = fixedFactorCondGrops[i];
+        var conditions = factorGroups[i].conditionsLinear();
+        for (var k = 0; k < arrOfOneFacGroup.length; k++) {
+            count++;
+            var condArray = arrOfOneFacGroup[k];
+            var totalVariations = 0;
+            var varArray = [];
+
+            for (var j = 0; j < condArray.length; j++) {
+                totalVariations += conditions[condArray[j]].trials().length;
+                varArray.push(conditions[condArray[j]].trials().length);
+            }
+
+            var minVar = Math.min.apply(null, varArray);
+            var maxVar = Math.max.apply(null, varArray);
+            totalNrTrialsMin += minVar;
+            totalNrTrialsMax += maxVar;
+
+            var obj = {
+                nrOfCondition: count,
+                nameOfFactorGroup: factorGroups[i].name(),
+                nrOfVariations:totalVariations,
+                minNrOfTrials: minVar,
+                maxNrOfTrials: maxVar
+            };
+            fixedFactorConds.push(obj);
+        }
+    }
+
+    var obj = {
+        fixedFactorConds: fixedFactorConds,
+        totalNrTrialsMax: totalNrTrialsMax,
+        totalNrTrialsMin: totalNrTrialsMin
+
+    };
+    return obj;
+
+};
+
+
+ExpTrialLoop.prototype.getCondGroups2 = function (facGroupIdx) {
+
+    var factorGroup = this.factorGroups()[facGroupIdx];
+    var conditions = factorGroup.conditionsLinear();
+    var arrOfOneFacGroup = factorGroup.getFixedFactorConditions();
+    var fixedFactorConds =  [];
+
+    var count = 0;
+    var totalNrTrialsMin = 0;
+    var totalNrTrialsMax = 0;
+
+    for (var k = 0; k < arrOfOneFacGroup.length; k++) {
+        count++;
+        var condArray = arrOfOneFacGroup[k];
+        var totalVariations = 0;
+        var varArray = [];
+
+        for (var j = 0; j < condArray.length; j++) {
+            totalVariations += conditions[condArray[j]].trials().length;
+            varArray.push(conditions[condArray[j]].trials().length);
+        }
+
+        var minVar = Math.min.apply(null, varArray);
+        var maxVar = Math.max.apply(null, varArray);
+        totalNrTrialsMin += minVar;
+        totalNrTrialsMax += maxVar;
+
+        var obj = {
+            nrOfCondition: count,
+            nameOfFactorGroup: factorGroup.name(),
+            nrOfVariations:totalVariations,
+            minNrOfTrials: minVar,
+            maxNrOfTrials: maxVar
+        };
+        fixedFactorConds.push(obj);
+    }
+
+
+    var obj = {
+        fixedFactorConds: fixedFactorConds,
+        totalNrTrialsMax: totalNrTrialsMax,
+        totalNrTrialsMin: totalNrTrialsMin
+
+    };
+    return obj;
+
+};
+
+
+
+ExpTrialLoop.prototype.doTrialRandomization = function() {
+
+    var allTrials = [];
+    for (var facGroupIdx =0; facGroupIdx <  this.factorGroups().length; facGroupIdx++) {
+        var outArr = this.getFactorLevels(facGroupIdx);
+        var factorLevels = outArr[0];
+        var factorIndicies = outArr[1];
+        var conditions = this.getConditionFromFactorLevels(factorIndicies,factorLevels,facGroupIdx);
+        var trials = this.drawTrialsFromConditions(conditions,facGroupIdx);
+        allTrials = allTrials.concat(trials);
+    }
+    return this.getRandomizedTrials(allTrials);
+};
+
+
+ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupIdx) {
+
+    var ffConds = this.factorGroups()[facGroupIdx].getFixedFactorConditions();
+
+    var excludedTrialsPerCondGroup = [];
+    for (var condGroup =0; condGroup < ffConds.length; condGroup++) {
+        excludedTrialsPerCondGroup.push([]);
+    }
+
+    var Trials = [];
+    for (var trialIndex=0; trialIndex < conditions.length; trialIndex++) {
+        var condition = conditions[trialIndex];
+
+        var condGroup = this.getCondGroup(condition.conditionIdx()-1,ffConds);
+        var nrExistingTrials =  condition.trials().length;
+
+        var options = [];
+        for (var i=0; i <nrExistingTrials; i++) {
+            if (excludedTrialsPerCondGroup[condGroup].indexOf(i)<0){
+                options.push(i);
+            }
+        }
+
+         if (options.length<1){
+             console.log("WARNING, too less trials for repeating condition");
+         }
+        var randValue = Math.floor(Math.random()*options.length);
+        excludedTrialsPerCondGroup[condGroup].push(randValue);
+        Trials.push(condition.trials()[randValue]);
+
+    }
+
+    return Trials
+};
+
+
+ExpTrialLoop.prototype.getCondGroup = function(conditionIdx,ffConds) {
+
+    var ffGroup = null;
+    for (var condGroup =0; condGroup < ffConds.length; condGroup++) {
+        var group = ffConds[condGroup];
+        if (group.indexOf(conditionIdx)>=0){
+            ffGroup = condGroup;
+            break
+        }
+    }
+
+    return ffGroup
+};
+
+
+ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
+
+    var arr = this.factorGroups()[factorGroupIdx].getFixedFactorLevels();
+    var allConds = arr[0];
+    var factorNames = arr[1];
+    var ffConds = this.factorGroups()[factorGroupIdx].getFixedFactorConditions();
+    var factors = this.factorGroups()[factorGroupIdx].factors();
+    var factorLevels = [];
+
+    var obj= this.getCondGroups2(factorGroupIdx);
+    var fixedFactorConds = obj.fixedFactorConds;
+
+    for (var i=0; i < ffConds.length; i++) {
+        for (var k=0; k < fixedFactorConds[i].minNrOfTrials; k++) {
+           var temp =  allConds[ffConds[i][0]].slice(0);
+           factorLevels.push(temp)
+        }
+    }
+
+    for (var facIdx=0; facIdx < factors.length; facIdx++) {
+        factor = factors[facIdx];
+        if (factor.factorType()=='random') {
+
+            var factor = factors[facIdx];
+            var facName = factor.globalVar().name();
+            factorNames.push(facIdx);
+            var levels = factor.globalVar().levels();
+            var nrLevels = levels.length;
+
+
+            if (factor.randomizationType()=='unbalanced'){
+                for (var trialIdx =0; trialIdx < factorLevels.length; trialIdx++) {
+                    var randValue = Math.floor(Math.random()*nrLevels);
+                    factorLevels[trialIdx].push(levels[randValue].name());
+                }
+            }
+
+            else if (factor.randomizationType()=='balancedTask'){  // role dice balanced in task
+                var trialSplit = Math.floor(factorLevels.length/nrLevels);
+                var remainder = factorLevels.length%nrLevels;
+
+                var trialIdx = 0;
+                for (var lvlIndex=0; lvlIndex <levels.length; lvlIndex++) {
+                    for (var repIndex=0; repIndex <trialSplit; repIndex++) {
+                        factorLevels[trialIdx].push(levels[lvlIndex].name());
+                        trialIdx ++;
+                    }
+                }
+
+                for (var remain=0; remain < remainder; remain++) {
+                    factorLevels[trialIdx].push(levels[remain].name());
+                    trialIdx ++;
+                }
+
+            }
+
+            else if(factor.randomizationType()=='balancedConditions') {
+
+                var startOfConditionIndex = 0;
+                var endOfConditionIndex = 0;
+
+                for (var k = 0; k < fixedFactorConds.length; k++) {
+
+                    endOfConditionIndex += fixedFactorConds[k].minNrOfTrials;
+
+                    if (endOfConditionIndex > startOfConditionIndex) {
+                        var nrTrials = endOfConditionIndex - startOfConditionIndex;
+
+                        var repsPerLvl = Math.floor(nrTrials / nrLevels);
+                        var remainder = nrTrials % nrLevels;
+
+                        var counter = startOfConditionIndex;
+                        for (var repetition = 0; repetition < repsPerLvl; repetition++) {
+                            for (var l = 0; l < levels.length; l++) {
+                                factorLevels[counter].push(levels[l].name());
+                                counter++;
+                            }
+                        }
+                        for (var l = 0; l < remainder; l++) {
+                            factorLevels[counter].push(levels[l].name());
+                            counter++;
+                        }
+                        startOfConditionIndex = endOfConditionIndex;
+                    }
+                }
+            }
+
+            else if (factor.randomizationType()=='balancedBetweenSubjects'){
+                // ToDO
+            }
+
+        }
+    }
+
+
+    return [factorLevels,factorNames]
+
+};
+
+
+ExpTrialLoop.prototype.getConditionFromFactorLevels = function(factorIndicies,factorLevels,factorGroup) {
+
+
+    var conditions = this.factorGroups()[factorGroup].conditionsLinear();
+
+    var allCondLevels = [];
+    for (var condIdx = 0; condIdx < conditions.length; condIdx++) {
+        var facLevels = conditions[condIdx].factorLevels();
+
+
+        var concatStr= '';
+        for (var facIndex = 0; facIndex <facLevels.length; facIndex++) {
+            if (facIndex <(facLevels.length-1)){
+                concatStr += facLevels[facIndex].name() +',';
+            }
+            else{
+                concatStr += facLevels[facIndex].name();
+            }
+
+        }
+        allCondLevels.push(concatStr);
+    }
+
+    var reIndexed = [];
+    for (var i = 0; i < factorIndicies.length; i++) {
+        reIndexed.push(factorIndicies.indexOf(i))
+    }
+
+    var presentedConditions  = [];
+    for (var trialIdx = 0; trialIdx < factorLevels.length; trialIdx++) {
+        var temp = factorLevels[trialIdx];
+        var temp2 = [];
+        for (var i = 0; i < temp.length; i++) {
+            temp2.push(temp[reIndexed[i]])
+        }
+
+        var searchStr = temp2.join();
+        var condIdx =  allCondLevels.indexOf(searchStr);
+        if(condIdx>=0 &&condIdx<=conditions.length-1){
+            presentedConditions.push(conditions[allCondLevels.indexOf(searchStr)]);
+        }
+        else{
+            console.log("error condition not found in randomization procedure");
+        }
+    }
+
+  return presentedConditions
+
+};
+
+ExpTrialLoop.prototype.reshuffle = function(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+};
+
+
+
+ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials) {
 
     // first read out all trialVariations from all TrialGroups into one Array:
+    /**
     var allTrials = [];
     for (var facGrpIdx=0; facGrpIdx < this.factorGroups().length; facGrpIdx++) {
         var conditions = this.factorGroups()[facGrpIdx].conditionsLinear();
@@ -152,14 +487,31 @@ ExpTrialLoop.prototype.getRandomizedTrials = function() {
         }
     }
 
+     for (var i = allTrials.length - 1; i > 0; i--) {
+
+
+            var permuteWithIdx = Math.floor(Math.random() * (i + 1)); // random number between 0 and i
+            var temp1 = allTrials[i];
+            allTrials[i] = allTrials[permuteWithIdx];
+            allTrials[permuteWithIdx] = temp1;
+        }
+     **/
+
+   // var ffConds = this.factorGroups()[facGroupIdx].getFixedFactorConditions();
+   // var condGroup = this.getCondGroup(condition.conditionIdx()-1,ffConds);
+
+
     // now randomize:
     console.log("do randomization...");
-    for (var i = allTrials.length - 1; i > 0; i--) {
-        var permuteWithIdx = Math.floor(Math.random() * (i + 1)); // random number between 0 and i
-        var temp1 = allTrials[i];
-        allTrials[i] = allTrials[permuteWithIdx];
-        allTrials[permuteWithIdx] = temp1;
+
+    if (this.trialRandomization()=="permute"){
+        allTrials = this.reshuffle(allTrials);
     }
+    else if (this.trialRandomization()=="fixed"){
+
+    }
+
+
 
 
     // TODO: make sure that there is spacing between repetitions:
@@ -194,10 +546,6 @@ ExpTrialLoop.prototype.getRandomizedTrials = function() {
             console.log("constraints could not be satisfied!");
         }
     }*/
-
-    // TODO: use the following variables:
-    // this.betweenSubjectDesign(false);
-    // this.randomization();
 
 
     // convert to full trial specification:
@@ -389,7 +737,9 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('percentTrialsShown')){
         this.percentTrialsShown(data.percentTrialsShown);
     }
-
+    if (data.hasOwnProperty('balanceAmountOfConditions')){
+        this.balanceAmountOfConditions(data.balanceAmountOfConditions);
+    }
 
 
     this.webcamEnabled(data.webcamEnabled);
@@ -427,6 +777,8 @@ ExpTrialLoop.prototype.toJS = function() {
         fixedTrialOrder: this.fixedTrialOrder(),
         allTrialsToAllSubjects: this.allTrialsToAllSubjects(),
         percentTrialsShown: this.percentTrialsShown(),
+        balanceAmountOfConditions: this.balanceAmountOfConditions(),
+
 
         webcamEnabled: this.webcamEnabled(),
         eventVariables: jQuery.map( this.eventVariables(), function( eventVariables ) { return eventVariables.id(); })

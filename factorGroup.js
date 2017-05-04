@@ -67,12 +67,18 @@ FactorGroup.prototype.getFixedFactorConditions = function() {
     var type = [];
     for (var i = 0; i < factors.length; i++) {
         type.push(factors[i].factorType());
+        if (factors[i].factorType() == "random") {
+
+        }
+
     }
 
     // get factor levels for each condition, remove factors levels of random factors
     var factorLevels = [];
+
     for (var i = 0; i < conditions.length; i++) {
         factorLevels.push([]);
+
         var levels = conditions[i].factorLevels();
         for (var k = 0; k < levels.length; k++) {
             if (type[k] == "fixed") {
@@ -96,6 +102,7 @@ FactorGroup.prototype.getFixedFactorConditions = function() {
             count++;
             fixedFactorCondGroups.push([]);
             for (var k = i; k < factorLevelsCombined.length; k++) {
+
                 if (factorLevelsCombined[k] == match) {
                     fixedFactorCondGroups[count].push(k);
                     factorLevelsCombined[k] = "*merelyACopy*";
@@ -105,6 +112,39 @@ FactorGroup.prototype.getFixedFactorConditions = function() {
     }
 
     return fixedFactorCondGroups;
+};
+
+
+
+FactorGroup.prototype.getFixedFactorLevels = function() {
+    var conditions = this.conditionsLinear();
+    var factors = this.factors();
+    var factorNames = [];
+    // get factor type values (random or fixed)
+    var type = [];
+    for (var i = 0; i < factors.length; i++) {
+        type.push(factors[i].factorType());
+        if (factors[i].factorType() == "fixed") {
+            factorNames.push(i)
+        }
+
+    }
+
+    // get factor levels for each condition, remove factors levels of random factors
+    var factorLevels = [];
+
+    for (var i = 0; i < conditions.length; i++) {
+        factorLevels.push([]);
+
+        var levels = conditions[i].factorLevels();
+        for (var k = 0; k < levels.length; k++) {
+            if (type[k] == "fixed") {
+                factorLevels[i].push(levels[k].name());
+            }
+        }
+    }
+
+    return [factorLevels,factorNames];
 };
 
 

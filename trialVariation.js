@@ -4,11 +4,17 @@
  * @constructor
  */
 var TrialVariation= function(condition) {
+    var self = this;
     this.condition = condition;
 
     // not serialized:
     this.nr = ko.observable(0);
     this.trialIdx = ko.observable(0);
+
+
+    this.uniqueId = ko.computed(function() {
+        return self.condition.trialStartIdx()+self.nr();
+    }, this);
 
 };
 
