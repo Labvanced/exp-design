@@ -19,7 +19,7 @@ var Condition = function(factorGroup) {
 
     this.trialStartIdx.subscribe(function(newTrialStartIdx) {
         var trialVariations = self.trials();
-        for (var i=1; i<trialVariations.length; i++) {
+        for (var i=0; i<trialVariations.length; i++) {
             trialVariations[i].trialIdx(newTrialStartIdx+i);
         }
     });

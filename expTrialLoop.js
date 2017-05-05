@@ -270,8 +270,10 @@ ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupId
              console.log("WARNING, too less trials for repeating condition");
          }
         var randValue = Math.floor(Math.random()*options.length);
-        excludedTrialsPerCondGroup[condGroup].push(randValue);
-        Trials.push(condition.trials()[randValue]);
+        var trialRandIdx = options[randValue];
+        excludedTrialsPerCondGroup[condGroup].push(trialRandIdx);
+        var chosenTrial = condition.trials()[trialRandIdx];
+        Trials.push(chosenTrial);
 
     }
 
