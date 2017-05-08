@@ -106,6 +106,7 @@ GlobalVar.prototype.resetValue = function() {
 GlobalVar.prototype.resetStartValue = function() {
     var startValue = this.createValueFromDataType();
     this.startValue(startValue);
+    this.resetValue();
 };
 
 GlobalVar.prototype.createValueFromDataType = function() {
@@ -262,6 +263,7 @@ GlobalVar.prototype.fromJS = function(data) {
         if (startValue) {
             startValue.fromJS(data.startValue);
             this.startValue(startValue);
+            this.resetValue();
         }
     }
 
