@@ -7,9 +7,9 @@
         </span>
         <br>
         <span class="media-controls">
-            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Pause</button></span>
-            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Play</button></span>
-            <span><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+            <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
         </span>
     </div>
 </template>
@@ -20,12 +20,12 @@
         Your browser does not support HTML5 audio.
     </audio>
     <span data-bind="ifnot: dataModel.showMediaControls">
-        <img src="/resources/icons/tool_sound.svg">
+        <img src="/resources/icons/tools/tool_sound.svg">
     </span>
     <span data-bind="if: dataModel.showMediaControls" class="media-controls">
-        <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Pause</button></span>
-        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Play</button></span>
-        <span><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+        <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
+        <span data-bind="ifnot: dataModel.currentlyPlaying"><button  type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+        <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
     </span>
 </template>
 
@@ -35,11 +35,11 @@
         Your browser does not support HTML5 audio.
     </audio>
     <div data-bind="ifnot: dataModel.showMediaControls" style="max-height: 100%">
-        <img src="/resources/icons/tool_sound.svg" max-height="100%" style="max-height: 100%">
+        <img src="/resources/icons/tools/tool_sound.svg" max-height="100%" style="max-height: 100%">
     </div>
     <span data-bind="if: dataModel.showMediaControls" class="media-controls">
-        <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Pause</button></span>
-        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Play</button></span>
-        <span><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+        <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
+        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+        <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
     </span>
 </template>
