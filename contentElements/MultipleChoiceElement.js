@@ -199,29 +199,27 @@ MultipleChoiceEntry.prototype.toJS = function() {
 function createMultipleChoiceComponents() {
     ko.components.register('choice-editview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function(multipleChoiceElement, componentInfo){
 
-                var viewModel = function(dataModel){
-                    this.dataModel = ko.observable(dataModel);
-                    this.questionText = dataModel.questionText;
-                    this.margin = dataModel.margin;
+                var viewModel = function(multipleChoiceElement){
+                    this.multipleChoiceElement = ko.observable(multipleChoiceElement);
+                    this.questionText = multipleChoiceElement.questionText;
+                    this.margin = multipleChoiceElement.margin;
 
                     this.addChoice = function() {
-                        this.dataModel().addEntry();
+                        this.multipleChoiceElement().addEntry();
                     };
 
                     this.removeChoice = function(idx) {
-                        this.dataModel().removeEntry();
-
-
+                        this.multipleChoiceElement().removeEntry();
                     };
 
                     this.focus = function () {
-                        this.dataModel().ckInstance.focus()
+                        this.multipleChoiceElement().ckInstance.focus()
                     };
                 };
 
-                return new viewModel(dataModel);
+                return new viewModel(multipleChoiceElement);
             }
         },
         template: {element: 'choice-editview-template'}
@@ -229,13 +227,13 @@ function createMultipleChoiceComponents() {
 
     ko.components.register('choice-preview',{
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
-                var viewModel = function(dataModel){
-                    this.dataModel = ko.observable(dataModel);
-                    this.questionText = dataModel.questionText;
-                    this.margin = dataModel.margin;
+            createViewModel: function(multipleChoiceElement, componentInfo){
+                var viewModel = function(multipleChoiceElement){
+                    this.multipleChoiceElement = ko.observable(multipleChoiceElement);
+                    this.questionText = multipleChoiceElement.questionText;
+                    this.margin = multipleChoiceElement.margin;
                 };
-                return new viewModel(dataModel);
+                return new viewModel(multipleChoiceElement);
             }
         },
         template: {element: 'choice-preview-template'}
@@ -243,14 +241,14 @@ function createMultipleChoiceComponents() {
 
     ko.components.register('choice-playerview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function(multipleChoiceElement, componentInfo){
 
-                var viewModel = function (dataModel) {
-                    this.dataModel = ko.observable(dataModel);
-                    this.questionText = dataModel.questionText;
-                    this.margin = dataModel.margin;
+                var viewModel = function (multipleChoiceElement) {
+                    this.multipleChoiceElement = ko.observable(multipleChoiceElement);
+                    this.questionText = multipleChoiceElement.questionText;
+                    this.margin = multipleChoiceElement.margin;
                 };
-                return new viewModel(dataModel);
+                return new viewModel(multipleChoiceElement);
             }
         },
         template: {element: 'choice-playerview-template'}
