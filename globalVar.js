@@ -15,7 +15,7 @@ var GlobalVar = function (expData) {
     this.id = ko.observable(guid());
     this.type = "GlobalVar";
     this.name = ko.observable("newVariable");
-    this.dataType = ko.observable(null);
+    this.dataType = ko.observable('undefined');
     this.scale = ko.observable(null);
     this.scope = ko.observable("undefined");
 
