@@ -7,10 +7,11 @@
  * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
  * @constructor
  */
-var FactorGroup= function(expData) {
+var FactorGroup= function(expData,expTrialLoop) {
     var self = this;
 
     this.expData = expData;
+    this.expTrialLoop = expTrialLoop;
 
     // serialized
     this.name = ko.observable("trial_group");
@@ -19,6 +20,26 @@ var FactorGroup= function(expData) {
 
     // not serialized
    // this.editName =  ko.observable(false);
+
+
+    this.trialOffset = ko.computed(function() {
+      var idx =  self.expTrialLoop.factorGroups().indexOf(self);
+      if (idx>0){
+          var l = 0;
+          for (var i = 0; i<idx; i++){
+              var facGroup = self.expTrialLoop.factorGroups()[i];
+              for (var k = 0; k<facGroup.conditionsLinear().length; k++){
+                  l = l+ facGroup.conditionsLinear()[k].trials().length;
+              }
+          }
+          return l
+      }
+      else{
+          return 0
+      }
+    }, this);
+
+
 
     this.conditionsLinear = ko.computed(function() {
         var linearArray = [];

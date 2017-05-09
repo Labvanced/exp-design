@@ -13,7 +13,8 @@ var TrialVariation= function(condition) {
 
 
     this.uniqueId = ko.computed(function() {
-        return self.condition.trialStartIdx()+self.nr();
+        var offset = condition.factorGroup.trialOffset();
+        return self.condition.trialStartIdx()+self.nr() +offset;
     }, this);
 
 };

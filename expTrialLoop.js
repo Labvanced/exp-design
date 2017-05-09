@@ -40,10 +40,14 @@ var ExpTrialLoop = function (expData) {
     // randomization settings
     this.randomizationOverview = ko.observable("standard");
     this.blockFixedFactorConditions = ko.observable(false);
+    this.orderOfConditions = ko.observable("fixed");
     this.trialRandomization = ko.observable("permute");
     this.fixedTrialOrder = ko.observableArray([]);
+
+    this.randomizationConstraint = ko.observable("none");
     this.minIntervalBetweenRep = ko.observable(0).extend({ numeric: 0 });
-    this.orderOfConditions = ko.observable("fixed");
+    this.maxIntervalSameCondition = ko.observable(3).extend({ numeric: 3 });
+
     this.allTrialsToAllSubjects = ko.observable(true);
     this.percentTrialsShown = ko.observable(100);
     this.balanceAmountOfConditions = ko.observable(true);
@@ -102,7 +106,7 @@ ExpTrialLoop.prototype.addNewFrame = function() {
 };
 
 ExpTrialLoop.prototype.addFactorGroup = function() {
-    var factorGroup = new FactorGroup(this.expData);
+    var factorGroup = new FactorGroup(this.expData, this);
     factorGroup.name("trial_group_" + (this.factorGroups().length+1));
     this.factorGroups.push(factorGroup);
 
@@ -237,7 +241,13 @@ ExpTrialLoop.prototype.doTrialRandomization = function() {
         var factorIndicies = outArr[1];
         var conditions = this.getConditionFromFactorLevels(factorIndicies,factorLevels,facGroupIdx);
         var trials = this.drawTrialsFromConditions(conditions,facGroupIdx);
-        allTrials = allTrials.concat(trials);
+     //   if (this.blockFixedFactorConditions()){
+            allTrials.push(trials);
+     //   }
+     //   else{
+     //       allTrials = allTrials.concat(trials);
+     //   }
+
     }
     return this.getRandomizedTrials(allTrials);
 };
@@ -467,99 +477,277 @@ ExpTrialLoop.prototype.reshuffle = function(array) {
 
 
 
+ExpTrialLoop.prototype.getTrialWithConstraint = function(trialArray,conditionsExcluded) {
+    var n = trialArray.length;
+    var trial = null;
+
+
+    if (conditionsExcluded){
+        var found = false;
+        var maxIter = trialArray.length*10;
+        var i = 0;
+        while (i<maxIter && found == false){
+            var randValue = Math.floor(Math.random()*n);
+            var trial = trialArray[randValue];
+            if (conditionsExcluded.indexOf(trial.condition.conditionIdx())==-1){
+                trial = trialArray.splice(randValue,1)[0];
+                found = true;
+            }
+            i++;
+        }
+    }
+    else{
+        var randValue = Math.floor(Math.random()*n);
+        var trial = trialArray[randValue];
+        trial = trialArray.splice(randValue,1)[0];
+        found = true;
+    }
+
+    if (!found){
+        trial = null;
+    }
+    return trial;
+
+};
+
+
+
+ExpTrialLoop.prototype.checkConstraint = function(currentArray,ffConds) {
+
+    var maxInterval = this.maxIntervalSameCondition();
+    var constraint = null;
+
+    if (currentArray.length>= maxInterval){
+        var lastEntries = [];
+        for (var j = currentArray.length-maxInterval; j < currentArray.length; j++) {
+            lastEntries.push(currentArray[j].condition.conditionIdx()-1);
+        }
+
+        for (var cond = 0; cond < ffConds.length; cond++) {
+            var match = 0;
+            for (var t = 0; t < lastEntries.length; t++) {
+               if(ffConds[cond].indexOf(lastEntries[t])>=0){
+                   match++;
+               }
+            }
+            if (match==maxInterval){
+                constraint = ffConds[cond];
+            }
+        }
+    }
+
+    return constraint
+
+};
+
+
+ExpTrialLoop.prototype.sortTrialBasedOnUniqueId = function(trials) {
+
+    var sortedArray = [];
+    var idArray = [];
+
+    for (t = 0; t<trials.length; t++){
+        idArray.push(trials[t].uniqueId());
+    }
+    for (t = 0; t<idArray.length; t++){
+        var idx = idArray.indexOf(Math.min.apply(null, idArray));
+        idArray.splice(idx,1,Infinity);
+        sortedArray.push(trials[idx]);
+    }
+
+    return sortedArray;
+};
+
+
+
+
+
 ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials) {
 
-    // first read out all trialVariations from all TrialGroups into one Array:
-    /**
-    var allTrials = [];
-    for (var facGrpIdx=0; facGrpIdx < this.factorGroups().length; facGrpIdx++) {
-        var conditions = this.factorGroups()[facGrpIdx].conditionsLinear();
-        for (var condIdx=0; condIdx < conditions.length; condIdx++) {
-            Array.prototype.push.apply( allTrials, conditions[condIdx].trials() );
-        }
-    }
-
-    // create trial_randomization first with increasing integer:
-    var numRep = this.repsPerTrialType();
-    if (numRep>1) {
-        var orig_allTrials = allTrials;
-        allTrials = [];
-        for (var j = 0; j < numRep; j++) {
-            Array.prototype.push.apply( allTrials, orig_allTrials );
-        }
-    }
-
-     for (var i = allTrials.length - 1; i > 0; i--) {
-
-
-            var permuteWithIdx = Math.floor(Math.random() * (i + 1)); // random number between 0 and i
-            var temp1 = allTrials[i];
-            allTrials[i] = allTrials[permuteWithIdx];
-            allTrials[permuteWithIdx] = temp1;
-        }
-     **/
-
-   // var ffConds = this.factorGroups()[facGroupIdx].getFixedFactorConditions();
-   // var condGroup = this.getCondGroup(condition.conditionIdx()-1,ffConds);
-
-
-    // now randomize:
     console.log("do randomization...");
 
-    if (this.trialRandomization()=="permute"){
-        allTrials = this.reshuffle(allTrials);
-    }
-    else if (this.trialRandomization()=="fixed"){
+    if (!this.blockFixedFactorConditions()){ // all conditions  combined, not blocked
+        if (this.trialRandomization()=="permute"){ // all trials permuted
+            if (this.randomizationConstraint()=="maximum"){
+                // do trial ordering with constraint for each factor group
+                preOutArray = [];
+                for (var facGroup = 0; facGroup < allTrials.length; facGroup++) {
+                    var out = [];
+                    var ffConds = this.factorGroups()[facGroup].getFixedFactorConditions();
+                    var trials =  allTrials[facGroup];
+                    var trialOrig = trials.slice(0);
+                    var iter = 0;
+                    while(trials.length>0 && iter <100) {
+                        var constraint = this.checkConstraint(out,ffConds);
+                        var trial = this.getTrialWithConstraint(trials,constraint);
+                        if(trial){
+                            out.push(trial);
+                        }
+                        else{
+                            out = [];
+                            trials = trialOrig.slice(0);
+                            iter++;
+                        }
+                    }
+                    preOutArray.push(out);
+                }
+                // find longest factor group and copy it to output array
+                var lengthArr = [];
+                for (var l = 0; l < preOutArray.length; l++) {
+                    lengthArr.push(preOutArray[l].length);
+                }
+                maxi = lengthArr.indexOf(Math.max.apply(null, lengthArr));
+                var copy = preOutArray[maxi].slice(0);
+                outArray = preOutArray[maxi];
 
-    }
 
+                // loop through the other factors groups and inset their trial in the first (biggest) one
+                for (var facGroup = 0; facGroup < preOutArray.length; facGroup++) {
 
+                    if (facGroup!=maxi){
 
-
-    // TODO: make sure that there is spacing between repetitions:
-    /*var minIntervalBetweenRep = this.minIntervalBetweenRep();
-    if (minIntervalBetweenRep>0) {
-        console.log("try to satify all constraints...");
-        for (var j = 0; j < 1000; j++) {
-            var constraintsSatisfied = true;
-            for (var i = 0; i < this.trial_randomization.length; i++) {
-                var stepsToLookBack = Math.min(i, minIntervalBetweenRep);
-                for (var k = 1; k <= stepsToLookBack; k++) {
-                    // look back k steps:
-                    if (this.trial_randomization[i] == this.trial_randomization[i-k]) {
-                        constraintsSatisfied = false;
-                        // permute trial i with any random other trial:
-                        var permuteWithIdx = Math.floor(Math.random() * this.trial_randomization.length);
-                        var temp1 = this.trial_randomization[i];
-                        this.trial_randomization[i] = this.trial_randomization[permuteWithIdx];
-                        this.trial_randomization[permuteWithIdx] = temp1;
+                        var solution = false;
+                        var discount = 0;
+                        var iter = 0;
+                        var fac = outArray.length /trials.length;
+                        while (solution ==false && iter<100) {
+                            var trials =  preOutArray[facGroup];
+                            var insertPosition = 0;
+                            while (trials.length>0 && insertPosition<=outArray.length) {
+                                var increment = Math.ceil(Math.random()*fac)+1-discount;
+                                insertPosition += increment;
+                                var trial = trials.splice(0,1)[0];
+                                outArray.splice(insertPosition,0,trial);
+                            }
+                            if (insertPosition<=outArray.length && trials.length==0){
+                                copy = outArray.slice(0);
+                                solution =true;
+                            }
+                            else{
+                                iter++;
+                                discount = Math.floor(fac);
+                                outArray=copy;
+                            }
+                        }
                     }
                 }
             }
-            if (constraintsSatisfied) {
-                console.log("all constraints were satisfied in iteration "+j);
-                break;
+            else if (this.randomizationConstraint()=="minimum"){
+                // Todo
+                var mergedArray = [].concat.apply([], allTrials);
+                var outArray = this.reshuffle(mergedArray);
+
+                // TODO: make sure that there is spacing between repetitions:
+                /*var minIntervalBetweenRep = this.minIntervalBetweenRep();
+                 if (minIntervalBetweenRep>0) {
+                 console.log("try to satify all constraints...");
+                 for (var j = 0; j < 1000; j++) {
+                 var constraintsSatisfied = true;
+                 for (var i = 0; i < this.trial_randomization.length; i++) {
+                 var stepsToLookBack = Math.min(i, minIntervalBetweenRep);
+                 for (var k = 1; k <= stepsToLookBack; k++) {
+                 // look back k steps:
+                 if (this.trial_randomization[i] == this.trial_randomization[i-k]) {
+                 constraintsSatisfied = false;
+                 // permute trial i with any random other trial:
+                 var permuteWithIdx = Math.floor(Math.random() * this.trial_randomization.length);
+                 var temp1 = this.trial_randomization[i];
+                 this.trial_randomization[i] = this.trial_randomization[permuteWithIdx];
+                 this.trial_randomization[permuteWithIdx] = temp1;
+                 }
+                 }
+                 }
+                 if (constraintsSatisfied) {
+                 console.log("all constraints were satisfied in iteration "+j);
+                 break;
+                 }
+                 else {
+                 console.log("not all constraints were satisfied in iteration "+j);
+                 }
+                 }
+                 if (!constraintsSatisfied){
+                 console.log("constraints could not be satisfied!");
+                 }
+                 }*/
             }
-            else {
-                console.log("not all constraints were satisfied in iteration "+j);
+            else if (this.randomizationConstraint()=="none"){
+                var mergedArray = [].concat.apply([], allTrials);
+                var outArray = this.reshuffle(mergedArray);
+
+            }
+
+        }
+
+        else if (this.trialRandomization()=="fixedAsInEditor") {
+            var mergedTrials  = [].concat.apply([], allTrials);
+            var outArray = this.sortTrialBasedOnUniqueId(mergedTrials);
+        }
+    }
+
+    else{ // conditions  blocked
+
+        preOutArray = [];
+        for (var facGroup = 0; facGroup < allTrials.length; facGroup++) {
+            preOutArray.push([]);
+            var ffConds = this.factorGroups()[facGroup].getFixedFactorConditions();
+
+            var trialsPerCondGroup = [];
+            for (var i = 0; i <ffConds.length; i++) {
+                trialsPerCondGroup.push([]);
+            }
+
+            for (var trialIdx =0; trialIdx < allTrials[facGroup].length; trialIdx++) {
+                var trial = allTrials[facGroup][trialIdx];
+                var condGroup = this.getCondGroup(trial.condition.conditionIdx()-1,ffConds);
+                trialsPerCondGroup[condGroup].push(trial);
+            }
+
+            if (this.trialRandomization()=="permute"){
+
+                for (var condGroupIdx =0; condGroupIdx < trialsPerCondGroup.length; condGroupIdx++) {
+                    preOutArray[facGroup][condGroupIdx] = this.reshuffle(trialsPerCondGroup[condGroupIdx]);
+                }
+
+            }
+
+            else if (this.trialRandomization()=="fixedAsInEditor") {
+                for (var condGroupIdx =0; condGroupIdx < trialsPerCondGroup.length; condGroupIdx++) {
+                    preOutArray[facGroup][condGroupIdx] = this.sortTrialBasedOnUniqueId(trialsPerCondGroup[condGroupIdx]);
+                }
             }
         }
-        if (!constraintsSatisfied){
-            console.log("constraints could not be satisfied!");
+
+        if (this.orderOfConditions()=="fixed"){
+            //  put conditions together in  numerical order
+            var mergedConditions = [].concat.apply([], preOutArray);
+            var outArray = [].concat.apply([], mergedConditions);
+
         }
-    }*/
+        else if (this.orderOfConditions()=="permuteUnbalanced"){
+            var mergedConditions = [].concat.apply([], preOutArray);
+            var mergedReshuffled = this.reshuffle(mergedConditions);
+            var outArray = [].concat.apply([], mergedReshuffled);
+        }
+        else if (this.orderOfConditions()=="balanceBetweenSubjects"){
+            // ToDo
+        }
+    }
+
+
+
+
 
 
     // convert to full trial specification:
-    for (var trialIdx=0; trialIdx < allTrials.length; trialIdx++) {
-        allTrials[trialIdx] = {
+    for (var trialIdx=0; trialIdx < outArray.length; trialIdx++) {
+        outArray[trialIdx] = {
             type: 'trialVariation',
-            trialVariation: allTrials[trialIdx]
+            trialVariation: outArray[trialIdx]
         };
-        this.completeSelectionSpec(allTrials[trialIdx]);
+        this.completeSelectionSpec(outArray[trialIdx]);
     }
 
-    return allTrials;
+    return outArray;
 };
 
 ExpTrialLoop.prototype.removeGroup = function(facGroupIdx,idx) {
@@ -707,7 +895,7 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     else {
         // new version:
         this.factorGroups(jQuery.map(data.factorGroups, function (factorGroup) {
-            return (new FactorGroup(self.expData)).fromJS(factorGroup);
+            return (new FactorGroup(self.expData,self)).fromJS(factorGroup);
         }));
         this.subSequencePerFactorGroup(data.subSequencePerFactorGroup);
     }
@@ -741,6 +929,12 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     }
     if (data.hasOwnProperty('balanceAmountOfConditions')){
         this.balanceAmountOfConditions(data.balanceAmountOfConditions);
+    }
+    if (data.hasOwnProperty('maxIntervalSameCondition')){
+        this.maxIntervalSameCondition(data.maxIntervalSameCondition);
+    }
+    if (data.hasOwnProperty('randomizationConstraint')){
+        this.randomizationConstraint(data.randomizationConstraint);
     }
 
 
@@ -780,6 +974,10 @@ ExpTrialLoop.prototype.toJS = function() {
         allTrialsToAllSubjects: this.allTrialsToAllSubjects(),
         percentTrialsShown: this.percentTrialsShown(),
         balanceAmountOfConditions: this.balanceAmountOfConditions(),
+        maxIntervalSameCondition: this.maxIntervalSameCondition(),
+        randomizationConstraint: this.randomizationConstraint(),
+
+
 
 
         webcamEnabled: this.webcamEnabled(),
