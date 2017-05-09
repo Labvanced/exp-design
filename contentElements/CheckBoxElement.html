@@ -15,7 +15,7 @@
     </div>
     <div data-bind="foreach: dataModel().elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: variable().startValue().value,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: variable().startValue().value,click:function(){return true},clickBubble: false">
             <div   style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" class="notDraggable" data-bind="wysiwyg: checkBoxText, valueUpdate: 'afterkeydown'" ></div>
         </div>
     </div>
@@ -28,7 +28,7 @@
     </div>
     <div data-bind="foreach: dataModel().elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" >
+            <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" >
             <div   style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" data-bind="html: checkBoxText"></div>
         </div>
     </div>

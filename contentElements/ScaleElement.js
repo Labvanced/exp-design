@@ -35,8 +35,8 @@ var ScaleElement= function(expData) {
 };
 
 
-ScaleElement.prototype.label = "Scale";
-ScaleElement.prototype.iconPath = "/resources/icons/tools/tool_rating.svg";
+ScaleElement.prototype.label = "Matrix";
+ScaleElement.prototype.iconPath = "/resources/icons/tools/matrix.svg";
 ScaleElement.prototype.modifiableProp = ["questionText","labels"];
 ScaleElement.prototype.dataType =      [ "string","string"];
 ScaleElement.prototype.initWidth = 750;
