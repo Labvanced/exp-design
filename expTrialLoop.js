@@ -95,8 +95,8 @@ var ExpTrialLoop = function (expData) {
 /**
  * Is called to initialize a newly created exp trial loop (instead of initialization via loadJS)
  */
-ExpTrialLoop.prototype.initNewInstance = function() {
-    this.addFactorGroup();
+ExpTrialLoop.prototype.initNewInstance = function(pageOrFrame,withFactor) {
+    this.addFactorGroup(pageOrFrame,withFactor);
 };
 
 ExpTrialLoop.prototype.addNewFrame = function() {
@@ -105,19 +105,42 @@ ExpTrialLoop.prototype.addNewFrame = function() {
     frame.parent = this.subSequence();
 };
 
-ExpTrialLoop.prototype.addFactorGroup = function() {
+ExpTrialLoop.prototype.addFactorGroup = function(pageOrFrame,withFactor) {
     var factorGroup = new FactorGroup(this.expData, this);
     factorGroup.name("trial_group_" + (this.factorGroups().length+1));
-    this.factorGroups.push(factorGroup);
 
     // add a new subSequence for the new group (if there are not already enough subSequences):
-    if (this.subSequencePerFactorGroup().length < this.factorGroups().length) {
-        var subsequence = new Sequence(this.expData);
-        subsequence.parent = this;
-        subsequence.setFactorGroup(factorGroup);
-        this.subSequence(subsequence);
-        this.subSequencePerFactorGroup().push(subsequence);
+    //if (this.subSequencePerFactorGroup().length < this.factorGroups().length) {
+    var subsequence = new Sequence(this.expData);
+    subsequence.parent = this;
+    subsequence.setFactorGroup(factorGroup);
+
+   // }
+    // add new frame or page
+    if(pageOrFrame=='frame'){
+        var elem = new FrameData(this.expData);
+        elem.name('frame_1');
     }
+    else if(pageOrFrame=='page'){
+        var elem = new PageData(this.expData);
+        elem.name('page_1');
+    }
+    subsequence.addNewSubElement(elem);
+    subsequence.currSelectedElement(elem);
+
+    // new factor
+    if(withFactor){
+        newFactor = new Factor(this.expData, factorGroup);
+        newFactor.init("_factor_1", factorGroup);
+        newFactor.updateLevels();
+        factorGroup.addFactor(newFactor);
+    }
+
+    this.factorGroups.push(factorGroup);
+    this.subSequencePerFactorGroup.push(subsequence);
+    this.subSequence(subsequence);
+    this.expData.notifyChanged();
+
 };
 
 ExpTrialLoop.prototype.renameGroup = function(facGroupIdx,flag) {
