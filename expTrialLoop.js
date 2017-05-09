@@ -108,16 +108,14 @@ ExpTrialLoop.prototype.addNewFrame = function() {
 ExpTrialLoop.prototype.addFactorGroup = function(pageOrFrame,withFactor) {
     var factorGroup = new FactorGroup(this.expData, this);
     factorGroup.name("trial_group_" + (this.factorGroups().length+1));
-    this.factorGroups.push(factorGroup);
 
     // add a new subSequence for the new group (if there are not already enough subSequences):
-    if (this.subSequencePerFactorGroup().length < this.factorGroups().length) {
-        var subsequence = new Sequence(this.expData);
-        subsequence.parent = this;
-        subsequence.setFactorGroup(factorGroup);
-        this.subSequence(subsequence);
-        this.subSequencePerFactorGroup.push(subsequence);
-    }
+    //if (this.subSequencePerFactorGroup().length < this.factorGroups().length) {
+    var subsequence = new Sequence(this.expData);
+    subsequence.parent = this;
+    subsequence.setFactorGroup(factorGroup);
+
+   // }
     // add new frame or page
     if(pageOrFrame=='frame'){
         var elem = new FrameData(this.expData);
@@ -127,9 +125,8 @@ ExpTrialLoop.prototype.addFactorGroup = function(pageOrFrame,withFactor) {
         var elem = new PageData(this.expData);
         elem.name('page_1');
     }
-    this.subSequence().addNewSubElement(elem);
-    this.subSequence().currSelectedElement(elem);
-
+    subsequence.addNewSubElement(elem);
+    subsequence.currSelectedElement(elem);
 
     // new factor
     if(withFactor){
@@ -139,6 +136,9 @@ ExpTrialLoop.prototype.addFactorGroup = function(pageOrFrame,withFactor) {
         factorGroup.addFactor(newFactor);
     }
 
+    this.factorGroups.push(factorGroup);
+    this.subSequencePerFactorGroup.push(subsequence);
+    this.subSequence(subsequence);
     this.expData.notifyChanged();
 
 };
