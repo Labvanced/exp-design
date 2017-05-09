@@ -15,7 +15,7 @@ var GlobalVar = function (expData) {
     this.id = ko.observable(guid());
     this.type = "GlobalVar";
     this.name = ko.observable("newVariable");
-    this.dataType = ko.observable(null);
+    this.dataType = ko.observable('undefined');
     this.scale = ko.observable(null);
     this.scope = ko.observable("undefined");
 
@@ -106,6 +106,7 @@ GlobalVar.prototype.resetValue = function() {
 GlobalVar.prototype.resetStartValue = function() {
     var startValue = this.createValueFromDataType();
     this.startValue(startValue);
+    this.resetValue();
 };
 
 GlobalVar.prototype.createValueFromDataType = function() {
@@ -262,6 +263,7 @@ GlobalVar.prototype.fromJS = function(data) {
         if (startValue) {
             startValue.fromJS(data.startValue);
             this.startValue(startValue);
+            this.resetValue();
         }
     }
 

@@ -199,7 +199,9 @@ function createAudioComponents() {
         if (index > -1) {
             this.dataModel.subscribersForJumpEvents.splice(index, 1);
         }
-        this.subscriberTimePercentage.dispose();
+        if (this.subscriberTimePercentage) {
+            this.subscriberTimePercentage.dispose();
+        }
         var myAudio = $(this.element).find('audio')[0];
         myAudio.removeEventListener("timeupdate", this.timeUpdateListener);
     };

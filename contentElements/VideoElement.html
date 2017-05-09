@@ -7,22 +7,22 @@
         </span>
         <br>
         <span class="media-controls">
-            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Pause</button></span>
-            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Play</button></span>
-            <span><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+            <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
         </span>
     </div>
 </template>
 
-<template id='video-preview-template'>
+<template id='video-preview-template' class="element-outline">
     <video data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}" preload="auto">
         <source data-bind="attr: {src: dataModel.vidSource()}">
         Your browser does not support HTML5 video.
     </video>
     <span class="media-controls-floating media-controls" data-bind="if: dataModel.showMediaControls">
-        <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Pause</button></span>
-        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Play</button></span>
-        <span><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+        <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
+        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+        <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
     </span>
 </template>
 
@@ -32,8 +32,8 @@
         Your browser does not support HTML5 video.
     </video>
     <span class="media-controls-floating media-controls" data-bind="if: dataModel.showMediaControls">
-        <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Pause</button></span>
-        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}">Play</button></span>
-        <span><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+        <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
+        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+        <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
     </span>
 </template>

@@ -17,7 +17,7 @@ var DisplayTextElement = function(expData) {
 };
 
 DisplayTextElement.prototype.label = "DisplayText";
-DisplayTextElement.prototype.iconPath = "/resources/icons/tools/textInput.svg";
+DisplayTextElement.prototype.iconPath = "/resources/icons/tools/tool_text.svg";
 DisplayTextElement.prototype.modifiableProp = ["text"];
 DisplayTextElement.prototype.dataType =      [ "string"];
 DisplayTextElement.prototype.initWidth = 500;

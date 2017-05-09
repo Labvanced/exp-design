@@ -155,12 +155,13 @@ Experiment.prototype.saveExpData = function() {
             });
         }
         catch (err) {
-            var tempDialog = $('<div><p>Error message:</p><p class="error text-danger">'+err.message+'</p></div>');
+
+            var tempDialog = $('<div><p>Error message:</p><p class="error text-danger">'+err.message+'</p><button data-toggle="collapse" data-target="#errorDetails">Show Details</button><div id="errorDetails" style="max-height: 250px; overflow: auto;" class="collapse">'+err.stack+'</div></div>');
             tempDialog.dialog({
                 modal: true,
                 title: "Error Saving Experiment",
                 resizable: false,
-                width: 300,
+                width: 400,
                 buttons: [
                     {
                         text: "Retry",
