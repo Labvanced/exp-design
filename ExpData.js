@@ -138,10 +138,10 @@ ExpData.prototype.addNewSubjGroup = function() {
     this.addGroup(group);
 };
 
-ExpData.prototype.addTask = function(taskName) {
+ExpData.prototype.addTask = function(taskName,pageOrFrame,withFactor) {
 
     var expTrialLoop = new ExpTrialLoop(this);
-    expTrialLoop.initNewInstance();
+    expTrialLoop.initNewInstance(pageOrFrame,withFactor);
     expTrialLoop.isInitialized(true);
     if (taskName){
         expTrialLoop.name(taskName);
