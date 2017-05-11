@@ -201,26 +201,30 @@ ActionRecord.prototype.run = function(triggerParams) {
         var val;
         switch (name) {
             // mouse events
-            case "Stimulus Name":
+            case "Stimulus Tag":
                 val = triggerParams[0];
                 break;
             case "Time From Stimulus Onset":  // change to onset of stimulus
                 val = triggerParams[1];
                 break;
-            case "Stimulus Visibility":
+            case "Stimulus Info":  // change to onset of stimulus
                 val = triggerParams[2];
                 break;
-            case "Stimulus X-Position":
+
+            case "Stimulus Visibility":
                 val = triggerParams[3];
                 break;
-            case "Stimulus Y-Position":
+            case "Stimulus X-Position":
                 val = triggerParams[4];
                 break;
-            case "Stimulus Width":
+            case "Stimulus Y-Position":
                 val = triggerParams[5];
                 break;
-            case "Stimulus Height":
+            case "Stimulus Width":
                 val = triggerParams[6];
+                break;
+            case "Stimulus Height":
+                val = triggerParams[7];
                 break;
             // keyboard events
             case "Id of Key":
@@ -240,7 +244,7 @@ ActionRecord.prototype.run = function(triggerParams) {
                 break;
         }
 
-        varToSave.value(val);
+        varToSave.setValue(val);
     }
 
 

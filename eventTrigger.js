@@ -57,9 +57,14 @@ TriggerMouse.prototype.getParameterSpec = function() {
  * @param target
  */
 TriggerMouse.prototype.triggerOnTarget = function(playerFrame,target) {
+    var stimulusInformation = null;
+    if (target.content().hasOwnProperty("stimulusInformation")){
+      stimulusInformation =  target.content().stimulusInformation()
+    }
     this.event.triggerActions([
         target.name(),
-        playerFrame.getFrameTime()
+        playerFrame.getFrameTime(),
+        stimulusInformation
     ]);
 };
 
