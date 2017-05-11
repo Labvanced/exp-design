@@ -47,8 +47,8 @@ var Response= function(parent) {
             if (value === "undefined"){
                 self.action(null);
             }
-            else if (value == "ActionSetVariable"){
-                self.action(new ActionSetVariable(self));
+            else if (value == "ActionModifyVariable"){
+                self.action(new ActionModifyVariable(self));
             }
             else if (value == "ActionSetElementProp"){
                 self.action(new ActionSetElementProp(self));

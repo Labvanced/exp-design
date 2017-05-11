@@ -45,9 +45,8 @@ TriggerMouse.prototype.isValid = function() {
  */
 TriggerMouse.prototype.getParameterSpec = function() {
     return [
-        'Stimulus Tag',
-        'Time From Stimulus Onset',
-        'Stimulus Info'
+        'Stimulus Name',
+        'Time From Frame Onset'
     ];
 };
 
@@ -809,7 +808,7 @@ TriggerVariableValueChanged.prototype.setupOnPlayerFrame = function(playerFrame)
     var variables = this.variables();
     for (var i=0; i<variables.length; i++) {
         var subscribeHandle = variables[i].value.subscribe(function(newVal){
-            self.event.triggerActions(newVal);
+            self.event.triggerActions([newVal]);
         });
         this.subscriberHandles.push(subscribeHandle);
     }
@@ -924,19 +923,19 @@ TriggerAudioVideoEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
         switch (this.triggerType()) {
             case "started":
                 elem.bind("play", function () {
-                    self.event.triggerActions(0);
+                    self.event.triggerActions([0]);
                 });
                 break;
             case "paused":
                 elem.bind("pause", function () {
                     var currTime = elem[0].currentTime;
-                    self.event.triggerActions(currTime);
+                    self.event.triggerActions([currTime]);
                 });
                 break;
             case "ended":
                 elem.bind("ended", function () {
                     var duration = elem[0].duration;
-                    self.event.triggerActions(duration);
+                    self.event.triggerActions([duration]);
                 });
                 break;
         }

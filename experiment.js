@@ -75,18 +75,18 @@ Experiment.prototype.copyExp = function() {
 
 Experiment.prototype.endRecs = function() {
     this.status('analyze');
-    this.save();
+    this.saveMetaData();
 };
 
 Experiment.prototype.restartRecordings = function(){
     this.status('record');
-    this.save();
+    this.saveMetaData();
 };
 
 
 Experiment.prototype.editSettings = function() {
     this.publishing_data.status('editing');
-    this.save();
+    this.savePublishingData();
 };
 
 /**
@@ -98,7 +98,7 @@ Experiment.prototype.notifyChanged = function() {
     if (!this.tempDisableAutosave) {
         // only automatically save if there is not already a saving process in transit:
         if (uc.userdata.accountSettingsData.autoSaveEnabled() && !this.changesInTransit) {
-            this.save();
+            this.saveExpData();
         }
         else {
             if (uc.userdata.accountSettingsData.ctrlZenabled()) {
@@ -146,7 +146,7 @@ Experiment.prototype.saveExpData = function() {
                     console.log("saved experiment success");
                     if (self.hasLocalChanges) {
                         // restart saving process for the new local changes that were made in the meantime
-                        self.save();
+                        self.saveExpData();
                     }
                 }
                 else {
@@ -179,6 +179,42 @@ Experiment.prototype.saveExpData = function() {
                 ]
             });
         }
+    }
+    else {
+
+        var tempDialog = $('<div><p>Editing this experiment is not possible because recordings are active. In order to keep the specification of the experiment and the recorded data synchronized, you have three options: </p><ul><li>You can delete all recordings and switch this experiment back to "create" mode.</li><li>You can copy this experiment and then edit the new instance (this will be implemented soon).</li><li>Cancel the editing and keep everything as it is.</li></ul></div>');
+        tempDialog.dialog({
+            modal: true,
+            title: "Experiment is Locked",
+            resizable: false,
+            width: 400,
+            buttons: [
+                {
+                    text: "Delete and disable all recordings",
+                    click: function () {
+                        uc.socket.emit('deleteAllRecsOfExpAndSwitchToCreate', {exp_id: self.exp_id()}, function(response){
+                            if (response.success){
+                                console.log("successfully switched experiment to create state.");
+                                tempDialog.dialog( "close" );
+                                self.status("create");
+                                self.saveExpData();
+                            }
+                            else {
+                                console.log("error: could not switch experiment to create state.");
+                            }
+                        });
+                    }
+                },
+                {
+                    text: "Cancel editing and reload from server",
+                    click: function () {
+                        window.location.reload(false);
+                        $( this ).dialog( "close" );
+                    }
+                }
+            ]
+        });
+
     }
 };
 

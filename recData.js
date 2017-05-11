@@ -16,7 +16,7 @@ var RecData = function() {
  * @param {globalVar} globalVar - variable to be recorded
  */
 RecData.prototype.addRecording = function(globalVar){
-    this.data[globalVar.id()] = globalVar.recValue;
+    this.data[globalVar.id()] = globalVar.getRecAtEndOfTrial();
 };
 
 /**

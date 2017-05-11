@@ -28,7 +28,7 @@ var GlobalVar = function (expData) {
     this.resetAtTrialStart = ko.observable(false);
     this.recordAtTrialEnd = ko.observable(false);
     this.startValue = ko.observable(null);
-    this.recType = ko.observable('overwrite'); // overwrite or stack
+    this.recType = ko.observable('overwrite'); // overwrite or timeseries
 
 
     this.isNameEditable = true; // this is set to false for variables that are created by our platform
@@ -60,7 +60,7 @@ GlobalVar.scopes = ['subject','task','trial'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];
-GlobalVar.recTypes = ['overwrite', 'stack']; // open to discussion
+GlobalVar.recTypes = ['overwrite', 'timeseries']; // open to discussion
 
 // definition of what scalesallowed for each datatype:
 GlobalVar.allowedScalePerDataType = {
@@ -97,16 +97,19 @@ GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
     return this;
 };
 
-GlobalVar.prototype.resetValue = function() {
-    var value = this.createValueFromDataType();
-    value.fromJS(this.startValue().toJS());
-    this.value(value);
+GlobalVar.prototype.initValue = function() {
+    this.value(this.createValueFromDataType());
+    this.resetValueToStartValue();
+};
+
+GlobalVar.prototype.resetValueToStartValue = function() {
+    this.value().fromJS(this.startValue().toJS());
 };
 
 GlobalVar.prototype.resetStartValue = function() {
     var startValue = this.createValueFromDataType();
     this.startValue(startValue);
-    this.resetValue();
+    this.initValue();
 };
 
 GlobalVar.prototype.createValueFromDataType = function() {
@@ -150,27 +153,43 @@ GlobalVar.prototype.removeBackRef = function(entity) {
     }
 };
 
-GlobalVar.prototype.setValue = function(val) {
-    // TODO: dataType conversions
-    this.value(val);
-
-    if(this.recType()=='overwrite'){
-        this.recValue = val;
-    } else if(this.recType()=='stack'){
+/**
+ * this function needs to be called in the player always when the value changes so that recordings are made.
+ * @param val
+ */
+GlobalVar.prototype.notifyValueChanged = function() {
+    if(this.recType()=='timeseries'){
         if(!this.recValue){
             this.recValue = [];
         }
         this.recValue.push({
             timeStamp:    new Date().getTime(),
-            value:        val
+            value:        this.value().toJS()
         });
     }
+};
 
+/**
+ * This is used by the player to retireve the recording at the end of a trial
+ */
+GlobalVar.prototype.getRecAtEndOfTrial = function() {
+    if(this.recType()=='overwrite'){
+        return this.value().toJS();
+    } else if(this.recType()=='timeseries'){
+        return this.recValue;
+    }
 };
 
 GlobalVar.prototype.getValue = function() {
-    // TODO: dataType conversions
     return this.value();
+};
+
+/**
+ * modify the value either by a supplying a globalVarValue instance or a javascript string or number
+ * @param valueObj
+ */
+GlobalVar.prototype.setValue = function(valueObj) {
+    this.value().setValue(valueObj);
 };
 
 GlobalVar.prototype.addLevel = function() {
@@ -263,7 +282,7 @@ GlobalVar.prototype.fromJS = function(data) {
         if (startValue) {
             startValue.fromJS(data.startValue);
             this.startValue(startValue);
-            this.resetValue();
+            this.resetStartValue();
         }
     }
 

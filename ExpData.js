@@ -141,11 +141,11 @@ ExpData.prototype.addNewSubjGroup = function() {
 ExpData.prototype.addTask = function(taskName,pageOrFrame,withFactor) {
 
     var expTrialLoop = new ExpTrialLoop(this);
-    expTrialLoop.initNewInstance(pageOrFrame,withFactor);
-    expTrialLoop.isInitialized(true);
     if (taskName){
         expTrialLoop.name(taskName);
     }
+    expTrialLoop.initNewInstance(pageOrFrame,withFactor);
+    expTrialLoop.isInitialized(true);
     this.availableTasks.push(expTrialLoop);
     this.reAddEntities();
     this.notifyChanged();

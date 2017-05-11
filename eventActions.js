@@ -240,7 +240,7 @@ ActionRecord.prototype.run = function(triggerParams) {
                 break;
         }
 
-        varToSave.value(val);
+        varToSave.value().value(val);
     }
 
 
@@ -662,7 +662,6 @@ ActionJumpTo.prototype.toJS = function() {
 
 
 
-
 /////////////////////////////////////////////   ActionSetVariable    ////////////////////////////////////////////////
 
 /**
@@ -672,6 +671,93 @@ ActionJumpTo.prototype.toJS = function() {
  * @constructor
  */
 var ActionSetVariable = function(event) {
+    this.event = event;
+
+    // serialized
+    this.variable = ko.observable(null);
+    this.operand = ko.observable(new OperandVariable(event));
+};
+ActionSetVariable.prototype.type = "ActionSetVariable";
+ActionSetVariable.prototype.label = "Set Variable";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionSetVariable.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionSetVariable.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'set variable');
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionSetVariable.prototype.run = function(triggerParams) {
+    var rValue = this.operand().getValue(triggerParams);
+    this.variable().value().value(rValue);
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionSetVariable.prototype.setPointers = function(entitiesArr) {
+    var varToSet = entitiesArr.byId[this.variable()];
+    this.variable(varToSet);
+    this.operand().setPointers(entitiesArr);
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionSetVariable}
+ */
+ActionSetVariable.prototype.fromJS = function(data) {
+    this.variable(data.variable);
+    var operand = new OperandVariable(this.event);
+    operand.fromJS(data.operand);
+    this.operand(operand);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionSetVariable.prototype.toJS = function() {
+    return {
+        variable: this.variable().id(),
+        operand: this.operand().toJS(),
+        type: this.type
+    };
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+/////////////////////////////////////////////   ActionModifyVariable    ////////////////////////////////////////////////
+
+/**
+ * This action allows to change the value of a variable.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
+var ActionModifyVariable = function(event) {
     this.event = event;
 
     this.variable = ko.observable(null);
@@ -690,14 +776,14 @@ var ActionSetVariable = function(event) {
             self.value(null);
         }
     });
-    
+
 
     
     this.operatorType.subscribe(function(newVal) {
         if (newVal == "=") {
             self.changeTypes(["value", "%", "variable"]);
             if (self.variable() && self.variable() instanceof GlobalVar) {
-                self.value(self.variable().startValue());
+                self.value(self.variable().startValue().value());
             }
         }
         else if (newVal == "*" || newVal == "/") {
@@ -717,21 +803,29 @@ var ActionSetVariable = function(event) {
         }
         else if (newVal == "value" && self.operatorType()=="=") {
             if (self.variable() && self.variable() instanceof GlobalVar) {
-                self.value(self.variable().startValue());
+                self.value(self.variable().startValue().value());
             }
         }
     });
 
 };
-ActionSetVariable.prototype.type = "ActionSetVariable";
-ActionSetVariable.prototype.label = "Set Variable";
+ActionModifyVariable.prototype.type = "ActionModifyVariable";
+ActionModifyVariable.prototype.label = "Modify Variable";
 
 /**
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionSetVariable.prototype.isValid = function(){
+ActionModifyVariable.prototype.isValid = function(){
     return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionModifyVariable.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'modify variable');
 };
 
 /**
@@ -740,7 +834,7 @@ ActionSetVariable.prototype.isValid = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionSetVariable.prototype.run = function(triggerParams) {
+ActionModifyVariable.prototype.run = function(triggerParams) {
 
 
     var operatorType =  this.operatorType();
@@ -823,7 +917,7 @@ ActionSetVariable.prototype.run = function(triggerParams) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSetVariable.prototype.setPointers = function(entitiesArr) {
+ActionModifyVariable.prototype.setPointers = function(entitiesArr) {
 
     var mainVariable = entitiesArr.byId[this.variable()];
     this.variable(mainVariable);
@@ -837,9 +931,9 @@ ActionSetVariable.prototype.setPointers = function(entitiesArr) {
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {ActionSetVariable}
+ * @returns {ActionModifyVariable}
  */
-ActionSetVariable.prototype.fromJS = function(data) {
+ActionModifyVariable.prototype.fromJS = function(data) {
 
     this.variable(data.variable);
     this.operatorType(data.operatorType);
@@ -854,7 +948,7 @@ ActionSetVariable.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionSetVariable.prototype.toJS = function() {
+ActionModifyVariable.prototype.toJS = function() {
     var value = null;
     if (this.value() && this.value().hasOwnProperty("id")){
         value = this.value.id();

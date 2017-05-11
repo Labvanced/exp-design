@@ -107,7 +107,8 @@ ExpTrialLoop.prototype.addNewFrame = function() {
 
 ExpTrialLoop.prototype.addFactorGroup = function(pageOrFrame,withFactor) {
     var factorGroup = new FactorGroup(this.expData, this);
-    factorGroup.name("trial_group_" + (this.factorGroups().length+1));
+    var nr_in_task = this.factorGroups().length+1;
+    factorGroup.name("trial_group_" + nr_in_task);
 
     // add a new subSequence for the new group (if there are not already enough subSequences):
     //if (this.subSequencePerFactorGroup().length < this.factorGroups().length) {
@@ -131,7 +132,7 @@ ExpTrialLoop.prototype.addFactorGroup = function(pageOrFrame,withFactor) {
     // new factor
     if(withFactor){
         newFactor = new Factor(this.expData, factorGroup);
-        newFactor.init("_factor_1", factorGroup);
+        newFactor.init(this.name()+"_g"+nr_in_task+"_f1");
         newFactor.updateLevels();
         factorGroup.addFactor(newFactor);
     }

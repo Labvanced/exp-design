@@ -321,7 +321,8 @@ var OperandVariable = function(event) {
 
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
-OperandVariable.prototype.operandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric"];
+OperandVariable.prototype.operandTypes = ['undefined', "arithmetic", "variable", "objProperty", "eventParam", "constantString", "constantNumeric"];
+OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/"];
 
 /**
  * This function is used to associate a global variable with this operand, so that the variable knows where it is used.
@@ -345,12 +346,39 @@ OperandVariable.prototype.getValue = function(parameters) {
         case "undefined":
             console.error("operand is undefined");
             return null;
+        case "arithmetic":
+            var left = value.left.getValue();
+            var right = value.right.getValue();
+
+            // convert to value if these are GlobalVarValueInstances:
+            if (left.hasOwnProperty('parentVar')){
+                left = left.toJS();
+            }
+            if (right.hasOwnProperty('parentVar')){
+                right = right.toJS();
+            }
+
+            if (value.op=="+") {
+                return left + right;
+            }
+            else if (value.op=="-") {
+                return left - right;
+            }
+            else if (value.op=="*") {
+                return left * right;
+            }
+            else if (value.op=="/") {
+                return left / right;
+            }
+            return null;
         case "variable":
             return value.getValue();
         case "objProperty":
             return this.operandValueOrObject().getValue();
         case "eventParam":
-            return parameters[value];
+            var paramNames = this.event.trigger().getParameterSpec();
+            var paramIdx = paramNames.indexOf(value);
+            return parameters[paramIdx];
         case "constantString":
             if (typeof value != "string") {
                 console.error("operand is not a string");
@@ -383,6 +411,10 @@ OperandVariable.prototype.setPointers = function(entitiesArr) {
     if (this.operandType() == "objProperty") {
         this.operandValueOrObject().setPointers(entitiesArr);
     }
+    if (this.operandType() == "arithmetic") {
+        this.operandValueOrObject().left.setPointers(entitiesArr);
+        this.operandValueOrObject().right.setPointers(entitiesArr);
+    }
 };
 
 /**
@@ -393,6 +425,10 @@ OperandVariable.prototype.setPointers = function(entitiesArr) {
 OperandVariable.prototype.reAddEntities = function(entitiesArr) {
     if (this.operandType() == "variable"){
         entitiesArr.push(this.operandValueOrObject());
+    }
+    if (this.operandType() == "arithmetic"){
+        this.operandValueOrObject().left.reAddEntities(entitiesArr);
+        this.operandValueOrObject().right.reAddEntities(entitiesArr);
     }
 };
 
@@ -407,6 +443,17 @@ OperandVariable.prototype.fromJS = function(data) {
         var refToObjectProperty = new RefToObjectProperty(this.event);
         refToObjectProperty.fromJS(data.operandValueOrObject);
         this.operandValueOrObject(refToObjectProperty);
+    }
+    else if (data.operandType == "arithmetic") {
+        var left = new OperandVariable(this.event);
+        var right = new OperandVariable(this.event);
+        left.fromJS(data.operandValueOrObject.left);
+        right.fromJS(data.operandValueOrObject.right);
+        this.operandValueOrObject({
+            left: left,
+            right: right,
+            op: data.operandValueOrObject.op
+        });
     }
     else {
         this.operandValueOrObject(data.operandValueOrObject);
@@ -429,6 +476,13 @@ OperandVariable.prototype.toJS = function() {
     }
     if (data.operandType == "objProperty") {
         data.operandValueOrObject = data.operandValueOrObject.toJS();
+    }
+    if (data.operandType == "arithmetic") {
+        data.operandValueOrObject = {
+            left: data.operandValueOrObject.left.toJS(),
+            right: data.operandValueOrObject.right.toJS(),
+            op: data.operandValueOrObject.op
+        };
     }
     return data;
 };
