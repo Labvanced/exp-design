@@ -46,7 +46,8 @@ TriggerMouse.prototype.isValid = function() {
 TriggerMouse.prototype.getParameterSpec = function() {
     return [
         'Stimulus Name',
-        'Time From Frame Onset'
+        'Time From Frame Onset',
+        'Stimulus Info'
     ];
 };
 

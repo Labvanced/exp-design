@@ -201,7 +201,7 @@ ActionRecord.prototype.run = function(triggerParams) {
         var val;
         switch (name) {
             // mouse events
-            case "Stimulus Tag":
+            case "Stimulus Name":
                 val = triggerParams[0];
                 break;
             case "Time From Stimulus Onset":  // change to onset of stimulus
