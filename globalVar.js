@@ -244,12 +244,14 @@ GlobalVar.prototype.fromJS = function(data) {
     this.isFactor(data.isFactor);
     this.isRecorded(data.isRecorded);
     this.isInteracting(data.isInteracting);
-
     if (data.hasOwnProperty('resetAtTrialStart')) {
         this.resetAtTrialStart(data.resetAtTrialStart);
     }
     if (data.hasOwnProperty('recordAtTrialEnd')) {
         this.recordAtTrialEnd(data.recordAtTrialEnd);
+    }
+    if (data.hasOwnProperty('recType')) {
+        this.recType(data.recType);
     }
     if (data.hasOwnProperty('startValue')) {
         var startValue = null;
@@ -318,6 +320,7 @@ GlobalVar.prototype.toJS = function() {
         recordAtTrialEnd: this.recordAtTrialEnd(),
         startValue: startValue,
         isRecorded:this.isRecorded(),
+        recType: this.recType(),
 
         type: this.type,
         levels: jQuery.map( this.levels(), function( lvl ) { return lvl.toJS(); } )
