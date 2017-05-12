@@ -184,6 +184,7 @@ ActionRecord.prototype.addRecording = function(type){
     
     this.selectedRecordings.push(newRec);
 
+
 };
 
 /**
