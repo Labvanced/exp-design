@@ -158,37 +158,26 @@ GlobalVar.prototype.removeBackRef = function(entity) {
  * @param val
  */
 GlobalVar.prototype.notifyValueChanged = function() {
-    if (this.value()){
-        if(this.recType()=='timeseries'){
-            if(!this.recValue){
-                this.recValue = [];
-            }
-            this.recValue.push({
-                timeStamp:    new Date().getTime(),
-                value:        this.value().toJS()
-            });
+    if (this.value()) {
+        if (!this.recValue) {
+            this.recValue = [];
         }
-        else if(this.recType()=='overwrite'){
-            this.recValue = this.value().toJS();
-        }
+        this.recValue.push({
+            timeStamp: new Date().getTime(),
+            value: this.value().toJS()
+        });
     }
-
 };
 
 /**
  * This is used by the player to retireve the recording at the end of a trial
  */
 GlobalVar.prototype.getRecAtEndOfTrial = function() {
-
-    return this.recValue;
-
-    /**
     if(this.recType()=='overwrite'){
         return this.value().toJS();
     } else if(this.recType()=='timeseries'){
-
+        return this.recValue;
     }
-     **/
 };
 
 GlobalVar.prototype.getValue = function() {

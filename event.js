@@ -81,13 +81,6 @@ Event.prototype.setPointers = function(entitiesArr) {
         this.requirement().setPointers(entitiesArr);
     }
     var actions = this.actions();
-    // reorder actions, move jump events toward the end
-    for (var i=0; i<actions.length; i++) {
-        if (actions[i] instanceof ActionJumpTo && i<actions.length-1){
-           var action =  actions.splice(i,1)[0];
-           actions.push(action);
-        }
-    }
     for (var i=0; i<actions.length; i++) {
         actions[i].setPointers(entitiesArr);
     }
