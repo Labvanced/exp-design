@@ -424,8 +424,11 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
         (function(event) {
             $(document).on("keydown", function (ev){
                 var keyIdx = validKeyCodes.indexOf(ev.keyCode);
-                ev.preventDefault();
                 if (keyIdx>=0){
+                    if (self.buttonTypesFkeysCode.indexOf(ev.keyCode) >= 0) {
+                        // only prevent default for F keys:
+                        ev.preventDefault();
+                    }
                     self.mouseX = playerFrame.mouseX;
                     self.mouseY = playerFrame.mouseY;
                     self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
@@ -439,8 +442,11 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
         (function(event) {
             $(document).on("keyup", function (ev){
                 var keyIdx = validKeyCodes.indexOf(ev.keyCode);
-                ev.preventDefault();
                 if (keyIdx>=0){
+                    if (self.buttonTypesFkeysCode.indexOf(ev.keyCode) >= 0) {
+                        // only prevent default for F keys:
+                        ev.preventDefault();
+                    }
                     self.mouseX = playerFrame.mouseX;
                     self.mouseY = playerFrame.mouseY;
                     self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
