@@ -46,7 +46,7 @@
         <ul class="sortableElement sortableOuter" id="sortableElementPrev">
             <!-- ko foreach: dataModel().elements -->
                 <li class="sortableInner ui-state-default">
-                    <div data-bind="wysiwyg: $rawData, valueUpdate: 'afterkeydown'"></div>
+                    <div class="notDraggable" data-bind="wysiwyg: $rawData, valueUpdate: 'afterkeydown'"></div>
                 </li>
             <!-- /ko -->
         </ul>
