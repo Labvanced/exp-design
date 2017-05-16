@@ -187,6 +187,7 @@ if (typeof CKEDITOR !== 'undefined') {
 
             ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
                 instance.updateElement();
+                instance.focusManager.blur(true);
                 instance.destroy();
             });
 
