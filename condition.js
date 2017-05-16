@@ -26,6 +26,28 @@ var Condition = function(factorGroup) {
 
 };
 
+
+Condition.prototype.getCurrentValueOfFactor = function(idOfGlobalVar) {
+
+    var levelValue = null;
+    var levelNames = [];
+    for (var i=0; i<this.factorLevels().length; i++) {
+        levelNames.push(this.factorLevels()[i].name());
+    }
+
+    var facIds= [];
+    for (var i=0; i<this.factorGroup.factors().length; i++) {
+        facIds.push(this.factorGroup.factors()[i].globalVar().id());
+    }
+
+    var idx = facIds.indexOf(idOfGlobalVar);
+    if (idx>=0){
+        levelValue= levelNames[idx];
+    }
+
+    return levelValue;
+};
+
 /**
  * Initializes a new instance with just one trial variation. This function is usually called after the constructor
  * created a new instance.

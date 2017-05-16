@@ -13,22 +13,22 @@
     </div>
     <div>
         <!-- ko if: (dataModel().inputType()=='number')  -->
-        <div><input style="position:relative;left: 0%;" type="number" class="form-control"></div>
+        <div><input style="position:relative;left: 0%;" type="number" class="form-control" data-bind="value: dataModel().variable().startValue().value"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel().inputType()=='text')  -->
-        <div><input style="position:relative;left: 0%;" type="text" class="form-control" placeholder="Participant Answer"></div>
+        <div><input style="position:relative;left: 0%;" type="text" class="form-control" data-bind="text: dataModel().variable().startValue().value"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel().inputType()=='date')  -->
-        <div><input style="position:relative;left: 0%;" type="date"></div>
+        <div><input style="position:relative;left: 0%;" type="date" class="form-control" data-bind="value: dataModel().variable().startValue().value" ></div>
         <!-- /ko -->
         <!-- ko if: (dataModel().inputType()=='week')  -->
-        <div><input style="position:relative;left: 0%;" type="week"></div>
+        <div><input style="position:relative;left: 0%;" type="week" class="form-control" data-bind="value: dataModel().variable().startValue().value"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel().inputType()=='time')  -->
-        <div><input style="position:relative;left: 0%;" type="time"></div>
+        <div><input style="position:relative;left: 0%;" type="time" class="form-control" data-bind="value: dataModel().variable().startValue().value"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel().inputType()=='color')  -->
-        <div><input style="position:relative;left: 0%;" type="color"></div>
+        <div><input style="position:relative;left: 0%;" type="color" class="form-control" data-bind="value: dataModel().variable().startValue().value"></div>
         <!-- /ko -->
     </div>
 
@@ -42,22 +42,22 @@
     <br>
     <div>
         <!-- ko if: (dataModel().inputType()=='number')  -->
-        <div><input style="position:relative;left: 0%;" type="number" class="form-control"></div>
+        <div><input style="position:relative;left: 0%;" type="number" class="form-control" data-bind="value: dataModel().variable().value().value"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel().inputType()=='text')  -->
-        <div><input style="position:relative;left: 0%;" type="text" class="form-control" placeholder="Participant Answer"></div>
+        <div><input style="position:relative;left: 0%;" type="text" class="form-control" data-bind="value: dataModel().variable().value().value"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel().inputType()=='date')  -->
-        <div><input style="position:relative;left: 0%;" type="date"></div>
+        <div><input style="position:relative;left: 0%;" type="date" class="form-control" data-bind="value: dataModel().variable().value().value"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel().inputType()=='week')  -->
-        <div><input style="position:relative;left: 0%;" type="week"></div>
+        <div><input style="position:relative;left: 0%;" type="week" class="form-control" data-bind="value: dataModel().variable().value().value"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel().inputType()=='time')  -->
-        <div><input style="position:relative;left: 0%;" type="time"></div>
+        <div><input style="position:relative;left: 0%;" type="time" class="form-control" data-bind="value: dataModel().variable().value().value"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel().inputType()=='color')  -->
-        <div><input style="position:relative;left: 0%;" type="color"></div>
+        <div><input style="position:relative;left: 0%;" type="color" class="form-control" data-bind="value: dataModel().variable().value().value"></div>
         <!-- /ko -->
     </div>
     <br>
