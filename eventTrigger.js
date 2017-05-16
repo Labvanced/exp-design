@@ -354,16 +354,19 @@ var TriggerKeyboard = function(event) {
 
 TriggerKeyboard.prototype.type = "TriggerKeyboard";
 TriggerKeyboard.prototype.label = "Keyboard Trigger";
+TriggerKeyboard.prototype.interactionTypes = ["PressDown", "PressUp"];
+
 TriggerKeyboard.prototype.buttonTypesArrows = ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"];
 TriggerKeyboard.prototype.buttonTypesNumbers = ["0","1", "2", "3", "4", "5", "6", "7", "8", "9"];
 TriggerKeyboard.prototype.buttonTypesLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 TriggerKeyboard.prototype.buttonTypesSpecial= ["Space","Enter","Ctrl","Tab","Shift"];
-TriggerKeyboard.prototype.interactionTypes = ["PressDown", "PressUp"];
+TriggerKeyboard.prototype.buttonTypesFkeys= ["F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"];
 
 TriggerKeyboard.prototype.buttonTypesArrowsCode = [37,38,39,40];
 TriggerKeyboard.prototype.buttonTypesNumbersCode = [48,49,50,51,52,53,54,55,56,57];
 TriggerKeyboard.prototype.buttonTypesLettersCode = [65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90];
 TriggerKeyboard.prototype.buttonTypesSpecialCode= [32,13,17,9,16];
+TriggerKeyboard.prototype.buttonTypesFkeysCode= [112,113,114,115,116,117,118,119,120,121,122,123];
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -384,8 +387,8 @@ TriggerKeyboard.prototype.isValid = function() {
  * @returns {string[]}
  */
 TriggerKeyboard.prototype.getValidKeyCodes = function() {
-    var allKeys = this.buttonTypesSpecial.concat(this.buttonTypesLetters.concat(this.buttonTypesArrows.concat(this.buttonTypesNumbers)));
-    var allKeysCode = this.buttonTypesSpecialCode.concat(this.buttonTypesLettersCode.concat(this.buttonTypesArrowsCode.concat(this.buttonTypesNumbersCode)));
+    var allKeys = this.buttonTypesFkeys.concat(this.buttonTypesSpecial.concat(this.buttonTypesLetters.concat(this.buttonTypesArrows.concat(this.buttonTypesNumbers))));
+    var allKeysCode = this.buttonTypesFkeysCode.concat(this.buttonTypesSpecialCode.concat(this.buttonTypesLettersCode.concat(this.buttonTypesArrowsCode.concat(this.buttonTypesNumbersCode))));
 
     validKeyCodes = [];
     var validKeys = this.buttons();
@@ -421,6 +424,7 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
         (function(event) {
             $(document).on("keydown", function (ev){
                 var keyIdx = validKeyCodes.indexOf(ev.keyCode);
+                ev.preventDefault();
                 if (keyIdx>=0){
                     self.mouseX = playerFrame.mouseX;
                     self.mouseY = playerFrame.mouseY;
