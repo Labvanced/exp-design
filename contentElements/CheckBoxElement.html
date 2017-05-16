@@ -28,7 +28,7 @@
     </div>
     <div data-bind="foreach: dataModel().elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" >
+            <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: variable().value().value,click:function(){return true},clickBubble: false">
             <div   style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" data-bind="html: checkBoxText"></div>
         </div>
     </div>

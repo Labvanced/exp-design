@@ -271,7 +271,7 @@ function createSortableElementComponents() {
                         this.setVarSubscription.dispose();
                     }
                     this.setVarSubscription = this.dataModel().elementIdsCombined.subscribe(function(val){
-                        self.dataModel().variable().value(val)
+                        self.dataModel().variable().value().value(val)
                     });
                 };
 

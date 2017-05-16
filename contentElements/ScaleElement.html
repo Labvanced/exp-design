@@ -68,7 +68,7 @@
             <div style="display: inline-block; width: 100%">
                 <div style="float: left; width:25%; display: inline-block;" data-bind="html: rowText" ></div>
                 <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: scaleParent.labels">
-                    <input style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" type="radio" data-bind="style:{width:$parent.scaleParent.calculateWidth()},attr:{value:$index()},checked: $parent.variable().value, click:function(){return true},clickBubble: false">
+                    <input style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" type="radio" data-bind="style:{width:$parent.scaleParent.calculateWidth()},attr:{value:$index()},checked: $parent.variable().value().value, click:function(){return true},clickBubble: false">
                 </span>
             </div>
         </div>
