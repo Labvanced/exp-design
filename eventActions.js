@@ -420,7 +420,7 @@ ActionSetElementProp.prototype.run = function(triggerParams) {
             changeValue = (oldValue * (value/100));
         }
         else if (changeType == 'variable'){
-            changeValue = parseFloat(variable.value());
+            changeValue = parseFloat(variable.value().value());
         }
 
         if (operatorType== '='){

@@ -132,7 +132,7 @@ ExpTrialLoop.prototype.addFactorGroup = function(pageOrFrame,withFactor) {
     // new factor
     if(withFactor){
         newFactor = new Factor(this.expData, factorGroup);
-        newFactor.init(this.name()+"_g"+nr_in_task+"_f1");
+        newFactor.init("factor1_"+factorGroup.name()+"_"+this.name());
         newFactor.updateLevels();
         factorGroup.addFactor(newFactor);
     }

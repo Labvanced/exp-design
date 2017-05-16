@@ -322,7 +322,7 @@ var OperandVariable = function(event) {
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
 OperandVariable.prototype.operandTypes = ['undefined', "arithmetic", "variable", "objProperty", "eventParam", "constantString", "constantNumeric"];
-OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/"];
+OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
 
 /**
  * This function is used to associate a global variable with this operand, so that the variable knows where it is used.
@@ -369,6 +369,9 @@ OperandVariable.prototype.getValue = function(parameters) {
             }
             else if (value.op=="/") {
                 return left / right;
+            }
+            else if (value.op=="%") {
+                return left % right;
             }
             return null;
         case "variable":
