@@ -284,7 +284,7 @@ Experiment.prototype.savePublishingData = function() {
     if (this.publishing_data instanceof PublishingData){
         var saveData = {
             exp_id: this.exp_id(),
-            publishing_data: this.publishing_data().toJS()
+            publishing_data: this.publishing_data.toJS()
         };
         uc.socket.emit('updateExperiment', saveData, function(response){
             if (response.success){
