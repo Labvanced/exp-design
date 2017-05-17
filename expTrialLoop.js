@@ -357,39 +357,47 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
 
             var factor = factors[facIdx];
             var facName = factor.globalVar().name();
-            factorNames.push(facIdx);
             var levels = factor.globalVar().levels();
             var nrLevels = levels.length;
 
 
             if (factor.randomizationType()=='unbalanced'){
-                for (var trialIdx =0; trialIdx < factorLevels.length; trialIdx++) {
+                factorNames.push(facIdx);
+                for (var trialIdx =0; trialIdx < factorLevels.length; trialIdx++) {factorLevels
                     var randValue = Math.floor(Math.random()*nrLevels);
                     factorLevels[trialIdx].push(levels[randValue].name());
                 }
             }
 
-            else if (factor.randomizationType()=='balancedTask'){  // role dice balanced in task
+            else if (factor.randomizationType()=='balancedTask'){
+                factorNames.push(facIdx);
                 var trialSplit = Math.floor(factorLevels.length/nrLevels);
                 var remainder = factorLevels.length%nrLevels;
+
+
+                var randIdx = [];
+                for (var trialIdx=0; trialIdx <factorLevels.length; trialIdx++) {
+                    randIdx.push(trialIdx);
+                }
+                var randIndicies = this.reshuffle(randIdx);
 
                 var trialIdx = 0;
                 for (var lvlIndex=0; lvlIndex <levels.length; lvlIndex++) {
                     for (var repIndex=0; repIndex <trialSplit; repIndex++) {
-                        factorLevels[trialIdx].push(levels[lvlIndex].name());
+                        factorLevels[randIndicies[trialIdx]].push(levels[lvlIndex].name());
                         trialIdx ++;
                     }
                 }
 
                 for (var remain=0; remain < remainder; remain++) {
-                    factorLevels[trialIdx].push(levels[remain].name());
+                    factorLevels[randIndicies[trialIdx]].push(levels[remain].name());
                     trialIdx ++;
                 }
 
             }
 
             else if(factor.randomizationType()=='balancedConditions') {
-
+                factorNames.push(facIdx);
                 var startOfConditionIndex = 0;
                 var endOfConditionIndex = 0;
 
@@ -422,6 +430,56 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
             else if (factor.randomizationType()=='balancedBetweenSubjects'){
                 // ToDO
             }
+
+        }
+    }
+
+
+    var globalVarNames = [];
+    for (var facIdx=0; facIdx < factors.length; facIdx++) {
+        globalVarNames.push(factors[facIdx].globalVar().name());
+    }
+
+    for (var facIdx=0; facIdx < factors.length; facIdx++) {
+        factor = factors[facIdx];
+        if (factor.factorType()=='random' && factor.randomizationType()=='balancedInFactor') {
+
+
+            var facName = factor.globalVar().name();
+            var levels = factor.globalVar().levels();
+            var nrLevels = levels.length;
+            balanceInFactor = null;
+
+            var idx = globalVarNames.indexOf(factor.balancedInFactor());
+            if (idx !=facIdx ){
+                factorNames.push(facIdx);
+                balanceInFactor = factors[idx];
+                var lvls = [];
+                var countLvl = [];
+
+                for (var lvl =0; lvl < balanceInFactor.globalVar().levels().length; lvl++) {
+                    lvls.push(balanceInFactor.globalVar().levels()[lvl].name());
+                    countLvl.push(0);
+                }
+
+                var indexInFacLevel=  factorNames.indexOf(idx);
+
+                var factorLevelsToBalance = [];
+                for (var trial=0; trial < factorLevels.length; trial++) {
+                    var facValu = factorLevels[trial][indexInFacLevel];
+                    var inder = lvls.indexOf(facValu);
+                    var value = levels[countLvl[inder]].name();
+                    factorLevels[trial].push(value);
+                    countLvl[inder]++
+                    if(countLvl[inder]>levels.length-1){
+                        countLvl[inder] = 0;
+                    }
+
+                }
+
+            }
+
+
 
         }
     }

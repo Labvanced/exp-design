@@ -15,6 +15,11 @@ var Factor = function(expData, factorGroup) {
     this.globalVar = ko.observable(null);
     this.factorType =  ko.observable('fixed');// either 'fixed' or 'random'
     this.randomizationType =  ko.observable('unbalanced');
+    this.balancedInFactor =  ko.observable('Please Select');
+    this.balancedInFactor.subscribe(function(oldValue) {
+       var test = 1;
+    });
+
     // or maybe better: either 'allFactorialInteractions' or 'redrawRandomPerTrial' or 'balancedBetweenSubjects'
 
     // not serialized:
@@ -84,6 +89,10 @@ Factor.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('randomizationType')){
         this.randomizationType(data.randomizationType);
     }
+    if (data.hasOwnProperty('balancedInFactor')){
+        this.balancedInFactor(data.balancedInFactor);
+    }
+
     this.globalVar(data.globalVar);
     return this;
 };
@@ -98,6 +107,7 @@ Factor.prototype.toJS = function() {
         id: this.id(),
         factorType: this.factorType(),
         randomizationType:this.randomizationType(),
+        balancedInFactor: this.balancedInFactor(),
         globalVar: this.globalVar().id()
     };
 };
