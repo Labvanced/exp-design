@@ -63,7 +63,7 @@
     <br>
 
     <div data-bind="style: {marginLeft: dataModel().margin, marginRight: dataModel().margin}">
-        <ul class="sortableElement sortableOuter" id="sortableElementPlayer">
+        <ul class="sortableElement sortableOuter pointer" id="sortableElementPlayer">
             <!-- ko foreach: dataModel().elements -->
             <li class="sortableInner ui-state-default">
                 <div data-bind="html: $rawData, valueUpdate: 'afterkeydown'"></div>
