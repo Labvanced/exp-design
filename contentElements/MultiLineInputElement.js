@@ -108,7 +108,7 @@ function createMultiLineInputComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                 };
                 return new viewModel(dataModel);
@@ -121,7 +121,7 @@ function createMultiLineInputComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
                     this.answer = dataModel.answer;
                 };
