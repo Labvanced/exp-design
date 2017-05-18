@@ -25,18 +25,25 @@ var ExpData = function (parentExperiment) {
     // the following variables are recorded once per subject:
     this.varSubjectId =  ko.observable();
     this.varSubjectIndex =  ko.observable();
+
     this.varGroupId =  ko.observable();
+
     // the following variables are recorded once per task:
     this.varSessionTimeStamp =  ko.observable();
+    this.varSessionTimeStampEnd =  ko.observable();
+
     this.varSessionId =  ko.observable();
     this.varSessionIndex =  ko.observable();
+
     this.varBlockId =  ko.observable();
     this.varBlockIndex =  ko.observable();
+
     this.varTaskId =  ko.observable();
     this.varTaskIndex =  ko.observable();
 
     this.varTrialId =  ko.observable();
-    this.varTaskIdx =  ko.observable();
+    this.varTrialIndex =  ko.observable();
+
     this.varCondition =  ko.observable();
 
     this.vars = ko.computed(function() {
@@ -53,6 +60,7 @@ ExpData.prototype.fixedVarNames = [
     'varSubjectIndex',
     'varGroupId',
     'varSessionTimeStamp',
+    'varSessionTimeStampEnd',
     'varSessionId',
     'varSessionIndex',
     'varBlockId',
@@ -60,7 +68,7 @@ ExpData.prototype.fixedVarNames = [
     'varTaskId',
     'varTaskIndex',
     'varTrialId',
-    'varTaskIdx',
+    'varTrialIndex',
     'varCondition'
 ];
 
@@ -79,6 +87,9 @@ ExpData.prototype.createVars = function() {
     }
     if (!this.varSessionTimeStamp()) {
         this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session Start Time'));
+    }
+    if (!this.varSessionTimeStampEnd()) {
+        this.varSessionTimeStampEnd((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session End Time'));
     }
     if (!this.varSessionId()) {
         this.varSessionId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Session Id'));
@@ -101,8 +112,8 @@ ExpData.prototype.createVars = function() {
     if (!this.varTrialId()) {
         this.varTrialId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Trial Id'));
     }
-    if (!this.varTaskIdx()) {
-        this.varTaskIdx((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'Trial Index'));
+    if (!this.varTrialIndex()) {
+        this.varTrialIndex((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Trial Index'));
     }
     if (!this.varCondition()) {
         this.varCondition((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Condition'));
