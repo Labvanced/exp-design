@@ -103,19 +103,13 @@ GlobalVar.prototype.initValue = function() {
 };
 
 GlobalVar.prototype.resetValueToStartValue = function() {
-    if (this.startValue()){
-        this.value().fromJS(this.startValue().toJS());
-    }
-    else{
-        this.value().fromJS(null);
-    }
-
+    this.value().fromJS(this.startValue().toJS());
 };
 
 GlobalVar.prototype.resetStartValue = function() {
     var startValue = this.createValueFromDataType();
     this.startValue(startValue);
-  //  this.initValue();
+    this.initValue();
 };
 
 GlobalVar.prototype.createValueFromDataType = function() {
@@ -295,8 +289,13 @@ GlobalVar.prototype.fromJS = function(data) {
             startValue.fromJS(data.startValue);
             this.startValue(startValue);
             this.initValue();
-            this.resetStartValue();
         }
+        else {
+            console.log("error: startValue.type is not found");
+        }
+    }
+    else {
+        this.resetStartValue();
     }
 
 
@@ -314,12 +313,9 @@ GlobalVar.prototype.fromJS = function(data) {
  * @returns {object}
  */
 GlobalVar.prototype.toJS = function() {
-    //var startValue = null;
+    var startValue = null;
     if (this.startValue()){
-        startValue = this.startValue().toJS()
-    }
-    else{
-        startValue = null;
+        startValue = this.startValue().toJS();
     }
     return {
         id: this.id(),
