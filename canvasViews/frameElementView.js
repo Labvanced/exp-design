@@ -13,7 +13,7 @@ var FrameElementView = function(dataModel, parentView) {
     this.div = document.createElement('div');
     $(this.div).css({
         "position": "absolute",
-        "opacity": this.dataModel.visibility()
+        "opacity": this.dataModel.modifier().selectedTrialView.visibility()
     });
 
     this.divContent = document.createElement('div');
