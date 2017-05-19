@@ -24,7 +24,7 @@ var PublishingData = function(experiment) {
     this.brandingType= ko.observable('LabVanced');
     this.secrecyType= ko.observable('link');
     this.passwordType= ko.observable('oneForAll');
-    this.stopCondition= ko.observable(null);
+    this.stopCondition= ko.observable('none');
     this.recordingStopDate= ko.observable(null);
     this.recordingStopTime= ko.observable(null);
     this.recordingStopNrSubjects =  ko.observable(1);
@@ -45,7 +45,7 @@ var PublishingData = function(experiment) {
     this.advertisement = ko.observable(null);
     this.addHighlight= ko.observable(false);
     this.addLabVancedSearch= ko.observable(false);
-    this.postOnAMT = ko.observable(null);
+    this.postOnAMT = ko.observable("no");
     this.termsCrowdsourcing = ko.observable(false);
     this.amountOfSubjects = ko.observable(0);
 
@@ -72,10 +72,10 @@ var PublishingData = function(experiment) {
 
     this.isDescriptionValid = ko.computed(function () {
 
-        if (this.exp_name() && this.exp_name().length == 0)
+        if (this.exp_name().length == 0)
             return false;
 
-        if (this.description() && this.description().length == 0)
+        if (this.description().length == 0)
             return false;
 
         if (this.categories().length == 0)
@@ -95,8 +95,39 @@ var PublishingData = function(experiment) {
         return true;
     }, this);
 
-};
+    this.errorString = ko.computed(function() {
+        var errorString = "";
+        if (this.exp_name().length == 0) {
+            errorString += "No name, ";
+        }
+        if (this.description().length == 0) {
+            errorString += "No description, ";
+        }
+        if (this.categories().length == 0) {
+            errorString += "No categories, ";
+        }
+        if (this.imageType() == "jdenticon") {
+            if (!this.jdenticonHash()) {
+                errorString += "No image, ";
+            }
+        }
+        else if (this.imageType() == "imgfile") {
+            if (!this.img_file_id()) {
+                errorString += "No image, ";
+            }
+            if (!this.img_file_orig_name()) {
+                errorString += "No image, ";
+            }
+        }
 
+        // remove last comma:
+        if (errorString!="") {
+            errorString = errorString.substring(0, errorString.length - 2);
+        }
+        return errorString;
+    }, this);
+
+};
 
 PublishingData.prototype.fromJS = function(data) {
 

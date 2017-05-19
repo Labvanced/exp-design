@@ -53,6 +53,29 @@ var ExpData = function (parentExperiment) {
         }
         return varArray;
     }, this);
+
+    this.errorString = ko.computed(function() {
+        var errorString = "";
+        if (this.availableGroups().length == 0) {
+            errorString += "No Group, ";
+        }
+        if (this.availableSessions().length == 0) {
+            errorString += "No Session, ";
+        }
+        if (this.availableBlocks().length == 0) {
+            errorString += "No Block, ";
+        }
+        if (this.availableTasks().length == 0) {
+            errorString += "No Task, ";
+        }
+
+        // remove last comma:
+        if (errorString!="") {
+            errorString = errorString.substring(0, errorString.length - 2);
+        }
+        return errorString;
+    }, this);
+
 };
 
 ExpData.prototype.fixedVarNames = [

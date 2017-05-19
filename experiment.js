@@ -69,24 +69,52 @@ Experiment.prototype.viewRecordings = function() {
     page("/page/recordingsPage/"+this.exp_id());
 };
 
-Experiment.prototype.copyExp = function() {
-
+Experiment.prototype.disableRecruiting = function(cb) {
+    if (this.publishing_data.recruitingEnabled()) {
+        this.publishing_data.recruitInLibrary(false);
+        this.publishing_data.recruitSecretly(false);
+        this.publishing_data.recruitExternal(false);
+        this.savePublishingData(function() {
+            cb();
+        });
+    }
+    else {
+        cb();
+    }
 };
 
-Experiment.prototype.endRecs = function() {
-    this.status('analyze');
-    this.saveMetaData();
+Experiment.prototype.switchToCreateState = function(cb) {
+    var self = this;
+
+    // need to disable all recruiting options first:
+    this.disableRecruiting(function() {
+        // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
+        uc.socket.emit('deleteAllRecsOfExpAndSwitchToCreate', {exp_id: self.exp_id()}, function(response){
+            if (response.success){
+                self.status("create");
+                self.saveExpData(cb);
+            }
+            else {
+                console.log("error: could not switch experiment to create state.");
+            }
+        });
+    });
 };
 
-Experiment.prototype.restartRecordings = function(){
+Experiment.prototype.switchToRecordState = function(cb){
     this.status('record');
-    this.saveMetaData();
+    this.saveMetaData(cb);
 };
 
+Experiment.prototype.switchToAnalyzeState = function(cb) {
+    var self = this;
 
-Experiment.prototype.editSettings = function() {
-    this.publishing_data.status('editing');
-    this.savePublishingData();
+    // need to disable all recruiting options first:
+    this.disableRecruiting(function() {
+        // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
+        self.status('analyze');
+        self.saveMetaData(cb);
+    });
 };
 
 /**
@@ -128,7 +156,7 @@ Experiment.prototype.save = function() {
 /**
  * save this experiment and send to server
  */
-Experiment.prototype.saveExpData = function() {
+Experiment.prototype.saveExpData = function(cb) {
     var self = this;
 
     if (this.status() == "create"){
@@ -144,6 +172,9 @@ Experiment.prototype.saveExpData = function() {
                 if (response.success){
                     self.changesInTransit = false;
                     console.log("saved experiment success");
+                    if (cb) {
+                        cb();
+                    }
                     if (self.hasLocalChanges) {
                         // restart saving process for the new local changes that were made in the meantime
                         self.saveExpData();
@@ -181,51 +212,14 @@ Experiment.prototype.saveExpData = function() {
         }
     }
     else {
-
-
         this.startLockingDialog();
-        /**
-        var tempDialog = $('<div><p>Editing this experiment is not possible because recordings are active. In order to keep the specification of the experiment and the recorded data synchronized, you have three options: </p><ul><li>You can delete all recordings and switch this experiment back to "create" mode.</li><li>You can copy this experiment and then edit the new instance (this will be implemented soon).</li><li>Cancel the editing and keep everything as it is.</li></ul></div>');
-        tempDialog.dialog({
-            modal: true,
-            title: "Experiment is Locked",
-            resizable: false,
-            width: 400,
-            buttons: [
-                {
-                    text: "Delete and disable all recordings",
-                    click: function () {
-                        uc.socket.emit('deleteAllRecsOfExpAndSwitchToCreate', {exp_id: self.exp_id()}, function(response){
-                            if (response.success){
-                                console.log("successfully switched experiment to create state.");
-                                tempDialog.dialog( "close" );
-                                self.status("create");
-                                self.saveExpData();
-                            }
-                            else {
-                                console.log("error: could not switch experiment to create state.");
-                            }
-                        });
-                    }
-                },
-                {
-                    text: "Cancel editing and reload from server",
-                    click: function () {
-                        window.location.reload(false);
-                        $( this ).dialog( "close" );
-                    }
-                }
-            ]
-        });
-         **/
-
     }
 };
 
 
 Experiment.prototype.startLockingDialog = function() {
     var self= this;
-    var tempDialog = $('<div><p>Editing this experiment is not possible because recordings are active. In order to keep the specification of the experiment and the recorded data synchronized, you have three options: </p><ul><li>You can delete all recordings and switch this experiment back to "create" mode.</li><li>You can copy this experiment and then edit the new instance (this will be implemented soon).</li><li>Cancel the editing and keep everything as it is.</li></ul></div>');
+    var tempDialog = $('<div><p>Editing this experiment is not possible because it is not in "create" state. In order to keep the specification of the experiment and the recorded data synchronized, you have three options: </p><ul><li>You can delete all recordings and switch this experiment back to "create" mode.</li><li>You can copy this experiment and then edit the new instance (this will be implemented soon).</li><li>Cancel the editing and keep everything as it is.</li></ul></div>');
     tempDialog.dialog({
         modal: true,
         title: "Experiment is Locked",
@@ -235,16 +229,9 @@ Experiment.prototype.startLockingDialog = function() {
             {
                 text: "Delete and disable all recordings",
                 click: function () {
-                    uc.socket.emit('deleteAllRecsOfExpAndSwitchToCreate', {exp_id: self.exp_id()}, function(response){
-                        if (response.success){
-                            console.log("successfully switched experiment to create state.");
-                            tempDialog.dialog( "close" );
-                            self.status("create");
-                            self.saveExpData();
-                        }
-                        else {
-                            console.log("error: could not switch experiment to create state.");
-                        }
+                    self.switchToCreateState(function() {
+                        console.log("successfully switched experiment to create state.");
+                        tempDialog.dialog( "close" );
                     });
                 }
             },
@@ -259,11 +246,7 @@ Experiment.prototype.startLockingDialog = function() {
     });
 };
 
-
-
-
-
-Experiment.prototype.saveMetaData = function() {
+Experiment.prototype.saveMetaData = function(cb) {
     var saveData = {
         exp_id: this.exp_id(),
         exp_name: this.exp_name(),
@@ -273,6 +256,9 @@ Experiment.prototype.saveMetaData = function() {
     uc.socket.emit('updateExperiment', saveData, function(response){
         if (response.success){
             console.log("saved experiment meta data to server.");
+            if (cb) {
+                cb();
+            }
         }
         else {
             console.log("error: could not transmit experiment meta data to server.");
@@ -280,7 +266,7 @@ Experiment.prototype.saveMetaData = function() {
     });
 };
 
-Experiment.prototype.savePublishingData = function() {
+Experiment.prototype.savePublishingData = function(cb) {
     if (this.publishing_data instanceof PublishingData){
         var saveData = {
             exp_id: this.exp_id(),
@@ -289,6 +275,9 @@ Experiment.prototype.savePublishingData = function() {
         uc.socket.emit('updateExperiment', saveData, function(response){
             if (response.success){
                 console.log("saved experiment publishing data to server.");
+                if (cb) {
+                    cb();
+                }
             }
             else {
                 console.log("error: could not transmit publishing data to server.");
@@ -297,7 +286,7 @@ Experiment.prototype.savePublishingData = function() {
     }
 };
 
-Experiment.prototype.saveAnalysisData = function() {
+Experiment.prototype.saveAnalysisData = function(cb) {
     if (this.analysis_data instanceof AnalysisData){
         var saveData = {
             exp_id: this.exp_id(),
@@ -306,6 +295,9 @@ Experiment.prototype.saveAnalysisData = function() {
         uc.socket.emit('updateExperiment', saveData, function(response){
             if (response.success){
                 console.log("saved experiment analysis data to server.");
+                if (cb) {
+                    cb();
+                }
             }
             else {
                 console.log("error: could not transmit analysis data to server.");
@@ -314,7 +306,7 @@ Experiment.prototype.saveAnalysisData = function() {
     }
 };
 
-Experiment.prototype.savePrivateData = function() {
+Experiment.prototype.savePrivateData = function(cb) {
     if (this.private_data instanceof PrivateData){
         var saveData = {
             exp_id: this.exp_id(),
@@ -323,6 +315,9 @@ Experiment.prototype.savePrivateData = function() {
         uc.socket.emit('updateExperiment', saveData, function(response){
             if (response.success){
                 console.log("saved experiment private data to server.");
+                if (cb) {
+                    cb();
+                }
             }
             else {
                 console.log("error: could not transmit private data to server.");
