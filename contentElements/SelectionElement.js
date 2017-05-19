@@ -1,5 +1,6 @@
 
 var SelectionElement = function(expData) {
+    var self = this;
     this.expData = expData;
     this.parent = null;
 
@@ -7,7 +8,7 @@ var SelectionElement = function(expData) {
     this.type = "SelectionElement";
     this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
 
-    this.availableOptions = ko.observableArray([]);
+ //   this.availableOptions = ko.observableArray([]);
     this.variable = ko.observable();
 
     // modifier:
@@ -15,6 +16,23 @@ var SelectionElement = function(expData) {
 
     ///// not serialized
     this.selected = ko.observable(false);
+
+
+
+    this.availableLevels = ko.computed(function() {
+        var arr = [];
+        if (self.variable()){
+            if (self.variable().levels){
+                var levels =  self.variable().levels();
+
+                for (var i=0; i < levels.length; i++){
+                    arr.push(levels[i].name());
+                }
+            }
+        }
+        return arr;
+
+    });
     /////
 };
 
@@ -28,11 +46,15 @@ SelectionElement.prototype.initHeight = 100;
 
 
 SelectionElement.prototype.addEntry = function(newInput) {
-    this.availableOptions.push(newInput);
+    if (newInput){
+        var level = this.variable().addLevel();
+        level.name(newInput);
+    }
+
 };
 
 SelectionElement.prototype.removeEntry = function(idx) {
-    this.availableOptions.splice(idx,1);
+    this.variable().removeLevel(idx);
 };
 
 
@@ -83,7 +105,7 @@ SelectionElement.prototype.toJS = function() {
         type: this.type,
         questionText: this.questionText(),
         variable: variableId,
-        availableOptions: this.availableOptions(),
+      //  availableOptions: this.availableOptions(),
         modifier: this.modifier().toJS()
     };
 };
@@ -92,7 +114,7 @@ SelectionElement.prototype.fromJS = function(data) {
     this.type=data.type;
     this.questionText(data.questionText);
     this.variable(data.variable);
-    this.availableOptions(data.availableOptions);
+ //   this.availableOptions(data.availableOptions);
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };

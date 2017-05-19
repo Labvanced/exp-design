@@ -103,13 +103,19 @@ GlobalVar.prototype.initValue = function() {
 };
 
 GlobalVar.prototype.resetValueToStartValue = function() {
-    this.value().fromJS(this.startValue().toJS());
+    if (this.startValue()){
+        this.value().fromJS(this.startValue().toJS());
+    }
+    else{
+        this.value().fromJS(null);
+    }
+
 };
 
 GlobalVar.prototype.resetStartValue = function() {
     var startValue = this.createValueFromDataType();
     this.startValue(startValue);
-    this.initValue();
+  //  this.initValue();
 };
 
 GlobalVar.prototype.createValueFromDataType = function() {
@@ -205,6 +211,10 @@ GlobalVar.prototype.removeLevel = function() {
     this.levels.pop();
 };
 
+GlobalVar.prototype.removeLevel = function(idx) {
+    this.levels.splice(idx,1);
+};
+
 
 GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
 
@@ -284,6 +294,7 @@ GlobalVar.prototype.fromJS = function(data) {
         if (startValue) {
             startValue.fromJS(data.startValue);
             this.startValue(startValue);
+            this.initValue();
             this.resetStartValue();
         }
     }
@@ -303,9 +314,12 @@ GlobalVar.prototype.fromJS = function(data) {
  * @returns {object}
  */
 GlobalVar.prototype.toJS = function() {
-    var startValue = null;
+    //var startValue = null;
     if (this.startValue()){
         startValue = this.startValue().toJS()
+    }
+    else{
+        startValue = null;
     }
     return {
         id: this.id(),

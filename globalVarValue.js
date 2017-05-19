@@ -140,7 +140,7 @@ GlobalVarValueCategorical = function(parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observable(null);
-    this.value.subscribe(function() {
+    this.value.subscribe(function(val) {
         self.parentVar.notifyValueChanged();
     });
 };

@@ -38,7 +38,7 @@ SortableElement.prototype.label = "Sortable";
 SortableElement.prototype.iconPath = "/resources/icons/tools/sort.svg";
 SortableElement.prototype.modifiableProp = ["questionText"];
 SortableElement.prototype.dataType =   [ "categorical"];
-SortableElement.prototype.initWidth = 200;
+SortableElement.prototype.initWidth = 350;
 SortableElement.prototype.initHeight = 100;
 
 SortableElement.prototype.init = function() {
@@ -56,9 +56,9 @@ SortableElement.prototype.init = function() {
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
 
-    this.addElem('element1');
-    this.addElem('element2');
-    this.addElem('element3');
+    this.addElem('id1');
+    this.addElem('id2');
+    this.addElem('id3');
 
     this.variable().startValue().value(this.elementIdsCombined());
 };
@@ -68,10 +68,13 @@ SortableElement.prototype.setVariableBackRef = function() {
 };
 
 SortableElement.prototype.addElem = function (elemId) {
-    var text = 'element' + (this.elements().length+1);
-    var  elem = ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">'+text+'</span></span>');
-    this.elements.push(elem);
-    this.elementIds.push(elemId);
+    if (elemId){
+        var text = 'element' + (this.elements().length+1);
+        var  elem = ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">'+text+'</span></span>');
+        this.elements.push(elem);
+        this.elementIds.push(elemId);
+    }
+
 };
 
 SortableElement.prototype.removeElem = function () {
