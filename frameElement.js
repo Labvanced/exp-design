@@ -19,7 +19,7 @@ var FrameElement= function(expData) {
     this.contentRotation = ko.observable(0).extend({ numeric: 0 });
     this.anchorPointX = ko.observable('low');
     this.anchorPointY = ko.observable('low');
-    this.visibilityOfObj = ko.observable(1).extend({ numeric: 2 });
+    this.visibility = ko.observable(1).extend({ numeric: 2 });
     this.keepAspectRatio = ko.observable(false);
     this.id = ko.observable(guid());
     this.type = "FrameElement";
@@ -52,7 +52,7 @@ FrameElement.prototype.addContent = function(element){
 };
 
 FrameElement.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","boolean","boolean","numeric","numeric"];
-FrameElement.prototype.modifiableProp = ["visibilityOfObj","editorX", "editorY", "editorWidth","editorHeight","isActive","keepAspectRatio","contentScaling","contentRotation"];
+FrameElement.prototype.modifiableProp = ["visibility","editorX", "editorY", "editorWidth","editorHeight","isActive","keepAspectRatio","contentScaling","contentRotation"];
 
 
 FrameElement.prototype.setAnchorPoint = function(horizontal, vertical) {
@@ -129,11 +129,11 @@ FrameElement.prototype.fromJS = function(data) {
     if(data.anchorPointY) {
         this.anchorPointY(data.anchorPointY);
     }
-    if(data.visibilityOfObj) {
-        this.visibilityOfObj(data.visibilityOfObj);
+    if(data.visibility) {
+        this.visibility(data.visibility);
     }
     else if (data.visibility){
-        this.visibilityOfObj(data.visibility);
+        this.visibility(data.visibility);
     }
 
 
@@ -174,7 +174,7 @@ FrameElement.prototype.toJS = function() {
         contentRotation: this.contentRotation(),
         anchorPointX: this.anchorPointX(),
         anchorPointY: this.anchorPointY(),
-        visibilityOfObj: this.visibilityOfObj(),
+        visibility: this.visibility(),
         isActive:  this.isActive(),
         keepAspectRatio: this.keepAspectRatio(),
         content: contentData
