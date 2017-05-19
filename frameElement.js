@@ -19,16 +19,11 @@ var FrameElement= function(expData) {
     this.contentRotation = ko.observable(0).extend({ numeric: 0 });
     this.anchorPointX = ko.observable('low');
     this.anchorPointY = ko.observable('low');
-    this.visibility = ko.observable(1).extend({ numeric: 2 });
+    this.visibilityOfObj = ko.observable(1).extend({ numeric: 2 });
     this.keepAspectRatio = ko.observable(false);
     this.id = ko.observable(guid());
     this.type = "FrameElement";
     this.name = ko.observable("frameElement");
-    this.onset = ko.observable(0);
-    this.onsetEnabled = ko.observable(false);
-    this.offset = ko.observable(0);
-    this.offsetEnabled = ko.observable(false);
-    this.responses = ko.observableArray([]);
     this.isActive = ko.observable(true);
     this.content = ko.observable();
 
@@ -56,14 +51,9 @@ FrameElement.prototype.addContent = function(element){
     element.parent = this;
 };
 
-FrameElement.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","string","boolean","string","boolean","boolean","boolean","numeric","numeric"];
-FrameElement.prototype.modifiableProp = ["visibility","editorX", "editorY", "editorWidth","editorHeight","onset","onsetEnabled","offset","offsetEnabled","isActive","keepAspectRatio","contentScaling","contentRotation"];
+FrameElement.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","boolean","boolean","numeric","numeric"];
+FrameElement.prototype.modifiableProp = ["visibilityOfObj","editorX", "editorY", "editorWidth","editorHeight","isActive","keepAspectRatio","contentScaling","contentRotation"];
 
-FrameElement.prototype.addNewResponse = function() {
-    var resp = new Response(this);
-    resp.responseType("mouse");
-    this.responses.push(resp);
-};
 
 FrameElement.prototype.setAnchorPoint = function(horizontal, vertical) {
     this.anchorPointX(horizontal);
@@ -88,10 +78,6 @@ FrameElement.prototype.selectTrialType = function(selectionSpec) {
  */
 FrameElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
-
-    jQuery.each( this.responses(), function(idx, resp ) {
-        resp.setPointers(entitiesArr);
-    } );
 
     if(this.content().setPointers){
         this.content().setPointers(entitiesArr);
@@ -125,13 +111,6 @@ FrameElement.prototype.fromJS = function(data) {
     this.type = data.type;
     this.dataType = data.dataType;
     this.name(data.name);
-    this.onset(data.onset);
-    this.onsetEnabled(data.onsetEnabled);
-    this.offset(data.offset);
-    this.offsetEnabled(data.offsetEnabled);
-    this.responses(jQuery.map( data.responses, function( respData ) {
-        return (new Response(self)).fromJS(respData);
-    } ));
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
     this.editorX(data.editorX);
@@ -150,7 +129,14 @@ FrameElement.prototype.fromJS = function(data) {
     if(data.anchorPointY) {
         this.anchorPointY(data.anchorPointY);
     }
-    this.visibility(data.visibility);
+    if(data.visibilityOfObj) {
+        this.visibilityOfObj(data.visibilityOfObj);
+    }
+    else if (data.visibility){
+        this.visibilityOfObj(data.visibility);
+    }
+
+
     this.isActive(data.isActive);
     this.keepAspectRatio(data.keepAspectRatio);
     if(data.content){
@@ -179,11 +165,6 @@ FrameElement.prototype.toJS = function() {
         type: this.type,
         dataType: this.dataType,
         name: this.name(),
-        onset: this.onset(),
-        onsetEnabled: this.onsetEnabled(),
-        offset: this.offset(),
-        offsetEnabled: this.offsetEnabled(),
-        responses: jQuery.map( this.responses(), function( resp ) { return resp.toJS(); } ),
         modifier: this.modifier().toJS(),
         editorX:  this.editorX(),
         editorY:  this.editorY(),
@@ -193,7 +174,7 @@ FrameElement.prototype.toJS = function() {
         contentRotation: this.contentRotation(),
         anchorPointX: this.anchorPointX(),
         anchorPointY: this.anchorPointY(),
-        visibility: this.visibility(),
+        visibilityOfObj: this.visibilityOfObj(),
         isActive:  this.isActive(),
         keepAspectRatio: this.keepAspectRatio(),
         content: contentData

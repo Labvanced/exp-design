@@ -13,7 +13,7 @@ var FrameElementView = function(dataModel, parentView) {
     this.div = document.createElement('div');
     $(this.div).css({
         "position": "absolute",
-        "opacity": this.dataModel.visibility()
+        "opacity": this.dataModel.visibilityOfObj()
     });
 
     this.divContent = document.createElement('div');
@@ -44,8 +44,8 @@ FrameElementView.prototype.setupSubscriber = function() {
     this.editorY = ko.computed(function() {
         return selectedTrialView.editorY();
     }, this);
-    this.visibility = ko.computed(function() {
-        return selectedTrialView.visibility();
+    this.visibilityOfObj = ko.computed(function() {
+        return selectedTrialView.visibilityOfObj();
     }, this);
     this.editorWidth = ko.computed(function() {
         return selectedTrialView.editorWidth();
@@ -75,9 +75,9 @@ FrameElementView.prototype.setupSubscriber = function() {
         self.update(false,true);
     });
 
-    this.visibility.subscribe(function(a) {
+    this.visibilityOfObj.subscribe(function(a) {
         $(self.div).css({
-            "opacity": self.visibility()
+            "opacity": self.visibilityOfObj()
         });
     });
 
