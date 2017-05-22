@@ -117,22 +117,19 @@ FrameElement.prototype.fromJS = function(data) {
     this.editorY(data.editorY);
     this.editorWidth(data.editorWidth);
     this.editorHeight(data.editorHeight);
-    if(data.contentScaling) {
+    if(data.hasOwnProperty('contentScaling')) {
         this.contentScaling(data.contentScaling);
     }
-    if (data.contentRotation) {
+    if (data.hasOwnProperty('contentRotation')) {
         this.contentRotation(data.contentRotation);
     }
-    if(data.anchorPointX) {
+    if(data.hasOwnProperty('anchorPointX')) {
         this.anchorPointX(data.anchorPointX);
     }
-    if(data.anchorPointY) {
+    if(data.hasOwnProperty('anchorPointY')) {
         this.anchorPointY(data.anchorPointY);
     }
-    if(data.visibility) {
-        this.visibility(data.visibility);
-    }
-    else if (data.visibility){
+    if(data.hasOwnProperty('visibility')) {
         this.visibility(data.visibility);
     }
 
