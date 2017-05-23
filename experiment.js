@@ -423,28 +423,28 @@ Experiment.prototype.toJS = function() {
         var exp_data_serialized = this.exp_data.toJS();
     }
     else {
-        var exp_data_serialized = null;
+        throw Error("cannot save exp data");
     }
 
     if (this.publishing_data instanceof PublishingData){
         var publishing_data_serialized = this.publishing_data.toJS();
     }
     else {
-        var publishing_data_serialized = null;
+        throw Error("cannot save publishing_data");
     }
 
     if (this.analysis_data instanceof AnalysisData){
         var analysisData_serialized = this.analysis_data.toJS();
     }
     else {
-        var analysisData_serialized = null;
+        throw Error("cannot save analysis_data");
     }
 
     if (this.private_data instanceof PrivateData){
         var private_data_serialized = this.private_data.toJS();
     }
     else {
-        var private_data_serialized = null;
+        throw Error("cannot save private_data");
     }
     
     return {
