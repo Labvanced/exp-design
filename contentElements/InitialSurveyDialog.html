@@ -1,0 +1,61 @@
+
+
+<div id="groupSettingsView" class="taskeditor-dialog" title="Group Settings">
+    <div>
+        <div>
+            <div>Initial survey (required fields are marked with *):</div>
+
+            <div>
+                <span class="survey-left-label">Gender<span data-bind="visible: requiredGender"> (*)</span>:</span>
+                <label><input type="radio" name="genderReq" value="male" data-bind="checked: selectedGender">Male</label>
+                <label><input type="radio" name="genderReq" value="female" data-bind="checked: selectedGender">Female</label>
+            </div>
+
+            <div>
+                <label>
+                    <span class="survey-left-label">Your Age<span data-bind="visible: requiredAge"> (*)</span>:</span>
+                    <input type="number" data-bind="value: selectedAge">
+                    years
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    <span class="survey-left-label">Country of Origin<span data-bind="visible: requiredCountry"> (*)</span>:</span>
+                    <span>
+                        <select data-bind="options: country_codes,
+                            optionsText: 'name',
+                            value: selectedCountry,
+                            optionsCaption: 'Choose...'">
+                        </select>
+                    </span>
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    <span class="survey-left-label">First Language<span data-bind="visible: requiredLanguage"> (*)</span>:</span>
+                    <select data-bind="options: language_codes,
+                        optionsText: 'name',
+                        value: selectedLanguage,
+                        optionsCaption: 'Choose...'"></select>
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    <span class="survey-left-label">Email<span data-bind="visible: requiredEmail"> (*)</span>:</span>
+                    <input type="email" data-bind="value: selectedEmail">
+                </label>
+            </div>
+
+            <div class="alert alert-warning" data-bind="visible: (okClicked() && errorString()!='')" >
+                <span data-bind="text: errorString"></span>
+            </div>
+
+            <div style="float: right;">
+                <button class="ok-button" data-bind="click: ok"> Ok </button>
+            </div>
+        </div>
+    </div>
+</div>

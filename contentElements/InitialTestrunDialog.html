@@ -1,0 +1,36 @@
+
+
+<div id="groupSettingsView" class="taskeditor-dialog" title="Group Settings">
+    <div>
+        <div>
+            <div>Which subject group or session do you want to test?</div>
+
+            <div>
+                <label>
+                    <span class="survey-left-label">Subject Group:</span>
+                    <span>
+                        <select data-bind="options: expData().availableGroups,
+                            optionsText: 'name',
+                            value: selectedSubjectGroup">
+                        </select>
+                    </span>
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    <span class="survey-left-label">Session Number:</span>
+                    <select data-bind="options: sessionsInGroup,
+                            optionsText: 'name',
+                            optionsValue: 'nr',
+                            value: selectedSessionNr">
+                    </select>
+                </label>
+            </div>
+
+            <div style="float: right;">
+                <button class="ok-button" data-bind="click: ok">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
