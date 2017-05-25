@@ -6,9 +6,55 @@ var EditorCallbacks = function(frameElementView,frameView) {
     this.dataModel = this.frameElementView.dataModel;
     this.frameView = frameView;
 
+
+    this.addHandles();
+
     this.addCallbacks();
 
     this.frameElementView.callbacks = this;
+};
+
+EditorCallbacks.prototype.addHandles = function() {
+
+    this.handles =  document.createElement('div');
+    $(this.handles).css({
+        "display": "none"
+    });
+
+    this.handleLU = document.createElement('div');
+    $(this.handleLU).addClass('draggableHandle draggableHandleLU');
+    $(this.handleLU).appendTo(this.handles);
+
+    this.handleLC = document.createElement('div');
+    $(this.handleLC).addClass('draggableHandle draggableHandleLC');
+    $(this.handleLC).appendTo(this.handles);
+
+    this.handleLB = document.createElement('div');
+    $(this.handleLB).addClass('draggableHandle draggableHandleLB');
+    $(this.handleLB).appendTo(this.handles);
+
+    this.handleCB = document.createElement('div');
+    $(this.handleCB).addClass('draggableHandle draggableHandleCB');
+    $(this.handleCB).appendTo(this.handles);
+
+    this.handleRB = document.createElement('div');
+    $(this.handleRB).addClass('draggableHandle draggableHandleRB');
+    $(this.handleRB).appendTo(this.handles);
+
+    this.handleRC = document.createElement('div');
+    $(this.handleRC).addClass('draggableHandle draggableHandleRC');
+    $(this.handleRC).appendTo(this.handles);
+
+    this.handleRU = document.createElement('div');
+    $(this.handleRU).addClass('draggableHandle draggableHandleRU');
+    $(this.handleRU).appendTo(this.handles);
+
+    this.handleCU = document.createElement('div');
+    $(this.handleCU).addClass('draggableHandle draggableHandleCU');
+    $(this.handleCU).appendTo(this.handles);
+
+    $(this.handles).appendTo(this.div)
+
 };
 
 EditorCallbacks.prototype.addCallbacks = function() {
@@ -18,8 +64,12 @@ EditorCallbacks.prototype.addCallbacks = function() {
         self2.frameView.parent.selectElement(self2.dataModel);
     });
 
+
+    //
+
     // Draggable On Frame in Editor View:
     $(this.div).draggable({
+        handle: '.draggableHandle',
         distance: 10,
         cancel : '.notDraggable',
         drag : function(event, ui) {
@@ -49,10 +99,19 @@ EditorCallbacks.prototype.addCallbacks = function() {
         if (newVal) {
             $(self2.div).resizable("enable");
             $(self2.div).draggable( "option", "distance", 0 );
+            $(self2.handles).css({
+                "display": "block"
+            });
+
         }
         else {
             $(self2.div).resizable("disable");
             $(self2.div).draggable( "option", "distance", 10 );
+            $(self2.handles).css({
+                "display": "none"
+            });
+
+
         }
     });
     $(self2.div).resizable("disable");
