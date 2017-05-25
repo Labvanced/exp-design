@@ -580,6 +580,10 @@ var ActionJumpTo = function(event) {
     this.event = event;
     this.jumpType = ko.observable(null);
     this.frameToJump= ko.observable(null)
+
+    this.frameToJump.subscribe(function(newVal) {
+       var test = null;
+    });
 };
 
 ActionJumpTo.prototype.type = "ActionJumpTo";
@@ -615,6 +619,9 @@ ActionJumpTo.prototype.run = function(triggerParams) {
         player.recordData();
         player.jumpToNextTask();
     }
+    else if (this.jumpType() == "specificFrame"){
+        player.currentFrame.goToCustomFrame(this.frameToJump());
+    }
 
 };
 
@@ -625,7 +632,8 @@ ActionJumpTo.prototype.run = function(triggerParams) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionJumpTo.prototype.setPointers = function(entitiesArr) {
+ActionJumpTo.prototype.setPointers = function() {
+    var entitiesArr = this.event.parent.expData.entities;
     var frame = entitiesArr.byId[this.frameToJump()];
     this.frameToJump(frame);
 };

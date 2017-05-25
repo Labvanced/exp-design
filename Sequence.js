@@ -74,6 +74,13 @@ Sequence.prototype.selectPreviousElement = function() {
     return nextElement;
 };
 
+Sequence.prototype.selectCustomElement = function(frame) {
+
+    this.currSelectedElement(frame);
+    return frame;
+};
+
+
 
 Sequence.prototype.selectNextElement = function() {
 
