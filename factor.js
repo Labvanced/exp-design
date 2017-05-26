@@ -50,11 +50,11 @@ Factor.prototype.addLevel = function() {
     }
 };
 
-Factor.prototype.removeLevel = function(lvlIdx,lvlName) {
+Factor.prototype.removeLevel = function(lvlIdx) {
     this._removeLevel(lvlIdx);
     var facIdx =  this.factorGroup.factors().indexOf(this);
     if (this.factorGroup && facIdx>=0) {
-        this.factorGroup.removeLevelFromCondition(facIdx,lvlIdx,lvlName);
+        this.factorGroup.removeLevelFromCondition(facIdx,lvlIdx);
     }
 };
 

@@ -299,7 +299,7 @@ FactorGroup.prototype.addLevelToCondition = function() {
 /**
  * updates the multi dimensional array with all new levels.
  */
-FactorGroup.prototype.removeLevelFromCondition = function(facIdx, lvlIdx, lvlName) {
+FactorGroup.prototype.removeLevelFromCondition = function(facIdx, lvlIdx) {
 
 
     function removeLevels(lvlIdx,requiredDepth,currentDepth,arr) {
