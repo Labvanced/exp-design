@@ -22,29 +22,9 @@ var ExpData = function (parentExperiment) {
 
     this.dateLastModified = ko.observable(getCurrentDate());
 
-    // the following variables are recorded once per subject:
-    this.varSubjectId =  ko.observable();
-    this.varSubjectIndex =  ko.observable();
-
-    this.varGroupId =  ko.observable();
-
-    // the following variables are recorded once per task:
-    this.varSessionTimeStamp =  ko.observable();
-    this.varSessionTimeStampEnd =  ko.observable();
-
-    this.varSessionId =  ko.observable();
-    this.varSessionIndex =  ko.observable();
-
-    this.varBlockId =  ko.observable();
-    this.varBlockIndex =  ko.observable();
-
-    this.varTaskId =  ko.observable();
-    this.varTaskIndex =  ko.observable();
-
-    this.varTrialId =  ko.observable();
-    this.varTrialIndex =  ko.observable();
-
-    this.varCondition =  ko.observable();
+    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+        this[ExpData.prototype.fixedVarNames[i]] = ko.observable();
+    }
 
     this.vars = ko.computed(function() {
         var varArray = [];
@@ -78,7 +58,7 @@ var ExpData = function (parentExperiment) {
 
 };
 
-ExpData.prototype.fixedVarNames = [
+ExpData.prototype.oldFixedVarNames = [
     'varSubjectId',
     'varSubjectIndex',
     'varGroupId',
@@ -95,51 +75,68 @@ ExpData.prototype.fixedVarNames = [
     'varCondition'
 ];
 
+ExpData.prototype.fixedVarNames = [
+    'varSubjectCode',
+    'varSubjectNr',
+    'varGroupName',
+    'varSessionTimeStamp',
+    'varSessionTimeStampEnd',
+    'varSessionName',
+    'varSessionNr',
+    'varBlockName',
+    'varBlockNr',
+    'varTaskName',
+    'varTaskNr',
+    'varTrialId',
+    'varTrialNr',
+    'varConditionId'
+];
+
 /**
  * creates all predefined (fixed) variables
  */
 ExpData.prototype.createVars = function() {
-    if (!this.varSubjectId()) {
-        this.varSubjectId((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Subject Id'));
+    if (!this.varSubjectCode()) {
+        this.varSubjectCode((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Subject_Code'));
     }
-    if (!this.varSubjectIndex()) {
-        this.varSubjectIndex((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'nominal', 'Subject Index'));
+    if (!this.varSubjectNr()) {
+        this.varSubjectNr((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'nominal', 'Subject_Nr'));
     }
-    if (!this.varGroupId()) {
-        this.varGroupId((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group Id'));
+    if (!this.varGroupName()) {
+        this.varGroupName((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group_Name'));
     }
     if (!this.varSessionTimeStamp()) {
-        this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session Start Time'));
+        this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session_Start_Time'));
     }
     if (!this.varSessionTimeStampEnd()) {
-        this.varSessionTimeStampEnd((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session End Time'));
+        this.varSessionTimeStampEnd((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session_End_Time'));
     }
-    if (!this.varSessionId()) {
-        this.varSessionId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Session Id'));
+    if (!this.varSessionName()) {
+        this.varSessionName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Session_Name'));
     }
-    if (!this.varSessionIndex()) {
-        this.varSessionIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Session Index'));
+    if (!this.varSessionNr()) {
+        this.varSessionNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Session_Nr'));
     }
-    if (!this.varBlockId()) {
-        this.varBlockId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Block Id'));
+    if (!this.varBlockName()) {
+        this.varBlockName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Block_Name'));
     }
-    if (!this.varBlockIndex()) {
-        this.varBlockIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Block Index'));
+    if (!this.varBlockNr()) {
+        this.varBlockNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Block_Nr'));
     }
-    if (!this.varTaskId()) {
-        this.varTaskId((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Task Id'));
+    if (!this.varTaskName()) {
+        this.varTaskName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Task_Name'));
     }
-    if (!this.varTaskIndex()) {
-        this.varTaskIndex((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Task Index'));
+    if (!this.varTaskNr()) {
+        this.varTaskNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Task_Nr'));
     }
     if (!this.varTrialId()) {
-        this.varTrialId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Trial Id'));
+        this.varTrialId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Trial_Id'));
     }
-    if (!this.varTrialIndex()) {
-        this.varTrialIndex((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Trial Index'));
+    if (!this.varTrialNr()) {
+        this.varTrialNr((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Trial_Nr'));
     }
-    if (!this.varCondition()) {
-        this.varCondition((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Condition'));
+    if (!this.varConditionId()) {
+        this.varConditionId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Condition_Id'));
     }
 };
 
@@ -351,7 +348,13 @@ ExpData.prototype.fromJS = function(data) {
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varName = ExpData.prototype.fixedVarNames[i];
-        this[varName](data[varName]);
+        if (varName === undefined) {
+            oldVarName = ExpData.prototype.oldFixedVarNames[i];
+            this[varName](data[oldVarName]);
+        }
+        else {
+            this[varName](data[varName]);
+        }
     }
 
     return this;
