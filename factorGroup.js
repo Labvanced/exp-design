@@ -294,6 +294,40 @@ FactorGroup.prototype.addLevelToCondition = function() {
 
 };
 
+
+
+/**
+ * updates the multi dimensional array with all new levels.
+ */
+FactorGroup.prototype.removeLevelFromCondition = function(facIdx, lvlIdx, lvlName) {
+
+
+    function removeLevels(lvlIdx,requiredDepth,currentDepth,arr) {
+
+        if (currentDepth == requiredDepth) {
+            arr.splice(lvlIdx,1);
+        }
+        else{
+            for (var t = 0; t < arr.length; t++) {
+                var newAr = arr[t];
+                removeLevels(lvlIdx,requiredDepth,currentDepth+1,newAr);
+            }
+        }
+    }
+
+    var factors = this.factors();
+    var conditions =  this.conditions();
+    if (factors.length>1){
+        removeLevels(lvlIdx,facIdx,0,conditions);
+    }
+    else{
+        conditions.splice(lvlIdx,1);
+    }
+
+    this.conditions(conditions);
+
+};
+
 /**
  * add a new factor to the tree.
  * @param {Factor} factor - the new factor

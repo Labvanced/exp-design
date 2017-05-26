@@ -61,7 +61,7 @@ MultipleChoiceElement.prototype.removeEntry = function() {
     var entry =  this.elements()[idx];
     entry.nameSubscription.dispose();
     entry.recValue.dispose();
-    this.variable().removeLevel();
+    this.variable().removeLevel(idx);
     this.elements.splice(idx,1);
 };
 
@@ -210,7 +210,7 @@ function createMultipleChoiceComponents() {
                         this.multipleChoiceElement().addEntry();
                     };
 
-                    this.removeChoice = function(idx) {
+                    this.removeChoice = function() {
                         this.multipleChoiceElement().removeEntry();
                     };
 

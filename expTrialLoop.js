@@ -146,6 +146,17 @@ ExpTrialLoop.prototype.addFactorGroup = function(pageOrFrame,withFactor) {
 
 };
 
+
+ExpTrialLoop.prototype.removeFactorGroup = function(facGroupIdx) {
+
+    this.factorGroups.splice(facGroupIdx,1);
+    this.subSequencePerFactorGroup.splice(facGroupIdx,1);
+    this.subSequence(this.subSequencePerFactorGroup()[0]);
+    this.expData.notifyChanged();
+
+};
+
+
 ExpTrialLoop.prototype.renameGroup = function(facGroupIdx,flag) {
 
     if (flag == "true"){
@@ -155,6 +166,7 @@ ExpTrialLoop.prototype.renameGroup = function(facGroupIdx,flag) {
         this.factorGroups()[facGroupIdx].editName(false);
     }
 };
+
 
 
 ExpTrialLoop.prototype.getCondGroups = function () {

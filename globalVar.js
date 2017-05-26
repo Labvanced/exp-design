@@ -200,11 +200,6 @@ GlobalVar.prototype.addLevel = function() {
     return level;
 };
 
-
-GlobalVar.prototype.removeLevel = function() {
-    this.levels.pop();
-};
-
 GlobalVar.prototype.removeLevel = function(idx) {
     this.levels.splice(idx,1);
 };
