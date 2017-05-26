@@ -13,7 +13,7 @@ var InitialTestrunDialog= function(expData) {
     this.divContainer = null;
 
     this.selectedSubjectGroup = ko.observable(null);
-    this.selectedSessionNr = ko.observable(0);
+    this.selectedSessionNr = ko.observable(1);
 
     this.sessionsInGroup = ko.computed(function() {
         var arr = [];
@@ -21,7 +21,7 @@ var InitialTestrunDialog= function(expData) {
         if (subjGroups) {
             for (var i = 0; i < subjGroups.sessions().length; i++) {
                 arr.push({
-                    nr: i,
+                    nr: i+1, // using 1-based indexing
                     name: subjGroups.sessions()[i].name
                 });
             }
@@ -34,7 +34,7 @@ var InitialTestrunDialog= function(expData) {
 
 InitialTestrunDialog.prototype.ok = function () {
     this.closeDialog();
-    var groupNr = this.expData().availableGroups().indexOf(this.selectedSubjectGroup());
+    var groupNr = this.expData().availableGroups().indexOf(this.selectedSubjectGroup()) + 1; // using 1-based indexing
     this.cb( groupNr, this.selectedSessionNr() );
 };
 
