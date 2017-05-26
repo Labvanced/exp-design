@@ -99,8 +99,8 @@ InitialSurveyDialog.prototype.ok = function () {
         var survey_data = {
             selectedGender: this.selectedGender(),
             selectedAge: this.selectedAge(),
-            selectedCountry: this.selectedCountry().code,
-            selectedLanguage: this.selectedLanguage().code,
+            selectedCountry: this.selectedCountry() ? this.selectedCountry().code : null,
+            selectedLanguage: this.selectedLanguage() ? this.selectedLanguage().code : null,
             selectedEmail: this.selectedEmail()
         };
         this.cb(survey_data);
