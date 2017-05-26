@@ -14,6 +14,8 @@ var RecSession = function(parentExperiment) {
     this.start_time = null;
     this.end_time = null;
     this.name = null;
+    this.subject_code = null;
+    this.survey_data = null;
 };
 
 /**
@@ -30,5 +32,7 @@ RecSession.prototype.fromJS = function(data) {
     this.start_time = data.start_time;
     this.end_time = data.end_time;
     this.name = data.name;
+    this.subject_code = data.subject_code;
+    this.survey_data = data.survey_data;
     return this;
 };

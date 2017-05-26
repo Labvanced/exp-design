@@ -59,7 +59,7 @@ InitialTestrunDialog.prototype.start = function (cb) {
     if (this.expData().availableGroups().length <= 1) {
         if (this.expData().availableGroups()[0].sessions().length <= 1) {
             // just start the only possible session:
-            cb(0, 0);
+            cb(1, 1);
             return;
         }
     }
