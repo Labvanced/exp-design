@@ -21,39 +21,59 @@ EditorCallbacks.prototype.addHandles = function() {
         "display": "none"
     });
 
-    this.handleLU = document.createElement('div');
-    $(this.handleLU).addClass('draggableHandle draggableHandleLU');
-    $(this.handleLU).appendTo(this.handles);
+    // draggable handles:
 
-    this.handleLC = document.createElement('div');
-    $(this.handleLC).addClass('draggableHandle draggableHandleLC');
-    $(this.handleLC).appendTo(this.handles);
+    this.handleN = document.createElement('div');
+    $(this.handleN).addClass('draggableHandleN draggableHandle');
+    $(this.handleN).appendTo(this.handles);
 
-    this.handleLB = document.createElement('div');
-    $(this.handleLB).addClass('draggableHandle draggableHandleLB');
-    $(this.handleLB).appendTo(this.handles);
+    this.handleW = document.createElement('div');
+    $(this.handleW).addClass('draggableHandleW draggableHandle');
+    $(this.handleW).appendTo(this.handles);
 
-    this.handleCB = document.createElement('div');
-    $(this.handleCB).addClass('draggableHandle draggableHandleCB');
-    $(this.handleCB).appendTo(this.handles);
+    this.handleE = document.createElement('div');
+    $(this.handleE).addClass('draggableHandleE draggableHandle');
+    $(this.handleE).appendTo(this.handles);
 
-    this.handleRB = document.createElement('div');
-    $(this.handleRB).addClass('draggableHandle draggableHandleRB');
-    $(this.handleRB).appendTo(this.handles);
+    this.handleS = document.createElement('div');
+    $(this.handleS).addClass('draggableHandleS draggableHandle');
+    $(this.handleS).appendTo(this.handles);
 
-    this.handleRC = document.createElement('div');
-    $(this.handleRC).addClass('draggableHandle draggableHandleRC');
-    $(this.handleRC).appendTo(this.handles);
+    // resizable handles:
 
-    this.handleRU = document.createElement('div');
-    $(this.handleRU).addClass('draggableHandle draggableHandleRU');
-    $(this.handleRU).appendTo(this.handles);
+    this.handleResizeNW = document.createElement('div');
+    $(this.handleResizeNW).addClass('ui-resizable-handle ui-resizable-nw resizableHandleNW resizableHandle');
+    $(this.handleResizeNW).appendTo(this.handles);
 
-    this.handleCU = document.createElement('div');
-    $(this.handleCU).addClass('draggableHandle draggableHandleCU');
-    $(this.handleCU).appendTo(this.handles);
+    this.handleResizeNE = document.createElement('div');
+    $(this.handleResizeNE).addClass('ui-resizable-handle ui-resizable-ne resizableHandleNE resizableHandle');
+    $(this.handleResizeNE).appendTo(this.handles);
 
-    $(this.handles).appendTo(this.div)
+    this.handleResizeSW = document.createElement('div');
+    $(this.handleResizeSW).addClass('ui-resizable-handle ui-resizable-sw resizableHandleSW resizableHandle');
+    $(this.handleResizeSW).appendTo(this.handles);
+
+    this.handleResizeSE = document.createElement('div');
+    $(this.handleResizeSE).addClass('ui-resizable-handle ui-resizable-se resizableHandleSE resizableHandle');
+    $(this.handleResizeSE).appendTo(this.handles);
+
+    this.handleResizeN = document.createElement('div');
+    $(this.handleResizeN).addClass('ui-resizable-handle ui-resizable-n resizableHandleN resizableHandle');
+    $(this.handleResizeN).appendTo(this.handles);
+
+    this.handleResizeE = document.createElement('div');
+    $(this.handleResizeE).addClass('ui-resizable-handle ui-resizable-e resizableHandleE resizableHandle');
+    $(this.handleResizeE).appendTo(this.handles);
+
+    this.handleResizeW = document.createElement('div');
+    $(this.handleResizeW).addClass('ui-resizable-handle ui-resizable-w resizableHandleW resizableHandle');
+    $(this.handleResizeW).appendTo(this.handles);
+
+    this.handleResizeS = document.createElement('div');
+    $(this.handleResizeS).addClass('ui-resizable-handle ui-resizable-s resizableHandleS resizableHandle');
+    $(this.handleResizeS).appendTo(this.handles);
+
+    $(this.handles).appendTo(this.div);
 
 };
 
@@ -64,8 +84,6 @@ EditorCallbacks.prototype.addCallbacks = function() {
         self2.frameView.parent.selectElement(self2.dataModel);
     });
 
-
-    //
 
     // Draggable On Frame in Editor View:
     $(this.div).draggable({
@@ -132,6 +150,11 @@ EditorCallbacks.prototype.addResize = function() {
             var width = sizeInPx.width * (1 / self2.frameView.scale());
             var height = sizeInPx.height * (1 / self2.frameView.scale());
             self2.frameElementView.setWidthAndHeight(width, height);
+
+            var left = ui.position.left / self2.frameView.scale();
+            var top = ui.position.top / self2.frameView.scale();
+
+            self2.frameElementView.setCoord(left, top);
         },
         aspectRatio: self2.dataModel.keepAspectRatio(),
         start: function(event, ui) {
@@ -142,6 +165,16 @@ EditorCallbacks.prototype.addResize = function() {
             // remove the temporary disabled autosaving:
             self2.dataModel.expData.parentExperiment.tempDisableAutosave = false;
             self2.dataModel.expData.notifyChanged();
+        },
+        handles: {
+            'nw': $(this.div).find('.resizableHandleNW'),
+            'ne': $(this.div).find('.resizableHandleNE'),
+            'sw': $(this.div).find('.resizableHandleSW'),
+            'se': $(this.div).find('.resizableHandleSE'),
+            'n': $(this.div).find('.resizableHandleN'),
+            'e': $(this.div).find('.resizableHandleE'),
+            's': $(this.div).find('.resizableHandleS'),
+            'w': $(this.div).find('.resizableHandleW')
         }
     });
 
