@@ -181,7 +181,8 @@ Experiment.prototype.saveExpData = function(cb) {
                     }
                 }
                 else {
-                    console.log("error: could not transmit experiment to server.");
+                    console.log("error: could not transmit experiment to server. Error Msg: "+response.error_msg);
+                    $('<div><p>Error message:</p><p class="error text-danger">'+response.error_msg+'</p></div>').dialog();
                 }
             });
         }
