@@ -96,15 +96,19 @@ var InitialSurveyDialog= function(expData) {
 InitialSurveyDialog.prototype.ok = function () {
     this.okClicked(true);
     if (this.errorString() == "") {
-        var survey_data = {
-            selectedGender: this.selectedGender(),
-            selectedAge: this.selectedAge(),
-            selectedCountry: this.selectedCountry() ? this.selectedCountry().code : null,
-            selectedLanguage: this.selectedLanguage() ? this.selectedLanguage().code : null,
-            selectedEmail: this.selectedEmail()
-        };
-        this.cb(survey_data);
+        this.submitData();
     }
+};
+
+InitialSurveyDialog.prototype.submitData = function () {
+    var survey_data = {
+        selectedGender: this.selectedGender(),
+        selectedAge: this.selectedAge(),
+        selectedCountry: this.selectedCountry() ? this.selectedCountry().code : null,
+        selectedLanguage: this.selectedLanguage() ? this.selectedLanguage().code : null,
+        selectedEmail: this.selectedEmail()
+    };
+    this.cb(survey_data);
 };
 
 /**
@@ -124,6 +128,12 @@ InitialSurveyDialog.prototype.closeDialog = function () {
 InitialSurveyDialog.prototype.start = function (cb) {
 
     this.cb = cb;
+
+    if (!this.requiredGender() && !this.requiredAge() && !this.requiredCountry() && !this.requiredLanguage() && !this.requiredLanguage()) {
+        // if nothing is required just skip the survey:
+        this.submitData();
+        return;
+    }
 
     this.divContainer = jQuery('<div/>');
     var self = this;
