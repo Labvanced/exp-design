@@ -31,6 +31,7 @@ var ScaleElement= function(expData) {
 
     ///// not serialized
     this.selected = ko.observable(false);
+    this.converting = false;
     /////
 };
 
@@ -78,6 +79,12 @@ ScaleElement.prototype.setPointers = function(entitiesArr) {
         this.elements()[i].setPointers(entitiesArr);
     }
     this.modifier().setPointers(entitiesArr);
+
+    if (this.converting) {
+        // if we need to convert from old scale element format, we create the first entry here.
+        this.addEntry();
+        this.converting = false;
+    }
 };
 
 ScaleElement.prototype.reAddEntities = function(entitiesArr) {
@@ -116,10 +123,30 @@ ScaleElement.prototype.fromJS = function(data) {
     var self = this;
     this.type=data.type;
     this.questionText(data.questionText);
-    this.labels(jQuery.map( data.labels, function( elem ) {return ko.observable(elem);}));
-    this.elements(jQuery.map( data.elements, function( elemData ) {
-        return (new ScaleEntry(self)).fromJS(elemData);
-    } ));
+
+    // check if new or old format:
+    if (data.hasOwnProperty('labels')) {
+        // already has the correct new format
+        this.labels(jQuery.map( data.labels, function( elem ) {return ko.observable(elem);}));
+        this.elements(jQuery.map( data.elements, function( elemData ) {
+            return (new ScaleEntry(self)).fromJS(elemData);
+        } ));
+    }
+    else {
+        // we need to convert:
+        this.converting = true;
+        var nrChoices = data.choices.length;
+        for (var i=0; i<nrChoices; i++) {
+            var label = '<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;"></span></span></p>';
+            if (i==0) {
+                label = data.startLabel;
+            }
+            if (i==nrChoices-1) {
+                label = data.endLabel;
+            }
+            this.labels.push(ko.observable(label));
+        }
+    }
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
