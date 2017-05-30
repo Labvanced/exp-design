@@ -76,8 +76,13 @@ ModifierTrialType.prototype.deepCopy = function() {
 ModifierTrialType.prototype.fromJS = function(data) {
     var modifiedProp = {};
     for (var prop in data.modifiedProp){
-        modifiedProp[prop] = ko.observable(data.modifiedProp[prop]);
-        this.propIsModified[prop](true);
+        if (this.propIsModified.hasOwnProperty(prop)) {
+            modifiedProp[prop] = ko.observable(data.modifiedProp[prop]);
+            this.propIsModified[prop](true);
+        }
+        else {
+            console.log('WARNING: property ' + prop + ' that was modified does not exist anymore.');
+        }
     }
     this.modifiedProp = modifiedProp;
     return this;
