@@ -79,7 +79,7 @@ FrameElement.prototype.selectTrialType = function(selectionSpec) {
 FrameElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 
-    if(this.content().setPointers){
+    if(this.content() && this.content().setPointers){
         this.content().setPointers(entitiesArr);
     }
 
@@ -137,11 +137,22 @@ FrameElement.prototype.fromJS = function(data) {
     this.isActive(data.isActive);
     this.keepAspectRatio(data.keepAspectRatio);
     if(data.content){
-        var content = new window[data.content.type](this.expData);
+        var classObj = window[data.content.type];
+        if (!classObj) {
+            console.log('error: type does not exist: '+data.content.type);
+            if (data.content.type == "TextInputElement") {
+                // convert type name:
+                data.content.type = "InputElement";
+                classObj = window[data.content.type];
+            }
+            else {
+                return this;
+            }
+        }
+        var content = new classObj(this.expData);
         content.fromJS(data.content);
         content.parent = this;
         this.content(content);
-
     }
     return this;
 };
@@ -155,7 +166,7 @@ FrameElement.prototype.toJS = function() {
         var contentData = this.content().toJS();
     }
     else{
-        contentData = null
+        contentData = null;
     }
     return {
         id: this.id(),
