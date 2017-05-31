@@ -115,7 +115,9 @@ InitialSurveyDialog.prototype.submitData = function () {
  * closes the Dialog
  */
 InitialSurveyDialog.prototype.closeDialog = function () {
-    this.divContainer.dialog('destroy').remove();
+    if (this.divContainer) {
+        this.divContainer.dialog('destroy').remove();
+    }
 };
 
 
