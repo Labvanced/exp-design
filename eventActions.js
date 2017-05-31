@@ -1086,13 +1086,13 @@ ActionDrawRandomNumber.prototype.run = function(triggerParams) {
         var min = this.distributionParam1();
         var max = this.distributionParam2();
         value = Math.random() * (max - min) + min;
-        this.variable().value(value);
+        this.variable().value().value(value);
     }
     else if (this.distribution() == "Gaussian") {
         var mean = this.distributionParam1();
         var std = this.distributionParam2();
         value = mean + randn_marsaglia_polar() * std;
-        this.variable().value(value);
+        this.variable().value().value(value);
     }
 };
 

@@ -181,7 +181,8 @@ GlobalVar.prototype.getRecAtEndOfTrial = function() {
 };
 
 GlobalVar.prototype.getValue = function() {
-    return this.value();
+    // TODO: check datatypes and maybe convert here...
+    return this.value().value();
 };
 
 /**

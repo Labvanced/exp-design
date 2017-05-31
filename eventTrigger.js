@@ -824,7 +824,7 @@ TriggerVariableValueChanged.prototype.setupOnPlayerFrame = function(playerFrame)
     var self = this;
     var variables = this.variables();
     for (var i=0; i<variables.length; i++) {
-        var subscribeHandle = variables[i].value.subscribe(function(newVal){
+        var subscribeHandle = variables[i].value().value.subscribe(function(newVal){
             self.event.triggerActions([newVal]);
         });
         this.subscriberHandles.push(subscribeHandle);
