@@ -541,8 +541,10 @@ TriggerOnFrameStart.prototype.getParameterSpec = function() {
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
 TriggerOnFrameStart.prototype.setupOnPlayerFrame = function(playerFrame) {
-    // just trigger directly, because this function is called on frame start:
-    this.event.triggerActions([]);
+    var self = this;
+    playerFrame.onFrameStartCallbacks.push(function(){
+        self.event.triggerActions([]);
+    });
 };
 
 /**
