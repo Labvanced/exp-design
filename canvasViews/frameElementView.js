@@ -220,8 +220,28 @@ FrameElementView.prototype.update = function(size, position){
 
     if (position || size){
 
-        var left = self.editorX();
-        var top = self.editorY();
+        var left = 0;
+        if (this.dataModel.anchorPointX() == 'low'){
+            left = self.editorX();
+        }
+        else if(this.dataModel.anchorPointX() == 'high'){
+            left = self.editorX() - self.editorWidth();
+        }
+        else { // center
+            left = self.editorX() - self.editorWidth()/2;
+        }
+
+        var top = 0;
+        if (this.dataModel.anchorPointY() == 'low'){
+            top = self.editorY();
+        }
+        else if(this.dataModel.anchorPointY() == 'high'){
+            top = self.editorY() - self.editorHeight();
+        }
+        else { // center
+            top = self.editorY() - self.editorHeight()/2;
+        }
+
         $(this.div).css({
             "left": left * self.scale(),
             "top": top * self.scale()
@@ -246,8 +266,27 @@ FrameElementView.prototype.setWidthAndHeight = function(w, h) {
 
 FrameElementView.prototype.setCoord = function(left, top) {
 
-    var x = left;
-    var y = top;
+    var x = 0;
+    if (this.dataModel.anchorPointX() == 'low'){
+        x = left;
+    }
+    else if(this.dataModel.anchorPointX() == 'high'){
+        x = left + this.editorWidth();
+    }
+    else { // center
+        x = left + this.editorWidth()/2;
+    }
+
+    var y = 0;
+    if (this.dataModel.anchorPointY() == 'low'){
+        y = top;
+    }
+    else if(this.dataModel.anchorPointY() == 'high'){
+        y = top + this.editorHeight();
+    }
+    else { // center
+        y = top + this.editorHeight()/2;
+    }
 
     if (this.dataModel.hasOwnProperty('modifier')) {
         this.dataModel.modifier().selectedTrialView.editorX(x);
