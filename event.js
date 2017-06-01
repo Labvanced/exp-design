@@ -24,8 +24,7 @@ var Event= function(parent) {
         if (self.name()){
             return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
         }
-        else return ''
-
+        else return '';
     });
 
 };
@@ -35,7 +34,7 @@ var Event= function(parent) {
  * deletes all requirements.
  */
 Event.prototype.deleteRequirement = function() {
-    this.requirement(null);
+    this.requirement(new RequirementAND(this));
 };
 
 /**
