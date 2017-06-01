@@ -6,14 +6,28 @@
  * @param {number} factorGroupIdx - The index of the factor group for the factor that is being created.
  * @constructor
  */
-var InitialTestrunDialog= function(expData) {
+var InitialSubjectDialog = function(expData) {
     var self = this;
 
     this.expData = ko.observable(expData);
     this.divContainer = null;
 
     this.selectedSubjectGroup = ko.observable(null);
+    this.selectedGroupNr = ko.pureComputed({
+        read: function () {
+            // using 1-based indexing:
+            var groupNr = self.expData().availableGroups().indexOf(self.selectedSubjectGroup()) + 1;
+            return groupNr;
+        },
+        write: function (value) {
+            var group = self.expData().availableGroups()[value - 1];
+            self.selectedSubjectGroup(group);
+        },
+        owner: this
+    });
     this.selectedSessionNr = ko.observable(1);
+    this.subjectCode = ko.observable("");
+    this.includeInitialSurvey = ko.observable(true);
 
     this.sessionsInGroup = ko.computed(function() {
         var arr = [];
@@ -32,46 +46,35 @@ var InitialTestrunDialog= function(expData) {
     this.cb = null;
 };
 
-InitialTestrunDialog.prototype.ok = function () {
+InitialSubjectDialog.prototype.ok = function () {
     this.closeDialog();
-    var groupNr = this.expData().availableGroups().indexOf(this.selectedSubjectGroup()) + 1; // using 1-based indexing
-    this.cb( groupNr, this.selectedSessionNr() );
+    this.cb();
 };
 
 /**
  * closes the Dialog
  */
-InitialTestrunDialog.prototype.closeDialog = function () {
+InitialSubjectDialog.prototype.closeDialog = function () {
     this.divContainer.dialog('destroy').remove();
 };
 
 
 /**
- * Opens the Add Factor Dialog
- *
- * @param {MouseEvent} event - the click event that triggers the opening of the dialog
+ * Opens the Dialog
  */
 
-InitialTestrunDialog.prototype.start = function (cb) {
+InitialSubjectDialog.prototype.start = function (cb) {
 
     this.cb = cb;
 
-    if (this.expData().availableGroups().length <= 1) {
-        if (this.expData().availableGroups()[0].sessions().length <= 1) {
-            // just start the only possible session:
-            cb(1, 1);
-            return;
-        }
-    }
-
     this.divContainer = jQuery('<div/>');
     var self = this;
-    this.divContainer.load("/html_views/InitialTestrunDialog.html?FILE_VERSION_PLACEHOLDER", function () {
+    this.divContainer.load("/html_views/InitialSubjectDialog.html?FILE_VERSION_PLACEHOLDER", function () {
         ko.applyBindings(self,self.divContainer[0]);
         self.divContainer.dialog({
             modal: true,
             width: 500,
-            title: "Test Run Settings",
+            title: "Experiment Session",
             closeOnEscape: false,
             open: function(event, ui) {
                 $(".ui-dialog-titlebar-close").hide();
@@ -80,7 +83,6 @@ InitialTestrunDialog.prototype.start = function (cb) {
                 self.closeDialog();
             },
             beforeClose: function () {
-                return self.serverConfirmed();
             }
         });
     });
