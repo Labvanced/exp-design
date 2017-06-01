@@ -690,7 +690,7 @@ var ActionSetVariable = function(event) {
     this.operand = ko.observable(new OperandVariable(event));
 };
 ActionSetVariable.prototype.type = "ActionSetVariable";
-ActionSetVariable.prototype.label = "Set Variable";
+ActionSetVariable.prototype.label = "Set (Record) Variable";
 
 /**
  * returns true if all settings are valid (used in the editor).
