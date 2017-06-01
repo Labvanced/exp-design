@@ -42,14 +42,10 @@ var InitialSurveyDialog= function(expData) {
             this.requiredLanguage(true);
         }
 
-        // email is required if more than one session with anytime in any session:
+        // email is required if more than one session:
         var sessionTimeData = availableGroups[i].sessionTimeData();
         if (sessionTimeData.length > 1) {
-            for (var j = 0; j < sessionTimeData.length; j++) {
-                if (sessionTimeData[j].startCondition() != 'anytime') {
-                    this.requiredEmail(true);
-                }
-            }
+            this.requiredEmail(true);
         }
     }
 
