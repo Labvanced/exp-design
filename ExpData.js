@@ -376,6 +376,7 @@ ExpData.prototype.toJS = function() {
         sessionsPerGroup.push(groups[i].sessions().length);
     }
 
+    this.dateLastModified(getCurrentDate());
 
     var data = {
         dateLastModified: this.dateLastModified(),
