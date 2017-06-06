@@ -378,6 +378,9 @@ OperandVariable.prototype.getValue = function(parameters) {
             return value.getValue();
         case "objProperty":
             return this.operandValueOrObject().getValue();
+        case "frameTime":
+            var playerFrame = this.event.parent.playerFrame;
+            return playerFrame.getFrameTime();
         case "eventParam":
             var paramNames = this.event.trigger().getParameterSpec();
             var paramIdx = paramNames.indexOf(value);

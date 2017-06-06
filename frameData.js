@@ -34,6 +34,7 @@ var FrameData = function(expData) {
 
     // not serialized
     this.label = "FrameData";
+    this.playerFrame = null; // pointer to the playerFrame if running in player.
 };
 
 FrameData.prototype.modifiableProp = ["name","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset"];

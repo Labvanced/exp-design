@@ -31,6 +31,7 @@ var PageData = function(expData) {
 
     // not serialized
     this.label = "PageData";
+    this.playerFrame = null; // pointer to the playerFrame if running in player.
 };
 
 PageData.prototype.modifiableProp = ["name","offset","offsetEnabled, "];
