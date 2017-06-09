@@ -97,6 +97,15 @@ GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
     return this;
 };
 
+GlobalVar.prototype.changeDataType = function(dataType) {
+    this.dataType(dataType);
+
+    // convert old value to new value:
+    var oldValue = this.value();
+    this.resetStartValue();
+    this.value().setValue(oldValue);
+};
+
 GlobalVar.prototype.initValue = function() {
     this.value(this.createValueFromDataType());
     this.resetValueToStartValue();

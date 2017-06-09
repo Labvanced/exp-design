@@ -65,7 +65,7 @@ GlobalVarValueNumeric.prototype.setValue = function(valueObj) {
     if (valueObj.hasOwnProperty('parentVar')){
         valueObj = valueObj.toJS();
     }
-    // convert other data types to string:
+    // convert other data types to numeric:
     if ((typeof valueObj) != "number") {
         valueObj = Number(valueObj);
     }

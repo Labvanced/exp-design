@@ -30,7 +30,7 @@ InputElement.prototype.initHeight = 100;
 
 InputElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[0]);
+    globalVar.dataType("numeric");
     globalVar.scope(GlobalVar.scopes[2]);
     globalVar.scale(GlobalVar.scales[1]);
     var name = this.parent.name();
@@ -97,11 +97,46 @@ function createInputComponents() {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
 
+                    this.inputType = ko.pureComputed({
+                        read: function () {
+                            return this.dataModel.inputType();
+                        },
+                        write: function (inputType) {
+                            // switch dataType of variable:
+                            var newDataType = "undefined";
+
+                            switch (inputType) {
+                                case "number":
+                                    newDataType = 'numeric';
+                                    break;
+                                case "text":
+                                    newDataType = 'string';
+                                    break;
+                                case "date":
+                                    newDataType = 'datetime';
+                                    break;
+                                case "week":
+                                    newDataType = 'string';
+                                    break;
+                                case "time":
+                                    newDataType = 'string';
+                                    break;
+                                case "color":
+                                    newDataType = 'string';
+                                    break;
+                            }
+
+                            this.dataModel.variable().changeDataType(newDataType);
+                            this.dataModel.inputType(inputType);
+                        },
+                        owner: this
+                    });
+
                     this.focus = function () {
-                        this.dataModel.ckInstance.focus()
+                        this.dataModel.ckInstance.focus();
                     };
                 };
 
@@ -117,8 +152,19 @@ function createInputComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
+
+                    this.value = ko.pureComputed({
+                        read: function () {
+                            return this.dataModel.variable().startValue().value();
+                        },
+                        write: function (value) {
+                            // setValue will convert to the correct datatype:
+                            this.dataModel.variable().startValue().setValue(value);
+                        },
+                        owner: this
+                    });
                 };
                 return new viewModel(dataModel);
             }
@@ -131,9 +177,19 @@ function createInputComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
-                    this.answer = dataModel.answer;
+
+                    this.value = ko.pureComputed({
+                        read: function () {
+                            return this.dataModel.variable().value().value();
+                        },
+                        write: function (value) {
+                            // setValue will convert to the correct datatype:
+                            this.dataModel.variable().value().setValue(value);
+                        },
+                        owner: this
+                    });
                 };
                 return new viewModel(dataModel);
             }
