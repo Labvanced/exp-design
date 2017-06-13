@@ -109,7 +109,7 @@ ExpData.prototype.createVars = function() {
         this.varSubjectNr((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'nominal', 'Subject_Nr'));
     }
     if (!this.varGroupName()) {
-        this.varGroupName((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group_Name'));
+        this.varGroupName((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominputtal', 'Group_Name'));
     }
     if (!this.varSessionTimeStamp()) {
         this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session_Start_Time'));
