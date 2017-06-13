@@ -93,7 +93,14 @@ ExpData.prototype.fixedVarNames = [
 ];
 
 ExpData.prototype.initVars = function() {
+
+
     for (var i=0; i<ExpData.prototype.fixedVarNames.length; i++) {
+
+        if (this[ExpData.prototype.fixedVarNames[i]]().startValue() == null) {
+            this[ExpData.prototype.fixedVarNames[i]]().resetStartValue();
+        }
+
         this[ExpData.prototype.fixedVarNames[i]]().initValue();
     }
 };
