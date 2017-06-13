@@ -92,6 +92,12 @@ ExpData.prototype.fixedVarNames = [
     'varConditionId'
 ];
 
+ExpData.prototype.initVars = function() {
+    for (var i=0; i<ExpData.prototype.fixedVarNames.length; i++) {
+        this[ExpData.prototype.fixedVarNames[i]]().initValue();
+    }
+};
+
 /**
  * creates all predefined (fixed) variables
  */
