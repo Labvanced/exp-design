@@ -527,21 +527,44 @@ Modifier.prototype.removeFactorDependency = function(factorVar) {
     }
 
     // check if this modifier depends on the factor:
-    var idx = this.factors.indexOf(factorVar);
-    if (idx>-1) {
-        console.log("removing FactorDependency");
-        this.ndimModifierTrialTypes = deepRemoveFactor(this.ndimModifierTrialTypes, idx);
+    var facIdx = this.factors.indexOf(factorVar);
+    if (facIdx>-1) {
+        this.ndimModifierTrialTypes = deepRemoveFactor(this.ndimModifierTrialTypes, facIdx);
 
         // if there is only one trial type left, then remove the modification completely and use default trial type instead:
         if (this.ndimModifierTrialTypes instanceof ModifierTrialType) {
             this.ndimModifierTrialTypes = [];
         }
 
-        this.factors.splice(idx, 1);
+        this.factors.splice(facIdx, 1);
     }
 
 };
 
+/**
+ * removes one level from one factor
+ */
+Modifier.prototype.removeLevelFromFactor = function(factor, lvlIdx) {
+
+    function deepRemoveLevel( multiDimArr, remainingDepth, lvlIdx) {
+        if (remainingDepth > 0) {
+            for (var t = 0; t < multiDimArr.length; t++) {
+                deepRemoveLevel(multiDimArr, remainingDepth - 1, lvlIdx);
+            }
+        }
+        else{
+            multiDimArr.splice(lvlIdx,1);
+        }
+    }
+
+    // check if this modifier depends on the factor:
+    var facIdx = this.factors.indexOf(factor);
+    if (facIdx>-1) {
+        console.log("removing level from Factor Dependency");
+        deepRemoveLevel(this.ndimModifierTrialTypes, facIdx, lvlIdx);
+    }
+
+};
 
 /**
  * recursively removes the modification of a property from the multidimensional array
