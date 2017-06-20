@@ -72,6 +72,16 @@ ScaleElement.prototype.removeEntry = function(idx) {
     this.elements.splice(idx,1);
 };
 
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+ScaleElement.prototype.getAllModifiers = function(modifiersArr) {
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.getAllModifiers(modifiersArr);
+    } );
+    modifiersArr.push(this.modifier());
+};
 
 ScaleElement.prototype.setPointers = function(entitiesArr) {
 
@@ -186,6 +196,14 @@ ScaleEntry.prototype.init = function() {
 
 ScaleEntry.prototype.setVariableBackRef = function() {
     this.variable().addBackRef(this, this.scaleParent.parent, true, true, 'scale');
+};
+
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+ScaleEntry.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
 };
 
 ScaleEntry.prototype.setPointers = function(entitiesArr) {

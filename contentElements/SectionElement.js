@@ -24,7 +24,13 @@ SectionElement.prototype.addElem = function (elem) {
     this.elements.push(elem);
 };
 
-
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+SectionElement.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
+};
 
 SectionElement.prototype.setPointers = function(entitiesArr) {
 

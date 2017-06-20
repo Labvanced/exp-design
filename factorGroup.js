@@ -363,6 +363,16 @@ FactorGroup.prototype.removeFactor = function(factor) {
         }
     }
 
+    // update modifiers:
+    var factorGroupIdx = this.expTrialLoop.factorGroups().indexOf( this );
+    var subSequence = this.expTrialLoop.subSequencePerFactorGroup()[factorGroupIdx];
+    var allModifiers = [];
+    subSequence.getAllModifiers(allModifiers);
+
+    for (var i=0; i<allModifiers.length; i++) {
+        allModifiers[i].removeFactorDependency(factor);
+    }
+
     var arrMultiDim = this.conditions();
     if (idx==0) {
         arrMultiDim = arrMultiDim[0];

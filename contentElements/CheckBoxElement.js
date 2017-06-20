@@ -46,6 +46,17 @@ CheckBoxElement.prototype.removeEntry = function() {
     this.elements.splice(idx,1);
 };
 
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+CheckBoxElement.prototype.getAllModifiers = function(modifiersArr) {
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.getAllModifiers(modifiersArr);
+    } );
+    modifiersArr.push(this.modifier());
+};
+
 CheckBoxElement.prototype.setPointers = function(entitiesArr) {
 
     for (var i=0; i<this.elements().length; i++) {
@@ -129,6 +140,14 @@ CheckBoxEntry.prototype.init = function() {
 
 CheckBoxEntry.prototype.setVariableBackRef = function() {
     this.variable().addBackRef(this, this.checkBoxParent.parent, true, true, 'checkbox');
+};
+
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+CheckBoxEntry.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
 };
 
 CheckBoxEntry.prototype.setPointers = function(entitiesArr) {

@@ -27,6 +27,14 @@ ButtonElement.prototype.dataType =      [ "string"];
 ButtonElement.prototype.initWidth = 80;
 ButtonElement.prototype.initHeight = 38;
 
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+ButtonElement.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
+};
+
 ButtonElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 };

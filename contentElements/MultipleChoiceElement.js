@@ -69,6 +69,17 @@ MultipleChoiceElement.prototype.setVariableBackRef = function() {
     this.variable().addBackRef(this, this.parent, true, true, 'multipleChoice');
 };
 
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+MultipleChoiceElement.prototype.getAllModifiers = function(modifiersArr) {
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.getAllModifiers(modifiersArr);
+    } );
+    modifiersArr.push(this.modifier());
+};
+
 MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
 
     if (this.variable()) {
@@ -162,6 +173,14 @@ MultipleChoiceEntry.prototype.dataType =[ "categorical"];
 
 MultipleChoiceEntry.prototype.getIndex = function() {
    return this.multChoiceParent.elements.indexOf(this);
+};
+
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+MultipleChoiceEntry.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
 };
 
 

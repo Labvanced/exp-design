@@ -83,6 +83,13 @@ SortableElement.prototype.removeElem = function () {
     this.elementIds.splice(idx,1);
 };
 
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+SortableElement.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
+};
 
 SortableElement.prototype.setPointers = function(entitiesArr) {
     var array = [];

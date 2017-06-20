@@ -167,6 +167,17 @@ PageData.prototype.getElementById = function(id) {
 };
 
 /**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+PageData.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.getAllModifiers(modifiersArr);
+    } );
+};
+
+/**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
  * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.

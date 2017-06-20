@@ -50,6 +50,14 @@ ImageElement.prototype.modifiableProp = ["file_id","file_orig_name", "stretchIma
 ImageElement.prototype.initWidth = 300;
 ImageElement.prototype.initHeight = 200;
 
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+ImageElement.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
+};
+
 ImageElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 };

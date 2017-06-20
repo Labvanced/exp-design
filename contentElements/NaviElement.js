@@ -53,6 +53,13 @@ NaviElement.prototype.init = function() {
     this.parent.parent.events.push(event2);
 };
 
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+NaviElement.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
+};
 
 NaviElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);

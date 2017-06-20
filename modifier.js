@@ -503,6 +503,46 @@ Modifier.prototype.addFactorDependency = function(factorVar) {
 
 };
 
+
+/**
+ * remove a dependency on a factor variable.
+ * @param factorVar
+ */
+Modifier.prototype.removeFactorDependency = function(factorVar) {
+
+    function deepRemoveFactor(multiDimArr, remainingDepthTillRemove){
+        var t;
+        if (remainingDepthTillRemove > 0) {
+            // recursive call:
+            for (t = 0; t < multiDimArr.length; t++) {
+                multiDimArr[t] = deepRemoveFactor(multiDimArr[t], remainingDepthTillRemove-1);
+            }
+            return multiDimArr;
+        }
+        else {
+            // use first entry as new trialType:
+            multiDimArr = multiDimArr[0];
+            return multiDimArr;
+        }
+    }
+
+    // check if this modifier depends on the factor:
+    var idx = this.factors.indexOf(factorVar);
+    if (idx>-1) {
+        console.log("removing FactorDependency");
+        this.ndimModifierTrialTypes = deepRemoveFactor(this.ndimModifierTrialTypes, idx);
+
+        // if there is only one trial type left, then remove the modification completely and use default trial type instead:
+        if (this.ndimModifierTrialTypes instanceof ModifierTrialType) {
+            this.ndimModifierTrialTypes = [];
+        }
+
+        this.factors.splice(idx, 1);
+    }
+
+};
+
+
 /**
  * recursively removes the modification of a property from the multidimensional array
  * @param objArr
