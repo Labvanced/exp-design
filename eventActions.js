@@ -138,7 +138,7 @@ ActionSaveObjProp.prototype.run = function(triggerParams) {
  */
 var ActionRecord = function(event) {
     this.event = event;
-   this.specialRecs = this.event.trigger().getParameterSpec();
+    this.specialRecs = this.event.trigger().getParameterSpec();
     this.selectedRecordings =  ko.observableArray([]);
 };
 
@@ -166,13 +166,13 @@ ActionRecord.prototype.setVariableBackRef = function(variable){
  * @param {string} type - the type of the recording, such as "elementTag" or "reactionTime"
  */
 ActionRecord.prototype.addRecording = function(type){
-    var self = this; 
+    var self = this;
     var newRec={
         recType: type,
         variable :ko.observable({
             isRecorded: ko.observable(true)
         }),
-       tmpRecState: null
+        tmpRecState: null
     };
     newRec.variable.subscribe(function(oldValue) {
         newRec.tmpRecState = oldValue.isRecorded();
@@ -181,7 +181,7 @@ ActionRecord.prototype.addRecording = function(type){
     newRec.variable.subscribe(function(oldValue) {
         oldValue.isRecorded(newRec.tmpRecState);
     }, this);
-    
+
     this.selectedRecordings.push(newRec);
 
 
@@ -516,57 +516,106 @@ ActionSetElementProp.prototype.toJS = function() {
 };
 
 
+
+
+
 ////////////////////////////////////////  ActionSetElementPropChange  ///////////////////////////////////////////////////
 
+
 var ActionSetElementPropChange = function(parentAction) {
-    this.parentAction = parentAction;
 
+    this.event = event;
+
+    // serialized
+    //this.variable = ko.observable(null);
+    this.target = ko.observable(null);
     this.property = ko.observable(null);
-    this.operatorType = ko.observable(null);
-    this.changeType = ko.observable(null);
-    this.value = ko.observable(0);
-    this.variable = ko.observable(null);
+    this.operand = ko.observable(new OperandVariable(event));
+
+    this.parentAction = parentAction;
 };
 
-ActionSetElementPropChange.prototype.operatorTypes = ["=", "+", "-", "*", "/"];
-ActionSetElementPropChange.prototype.changeTypes =  ["value", "%", "variable"];
+ActionSetElementPropChange.prototype.type = "ActionSetElementPropChange";
+ActionSetElementPropChange.prototype.label = "Set Element Property";
 
+
+ActionSetElementPropChange.prototype.isValid = function(){
+    return true;
+};
+
+
+
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionSetElementPropChange.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'set element property');
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionSetElementPropChange.prototype.run = function(triggerParams) {
+    var rValue = this.operand().getValue(triggerParams);
+
+
+    this.target().modifier().selectedTrialView[this.property()](rValue);
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
 ActionSetElementPropChange.prototype.setPointers = function(entitiesArr) {
-    if (this.changeType() == "variable") {
-        var varId = this.variable();
-        var globVar = entitiesArr.byId[varId];
-        this.variable(globVar);
-        this.parentAction.setVariableBackRef(globVar);
-    }
-    else {
-        this.variable(null);
-    }
+
+    var target = entitiesArr.byId[this.target()];
+    this.target(target);
+    this.operand().setPointers(entitiesArr);
 };
 
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionSetVariable}
+ */
 ActionSetElementPropChange.prototype.fromJS = function(data) {
+    //  this.variable(data.variable);
+    var operand = new OperandVariable(this.event);
+    operand.fromJS(data.operand);
+
+    this.operand(operand);
     this.property(data.property);
-    this.operatorType(data.operatorType);
-    this.changeType(data.changeType);
-    this.value(data.value);
-    if (data.variable) {
-        this.variable(data.variable);
-    }
+    this.target(data.target);
+    return this;
 };
 
-ActionSetElementPropChange.prototype.toJS = function() {
-    var variable = this.variable();
-    if (variable) {
-        variable = variable.id();
-    }
 
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionSetElementPropChange.prototype.toJS = function() {
     return {
+        //     variable: this.variable().id(),
+        operand: this.operand().toJS(),
         property: this.property(),
-        operatorType: this.operatorType(),
-        changeType: this.changeType(),
-        value: this.value(),
-        variable: variable
+        target: this.target().id(),
+        type: this.type
     };
 };
+
+
+
+
+
 
 ////////////////////////////////////////////   ActionJumpTo   /////////////////////////////////////////////////////
 
@@ -582,7 +631,7 @@ var ActionJumpTo = function(event) {
     this.frameToJump= ko.observable(null)
 
     this.frameToJump.subscribe(function(newVal) {
-       var test = null;
+        var test = null;
     });
 };
 
@@ -682,6 +731,7 @@ ActionJumpTo.prototype.toJS = function() {
  * @param {Event} event - the parent event
  * @constructor
  */
+
 var ActionSetVariable = function(event) {
     this.event = event;
 
@@ -690,7 +740,7 @@ var ActionSetVariable = function(event) {
     this.operand = ko.observable(new OperandVariable(event));
 };
 ActionSetVariable.prototype.type = "ActionSetVariable";
-ActionSetVariable.prototype.label = "Set (Record) Variable";
+ActionSetVariable.prototype.label = "Set / Record Variable";
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -778,9 +828,9 @@ var ActionModifyVariable = function(event) {
     this.value = ko.observable(null);
     this.operatorTypes = ko.observableArray(["=", "+", "-", "*", "/"]);
     this.changeTypes =  ko.observableArray(["value", "%","variable"]);
-    
+
     var self= this;
-    
+
     this.variable.subscribe(function(newVal) {
         if (self.variable() != newVal){
             self.operatorType(null);
@@ -790,7 +840,7 @@ var ActionModifyVariable = function(event) {
     });
 
 
-    
+
     this.operatorType.subscribe(function(newVal) {
         if (newVal == "=") {
             self.changeTypes(["value", "%", "variable"]);
@@ -863,7 +913,7 @@ ActionModifyVariable.prototype.run = function(triggerParams) {
         value = Number(value);
     }
     var newValue;
-    
+
     if (operatorType== '='){
         if (changeType== 'value'){
             newValue = value;
@@ -1086,13 +1136,13 @@ ActionDrawRandomNumber.prototype.run = function(triggerParams) {
         var min = this.distributionParam1();
         var max = this.distributionParam2();
         value = Math.random() * (max - min) + min;
-        this.variable().value().value(value);
+        this.variable().value(value);
     }
     else if (this.distribution() == "Gaussian") {
         var mean = this.distributionParam1();
         var std = this.distributionParam2();
         value = mean + randn_marsaglia_polar() * std;
-        this.variable().value().value(value);
+        this.variable().value(value);
     }
 };
 
@@ -1185,19 +1235,20 @@ ActionControlAV.prototype.isValid = function(){
  */
 ActionControlAV.prototype.run = function(triggerParams) {
 
-   var elem =  $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
+    var elem =  $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
 
-   if (elem.length > 0) {
-       if (this.actionType() == 'start') {
-           elem[0].play();
-       }
-       else if (this.actionType() == 'stop') {
-           elem[0].stop();
-       }
-       else if (this.actionType() == 'pause') {
-           elem[0].pause();
-       }
-   }
+    if (elem.length > 0) {
+        if (this.actionType() == 'start') {
+            elem[0].play();
+        }
+        else if (this.actionType() == 'end') {
+            elem[0].pause();
+            elem[0].currentTime = 0;
+        }
+        else if (this.actionType() == 'pause') {
+            elem[0].pause();
+        }
+    }
 
 };
 
