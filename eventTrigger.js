@@ -421,7 +421,7 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
     var validKeyCodes = this.getValidKeyCodes();
 
     if (this.interactionType() == "PressDown"){
-        (function(event) {
+        (function() {
             $(document).on("keydown", function (ev){
                 var keyIdx = validKeyCodes.indexOf(ev.keyCode);
                 if (keyIdx>=0){
@@ -435,11 +435,11 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
                 }
 
             });
-        })(event);
+        })();
     }
 
     else if (this.interactionType() == "PressUp"){
-        (function(event) {
+        (function() {
             $(document).on("keyup", function (ev){
                 var keyIdx = validKeyCodes.indexOf(ev.keyCode);
                 if (keyIdx>=0){
@@ -452,7 +452,7 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
                     self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
                 }
             });
-        })(event);
+        })();
     }
 };
 
