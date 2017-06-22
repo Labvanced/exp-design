@@ -516,42 +516,82 @@ ActionSetElementProp.prototype.toJS = function() {
 };
 
 
-
-
-
 ////////////////////////////////////////  ActionSetElementPropChange  ///////////////////////////////////////////////////
 
-
 var ActionSetElementPropChange = function(parentAction) {
+    this.parentAction = parentAction;
 
+    this.property = ko.observable(null);
+    this.operatorType = ko.observable(null);
+    this.changeType = ko.observable(null);
+    this.value = ko.observable(0);
+    this.variable = ko.observable(null);
+};
+
+ActionSetElementPropChange.prototype.operatorTypes = ["=", "+", "-", "*", "/"];
+ActionSetElementPropChange.prototype.changeTypes =  ["value", "%", "variable"];
+
+ActionSetElementPropChange.prototype.setPointers = function(entitiesArr) {
+    if (this.changeType() == "variable") {
+        var varId = this.variable();
+        var globVar = entitiesArr.byId[varId];
+        this.variable(globVar);
+        this.parentAction.setVariableBackRef(globVar);
+    }
+    else {
+        this.variable(null);
+    }
+};
+
+ActionSetElementPropChange.prototype.fromJS = function(data) {
+    this.property(data.property);
+    this.operatorType(data.operatorType);
+    this.changeType(data.changeType);
+    this.value(data.value);
+    if (data.variable) {
+        this.variable(data.variable);
+    }
+};
+
+ActionSetElementPropChange.prototype.toJS = function() {
+    var variable = this.variable();
+    if (variable) {
+        variable = variable.id();
+    }
+
+    return {
+        property: this.property(),
+        operatorType: this.operatorType(),
+        changeType: this.changeType(),
+        value: this.value(),
+        variable: variable
+    };
+};
+
+
+
+
+////////////////////////////////////////  ActionSetProp (new version) ///////////////////////////////////////////////////
+
+var ActionSetProp = function(event) {
     this.event = event;
 
     // serialized
-    //this.variable = ko.observable(null);
-    this.target = ko.observable(null);
-    this.property = ko.observable(null);
-    this.operand = ko.observable(new OperandVariable(event));
-
-    this.parentAction = parentAction;
+    this.refToObjectProperty = new RefToObjectProperty(event);
+    this.operand = new OperandVariable(event);
 };
 
-ActionSetElementPropChange.prototype.type = "ActionSetElementPropChange";
-ActionSetElementPropChange.prototype.label = "Set Element Property";
+ActionSetProp.prototype.type = "ActionSetProp";
+ActionSetProp.prototype.label = "Set Property";
 
-
-ActionSetElementPropChange.prototype.isValid = function(){
+ActionSetProp.prototype.isValid = function(){
     return true;
 };
 
-
-
-
 /**
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
- * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionSetElementPropChange.prototype.setVariableBackRef = function(variable){
-    variable.addBackRef(this, this.event, true, false, 'set element property');
+ActionSetProp.prototype.setVariableBackRef = function(){
 };
 
 /**
@@ -560,11 +600,9 @@ ActionSetElementPropChange.prototype.setVariableBackRef = function(variable){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionSetElementPropChange.prototype.run = function(triggerParams) {
-    var rValue = this.operand().getValue(triggerParams);
-
-
-    this.target().modifier().selectedTrialView[this.property()](rValue);
+ActionSetProp.prototype.run = function(triggerParams) {
+    var rValue = this.operand.getValue(triggerParams);
+    this.refToObjectProperty.setValue(rValue);
 };
 
 /**
@@ -574,11 +612,9 @@ ActionSetElementPropChange.prototype.run = function(triggerParams) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSetElementPropChange.prototype.setPointers = function(entitiesArr) {
-
-    var target = entitiesArr.byId[this.target()];
-    this.target(target);
-    this.operand().setPointers(entitiesArr);
+ActionSetProp.prototype.setPointers = function(entitiesArr) {
+    this.refToObjectProperty.setPointers(entitiesArr);
+    this.operand.setPointers(entitiesArr);
 };
 
 /**
@@ -586,29 +622,21 @@ ActionSetElementPropChange.prototype.setPointers = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionSetVariable}
  */
-ActionSetElementPropChange.prototype.fromJS = function(data) {
-    //  this.variable(data.variable);
-    var operand = new OperandVariable(this.event);
-    operand.fromJS(data.operand);
-
-    this.operand(operand);
-    this.property(data.property);
-    this.target(data.target);
+ActionSetProp.prototype.fromJS = function(data) {
+    this.refToObjectProperty.fromJS(data.refToObjectProperty);
+    this.operand.fromJS(data.operand);
     return this;
 };
-
 
 /**
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionSetElementPropChange.prototype.toJS = function() {
+ActionSetProp.prototype.toJS = function() {
     return {
-        //     variable: this.variable().id(),
-        operand: this.operand().toJS(),
-        property: this.property(),
-        target: this.target().id(),
-        type: this.type
+        type: this.type,
+        refToObjectProperty: this.refToObjectProperty.toJS(),
+        operand: this.operand.toJS()
     };
 };
 
@@ -629,10 +657,6 @@ var ActionJumpTo = function(event) {
     this.event = event;
     this.jumpType = ko.observable(null);
     this.frameToJump= ko.observable(null)
-
-    this.frameToJump.subscribe(function(newVal) {
-        var test = null;
-    });
 };
 
 ActionJumpTo.prototype.type = "ActionJumpTo";
@@ -1136,13 +1160,13 @@ ActionDrawRandomNumber.prototype.run = function(triggerParams) {
         var min = this.distributionParam1();
         var max = this.distributionParam2();
         value = Math.random() * (max - min) + min;
-        this.variable().value(value);
+        this.variable().value().value(value);
     }
     else if (this.distribution() == "Gaussian") {
         var mean = this.distributionParam1();
         var std = this.distributionParam2();
         value = mean + randn_marsaglia_polar() * std;
-        this.variable().value(value);
+        this.variable().value().value(value);
     }
 };
 

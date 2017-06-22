@@ -519,6 +519,13 @@ RefToObjectProperty.prototype.getValue = function() {
 };
 
 /**
+ * set the value of the object property
+ */
+RefToObjectProperty.prototype.setValue = function(newVal) {
+    this.target().modifier().selectedTrialView[this.property()](newVal);
+};
+
+/**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
  * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
