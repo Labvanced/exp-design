@@ -105,6 +105,8 @@ function createInputComponents() {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
+                    var self = this;
+
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
 
@@ -145,6 +147,16 @@ function createInputComponents() {
 
                     this.focus = function () {
                         this.dataModel.ckInstance.focus();
+                    };
+
+                    this.relinkVariable = function() {
+                        var frameData = self.dataModel.parent.parent;
+                        var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
+                            frameData.addVariableToLocalWorkspace(newVariable);
+                            self.dataModel.variable(newVariable);
+                            self.dataModel.setVariableBackRef(newVariable);
+                        }, frameData);
+                        variableDialog.show();
                     };
                 };
 

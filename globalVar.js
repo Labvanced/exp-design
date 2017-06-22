@@ -62,7 +62,7 @@ GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];
 GlobalVar.recTypes = ['overwrite', 'timeseries']; // open to discussion
 
-// definition of what scalesallowed for each datatype:
+// definition of what scales allowed for each datatype:
 GlobalVar.allowedScalePerDataType = {
     'undefined': ['nominal', 'ordinal', 'interval', 'ratio','undefined'],
     'string': ['nominal', 'ordinal','undefined'],
@@ -74,10 +74,6 @@ GlobalVar.allowedScalePerDataType = {
     'structure': ['undefined']
 };
 
-
-
-
-
 // now create the inverted mapping:
 GlobalVar.allowedDataTypePerScale = {
     'undefined': ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime', 'timer','structure'],
@@ -87,7 +83,17 @@ GlobalVar.allowedDataTypePerScale = {
     'ratio': ['numeric', 'datetime', 'timer']
 };
 
-
+// definition of what scales allowed for each datatype:
+GlobalVar.iconPerDataType = {
+    'undefined': "/resources/icons/variables/string.svg",
+    'string': "/resources/icons/variables/string.svg",
+    'numeric': "/resources/icons/variables/numeric.svg",
+    'boolean': "/resources/icons/variables/boolean.svg",
+    'categorical': "/resources/icons/variables/string.svg",
+    'datetime': "/resources/icons/variables/datetime.svg",
+    'timer': "/resources/icons/timer.svg",
+    'structure': "/resources/icons/variables/string.svg"
+};
 
 GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
     this.dataType(dataType);

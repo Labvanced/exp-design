@@ -1,8 +1,15 @@
 <template id='input-editview-template'>
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Input</div>
-        <label>Input type: </label>
-        <select data-bind="options: InputElement.prototype.typeOptions, value: inputType"></select>
+        <label>Input type:<select data-bind="options: InputElement.prototype.typeOptions, value: inputType"></select></label>
+        <br>
+        <label>
+            Linked Variable:
+            <span data-bind="component: {name: 'LinkedVariableView', params: {variable: $data.dataModel.variable() } }"></span>
+            <div class="variableRelinkButton" data-bind="click: relinkVariable" data-toggle="tooltip" title="Relink Variable">
+                <img width="14" height="14" src="/resources/icons/unlink.svg">
+            </div>
+        </label>
     </div>
 </template>
 
