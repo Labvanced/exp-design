@@ -84,7 +84,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 var target = this.targets()[i];
                 var self = this;
                 if (this.buttonType() == "Left"){
-                    (function(event,target) {
+                    (function(target) {
                         if (!(target.content() instanceof NaviElement)){
                             $(playerFrame.frameView.viewElements.byId[target.id()].div).click(function(ev) {
                                 self.mouseX = playerFrame.mouseX;
@@ -115,11 +115,11 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                             }
                         }
 
-                    })(event,target);
+                    })(target);
                 }
 
                 else if (this.buttonType() == "Right"){
-                    (function(event,target) {
+                    (function(target) {
                         if (!(target.content() instanceof NaviElement)){
                             $(playerFrame.frameView.viewElements.byId[target.id()].div).contextmenu(function(ev) {
                                 self.mouseX = playerFrame.mouseX;
@@ -150,7 +150,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                             }
                         }
 
-                    })(event,target);
+                    })(target);
                 }
             }
             break;
@@ -160,7 +160,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
             for (var i = 0; i<this.targets().length;i++){
                 var target = this.targets()[i];
                 // closure to make event persistent over loop:
-                (function(event,target) {
+                (function(target) {
                     if (!(target.content() instanceof NaviElement)){
                         $(playerFrame.frameView.viewElements.byId[target.id()].div).on('mousedown',function(ev) {
                             if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
@@ -197,7 +197,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                         }
                     }
 
-                })(event,target);
+                })(target);
             }
             break;
 
@@ -205,7 +205,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
             for (var i = 0; i<this.targets().length;i++){
                 var target = this.targets()[i];
                 // closure to make event persistent over loop:
-                (function(event,target) {
+                (function(target) {
                     if (!(target.content() instanceof NaviElement)){
                         $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseup(function(ev) {
                             if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
@@ -241,7 +241,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                             }
                         }
                     }
-                })(event,target);
+                })(target);
             }
             break;
 
@@ -249,7 +249,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
             for (var i = 0; i < this.targets().length; i++) {
                 var target = this.targets()[i];
                 // closure to make event persistent over loop:
-                (function (event, target) {
+                (function ( target) {
 
                     if (!(target.content() instanceof NaviElement)){
                         $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseover(function (ev) {
@@ -283,7 +283,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
 
 
 
-                })(event, target);
+                })(target);
             }
             break;
     }
