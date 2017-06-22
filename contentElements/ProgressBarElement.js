@@ -41,6 +41,14 @@ ProgressBarElement.prototype.setVariableBackRef = function() {
     this.variable().addBackRef(this, this.parent, true, true, 'Progress Bar');
 };
 
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+ProgressBarElement.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
+};
+
 ProgressBarElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);

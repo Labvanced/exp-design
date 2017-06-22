@@ -28,6 +28,14 @@ DisplayTextElement.prototype.init = function() {
 
 };
 
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+DisplayTextElement.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
+};
+
 DisplayTextElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 };

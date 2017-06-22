@@ -299,23 +299,31 @@ FactorGroup.prototype.addLevelToCondition = function() {
 /**
  * updates the multi dimensional array with all new levels.
  */
-FactorGroup.prototype.removeLevelFromCondition = function(facIdx, lvlIdx) {
+FactorGroup.prototype.removeLevelFromFactor = function(factor, lvlIdx) {
 
+    var factors = this.factors();
+    var facIdx =  factors.indexOf(factor);
 
+    // update modifiers:
+    var factorGroupIdx = this.expTrialLoop.factorGroups().indexOf( this );
+    var subSequence = this.expTrialLoop.subSequencePerFactorGroup()[factorGroupIdx];
+    var allModifiers = [];
+    subSequence.getAllModifiers(allModifiers);
+    for (var i=0; i<allModifiers.length; i++) {
+        allModifiers[i].removeLevelFromFactor(factor, lvlIdx);
+    }
+
+    // Update conditions table:
     function removeLevels(lvlIdx,requiredDepth,currentDepth,arr) {
-
         if (currentDepth == requiredDepth) {
             arr.splice(lvlIdx,1);
         }
         else{
             for (var t = 0; t < arr.length; t++) {
-                var newAr = arr[t];
-                removeLevels(lvlIdx,requiredDepth,currentDepth+1,newAr);
+                removeLevels(lvlIdx,requiredDepth,currentDepth+1,arr[t]);
             }
         }
     }
-
-    var factors = this.factors();
     var conditions =  this.conditions();
     if (factors.length>1){
         removeLevels(lvlIdx,facIdx,0,conditions);
@@ -323,9 +331,11 @@ FactorGroup.prototype.removeLevelFromCondition = function(facIdx, lvlIdx) {
     else{
         conditions.splice(lvlIdx,1);
     }
-
     this.conditions(conditions);
 
+
+    // Now really remove the level from the categorical variable:
+    factors[facIdx].globalVar().removeLevel(lvlIdx);
 };
 
 /**
@@ -338,8 +348,6 @@ FactorGroup.prototype.addFactor = function(factor) {
 
     this.factors.push(factor);
     this.addFactorToCondition(factor);
-   // this.addLevelsToCondition();
-    
 
 };
 
@@ -363,6 +371,16 @@ FactorGroup.prototype.removeFactor = function(factor) {
         }
     }
 
+    // update modifiers:
+    var factorGroupIdx = this.expTrialLoop.factorGroups().indexOf( this );
+    var subSequence = this.expTrialLoop.subSequencePerFactorGroup()[factorGroupIdx];
+    var allModifiers = [];
+    subSequence.getAllModifiers(allModifiers);
+    for (var i=0; i<allModifiers.length; i++) {
+        allModifiers[i].removeFactorDependency(factor);
+    }
+
+    // update conditions array:
     var arrMultiDim = this.conditions();
     if (idx==0) {
         arrMultiDim = arrMultiDim[0];

@@ -50,6 +50,14 @@ LikertElement.prototype.setVariableBackRef = function() {
     this.variable().addBackRef(this, this.parent, true, true, 'Likert');
 };
 
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+LikertElement.prototype.getAllModifiers = function(modifiersArr) {
+    modifiersArr.push(this.modifier());
+};
+
 LikertElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);

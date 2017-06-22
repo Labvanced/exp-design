@@ -98,7 +98,7 @@ Sequence.prototype.selectNextElement = function() {
     if (nextElement === undefined) {
         nextElement = {
             type:"EndOfSequence"
-        }
+        };
     }
 
     this.currSelectedElement(nextElement);
@@ -116,6 +116,18 @@ Sequence.prototype.addNewSubElement = function(elem) {
 
 Sequence.prototype.getElementById = function(id) {
     return  this.elements.byId[id];
+};
+
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+Sequence.prototype.getAllModifiers = function(modifiersArr) {
+    jQuery.each( this.elements(), function( index, elem ) {
+        if (elem.getAllModifiers) {
+            elem.getAllModifiers(modifiersArr);
+        }
+    } );
 };
 
 /**
