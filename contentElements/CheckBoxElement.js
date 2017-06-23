@@ -183,21 +183,35 @@ function createCheckBoxComponents() {
             createViewModel: function(dataModel, componentInfo){
 
                 var viewModel = function(dataModel){
-                    this.dataModel = ko.observable(dataModel);
+
+                    var self = this;
+
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.margin = dataModel.margin;
 
                     this.addChoice = function() {
-                        this.dataModel().addEntry();
+                        this.dataModel.addEntry();
                     };
 
                     this.removeChoice = function() {
-                        this.dataModel().removeEntry();
+                        this.dataModel.removeEntry();
                     };
 
                     this.focus = function () {
-                        this.dataModel().ckInstance.focus()
-                    }
+                        this.dataModel.ckInstance.focus();
+                    };
+
+                    this.relinkCallback = function(index) {
+                        var frameData = self.dataModel.parent.parent;
+                        var checkboxEntry = self.dataModel.elements()[index];
+                        var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
+                            frameData.addVariableToLocalWorkspace(newVariable);
+                            checkboxEntry.variable(newVariable);
+                            checkboxEntry.setVariableBackRef(newVariable);
+                        }, frameData);
+                        variableDialog.show();
+                    };
 
                 };
 
@@ -212,7 +226,7 @@ function createCheckBoxComponents() {
             createViewModel: function(dataModel, componentInfo){
                 
                 var viewModel = function(dataModel){
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.margin = dataModel.margin;
                 };
@@ -228,7 +242,7 @@ function createCheckBoxComponents() {
             createViewModel: function(dataModel, componentInfo) {
 
                 var viewModel = function (dataModel) {
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.margin = dataModel.margin;
                 };

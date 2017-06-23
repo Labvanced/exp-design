@@ -4,6 +4,25 @@
         <div>
             <span style="cursor: pointer" data-bind="click:addChoice"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
             <span style="cursor: pointer" data-bind="click:removeChoice"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Linked Variable</th>
+                        <th>Entry</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: dataModel.elements">
+                    <tr>
+                        <th>
+                            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: variable, allowedDatatypes: ['boolean'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
+                        </th>
+                        <th>
+                            <div data-bind="wysiwyg: checkBoxText, valueUpdate: 'afterkeydown'" ></div>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <br><br>
     </div>
@@ -13,7 +32,7 @@
     <div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: 'afterkeydown'">
         <p>Your Question</p>
     </div>
-    <div data-bind="foreach: dataModel().elements, style: {marginTop: margin, marginBottom: margin}">
+    <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
             <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: variable().startValue().value,click:function(){return true},clickBubble: false">
             <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" class="notDraggable" data-bind="wysiwyg: checkBoxText, valueUpdate: 'afterkeydown'" ></div>
@@ -26,7 +45,7 @@
     <div data-bind="html: questionText">
         <p>Your Question</p>
     </div>
-    <div data-bind="foreach: dataModel().elements, style: {marginTop: margin, marginBottom: margin}">
+    <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <label>
             <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: variable().value().value,click:function(){return true},clickBubble: false">
             <div   style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" data-bind="html: checkBoxText"></div>
