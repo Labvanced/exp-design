@@ -26,7 +26,14 @@ InputElement.prototype.typeOptions = ["number","text","date","week","time","colo
 InputElement.prototype.dataType =      [ "string"];
 InputElement.prototype.initWidth = 300;
 InputElement.prototype.initHeight = 100;
-
+InputElement.prototype.dataTypePerInputType = {
+    "number": 'numeric',
+    "text": 'string',
+    "date": 'datetime',
+    "week": 'string',
+    "time": 'string',
+    "color": 'string'
+};
 
 InputElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
@@ -116,40 +123,23 @@ function createInputComponents() {
                         },
                         write: function (inputType) {
                             // switch dataType of variable:
-                            var newDataType = "undefined";
-
-                            switch (inputType) {
-                                case "number":
-                                    newDataType = 'numeric';
-                                    break;
-                                case "text":
-                                    newDataType = 'string';
-                                    break;
-                                case "date":
-                                    newDataType = 'datetime';
-                                    break;
-                                case "week":
-                                    newDataType = 'string';
-                                    break;
-                                case "time":
-                                    newDataType = 'string';
-                                    break;
-                                case "color":
-                                    newDataType = 'string';
-                                    break;
-                            }
-
+                            var newDataType = InputElement.prototype.dataTypePerInputType[inputType];
                             this.dataModel.variable().changeDataType(newDataType);
                             this.dataModel.inputType(inputType);
                         },
                         owner: this
                     });
 
+                    this.allowedDataTypes = ko.computed(function() {
+                        var allowedDataType = InputElement.prototype.dataTypePerInputType[self.dataModel.inputType()];
+                        return [allowedDataType];
+                    });
+
                     this.focus = function () {
                         this.dataModel.ckInstance.focus();
                     };
 
-                    this.relinkVariable = function() {
+                    this.relinkCallback = function() {
                         var frameData = self.dataModel.parent.parent;
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);

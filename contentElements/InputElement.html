@@ -5,10 +5,7 @@
         <br>
         <label>
             Linked Variable:
-            <span data-bind="component: {name: 'LinkedVariableView', params: {variable: $data.dataModel.variable() } }"></span>
-            <div class="variableRelinkButton" data-bind="click: relinkVariable" data-toggle="tooltip" title="Relink Variable">
-                <img width="14" height="14" src="/resources/icons/unlink.svg">
-            </div>
+            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: allowedDataTypes(), relinkCallback: relinkCallback } }"></span>
         </label>
     </div>
 </template>
