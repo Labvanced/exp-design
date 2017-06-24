@@ -511,7 +511,7 @@ var TriggerOnFrameStart = function(event) {
     this.event = event;
 
     // serialized
-    this.timeDelayInMs = ko.observable(0);
+
 };
 
 TriggerOnFrameStart.prototype.type = "TriggerOnFrameStart";
@@ -572,7 +572,6 @@ TriggerOnFrameStart.prototype.setPointers = function(entitiesArr) {
  * @returns {TriggerOnFrameStart}
  */
 TriggerOnFrameStart.prototype.fromJS = function(data) {
-    this.timeDelayInMs(data.timeDelayInMs);
     return this;
 };
 
@@ -583,7 +582,6 @@ TriggerOnFrameStart.prototype.fromJS = function(data) {
 TriggerOnFrameStart.prototype.toJS = function() {
     return {
         type: this.type,
-        timeDelayInMs: this.timeDelayInMs()
     };
 };
 

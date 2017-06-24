@@ -705,8 +705,7 @@ ActionJumpTo.prototype.run = function(triggerParams) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionJumpTo.prototype.setPointers = function() {
-    var entitiesArr = this.event.parent.expData.entities;
+ActionJumpTo.prototype.setPointers = function(entitiesArr) {
     var frame = entitiesArr.byId[this.frameToJump()];
     this.frameToJump(frame);
 };
@@ -740,6 +739,127 @@ ActionJumpTo.prototype.toJS = function() {
         jumpType: this.jumpType(),
         frameToJump: frameToJump
 
+    };
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////////   ActionDelayedActions   /////////////////////////////////////////////////////
+
+/**
+ * This action jumps to another frame or next trial.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
+var ActionDelayedActions = function(event) {
+    this.event = event;
+    this.timeoutFcn = null;
+
+    // serialized:
+    this.delayInMs = ko.observable(1000);
+    this.subActions = ko.observableArray([]);
+};
+
+ActionDelayedActions.prototype.type = "ActionDelayedActions";
+ActionDelayedActions.prototype.label = "Delayed Actions";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionDelayedActions.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It either jumps to the
+ * next frame or to specific frame or next trial.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionDelayedActions.prototype.run = function(triggerParams) {
+    var self = this;
+    this.timeoutFcn = setTimeout(function() {
+        self.runDelayed(triggerParams);
+    }, this.delayInMs());
+};
+
+/**
+ * This function is called when the delay finished.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionDelayedActions.prototype.runDelayed = function(triggerParams) {
+    var actions = this.subActions();
+    for (var i=0; i<actions.length; i++) {
+        actions[i].run(triggerParams);
+    }
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionDelayedActions.prototype.setPointers = function(entitiesArr) {
+    jQuery.each( this.subActions(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+};
+
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionDelayedActions.prototype.reAddEntities = function(entitiesArr) {
+    jQuery.each( this.subActions(), function( index, elem ) {
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (elem.reAddEntities)
+            elem.reAddEntities(entitiesArr);
+    } );
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionDelayedActions}
+ */
+ActionDelayedActions.prototype.fromJS = function(data) {
+    this.delayInMs(data.delayInMs);
+
+    var subActions = [];
+    for (var i=0; i<data.subActions.length; i++) {
+        var subAction = actionFactory(this, data.subActions[i].type);
+        subAction.fromJS(data.subActions[i]);
+        subActions.push(subAction);
+    }
+    this.subActions(subActions);
+
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionDelayedActions.prototype.toJS = function() {
+    var subActions = this.subActions();
+    var subActionsData = [];
+    for (var i=0; i<subActions.length; i++) {
+        subActionsData.push(subActions[i].toJS());
+    }
+
+    return {
+        type: this.type,
+        delayInMs: this.delayInMs(),
+        subActions: subActionsData
     };
 };
 
