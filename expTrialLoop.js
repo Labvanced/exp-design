@@ -1005,7 +1005,7 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('blockFixedFactorConditions')){
         this.blockFixedFactorConditions(data.blockFixedFactorConditions);
     }
-    if (data.hasOwnProperty('trialRandoization')){
+    if (data.hasOwnProperty('trialRandomization')){
         this.trialRandomization(data.trialRandomization);
     }
     if (data.hasOwnProperty('minIntervalBetweenRep')){
