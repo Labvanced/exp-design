@@ -300,6 +300,15 @@ FrameElementView.prototype.setCoord = function(left, top) {
     return this;
 };
 
+
+FrameElementView.prototype.setNaturalImageSize = function(naturalWidth, naturalHeight) {
+    console.log("initialize original size");
+    // initialize original size:
+    this.fullWidth(naturalWidth);
+    this.fullHeight(naturalHeight);
+    this.update(true,true);
+};
+
 FrameElementView.prototype.renderContent = function(data) {
     var self = this;
     if (ko.isObservable(data)){
@@ -309,7 +318,23 @@ FrameElementView.prototype.renderContent = function(data) {
     if (data.type == "ImageElement") {
         if (data.imgSource()){
 
-            this.divContentInside = new Image;
+            // check if we have it preloaded:
+            var imgElem;
+            var htmlObjectUrl;
+            if (typeof queue !== 'undefined') {
+                var file_id = data.modifier().selectedTrialView.file_id();
+                htmlObjectUrl = preloadedObjectUrlsById[file_id];
+                imgElem = queue.getResult(file_id);
+            }
+
+            if (imgElem instanceof Image && htmlObjectUrl) {
+                this.divContentInside = new Image;
+                this.divContentInside.src = htmlObjectUrl;
+            }
+            else {
+                this.divContentInside = new Image;
+                this.divContentInside.src = data.imgSource();
+            }
 
             $(this.divContentInside).css({
                 "width":self.editorWidth() * self.scale(),
@@ -318,17 +343,17 @@ FrameElementView.prototype.renderContent = function(data) {
                 "backgroundColor": "transparent"
             });
 
-            this.divContentInside.src = data.imgSource();
-            this.divContentInside.onload = function () {
-                // initialize original size:
-                self.fullWidth(this.naturalWidth);
-                self.fullHeight(this.naturalHeight);
-                self.update(true,true);
-            };
-
             $(this.divContent).children().remove();
             $(this.divContent).append(this.divContentInside);
 
+            if (imgElem instanceof Image) {
+                self.setNaturalImageSize(imgElem.naturalWidth, imgElem.naturalHeight);
+            }
+            else {
+                this.divContentInside.onload = function () {
+                    self.setNaturalImageSize(this.naturalWidth, this.naturalHeight);
+                };
+            }
         }
         else {
             this.renderPlaceHolderBoxAndLabel();
