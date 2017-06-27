@@ -463,7 +463,7 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
             balanceInFactor = null;
 
             var idx = globalVarNames.indexOf(factor.balancedInFactor());
-            if (idx !=facIdx ){
+            if (idx !=facIdx && idx >=0 ){
                 factorNames.push(facIdx);
                 balanceInFactor = factors[idx];
                 var lvls = [];

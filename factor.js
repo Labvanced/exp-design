@@ -16,7 +16,7 @@ var Factor = function(expData, factorGroup) {
     this.factorType =  ko.observable('fixed');// either 'fixed' or 'random'
     this.randomizationType =  ko.observable('unbalanced');
     this.balancedInFactor =  ko.observable('Please Select');
-    this.balancedInFactor.subscribe(function(oldValue) {
+    this.balancedInFactor.subscribe(function(newValue) {
        var test = 1;
     });
 
