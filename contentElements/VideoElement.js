@@ -142,27 +142,31 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
     this.element = componentInfo.element;
     this.dataModel = dataModel;
 
-    // TODO: for using prealoded videos, bind html src to the following htmlObjectURL
-    this.vidSource = ko.computed( function() {
 
-        // check if we have it preloaded:
-        var vidElem;
-        var htmlObjectUrl;
-        if (typeof queue !== 'undefined') {
-            var file_id = this.dataModel.modifier().selectedTrialView.file_id();
-            htmlObjectUrl = preloadedObjectUrlsById[file_id];
-            vidElem = queue.getResult(file_id);
-        }
+    var myPreloadedVideoSource = $(this.element).find('.preloadedSource')[0];
+    if (myPreloadedVideoSource) {
+        this.updateVideoSource = function () {
+            // check if we have it preloaded:
+            var videoElem;
+            var htmlObjectUrl;
+            if (typeof queue !== 'undefined') {
+                var file_id = self.dataModel.modifier().selectedTrialView.file_id();
+                htmlObjectUrl = preloadedObjectUrlsById[file_id];
+                videoElem = queue.getResult(file_id);
+            }
 
-        if (vidElem instanceof HTMLVideoElement && htmlObjectUrl) {
-            return htmlObjectUrl;
-        }
-        else {
-            return this.dataModel.vidSource();
-        }
-
-    }, this);
-
+            if (videoElem instanceof HTMLVideoElement && htmlObjectUrl) {
+                myPreloadedVideoSource.src = htmlObjectUrl;
+            }
+            else {
+                myPreloadedVideoSource.src = self.dataModel.vidSource();
+            }
+        };
+        this.updateVideoSource();
+        self.dataModel.modifier().selectedTrialView.file_id.subscribe(function() {
+            self.updateVideoSource();
+        });
+    }
 
     // only add playback functionality if not in sequence view:
     if ($(this.element).parents('#sequenceView').length == 0) {

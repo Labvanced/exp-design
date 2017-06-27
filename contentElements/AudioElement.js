@@ -151,6 +151,31 @@ function createAudioComponents() {
         this.element = componentInfo.element;
         this.dataModel = dataModel;
 
+        var myPreloadedAudioSource = $(this.element).find('.preloadedSource')[0];
+        if (myPreloadedAudioSource) {
+            this.updateAudioSource = function () {
+                // check if we have it preloaded:
+                var audioElem;
+                var htmlObjectUrl;
+                if (typeof queue !== 'undefined') {
+                    var file_id = self.dataModel.modifier().selectedTrialView.file_id();
+                    htmlObjectUrl = preloadedObjectUrlsById[file_id];
+                    audioElem = queue.getResult(file_id);
+                }
+
+                if (audioElem instanceof HTMLAudioElement && htmlObjectUrl) {
+                    myPreloadedAudioSource.src = htmlObjectUrl;
+                }
+                else {
+                    myPreloadedAudioSource.src = self.dataModel.audioSource();
+                }
+            };
+            this.updateAudioSource();
+            self.dataModel.modifier().selectedTrialView.file_id.subscribe(function() {
+                self.updateAudioSource();
+            });
+        }
+
         // only add playback functionality if not in sequence view:
         if ($(this.element).parents('#sequenceView').length == 0) {
 
@@ -170,7 +195,7 @@ function createAudioComponents() {
                 }
             });
 
-            // add subscriber to be notified when the video should jump to specific time:
+            // add subscriber to be notified when the audio should jump to specific time:
             this.listenForJumpTo = function (evtParam) {
                 if (evtParam.jumpToFraction) {
                     var time = myAudio.duration * evtParam.jumpToFraction;

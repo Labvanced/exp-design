@@ -31,6 +31,7 @@
 
 <template id='audio-playerview-template'>
     <audio preload="auto">
+        <source class="preloadedSource">
         <source data-bind="attr: {src: dataModel.audioSource()}">
         Your browser does not support HTML5 audio.
     </audio>
