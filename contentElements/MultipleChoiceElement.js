@@ -34,7 +34,7 @@ MultipleChoiceElement.prototype.initHeight = 120;
 
 MultipleChoiceElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[3]);
+    globalVar.dataType('string');
     globalVar.scope(GlobalVar.scopes[2]);
     globalVar.scale(GlobalVar.scales[0]);
     var name = this.parent.name();
@@ -58,10 +58,6 @@ MultipleChoiceElement.prototype.addEntry = function() {
 
 MultipleChoiceElement.prototype.removeEntry = function() {
     var idx = this.elements().length-1;
-    var entry =  this.elements()[idx];
-    entry.nameSubscription.dispose();
-    entry.recValue.dispose();
-    this.variable().removeLevel(idx);
     this.elements.splice(idx,1);
 };
 
@@ -81,17 +77,20 @@ MultipleChoiceElement.prototype.getAllModifiers = function(modifiersArr) {
 };
 
 MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
-
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
-
     this.modifier().setPointers(entitiesArr);
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+    if (this.variable().dataType() == "categorical") {
+        // convert to string type:
+        this.variable().changeDataType("string");
+    }
 };
 
 MultipleChoiceElement.prototype.reAddEntities = function(entitiesArr) {
-
-
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
@@ -100,13 +99,12 @@ MultipleChoiceElement.prototype.reAddEntities = function(entitiesArr) {
 
 MultipleChoiceElement.prototype.selectTrialType = function(selectionSpec) {
     jQuery.each( this.elements(), function( index, elem ) {
-        elem.selectTrialType(selectionSpec)
+        elem.selectTrialType(selectionSpec);
     } );
     this.modifier().selectTrialType(selectionSpec);
 };
 
 MultipleChoiceElement.prototype.toJS = function() {
-
 
     var variableId = null;
     if (this.variable()) {
@@ -143,32 +141,23 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
 
 
 
+
+//////////////////////////////////////////////
+////// MultipleChoiceEntry
+//////////////////////////////////////////////
+
+
 var MultipleChoiceEntry= function(multChoiceParent) {
-    var self = this;
     this.multChoiceParent = multChoiceParent;
-    var nrEntries = '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">option_' +this.multChoiceParent.elements().length+'</span></span>';
-    this.multChoiceText= ko.observable( nrEntries);
 
-    if (this.nameSubscription){
-        this.nameSubscription.dispose();
-    }
-    this.nameSubscription = this.multChoiceText.subscribe(function(newVal) {
-       var innerText =  $($.parseHTML(newVal)).text();
-       if  (self.multChoiceParent.variable() instanceof GlobalVar){
-           self.multChoiceParent.variable().levels()[self.getIndex()].name(innerText);
-       }
-
-    });
-
-    this.recValue = ko.computed(function() {
-        return $($.parseHTML(self.multChoiceText())).text();
-    }, this);
+    this.multChoiceText = ko.observable(null);
+    this.multChoiceValue = ko.observable(null);
 
     this.modifier = ko.observable(new Modifier(this.multChoiceParent.expData, this));
 };
 
 MultipleChoiceEntry.prototype.modifiableProp = ["multChoiceText"];
-MultipleChoiceEntry.prototype.dataType =[ "categorical"];
+MultipleChoiceEntry.prototype.dataType =["string"];
 
 
 MultipleChoiceEntry.prototype.getIndex = function() {
@@ -183,25 +172,37 @@ MultipleChoiceEntry.prototype.getAllModifiers = function(modifiersArr) {
     modifiersArr.push(this.modifier());
 };
 
-
 MultipleChoiceEntry.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
 MultipleChoiceEntry.prototype.init = function() {
-    var lvl = this.multChoiceParent.variable().addLevel();
-    lvl.name($($.parseHTML(this.multChoiceText())).text());
+    var nr = this.multChoiceParent.elements().length;
+    var initText = '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">option_' +nr+'</span></span>';
+    this.multChoiceText( initText );
+    this.multChoiceValue( 'option_' +nr );
 };
 
+MultipleChoiceEntry.prototype.setPointers = function(entitiesArr) {
+    if (this.multChoiceValue() == null) {
+        // convert from old categorical format to string format:
+        var nr = this.multChoiceParent.elements().indexOf(this);
+        this.multChoiceValue( 'option_' +nr );
+    }
+};
 
 MultipleChoiceEntry.prototype.fromJS = function(data) {
     this.multChoiceText(data.multChoiceText);
+    if (data.hasOwnProperty('multChoiceValue')) {
+        this.multChoiceValue(data.multChoiceValue);
+    }
     return this;
 };
 
 MultipleChoiceEntry.prototype.toJS = function() {
     return {
-        multChoiceText:  this.multChoiceText()
+        multChoiceText:  this.multChoiceText(),
+        multChoiceValue: this.multChoiceValue()
     };
 };
 
@@ -221,20 +222,32 @@ function createMultipleChoiceComponents() {
             createViewModel: function(multipleChoiceElement, componentInfo){
 
                 var viewModel = function(multipleChoiceElement){
-                    this.multipleChoiceElement = ko.observable(multipleChoiceElement);
+                    var self = this;
+
+                    this.multipleChoiceElement = multipleChoiceElement;
                     this.questionText = multipleChoiceElement.questionText;
                     this.margin = multipleChoiceElement.margin;
 
                     this.addChoice = function() {
-                        this.multipleChoiceElement().addEntry();
+                        self.multipleChoiceElement.addEntry();
                     };
 
                     this.removeChoice = function() {
-                        this.multipleChoiceElement().removeEntry();
+                        self.multipleChoiceElement.removeEntry();
                     };
 
                     this.focus = function () {
-                        this.multipleChoiceElement().ckInstance.focus()
+                        self.multipleChoiceElement.ckInstance.focus();
+                    };
+
+                    this.relinkCallback = function() {
+                        var frameData = self.dataModel.parent.parent;
+                        var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
+                            frameData.addVariableToLocalWorkspace(newVariable);
+                            self.multipleChoiceElement.variable(newVariable);
+                            self.multipleChoiceElement.setVariableBackRef(newVariable);
+                        }, frameData);
+                        variableDialog.show();
                     };
                 };
 
@@ -248,7 +261,7 @@ function createMultipleChoiceComponents() {
         viewModel: {
             createViewModel: function(multipleChoiceElement, componentInfo){
                 var viewModel = function(multipleChoiceElement){
-                    this.multipleChoiceElement = ko.observable(multipleChoiceElement);
+                    this.multipleChoiceElement = multipleChoiceElement;
                     this.questionText = multipleChoiceElement.questionText;
                     this.margin = multipleChoiceElement.margin;
                 };
@@ -263,7 +276,7 @@ function createMultipleChoiceComponents() {
             createViewModel: function(multipleChoiceElement, componentInfo){
 
                 var viewModel = function (multipleChoiceElement) {
-                    this.multipleChoiceElement = ko.observable(multipleChoiceElement);
+                    this.multipleChoiceElement = multipleChoiceElement;
                     this.questionText = multipleChoiceElement.questionText;
                     this.margin = multipleChoiceElement.margin;
                 };

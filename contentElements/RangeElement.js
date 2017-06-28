@@ -118,7 +118,9 @@ function createRangeComponents() {
 
                 var viewModel = function(dataModel){
 
-                    this.dataModel = ko.observable(dataModel);
+                    var self = this;
+
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.minChoice = dataModel.minChoice;
                     this.maxChoice = dataModel.maxChoice;
@@ -126,7 +128,17 @@ function createRangeComponents() {
                     this.endLabel = dataModel.endLabel;
 
                     this.focus = function () {
-                        this.dataModel().ckInstance.focus()
+                        this.dataModel.ckInstance.focus();
+                    };
+
+                    this.relinkCallback = function() {
+                        var frameData = self.dataModel.parent.parent;
+                        var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
+                            frameData.addVariableToLocalWorkspace(newVariable);
+                            self.dataModel.variable(newVariable);
+                            self.dataModel.setVariableBackRef(newVariable);
+                        }, frameData);
+                        variableDialog.show();
                     };
                     
                 };
@@ -144,9 +156,9 @@ function createRangeComponents() {
                 var viewModel = function(dataModel){
 
                     var self = this;
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
-                    this.sliderValue =  ko.observable(this.dataModel().variable().startValue().value());
+                    this.sliderValue =  ko.observable(this.dataModel.variable().startValue().value());
 
                     this.minChoice = dataModel.minChoice;
                     this.maxChoice = dataModel.maxChoice;
@@ -166,7 +178,7 @@ function createRangeComponents() {
             createViewModel: function(dataModel, componentInfo){
 
                 var viewModel = function (dataModel) {
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.minChoice = dataModel.minChoice;
                     this.maxChoice = dataModel.maxChoice;

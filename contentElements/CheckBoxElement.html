@@ -8,18 +8,18 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Linked Variable</th>
-                        <th>Entry</th>
+                        <th style="width: 50px;">Entry</th>
+                        <th>Linked Variables</th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: dataModel.elements">
                     <tr>
-                        <th>
+                        <td>
+                            <div data-bind="text: $index()+1"></div>
+                        </td>
+                        <td>
                             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: variable, allowedDatatypes: ['boolean'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
-                        </th>
-                        <th>
-                            <div data-bind="wysiwyg: checkBoxText, valueUpdate: 'afterkeydown'" ></div>
-                        </th>
+                        </td>
                     </tr>
                 </tbody>
             </table>

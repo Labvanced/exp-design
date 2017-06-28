@@ -107,8 +107,10 @@ GlobalVar.prototype.changeDataType = function(dataType) {
     this.dataType(dataType);
 
     // convert old value to new value:
+    var oldStartValue = this.startValue();
     var oldValue = this.value();
     this.resetStartValue();
+    this.startValue().setValue(oldStartValue);
     this.value().setValue(oldValue);
 };
 

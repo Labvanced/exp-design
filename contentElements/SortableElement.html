@@ -3,11 +3,17 @@
         <div class="taskeditor-header">Sortable</div>
         <div>
             <label>Nr Of Sortable Elements: </label>
-            <span data-bind="text: dataModel().elements().length"></span>
+            <span data-bind="text: dataModel.elements().length"></span>
 
             <span style="cursor: pointer" data-bind="click:removeElem"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
         </div>
 
+        <br>
+        <label>
+            Linked Variable:
+            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
+        </label>
+        
         <div>Add New Item: </div>
         <span>Idem Id: </span><input style="width: 120px; margin-left:3px; display: inline-block" type="text" class="form-control" data-bind="value:currentEntry">  <span style="cursor: pointer" data-bind="click:addElem"><img width="20" height="20" src="/resources/icons/add.svg"/></span></span>
         <br>
@@ -15,7 +21,7 @@
         <label>Sortable Elements: </label>
         <div style="max-height: 200px; overflow: auto; margin-left: 10px; border: 1px solid black; padding:5px">
             <div><span>Index:</span> <span style="margin-left: 30px">Element Ids:</span></div>
-            <div data-bind="foreach: dataModel().elementIds">
+            <div data-bind="foreach: dataModel.elementIds">
                 <div style="display: block; width: 100%">
                     <span>
                         <span style="display: inline-block; margin-left: 10px;"  data-bind="text:$index()+1"></span>
@@ -29,7 +35,7 @@
 
         <div style="margin-left: 10px">
             <label>Activate Sorting / Disable Text-Editing: </label>
-            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: dataModel().activeSorting">
+            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: dataModel.activeSorting">
         </div>
     </div>
 </template>
@@ -37,14 +43,14 @@
 <template id='sortable-preview-template'>
 
 
-    <div class="notDraggable" data-bind="wysiwyg: dataModel().modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
+    <div class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
         <p>Your Question</p>
     </div>
     <br>
 
-    <div data-bind="style: {marginLeft: dataModel().margin, marginRight: dataModel().margin}">
+    <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
         <ul class="sortableElement sortableOuter" id="sortableElementPrev">
-            <!-- ko foreach: dataModel().elements -->
+            <!-- ko foreach: dataModel.elements -->
                 <li class="sortableInner ui-state-default">
                     <div class="notDraggable" data-bind="wysiwyg: $rawData, valueUpdate: 'afterkeydown'"></div>
                 </li>
@@ -57,14 +63,14 @@
 
 <template id='sortable-playerview-template'>
 
-    <div class="notDraggable" data-bind="html: dataModel().modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
+    <div class="notDraggable" data-bind="html: dataModel.modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
         <p>Your Question</p>
     </div>
     <br>
 
-    <div data-bind="style: {marginLeft: dataModel().margin, marginRight: dataModel().margin}">
+    <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
         <ul class="sortableElement sortableOuter pointer" id="sortableElementPlayer">
-            <!-- ko foreach: dataModel().elements -->
+            <!-- ko foreach: dataModel.elements -->
             <li class="sortableInner ui-state-default">
                 <div data-bind="html: $rawData, valueUpdate: 'afterkeydown'"></div>
             </li>

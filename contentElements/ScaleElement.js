@@ -234,83 +234,95 @@ ScaleEntry.prototype.toJS = function() {
 
 
 function createScaleComponents() {
+
+    var ScaleEditViewModel = function(dataModel){
+        this.dataModel = dataModel;
+    };
+
+    ScaleEditViewModel.prototype.focus = function() {
+        this.dataModel.ckInstance.focus();
+    };
+
+    ScaleEditViewModel.prototype.relinkCallback = function(index) {
+        var frameData = this.dataModel.parent.parent;
+        var checkboxEntry = this.dataModel.elements()[index];
+        var variableDialog = new AddNewVariable(this.dataModel.expData, function (newVariable) {
+            frameData.addVariableToLocalWorkspace(newVariable);
+            checkboxEntry.variable(newVariable);
+            checkboxEntry.setVariableBackRef(newVariable);
+        }, frameData);
+        variableDialog.show();
+    };
+
+    ScaleEditViewModel.prototype.addColumn = function() {
+        if (this.dataModel.addDeleteFromCol()=='left'){
+            this.dataModel.labels.splice(0,0,ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">new option</span></span></p>'));
+        }
+        else{
+            this.dataModel.labels.push(ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">new option</span></span></p>'));
+        }
+
+        // force refresh of observable array to trigger refresh of view:
+        var tmp = this.dataModel.labels();
+        this.dataModel.labels([]);
+        this.dataModel.labels(tmp);
+    };
+
+    ScaleEditViewModel.prototype.removeColumn = function() {
+        if (this.dataModel.addDeleteFromCol()=='left'){
+            this.dataModel.labels.splice(0,1);
+        }
+        else{
+            this.dataModel.labels.splice(this.dataModel.nrChoices()-1,1);
+        }
+
+        // force refresh of observable array to trigger refresh of view:
+        var tmp = this.dataModel.labels();
+        this.dataModel.labels([]);
+        this.dataModel.labels(tmp);
+    };
+
+    ScaleEditViewModel.prototype.addRow = function() {
+        this.dataModel.addEntry();
+    };
+
+    ScaleEditViewModel.prototype.removeRow = function() {
+        this.dataModel.removeEntry();
+    };
+
+
     ko.components.register('scale-editview', {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-
-                var viewModel = function(dataModel){
-
-                    this.dataModel = ko.observable(dataModel);
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus()
-                    };
-                };
-
-                viewModel.prototype.addColumn = function() {
-                    if (this.dataModel().addDeleteFromCol()=='left'){
-                        this.dataModel().labels.splice(0,0,ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">new option</span></span></p>'));
-                    }
-                    else{
-                        this.dataModel().labels.push(ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">new option</span></span></p>'));
-                    }
-
-                    // force refresh of observable array to trigger refresh of view:
-                    var tmp = this.dataModel().labels();
-                    this.dataModel().labels([]);
-                    this.dataModel().labels(tmp);
-                };
-
-                viewModel.prototype.removeColumn = function() {
-                    if (this.dataModel().addDeleteFromCol()=='left'){
-                        this.dataModel().labels.splice(0,1);
-                    }
-                    else{
-                        this.dataModel().labels.splice(this.dataModel().nrChoices()-1,1);
-                    }
-
-                    // force refresh of observable array to trigger refresh of view:
-                    var tmp = this.dataModel().labels();
-                    this.dataModel().labels([]);
-                    this.dataModel().labels(tmp);
-                };
-
-                viewModel.prototype.addRow = function() {
-                    this.dataModel().addEntry();
-                };
-
-                viewModel.prototype.removeRow = function() {
-                    this.dataModel().removeEntry();
-                };
-
-
-                return new viewModel(dataModel);
+                return new ScaleEditViewModel(dataModel);
             }
         },
         template: {element: 'scale-editview-template'}
 
     });
 
+
+    var ScalePreviewViewModel = function(dataModel){
+        this.dataModel = dataModel;
+    };
+
     ko.components.register('scale-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                var viewModel = function(dataModel){
-                    this.dataModel = ko.observable(dataModel);
-
-                };
-                return new viewModel(dataModel);
+                return new ScalePreviewViewModel(dataModel);
             }
         },
         template: {element: 'scale-preview-template'}
     });
 
+    var ScalePlayerViewModel = function(dataModel){
+        this.dataModel = dataModel;
+    };
+
     ko.components.register('scale-playerview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                var viewModel = function (dataModel) {
-                    this.dataModel = ko.observable(dataModel);
-
-                };
-                return new viewModel(dataModel);
+                return new ScalePlayerViewModel(dataModel);
             }
         },
         template: {element: 'scale-playerview-template'}

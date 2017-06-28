@@ -37,7 +37,7 @@ var SortableElement = function(expData) {
 SortableElement.prototype.label = "Sortable";
 SortableElement.prototype.iconPath = "/resources/icons/tools/sort.svg";
 SortableElement.prototype.modifiableProp = ["questionText"];
-SortableElement.prototype.dataType =   [ "categorical"];
+SortableElement.prototype.dataType =   [ "string"];
 SortableElement.prototype.initWidth = 350;
 SortableElement.prototype.initHeight = 100;
 
@@ -148,18 +148,18 @@ function createSortableElementComponents() {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
                     var self = this;
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.currentEntry = ko.observable('');
                     this.focus = function () {
-                        this.dataModel().ckInstance.focus();
+                        this.dataModel.ckInstance.focus();
                     };
 
 
                     if (this.enableSortingSubscription){
                         this.enableSortingSubscription.dispose()
                     }
-                    this.enableSortingSubscription = this.dataModel().activeSorting.subscribe(function(val){
-                        self.sortableElement = $('#'+self.dataModel().tempId);
+                    this.enableSortingSubscription = this.dataModel.activeSorting.subscribe(function(val){
+                        self.sortableElement = $('#'+self.dataModel.tempId);
                         if (val){
                             self.sortableElement.sortable("enable");
                         }
@@ -167,15 +167,25 @@ function createSortableElementComponents() {
                             self.sortableElement.sortable("disable");
                         }
                     });
+
+                    this.relinkCallback = function() {
+                        var frameData = self.dataModel.parent.parent;
+                        var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
+                            frameData.addVariableToLocalWorkspace(newVariable);
+                            self.dataModel.variable(newVariable);
+                            self.dataModel.setVariableBackRef(newVariable);
+                        }, frameData);
+                        variableDialog.show();
+                    };
                 };
 
                 viewModel.prototype.addElem= function() {
-                    this.dataModel().addElem(this.currentEntry());
+                    this.dataModel.addElem(this.currentEntry());
                     this.currentEntry('');
                 };
 
                 viewModel.prototype.removeElem= function() {
-                    this.dataModel().removeElem()
+                    this.dataModel.removeElem()
                 };
 
 
@@ -192,17 +202,17 @@ function createSortableElementComponents() {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
                     var self = this;
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.startPosition = ko.observable(null);
                     this.stopPosition = ko.observable(null);
                     this.focus = function () {
-                        this.dataModel().ckInstance.focus();
+                        this.dataModel.ckInstance.focus();
 
                     };
 
                     this.sortableElement = $('#sortableElementPrev');
                     var varNewId  = guid();
-                    this.dataModel().tempId = varNewId;
+                    this.dataModel.tempId = varNewId;
                     this.sortableElement.attr("id",varNewId);
 
                     this.sortableElement.sortable({
@@ -215,9 +225,9 @@ function createSortableElementComponents() {
                         stop: function( event, ui ) {
                             self.stopPosition(ui.item.index());
                             if (self.startPosition()!=null){
-                                var elem =  self.dataModel().elementIds()[self.startPosition()];
-                                self.dataModel().elementIds.splice(self.startPosition(),1);
-                                self.dataModel().elementIds.splice(self.stopPosition(),0,elem);
+                                var elem =  self.dataModel.elementIds()[self.startPosition()];
+                                self.dataModel.elementIds.splice(self.startPosition(),1);
+                                self.dataModel.elementIds.splice(self.stopPosition(),0,elem);
                                 self.startPosition(null);
                                 self.stopPosition(null);
                             }
@@ -227,8 +237,8 @@ function createSortableElementComponents() {
                     if (this.setVarSubscription){
                         this.setVarSubscription.dispose();
                     }
-                    this.setVarSubscription = this.dataModel().elementIdsCombined.subscribe(function(val){
-                       self.dataModel().variable().startValue().value(val)
+                    this.setVarSubscription = this.dataModel.elementIdsCombined.subscribe(function(val){
+                       self.dataModel.variable().startValue().value(val)
                     });
 
                 };
@@ -247,11 +257,11 @@ function createSortableElementComponents() {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
                     var self = this;
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.startPosition = ko.observable(null);
                     this.stopPosition = ko.observable(null);
                     this.focus = function () {
-                        this.dataModel().ckInstance.focus();
+                        this.dataModel.ckInstance.focus();
 
                     };
 
@@ -268,9 +278,9 @@ function createSortableElementComponents() {
                         stop: function( event, ui ) {
                             self.stopPosition(ui.item.index());
                             if (self.startPosition()!=null){
-                                var elem =  self.dataModel().elementIds()[self.startPosition()];
-                                self.dataModel().elementIds.splice(self.startPosition(),1);
-                                self.dataModel().elementIds.splice(self.stopPosition(),0,elem);
+                                var elem =  self.dataModel.elementIds()[self.startPosition()];
+                                self.dataModel.elementIds.splice(self.startPosition(),1);
+                                self.dataModel.elementIds.splice(self.stopPosition(),0,elem);
                                 self.startPosition(null);
                                 self.stopPosition(null);
                             }
@@ -280,8 +290,8 @@ function createSortableElementComponents() {
                     if (this.setVarSubscription){
                         this.setVarSubscription.dispose();
                     }
-                    this.setVarSubscription = this.dataModel().elementIdsCombined.subscribe(function(val){
-                        self.dataModel().variable().value().value(val)
+                    this.setVarSubscription = this.dataModel.elementIdsCombined.subscribe(function(val){
+                        self.dataModel.variable().value().value(val)
                     });
                 };
 

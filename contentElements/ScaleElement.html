@@ -4,47 +4,65 @@
         <br>
         <div>
             <label>Nr of Choices: </label>
-            <span data-bind="text: dataModel().nrChoices"></span>
+            <span data-bind="text: dataModel.nrChoices"></span>
             <span style="cursor: pointer" data-bind="click:addColumn"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
             <span style="cursor: pointer" data-bind="click:removeColumn"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
         </div>
         <label>Insert / Delete from: </label>
-        <select style="width: 40px" class="taskeditor-input" data-bind="options: ScaleElement.prototype.addDeleteOptionsCol, value:dataModel().addDeleteFromCol"></select>
+        <select style="width: 40px" class="taskeditor-input" data-bind="options: ScaleElement.prototype.addDeleteOptionsCol, value:dataModel.addDeleteFromCol"></select>
 
         <div>
             <label>Nr of Questions: </label>
-            <span data-bind="text: dataModel().nrRows"></span>
+            <span data-bind="text: dataModel.nrRows"></span>
             <span style="cursor: pointer" data-bind="click:addRow"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
             <span style="cursor: pointer" data-bind="click:removeRow"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
         </div>
 
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 50px;">Entry</th>
+                <th>Linked Variables</th>
+            </tr>
+            </thead>
+            <tbody data-bind="foreach: dataModel.elements">
+            <tr>
+                <td>
+                    <div data-bind="text: $index()+1"></div>
+                </td>
+                <td>
+                    <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: variable, allowedDatatypes: ['numeric'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
         <div>
-            Margin: <input style="display: inline-block; width: 50px" type="text" data-bind="textInput: dataModel().margin">
+            Margin: <input style="display: inline-block; width: 50px" type="text" data-bind="textInput: dataModel.margin">
         </div>
     </div>
 </template>
 
 <template id="scale-preview-template">
 
-    <div class="notDraggable" data-bind="wysiwyg: dataModel().modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
+    <div class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
         <p>Your Question</p>
     </div>
     <br>
-    <div data-bind="style: {marginLeft: dataModel().margin, marginRight: dataModel().margin}">
+    <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
 
         <div>
             <div style="display: inline-block; width: 100%">
-                <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: dataModel().labels">
-                    <div class="notDraggable" style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" data-bind="style:{width:$parent.dataModel().calculateWidth()}, wysiwyg: $rawData, valueUpdate: 'afterkeydown'"></div>
+                <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels">
+                    <div class="notDraggable" style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" data-bind="style:{width:$parent.dataModel.calculateWidth()}, wysiwyg: $rawData, valueUpdate: 'afterkeydown'"></div>
                 </span>
             </div>
         </div>
-        <div data-bind="foreach: dataModel().elements">
+        <div data-bind="foreach: dataModel.elements">
             <div style="display: inline-block; width: 100%">
                 <div style="float: left; width:25%; display: inline-block;" class="notDraggable" data-bind="wysiwyg: rowText, valueUpdate: 'afterkeydown'" ></div>
                 <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: scaleParent.labels">
-                    <input style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" type="radio" data-bind="style:{width:$parent.scaleParent.calculateWidth()},attr:{value:$index()},checked: $parent.variable().startValue().value, click:function(){return true},clickBubble: false">
+                    <input style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" type="radio" data-bind="style:{width:$parent.scaleParent.calculateWidth()},attr:{value:$index()+1},checked: $parent.variable().startValue().value, click:function(){return true},clickBubble: false">
                 </span>
             </div>
         </div>
@@ -54,21 +72,21 @@
 
 <template id="scale-playerview-template">
 
-    <div data-bind="html: dataModel().modifier().selectedTrialView.questionText"></div>
+    <div data-bind="html: dataModel.modifier().selectedTrialView.questionText"></div>
     <br>
-    <div data-bind="style: {marginLeft: dataModel().margin, marginRight: dataModel().margin}">
+    <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
         <div>
             <div style="display: inline-block; width: 100%">
-                <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: dataModel().labels">
-                    <div class="notDraggable" style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" data-bind="style:{width:$parent.dataModel().calculateWidth()}, html: $rawData"></div>
+                <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels">
+                    <div class="notDraggable" style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" data-bind="style:{width:$parent.dataModel.calculateWidth()}, html: $rawData"></div>
                 </span>
             </div>
         </div>
-        <div data-bind="foreach: dataModel().elements">
+        <div data-bind="foreach: dataModel.elements">
             <div style="display: inline-block; width: 100%">
                 <div style="float: left; width:25%; display: inline-block;" data-bind="html: rowText" ></div>
                 <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: scaleParent.labels">
-                    <input style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" type="radio" data-bind="style:{width:$parent.scaleParent.calculateWidth()},attr:{value:$index()},checked: $parent.variable().value().value, click:function(){return true},clickBubble: false">
+                    <input style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" type="radio" data-bind="style:{width:$parent.scaleParent.calculateWidth()},attr:{value:$index()+1},checked: $parent.variable().value().value, click:function(){return true},clickBubble: false">
                 </span>
             </div>
         </div>

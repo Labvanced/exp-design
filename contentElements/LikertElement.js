@@ -117,7 +117,9 @@ function createLikertElementComponents() {
 
                 var viewModel = function(dataModel){
 
-                    this.dataModel = ko.observable(dataModel);
+                    var self = this;
+
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.choices = dataModel.choices;
                     this.startChoice = dataModel.startChoice;
@@ -129,14 +131,24 @@ function createLikertElementComponents() {
                     this.margin = dataModel.margin;
 
                     this.finish = function() {
-                        this.choices([]);
-                        for (var i = this.startChoice();i<=this.endChoice();i++){
-                            this.choices.push(i);
+                        self.choices([]);
+                        for (var i = self.startChoice();i<=self.endChoice();i++){
+                            self.choices.push(i);
                         }
                     };
 
                     this.focus = function () {
-                        this.dataModel.ckInstance.focus()
+                        self.dataModel.ckInstance.focus();
+                    };
+
+                    this.relinkCallback = function() {
+                        var frameData = self.dataModel.parent.parent;
+                        var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
+                            frameData.addVariableToLocalWorkspace(newVariable);
+                            self.dataModel.variable(newVariable);
+                            self.dataModel.setVariableBackRef(newVariable);
+                        }, frameData);
+                        variableDialog.show();
                     };
 
                 };
@@ -152,7 +164,7 @@ function createLikertElementComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.margin = dataModel.margin;
                     this.startChoice = dataModel.startChoice;
@@ -171,7 +183,7 @@ function createLikertElementComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function (dataModel) {
-                    this.dataModel = ko.observable(dataModel);
+                    this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.startChoice = dataModel.startChoice;
                     this.endChoice = dataModel.endChoice;

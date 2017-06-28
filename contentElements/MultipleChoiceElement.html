@@ -5,7 +5,30 @@
             <span style="cursor: pointer" data-bind="click:addChoice"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
             <span style="cursor: pointer" data-bind="click:removeChoice"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
         </div>
-        <br><br>
+        <br>
+        <label>
+            Linked Variable:
+            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: multipleChoiceElement.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
+        </label>
+        <br>
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 50px;">Entry</th>
+                <th>Variable Value</th>
+            </tr>
+            </thead>
+            <tbody data-bind="foreach: multipleChoiceElement.elements">
+            <tr>
+                <td>
+                    <div data-bind="text: $index()+1"></div>
+                </td>
+                <td>
+                    <input class="taskeditor-input" type="text" data-bind="textInput: multChoiceValue">
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
@@ -13,9 +36,9 @@
     <div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: 'afterkeydown'">
         <p>Your Question</p>
     </div>
-    <div data-bind="foreach: multipleChoiceElement().elements, style: {marginTop: margin, marginBottom: margin}">
+    <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="radio" data-bind="checkedValue: recValue, checked: $parent.multipleChoiceElement().variable().startValue().value, click:function(){return true}, clickBubble: false">
+            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue, click:function(){return true}, clickBubble: false">
             <div style="display: inline-block; margin-bottom: inherit; margin-top: inherit;" class="notDraggable" data-bind="wysiwyg: multChoiceText, valueUpdate: 'afterkeydown'"></div>
         </div>
     </div>
@@ -24,9 +47,9 @@
 
 <template id="choice-playerview-template">
     <div data-bind="html: questionText"></div>
-    <div data-bind="foreach: multipleChoiceElement().elements, style: {marginTop: margin, marginBottom: margin}">
+    <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: recValue, checked: $parent.multipleChoiceElement().variable().value().value, click: function(){return true}, clickBubble: false">
+            <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value, click: function(){return true}, clickBubble: false">
             <div style="display: inline-block; margin-bottom: inherit; margin-top: inherit" data-bind="html: multChoiceText"></div>
         </div>
     </div>

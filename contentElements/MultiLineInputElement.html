@@ -1,7 +1,11 @@
 <template id="multi-line-input-editview-template">
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Multiline Answer</div>
-
+        <br>
+        <label>
+            Linked Variable:
+            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
+        </label>
     </div>
 </template>
 
