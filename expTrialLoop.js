@@ -462,7 +462,7 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
             var nrLevels = levels.length;
             balanceInFactor = null;
 
-            var idx = globalVarNames.indexOf(factor.balancedInFactor());
+            var idx = globalVarNames.indexOf(factor.balancedInFactor().globalVar().name());
             if (idx !=facIdx && idx >=0 ){
                 factorNames.push(facIdx);
                 balanceInFactor = factors[idx];
@@ -489,6 +489,9 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
 
                 }
 
+            }
+            else{
+                console.log("error: the factor which should be used for balancing is does not exist, or is identical to the balancing factor.")
             }
 
 
