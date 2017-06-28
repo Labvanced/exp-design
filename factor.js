@@ -15,7 +15,7 @@ var Factor = function(expData, factorGroup) {
     this.globalVar = ko.observable(null);
     this.factorType =  ko.observable('fixed');// either 'fixed' or 'random'
     this.randomizationType =  ko.observable('unbalanced');
-    this.balancedInFactor =  ko.observable('Please Select');
+    this.balancedInFactor =  ko.observable(null);
     this.balancedInFactor.subscribe(function(newValue) {
        var test = 1;
     });
@@ -69,7 +69,12 @@ Factor.prototype.setPointers = function(entitiesArr) {
     if (entitiesArr.byId[this.globalVar()]){
         this.globalVar(entitiesArr.byId[this.globalVar()]);
     }
-
+    if (entitiesArr.byId[this.balancedInFactor()]){
+        this.balancedInFactor(entitiesArr.byId[this.balancedInFactor()]);
+    }
+    else {
+        this.balancedInFactor(null);
+    }
 };
 
 /**
@@ -80,6 +85,13 @@ Factor.prototype.setPointers = function(entitiesArr) {
 Factor.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.globalVar().id()))
         entitiesArr.push(this.globalVar());
+
+    if (this.randomizationType()=='balancedInFactor') {
+        if (this.balancedInFactor()) {
+            if (!entitiesArr.byId.hasOwnProperty(this.balancedInFactor().id()))
+                entitiesArr.push(this.balancedInFactor());
+        }
+    }
 };
 
 /**
@@ -106,12 +118,19 @@ Factor.prototype.fromJS = function(data) {
  * @returns {object}
  */
 Factor.prototype.toJS = function() {
+    var balancedInFactorId = null;
+    if (this.randomizationType()=='balancedInFactor') {
+        if (this.balancedInFactor() instanceof Factor) {
+            balancedInFactorId = this.balancedInFactor().id();
+        }
+    }
+
     return {
         type: "Factor",
         id: this.id(),
         factorType: this.factorType(),
         randomizationType:this.randomizationType(),
-        balancedInFactor: this.balancedInFactor(),
+        balancedInFactor: balancedInFactorId,
         globalVar: this.globalVar().id()
     };
 };
