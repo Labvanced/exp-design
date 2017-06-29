@@ -38,7 +38,7 @@
     </div>
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue, click:function(){return true}, clickBubble: false">
+            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue().value, click:function(){return true}, clickBubble: false">
             <div style="display: inline-block; margin-bottom: inherit; margin-top: inherit;" class="notDraggable" data-bind="wysiwyg: multChoiceText, valueUpdate: 'afterkeydown'"></div>
         </div>
     </div>
@@ -49,7 +49,7 @@
     <div data-bind="html: questionText"></div>
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value, click: function(){return true}, clickBubble: false">
+            <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false">
             <div style="display: inline-block; margin-bottom: inherit; margin-top: inherit" data-bind="html: multChoiceText"></div>
         </div>
     </div>

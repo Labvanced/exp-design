@@ -187,7 +187,7 @@ MultipleChoiceEntry.prototype.setPointers = function(entitiesArr) {
     if (this.multChoiceValue() == null) {
         // convert from old categorical format to string format:
         var nr = this.multChoiceParent.elements().indexOf(this);
-        this.multChoiceValue( 'option_' +nr );
+        this.multChoiceValue( $($.parseHTML(this.multChoiceText())).text() );
     }
 };
 
