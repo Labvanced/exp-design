@@ -120,8 +120,8 @@ FrameElement.prototype.fromJS = function(data) {
     var self = this;
     this.id(data.id);
     this.type = data.type;
-    this.dataType = data.dataType;
     this.name(data.name);
+
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
     this.editorX(data.editorX);
@@ -182,7 +182,6 @@ FrameElement.prototype.toJS = function() {
     return {
         id: this.id(),
         type: this.type,
-        dataType: this.dataType,
         name: this.name(),
         modifier: this.modifier().toJS(),
         editorX:  this.editorX(),

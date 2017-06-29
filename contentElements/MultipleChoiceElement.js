@@ -241,8 +241,8 @@ function createMultipleChoiceComponents() {
                     };
 
                     this.relinkCallback = function() {
-                        var frameData = self.dataModel.parent.parent;
-                        var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
+                        var frameData = self.multipleChoiceElement.parent.parent;
+                        var variableDialog = new AddNewVariable(self.multipleChoiceElement.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
                             self.multipleChoiceElement.variable(newVariable);
                             self.multipleChoiceElement.setVariableBackRef(newVariable);

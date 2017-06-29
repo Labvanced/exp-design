@@ -89,9 +89,28 @@ PageElement.prototype.fromJS = function(data) {
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
+
+    this.modifier(new Modifier(this.expData, this));
+    if (data.hasOwnProperty('modifier')) {
+        this.modifier().fromJS(data.modifier);
+    }
+
     if(data.content){
-        var content = new window[data.content.type]();
+        var classObj = window[data.content.type];
+        if (!classObj) {
+            console.log('error: type does not exist: '+data.content.type);
+            if (data.content.type == "TextInputElement") {
+                // convert type name:
+                data.content.type = "InputElement";
+                classObj = window[data.content.type];
+            }
+            else {
+                return this;
+            }
+        }
+        var content = new classObj(this.expData);
         content.fromJS(data.content);
+        content.parent = this;
         this.content(content);
     }
     return this;
@@ -106,13 +125,14 @@ PageElement.prototype.toJS = function() {
         var contentData = this.content().toJS();
     }
     else{
-        contentData = null
+        contentData = null;
     }
     return {
         id: this.id(),
         type: this.type,
-        content: contentData,
-        name: this.name()
+        name: this.name(),
+        modifier: this.modifier().toJS(),
+        content: contentData
     };
 };
 
