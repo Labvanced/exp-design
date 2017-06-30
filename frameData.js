@@ -48,7 +48,7 @@ FrameData.prototype.getDeepCopy = function() {
 
     // loop through array and create deep copies
     var entitiesArrCopy = jQuery.map(entitiesArr(), function (entity) {
-        if ( (entity instanceof GlobalVar && !entity.isFactor()) || entity instanceof Factor) { // no deep copy of global variables so that we can keep state across frames.
+        if ( entity instanceof GlobalVar || entity instanceof Factor) { // no deep copy of global variables so that we can keep state across frames.
             return entity;
         }
         else {
