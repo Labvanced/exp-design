@@ -460,38 +460,42 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
             var facName = factor.globalVar().name();
             var levels = factor.globalVar().levels();
             var nrLevels = levels.length;
-            balanceInFactor = null;
+            var balanceInFactor = null;
 
-            var idx = globalVarNames.indexOf(factor.balancedInFactor().globalVar().name());
-            if (idx !=facIdx && idx >=0 ){
-                factorNames.push(facIdx);
-                balanceInFactor = factors[idx];
-                var lvls = [];
-                var countLvl = [];
 
-                for (var lvl =0; lvl < balanceInFactor.globalVar().levels().length; lvl++) {
-                    lvls.push(balanceInFactor.globalVar().levels()[lvl].name());
-                    countLvl.push(0);
-                }
+            if (factor.balancedInFactor()){
+                var idx = globalVarNames.indexOf(factor.balancedInFactor().globalVar().name());
+                if (idx !=facIdx && idx >=0 ){
+                    factorNames.push(facIdx);
+                    balanceInFactor = factors[idx];
+                    var lvls = [];
+                    var countLvl = [];
 
-                var indexInFacLevel=  factorNames.indexOf(idx);
+                    for (var lvl =0; lvl < balanceInFactor.globalVar().levels().length; lvl++) {
+                        lvls.push(balanceInFactor.globalVar().levels()[lvl].name());
+                        countLvl.push(0);
+                    }
 
-                var factorLevelsToBalance = [];
-                for (var trial=0; trial < factorLevels.length; trial++) {
-                    var facValu = factorLevels[trial][indexInFacLevel];
-                    var inder = lvls.indexOf(facValu);
-                    var value = levels[countLvl[inder]].name();
-                    factorLevels[trial].push(value);
-                    countLvl[inder]++
-                    if(countLvl[inder]>levels.length-1){
-                        countLvl[inder] = 0;
+                    var indexInFacLevel=  factorNames.indexOf(idx);
+
+                    var factorLevelsToBalance = [];
+                    for (var trial=0; trial < factorLevels.length; trial++) {
+                        var facValu = factorLevels[trial][indexInFacLevel];
+                        var inder = lvls.indexOf(facValu);
+                        var value = levels[countLvl[inder]].name();
+                        factorLevels[trial].push(value);
+                        countLvl[inder]++
+                        if(countLvl[inder]>levels.length-1){
+                            countLvl[inder] = 0;
+                        }
+
                     }
 
                 }
+                else{
+                    console.log("error: the factor which should be used for balancing is does not exist, or is identical to the balancing factor.")
+                }
 
-            }
-            else{
-                console.log("error: the factor which should be used for balancing is does not exist, or is identical to the balancing factor.")
             }
 
 

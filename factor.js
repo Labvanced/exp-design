@@ -16,9 +16,7 @@ var Factor = function(expData, factorGroup) {
     this.factorType =  ko.observable('fixed');// either 'fixed' or 'random'
     this.randomizationType =  ko.observable('unbalanced');
     this.balancedInFactor =  ko.observable(null);
-    this.balancedInFactor.subscribe(function(newValue) {
-       var test = 1;
-    });
+
 
     // or maybe better: either 'allFactorialInteractions' or 'redrawRandomPerTrial' or 'balancedBetweenSubjects'
 
