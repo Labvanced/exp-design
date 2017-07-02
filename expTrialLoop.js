@@ -325,6 +325,22 @@ ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupId
 
     }
 
+    // sanity check
+    var trialRepIdx = [];
+    for (var trialIndex=0; trialIndex < Trials.length; trialIndex++) {
+        trialRepIdx.push(Trials[trialIndex].nr());
+    }
+    var checkSortArray = trialRepIdx.slice().sort();
+    var results = [];
+    for (var i = 0; i < checkSortArray.length - 1; i++) {
+        if (checkSortArray[i + 1] == checkSortArray[i]) {
+            console.log("error double trial entry");
+
+        }
+    }
+
+
+
     return Trials
 };
 
