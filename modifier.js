@@ -219,7 +219,7 @@ Modifier.prototype.addProp = function(propName) {
 
                 var factorsSelected = selectedTrialType.allFactors;
                 var levelsSelected = selectedTrialType.allLevelIdx;
-                var selectedTrialIdx = selectedTrialType.trialVariation.nr();
+                var selectedTrialIdx = selectedTrialType.trialNr;
 
                 if (factors.length == 0){
                     var val = this.objToModify[propName]();
@@ -346,7 +346,7 @@ Modifier.prototype.addProp = function(propName) {
             else if (selectionType=='trialVariation') {
                 var factorsSelected = selectedTrialType.allFactors;
                 var levelsSelected = selectedTrialType.allLevelIdx;
-                var selectedTrialIdx = selectedTrialType.trialVariation.nr();
+                var selectedTrialIdx = selectedTrialType.trialNr;
 
                 // make sure to add dependency on all trials:
                 this._addTrialVariationDep();
@@ -593,7 +593,21 @@ Modifier.prototype.removeModificationRecursive = function(objArr,propName) {
  * { type: 'trialVariation', factorGroup: facGroup_obj, trialVariation: trialVariation_obj }
  */
 Modifier.prototype.selectTrialType = function(selectionSpec){
-    this.selectedTrialType(selectionSpec);
+
+    if (selectionSpec.type == 'trialVariation') {
+        // convert to make sure that computed does not depend on nr, because of garbage collector
+        var newSelectionSpec = {
+            type: 'trialVariation',
+            factorGroup: selectionSpec.factorGroup,
+            allFactors: selectionSpec.allFactors,
+            allLevelIdx: selectionSpec.allLevelIdx,
+            trialNr: selectionSpec.trialVariation.nr()
+        };
+        this.selectedTrialType(newSelectionSpec);
+    }
+    else {
+        this.selectedTrialType(selectionSpec);
+    }
 };
 
 /**

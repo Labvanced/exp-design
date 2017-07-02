@@ -4,16 +4,20 @@ var FrameElementView = function(dataModel, parentView) {
     this.dataModel = dataModel;
     this.parentView = parentView;
 
+    this.disposables = [];
+
     // default values
     this.id = dataModel.id();
     this.fullWidth = ko.observable(0);
     this.fullHeight = ko.observable(0);
     this.isSelected = ko.observable(false);
 
+    this.selectedTrialView = this.dataModel.modifier().selectedTrialView;
+
     this.div = document.createElement('div');
     $(this.div).css({
         "position": "absolute",
-        "opacity": this.dataModel.modifier().selectedTrialView.visibility()
+        "opacity": this.selectedTrialView.visibility()
     });
 
     this.divContent = document.createElement('div');
@@ -36,76 +40,55 @@ FrameElementView.prototype.setupSubscriber = function() {
         return this.parentView.scale();
     }, this);
 
-    var selectedTrialView = this.dataModel.modifier().selectedTrialView;
-
-    this.editorX = ko.computed(function() {
-        return selectedTrialView.editorX();
-    }, this);
-    this.editorY = ko.computed(function() {
-        return selectedTrialView.editorY();
-    }, this);
-    this.visibility = ko.computed(function() {
-        return selectedTrialView.visibility();
-    }, this);
-    this.editorWidth = ko.computed(function() {
-        return selectedTrialView.editorWidth();
-    }, this);
-    this.editorHeight = ko.computed(function() {
-        return selectedTrialView.editorHeight();
-    }, this);
-    this.keepAspectRatio = ko.computed(function() {
-        return selectedTrialView.keepAspectRatio();
-    }, this);
-
     if (this.dataModel.content().hasOwnProperty('stretchImageToFitBoundingBox')) {
-        this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox.subscribe(function(newVal) {
+        this.disposables.push(this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox.subscribe(function(newVal) {
             self.update(true, false);
-        });
+        }));
     }
 
-    this.scale.subscribe(function() {
+    this.disposables.push(this.scale.subscribe(function() {
         self.update(true,true);
-    });
+    }));
 
-    this.editorX.subscribe(function(x) {
+    this.disposables.push(this.selectedTrialView.editorX.subscribe(function(x) {
         self.update(false,true);
-    });
+    }));
 
-    this.editorY.subscribe(function(y) {
+    this.disposables.push(this.selectedTrialView.editorY.subscribe(function(y) {
         self.update(false,true);
-    });
+    }));
 
-    this.visibility.subscribe(function(a) {
+    this.disposables.push(this.selectedTrialView.visibility.subscribe(function(a) {
         $(self.div).css({
-            "opacity": self.visibility()
+            "opacity": self.selectedTrialView.visibility()
         });
-    });
+    }));
 
-    this.editorWidth.subscribe(function(w) {
+    this.disposables.push(this.selectedTrialView.editorWidth.subscribe(function(w) {
         self.update(true,false);
-    });
+    }));
 
-    this.editorHeight.subscribe(function(h) {
+    this.disposables.push(this.selectedTrialView.editorHeight.subscribe(function(h) {
         self.update(true,false);
-    });
+    }));
 
-    this.dataModel.contentScaling.subscribe(function(newValue){
+    this.disposables.push(this.selectedTrialView.contentScaling.subscribe(function(newValue){
         self.update(true,false);
-    });
+    }));
 
-    this.dataModel.contentRotation.subscribe(function(newValue){
+    this.disposables.push(this.selectedTrialView.contentRotation.subscribe(function(newValue){
         self.update(true,false);
-    });
+    }));
 
-    this.dataModel.anchorPointX.subscribe(function(newVal) {
+    this.disposables.push(this.dataModel.anchorPointX.subscribe(function(newVal) {
         self.update(false,true);
-    });
+    }));
 
-    this.dataModel.anchorPointY.subscribe(function(newVal) {
+    this.disposables.push(this.dataModel.anchorPointY.subscribe(function(newVal) {
         self.update(false,true);
-    });
+    }));
 
-    this.isSelected.subscribe(function(newVal){
+    this.disposables.push(this.isSelected.subscribe(function(newVal){
         if (newVal) {
             $(self.div).css({
                 "outline": "3px #74c9d6 solid"
@@ -116,16 +99,16 @@ FrameElementView.prototype.setupSubscriber = function() {
                 "outline": "0px"
             });
         }
-    });
+    }));
 
-    this.dataModel.content.subscribe(function(newValue){
-        self.renderContent(newValue)
-    });
+    this.disposables.push(this.dataModel.content.subscribe(function(newValue){
+        self.renderContent(newValue);
+    }));
 
     if(this.dataModel.content().imgSource) {
-        this.dataModel.content().imgSource.subscribe(function(imgSource) {
+        this.disposables.push(this.dataModel.content().imgSource.subscribe(function(imgSource) {
             self.renderContent(self.dataModel.content);
-        });
+        }));
     }
 };
 
@@ -136,11 +119,11 @@ FrameElementView.prototype.update = function(size, position){
     if (size){
 
         $(this.div).css({
-            "width": self.editorWidth() * self.scale(),
-            "height": self.editorHeight() * self.scale()
+            "width": self.selectedTrialView.editorWidth() * self.scale(),
+            "height": self.selectedTrialView.editorHeight() * self.scale()
         });
 
-        var contentRotation = self.dataModel.contentRotation();
+        var contentRotation = self.selectedTrialView.contentRotation();
         if (contentRotation) {
             $(this.div).css({
                 '-webkit-transform': 'rotate(' + contentRotation + 'deg)',
@@ -161,13 +144,13 @@ FrameElementView.prototype.update = function(size, position){
         }
 
         $(this.divContent).css({
-            "width": self.editorWidth() * self.scale(),
-            "height": self.editorHeight() * self.scale(),
+            "width": self.selectedTrialView.editorWidth() * self.scale(),
+            "height": self.selectedTrialView.editorHeight() * self.scale(),
             "position": "absolute"
         });
 
-        var scale = self.dataModel.contentScaling() * self.scale();
-        $(this.contentScaling).css({
+        var scale = self.selectedTrialView.contentScaling() * self.scale();
+        $(this.divContentScaling).css({
             "position": "absolute",
             '-webkit-transform': 'scale(' + scale + ')',
             '-moz-transform': 'scale(' + scale + ')',
@@ -177,23 +160,23 @@ FrameElementView.prototype.update = function(size, position){
         });
 
         $(this.divContentInside).css({
-            "width": self.editorWidth(),
-            "height": self.editorHeight(),
+            "width": self.selectedTrialView.editorWidth(),
+            "height": self.selectedTrialView.editorHeight(),
             "position": "absolute"
         });
 
         $(this.text).css({
-            "width": self.editorWidth() * self.scale(),
-            "height": self.editorHeight() * self.scale()
+            "width": self.selectedTrialView.editorWidth() * self.scale(),
+            "height": self.selectedTrialView.editorHeight() * self.scale()
         });
 
         if (this.dataModel.content().type == "ImageElement"){
             var image = this.divContentInside;
             if (image) {
-                // this.editorWidth is the bounding box in virtual frame coordinates
+                // this.selectedTrialView.editorWidth is the bounding box in virtual frame coordinates
                 // this.fullWidth is the raw image width
                 if (!this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox()) {
-                    var scale = Math.min(self.editorWidth() / this.fullWidth(), self.editorHeight() / this.fullHeight());
+                    var scale = Math.min(self.selectedTrialView.editorWidth() / this.fullWidth(), self.selectedTrialView.editorHeight() / this.fullHeight());
                     var w = this.fullWidth() * scale * self.scale();
                     var h = this.fullHeight() * scale * self.scale();
 
@@ -201,14 +184,14 @@ FrameElementView.prototype.update = function(size, position){
                         "width": w,
                         "height": h,
                         "position": 'absolute',
-                        "left": (self.editorWidth() * self.scale() - w)/2,
-                        "top": (self.editorHeight() * self.scale() - h)/2
+                        "left": (self.selectedTrialView.editorWidth() * self.scale() - w)/2,
+                        "top": (self.selectedTrialView.editorHeight() * self.scale() - h)/2
                     });
                 }
                 else {
                     $(image).css({
-                        "width": self.editorWidth() * self.scale(),
-                        "height": self.editorHeight() * self.scale(),
+                        "width": self.selectedTrialView.editorWidth() * self.scale(),
+                        "height": self.selectedTrialView.editorHeight() * self.scale(),
                         "left": 0,
                         "top": 0
                     });
@@ -222,24 +205,24 @@ FrameElementView.prototype.update = function(size, position){
 
         var left = 0;
         if (this.dataModel.anchorPointX() == 'low'){
-            left = self.editorX();
+            left = self.selectedTrialView.editorX();
         }
         else if(this.dataModel.anchorPointX() == 'high'){
-            left = self.editorX() - self.editorWidth();
+            left = self.selectedTrialView.editorX() - self.selectedTrialView.editorWidth();
         }
         else { // center
-            left = self.editorX() - self.editorWidth()/2;
+            left = self.selectedTrialView.editorX() - self.selectedTrialView.editorWidth()/2;
         }
 
         var top = 0;
         if (this.dataModel.anchorPointY() == 'low'){
-            top = self.editorY();
+            top = self.selectedTrialView.editorY();
         }
         else if(this.dataModel.anchorPointY() == 'high'){
-            top = self.editorY() - self.editorHeight();
+            top = self.selectedTrialView.editorY() - self.selectedTrialView.editorHeight();
         }
         else { // center
-            top = self.editorY() - self.editorHeight()/2;
+            top = self.selectedTrialView.editorY() - self.selectedTrialView.editorHeight()/2;
         }
 
         $(this.div).css({
@@ -254,8 +237,8 @@ FrameElementView.prototype.update = function(size, position){
 FrameElementView.prototype.setWidthAndHeight = function(w, h) {
 
     if (this.dataModel.hasOwnProperty('modifier')) {
-        this.dataModel.modifier().selectedTrialView.editorWidth(w);
-        this.dataModel.modifier().selectedTrialView.editorHeight(h);
+        this.selectedTrialView.editorWidth(w);
+        this.selectedTrialView.editorHeight(h);
     }
     else {
         this.dataModel.editorWidth(w);
@@ -271,10 +254,10 @@ FrameElementView.prototype.setCoord = function(left, top) {
         x = left;
     }
     else if(this.dataModel.anchorPointX() == 'high'){
-        x = left + this.editorWidth();
+        x = left + this.selectedTrialView.editorWidth();
     }
     else { // center
-        x = left + this.editorWidth()/2;
+        x = left + this.selectedTrialView.editorWidth()/2;
     }
 
     var y = 0;
@@ -282,15 +265,15 @@ FrameElementView.prototype.setCoord = function(left, top) {
         y = top;
     }
     else if(this.dataModel.anchorPointY() == 'high'){
-        y = top + this.editorHeight();
+        y = top + this.selectedTrialView.editorHeight();
     }
     else { // center
-        y = top + this.editorHeight()/2;
+        y = top + this.selectedTrialView.editorHeight()/2;
     }
 
     if (this.dataModel.hasOwnProperty('modifier')) {
-        this.dataModel.modifier().selectedTrialView.editorX(x);
-        this.dataModel.modifier().selectedTrialView.editorY(y);
+        this.selectedTrialView.editorX(x);
+        this.selectedTrialView.editorY(y);
     }
     else {
         this.dataModel.editorX(x);
@@ -337,8 +320,8 @@ FrameElementView.prototype.renderContent = function(data) {
             }
 
             $(this.divContentInside).css({
-                "width":self.editorWidth() * self.scale(),
-                "height": self.editorHeight() * self.scale(),
+                "width": self.selectedTrialView.editorWidth() * self.scale(),
+                "height": self.selectedTrialView.editorHeight() * self.scale(),
                 "position": "absolute",
                 "backgroundColor": "transparent"
             });
@@ -362,7 +345,7 @@ FrameElementView.prototype.renderContent = function(data) {
     else {
         $(this.divContent).children().remove();
 
-        this.contentScaling = $("<div></div>");
+        this.divContentScaling = $("<div></div>");
 
         if (this.parentView.type == "editorView") {
             this.divContentInside = $("<div data-bind='component: {name : \"contentElementPreview\", params : $data}'></div>");
@@ -371,8 +354,8 @@ FrameElementView.prototype.renderContent = function(data) {
             this.divContentInside = $("<div data-bind='component: {name : \"contentElementPlayerview\", params : $data}'></div>");
         }
 
-        $(this.contentScaling).append(this.divContentInside);
-        $(this.divContent).append(this.contentScaling);
+        $(this.divContentScaling).append(this.divContentInside);
+        $(this.divContent).append(this.divContentScaling);
         ko.applyBindings(data, $(this.divContent)[0]);
         this.update(true, false);
     }
@@ -389,9 +372,9 @@ FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function() {
         "border": " 1px solid black"
     });
     $(this.text).text(this.dataModel.name());
-    this.dataModel.name.subscribe(function(newName) {
+    this.disposables.push(this.dataModel.name.subscribe(function(newName) {
         $(self.text).text(newName);
-    });
+    }));
 
     $(this.divContent).append($(this.text));
     this.update(true,true);
@@ -406,4 +389,8 @@ FrameElementView.prototype.dispose = function() {
         ko.cleanNode(componentDiv);
     }
     $(this.div).remove();
+
+    ko.utils.arrayForEach(this.disposables, function (disposable) {
+        disposable.dispose();
+    });
 };

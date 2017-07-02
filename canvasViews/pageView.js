@@ -53,6 +53,10 @@ PageView.prototype.init = function(size) {
     }
 };
 
+PageView.prototype.dispose = function() {
+
+};
+
 PageView.prototype.setDataModel = function(pageData) {
 
     this.pageData = pageData;

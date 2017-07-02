@@ -90,6 +90,14 @@ FrameView.prototype.init = function(size) {
     }
 };
 
+FrameView.prototype.dispose = function() {
+    // dispose all previous view elements (removing ko components and other clean up):
+    var viewElements = this.viewElements();
+    for (var i= 0, len=viewElements.length; i<len; i++) {
+        viewElements[i].dispose();
+    }
+};
+
 FrameView.prototype.setDataModel = function(frameData) {
 
     var self = this;

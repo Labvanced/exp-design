@@ -176,13 +176,15 @@ GlobalVar.prototype.removeBackRef = function(entity) {
  */
 GlobalVar.prototype.notifyValueChanged = function() {
     if (this.value()) {
-        if (!this.recValue) {
-            this.recValue = [];
+        if(this.recType()=='timeseries') {
+            if (!this.recValue) {
+                this.recValue = [];
+            }
+            this.recValue.push({
+                timeStamp: new Date().getTime(),
+                value: this.value().toJS()
+            });
         }
-        this.recValue.push({
-            timeStamp: new Date().getTime(),
-            value: this.value().toJS()
-        });
     }
 };
 

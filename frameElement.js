@@ -27,7 +27,7 @@ var FrameElement= function(expData) {
     this.isActive = ko.observable(true);
     this.content = ko.observable();
 
-    this.shortName = ko.computed(function() {
+    this.shortName = ko.pureComputed(function() {
         if (self.name()){
             return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
         }
