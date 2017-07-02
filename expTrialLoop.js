@@ -643,6 +643,37 @@ ExpTrialLoop.prototype.checkConstraint = function(currentArray,ffConds) {
 
 };
 
+ExpTrialLoop.prototype.sortTrialBasedOnInputArray = function(sortedArray) {
+
+    var trialOrder = this.fixedTrialOrder();
+    var StringArray = trialOrder.split(',');
+    var numberArray = [];
+    for (var i = 0; i<StringArray.length; i++){
+        var value = parseInt(StringArray[i]);
+        if (isNaN(value)){
+            console.log("bad input sequence, trial id is not a number.")
+        }
+        else{
+            numberArray.push(value-1);
+        }
+
+    }
+    var outArray = [];
+
+    for (var t = 0; t<numberArray.length; t++){
+        var trial = sortedArray[numberArray[t]];
+        if (trial){
+            outArray.push(trial)
+        }
+        else{
+            console.log("bad input sequence, trial number not specified.")
+        }
+
+    }
+
+    return outArray;
+};
+
 
 ExpTrialLoop.prototype.sortTrialBasedOnUniqueId = function(trials) {
 
@@ -785,6 +816,12 @@ ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials) {
             var mergedTrials  = [].concat.apply([], allTrials);
             var outArray = this.sortTrialBasedOnUniqueId(mergedTrials);
         }
+
+        else if (this.trialRandomization()=="fixedByHand") {
+            var mergedTrials  = [].concat.apply([], allTrials);
+            var sortedArray = this.sortTrialBasedOnUniqueId(mergedTrials);
+            var outArray = this.sortTrialBasedOnInputArray(sortedArray);
+        }
     }
 
     else{ // conditions  blocked
@@ -817,6 +854,13 @@ ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials) {
                 for (var condGroupIdx =0; condGroupIdx < trialsPerCondGroup.length; condGroupIdx++) {
                     preOutArray[facGroup][condGroupIdx] = this.sortTrialBasedOnUniqueId(trialsPerCondGroup[condGroupIdx]);
                 }
+            }
+
+
+            else if (this.trialRandomization()=="fixedByHand") {
+                var mergedTrials  = [].concat.apply([], allTrials);
+                var sortedArray = this.sortTrialBasedOnUniqueId(mergedTrials);
+                var outArray = this.sortTrialBasedOnInputArray(sortedArray);
             }
         }
 
