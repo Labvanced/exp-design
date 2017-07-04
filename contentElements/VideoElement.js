@@ -143,7 +143,7 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
     this.dataModel = dataModel;
 
 
-    var myPreloadedVideoSource = $(this.element).find('.preloadedSource')[0];
+    var myPreloadedVideoSource = $(this.element).find('.videoSource')[0];
     if (myPreloadedVideoSource) {
         this.updateVideoSource = function () {
             // check if we have it preloaded:
@@ -161,6 +161,7 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
             else {
                 myPreloadedVideoSource.src = self.dataModel.vidSource();
             }
+            $(this.element).find('video')[0].load();
         };
         this.updateVideoSource();
         self.dataModel.modifier().selectedTrialView.file_id.subscribe(function() {
