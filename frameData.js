@@ -20,6 +20,7 @@ var FrameData = function(expData) {
     this.elements = ko.observableArray([]).extend({sortById: null});
     this.events = ko.observableArray([]).extend({sortById: null});
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
+    this.hideMouse = ko.observable(false);
 
     // serialized (specific for frameData):
     this.frameWidth = ko.observable(800).extend({ rateLimit: { timeout: 50, method: "notifyWhenChangesStop" } });
@@ -37,7 +38,7 @@ var FrameData = function(expData) {
     this.playerFrame = null; // pointer to the playerFrame if running in player.
 };
 
-FrameData.prototype.modifiableProp = ["name","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset"];
+FrameData.prototype.modifiableProp = ["name","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset","hideMouse"];
 
 FrameData.prototype.getDeepCopy = function() {
     var self = this;
@@ -276,6 +277,9 @@ FrameData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("emotionOffset")) {
         this.emotionOffset(data.emotionOffset);
     }
+    if (data.hasOwnProperty("hideMouse")) {
+        this.hideMouse(data.hideMouse);
+    }
     this.events(jQuery.map( data.events, function( eventData ) {
         return (new Event(self)).fromJS(eventData);
     } ));
@@ -300,6 +304,7 @@ FrameData.prototype.toJS = function() {
         frameHeight: this.frameHeight(),
         zoomMode: this.zoomMode(),
         emotionEnabled: this.emotionEnabled(),
+        hideMouse: this.hideMouse(),
         emotionFeedbackEnabled: this.emotionFeedbackEnabled(),
         emotionOffset: this.emotionOffset(),
         events: jQuery.map( this.events(), function( event ) {
