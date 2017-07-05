@@ -16,7 +16,7 @@
 
 <template id='video-preview-template' class="element-outline">
     <video data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}" preload="auto">
-        <source data-bind="attr: {src: dataModel.vidSource()}">
+        <source class="videoSource">
         Your browser does not support HTML5 video.
     </video>
     <span class="media-controls-floating media-controls" data-bind="if: dataModel.showMediaControls">
@@ -28,8 +28,7 @@
 
 <template id='video-playerview-template'>
     <video data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}" preload="auto">
-        <source class="preloadedSource">
-        <source data-bind="attr: {src: dataModel.vidSource()}">
+        <source class="videoSource">
         Your browser does not support HTML5 video.
     </video>
     <span class="media-controls-floating media-controls" data-bind="if: dataModel.showMediaControls">

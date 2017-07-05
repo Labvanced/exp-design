@@ -169,6 +169,7 @@ function createAudioComponents() {
                 else {
                     myPreloadedAudioSource.src = self.dataModel.audioSource();
                 }
+                $(this.element).find('audio')[0].load();
             };
             this.updateAudioSource();
             self.dataModel.modifier().selectedTrialView.file_id.subscribe(function() {

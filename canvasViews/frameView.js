@@ -85,7 +85,6 @@ FrameView.prototype.init = function(size) {
             }
 
         }
-
         this.isInitialized = true;
     }
 };

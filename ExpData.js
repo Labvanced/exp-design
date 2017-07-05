@@ -153,6 +153,15 @@ ExpData.prototype.createVars = function() {
     }
 };
 
+
+ExpData.prototype.deleteGlobalVar = function(globalVar) {
+    var idx = this.entities().indexOf(globalVar);
+    if (idx>=0){
+        this.entities().splice(idx,1);
+    }
+};
+
+
 /**
  * should be called by the ui classes after a change was made to some sub datamodels of this expData.
  */
