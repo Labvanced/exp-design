@@ -902,6 +902,12 @@ ActionSetVariable.prototype.setVariableBackRef = function(variable){
     variable.addBackRef(this, this.event, true, false, 'set variable');
 };
 
+
+ActionSetVariable.prototype.removeVariable = function(){
+    this.variable(null);
+};
+
+
 /**
  * This function is called when the parent event was triggered and the requirements are true. It sets a specific
  * globalVar to a specific value.

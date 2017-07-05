@@ -803,6 +803,13 @@ TriggerVariableValueChanged.prototype.setVariableBackRef = function(variable){
     variable.addBackRef(this, this.event, false, true, 'Trigger On Variable Change');
 };
 
+
+
+
+TriggerVariableValueChanged.prototype.removeVariable = function(variable) {
+    this.variables.remove(variable);
+};
+
 /**
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
