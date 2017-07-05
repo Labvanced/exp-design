@@ -1,5 +1,5 @@
 // � by Caspar Goeke and Holger Finger
-
+"use strict";
 
 ////////////////////////
 
@@ -18,6 +18,10 @@ var TriggerMouse = function(event) {
     this.buttonType = ko.observable("Left");
     this.interactionType = ko.observable("Click");
     this.targets = ko.observableArray([]);
+
+    // not serialized:
+    this.eventHandlesForCleanUp = [];
+
 };
 
 TriggerMouse.prototype.type = "TriggerMouse";
@@ -74,219 +78,80 @@ TriggerMouse.prototype.triggerOnTarget = function(playerFrame,target) {
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
 TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
-
     var self = this;
 
-    switch (this.interactionType()){
-        case "Click":
+    function createEventListener(target) {
+        var targetElem = $(playerFrame.frameView.viewElements.byId[target.id()].div);
 
-            for (var i = 0; i<this.targets().length;i++){
-                var target = this.targets()[i];
-                var self = this;
-                if (this.buttonType() == "Left"){
-                    (function(target) {
-                        if (!(target.content() instanceof NaviElement)){
-                            $(playerFrame.frameView.viewElements.byId[target.id()].div).click(function(ev) {
-                                self.mouseX = playerFrame.mouseX;
-                                self.mouseY = playerFrame.mouseY;
-                                self.triggerOnTarget(playerFrame,target);
-                            });
-                        }
-                        else {
-                            if (self.event.actions()[0] instanceof ActionJumpTo){
-                                if(self.event.actions()[0].jumpType()=="previousFrame"){
-                                    $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventBackward')).click(function(ev) {
-                                        ev.stopImmediatePropagation();
-                                        self.mouseX = playerFrame.mouseX;
-                                        self.mouseY = playerFrame.mouseY;
-                                        self.triggerOnTarget(playerFrame,target);
-                                    });
-                                }
+        var eventHandle = {
+            elem: targetElem,
+            eventName: null,
+            cb: null
+        };
 
-                                else if(self.event.actions()[0].jumpType()=="nextFrame"){
-                                    $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventForward')).click(function(ev) {
-                                        ev.stopImmediatePropagation();
-                                        self.mouseX = playerFrame.mouseX;
-                                        self.mouseY = playerFrame.mouseY;
-                                        self.triggerOnTarget(playerFrame,target);
+        switch (self.interactionType()){
 
-                                    });
-                                }
-                            }
-                        }
-
-                    })(target);
+            case "Click":
+                if (self.buttonType() === "Left"){
+                    eventHandle.eventName = 'click';
+                    eventHandle.cb = function(ev) {
+                        self.mouseX = playerFrame.mouseX;
+                        self.mouseY = playerFrame.mouseY;
+                        self.triggerOnTarget(playerFrame,target);
+                    };
                 }
-
-                else if (this.buttonType() == "Right"){
-                    (function(target) {
-                        if (!(target.content() instanceof NaviElement)){
-                            $(playerFrame.frameView.viewElements.byId[target.id()].div).contextmenu(function(ev) {
-                                self.mouseX = playerFrame.mouseX;
-                                self.mouseY = playerFrame.mouseY;
-                                self.triggerOnTarget(playerFrame,target);
-                            });
-                        }
-                        else {
-                            if (self.event.actions()[0] instanceof ActionJumpTo){
-                                if(self.event.actions()[0].jumpType()=="previousFrame"){
-                                    $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventBackward')).contextmenu(function(ev) {
-                                        ev.stopImmediatePropagation();
-                                        self.mouseX = playerFrame.mouseX;
-                                        self.mouseY = playerFrame.mouseY;
-                                        self.triggerOnTarget(playerFrame,target);
-                                    });
-                                }
-
-                                else if(self.event.actions()[0].jumpType()=="nextFrame"){
-                                    $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventForward')).contextmenu(function(ev) {
-                                        ev.stopImmediatePropagation();
-                                        self.mouseX = playerFrame.mouseX;
-                                        self.mouseY = playerFrame.mouseY;
-                                        self.triggerOnTarget(playerFrame,target);
-
-                                    });
-                                }
-                            }
-                        }
-
-                    })(target);
+                else if (self.buttonType() === "Right"){
+                    eventHandle.eventName = 'contextmenu';
+                    eventHandle.cb = function(ev) {
+                        self.mouseX = playerFrame.mouseX;
+                        self.mouseY = playerFrame.mouseY;
+                        self.triggerOnTarget(playerFrame,target);
+                    };
                 }
-            }
-            break;
+                break;
 
-
-        case "PressDown":
-            for (var i = 0; i<this.targets().length;i++){
-                var target = this.targets()[i];
-                // closure to make event persistent over loop:
-                (function(target) {
-                    if (!(target.content() instanceof NaviElement)){
-                        $(playerFrame.frameView.viewElements.byId[target.id()].div).on('mousedown',function(ev) {
-                            if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
-                                self.mouseX = playerFrame.mouseX;
-                                self.mouseY = playerFrame.mouseY;
-                                self.triggerOnTarget(playerFrame,target);
-                            }
-                        });
+            case "PressDown":
+                eventHandle.eventName = 'mousedown';
+                eventHandle.cb = function(ev) {
+                    if ((self.buttonType() === "Left" && ev.button==0) || (self.buttonType() === "Right" && ev.button==2)){
+                        self.mouseX = playerFrame.mouseX;
+                        self.mouseY = playerFrame.mouseY;
+                        self.triggerOnTarget(playerFrame,target);
                     }
-                    else {
-                        if (self.event.actions()[0] instanceof ActionJumpTo){
-                            if(self.event.actions()[0].jumpType()=="previousFrame"){
-                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventBackward')).on('mousedown',function(ev) {
-                                    if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
-                                        ev.stopImmediatePropagation();
-                                        self.mouseX = playerFrame.mouseX;
-                                        self.mouseY = playerFrame.mouseY;
-                                        self.triggerOnTarget(playerFrame,target);
-                                    }
+                };
+                break;
 
-                                });
-                            }
-
-                            else if(self.event.actions()[0].jumpType()=="nextFrame"){
-                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventForward')).on('mousedown',function(ev) {
-                                    if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
-                                        ev.stopImmediatePropagation();
-                                        self.mouseX = playerFrame.mouseX;
-                                        self.mouseY = playerFrame.mouseY;
-                                        self.triggerOnTarget(playerFrame,target);
-                                    }
-                                });
-                            }
-                        }
+            case "PressUp":
+                eventHandle.eventName = 'mouseup';
+                eventHandle.cb = function(ev) {
+                    if ((self.buttonType() === "Left" && ev.button==0) || (self.buttonType() === "Right" && ev.button==2)){
+                        self.mouseX = playerFrame.mouseX;
+                        self.mouseY = playerFrame.mouseY;
+                        self.triggerOnTarget(playerFrame,target);
                     }
+                };
+                break;
 
-                })(target);
-            }
-            break;
+            case "Hover":
+                eventHandle.eventName = 'mouseover';
+                eventHandle.cb = function(ev) {
+                    self.mouseX = playerFrame.mouseX;
+                    self.mouseY = playerFrame.mouseY;
+                    self.triggerOnTarget(playerFrame,target);
+                };
+                break;
 
-        case "PressUp":
-            for (var i = 0; i<this.targets().length;i++){
-                var target = this.targets()[i];
-                // closure to make event persistent over loop:
-                (function(target) {
-                    if (!(target.content() instanceof NaviElement)){
-                        $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseup(function(ev) {
-                            if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
-                                self.mouseX = playerFrame.mouseX;
-                                self.mouseY = playerFrame.mouseY;
-                                self.triggerOnTarget(playerFrame,target);
-                            }
-                        });
-                    }
-                    else {
-                        if (self.event.actions()[0] instanceof ActionJumpTo){
-                            if(self.event.actions()[0].jumpType()=="previousFrame"){
-                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventBackward')).mouseup(function(ev) {
-                                    if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
-                                        ev.stopImmediatePropagation();
-                                        self.mouseX = playerFrame.mouseX;
-                                        self.mouseY = playerFrame.mouseY;
-                                        self.triggerOnTarget(playerFrame,target);
-                                    }
+        }
 
-                                });
-                            }
-
-                            else if(self.event.actions()[0].jumpType()=="nextFrame"){
-                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventForward')).mouseup(function(ev) {
-                                    if ((self.buttonType() == "Left" && ev.button==0) || (self.buttonType() == "Right" && ev.button==2)){
-                                        ev.stopImmediatePropagation();
-                                        self.mouseX = playerFrame.mouseX;
-                                        self.mouseY = playerFrame.mouseY;
-                                        self.triggerOnTarget(playerFrame,target);
-                                    }
-                                });
-                            }
-                        }
-                    }
-                })(target);
-            }
-            break;
-
-        case "Hover":
-            for (var i = 0; i < this.targets().length; i++) {
-                var target = this.targets()[i];
-                // closure to make event persistent over loop:
-                (function ( target) {
-
-                    if (!(target.content() instanceof NaviElement)){
-                        $(playerFrame.frameView.viewElements.byId[target.id()].div).mouseover(function (ev) {
-                            self.mouseX = playerFrame.mouseX;
-                            self.mouseY = playerFrame.mouseY;
-                            self.triggerOnTarget(playerFrame,target);
-                        });
-                    }
-                    else {
-                        if (self.event.actions()[0] instanceof ActionJumpTo){
-                            if(self.event.actions()[0].jumpType()=="previousFrame"){
-                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventBackward')).mouseover(function(ev) {
-                                    ev.stopImmediatePropagation();
-                                    self.mouseX = playerFrame.mouseX;
-                                    self.mouseY = playerFrame.mouseY;
-                                    self.triggerOnTarget(playerFrame,target);
-                                });
-                            }
-
-                            else if(self.event.actions()[0].jumpType()=="nextFrame"){
-                                $($(playerFrame.frameView.viewElements.byId[target.id()].div).find('.eventForward')).mouseover(function(ev) {
-                                    ev.stopImmediatePropagation();
-                                    self.mouseX = playerFrame.mouseX;
-                                    self.mouseY = playerFrame.mouseY;
-                                    self.triggerOnTarget(playerFrame,target);
-
-                                });
-                            }
-                        }
-                    }
-
-
-
-                })(target);
-            }
-            break;
+        self.eventHandlesForCleanUp.push(eventHandle);
+        eventHandle.elem.on(eventHandle.eventName,eventHandle.cb);
     }
+
+
+    for (var i = 0; i<this.targets().length;i++){
+        createEventListener(this.targets()[i]);
+    }
+
 };
 
 /**
@@ -294,7 +159,11 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
  * @param playerFrame
  */
 TriggerMouse.prototype.destroyOnPlayerFrame = function(playerFrame) {
-
+    for (var i=0; i<this.eventHandlesForCleanUp.length; i++) {
+        var handle = this.eventHandlesForCleanUp[i];
+        handle.elem.off(handle.eventName, handle.cb);
+    }
+    this.eventHandlesForCleanUp = [];
 };
 
 /**
@@ -338,6 +207,138 @@ TriggerMouse.prototype.toJS = function() {
 ////////////////////////
 
 
+////////////////////////
+
+/**
+ * This Trigger handles mouse interactions with stimulus elements.
+ *
+ * @param {Event} event - the parent event where this requirements is used.
+ * @constructor
+ */
+var TriggerButtonClick = function(event) {
+    this.event = event;
+
+    // serialized
+    this.target = ko.observable(null);
+    this.buttonIdx = ko.observable(0);
+
+    // not serialized:
+    this.eventHandleForCleanUp = null;
+
+};
+
+TriggerButtonClick.prototype.type = "TriggerButtonClick";
+TriggerButtonClick.prototype.label = "Button Bar Trigger";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+TriggerButtonClick.prototype.isValid = function() {
+    if (this.event.trigger() && this.target()){
+        return true;
+    }
+    else{
+        return false;
+    }
+};
+
+/**
+ * Returns the parameters that this trigger will pass on to the requirements and actions.
+ *
+ * @returns {string[]}
+ */
+TriggerButtonClick.prototype.getParameterSpec = function() {
+    return [
+        'Stimulus Name',
+        'Time From Frame Onset',
+        'Stimulus Info'
+    ];
+};
+
+/**
+ * private member function to trigger the event on a specific target object
+ * @param playerFrame
+ * @param target
+ */
+TriggerButtonClick.prototype.triggerOnTarget = function(playerFrame,target) {
+    var stimulusInformation = null;
+    if (target.content().hasOwnProperty("stimulusInformation")){
+        stimulusInformation =  target.content().modifier().selectedTrialView.stimulusInformation();
+    }
+    this.event.triggerActions([
+        target.name(),
+        playerFrame.getFrameTime(),
+        stimulusInformation
+    ]);
+};
+
+/**
+ * this function is called in the player when the frame starts. It sets up the corresponding click handlers.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+TriggerButtonClick.prototype.setupOnPlayerFrame = function(playerFrame) {
+    var self = this;
+    var target = this.target();
+    var targetElem = $(playerFrame.frameView.viewElements.byId[target.id()].div);
+    var buttonElem = $(targetElem.find('.navi-button'))[this.buttonIdx()];
+    this.eventHandleForCleanUp = function(ev) {
+        ev.stopImmediatePropagation();
+        self.triggerOnTarget(playerFrame,target);
+    };
+    $(buttonElem).on("click",this.eventHandleForCleanUp);
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+TriggerButtonClick.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    var target = this.target();
+    var targetElem = $(playerFrame.frameView.viewElements.byId[target.id()].div);
+    var buttonElem = $(targetElem.find('.navi-button'))[this.buttonIdx()];
+    $(buttonElem).off("click",this.eventHandleForCleanUp);
+    this.eventHandleForCleanUp = null;
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerButtonClick.prototype.setPointers = function(entitiesArr) {
+    this.target(entitiesArr.byId[this.target()]);
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {TriggerButtonClick}
+ */
+TriggerButtonClick.prototype.fromJS = function(data) {
+    this.buttonIdx(data.buttonIdx);
+    this.target(data.target);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+TriggerButtonClick.prototype.toJS = function() {
+    return {
+        type: this.type,
+        buttonIdx: this.buttonIdx(),
+        target: this.target().id()
+    };
+};
+
+////////////////////////
+
+
 /**
  * This Trigger handles keyboard interactions of the participant with the experiment.
  *
@@ -350,6 +351,10 @@ var TriggerKeyboard = function(event) {
     // serialized
     this.buttons = ko.observableArray([]);
     this.interactionType = ko.observable("Pressed");
+
+    // not serialized:
+    this.eventHandleForCleanUp = null;
+
 };
 
 TriggerKeyboard.prototype.type = "TriggerKeyboard";
@@ -390,7 +395,7 @@ TriggerKeyboard.prototype.getValidKeyCodes = function() {
     var allKeys = this.buttonTypesFkeys.concat(this.buttonTypesSpecial.concat(this.buttonTypesLetters.concat(this.buttonTypesArrows.concat(this.buttonTypesNumbers))));
     var allKeysCode = this.buttonTypesFkeysCode.concat(this.buttonTypesSpecialCode.concat(this.buttonTypesLettersCode.concat(this.buttonTypesArrowsCode.concat(this.buttonTypesNumbersCode))));
 
-    validKeyCodes = [];
+    var validKeyCodes = [];
     var validKeys = this.buttons();
     for (var i = 0; i<this.buttons().length; i++) {
         var index =  allKeys.indexOf(validKeys[i]);
@@ -420,39 +425,24 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
     var self = this;
     var validKeyCodes = this.getValidKeyCodes();
 
-    if (this.interactionType() == "PressDown"){
-        (function() {
-            $(document).on("keydown", function (ev){
-                var keyIdx = validKeyCodes.indexOf(ev.keyCode);
-                if (keyIdx>=0){
-                    if (self.buttonTypesFkeysCode.indexOf(ev.keyCode) >= 0) {
-                        // only prevent default for F keys:
-                        ev.preventDefault();
-                    }
-                    self.mouseX = playerFrame.mouseX;
-                    self.mouseY = playerFrame.mouseY;
-                    self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
-                }
+    this.eventHandleForCleanUp = function (ev){
+        var keyIdx = validKeyCodes.indexOf(ev.keyCode);
+        if (keyIdx>=0){
+            if (self.buttonTypesFkeysCode.indexOf(ev.keyCode) >= 0) {
+                // only prevent default for F keys:
+                ev.preventDefault();
+            }
+            self.mouseX = playerFrame.mouseX;
+            self.mouseY = playerFrame.mouseY;
+            self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
+        }
+    };
 
-            });
-        })();
+    if (this.interactionType() === "PressDown"){
+        $(document).on("keydown", this.eventHandleForCleanUp);
     }
-
-    else if (this.interactionType() == "PressUp"){
-        (function() {
-            $(document).on("keyup", function (ev){
-                var keyIdx = validKeyCodes.indexOf(ev.keyCode);
-                if (keyIdx>=0){
-                    if (self.buttonTypesFkeysCode.indexOf(ev.keyCode) >= 0) {
-                        // only prevent default for F keys:
-                        ev.preventDefault();
-                    }
-                    self.mouseX = playerFrame.mouseX;
-                    self.mouseY = playerFrame.mouseY;
-                    self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
-                }
-            });
-        })();
+    else { // PressUp
+        $(document).on("keyup", this.eventHandleForCleanUp);
     }
 };
 
@@ -461,7 +451,13 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
  * @param playerFrame
  */
 TriggerKeyboard.prototype.destroyOnPlayerFrame = function(playerFrame) {
-
+    if (this.interactionType() === "PressDown"){
+        $(document).off("keydown", this.eventHandleForCleanUp);
+    }
+    else { // PressUp
+        $(document).off("keyup", this.eventHandleForCleanUp);
+    }
+    this.eventHandleForCleanUp = null;
 };
 
 /**
@@ -510,7 +506,8 @@ TriggerKeyboard.prototype.toJS = function() {
 var TriggerOnFrameStart = function(event) {
     this.event = event;
 
-    // serialized
+    // not serialized
+    this.callbackForCleanUp = null;
 
 };
 
@@ -542,9 +539,10 @@ TriggerOnFrameStart.prototype.getParameterSpec = function() {
  */
 TriggerOnFrameStart.prototype.setupOnPlayerFrame = function(playerFrame) {
     var self = this;
-    playerFrame.onFrameStartCallbacks.push(function(){
+    this.callbackForCleanUp = function(){
         self.event.triggerActions([]);
-    });
+    };
+    playerFrame.onFrameStartCallbacks.push(this.callbackForCleanUp);
 };
 
 /**
@@ -552,7 +550,10 @@ TriggerOnFrameStart.prototype.setupOnPlayerFrame = function(playerFrame) {
  * @param playerFrame
  */
 TriggerOnFrameStart.prototype.destroyOnPlayerFrame = function(playerFrame) {
-
+    var index = playerFrame.onFrameStartCallbacks.indexOf(this.callbackForCleanUp);
+    if (index > -1) {
+        playerFrame.onFrameStartCallbacks.splice(index, 1);
+    }
 };
 
 /**
@@ -598,7 +599,9 @@ TriggerOnFrameStart.prototype.toJS = function() {
 var TriggerOnFrameEnd = function(event) {
     this.event = event;
 
-    // serialized
+    // not serialized
+    this.callbackForCleanUp = null;
+
 };
 
 TriggerOnFrameEnd.prototype.type = "TriggerOnFrameEnd";
@@ -630,9 +633,10 @@ TriggerOnFrameEnd.prototype.getParameterSpec = function() {
  */
 TriggerOnFrameEnd.prototype.setupOnPlayerFrame = function(playerFrame) {
     var self = this;
-    playerFrame.onFrameEndCallbacks.push(function(){
+    this.callbackForCleanUp = function(){
         self.event.triggerActions([playerFrame.getFrameTime()]);
-    });
+    };
+    playerFrame.onFrameEndCallbacks.push(this.callbackForCleanUp);
 };
 
 /**
@@ -640,7 +644,10 @@ TriggerOnFrameEnd.prototype.setupOnPlayerFrame = function(playerFrame) {
  * @param playerFrame
  */
 TriggerOnFrameEnd.prototype.destroyOnPlayerFrame = function(playerFrame) {
-
+    var index = playerFrame.onFrameEndCallbacks.indexOf(this.callbackForCleanUp);
+    if (index > -1) {
+        playerFrame.onFrameEndCallbacks.splice(index, 1);
+    }
 };
 
 /**
@@ -839,6 +846,7 @@ TriggerVariableValueChanged.prototype.destroyOnPlayerFrame = function(playerFram
     for (var i=0; i<this.subscriberHandles.length; i++) {
         this.subscriberHandles[i].dispose();
     }
+    this.subscriberHandles = [];
 };
 
 /**
@@ -914,6 +922,8 @@ var TriggerAudioVideoEvent= function(event) {
     this.target = ko.observable(null);
     this.triggerType = ko.observable(null);
 
+    // not serialized:
+    this.eventHandlesForCleanUp = [];
 
 };
 
@@ -935,25 +945,32 @@ TriggerAudioVideoEvent.prototype.isValid = function() {
 TriggerAudioVideoEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
 
     var self = this;
+    var cb;
     var elem =  $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
     if (elem.length > 0) {
         switch (this.triggerType()) {
             case "started":
-                elem.bind("play", function () {
+                cb = function () {
                     self.event.triggerActions([0]);
-                });
+                };
+                this.eventHandlesForCleanUp.push(cb);
+                elem.on("play", cb);
                 break;
             case "paused":
-                elem.bind("pause", function () {
+                cb = function () {
                     var currTime = elem[0].currentTime;
                     self.event.triggerActions([currTime]);
-                });
+                };
+                this.eventHandlesForCleanUp.push(cb);
+                elem.on("pause", cb);
                 break;
             case "ended":
-                elem.bind("ended", function () {
+                cb = function () {
                     var duration = elem[0].duration;
                     self.event.triggerActions([duration]);
-                });
+                };
+                this.eventHandlesForCleanUp.push(cb);
+                elem.on("ended", cb);
                 break;
         }
     }
@@ -962,7 +979,21 @@ TriggerAudioVideoEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
 
 
 TriggerAudioVideoEvent.prototype.destroyOnPlayerFrame = function(playerFrame) {
-
+    var elem =  $(playerFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
+    for (var i=0; i<this.eventHandlesForCleanUp.length; i++) {
+        switch (this.triggerType()) {
+            case "started":
+                elem.off("play", this.eventHandlesForCleanUp[i]);
+                break;
+            case "paused":
+                elem.off("pause", this.eventHandlesForCleanUp[i]);
+                break;
+            case "ended":
+                elem.off("ended", this.eventHandlesForCleanUp[i]);
+                break;
+        }
+    }
+    this.eventHandlesForCleanUp = [];
 };
 
 

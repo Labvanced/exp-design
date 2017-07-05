@@ -83,6 +83,23 @@ Event.prototype.setPointers = function(entitiesArr) {
     for (var i=0; i<actions.length; i++) {
         actions[i].setPointers(entitiesArr);
     }
+
+    // check if conversion necessary from old navigation element:
+    if (this.trigger().type === 'TriggerMouse') {
+        if (this.trigger().targets()[0].content() instanceof NaviElement){
+            console.log("converting from trigger type TriggerMouse to trigger type TriggerButtonClick...");
+            var newTrigger = new TriggerButtonClick(this);
+            newTrigger.target(this.trigger().targets()[0]);
+            if (this.actions()[0].jumpType()=="nextFrame") {
+                newTrigger.buttonIdx(1);
+            }
+            else {
+                newTrigger.buttonIdx(0);
+            }
+            this.trigger(newTrigger);
+        }
+    }
+
 };
 
 /**
