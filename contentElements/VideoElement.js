@@ -134,6 +134,27 @@ VideoEditViewModel.prototype.dispose = function() {
     this.subscriberTimePercentage.dispose();
 };
 
+function getBlobURL(url, mime, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", url);
+    xhr.responseType = "arraybuffer";
+
+    xhr.addEventListener("load", function() {
+
+        var arrayBufferView = new Uint8Array( this.response );
+        var blob = new Blob( [ arrayBufferView ], { type: mime } );
+        var url = null;
+
+        if ( window.webkitURL ) {
+            url = window.webkitURL.createObjectURL(blob);
+        } else if ( window.URL && window.URL.createObjectURL ) {
+            url = window.URL.createObjectURL(blob);
+        }
+
+        callback(url, blob);
+    });
+    xhr.send();
+}
 
 /******************* View Model for Preview and for Player ***********************/
 
@@ -143,10 +164,14 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
     this.dataModel = dataModel;
 
 
+
     var myPreloadedVideoSource = $(this.element).find('.videoSource')[0];
     if (myPreloadedVideoSource) {
         this.updateVideoSource = function () {
             // check if we have it preloaded:
+            if(!self.dataModel.vidSource()){
+                return;
+            }
             var videoElem;
             var htmlObjectUrl;
             if (typeof queue !== 'undefined') {
@@ -157,14 +182,19 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
 
             if (videoElem instanceof HTMLVideoElement && htmlObjectUrl) {
                 myPreloadedVideoSource.src = htmlObjectUrl;
+                $(this.element).find('video')[0].load();
             }
             else {
-                myPreloadedVideoSource.src = self.dataModel.vidSource();
+                getBlobURL(self.dataModel.vidSource(), "video/mp4", function(url, blob) {
+                    myPreloadedVideoSource.src = url;
+                    $(this.element).find('video')[0].load();
+                });
             }
-            $(this.element).find('video')[0].load();
+
         };
         this.updateVideoSource();
-        self.dataModel.modifier().selectedTrialView.file_id.subscribe(function() {
+        //TODO updateVideoSource is called twice because vidSource changes once for file_id and once for file_orig_name
+        self.dataModel.vidSource.subscribe(function() {
             self.updateVideoSource();
         });
     }
