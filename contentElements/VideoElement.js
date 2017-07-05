@@ -182,12 +182,12 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
 
             if (videoElem instanceof HTMLVideoElement && htmlObjectUrl) {
                 myPreloadedVideoSource.src = htmlObjectUrl;
-                $(this.element).find('video')[0].load();
+                $(self.element).find('video')[0].load();
             }
             else {
                 getBlobURL(self.dataModel.vidSource(), "video/mp4", function(url, blob) {
                     myPreloadedVideoSource.src = url;
-                    $(this.element).find('video')[0].load();
+                    $(self.element).find('video')[0].load();
                 });
             }
 
