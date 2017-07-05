@@ -85,6 +85,25 @@ FrameView.prototype.init = function(size) {
             }
 
         }
+        else if (this.type == "playerView"){
+
+
+            if (this.hideCursorSubscription ){
+                this.hideCursorSubscription.dispose();
+            }
+            this.hideCursorSubscription = this.frameData.hideMouse.subscribe(function(val){
+                if (val){
+                    $(this.divContainer).css({
+                        "cursor": 'pointer'
+                    });
+                }
+                else{
+                    $(this.divContainer).css({
+                        "cursor": 'none'
+                    });
+                }
+            });
+        }
 
         this.isInitialized = true;
     }

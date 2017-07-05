@@ -23,6 +23,8 @@ var PageData = function(expData) {
     this.events = ko.observableArray([]).extend({sortById: null});
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
 
+    this.hideMouse = ko.observable(false);
+
     // serialized (specific for pageData):
     this.shuffleAll = ko.observable(false);
 
@@ -34,7 +36,7 @@ var PageData = function(expData) {
     this.playerFrame = null; // pointer to the playerFrame if running in player.
 };
 
-PageData.prototype.modifiableProp = ["name","offset","offsetEnabled, "];
+PageData.prototype.modifiableProp = ["name","offset","offsetEnabled","hideMouse"];
 
 PageData.prototype.getDeepCopy = function() {
     var self = this;
@@ -278,6 +280,9 @@ PageData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("maxWidth")) {
         this.maxWidth(parseInt(data.maxWidth));
     }
+    if (data.hasOwnProperty("hideMouse")) {
+        this.hideMouse(data.hideMouse);
+    }
 
     return this;
 };
@@ -294,6 +299,7 @@ PageData.prototype.toJS = function() {
         offset: this.offset(),
         offsetEnabled: this.offsetEnabled(),
         bgColor: this.bgColor(),
+        hideMouse: this.hideMouse(),
         events: jQuery.map( this.events(), function( event ) {
             return event.toJS();
         } ),

@@ -131,6 +131,7 @@ FrameElementView.prototype.update = function(size, position){
                 '-ms-transform': 'rotate(' + contentRotation + 'deg)',
                 '-o-transform': 'rotate(' + contentRotation + 'deg)',
                 'transform': 'rotate(' + contentRotation + 'deg)'
+
             });
         }
         else {
@@ -172,7 +173,9 @@ FrameElementView.prototype.update = function(size, position){
 
         if (this.dataModel.content().type == "ImageElement"){
             var image = this.divContentInside;
+
             if (image) {
+
                 // this.selectedTrialView.editorWidth is the bounding box in virtual frame coordinates
                 // this.fullWidth is the raw image width
                 if (!this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox()) {
@@ -185,7 +188,8 @@ FrameElementView.prototype.update = function(size, position){
                         "height": h,
                         "position": 'absolute',
                         "left": (self.selectedTrialView.editorWidth() * self.scale() - w)/2,
-                        "top": (self.selectedTrialView.editorHeight() * self.scale() - h)/2
+                        "top": (self.selectedTrialView.editorHeight() * self.scale() - h)/2,
+                        "-webkit-user-drag": 'none'
                     });
                 }
                 else {
@@ -193,9 +197,11 @@ FrameElementView.prototype.update = function(size, position){
                         "width": self.selectedTrialView.editorWidth() * self.scale(),
                         "height": self.selectedTrialView.editorHeight() * self.scale(),
                         "left": 0,
-                        "top": 0
+                        "top": 0,
+                        "-webkit-user-drag": 'none'
                     });
                 }
+
             }
         }
 
