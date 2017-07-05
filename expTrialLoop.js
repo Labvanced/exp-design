@@ -21,7 +21,7 @@ var ExpTrialLoop = function (expData) {
     this.id = ko.observable(guid());
     this.displayInitialCountdown = ko.observable(true);
     
-    this.zoomMode = ko.observable('fullscreen');
+    this.zoomMode = ko.observable('fullscreen'); // fullscreen or visualDegree or pixel or millimeter
     this.visualDegreeToUnit = ko.observable(20);
 
     //properties
@@ -1100,6 +1100,12 @@ ExpTrialLoop.prototype.fromJS = function(data) {
         this.randomizationConstraint(data.randomizationConstraint);
     }
 
+    if (data.hasOwnProperty('zoomMode')){
+        this.zoomMode(data.zoomMode);
+    }
+    if (data.hasOwnProperty('visualDegreeToUnit')){
+        this.visualDegreeToUnit(data.visualDegreeToUnit);
+    }
 
     this.webcamEnabled(data.webcamEnabled);
     this.eventVariables(data.eventVariables);
@@ -1140,8 +1146,8 @@ ExpTrialLoop.prototype.toJS = function() {
         maxIntervalSameCondition: this.maxIntervalSameCondition(),
         randomizationConstraint: this.randomizationConstraint(),
 
-
-
+        zoomMode: this.zoomMode(),
+        visualDegreeToUnit: this.visualDegreeToUnit(),
 
         webcamEnabled: this.webcamEnabled(),
         eventVariables: jQuery.map( this.eventVariables(), function( eventVariables ) { return eventVariables.id(); })

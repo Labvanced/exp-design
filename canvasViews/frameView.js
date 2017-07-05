@@ -164,6 +164,27 @@ FrameView.prototype.recalcScale = function() {
                 "height": self.frameData.frameHeight() * self.scale()
             });
         }
+        if (this.type === "playerView") {
+            var task = this.frameData.parent.parent;
+            switch (task.zoomMode()) {
+                case "fullscreen":
+                    this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
+                    break;
+                case "visualDegree":
+                    var distToScreenInMM = 500;
+                    var designUnitsPerDegree = task.visualDegreeToUnit();
+                    var mmPerDegree = 2 * Math.PI * distToScreenInMM / 360; // at the center of the screen in mm/deg
+                    var pxPerDeg = this.parent.player.PixelDensityPerMM * mmPerDegree;
+                    this.scale(pxPerDeg / designUnitsPerDegree);  // scale is in px/designUnits
+                    break;
+                case "pixel":
+                    this.scale(1);
+                    break;
+                case "millimeter":
+                    this.scale(this.parent.player.PixelDensityPerMM);
+                    break;
+            }
+        }
     }
 };
 
