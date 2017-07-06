@@ -321,7 +321,7 @@ var OperandVariable = function(event) {
 
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
-OperandVariable.prototype.operandTypes = ['undefined', "arithmetic", "variable", "objProperty", "eventParam", "constantString", "constantNumeric"];
+OperandVariable.prototype.operandTypes = ['undefined', "arithmetic", "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean"];
 OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
 
 /**
@@ -391,10 +391,20 @@ OperandVariable.prototype.getValue = function(parameters) {
             }
             return value;
         case "constantNumeric":
-            if (typeof value != "number") {
+            if (typeof value !== "number") {
                 value = parseFloat(value);
                 if (isNaN(value)) {
                     console.error("operand is not a number");
+                }
+            }
+            return value;
+        case "constantBoolean":
+            if (typeof value !== "boolean") {
+                if (typeof value === "string") {
+                    value = (value === 'true' || value === 'TRUE' || value === 'True');
+                }
+                if (isNaN(value)) {
+                    console.error("operand is not a boolean");
                 }
             }
             return value;
