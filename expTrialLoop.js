@@ -49,7 +49,7 @@ var ExpTrialLoop = function (expData) {
     this.maxIntervalSameCondition = ko.observable(3).extend({ numeric: 3 });
 
     this.allTrialsToAllSubjects = ko.observable(true);
-    this.percentTrialsShown = ko.observable(100);
+    this.numberTrialsToShow = ko.observable(null);
     this.balanceAmountOfConditions = ko.observable(true);
 
     // external devices
@@ -269,9 +269,7 @@ ExpTrialLoop.prototype.getCondGroups2 = function (facGroupIdx) {
 };
 
 
-
-ExpTrialLoop.prototype.doTrialRandomization = function() {
-
+ExpTrialLoop.prototype.getTrialRandomizationOneRun = function() {
     var allTrials = [];
     for (var facGroupIdx =0; facGroupIdx <  this.factorGroups().length; facGroupIdx++) {
         var outArr = this.getFactorLevels(facGroupIdx);
@@ -279,15 +277,54 @@ ExpTrialLoop.prototype.doTrialRandomization = function() {
         var factorIndicies = outArr[1];
         var conditions = this.getConditionFromFactorLevels(factorIndicies,factorLevels,facGroupIdx);
         var trials = this.drawTrialsFromConditions(conditions,facGroupIdx);
-     //   if (this.blockFixedFactorConditions()){
-            allTrials.push(trials);
-     //   }
-     //   else{
-     //       allTrials = allTrials.concat(trials);
-     //   }
+        allTrials.push(trials);
+    }
+    var trialsRandomized = this.getRandomizedTrials(allTrials);
+    return trialsRandomized;
+};
+
+
+ExpTrialLoop.prototype.doTrialRandomization = function() {
+
+    if (this.allTrialsToAllSubjects()) {
+        return this.getTrialRandomizationOneRun();
+    }
+    else {
+
+        var condGroups = this.getCondGroups();
+        var numberTrialsToShow = this.numberTrialsToShow();
+
+        if (condGroups.totalNrTrialsMin < numberTrialsToShow) {
+
+            var trialsRandomizedAll = [];
+
+            // do new random draws until we have the number trials requested:
+            while (trialsRandomizedAll.length < numberTrialsToShow) {
+                $.merge( trialsRandomizedAll, this.getTrialRandomizationOneRun() );
+            }
+
+            // reduce number to amount requested:
+            if (trialsRandomizedAll.length > numberTrialsToShow) {
+                trialsRandomizedAll = trialsRandomizedAll.slice(0, numberTrialsToShow);
+            }
+
+            return trialsRandomizedAll;
+
+        }
+        else {
+
+            var trialsRandomized = this.getTrialRandomizationOneRun();
+
+            // TODO: filter trialsRandomized based on defined proportions between conditions
+            if (trialsRandomized.length > numberTrialsToShow) {
+                trialsRandomized = trialsRandomized.slice(0, numberTrialsToShow);
+            }
+
+            return trialsRandomized;
+
+        }
 
     }
-    return this.getRandomizedTrials(allTrials);
 };
 
 
@@ -714,7 +751,7 @@ ExpTrialLoop.prototype.sortTrialBasedOnUniqueId = function(trials) {
 
 ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials) {
 
-    console.log("do randomization...");
+    console.log("get randomization...");
 
     if (!this.blockFixedFactorConditions()){ // all conditions  combined, not blocked
         if (this.trialRandomization()=="permute"){ // all trials permuted
@@ -1087,8 +1124,8 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('allTrialsToAllSubjects')){
         this.allTrialsToAllSubjects(data.allTrialsToAllSubjects);
     }
-    if (data.hasOwnProperty('percentTrialsShown')){
-        this.percentTrialsShown(data.percentTrialsShown);
+    if (data.hasOwnProperty('numberTrialsToShow')){
+        this.numberTrialsToShow(data.numberTrialsToShow);
     }
     if (data.hasOwnProperty('balanceAmountOfConditions')){
         this.balanceAmountOfConditions(data.balanceAmountOfConditions);
@@ -1141,7 +1178,7 @@ ExpTrialLoop.prototype.toJS = function() {
         orderOfConditions: this.orderOfConditions(),
         fixedTrialOrder: this.fixedTrialOrder(),
         allTrialsToAllSubjects: this.allTrialsToAllSubjects(),
-        percentTrialsShown: this.percentTrialsShown(),
+        numberTrialsToShow: this.numberTrialsToShow(),
         balanceAmountOfConditions: this.balanceAmountOfConditions(),
         maxIntervalSameCondition: this.maxIntervalSameCondition(),
         randomizationConstraint: this.randomizationConstraint(),
