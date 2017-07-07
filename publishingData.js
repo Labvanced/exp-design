@@ -62,7 +62,6 @@ var PublishingData = function(experiment) {
     this.individualizedLinks =  ko.observableArray([]);
     this.ratingValues =  ko.observableArray([]);
     this.raterUserIds=  ko.observableArray([]);
-    this.authorId = ko.observable('user');
     this.publicationDate =  ko.observable(null);
 
     // test
@@ -178,7 +177,6 @@ PublishingData.prototype.fromJS = function(data) {
     this.individualizedLinks(data.individualizedLinks);
     this.ratingValues(data.ratingValues);
     this.raterUserIds(data.raterUserIds);
-    this.authorId(data.authorId);
     this.publicationDate(data.publicationDate);
 
 };
@@ -232,7 +230,6 @@ PublishingData.prototype.toJS = function() {
         individualizedLinks:  this.individualizedLinks(),
         ratingValues:  this.ratingValues(),
         raterUserIds:  this.raterUserIds(),
-        authorId: this.authorId(),
         publicationDate: this.publicationDate(),
 
     };
