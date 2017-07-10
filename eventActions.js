@@ -379,9 +379,14 @@ ActionSetElementProp.prototype.toJS = function() {
         changes.push(obj);
     }
 
+    var targetId = null;
+    if (this.target()) {
+        targetId = this.target().id();
+    }
+
     return {
         type: this.type,
-        target: this.target().id(),
+        target: targetId,
         animate: this.animate(),
         animationTime:this.animationTime,
         changes: changes
@@ -1258,18 +1263,20 @@ ActionControlAV.prototype.isValid = function(){
  */
 ActionControlAV.prototype.run = function(triggerParams) {
 
-    var elem =  $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
+    if (this.target()) {
+        var elem = $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
 
-    if (elem.length > 0) {
-        if (this.actionType() == 'start') {
-            elem[0].play();
-        }
-        else if (this.actionType() == 'end') {
-            elem[0].pause();
-            elem[0].currentTime = 0;
-        }
-        else if (this.actionType() == 'pause') {
-            elem[0].pause();
+        if (elem.length > 0) {
+            if (this.actionType() == 'start') {
+                elem[0].play();
+            }
+            else if (this.actionType() == 'end') {
+                elem[0].pause();
+                elem[0].currentTime = 0;
+            }
+            else if (this.actionType() == 'pause') {
+                elem[0].pause();
+            }
         }
     }
 
@@ -1303,9 +1310,13 @@ ActionControlAV.prototype.fromJS = function(data) {
  * @returns {object}
  */
 ActionControlAV.prototype.toJS = function() {
+    var targetId = null;
+    if (this.target()) {
+        targetId = this.target().id();
+    }
     return {
         type: this.type,
-        target: this.target().id(),
+        target: targetId,
         actionType: this.actionType()
     };
 };
