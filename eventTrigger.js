@@ -329,10 +329,14 @@ TriggerButtonClick.prototype.fromJS = function(data) {
  * @returns {object}
  */
 TriggerButtonClick.prototype.toJS = function() {
+    var targetId = null;
+    if (this.target()) {
+        targetId = this.target().id();
+    }
     return {
         type: this.type,
         buttonIdx: this.buttonIdx(),
-        target: this.target().id()
+        target: targetId
     };
 };
 
@@ -1018,9 +1022,14 @@ TriggerAudioVideoEvent.prototype.fromJS = function(data) {
 
 TriggerAudioVideoEvent.prototype.toJS = function() {
 
+    var targetId = null;
+    if (this.target()) {
+        targetId = this.target().id();
+    }
+
     return {
         type: this.type,
-        target: this.target().id(),
+        target: targetId,
         triggerType: this.triggerType()
     };
 };
