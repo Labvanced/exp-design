@@ -155,7 +155,9 @@ ActionRecord.prototype.reAddEntities = function(entitiesArr) {
     var selectedRec = this.selectedRecordings();
     for (i = 0; i<selectedRec.length; i++){
         if (selectedRec[i].variable()) {
-            entitiesArr.push(selectedRec[i].variable());
+            if (!entitiesArr.byId.hasOwnProperty(selectedRec[i].variable().id())) {
+                entitiesArr.push(selectedRec[i].variable());
+            }
         }
     }
 };

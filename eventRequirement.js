@@ -440,7 +440,11 @@ OperandVariable.prototype.setPointers = function(entitiesArr) {
  */
 OperandVariable.prototype.reAddEntities = function(entitiesArr) {
     if (this.operandType() == "variable"){
-        entitiesArr.push(this.operandValueOrObject());
+        if (this.operandValueOrObject()) {
+            if (!entitiesArr.byId.hasOwnProperty(this.operandValueOrObject().id())) {
+                entitiesArr.push(this.operandValueOrObject());
+            }
+        }
     }
     if (this.operandType() == "arithmetic"){
         this.operandValueOrObject().left.reAddEntities(entitiesArr);
