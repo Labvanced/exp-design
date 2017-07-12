@@ -430,10 +430,15 @@ OperandVariable.prototype.removeVariable = function(globalVar) {
  */
 OperandVariable.prototype.setPointers = function(entitiesArr) {
     if (this.operandType() == "variable"){
-        var globVar = entitiesArr.byId[this.operandValueOrObject()];
-        if (globVar) {
-            this.operandValueOrObject(globVar);
-            this.setVariableBackRef(globVar);
+        if (this.operandValueOrObject()) {
+            var globVar = entitiesArr.byId[this.operandValueOrObject()];
+            if (globVar) {
+                this.operandValueOrObject(globVar);
+                this.setVariableBackRef(globVar);
+            }
+            else {
+                this.operandValueOrObject(null);
+            }
         }
     }
     if (this.operandType() == "objProperty") {
