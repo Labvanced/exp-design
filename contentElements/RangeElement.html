@@ -6,6 +6,8 @@
         To
         <input style="max-width: 30px" type="text" data-bind="value: maxChoice">
         <br>
+        <label><input type="checkbox" data-bind="checked: dataModel.showNumber" />Show As Number</label>
+        <br>
         <label>
             Linked Variable:
             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['numeric'], relinkCallback: relinkCallback } }"></span>
@@ -19,7 +21,7 @@
     </div>
 
     <div>
-        <div style="display: inline-block; width: 100%; height: 100%">
+        <div style="display: inline-block; width: 100%; height: 100%" data-bind="if: dataModel.showNumber">
             <div style="text-align: center" data-bind="text: dataModel.variable().startValue().value()"></div>
         </div>
 
@@ -39,7 +41,7 @@
     <div style="font-size: 200%" data-bind="html: dataModel.modifier().selectedTrialView.questionText"></div>
     <br>
     <div>
-        <div style="display: inline-block; width: 100%; height: 100%">
+        <div style="display: inline-block; width: 100%; height: 100%" data-bind="if: dataModel.showNumber">
             <div style="text-align: center" data-bind="text: dataModel.variable().value().value()"></div>
         </div>
 

@@ -10,7 +10,7 @@ var RangeElement= function(expData) {
     this.maxChoice= ko.observable(5);
     this.startLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">label 1</span></span>');
     this.endLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">label 2</span></span>');
-
+    this.showNumber = ko.observable(true);
 
     this.variable = ko.observable();
 
@@ -93,6 +93,7 @@ RangeElement.prototype.toJS = function() {
         maxChoice: this.maxChoice(),
         startLabel: this.startLabel(),
         endLabel: this.endLabel(),
+        showNumber: this.showNumber(),
         variable: variableId,
         modifier: this.modifier().toJS()
     };
@@ -106,6 +107,9 @@ RangeElement.prototype.fromJS = function(data) {
     this.startLabel(data.startLabel);
     this.endLabel(data.endLabel);
     this.variable(data.variable);
+    if (data.hasOwnProperty("showNumber")) {
+        this.showNumber(data.showNumber);
+    }
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
