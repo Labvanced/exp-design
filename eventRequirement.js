@@ -504,10 +504,14 @@ OperandVariable.prototype.toJS = function() {
         operandValueOrObject: this.operandValueOrObject()
     };
     if (data.operandType == "variable" && data.operandValueOrObject) {
-        data.operandValueOrObject = data.operandValueOrObject.id();
+        if (data.operandValueOrObject) {
+            data.operandValueOrObject = data.operandValueOrObject.id();
+        }
     }
     if (data.operandType == "objProperty") {
-        data.operandValueOrObject = data.operandValueOrObject.toJS();
+        if (data.operandValueOrObject) {
+            data.operandValueOrObject = data.operandValueOrObject.toJS();
+        }
     }
     if (data.operandType == "arithmetic") {
         data.operandValueOrObject = {
