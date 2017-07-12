@@ -810,9 +810,8 @@ ActionSetVariable.prototype.setPointers = function(entitiesArr) {
     var varToSet = entitiesArr.byId[this.variable()];
     if (varToSet){
         this.variable(varToSet);
-        this.operand().setPointers(entitiesArr);
     }
-
+    this.operand().setPointers(entitiesArr);
 };
 
 /**
