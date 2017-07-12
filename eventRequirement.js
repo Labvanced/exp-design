@@ -411,6 +411,14 @@ OperandVariable.prototype.getValue = function(parameters) {
     }
 };
 
+
+
+OperandVariable.prototype.removeVariable = function(globalVar) {
+ //TODO
+};
+
+
+
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
