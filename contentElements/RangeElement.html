@@ -17,7 +17,6 @@
 
 <template id="range-preview-template">
     <div class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
-        <p>Your Question</p>
     </div>
 
     <div>
@@ -27,9 +26,7 @@
 
         <div style="display: inline-block; width: 100%; height: 100%">
             <div style="display: inline-block;padding: 0px; text-align:right; width: 24%"  class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.startLabel, valueUpdate: afterkeydown"></div>
-
             <div style="display: inline-block;padding: 0px; width: 50%;"><input style="border: none" data-highlight="true" type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, value: dataModel.variable().startValue().value,  valueUpdate: 'input'"></div>
-
             <div style="display: inline-block;padding: 0px; width: 24%" class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.endLabel, valueUpdate: afterkeydown"></div>
         </div>
 
@@ -38,8 +35,8 @@
 </template>
 
 <template id="range-playerview-template">
-    <div style="font-size: 200%" data-bind="html: dataModel.modifier().selectedTrialView.questionText"></div>
-    <br>
+    <div data-bind="html: dataModel.modifier().selectedTrialView.questionText"></div>
+
     <div>
         <div style="display: inline-block; width: 100%; height: 100%" data-bind="if: dataModel.showNumber">
             <div style="text-align: center" data-bind="text: dataModel.variable().value().value()"></div>

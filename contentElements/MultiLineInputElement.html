@@ -11,7 +11,6 @@
 
 <template id="multi-line-input-preview-template">
     <div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: 'afterkeydown'">
-        <p>Your Question</p>
     </div>
     <div>
         <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" data-bind="value: dataModel().variable().startValue().value"></textarea>
@@ -21,7 +20,6 @@
 
 <template id="multi-line-input-playerview-template">
     <div data-bind="html: questionText"></div>
-    <br>
     <div>
         <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" placeholder="Participant Answer" data-bind="value: dataModel().variable().value().value"></textarea>
     </div>

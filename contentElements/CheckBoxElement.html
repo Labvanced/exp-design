@@ -30,7 +30,6 @@
 
 <template id="checkbox-preview-template">
     <div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: 'afterkeydown'">
-        <p>Your Question</p>
     </div>
     <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
@@ -43,7 +42,6 @@
 
 <template id="checkbox-playerview-template">
     <div data-bind="html: questionText">
-        <p>Your Question</p>
     </div>
     <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <label>
