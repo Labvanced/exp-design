@@ -414,7 +414,9 @@ OperandVariable.prototype.getValue = function(parameters) {
 
 
 OperandVariable.prototype.removeVariable = function(globalVar) {
- //TODO
+    if (this.operandType() === "variable") {
+        this.operandValueOrObject(null);
+    }
 };
 
 
