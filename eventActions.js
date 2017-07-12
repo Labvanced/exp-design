@@ -808,8 +808,11 @@ ActionSetVariable.prototype.run = function(triggerParams) {
  */
 ActionSetVariable.prototype.setPointers = function(entitiesArr) {
     var varToSet = entitiesArr.byId[this.variable()];
-    this.variable(varToSet);
-    this.operand().setPointers(entitiesArr);
+    if (varToSet){
+        this.variable(varToSet);
+        this.operand().setPointers(entitiesArr);
+    }
+
 };
 
 /**
