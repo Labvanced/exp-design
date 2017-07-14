@@ -1,22 +1,22 @@
 <template id="navigation-editview-template">
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Navigation</div>
-        <span style="cursor: pointer" data-bind="click: addButton"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
+        <span style="cursor: pointer" data-bind="click: addButton"><img width="20" height="20" src="/resources/icons/add.svg"/> Add Button</span>
     </div>
 </template>
 
 <template id="navigation-preview-template">
     <div class="navigationWrapper" data-bind="foreach: dataModel.buttonEntries">
-        <div class="navi-button"
-             style="cursor: pointer; width: 30%; margin: 4px; float: left; display: table-cell; vertical-align: middle; text-align: center"
-             data-bind="wysiwyg: $data.buttonText, valueUpdate: afterkeydown">Button</div>
+        <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
+            <div class="navi-button" data-bind="wysiwyg: $data.buttonText, valueUpdate: afterkeydown"></div>
+        </div>
     </div>
 </template>
 
 <template id="navigation-playerview-template">
     <div class="navigationWrapper" data-bind="foreach: dataModel.buttonEntries">
-        <div class="navi-button"
-             style="cursor: pointer; width: 30%; margin: 4px; float: left;  display: table-cell; vertical-align: middle; text-align: center"
-             data-bind="html: $data.buttonText">Button</div>
+        <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
+            <div class="navi-button" data-bind="html: $data.buttonText"></div>
+        </div>
     </div>
 </template>
