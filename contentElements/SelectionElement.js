@@ -21,7 +21,7 @@ var SelectionElement = function(expData) {
 SelectionElement.prototype.label = "Selection";
 SelectionElement.prototype.iconPath = "/resources/icons/tools/selection.svg";
 SelectionElement.prototype.modifiableProp = ["questionText"];
-SelectionElement.prototype.dataType =      [ "categorical"];
+SelectionElement.prototype.dataType =      [ "string"];
 SelectionElement.prototype.initWidth = 300;
 SelectionElement.prototype.initHeight = 100;
 

@@ -173,7 +173,7 @@ var ScaleEntry= function(scaleParent) {
 };
 
 ScaleEntry.prototype.modifiableProp = ["rowText"];
-ScaleEntry.prototype.dataType =[ "categorical"];
+ScaleEntry.prototype.dataType =[ "string"];
 
 ScaleEntry.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
