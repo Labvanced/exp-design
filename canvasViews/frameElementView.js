@@ -174,6 +174,7 @@ FrameElementView.prototype.update = function(size, position){
         if (this.dataModel.content().type == "ImageElement"){
             var image = this.divContentInside;
 
+
             if (image) {
 
                 // this.selectedTrialView.editorWidth is the bounding box in virtual frame coordinates
@@ -189,7 +190,13 @@ FrameElementView.prototype.update = function(size, position){
                         "position": 'absolute',
                         "left": (self.selectedTrialView.editorWidth() * self.scale() - w)/2,
                         "top": (self.selectedTrialView.editorHeight() * self.scale() - h)/2,
-                        "-webkit-user-drag": 'none'
+                        "-webkit-user-drag": 'none',
+                        "-webkit-user-select": 'none',
+                        "-khtml-user-select": 'none',
+                        "-moz-user-select": 'none',
+                        "-o-user-select": 'none',
+                        "user-select": 'none'
+
                     });
                 }
                 else {
@@ -198,7 +205,12 @@ FrameElementView.prototype.update = function(size, position){
                         "height": self.selectedTrialView.editorHeight() * self.scale(),
                         "left": 0,
                         "top": 0,
-                        "-webkit-user-drag": 'none'
+                        "-webkit-user-drag": 'none',
+                        "-webkit-user-select": 'none',
+                        "-khtml-user-select": 'none',
+                        "-moz-user-select": 'none',
+                        "-o-user-select": 'none',
+                        "user-select": 'none'
                     });
                 }
 
