@@ -842,8 +842,12 @@ ActionSetVariable.prototype.fromJS = function(data) {
  * @returns {object}
  */
 ActionSetVariable.prototype.toJS = function() {
+    var varId = null;
+    if (this.variable()) {
+        varId = this.variable().id();
+    }
     return {
-        variable: this.variable().id(),
+        variable: varId,
         operand: this.operand().toJS(),
         type: this.type
     };
