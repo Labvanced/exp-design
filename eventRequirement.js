@@ -430,10 +430,15 @@ OperandVariable.prototype.removeVariable = function(globalVar) {
  */
 OperandVariable.prototype.setPointers = function(entitiesArr) {
     if (this.operandType() == "variable"){
-        var globVar = entitiesArr.byId[this.operandValueOrObject()];
-        if (globVar) {
-            this.operandValueOrObject(globVar);
-            this.setVariableBackRef(globVar);
+        if (this.operandValueOrObject()) {
+            var globVar = entitiesArr.byId[this.operandValueOrObject()];
+            if (globVar) {
+                this.operandValueOrObject(globVar);
+                this.setVariableBackRef(globVar);
+            }
+            else {
+                this.operandValueOrObject(null);
+            }
         }
     }
     if (this.operandType() == "objProperty") {
@@ -504,10 +509,14 @@ OperandVariable.prototype.toJS = function() {
         operandValueOrObject: this.operandValueOrObject()
     };
     if (data.operandType == "variable" && data.operandValueOrObject) {
-        data.operandValueOrObject = data.operandValueOrObject.id();
+        if (data.operandValueOrObject) {
+            data.operandValueOrObject = data.operandValueOrObject.id();
+        }
     }
     if (data.operandType == "objProperty") {
-        data.operandValueOrObject = data.operandValueOrObject.toJS();
+        if (data.operandValueOrObject) {
+            data.operandValueOrObject = data.operandValueOrObject.toJS();
+        }
     }
     if (data.operandType == "arithmetic") {
         data.operandValueOrObject = {

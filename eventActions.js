@@ -578,6 +578,16 @@ ActionJumpTo.prototype.run = function(triggerParams) {
 
 };
 
+ActionJumpTo.prototype.reAddEntities = function(entitiesArr) {
+    if (this.jumpType() == "specificFrame") {
+        if (this.frameToJump()) {
+            if (!entitiesArr.byId.hasOwnProperty(this.frameToJump().id())) {
+                entitiesArr.push(this.frameToJump());
+            }
+        }
+    }
+};
+
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use

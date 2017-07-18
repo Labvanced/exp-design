@@ -7,16 +7,13 @@ var NaviElement = function(expData) {
     this.type= "NaviElement";
     this.id = ko.observable(guid());
 
-    var button1 = new NaviEntry(this);
-    button1.buttonText("Back");
+    var button1 = new ButtonEntry(this);
+    button1.buttonText('<div style="text-align: center;">Back</div>');
 
-    var button2 = new NaviEntry(this);
-    button2.buttonText("Next");
+    var button2 = new ButtonEntry(this);
+    button2.buttonText('<div style="text-align: center;">Next</div>');
 
     this.buttonEntries = ko.observableArray([button1, button2]);
-
-    this.returnButton = ko.observable(true);
-    this.selected = ko.observable(false);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -60,8 +57,8 @@ NaviElement.prototype.init = function() {
 };
 
 NaviElement.prototype.addButton = function() {
-    var button = new NaviEntry(this);
-    button.buttonText("Button");
+    var button = new ButtonEntry(this);
+    button.buttonText('<div style="text-align: center;">Button</div>');
     this.buttonEntries.push(button);
 };
 
@@ -105,17 +102,17 @@ NaviElement.prototype.fromJS = function(data) {
     var buttonEntries = [];
     if (data.hasOwnProperty('buttonText1')) {
         // converting from old format:
-        var entry = new NaviEntry(this);
+        var entry = new ButtonEntry(this);
         entry.buttonText(data.buttonText1);
         buttonEntries.push(entry);
 
-        var entry2 = new NaviEntry(this);
+        var entry2 = new ButtonEntry(this);
         entry2.buttonText(data.buttonText2);
         buttonEntries.push(entry2);
     }
     else {
         for (var i=0; i<data.buttonEntries.length; i++) {
-            var buttonEntry = new NaviEntry(this);
+            var buttonEntry = new ButtonEntry(this);
             buttonEntry.fromJS(data.buttonEntries[i]);
             buttonEntries.push(buttonEntry);
         }
@@ -127,46 +124,6 @@ NaviElement.prototype.fromJS = function(data) {
 };
 
 
-////////////////////////////////////
-
-
-
-
-var NaviEntry= function(parent, initText) {
-    this.parent = parent;
-    this.buttonText = ko.observable( initText );
-};
-
-NaviEntry.prototype.modifiableProp = ["buttonText"];
-NaviEntry.prototype.dataType =[ "string"];
-
-NaviEntry.prototype.selectTrialType = function(selectionSpec) {
-    this.modifier().selectTrialType(selectionSpec);
-};
-
-/**
- * This function is used recursively to retrieve an array with all modifiers.
- * @param {Array} modifiersArr - this is an array that holds all modifiers.
- */
-NaviEntry.prototype.getAllModifiers = function(modifiersArr) {
-};
-
-NaviEntry.prototype.setPointers = function(entitiesArr) {
-};
-
-NaviEntry.prototype.reAddEntities = function(entitiesArr) {
-};
-
-NaviEntry.prototype.fromJS = function(data) {
-    this.buttonText(data.buttonText);
-    return this;
-};
-
-NaviEntry.prototype.toJS = function() {
-    return {
-        buttonText:  this.buttonText()
-    };
-};
 
 //////////////////////////////////
 

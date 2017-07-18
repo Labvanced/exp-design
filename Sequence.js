@@ -41,6 +41,38 @@ Sequence.prototype.selectTrialType = function(selectionSpec) {
     }
 };
 
+
+Sequence.prototype.getDeepCopyForPlayer = function() {
+    var self = this;
+
+    var entitiesArr = ko.observableArray([]).extend({sortById: null});
+    this.reAddEntities(entitiesArr);
+    entitiesArr.push(this);
+
+    // loop through array and create deep copies
+    var entitiesArrCopy = jQuery.map(entitiesArr(), function (entity) {
+        if ( entity instanceof GlobalVar || entity instanceof Factor) { // no deep copy of global variables so that we can keep state across frames.
+            return entity;
+        }
+        else {
+            var entityJson = entity.toJS();
+            return entityFactory(entityJson, self.expData);
+        }
+    });
+    var entitiesArrCopyObs = ko.observableArray([]).extend({sortById: null});
+    entitiesArrCopyObs(entitiesArrCopy);
+    jQuery.each( entitiesArrCopy, function( index, elem ) {
+        elem.setPointers(entitiesArrCopyObs);
+    } );
+
+    // find this frame:
+    var deepCopy = entitiesArrCopyObs.byId[this.id()];
+    deepCopy.parent = this.parent;
+    deepCopy.factorGroup = this.factorGroup;
+
+    return deepCopy;
+};
+
 /**
  * sets the factor group:
  */

@@ -24,7 +24,6 @@
 
 <template id="likert-preview-template">
     <div class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
-        <p>Your Question</p>
     </div>
     <br>
     <div data-bind="style: {marginLeft: margin, marginRight: margin}">
@@ -41,7 +40,7 @@
 </template>
 
 <template id="likert-playerview-template">
-    <div style="font-size: 200%" data-bind="html: dataModel.modifier().selectedTrialView.questionText"></div>
+    <div data-bind="html: dataModel.modifier().selectedTrialView.questionText"></div>
     <br>
     <div data-bind="style: {marginLeft: margin, marginRight: margin}">
         <span style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="html: dataModel.modifier().selectedTrialView.startLabel"></span>
