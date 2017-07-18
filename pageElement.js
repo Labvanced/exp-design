@@ -39,6 +39,7 @@ PageElement.prototype.selectTrialType = function(selectionSpec) {
 
 PageElement.prototype.modifiableProp = [];
 PageElement.prototype.dataType =      [];
+PageElement.prototype.subElementProp = ["content"];
 
 /**
  * This function is used recursively to retrieve an array with all modifiers.

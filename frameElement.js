@@ -53,7 +53,7 @@ FrameElement.prototype.addContent = function(element){
 
 FrameElement.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","boolean","boolean","numeric","numeric"];
 FrameElement.prototype.modifiableProp = ["visibility","editorX", "editorY", "editorWidth","editorHeight","isActive","keepAspectRatio","contentScaling","contentRotation"];
-
+FrameElement.prototype.subElementProp = ["content"];
 
 FrameElement.prototype.setAnchorPoint = function(horizontal, vertical) {
     this.anchorPointX(horizontal);

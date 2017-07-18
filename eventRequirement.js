@@ -541,7 +541,7 @@ var RefToObjectProperty = function(event) {
 
     // serialized
     this.target = ko.observable(null);
-    this.property = ko.observable(null);
+    this.property = ko.observable(null); // sub properties are separated by dot (.)
 };
 
 /**
@@ -550,14 +550,36 @@ var RefToObjectProperty = function(event) {
  * @returns {number | string}
  */
 RefToObjectProperty.prototype.getValue = function() {
-    return this.target().modifier().selectedTrialView[this.property()]();
+
+    var propertyPath = this.property().split(".");
+    var target = this.target();
+
+    for (var k=0; k < propertyPath.length-1; k++) {
+        target = target[propertyPath[k]];
+        if (ko.isObservable(target)) {
+            target = target();
+        }
+    }
+    return target.modifier().selectedTrialView[propertyPath[propertyPath.length-1]]();
+
 };
 
 /**
  * set the value of the object property
  */
 RefToObjectProperty.prototype.setValue = function(newVal) {
-    this.target().modifier().selectedTrialView[this.property()](newVal);
+
+    var propertyPath = this.property().split(" ");
+    var target = this.target();
+
+    for (var k=0; k < propertyPath.length-1; k++) {
+        target = target[propertyPath[k]];
+        if (ko.isObservable(target)) {
+            target = target();
+        }
+    }
+    target.modifier().selectedTrialView[propertyPath[propertyPath.length-1]](newVal);
+
 };
 
 /**
