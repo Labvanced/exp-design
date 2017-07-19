@@ -482,6 +482,9 @@ Modifier.prototype.addFactorDependency = function(factorVar) {
             // add this level of the non-interacting factor:
             this.ndimModifierTrialTypes.push(new ModifierTrialType(this.expData, this.objToModify));
         }
+
+        // add new interacting factor:
+        this.factors.push(factorVar);
     }
     else {
         // find the previous factor that is already a dependent Factor:
@@ -495,11 +498,13 @@ Modifier.prototype.addFactorDependency = function(factorVar) {
         }
         insertionDepth++;
 
-        deepCloneOuter(this.ndimModifierTrialTypes, numNewLevels, insertionDepth);
+        this.ndimModifierTrialTypes = deepCloneOuter(this.ndimModifierTrialTypes, numNewLevels, insertionDepth);
+
+        // add new interacting factor:
+        this.factors.splice(insertionDepth, 0, factorVar);
+
     }
 
-    // add new interacting factor:
-    this.factors.push(factorVar);
 
 };
 
@@ -625,6 +630,7 @@ Modifier.prototype.addInteractingLevels = function() {
     function updateLevels(multiDimTrialTypes, multiDimConditions, depFactors, allFactors) {
 
         while (depFactors[0] != allFactors[0]) {
+            // remove first entry:
             allFactors = allFactors.slice(1);
             multiDimConditions = multiDimConditions.slice(1);
         }
