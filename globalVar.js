@@ -151,13 +151,16 @@ GlobalVar.prototype.createValueFromDataType = function() {
 };
 
 GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, isRead, refLabel) {
-    this.backRefs.push({
-        entity: entity,
-        parentNamedEntity: parentNamedEntity,
-        isWritten: isWritten,
-        isRead: isRead,
-        refLabel: refLabel
-    });
+    // only add back references in editor for variables view:
+    if (window.uc!==undefined && (uc instanceof Client)) {
+        this.backRefs.push({
+            entity: entity,
+            parentNamedEntity: parentNamedEntity,
+            isWritten: isWritten,
+            isRead: isRead,
+            refLabel: refLabel
+        });
+    }
 };
 
 GlobalVar.prototype.removeBackRef = function(entity) {
