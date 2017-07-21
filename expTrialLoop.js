@@ -505,20 +505,65 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
         globalVarNames.push(factors[facIdx].globalVar().name());
     }
 
+    // get nested dependencies
+    var resolvedFactors = [];
+    for (var facIdx=0; facIdx < factorNames.length; facIdx++) {
+        resolvedFactors.push(factors[factorNames[facIdx]]);
+    }
+    var unresolvedFactors = [];
     for (var facIdx=0; facIdx < factors.length; facIdx++) {
-        factor = factors[facIdx];
+        if (factorNames.indexOf(facIdx)<0){
+            unresolvedFactors.push(factors[facIdx]);
+        }
+    }
+
+    var factorDependencies = [];
+    for (var facIdx=0; facIdx < unresolvedFactors.length; facIdx++) {
+        factorDependencies.push(unresolvedFactors[facIdx].balancedInFactor());
+    }
+
+
+    var resolutionOrder= [];
+    var outerIdx = 0;
+    var l = unresolvedFactors.length;
+    while(unresolvedFactors.length>0 && outerIdx<=l){
+        var found = false;
+        var idx = 0;
+        while(!found && idx<=factorDependencies.length){
+            var depFactor = factorDependencies[idx];
+            var unresFactor = unresolvedFactors[idx];
+
+            if(resolvedFactors.indexOf(depFactor)>=0){
+                found = true;
+                resolutionOrder.push(unresFactor);
+                resolvedFactors.push(unresFactor);
+                unresolvedFactors.splice(idx,1);
+                factorDependencies.splice(idx,1);
+            }
+            else{
+                idx++;
+            }
+        }
+        outerIdx++;
+    }
+
+
+    for (var facIndx=0; facIndx < resolutionOrder.length; facIndx++) {
+        factor = resolutionOrder[facIndx];
+
         if (factor.factorType()=='random' && factor.randomizationType()=='balancedInFactor') {
 
 
             var facName = factor.globalVar().name();
             var levels = factor.globalVar().levels();
+            var facIdx = factors.indexOf(factor);
             var nrLevels = levels.length;
             var balanceInFactor = null;
 
 
             if (factor.balancedInFactor()){
                 var idx = globalVarNames.indexOf(factor.balancedInFactor().globalVar().name());
-                if (idx !=facIdx && idx >=0 ){
+                if (idx >=0 ){
                     factorNames.push(facIdx);
                     balanceInFactor = factors[idx];
                     var lvls = [];
@@ -537,7 +582,7 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
                         var inder = lvls.indexOf(facValu);
                         var value = levels[countLvl[inder]].name();
                         factorLevels[trial].push(value);
-                        countLvl[inder]++
+                        countLvl[inder]++;
                         if(countLvl[inder]>levels.length-1){
                             countLvl[inder] = 0;
                         }
