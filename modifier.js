@@ -88,6 +88,16 @@ function deepCloneMultiDimArr(multiDimArr){
     }
 }
 
+function flatten(arr) {
+    return arr.reduce(function (flat, toFlatten) {
+        return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+    }, []);
+}
+
+Modifier.prototype.getFlattendArray = function () {
+    return flatten(this.ndimModifierTrialTypes);
+};
+
 /**
  * get the factor group on which this modifier depends on.
  * @returns {FactorGroup}

@@ -5,7 +5,7 @@ var MultipleChoiceElement = function(expData) {
 
     //serialized
     this.type= "MultipleChoiceElement";
-    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
 
    // this.openQuestion=  ko.observable(false);
 
@@ -15,9 +15,6 @@ var MultipleChoiceElement = function(expData) {
 
     this.margin = ko.observable('5pt');
 
-    // modifier:
-    this.modifier = ko.observable(new Modifier(this.expData, this));
-
     ///// not serialized
     this.selected = ko.observable(false);
     /////
@@ -25,8 +22,6 @@ var MultipleChoiceElement = function(expData) {
 
 MultipleChoiceElement.prototype.label = "Multiple Choice";
 MultipleChoiceElement.prototype.iconPath = "/resources/icons/tools/tool_multiplechoice.svg";
-MultipleChoiceElement.prototype.modifiableProp = ["questionText"];
-MultipleChoiceElement.prototype.dataType =      [ "string"];
 MultipleChoiceElement.prototype.initWidth = 180;
 MultipleChoiceElement.prototype.initHeight = 120;
 
@@ -73,14 +68,13 @@ MultipleChoiceElement.prototype.getAllModifiers = function(modifiersArr) {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.getAllModifiers(modifiersArr);
     } );
-    modifiersArr.push(this.modifier());
+    this.questionText().getAllModifiers(modifiersArr);
 };
 
 MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
-    this.modifier().setPointers(entitiesArr);
     jQuery.each( this.elements(), function( index, elem ) {
         elem.setPointers(entitiesArr);
     } );
@@ -88,20 +82,40 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
         // convert to string type:
         this.variable().changeDataType("string");
     }
+    this.questionText().setPointers();
 };
 
 MultipleChoiceElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
-    this.modifier().reAddEntities(entitiesArr);
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.reAddEntities(entitiesArr);
+    } );
+    this.questionText().reAddEntities(entitiesArr);
 };
 
 MultipleChoiceElement.prototype.selectTrialType = function(selectionSpec) {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.selectTrialType(selectionSpec);
     } );
-    this.modifier().selectTrialType(selectionSpec);
+    this.questionText().selectTrialType(selectionSpec);
+};
+
+MultipleChoiceElement.prototype.dispose = function () {
+    this.questionText().dispose();
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.dispose();
+    } );
+};
+
+MultipleChoiceElement.prototype.getTextRefs = function(textArr, label){
+    var questlabel = label + '.Question';
+    this.questionText().getTextRefs(textArr, questlabel);
+    jQuery.each( this.elements(), function( index, elem ) {
+        var ind = index + 1;
+        elem.getTextRefs(textArr, label + '.Entry' + ind);
+    } );
 };
 
 MultipleChoiceElement.prototype.toJS = function() {
@@ -113,19 +127,24 @@ MultipleChoiceElement.prototype.toJS = function() {
 
     return {
         type: this.type,
-        questionText: this.questionText(),
+        questionText: this.questionText().toJS(),
         variable: variableId,
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
-        }),
-        modifier: this.modifier().toJS()
+        })
     };
 };
 
 MultipleChoiceElement.prototype.fromJS = function(data) {
     var self = this;
     this.type=data.type;
-    this.questionText(data.questionText);
+    if(data.questionText.hasOwnProperty('rawText')){
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText().fromJS(data.questionText);
+    }
+    else{
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
+    }
     this.variable(data.variable);
 
     if (data.elements) {
@@ -133,9 +152,6 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
             return (new MultipleChoiceEntry(self)).fromJS(elemData);
         }));
     }
-
-    this.modifier(new Modifier(this.expData, this));
-    this.modifier().fromJS(data.modifier);
 };
 
 
@@ -148,20 +164,17 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
 
 
 var MultipleChoiceEntry= function(multChoiceParent) {
-    this.multChoiceParent = multChoiceParent;
+    this.parent = multChoiceParent;
 
-    this.multChoiceText = ko.observable(null);
+    this.multChoiceText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
     this.multChoiceValue = ko.observable(null);
 
-    this.modifier = ko.observable(new Modifier(this.multChoiceParent.expData, this));
 };
 
-MultipleChoiceEntry.prototype.modifiableProp = ["multChoiceText"];
-MultipleChoiceEntry.prototype.dataType =["string"];
 
 
 MultipleChoiceEntry.prototype.getIndex = function() {
-   return this.multChoiceParent.elements.indexOf(this);
+   return this.parent.elements.indexOf(this);
 };
 
 /**
@@ -169,30 +182,49 @@ MultipleChoiceEntry.prototype.getIndex = function() {
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 MultipleChoiceEntry.prototype.getAllModifiers = function(modifiersArr) {
-    modifiersArr.push(this.modifier());
+    this.multChoiceText().getAllModifiers(modifiersArr);
 };
 
 MultipleChoiceEntry.prototype.selectTrialType = function(selectionSpec) {
-    this.modifier().selectTrialType(selectionSpec);
+    this.multChoiceText().selectTrialType(selectionSpec);
 };
 
 MultipleChoiceEntry.prototype.init = function() {
-    var nr = this.multChoiceParent.elements().length;
+    var nr = this.parent.elements().length;
     var initText = '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">option_' +nr+'</span></span>';
-    this.multChoiceText( initText );
+    this.multChoiceText().rawText( initText );
     this.multChoiceValue( 'option_' +nr );
+};
+
+MultipleChoiceEntry.prototype.reAddEntities = function (entitiesArr) {
+    this.multChoiceText().reAddEntities(entitiesArr);
 };
 
 MultipleChoiceEntry.prototype.setPointers = function(entitiesArr) {
     if (this.multChoiceValue() == null) {
         // convert from old categorical format to string format:
-        var nr = this.multChoiceParent.elements().indexOf(this);
+        var nr = this.parent.elements().indexOf(this);
         this.multChoiceValue( $($.parseHTML(this.multChoiceText())).text() );
     }
+    this.multChoiceText().setPointers(entitiesArr);
+};
+
+MultipleChoiceEntry.prototype.dispose = function () {
+    this.multChoiceText().dispose();
+};
+
+MultipleChoiceEntry.prototype.getTextRefs = function(textArr, label){
+    this.multChoiceText().getTextRefs(textArr, label);
 };
 
 MultipleChoiceEntry.prototype.fromJS = function(data) {
-    this.multChoiceText(data.multChoiceText);
+    if(data.multChoiceText.hasOwnProperty('rawText')) {
+        this.multChoiceText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+        this.multChoiceText().fromJS(data.multChoiceText);
+    }
+    else{
+        this.multChoiceText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, data.multChoiceText));
+    }
     if (data.hasOwnProperty('multChoiceValue')) {
         this.multChoiceValue(data.multChoiceValue);
     }
@@ -201,19 +233,10 @@ MultipleChoiceEntry.prototype.fromJS = function(data) {
 
 MultipleChoiceEntry.prototype.toJS = function() {
     return {
-        multChoiceText:  this.multChoiceText(),
+        multChoiceText:  this.multChoiceText().toJS(),
         multChoiceValue: this.multChoiceValue()
     };
 };
-
-
-
-
-
-
-
-
-
 
 
 function createMultipleChoiceComponents() {

@@ -5,17 +5,13 @@ var RangeElement= function(expData) {
 
     //serialized
     this.type= "RangeElement";
-    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
     this.minChoice= ko.observable(1);
     this.maxChoice= ko.observable(5);
-    this.startLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">label 1</span></span>');
-    this.endLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">label 2</span></span>');
+    this.startLabel = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">label 1</span></span>'));
+    this.endLabel = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">label 2</span></span>'));
     this.showNumber = ko.observable(true);
-
     this.variable = ko.observable();
-
-    // modifier:
-    this.modifier = ko.observable(new Modifier(this.expData, this));
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -24,8 +20,6 @@ var RangeElement= function(expData) {
 
 RangeElement.prototype.label = "Range";
 RangeElement.prototype.iconPath = "/resources/icons/tools/tool_slider.svg";
-RangeElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
-RangeElement.prototype.dataType =      [ "string","string","string"];
 RangeElement.prototype.initWidth = 500;
 RangeElement.prototype.initHeight = 100;
 
@@ -59,25 +53,49 @@ RangeElement.prototype.setVariableBackRef = function() {
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 RangeElement.prototype.getAllModifiers = function(modifiersArr) {
-    modifiersArr.push(this.modifier());
+    this.questionText().getAllModifiers(modifiersArr);
+    this.startLabel().getAllModifiers(modifiersArr);
+    this.endLabel().getAllModifiers(modifiersArr);
 };
 
 RangeElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
-    this.modifier().setPointers(entitiesArr);
+    this.questionText().setPointers(entitiesArr);
+    this.startLabel().setPointers(entitiesArr);
+    this.endLabel().setPointers(entitiesArr);
 };
 
 RangeElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
-    this.modifier().reAddEntities(entitiesArr);
+    this.questionText().reAddEntities(entitiesArr);
+    this.startLabel().reAddEntities(entitiesArr);
+    this.endLabel().reAddEntities(entitiesArr);
 };
 
 RangeElement.prototype.selectTrialType = function(selectionSpec) {
-    this.modifier().selectTrialType(selectionSpec);
+    this.questionText().selectTrialType(selectionSpec);
+    this.startLabel().selectTrialType(selectionSpec);
+    this.endLabel().selectTrialType(selectionSpec);
+};
+
+RangeElement.prototype.dispose = function () {
+    this.questionText().dispose();
+    this.startLabel().dispose();
+    this.endLabel().dispose();
+};
+
+RangeElement.prototype.getTextRefs = function(textArr, label){
+    var questlabel = label + '.Question';
+    this.questionText().getTextRefs(textArr, questlabel);
+    var startlabel = label + '.Start';
+    this.startLabel().getTextRefs(textArr, startlabel);
+    var endlabel = label + '.End';
+    this.endLabel().getTextRefs(textArr, endlabel);
+
 };
 
 RangeElement.prototype.toJS = function() {
@@ -88,30 +106,37 @@ RangeElement.prototype.toJS = function() {
 
     return {
         type: this.type,
-        questionText: this.questionText(),
+        questionText: this.questionText().toJS(),
         minChoice: this.minChoice(),
         maxChoice: this.maxChoice(),
-        startLabel: this.startLabel(),
-        endLabel: this.endLabel(),
+        startLabel: this.startLabel().toJS(),
+        endLabel: this.endLabel().toJS(),
         showNumber: this.showNumber(),
-        variable: variableId,
-        modifier: this.modifier().toJS()
+        variable: variableId
     };
 };
 
 RangeElement.prototype.fromJS = function(data) {
     this.type=data.type;
-    this.questionText(data.questionText);
+    if(data.questionText.hasOwnProperty('rawText')) {
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText().fromJS(data.questionText);
+        this.startLabel = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.startLabel().fromJS(data.startLabel);
+        this.endLabel = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.endLabel().fromJS(data.endLabel);
+    }
+    else{
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
+        this.startLabel = ko.observable(new EditableTextElement(this.expData, this, data.startLabel));
+        this.endLabel = ko.observable(new EditableTextElement(this.expData, this, data.endLabel));
+    }
     this.minChoice(data.minChoice);
     this.maxChoice(data.maxChoice);
-    this.startLabel(data.startLabel);
-    this.endLabel(data.endLabel);
     this.variable(data.variable);
     if (data.hasOwnProperty("showNumber")) {
         this.showNumber(data.showNumber);
     }
-    this.modifier(new Modifier(this.expData, this));
-    this.modifier().fromJS(data.modifier);
 };
 
 

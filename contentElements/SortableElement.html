@@ -9,10 +9,24 @@
         </div>
 
         <br>
-        <label>
-            Linked Variable:
-            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
-        </label>
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 50px;">Entry</th>
+                <th>Linked Variables</th>
+            </tr>
+            </thead>
+            <tbody data-bind="foreach: dataModel.elements">
+            <tr>
+                <td>
+                    <div data-bind="text: $index()+1"></div>
+                </td>
+                <td>
+                    <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: variable, allowedDatatypes: ['numeric'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
         
         <div>Add New Item: </div>
         <span>Idem Id: </span><input style="width: 120px; margin-left:3px; display: inline-block" type="text" class="form-control" data-bind="value:currentEntry">  <span style="cursor: pointer" data-bind="click:addElem"><img width="20" height="20" src="/resources/icons/add.svg"/></span></span>
@@ -43,16 +57,14 @@
 <template id='sortable-preview-template'>
 
 
-    <div class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
-        <p>Your Question</p>
-    </div>
+    <div data-bind="component: {name : 'editable-text-element-preview', params : dataModel.questionText}"></div>
     <br>
 
     <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
         <ul class="sortableElement sortableOuter" id="sortableElementPrev">
             <!-- ko foreach: dataModel.elements -->
                 <li class="sortableInner ui-state-default">
-                    <div class="notDraggable" data-bind="wysiwyg: $rawData, valueUpdate: 'afterkeydown'"></div>
+                    <div data-bind="component: {name : 'editable-text-element-preview', params : sortableText}"></div>
                 </li>
             <!-- /ko -->
         </ul>
@@ -62,17 +74,14 @@
 </template>
 
 <template id='sortable-playerview-template'>
-
-    <div class="notDraggable" data-bind="html: dataModel.modifier().selectedTrialView.questionText">
-        <p>Your Question</p>
-    </div>
+    <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
     <br>
 
     <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
         <ul class="sortableElement sortableOuter pointer" id="sortableElementPlayer">
             <!-- ko foreach: dataModel.elements -->
             <li class="sortableInner ui-state-default">
-                <div data-bind="html: $rawData, valueUpdate: 'afterkeydown'"></div>
+                <div data-bind="component: {name : 'editable-text-element-playerview', params : sortableText}"></div>
             </li>
             <!-- /ko -->
         </ul>

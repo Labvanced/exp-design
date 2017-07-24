@@ -4,20 +4,17 @@ var LikertElement= function(expData) {
 
     //serialized
     this.type= "LikertElement";
-    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
     this.startChoice= ko.observable(1);
     this.endChoice= ko.observable(5);
-    this.startLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">Left Label</span></span>');
-    this.endLabel= ko.observable('<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">Right Label</span></span>');
+    this.startLabel = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">Left Label</span></span>'));
+    this.endLabel = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">Right Label</span></span>'));
     this.choices= ko.observableArray([1,2,3,4,5]);
 
     this.variable = ko.observable();
 
     this.showNums = ko.observable(true);
     this.margin = ko.observable('2pt');
-
-    // modifier:
-    this.modifier = ko.observable(new Modifier(this.expData, this));
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -26,8 +23,6 @@ var LikertElement= function(expData) {
 
 LikertElement.prototype.label = "Likert";
 LikertElement.prototype.iconPath = "/resources/icons/tools/tool_rating.svg";
-LikertElement.prototype.modifiableProp = ["questionText","startLabel","endLabel"];
-LikertElement.prototype.dataType =      [ "string","string","string"];
 LikertElement.prototype.initWidth = 350;
 LikertElement.prototype.initHeight = 120;
 
@@ -55,25 +50,49 @@ LikertElement.prototype.setVariableBackRef = function() {
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 LikertElement.prototype.getAllModifiers = function(modifiersArr) {
-    modifiersArr.push(this.modifier());
+    this.questionText().getAllModifiers(modifiersArr);
+    this.startLabel().getAllModifiers(modifiersArr);
+    this.endLabel().getAllModifiers(modifiersArr);
 };
 
 LikertElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
-    this.modifier().setPointers(entitiesArr);
+    this.questionText().setPointers(entitiesArr);
+    this.startLabel().setPointers(entitiesArr);
+    this.endLabel().setPointers(entitiesArr);
 };
 
 LikertElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
-    this.modifier().reAddEntities(entitiesArr);
+    this.questionText().reAddEntities(entitiesArr);
+    this.startLabel().reAddEntities(entitiesArr);
+    this.endLabel().reAddEntities(entitiesArr);
 };
 
 LikertElement.prototype.selectTrialType = function(selectionSpec) {
-    this.modifier().selectTrialType(selectionSpec);
+    this.questionText().selectTrialType(selectionSpec);
+    this.startLabel().selectTrialType(selectionSpec);
+    this.endLabel().selectTrialType(selectionSpec);
+};
+
+LikertElement.prototype.dispose = function () {
+  this.questionText().dispose();
+  this.startLabel().dispose();
+  this.endLabel().dispose();
+};
+
+LikertElement.prototype.getTextRefs = function(textArr, label){
+    var questlabel = label + '.Question';
+    this.questionText().getTextRefs(textArr, questlabel);
+    var startlabel = label + '.Start';
+    this.startLabel().getTextRefs(textArr, startlabel);
+    var endlabel = label + '.End';
+    this.endLabel().getTextRefs(textArr, endlabel);
+
 };
 
 LikertElement.prototype.toJS = function() {
@@ -84,29 +103,35 @@ LikertElement.prototype.toJS = function() {
 
     return {
         type: this.type,
-        questionText: this.questionText(),
+        questionText: this.questionText().toJS(),
         startChoice: this.startChoice(),
         endChoice: this.endChoice(),
-        startLabel: this.startLabel(),
-        endLabel: this.endLabel(),
+        startLabel: this.startLabel().toJS(),
+        endLabel: this.endLabel().toJS(),
         choices: this.choices(),
-        variable: variableId,
-        modifier: this.modifier().toJS()
+        variable: variableId
     };
 };
 
 LikertElement.prototype.fromJS = function(data) {
     this.type=data.type;
-    this.questionText(data.questionText);
+    if(data.questionText.hasOwnProperty('rawText')) {
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText().fromJS(data.questionText);
+        this.startLabel = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.startLabel().fromJS(data.startLabel);
+        this.endLabel = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.endLabel().fromJS(data.endLabel);
+    }
+    else{
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
+        this.startLabel = ko.observable(new EditableTextElement(this.expData, this, data.startLabel));
+        this.endLabel = ko.observable(new EditableTextElement(this.expData, this, data.endLabel));
+    }
     this.startChoice(data.startChoice);
     this.endChoice(data.endChoice);
-    this.startLabel(data.startLabel);
-    this.endLabel(data.endLabel);
     this.choices(data.choices);
     this.variable(data.variable);
-
-    this.modifier(new Modifier(this.expData, this));
-    this.modifier().fromJS(data.modifier);
 };
 
 

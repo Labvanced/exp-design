@@ -6,13 +6,10 @@ var SelectionElement = function(expData) {
 
     //serialized
     this.type = "SelectionElement";
-    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'))
 
     this.elements = ko.observableArray([]);
     this.variable = ko.observable();
-
-    // modifier:
-    this.modifier = ko.observable(new Modifier(this.expData, this));
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -20,8 +17,6 @@ var SelectionElement = function(expData) {
 
 SelectionElement.prototype.label = "Selection";
 SelectionElement.prototype.iconPath = "/resources/icons/tools/selection.svg";
-SelectionElement.prototype.modifiableProp = ["questionText"];
-SelectionElement.prototype.dataType =      [ "string"];
 SelectionElement.prototype.initWidth = 300;
 SelectionElement.prototype.initHeight = 100;
 
@@ -65,7 +60,7 @@ SelectionElement.prototype.getAllModifiers = function(modifiersArr) {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.getAllModifiers(modifiersArr);
     } );
-    modifiersArr.push(this.modifier());
+    this.questionText().getAllModifiers(modifiersArr);
 };
 
 SelectionElement.prototype.setPointers = function(entitiesArr) {
@@ -73,7 +68,6 @@ SelectionElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
-    this.modifier().setPointers(entitiesArr);
     jQuery.each( this.elements(), function( index, elem ) {
         elem.setPointers(entitiesArr);
     } );
@@ -87,20 +81,26 @@ SelectionElement.prototype.setPointers = function(entitiesArr) {
         } );
         this.variable().changeDataType("string");
     }
+    this.questionText().setPointers();
 };
 
 SelectionElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
-    this.modifier().reAddEntities(entitiesArr);
+    this.questionText().reAddEntities(entitiesArr);
 };
 
 SelectionElement.prototype.selectTrialType = function(selectionSpec) {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.selectTrialType(selectionSpec);
     } );
-    this.modifier().selectTrialType(selectionSpec);
+    this.questionText().selectTrialType(selectionSpec);
+};
+
+SelectionElement.prototype.getTextRefs = function(textArr, label){
+    var questlabel = label + '.Question';
+    this.questionText().getTextRefs(textArr, questlabel);
 };
 
 SelectionElement.prototype.toJS = function() {
@@ -111,29 +111,31 @@ SelectionElement.prototype.toJS = function() {
 
     return {
         type: this.type,
-        questionText: this.questionText(),
+        questionText: this.questionText().toJS(),
         variable: variableId,
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
-        }),
-        modifier: this.modifier().toJS()
+        })
     };
 };
 
 SelectionElement.prototype.fromJS = function(data) {
     var self = this;
     this.type=data.type;
-    this.questionText(data.questionText);
+    if(data.questionText.hasOwnProperty('rawText')) {
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText().fromJS(data.questionText);
+    }
+    else{
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
+    }
     this.variable(data.variable);
-
     if (data.hasOwnProperty('elements')) {
         this.elements(jQuery.map(data.elements, function (elemData) {
             return (new SelectionEntry(self)).fromJS(elemData);
         }));
     }
 
-    this.modifier(new Modifier(this.expData, this));
-    this.modifier().fromJS(data.modifier);
 };
 
 
@@ -150,12 +152,7 @@ var SelectionEntry= function(selectionParent) {
     this.selectionText = ko.observable(null);
     this.selectionValue = ko.observable(null);
 
-    this.modifier = ko.observable(new Modifier(this.selectionParent.expData, this));
 };
-
-SelectionEntry.prototype.modifiableProp = ["selectionText"];
-SelectionEntry.prototype.dataType =["string"];
-
 
 SelectionEntry.prototype.getIndex = function() {
     return this.selectionParent.elements.indexOf(this);
@@ -166,11 +163,11 @@ SelectionEntry.prototype.getIndex = function() {
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 SelectionEntry.prototype.getAllModifiers = function(modifiersArr) {
-    modifiersArr.push(this.modifier());
+    this.selectionText().getAllModifiers(modifiersArr);
 };
 
 SelectionEntry.prototype.selectTrialType = function(selectionSpec) {
-    this.modifier().selectTrialType(selectionSpec);
+    this.selectionText().selectTrialType(selectionSpec);
 };
 
 SelectionEntry.prototype.setPointers = function(entitiesArr) {
@@ -179,6 +176,7 @@ SelectionEntry.prototype.setPointers = function(entitiesArr) {
         var nr = this.selectionParent.elements().indexOf(this);
         this.selectionValue( 'option_' +nr );
     }
+    this.selectionText().setPointers(entitiesArr);
 };
 
 SelectionEntry.prototype.fromJS = function(data) {

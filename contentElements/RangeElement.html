@@ -16,8 +16,7 @@
 </template>
 
 <template id="range-preview-template">
-    <div class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
-    </div>
+    <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
 
     <div>
         <div style="display: inline-block; width: 100%; height: 100%" data-bind="if: dataModel.showNumber">
@@ -25,9 +24,11 @@
         </div>
 
         <div style="display: inline-block; width: 100%; height: 100%">
-            <div style="display: inline-block;padding: 0px; text-align:right; width: 24%"  class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.startLabel, valueUpdate: afterkeydown"></div>
+            <div class="notDraggable" style="display: inline-block;padding: 0px; text-align:right; width: 24%" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.startLabel}"></div>
+
             <div style="display: inline-block;padding: 0px; width: 50%;"><input style="border: none" data-highlight="true" type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, value: dataModel.variable().startValue().value,  valueUpdate: 'input'"></div>
-            <div style="display: inline-block;padding: 0px; width: 24%" class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.endLabel, valueUpdate: afterkeydown"></div>
+
+            <div class="notDraggable" style="display: inline-block;padding: 0px; width: 24%" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.endLabel}"></div>
         </div>
 
     </div>
@@ -35,17 +36,17 @@
 </template>
 
 <template id="range-playerview-template">
-    <div data-bind="html: dataModel.modifier().selectedTrialView.questionText"></div>
-
+    <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
+    <br>
     <div>
         <div style="display: inline-block; width: 100%; height: 100%" data-bind="if: dataModel.showNumber">
             <div style="text-align: center" data-bind="text: dataModel.variable().value().value()"></div>
         </div>
 
         <div style="display: inline-block; width: 100%; height: 100%">
-            <div style="display: inline-block;padding: 0px; text-align:right; width: 24%"  class="notDraggable" data-bind="html: dataModel.modifier().selectedTrialView.startLabel"></div>
+            <div style="display: inline-block;padding: 0px; text-align:right; width: 24%" data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.startLabel}"></div>
             <div style="display: inline-block;padding: 0px; width: 50%;"><input style="border: none" data-highlight="true" type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, value: dataModel.variable().value().value, valueUpdate: 'afterkeydown', click: function(){return true}, clickBubble: false"></div>
-            <div style="display: inline-block;padding: 0px; width: 24%" class="notDraggable" data-bind="html: dataModel.modifier().selectedTrialView.endLabel"></div>
+            <div style="display: inline-block;padding: 0px; width: 24%" data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.endLabel}"></div>
         </div>
 
     </div>

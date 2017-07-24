@@ -17,8 +17,15 @@ var ExpData = function (parentExperiment) {
     this.availableSessions = ko.observableArray([]);
     this.availableGroups = ko.observableArray([]);
 
-    // TODO: need to serialize / deserialize
+    //serialized
     this.translations = ko.observableArray([]);
+    this.languageCodes = ko.observable({});
+    this.currentLanguage = ko.observable(0);
+    this.availableTranslations = ko.observableArray(['Original']);
+
+
+    //not serialized
+    this.languages = ['Chinese', 'Dutch', 'English', 'French', 'German', 'Spanish'];
 
     this.dateLastModified = ko.observable(getCurrentDate());
 
@@ -159,6 +166,10 @@ ExpData.prototype.deleteGlobalVar = function(globalVar) {
     if (idx>=0){
         this.entities().splice(idx,1);
     }
+};
+
+ExpData.prototype.addTranslation = function(translationEntry){
+    this.translations.push(translationEntry);
 };
 
 
@@ -368,6 +379,17 @@ ExpData.prototype.fromJS = function(data) {
     this.availableSessions(data.availableSessions);
     this.availableGroups(data.availableGroups);
 
+    if(data.hasOwnProperty('translations')){
+        this.translations(jQuery.map(data.translations, function (entryData) {
+            var entry = new TranslationEntry(self);
+            entry.fromJS(entryData);
+            return entry;
+        }));
+        this.currentLanguage(data.currentLanguage);
+        this.availableTranslations(data.availableTranslations);
+        this.languageCodes(data.languageCodes);
+    }
+
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varName = ExpData.prototype.fixedVarNames[i];
         if (varName === undefined) {
@@ -408,7 +430,11 @@ ExpData.prototype.toJS = function() {
         availableSessions: jQuery.map( this.availableSessions(), function( session ) { return session.id(); }),
         availableGroups: jQuery.map( this.availableGroups(), function( group ) { return group.id(); }),
         numGroups: this.availableGroups().length,
-        sessionsPerGroup: sessionsPerGroup
+        sessionsPerGroup: sessionsPerGroup,
+        translations: jQuery.map( this.translations(), function( entry ) { return entry.toJS(); }),
+        currentLanguage: this.currentLanguage(),
+        availableTranslations: this.availableTranslations(),
+        languageCodes: this.languageCodes()
     };
 
     // add all variable ids:

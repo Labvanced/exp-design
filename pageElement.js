@@ -34,7 +34,9 @@ PageElement.prototype.addContent = function(element){
 
 PageElement.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
-    this.content().modifier().selectTrialType(selectionSpec);
+    if  (typeof this.content().selectTrialType === "function"){
+        this.content().selectTrialType(selectionSpec);
+    }
 };
 
 PageElement.prototype.modifiableProp = [];
@@ -80,6 +82,18 @@ PageElement.prototype.reAddEntities = function(entitiesArr) {
         this.content().reAddEntities(entitiesArr);
     }
 };
+
+/**
+ * Recursively gathers path of entities until EditableText
+ * @param {ko.observableArray} textArr - contains element label and rawText
+ * @param {String} label - to be added to the path
+ * @returns textArr on highes level
+ */
+PageElement.prototype.getTextRefs = function(textArr, label){
+    this.content().getTextRefs(textArr, this.name());
+    return textArr;
+};
+
 
 /**
  * load from a json object to deserialize the states.

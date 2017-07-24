@@ -168,6 +168,8 @@ if (typeof CKEDITOR !== 'undefined') {
                 }
             });
 
+            instance.parentViewModel = viewModel;
+
             instance.on('blur',function( e ){
                 $("#editorToolbar").hide();
                 if (viewModel.hasOwnProperty('dataModel') && viewModel.dataModel.hasOwnProperty("editText")) {

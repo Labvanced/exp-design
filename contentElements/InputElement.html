@@ -12,8 +12,7 @@
 
 <template id='input-preview-template'>
 
-    <div class="notDraggable" data-bind="wysiwyg: dataModel.modifier().selectedTrialView.questionText, valueUpdate: 'afterkeydown'">
-    </div>
+    <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
     <div>
         <!-- ko if: (dataModel.inputType()=='number')  -->
         <div><input style="position:relative;left: 0%;" type="number" class="form-control" data-bind="value: value"></div>
@@ -41,7 +40,7 @@
 </template>
 
 <template id='input-playerview-template'>
-    <div data-bind="html: dataModel.modifier().selectedTrialView.questionText"></div>
+    <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
     <br>
     <div>
         <!-- ko if: (dataModel.inputType()=='number')  -->

@@ -33,23 +33,22 @@
 </template>
 
 <template id="choice-preview-template">
-    <div class="notDraggable" data-bind="wysiwyg: questionText, valueUpdate: 'afterkeydown'">
-    </div>
+    <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
             <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue().value, click:function(){return true}, clickBubble: false">
-            <div style="display: inline-block; margin-bottom: inherit; margin-top: inherit;" class="notDraggable" data-bind="wysiwyg: multChoiceText, valueUpdate: 'afterkeydown'"></div>
+            <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" class="notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
         </div>
     </div>
     <br>
 </template>
 
 <template id="choice-playerview-template">
-    <div data-bind="html: questionText"></div>
+    <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
             <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false">
-            <div style="display: inline-block; margin-bottom: inherit; margin-top: inherit" data-bind="html: multChoiceText"></div>
+            <div   style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
         </div>
     </div>
     <br>

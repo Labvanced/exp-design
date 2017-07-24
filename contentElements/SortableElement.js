@@ -12,75 +12,47 @@ var SortableElement = function(expData) {
 
     this.elements =  ko.observableArray([]).extend({sortById: null});
     this.elementIds =  ko.observableArray([]).extend({sortById: null});
-    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
-    this.variable = ko.observable();
-
-    this.modifier = ko.observable(new Modifier(this.expData, this));
-
+    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
 
     ///// not serialized
-    this.elementIdsCombined = ko.computed(function() {
-        var elems = self.elementIds();
-        var output = '/***/';
-        for (var i =0; i<elems.length;i++){
-            output += self.elementIds()[i] + '/***/'
-        }
-        return output;
-    });
-
     this.selected = ko.observable(false);
     this.activeSorting = ko.observable(false);
-
+    this.elementIdMap = {};
     /////
 };
 
 SortableElement.prototype.label = "Sortable";
 SortableElement.prototype.iconPath = "/resources/icons/tools/sort.svg";
-SortableElement.prototype.modifiableProp = ["questionText"];
-SortableElement.prototype.dataType =   [ "string"];
 SortableElement.prototype.initWidth = 350;
 SortableElement.prototype.initHeight = 100;
 
 SortableElement.prototype.init = function() {
 
-    var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType(GlobalVar.dataTypes[0]);
-    globalVar.scope(GlobalVar.scopes[2]);
-    globalVar.scale(GlobalVar.scales[0]);
-    var name = this.parent.name();
-    globalVar.name(name);
-    globalVar.resetStartValue();
-    this.variable(globalVar);
-
-    var frameOrPageElement = this.parent;
-    frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
-    this.setVariableBackRef();
-
     this.addElem('id1');
     this.addElem('id2');
     this.addElem('id3');
 
-    this.variable().startValue().value(this.elementIdsCombined());
-};
-
-SortableElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'Sortable');
 };
 
 SortableElement.prototype.addElem = function (elemId) {
     if (elemId){
         var text = 'element' + (this.elements().length+1);
-        var  elem = ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">'+text+'</span></span>');
+        var elem = new SortableEntry(this);
+        elem.init();
+        elem.sortableText().setText('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">'+text+'</span></span>');
         this.elements.push(elem);
         this.elementIds.push(elemId);
+        this.elementIdMap[elemId] = elem;
     }
 
 };
 
 SortableElement.prototype.removeElem = function () {
     var idx = this.elements().length-1;
+    delete this.elementIdMap[this.elementIds()[idx]];
     this.elements.splice(idx,1);
     this.elementIds.splice(idx,1);
+
 };
 
 /**
@@ -88,16 +60,25 @@ SortableElement.prototype.removeElem = function () {
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 SortableElement.prototype.getAllModifiers = function(modifiersArr) {
-    modifiersArr.push(this.modifier());
+    this.questionText().getAllModifiers(modifiersArr);
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.getAllModifiers(modifiersArr);
+    } );
 };
 
 SortableElement.prototype.setPointers = function(entitiesArr) {
-    var array = [];
+//    var array = [];
     for (var i=0; i<this.elements().length; i++) {
-        array[i] = ko.observable(this.elements()[i])
+        this.elements()[i].setPointers(entitiesArr);
+//        array[i] = ko.observable(this.elements()[i]);
     }
-    this.elements(array);
-    this.modifier().setPointers(entitiesArr);
+//    this.elements(array);
+
+    for (var i=0; i<this.elementIds().length; i++) {
+        this.elementIdMap[this.elementIds()[i]] = this.elements()[i];
+    }
+
+    this.questionText().setPointers(entitiesArr);
 };
 
 /**
@@ -106,6 +87,33 @@ SortableElement.prototype.setPointers = function(entitiesArr) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 SortableElement.prototype.reAddEntities = function(entitiesArr) {
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.reAddEntities(entitiesArr);
+    } );
+    this.questionText().reAddEntities(entitiesArr);
+};
+
+SortableElement.prototype.selectTrialType = function(selectionSpec) {
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.selectTrialType(selectionSpec);
+    } );
+    this.questionText().selectTrialType(selectionSpec);
+};
+
+SortableElement.prototype.dispose = function () {
+    this.questionText().dispose();
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.dispose();
+    } );
+};
+
+SortableElement.prototype.getTextRefs = function(textArr, label){
+    var questlabel = label + '.Question';
+    this.questionText().getTextRefs(textArr, questlabel);
+    jQuery.each( this.elements(), function( index, elem ) {
+        var ind = index + 1;
+        elem.getTextRefs(textArr, label + '.Entry' + ind);
+    } );
 
 };
 
@@ -115,12 +123,19 @@ SortableElement.prototype.reAddEntities = function(entitiesArr) {
  * @returns {PageData}
  */
 SortableElement.prototype.fromJS = function(data) {
+    var self = this;
     this.type = data.type;
-    this.questionText(data.questionText);
-    this.elements(data.elements);
+    if(data.questionText.hasOwnProperty('rawText')) {
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText().fromJS(data.questionText);
+    }
+    else {
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
+    }
+    this.elements(jQuery.map(data.elements, function (elemData) {
+        return (new SortableEntry(self)).fromJS(elemData);
+    }));
     this.elementIds(data.elementIds);
-    this.modifier(new Modifier(this.expData, this));
-    this.modifier().fromJS(data.modifier);
 };
 
 /**
@@ -128,18 +143,109 @@ SortableElement.prototype.fromJS = function(data) {
  * @returns {object}
  */
 SortableElement.prototype.toJS = function() {
+    var self = this;
     return {
         type: this.type,
-        questionText: this.questionText(),
-        elements: jQuery.map( this.elements(), function( elem ) {
-            return elem();
+        questionText: this.questionText().toJS(),
+        elements: jQuery.map( this.elementIds(), function( elem ) {
+            return self.elementIdMap[elem].toJS();
         }),
-        elementIds: this.elementIds(),
-        modifier: this.modifier().toJS()
+        elementIds: this.elementIds()
     };
 };
 
 
+//////////////////////////////////////////////
+////// SortableEntry
+//////////////////////////////////////////////
+
+
+var SortableEntry= function(selectionParent) {
+    this.parent = selectionParent;
+    this.sortableText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+    this.variable = ko.observable(null);
+};
+
+SortableEntry.prototype.init = function() {
+    var globalVar = new GlobalVar(this.parent.expData);
+    globalVar.dataType(GlobalVar.dataTypes[1]);
+    globalVar.scope(GlobalVar.scopes[4]);
+    globalVar.scale(GlobalVar.scales[1]);
+    var name = this.parent.parent.name() +'_'+ this.parent.elements().length;
+    globalVar.name(name);
+    globalVar.resetStartValue();
+    this.variable(globalVar);
+
+    var frameOrPageElement = this.parent.parent;
+    frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
+    this.setVariableBackRef();
+
+    this.name = 'element' + this.parent.elements().length;
+    this.variable().startValue().value(this.parent.elements().length);
+
+};
+
+SortableEntry.prototype.setVariableBackRef = function() {
+    this.variable().addBackRef(this, this.parent.parent, true, true, 'sortable');
+};
+
+
+SortableEntry.prototype.reAddEntities = function(entitiesArr) {
+    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+        entitiesArr.push(this.variable());
+    }
+    this.sortableText().reAddEntities(entitiesArr);
+
+};
+
+SortableEntry.prototype.getIndex = function() {
+    return this.parent.elements.indexOf(this);
+};
+
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+SortableEntry.prototype.getAllModifiers = function(modifiersArr) {
+    this.sortableText().getAllModifiers(modifiersArr);
+};
+
+SortableEntry.prototype.selectTrialType = function(selectionSpec) {
+    this.sortableText().selectTrialType(selectionSpec);
+};
+
+SortableEntry.prototype.setPointers = function(entitiesArr) {
+    this.variable(entitiesArr.byId[this.variable()]);
+    this.setVariableBackRef();
+    this.sortableText().setPointers(entitiesArr);
+};
+
+SortableEntry.prototype.dispose = function () {
+    this.sortableText().dispose();
+};
+
+SortableEntry.prototype.getTextRefs = function(textArr, label){
+    this.sortableText().getTextRefs(textArr, label);
+};
+
+SortableEntry.prototype.fromJS = function(data) {
+    if(data.sortableText.hasOwnProperty('rawText')) {
+        this.sortableText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+        this.sortableText().fromJS(data.sortableText);
+    }
+    else{
+        this.sortableText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, data.sortableText));
+    }
+    this.variable(data.variable);
+    return this;
+};
+
+SortableEntry.prototype.toJS = function() {
+    return {
+        variable:  this.variable().id(),
+        sortableText:  this.sortableText().toJS()
+    };
+};
 
 
 function createSortableElementComponents() {
@@ -156,7 +262,7 @@ function createSortableElementComponents() {
 
 
                     if (this.enableSortingSubscription){
-                        this.enableSortingSubscription.dispose()
+                        this.enableSortingSubscription.dispose();
                     }
                     this.enableSortingSubscription = this.dataModel.activeSorting.subscribe(function(val){
                         self.sortableElement = $('#'+self.dataModel.tempId);
@@ -168,15 +274,17 @@ function createSortableElementComponents() {
                         }
                     });
 
-                    this.relinkCallback = function() {
+                    this.relinkCallback = function(index) {
                         var frameData = self.dataModel.parent.parent;
+                        var sortableEntry = self.dataModel.elements()[index];
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
-                            self.dataModel.variable(newVariable);
-                            self.dataModel.setVariableBackRef(newVariable);
+                            sortableEntry.variable(newVariable);
+                            sortableEntry.setVariableBackRef(newVariable);
                         }, frameData);
                         variableDialog.show();
                     };
+
                 };
 
                 viewModel.prototype.addElem= function() {
@@ -185,7 +293,7 @@ function createSortableElementComponents() {
                 };
 
                 viewModel.prototype.removeElem= function() {
-                    this.dataModel.removeElem()
+                    this.dataModel.removeElem();
                 };
 
 
@@ -230,19 +338,14 @@ function createSortableElementComponents() {
                                 self.dataModel.elementIds.splice(self.stopPosition(),0,elem);
                                 self.startPosition(null);
                                 self.stopPosition(null);
+
+                                var entry =  self.dataModel.elementIdMap[elem];
+                                entry.variable().value().value(self.stopPosition);
                             }
                         }
                     });
 
-                    if (this.setVarSubscription){
-                        this.setVarSubscription.dispose();
-                    }
-                    this.setVarSubscription = this.dataModel.elementIdsCombined.subscribe(function(val){
-                       self.dataModel.variable().startValue().value(val)
-                    });
-
                 };
-
 
 
                 return new viewModel(dataModel);
@@ -283,16 +386,12 @@ function createSortableElementComponents() {
                                 self.dataModel.elementIds.splice(self.stopPosition(),0,elem);
                                 self.startPosition(null);
                                 self.stopPosition(null);
+                                var entry =  self.dataModel.elementIdMap[elem];
+                                entry.variable().value().value(self.stopPosition);
                             }
                         }
                     });
 
-                    if (this.setVarSubscription){
-                        this.setVarSubscription.dispose();
-                    }
-                    this.setVarSubscription = this.dataModel.elementIdsCombined.subscribe(function(val){
-                        self.dataModel.variable().value().value(val)
-                    });
                 };
 
                 return new viewModel(dataModel);

@@ -8,7 +8,7 @@ var ScaleElement= function(expData) {
     this.type= "ScaleElement";
     this.id = ko.observable(guid());
 
-    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
     this.addDeleteFromCol = ko.observable(this.addDeleteOptionsCol[1]);
 
     this.labels = ko.observableArray([]);
@@ -24,11 +24,6 @@ var ScaleElement= function(expData) {
 
     this.margin = ko.observable('2pt');
 
-
-
-    // modifier:
-    this.modifier = ko.observable(new Modifier(this.expData, this));
-
     ///// not serialized
     this.selected = ko.observable(false);
     this.converting = false;
@@ -38,8 +33,6 @@ var ScaleElement= function(expData) {
 
 ScaleElement.prototype.label = "Matrix";
 ScaleElement.prototype.iconPath = "/resources/icons/tools/matrix.svg";
-ScaleElement.prototype.modifiableProp = ["questionText","labels"];
-ScaleElement.prototype.dataType =      [ "string","string"];
 ScaleElement.prototype.initWidth = 750;
 ScaleElement.prototype.initHeight = 170;
 ScaleElement.prototype.addDeleteOptionsCol = ["left","right"];
@@ -47,13 +40,15 @@ ScaleElement.prototype.addDeleteOptionsCol = ["left","right"];
 ScaleElement.prototype.init = function() {
     this.addEntry();
 
-    this.labels([
-        ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">totally agree</span></span></p>'),
-        ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly agree</span></span></p>'),
-        ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">undecided</span></span></p>'),
-        ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly disagree</span></span></p>'),
-        ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">totally disagree</span></span></p>')
-    ]);
+    for(var i = 0; i<5; i++){
+        this.labels.push(new ScaleLabel(this));
+    }
+
+    this.labels()[0].labelText().setText('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">totally agree</span></span></p>');
+    this.labels()[1].labelText().setText('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly agree</span></span></p>');
+    this.labels()[2].labelText().setText('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">undecided</span></span></p>');
+    this.labels()[3].labelText().setText('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly disagree</span></span></p>');
+    this.labels()[4].labelText().setText('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">totally disagree</span></span></p>');
 };
 
 
@@ -80,7 +75,10 @@ ScaleElement.prototype.getAllModifiers = function(modifiersArr) {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.getAllModifiers(modifiersArr);
     } );
-    modifiersArr.push(this.modifier());
+    jQuery.each( this.labels(), function( index, elem ) {
+        elem.getAllModifiers(modifiersArr);
+    } );
+    this.questionText().getAllModifiers(modifiersArr);
 };
 
 ScaleElement.prototype.setPointers = function(entitiesArr) {
@@ -88,77 +86,121 @@ ScaleElement.prototype.setPointers = function(entitiesArr) {
     for (var i=0; i<this.elements().length; i++) {
         this.elements()[i].setPointers(entitiesArr);
     }
-    this.modifier().setPointers(entitiesArr);
+    for (var i=0; i<this.labels().length; i++) {
+        this.labels()[i].setPointers(entitiesArr);
+    }
 
     if (this.converting) {
         // if we need to convert from old scale element format, we create the first entry here.
         this.addEntry();
         this.converting = false;
     }
+
+    this.questionText().setPointers(entitiesArr);
 };
 
 ScaleElement.prototype.reAddEntities = function(entitiesArr) {
 
     jQuery.each( this.elements(), function( index, elem ) {
-        elem.reAddEntities(entitiesArr)
+        elem.reAddEntities(entitiesArr);
     } );
-    this.modifier().reAddEntities(entitiesArr);
+    jQuery.each( this.labels(), function( index, elem ) {
+        elem.reAddEntities(entitiesArr);
+    } );
+    this.questionText().reAddEntities(entitiesArr);
 };
 
 ScaleElement.prototype.selectTrialType = function(selectionSpec) {
 
     jQuery.each( this.elements(), function( index, elem ) {
-        elem.selectTrialType(selectionSpec)
+        elem.selectTrialType(selectionSpec);
     } );
-    this.modifier().selectTrialType(selectionSpec);
+    jQuery.each( this.labels(), function( index, elem ) {
+        elem.selectTrialType(selectionSpec);
+    } );
+    this.questionText().selectTrialType(selectionSpec);
+};
+
+ScaleElement.prototype.dispose = function () {
+    this.questionText().dispose();
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.dispose();
+    } );
+    jQuery.each( this.labels(), function( index, elem ) {
+        elem.dispose();
+    } );
+};
+
+ScaleElement.prototype.getTextRefs = function(textArr, label){
+    var questlabel = label + '.Question';
+    this.questionText().getTextRefs(textArr, questlabel);
+    jQuery.each( this.labels(), function( index, elem ) {
+        var ind = index + 1;
+        elem.getTextRefs(textArr, label + '.Label' + ind);
+    } );
+    jQuery.each( this.elements(), function( index, elem ) {
+        var ind = index + 1;
+        elem.getTextRefs(textArr, label + '.Entry' + ind);
+    } );
 };
 
 ScaleElement.prototype.toJS = function() {
 
-
-    var labels = jQuery.map( this.labels(), function( elem ) {return elem();});
-
     return {
         type: this.type,
-        questionText: this.questionText(),
-        labels: labels,
-        elements: jQuery.map( this.elements(), function( elem ) {
+        questionText: this.questionText().toJS(),
+        labels: jQuery.map( this.labels(), function( elem ) {
             return elem.toJS();
         }),
-        modifier: this.modifier().toJS()
+        elements: jQuery.map( this.elements(), function( elem ) {
+            return elem.toJS();
+        })
     };
 };
 
 ScaleElement.prototype.fromJS = function(data) {
     var self = this;
     this.type=data.type;
-    this.questionText(data.questionText);
-
-    // check if new or old format:
-    if (data.hasOwnProperty('labels')) {
-        // already has the correct new format
-        this.labels(jQuery.map( data.labels, function( elem ) {return ko.observable(elem);}));
+    if(data.questionText.hasOwnProperty('rawText')) {
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText().fromJS(data.questionText);
+        this.labels(jQuery.map( data.labels, function( elem ) {
+            return new ScaleLabel(self).fromJS(elem);
+        }));
         this.elements(jQuery.map( data.elements, function( elemData ) {
             return (new ScaleEntry(self)).fromJS(elemData);
         } ));
     }
-    else {
-        // we need to convert:
-        this.converting = true;
-        var nrChoices = data.choices.length;
-        for (var i=0; i<nrChoices; i++) {
-            var label = '<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;"></span></span></p>';
-            if (i==0) {
-                label = data.startLabel;
+    else{
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
+        // check if new or old format:
+        if (data.hasOwnProperty('labels')) {
+            // already has the correct new format
+            this.labels(jQuery.map( data.labels, function( elem ) {
+                return new ScaleLabel(self).fromJS(elem);
+            }));
+            this.elements(jQuery.map( data.elements, function( elemData ) {
+                return (new ScaleEntry(self)).fromJS(elemData);
+            } ));
+        }
+        else {
+            // we need to convert:
+            this.converting = true;
+            var nrChoices = data.choices.length;
+            for (var i=0; i<nrChoices; i++) {
+                var label = '<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;"></span></span></p>';
+                if (i==0) {
+                    label = data.startLabel;
+                }
+                if (i==nrChoices-1) {
+                    label = data.endLabel;
+                }
+                var labelElement = new ScaleLabel(self);
+                labelElement.labelText().setText(label);
+                this.labels.push(labelElement);
             }
-            if (i==nrChoices-1) {
-                label = data.endLabel;
-            }
-            this.labels.push(ko.observable(label));
         }
     }
-    this.modifier(new Modifier(this.expData, this));
-    this.modifier().fromJS(data.modifier);
 };
 
 
@@ -166,17 +208,13 @@ ScaleElement.prototype.fromJS = function(data) {
 
 var ScaleEntry= function(scaleParent) {
     var self = this;
-    this.scaleParent = scaleParent;
-    this.rowText= ko.observable( '<span style="font-size:14px;"><span style="font-family:Arial,Helvetica,sans-serif;">your question</span></span>');
+    this.parent = scaleParent;
+    this.rowText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<span style="font-size:14px;"><span style="font-family:Arial,Helvetica,sans-serif;">your question</span></span>'));
     this.variable=ko.observable(null);
-    this.modifier = ko.observable(new Modifier(this.scaleParent.expData, this));
 };
 
-ScaleEntry.prototype.modifiableProp = ["rowText"];
-ScaleEntry.prototype.dataType =[ "string"];
-
 ScaleEntry.prototype.selectTrialType = function(selectionSpec) {
-    this.modifier().selectTrialType(selectionSpec);
+    this.rowText().selectTrialType(selectionSpec);
 };
 
 ScaleEntry.prototype.init = function() {
@@ -184,18 +222,18 @@ ScaleEntry.prototype.init = function() {
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope(GlobalVar.scopes[2]);
     globalVar.scale(GlobalVar.scales[1]);
-    var name = this.scaleParent.parent.name() +'_'+ this.scaleParent.elements().length;
+    var name = this.parent.parent.name() +'_'+ this.parent.elements().length;
     globalVar.name(name);
     globalVar.resetStartValue();
     this.variable(globalVar);
 
-    var frameOrPageElement = this.scaleParent.parent;
+    var frameOrPageElement = this.parent.parent;
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
 };
 
 ScaleEntry.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.scaleParent.parent, true, true, 'scale');
+    this.variable().addBackRef(this, this.parent.parent, true, true, 'scale');
 };
 
 /**
@@ -203,12 +241,13 @@ ScaleEntry.prototype.setVariableBackRef = function() {
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 ScaleEntry.prototype.getAllModifiers = function(modifiersArr) {
-    modifiersArr.push(this.modifier());
+    this.rowText().getAllModifiers(modifiersArr);
 };
 
 ScaleEntry.prototype.setPointers = function(entitiesArr) {
     this.variable(entitiesArr.byId[this.variable()]);
     this.setVariableBackRef();
+    this.rowText().setPointers(entitiesArr);
 };
 
 ScaleEntry.prototype.reAddEntities = function(entitiesArr) {
@@ -217,8 +256,22 @@ ScaleEntry.prototype.reAddEntities = function(entitiesArr) {
     }
 };
 
+ScaleEntry.prototype.dispose = function () {
+    this.rowText().dispose();
+};
+
+ScaleEntry.prototype.getTextRefs = function(textArr, label){
+    this.rowText().getTextRefs(textArr, label);
+};
+
 ScaleEntry.prototype.fromJS = function(data) {
-    this.rowText(data.rowText);
+    if(data.rowText.hasOwnProperty('rawText')) {
+        this.rowText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+        this.rowText().fromJS(data.rowText);
+    }
+    else{
+        this.rowText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, data.rowText));
+    }
     this.variable(data.variable);
     return this;
 };
@@ -226,10 +279,65 @@ ScaleEntry.prototype.fromJS = function(data) {
 ScaleEntry.prototype.toJS = function() {
     return {
         variable:  this.variable().id(),
-        rowText:  this.rowText()
+        rowText:  this.rowText().toJS()
     };
 };
 
+
+/**
+ * Element for the labels of the Matrix columns
+ * @param {ScaleElement} scaleParent - parent datamodel of the ScaleLabel
+ */
+var ScaleLabel= function(scaleParent) {
+    var self = this;
+    this.parent = scaleParent;
+    this.labelText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+};
+
+ScaleLabel.prototype.selectTrialType = function(selectionSpec) {
+    this.labelText().selectTrialType(selectionSpec);
+};
+
+/**
+ * This function is used recursively to retrieve an array with all modifiers.
+ * @param {Array} modifiersArr - this is an array that holds all modifiers.
+ */
+ScaleLabel.prototype.getAllModifiers = function(modifiersArr) {
+    this.labelText().getAllModifiers(modifiersArr);
+};
+
+ScaleLabel.prototype.setPointers = function(entitiesArr) {
+    this.labelText().setPointers(entitiesArr);
+};
+
+ScaleLabel.prototype.reAddEntities = function(entitiesArr) {
+    this.labelText().reAddEntities(entitiesArr);
+};
+
+ScaleLabel.prototype.dispose = function () {
+    this.labelText().dispose();
+};
+
+ScaleLabel.prototype.getTextRefs = function(textArr, label){
+    this.labelText().getTextRefs(textArr, label);
+};
+
+ScaleLabel.prototype.fromJS = function(data) {
+    if(data.labelText.hasOwnProperty('rawText')){
+        this.labelText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+        this.labelText().fromJS(data.labelText);
+    }
+    else{
+        this.labelText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, data.labelText));
+    }
+    return this;
+};
+
+ScaleLabel.prototype.toJS = function() {
+    return {
+        labelText:  this.labelText().toJS()
+    };
+};
 
 
 

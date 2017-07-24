@@ -54,7 +54,7 @@ FrameData.prototype.deleteChildEntity = function(entity) {
 
         // delete associated global vars
         if (entity.content().hasOwnProperty('variable')){
-            this.localWorkspaceVars.remove(entity.content().variable())
+            this.localWorkspaceVars.remove(entity.content().variable());
         }
 
         // delete associated global vars
@@ -62,10 +62,14 @@ FrameData.prototype.deleteChildEntity = function(entity) {
             var elems  = entity.content().elements();
             for (var i = 0; i< elems.length; i++){
                 if (elems[i].hasOwnProperty('variable')){
-                    this.localWorkspaceVars.remove(elems[i].variable())
+                    this.localWorkspaceVars.remove(elems[i].variable());
                 }
 
             }
+        }
+
+        if (typeof entity.content().dispose === 'function'){
+            entity.content().dispose();
         }
     }
 

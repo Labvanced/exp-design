@@ -64,6 +64,10 @@ PageData.prototype.deleteChildEntity = function(entity) {
 
             }
         }
+
+        if (typeof entity.content().dispose === 'function'){
+            entity.content().dispose();
+        }
     }
     obsArr.remove(entity);
 

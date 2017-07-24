@@ -110,6 +110,16 @@ FrameElement.prototype.reAddEntities = function(entitiesArr) {
 };
 
 
+/**
+ * Recursively gathers path of entities until EditableText
+ * @param {ko.observableArray} textArr - contains element label and rawText
+ * @param {String} label - to be added to the path
+ * @returns textArr on highes level
+ */
+FrameElement.prototype.getTextRefs = function(textArr, label){
+    this.content().getTextRefs(textArr, this.name());
+    return textArr;
+};
 
 /**
  * load from a json object to deserialize the states.

@@ -5,16 +5,13 @@ var CheckBoxElement= function(expData) {
 
     //serialized
     this.type= "CheckBoxElement";
-    this.questionText= ko.observable('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>');
+    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
 
     // content
     this.elements = ko.observableArray([]);
 
     // style
     this.margin = ko.observable('5pt');
-
-    // modifier:
-    this.modifier = ko.observable(new Modifier(this.expData, this));
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -23,15 +20,12 @@ var CheckBoxElement= function(expData) {
 
 CheckBoxElement.prototype.label = "Checkbox";
 CheckBoxElement.prototype.iconPath = "/resources/icons/tools/tool_checkbox.svg";
-CheckBoxElement.prototype.modifiableProp = ["questionText"];
-CheckBoxElement.prototype.dataType = ["string"];
 CheckBoxElement.prototype.initWidth = 180;
 CheckBoxElement.prototype.initHeight = 90;
 
 CheckBoxElement.prototype.init = function() {
     this.addEntry();
 };
-
 
 CheckBoxElement.prototype.addEntry = function() {
      var checkBoxEntry = new CheckBoxEntry(this);
@@ -55,7 +49,7 @@ CheckBoxElement.prototype.getAllModifiers = function(modifiersArr) {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.getAllModifiers(modifiersArr);
     } );
-    modifiersArr.push(this.modifier());
+    this.questionText().getAllModifiers(modifiersArr);
 };
 
 CheckBoxElement.prototype.setPointers = function(entitiesArr) {
@@ -63,47 +57,67 @@ CheckBoxElement.prototype.setPointers = function(entitiesArr) {
     for (var i=0; i<this.elements().length; i++) {
         this.elements()[i].setPointers(entitiesArr);
     }
-    this.modifier().setPointers(entitiesArr);
+    this.questionText().setPointers(entitiesArr);
 };
 
 CheckBoxElement.prototype.reAddEntities = function(entitiesArr) {
 
     jQuery.each( this.elements(), function( index, elem ) {
-        elem.reAddEntities(entitiesArr)
+        elem.reAddEntities(entitiesArr);
     } );
-    this.modifier().reAddEntities(entitiesArr);
+    this.questionText().reAddEntities(entitiesArr);
 };
 
 CheckBoxElement.prototype.selectTrialType = function(selectionSpec) {
     jQuery.each( this.elements(), function( index, elem ) {
-        elem.selectTrialType(selectionSpec)
+        elem.selectTrialType(selectionSpec);
     } );
-    this.modifier().selectTrialType(selectionSpec);
+    this.questionText().selectTrialType(selectionSpec);
+};
+
+CheckBoxElement.prototype.dispose = function () {
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.dispose();
+    } );
+    this.questionText().dispose();
+};
+
+CheckBoxElement.prototype.getTextRefs = function(textArr, label){
+    var questlabel = label + '.Question';
+    this.questionText().getTextRefs(textArr, questlabel);
+    jQuery.each( this.elements(), function( index, elem ) {
+        var ind = index + 1;
+        elem.getTextRefs(textArr, label + '.Entry' + ind);
+    } );
+
 };
 
 CheckBoxElement.prototype.toJS = function() {
 
     return {
         type: this.type,
-        questionText: this.questionText(),
+        questionText: this.questionText().toJS(),
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
-        }),
-        modifier: this.modifier().toJS()
+        })
     };
 };
 
 CheckBoxElement.prototype.fromJS = function(data) {
     var self = this;
     this.type=data.type;
-    this.questionText(data.questionText);
+    if(data.questionText.hasOwnProperty('rawText')){
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText().fromJS(data.questionText);
+    }
+    else{
+        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
+    }
     if (data.elements) {
         this.elements(jQuery.map(data.elements, function (elemData) {
             return (new CheckBoxEntry(self)).fromJS(elemData);
         }));
     }
-    this.modifier(new Modifier(this.expData, this));
-    this.modifier().fromJS(data.modifier);
 };
 
 
@@ -111,17 +125,13 @@ CheckBoxElement.prototype.fromJS = function(data) {
 
 
 var CheckBoxEntry= function(checkBoxParent) {
-    this.checkBoxParent = checkBoxParent;
-    this.checkBoxText= ko.observable( '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">check</span></span>');
+    this.parent = checkBoxParent;
+    this.checkBoxText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">check</span></span>'));
     this.variable=ko.observable(null);
-    this.modifier = ko.observable(new Modifier(this.checkBoxParent.expData, this));
 };
 
-CheckBoxEntry.prototype.modifiableProp = ["checkBoxText"];
-CheckBoxEntry.prototype.dataType =[ "string"];
-
 CheckBoxEntry.prototype.selectTrialType = function(selectionSpec) {
-    this.modifier().selectTrialType(selectionSpec);
+    this.checkBoxText().selectTrialType(selectionSpec);
 };
 
 CheckBoxEntry.prototype.init = function() {
@@ -129,18 +139,18 @@ CheckBoxEntry.prototype.init = function() {
     globalVar.dataType(GlobalVar.dataTypes[2]);
     globalVar.scope(GlobalVar.scopes[4]);
     globalVar.scale(GlobalVar.scales[1]);
-    var name = this.checkBoxParent.parent.name() +'_'+ this.checkBoxParent.elements().length;
+    var name = this.parent.parent.name() +'_'+ this.parent.elements().length;
     globalVar.name(name);
     globalVar.resetStartValue();
     this.variable(globalVar);
 
-    var frameOrPageElement = this.checkBoxParent.parent;
+    var frameOrPageElement = this.parent.parent;
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
 };
 
 CheckBoxEntry.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.checkBoxParent.parent, true, true, 'checkbox');
+    this.variable().addBackRef(this, this.parent.parent, true, true, 'checkbox');
 };
 
 /**
@@ -148,22 +158,38 @@ CheckBoxEntry.prototype.setVariableBackRef = function() {
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 CheckBoxEntry.prototype.getAllModifiers = function(modifiersArr) {
-    modifiersArr.push(this.modifier());
+    this.checkBoxText().getAllModifiers(modifiersArr);
 };
 
 CheckBoxEntry.prototype.setPointers = function(entitiesArr) {
     this.variable(entitiesArr.byId[this.variable()]);
     this.setVariableBackRef();
+    this.checkBoxText().setPointers(entitiesArr);
 };
 
 CheckBoxEntry.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
+    this.checkBoxText().reAddEntities(entitiesArr);
+};
+
+CheckBoxEntry.prototype.dispose = function () {
+  this.checkBoxText().dispose();
+};
+
+CheckBoxEntry.prototype.getTextRefs = function(textArr, label){
+    this.checkBoxText().getTextRefs(textArr, label);
 };
 
 CheckBoxEntry.prototype.fromJS = function(data) {
-    this.checkBoxText(data.checkBoxText);
+    if(data.checkBoxText.hasOwnProperty('rawText')){
+        this.checkBoxText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+        this.checkBoxText().fromJS(data.checkBoxText);
+    }
+    else{
+        this.checkBoxText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, data.checkBoxText));
+    }
     this.variable(data.variable);
     return this;
 };
@@ -171,11 +197,9 @@ CheckBoxEntry.prototype.fromJS = function(data) {
 CheckBoxEntry.prototype.toJS = function() {
     return {
         variable:  this.variable().id(),
-        checkBoxText:  this.checkBoxText()
+        checkBoxText:  this.checkBoxText().toJS()
     };
 };
-
-
 
 
 function createCheckBoxComponents() {

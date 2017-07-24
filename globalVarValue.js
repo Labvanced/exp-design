@@ -45,6 +45,15 @@ GlobalVarValueString.prototype.toJS = function() {
 };
 
 
+/**
+ * return string representation of value
+ * @returns {object}
+ */
+
+GlobalVarValueString.prototype.toString = function () {
+    return this.value();
+};
+
 ////////////////////  GlobalVarValueNumeric  ///////////////////////////////////
 
 GlobalVarValueNumeric = function(parentVar) {
@@ -89,6 +98,18 @@ GlobalVarValueNumeric.prototype.toJS = function() {
     return this.value();
 };
 
+/**
+ * return string representation of value
+ * @returns {object}
+ */
+
+GlobalVarValueNumeric.prototype.toString = function () {
+    if(this.value() !== null){
+        return this.value().toString();
+    }else{
+        return null;
+    }
+};
 
 ////////////////////  GlobalVarValueBoolean  ///////////////////////////////////
 
@@ -133,6 +154,18 @@ GlobalVarValueBoolean.prototype.toJS = function() {
     return this.value();
 };
 
+/**
+ * return string representation of value
+ * @returns {object}
+ */
+
+GlobalVarValueBoolean.prototype.toString = function () {
+    if(this.value() !== null){
+        return this.value().toString();
+    }else{
+        return null;
+    }
+};
 
 ////////////////////  GlobalVarValueCategorical  ///////////////////////////////////
 
