@@ -536,7 +536,12 @@ ActionSetProp.prototype.toJS = function() {
 var ActionJumpTo = function(event) {
     this.event = event;
     this.jumpType = ko.observable(null);
-    this.frameToJump= ko.observable(null)
+    this.frameToJump= ko.observable(null);
+
+
+    this.frameToJump.subscribe(function(newVal) {
+       console.log("change")
+    });
 };
 
 ActionJumpTo.prototype.type = "ActionJumpTo";
@@ -683,10 +688,14 @@ ActionDelayedActions.prototype.run = function(triggerParams) {
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionDelayedActions.prototype.runDelayed = function(triggerParams) {
-    var actions = this.subActions();
-    for (var i=0; i<actions.length; i++) {
-        actions[i].run(triggerParams);
+
+    if (this.event.requirement()==null || this.event.requirement().checkIfTrue()) {
+        var actions = this.subActions();
+        for (var i=0; i<actions.length; i++) {
+            actions[i].run(triggerParams);
+        }
     }
+
 };
 
 /**
