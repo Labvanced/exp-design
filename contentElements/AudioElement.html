@@ -1,6 +1,17 @@
 <template id='audio-editview-template'>
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Audio</div>
+
+        <label class="property-description" for="imgFile3">Filename: </label>
+        <span style="width: 180px;">
+                <span id="imgFile3" class="taskeditor-input" style="display: inline-flex;margin-top: 8px" data-bind="{text: dataModel.modifier().selectedTrialView.file_orig_name, css: { 'modified-prop': !( dataModel.file_orig_name()=== dataModel.modifier().selectedTrialView.file_orig_name()) }}" ></span>
+                <span class="file-button"  data-bind="click: function() { uc.currentEditorView.mediaEditor.openFileManager(true)}" style="cursor: pointer">
+                    <img  src="/resources/icons/openFile.svg" style="width: 20px;"/>
+                </span>
+            </span>
+        <br>
+
+
         <span class="property-description">
             Show Media Controls:
             <input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showMediaControls">

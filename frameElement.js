@@ -21,6 +21,10 @@ var FrameElement= function(expData) {
     this.anchorPointY = ko.observable('low');
     this.visibility = ko.observable(1).extend({ numeric: 2 });
     this.keepAspectRatio = ko.observable(false);
+
+    // new
+    this.stimulusInformation  = ko.observable(null);
+
     this.id = ko.observable(guid());
     this.type = "FrameElement";
     this.name = ko.observable("frameElement");
@@ -153,6 +157,9 @@ FrameElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('visibility')) {
         this.visibility(data.visibility);
     }
+    if(data.hasOwnProperty('stimulusInformation')) {
+        this.stimulusInformation(data.stimulusInformation);
+    }
 
 
     this.isActive(data.isActive);
@@ -177,6 +184,7 @@ FrameElement.prototype.fromJS = function(data) {
     }
     return this;
 };
+
 
 /**
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
@@ -205,6 +213,7 @@ FrameElement.prototype.toJS = function() {
         visibility: this.visibility(),
         isActive:  this.isActive(),
         keepAspectRatio: this.keepAspectRatio(),
+        stimulusInformation: this.stimulusInformation(),
         content: contentData
     };
 };

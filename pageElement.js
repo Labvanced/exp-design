@@ -15,6 +15,9 @@ var PageElement = function(expData) {
     this.id = ko.observable(guid());
     this.selected = ko.observable(false);
 
+    // new
+    this.stimulusInformation  = ko.observable(null);
+
     this.shortName = ko.computed(function() {
         if (self.name()){
             return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
@@ -109,6 +112,10 @@ PageElement.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('modifier')) {
         this.modifier().fromJS(data.modifier);
     }
+    if(data.hasOwnProperty('stimulusInformation')) {
+        this.stimulusInformation(data.stimulusInformation);
+    }
+
 
     if(data.content){
         var classObj = window[data.content.type];
@@ -146,6 +153,7 @@ PageElement.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         name: this.name(),
+        stimulusInformation: this.stimulusInformation(),
         modifier: this.modifier().toJS(),
         content: contentData
     };

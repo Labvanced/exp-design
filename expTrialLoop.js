@@ -73,6 +73,13 @@ var ExpTrialLoop = function (expData) {
                 l = l+ facGroup.conditionsLinear()[k].trials().length;
             }
         }
+        // update random factors, as soon as amount of trials changes
+        if (uc.currentEditorView){
+            if (uc.currentEditorView.randomizationDialog){
+                uc.currentEditorView.randomizationDialog.updateValues();
+            }
+        }
+
         return l
     }, this);
 
