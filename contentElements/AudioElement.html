@@ -4,7 +4,7 @@
 
         <label class="property-description" for="imgFile3">Filename: </label>
         <span style="width: 180px;">
-                <span id="imgFile3" class="taskeditor-input" style="display: inline-flex;margin-top: 8px" data-bind="{text: dataModel.modifier().selectedTrialView.file_orig_name, css: { 'modified-prop': !( dataModel.file_orig_name()=== dataModel.modifier().selectedTrialView.file_orig_name()) }}" ></span>
+                <span id="imgFile3" class="taskeditor-input" style="display: inline-flex;margin-top: 8px; overflow: hidden" data-bind="{text: dataModel.modifier().selectedTrialView.file_orig_name, css: { 'modified-prop': !( dataModel.file_orig_name()=== dataModel.modifier().selectedTrialView.file_orig_name()) }}" ></span>
                 <span class="file-button"  data-bind="click: function() { uc.currentEditorView.mediaEditor.openFileManager(true)}" style="cursor: pointer">
                     <img  src="/resources/icons/openFile.svg" style="width: 20px;"/>
                 </span>

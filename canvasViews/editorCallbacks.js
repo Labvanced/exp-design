@@ -7,7 +7,7 @@ var EditorCallbacks = function(frameElementView,frameView) {
     this.frameView = frameView;
 
 
-    this.addHandles();
+   this.addHandles();
 
     this.addCallbacks();
 
@@ -110,6 +110,7 @@ EditorCallbacks.prototype.addCallbacks = function() {
     this.addResize();
     this.dataModel.keepAspectRatio.subscribe(function(newVal) {
         self2.addResize();
+        self2.frameView.parent.selectElement(self2.dataModel);
     });
 
     // It is only draggable or resizable when it is selected:
@@ -142,6 +143,8 @@ EditorCallbacks.prototype.addResize = function() {
     // destroy previously initialized resize element if it exists:
     if ($(self2.div).resizable( "instance" )) {
         $(self2.div).resizable( "destroy" );
+        $(self2.handles).remove();
+        self2.addHandles();
     }
 
     $(this.div).resizable({
@@ -166,16 +169,18 @@ EditorCallbacks.prototype.addResize = function() {
             self2.dataModel.expData.parentExperiment.tempDisableAutosave = false;
             self2.dataModel.expData.notifyChanged();
         },
-        handles: {
-            'nw': $(this.div).find('.resizableHandleNW'),
-            'ne': $(this.div).find('.resizableHandleNE'),
-            'sw': $(this.div).find('.resizableHandleSW'),
-            'se': $(this.div).find('.resizableHandleSE'),
-            'n': $(this.div).find('.resizableHandleN'),
-            'e': $(this.div).find('.resizableHandleE'),
-            's': $(this.div).find('.resizableHandleS'),
-            'w': $(this.div).find('.resizableHandleW')
-        }
+        handles:
+
+            {
+                'nw':  $(self2.handleResizeNW),
+                'ne': $(self2.handleResizeNE),
+                'sw': $(self2.handleResizeSW),
+                'se': $(self2.handleResizeSE),
+                'n':  $(self2.handleResizeN),
+                'e':  $(self2.handleResizeE),
+                's':  $(self2.handleResizeS),
+                'w':  $(self2.handleResizeW)
+            }
     });
 
 };
