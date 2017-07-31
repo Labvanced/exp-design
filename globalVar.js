@@ -26,7 +26,7 @@ var GlobalVar = function (expData) {
     this.isRecorded = ko.observable(true);
 
     this.resetAtTrialStart = ko.observable(false);
-    this.recordAtTrialEnd = ko.observable(false);
+    this.recordAtTrialEnd = ko.observable(false);  // is this still needed?
     this.startValue = ko.observable(null);
     this.recType = ko.observable('overwrite'); // overwrite or timeseries
 

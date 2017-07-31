@@ -120,10 +120,10 @@ ExpData.prototype.createVars = function() {
         this.varSubjectCode((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Subject_Code'));
     }
     if (!this.varSubjectNr()) {
-        this.varSubjectNr((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'nominal', 'Subject_Nr'));
+        this.varSubjectNr((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'ordinal', 'Subject_Nr'));
     }
     if (!this.varGroupName()) {
-        this.varGroupName((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominputtal', 'Group_Name'));
+        this.varGroupName((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group_Name'));
     }
     if (!this.varSessionTimeStamp()) {
         this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session_Start_Time'));
@@ -135,30 +135,45 @@ ExpData.prototype.createVars = function() {
         this.varSessionName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Session_Name'));
     }
     if (!this.varSessionNr()) {
-        this.varSessionNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Session_Nr'));
+        this.varSessionNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'ordinal', 'Session_Nr'));
     }
     if (!this.varBlockName()) {
         this.varBlockName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Block_Name'));
     }
     if (!this.varBlockNr()) {
-        this.varBlockNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Block_Nr'));
+        this.varBlockNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'ordinal', 'Block_Nr'));
     }
     if (!this.varTaskName()) {
         this.varTaskName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Task_Name'));
     }
     if (!this.varTaskNr()) {
-        this.varTaskNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'nominal', 'Task_Nr'));
+        this.varTaskNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'ordinal', 'Task_Nr'));
     }
     if (!this.varTrialId()) {
-        this.varTrialId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Trial_Id'));
+        this.varTrialId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'ordinal', 'Trial_Id'));
     }
     if (!this.varTrialNr()) {
-        this.varTrialNr((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Trial_Nr'));
+        this.varTrialNr((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'ordinal', 'Trial_Nr'));
     }
     if (!this.varConditionId()) {
-        this.varConditionId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Condition_Id'));
+        this.varConditionId((new GlobalVar(this.expData)).initProperties('string', 'trial', 'nominal', 'Condition_Id'));
     }
 };
+
+
+
+ExpData.prototype.isSystemVar = function(globalVar) {
+
+    var systemVarList = ['Subject_Code','Subject_Nr','Group_Name','Session_Start_Time','Session_End_Time','Session_Name','Session_Nr','Block_Name','Block_Nr','Task_Name','Task_Nr','Trial_Id','Trial_Nr','Condition_Id'];
+
+    if (systemVarList.indexOf(globalVar.name())>=0 || globalVar.isFactor()){
+        return true;
+    }
+    else{
+        return false;
+    }
+};
+
 
 
 ExpData.prototype.deleteGlobalVar = function(globalVar) {
