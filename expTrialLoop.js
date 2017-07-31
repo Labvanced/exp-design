@@ -74,11 +74,10 @@ var ExpTrialLoop = function (expData) {
             }
         }
         // update random factors, as soon as amount of trials changes
-        if (uc.currentEditorView){
-            if (uc.currentEditorView.randomizationDialog){
-                uc.currentEditorView.randomizationDialog.updateValues();
-            }
-        }
+
+      //  var condGroups = self.getCondGroups();
+     //   self.numberTrialsToShow(condGroups.totalNrTrialsMin);
+
 
         return l
     }, this);

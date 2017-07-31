@@ -13,7 +13,7 @@ var ExpBlock = function (expData) {
     this.id = ko.observable(guid());
     this.name = ko.observable("block_1");
     this.type = "ExpBlock";
-    this.subTasks = ko.observableArray([]);
+    this.subTasks = ko.observableArray([]).extend({sortById: null});
     this.editName =  ko.observable(false);
 };
 

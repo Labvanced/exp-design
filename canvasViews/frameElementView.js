@@ -16,14 +16,15 @@ var FrameElementView = function(dataModel, parentView) {
 
     this.div = document.createElement('div');
     $(this.div).css({
-        "position": "absolute",
-        "opacity": this.selectedTrialView.visibility()
+        "position": "absolute"
+       // "opacity": this.selectedTrialView.visibility()
     });
 
     this.divContent = document.createElement('div');
     $(this.divContent).css({
         "position": "absolute",
-        "overflow": "hidden"
+        "overflow": "hidden",
+        "opacity": this.selectedTrialView.visibility()
     });
     $(this.div).append(this.divContent);
 
@@ -59,7 +60,7 @@ FrameElementView.prototype.setupSubscriber = function() {
     }));
 
     this.disposables.push(this.selectedTrialView.visibility.subscribe(function(a) {
-        $(self.div).css({
+        $(self.divContent).css({
             "opacity": self.selectedTrialView.visibility()
         });
     }));
