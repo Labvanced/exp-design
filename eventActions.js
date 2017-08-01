@@ -1352,10 +1352,12 @@ ActionControlAV.prototype.toJS = function() {
 
 
 
-/////////////////////////////////////////////////  ActionControlTimer  //////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////  ActionControlTimer ///////////////////////////////////////////////
 
 /**
- * This action allows to start a timer variable to count down or up.
+ * This action allows to start or stop the playback of audio or video elements.
  *
  * @param {Event} event - the parent event
  * @constructor
@@ -1363,9 +1365,23 @@ ActionControlAV.prototype.toJS = function() {
 var ActionControlTimer = function(event) {
     this.event = event;
 
+    // serialized
+    this.timerVar = ko.observable(null);
+    this.actionType = ko.observable(null);
+    this.updateRate =  ko.observable(50);// in milli seconds
+    this.updateValue = ko.observable(null);
+
+    // not serialized
+    this.referencesToTriggers = [];
+
 };
+
+
 ActionControlTimer.prototype.type = "ActionControlTimer";
 ActionControlTimer.prototype.label = "Control Timer";
+ActionControlTimer.prototype.actionTypes = ["countUp","countDown","set","pause"];
+
+
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -1375,15 +1391,115 @@ ActionControlTimer.prototype.isValid = function(){
     return true;
 };
 
+ActionControlTimer.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'control timer');
+};
+
+
+ActionControlTimer.prototype.removeVariable = function(){
+    this.timerVar(null);
+};
+
+
+
+ActionControlTimer.prototype.pause = function() {
+    if (this.updateTimeout){
+        clearTimeout(this.updateTimeout);
+    }
+};
+
+ActionControlTimer.prototype.setVal = function() {
+    this.pause();
+    this.timerVar().value(this.updateValue());
+};
+
+
+ActionControlTimer.prototype.updateCallback = function() {
+    var self = this;
+    var doRecursive = true;
+
+    this.updateTimeout = setTimeout(function() {
+        var currentValue =  parseInt(self.timerVar().value().value());
+        if(self.actionType() =='countUp'){
+            var newVal = currentValue+self.updateRate();
+        }
+        else if(self.actionType() =='countDown'){
+            var newVal = currentValue-self.updateRate();
+        }
+        self.timerVar().value().value(newVal);
+
+        for(var i = 0; i<self.referencesToTriggers.length;i++){
+            var trigger = self.referencesToTriggers[i];
+            var isExecuted = trigger.checkExecution(newVal,self.actionType());
+            // as soon as com trigger is firing stop updating timer
+            if (isExecuted){
+                doRecursive = false;
+            }
+        }
+        if (doRecursive){
+            self.updateCallback();
+        }
+        else{
+            self.pause();
+        }
+
+    }, this.updateRate());
+
+};
+
 /**
- * This function is called when the parent event was triggered and the requirements are true. It starts a timer
- * countdown or countup.
+ * This function is called when the parent event was triggered and the requirements are true. It starts or stops
+ * playback of audio or video files in the player.
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionControlTimer.prototype.run = function(triggerParams) {
 
+
+    if (this.timerVar()) {
+        if (this.actionType() == 'countUp') {
+            this.updateCallback();
+        }
+        else if (this.actionType() == 'countDown') {
+            this.updateCallback();
+        }
+        else if (this.actionType() == 'set') {
+            this.setVal();
+        }
+        else if (this.actionType() == 'pause') {
+            this.pause();
+        }
+    }
+
 };
+
+ActionControlTimer.prototype.addTriggerReferences = function() {
+
+    // find triggers for same variable if they exist
+    var allEvents = this.event.parent.events();
+    for(var i = 0; i<allEvents.length;i++){
+        var trigger = allEvents[i].trigger();
+        if (trigger instanceof TriggerTimerReached){
+            if (trigger.timerVar().id){
+                if(trigger.timerVar().id() === this.timerVar().id()){
+                    if (this.referencesToTriggers.indexOf(trigger)==-1 ){
+                        this.referencesToTriggers.push(trigger);
+                    }
+                }
+            }
+            else{
+                if(trigger.timerVar() === this.timerVar().id()){
+                    if (this.referencesToTriggers.indexOf(trigger)==-1 ){
+                        this.referencesToTriggers.push(trigger);
+                    }
+                }
+            }
+
+        }
+    }
+
+};
+
 
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
@@ -1393,15 +1509,24 @@ ActionControlTimer.prototype.run = function(triggerParams) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionControlTimer.prototype.setPointers = function(entitiesArr) {
-
+    var timerVar = entitiesArr.byId[this.timerVar()];
+    if (timerVar){
+        this.timerVar(timerVar);
+    }
+    this.addTriggerReferences();
 };
+
 
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {ActionControlTimer}
+ * @returns {ActionControlAV}
  */
 ActionControlTimer.prototype.fromJS = function(data) {
+    this.timerVar(data.timerVar);
+    this.actionType(data.actionType);
+    this.updateRate(data.updateRate);
+    this.updateValue(data.updateValue);
     return this;
 };
 
@@ -1410,12 +1535,21 @@ ActionControlTimer.prototype.fromJS = function(data) {
  * @returns {object}
  */
 ActionControlTimer.prototype.toJS = function() {
+    var timerVar = null;
+    if (this.timerVar()) {
+        timerVar = this.timerVar().id();
+    }
     return {
-        type: this.type
+        type: this.type,
+        timerVar: timerVar,
+        actionType: this.actionType(),
+        updateRate: this.updateRate(),
+        updateValue: this.updateValue()
     };
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 

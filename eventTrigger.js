@@ -713,6 +713,11 @@ TriggerTimerReached.prototype.isValid = function() {
     return true;
 };
 
+
+TriggerTimerReached.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'timer trigger');
+};
+
 /**
  * Returns the parameters that this trigger will pass on to the requirements and actions.
  *
@@ -723,12 +728,31 @@ TriggerTimerReached.prototype.getParameterSpec = function() {
     ];
 };
 
+TriggerTimerReached.prototype.checkExecution = function(currentValue,actionType){
+
+    if (actionType =="countUp" && currentValue>=parseInt(this.timeInMs()) ){
+        this.event.triggerActions([]);
+        return true
+
+    }
+    else if (actionType =="countDown" && currentValue<=parseInt(this.timeInMs()) ) {
+        this.event.triggerActions([]);
+        return true
+    }
+    else{
+        return false
+    }
+
+};
+
+
 /**
  * this function is called in the player when the frame starts. It sets up the corresponding timer callbacks.
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
 TriggerTimerReached.prototype.setupOnPlayerFrame = function(playerFrame) {
+
 };
 
 /**
@@ -747,8 +771,9 @@ TriggerTimerReached.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 TriggerTimerReached.prototype.setPointers = function(entitiesArr) {
-    if (this.timerVar()){
-        this.timerVar(entitiesArr.byId[this.timerVar()]);
+    var timerVar = entitiesArr.byId[this.timerVar()];
+    if (timerVar){
+        this.timerVar(timerVar);
     }
 };
 
