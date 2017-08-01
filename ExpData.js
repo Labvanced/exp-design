@@ -126,10 +126,10 @@ ExpData.prototype.createVars = function() {
         this.varGroupName((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group_Name'));
     }
     if (!this.varSessionTimeStamp()) {
-        this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session_Start_Time'));
+        this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'interval', 'Session_Start_Time'));
     }
     if (!this.varSessionTimeStampEnd()) {
-        this.varSessionTimeStampEnd((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'ordinal', 'Session_End_Time'));
+        this.varSessionTimeStampEnd((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'interval', 'Session_End_Time'));
     }
     if (!this.varSessionName()) {
         this.varSessionName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Session_Name'));

@@ -16,7 +16,7 @@ var GlobalVar = function (expData) {
     this.type = "GlobalVar";
     this.name = ko.observable("newVariable");
     this.dataType = ko.observable('undefined');
-    this.scale = ko.observable(null);
+    this.scale = ko.observable('undefined');
     this.scope = ko.observable("undefined");
 
     this.isFactor =  ko.observable(false);
@@ -26,7 +26,9 @@ var GlobalVar = function (expData) {
     this.isRecorded = ko.observable(true);
 
     this.resetAtTrialStart = ko.observable(false);
+
     this.recordAtTrialEnd = ko.observable(false);  // is this still needed?
+
     this.startValue = ko.observable(null);
     this.recType = ko.observable('overwrite'); // overwrite or timeseries
 
@@ -49,6 +51,7 @@ var GlobalVar = function (expData) {
         else return '';
 
     });
+
 
 };
 
