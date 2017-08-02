@@ -18,6 +18,8 @@ var ExpData = function (parentExperiment) {
     this.availableGroups = ko.observableArray([]);
 
     //serialized
+    this.studySettings = new StudySettings(this.expData);
+
     this.translations = ko.observableArray([]);
     this.languageCodes = ko.observable({});
     this.currentLanguage = ko.observable(0);
@@ -388,6 +390,12 @@ ExpData.prototype.fromJS = function(data) {
             return entityFactory(entityJson, self);
         }));
     }
+    
+    if (data.studySettings) {
+        this.studySettings = new StudySettings(this.expData);
+        this.studySettings.fromJS(data.studySettings);
+
+    }
 
     this.availableTasks(data.availableTasks);
     this.availableBlocks(data.availableBlocks);
@@ -435,6 +443,11 @@ ExpData.prototype.toJS = function() {
         sessionsPerGroup.push(groups[i].sessions().length);
     }
 
+    var studySettings = null;
+    if (this.studySettings) {
+        studySettings = this.studySettings.toJS();
+    }
+
     this.dateLastModified(getCurrentDate());
 
     var data = {
@@ -449,7 +462,8 @@ ExpData.prototype.toJS = function() {
         translations: jQuery.map( this.translations(), function( entry ) { return entry.toJS(); }),
         currentLanguage: this.currentLanguage(),
         availableTranslations: this.availableTranslations(),
-        languageCodes: this.languageCodes()
+        languageCodes: this.languageCodes(),
+        studySettings:studySettings
     };
 
     // add all variable ids:
