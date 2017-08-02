@@ -163,11 +163,11 @@ SelectionEntry.prototype.getIndex = function() {
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 SelectionEntry.prototype.getAllModifiers = function(modifiersArr) {
-    this.selectionText().getAllModifiers(modifiersArr);
+   // this.selectionText().getAllModifiers(modifiersArr);
 };
 
 SelectionEntry.prototype.selectTrialType = function(selectionSpec) {
-    this.selectionText().selectTrialType(selectionSpec);
+  //  this.selectionText().selectTrialType(selectionSpec);
 };
 
 SelectionEntry.prototype.setPointers = function(entitiesArr) {
@@ -176,7 +176,7 @@ SelectionEntry.prototype.setPointers = function(entitiesArr) {
         var nr = this.selectionParent.elements().indexOf(this);
         this.selectionValue( 'option_' +nr );
     }
-    this.selectionText().setPointers(entitiesArr);
+ //   this.selectionText().setPointers(entitiesArr);
 };
 
 SelectionEntry.prototype.fromJS = function(data) {
