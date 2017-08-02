@@ -700,6 +700,9 @@ var TriggerTimerReached = function(event) {
     this.timerVar = ko.observable(null);
     this.timeInMs = ko.observable(0);
     this.repeat = ko.observable(false);
+
+    // not serialized:
+    this.triggerCallback = null;
 };
 
 TriggerTimerReached.prototype.type = "TriggerTimerReached";
@@ -728,31 +731,19 @@ TriggerTimerReached.prototype.getParameterSpec = function() {
     ];
 };
 
-TriggerTimerReached.prototype.checkExecution = function(currentValue,actionType){
-
-    if (actionType =="countUp" && currentValue>=parseInt(this.timeInMs()) ){
-        this.event.triggerActions([]);
-        return true
-
-    }
-    else if (actionType =="countDown" && currentValue<=parseInt(this.timeInMs()) ) {
-        this.event.triggerActions([]);
-        return true
-    }
-    else{
-        return false
-    }
-
-};
-
-
 /**
  * this function is called in the player when the frame starts. It sets up the corresponding timer callbacks.
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
 TriggerTimerReached.prototype.setupOnPlayerFrame = function(playerFrame) {
-
+    var self = this;
+    this.triggerCallback = function() {
+        console.log("timer reached");
+        self.event.triggerActions([]);
+    };
+    var timeInMs = parseInt(this.timeInMs());
+    this.timerVar().value().addTriggerCallback(this.triggerCallback, timeInMs);
 };
 
 /**
@@ -760,7 +751,9 @@ TriggerTimerReached.prototype.setupOnPlayerFrame = function(playerFrame) {
  * @param playerFrame
  */
 TriggerTimerReached.prototype.destroyOnPlayerFrame = function(playerFrame) {
-
+    if (this.triggerCallback) {
+        this.timerVar().value().removeTriggerCallback(this.triggerCallback);
+    }
 };
 
 /**

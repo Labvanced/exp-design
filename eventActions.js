@@ -1400,53 +1400,6 @@ ActionControlTimer.prototype.removeVariable = function(){
     this.timerVar(null);
 };
 
-
-
-ActionControlTimer.prototype.pause = function() {
-    if (this.updateTimeout){
-        clearTimeout(this.updateTimeout);
-    }
-};
-
-ActionControlTimer.prototype.setVal = function() {
-    this.pause();
-    this.timerVar().value(this.updateValue());
-};
-
-
-ActionControlTimer.prototype.updateCallback = function() {
-    var self = this;
-    var doRecursive = true;
-
-    this.updateTimeout = setTimeout(function() {
-        var currentValue =  parseInt(self.timerVar().value().value());
-        if(self.actionType() =='countUp'){
-            var newVal = currentValue+self.updateRate();
-        }
-        else if(self.actionType() =='countDown'){
-            var newVal = currentValue-self.updateRate();
-        }
-        self.timerVar().value().value(newVal);
-
-        for(var i = 0; i<self.referencesToTriggers.length;i++){
-            var trigger = self.referencesToTriggers[i];
-            var isExecuted = trigger.checkExecution(newVal,self.actionType());
-            // as soon as com trigger is firing stop updating timer
-            if (isExecuted){
-                doRecursive = false;
-            }
-        }
-        if (doRecursive){
-            self.updateCallback();
-        }
-        else{
-            self.pause();
-        }
-
-    }, this.updateRate());
-
-};
-
 /**
  * This function is called when the parent event was triggered and the requirements are true. It starts or stops
  * playback of audio or video files in the player.
@@ -1454,52 +1407,22 @@ ActionControlTimer.prototype.updateCallback = function() {
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionControlTimer.prototype.run = function(triggerParams) {
-
-
     if (this.timerVar()) {
         if (this.actionType() == 'countUp') {
-            this.updateCallback();
+            this.timerVar().value().startCountup();
         }
         else if (this.actionType() == 'countDown') {
-            this.updateCallback();
+            this.timerVar().value().startCountdown();
         }
         else if (this.actionType() == 'set') {
-            this.setVal();
+            var updateValue = parseInt(this.updateValue());
+            this.timerVar().value().setValue(updateValue);
         }
         else if (this.actionType() == 'pause') {
-            this.pause();
+            this.timerVar().value().pause();
         }
     }
-
 };
-
-ActionControlTimer.prototype.addTriggerReferences = function() {
-
-    // find triggers for same variable if they exist
-    var allEvents = this.event.parent.events();
-    for(var i = 0; i<allEvents.length;i++){
-        var trigger = allEvents[i].trigger();
-        if (trigger instanceof TriggerTimerReached){
-            if (trigger.timerVar().id){
-                if(trigger.timerVar().id() === this.timerVar().id()){
-                    if (this.referencesToTriggers.indexOf(trigger)==-1 ){
-                        this.referencesToTriggers.push(trigger);
-                    }
-                }
-            }
-            else{
-                if(trigger.timerVar() === this.timerVar().id()){
-                    if (this.referencesToTriggers.indexOf(trigger)==-1 ){
-                        this.referencesToTriggers.push(trigger);
-                    }
-                }
-            }
-
-        }
-    }
-
-};
-
 
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
@@ -1513,7 +1436,6 @@ ActionControlTimer.prototype.setPointers = function(entitiesArr) {
     if (timerVar){
         this.timerVar(timerVar);
     }
-    this.addTriggerReferences();
 };
 
 
@@ -1525,7 +1447,6 @@ ActionControlTimer.prototype.setPointers = function(entitiesArr) {
 ActionControlTimer.prototype.fromJS = function(data) {
     this.timerVar(data.timerVar);
     this.actionType(data.actionType);
-    this.updateRate(data.updateRate);
     this.updateValue(data.updateValue);
     return this;
 };
@@ -1543,7 +1464,6 @@ ActionControlTimer.prototype.toJS = function() {
         type: this.type,
         timerVar: timerVar,
         actionType: this.actionType(),
-        updateRate: this.updateRate(),
         updateValue: this.updateValue()
     };
 };
