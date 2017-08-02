@@ -282,6 +282,7 @@ GlobalVarValueTimer = function(parentVar) {
 GlobalVarValueTimer.states = ['pause','up','down'];
 
 GlobalVarValueTimer.prototype.setValue = function(timeInMs) {
+    timeInMs = parseInt(timeInMs);
     this.timerValueAtStart = timeInMs;
     this.value(timeInMs);
     this.startTimeInUTC = Date.now();
