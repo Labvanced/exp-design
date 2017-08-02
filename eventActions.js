@@ -735,7 +735,7 @@ ActionDelayedActions.prototype.fromJS = function(data) {
 
     var subActions = [];
     for (var i=0; i<data.subActions.length; i++) {
-        var subAction = actionFactory(this, data.subActions[i].type);
+        var subAction = actionFactory(this.event, data.subActions[i].type);
         subAction.fromJS(data.subActions[i]);
         subActions.push(subAction);
     }
