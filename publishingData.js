@@ -29,6 +29,7 @@ var PublishingData = function(experiment) {
     this.recordingStopTime= ko.observable(null);
     this.recordingStopNrSubjects =  ko.observable(1);
 
+
     // page 2  //
     this.exp_name = ko.observable("");
     if (experiment){
@@ -40,6 +41,13 @@ var PublishingData = function(experiment) {
     this.jdenticonHash = ko.observable(guid());
     this.imageType = ko.observable("jdenticon"); // "jdenticon" or "imgfile"
     this.categories = ko.observableArray([]);
+    this.affiliations = ko.observableArray([ko.observable('')]);
+    this.duration = ko.observable(15);
+    this.references = ko.observableArray([]);
+    this.referenceURLs = ko.observableArray([]);
+    this.externalnfo = ko.observableArray([]);
+    this.externalLinks = ko.observableArray([]);
+
 
     // page 3 //
     this.advertisement = ko.observable(null);
@@ -156,8 +164,53 @@ PublishingData.prototype.fromJS = function(data) {
     this.imageType(data.imageType);
     this.categories(data.categories);
 
+    if (data.hasOwnProperty('affiliations')) {
+        var affi = [];
+        for (var i = 0; i<data.affiliations.length; i++){
+            affi.push(ko.observable(data.affiliations[i]));
+        }
+        this.affiliations(affi);
+    }
+
+    if (data.hasOwnProperty('references')) {
+        var references = [];
+        for (var i = 0; i<data.references.length; i++){
+            references.push(ko.observable(data.references[i]));
+        }
+        this.references(references);
+    }
+
+    if (data.hasOwnProperty('referenceURLs')) {
+        var referenceURLs = [];
+        for (var i = 0; i<data.referenceURLs.length; i++){
+            referenceURLs.push(ko.observable(data.referenceURLs[i]));
+        }
+        this.referenceURLs(referenceURLs);
+    }
+
+    if (data.hasOwnProperty('externalnfo')) {
+        var externalnfo = [];
+        for (var i = 0; i<data.externalnfo.length; i++){
+            externalnfo.push(ko.observable(data.externalnfo[i]));
+        }
+        this.externalnfo(externalnfo);
+    }
+
+    if (data.hasOwnProperty('externalLinks')) {
+        var externalLinks = [];
+        for (var i = 0; i<data.externalLinks.length; i++){
+            externalLinks.push(ko.observable(data.externalLinks[i]));
+        }
+        this.externalLinks(externalLinks);
+    }
+
+
+
+    if (data.hasOwnProperty('duration')) {
+        this.duration(data.duration);
+    }
+
     // page 3 //
-    this.advertisement(data.advertisement);
     this.addHighlight(data.addHighlight);
     this.addLabVancedSearch(data.addLabVancedSearch);
     this.postOnAMT(data.postOnAMT);
@@ -184,6 +237,28 @@ PublishingData.prototype.fromJS = function(data) {
 
 PublishingData.prototype.toJS = function() {
 
+    var affi = [];
+    for (var i = 0; i<this.affiliations().length; i++){
+        affi.push(this.affiliations()[i]());
+    }
+
+    var references = [];
+    for (var i = 0; i<this.references().length; i++){
+        references.push(this.references()[i]());
+    }
+    var referenceURLs = [];
+    for (var i = 0; i<this.referenceURLs().length; i++){
+        referenceURLs.push(this.referenceURLs()[i]());
+    }
+    var externalnfo = [];
+    for (var i = 0; i<this.externalnfo().length; i++){
+        externalnfo.push(this.externalnfo()[i]());
+    }
+    var externalLinks = [];
+    for (var i = 0; i<this.externalLinks().length; i++){
+        externalLinks.push(this.externalLinks()[i]());
+    }
+
     return {
         dateLastModified: this.dateLastModified(),
 
@@ -208,6 +283,14 @@ PublishingData.prototype.toJS = function() {
         jdenticonHash: this.jdenticonHash(),
         imageType: this.imageType(),
         categories: this.categories(),
+        affiliations:affi,
+        duration: this.duration(),
+        references:references,
+        referenceURLs:referenceURLs,
+        externalnfo:externalnfo,
+        externalLinks:externalLinks,
+
+
 
         // page 3 //
         advertisement: this.advertisement(),
@@ -230,7 +313,7 @@ PublishingData.prototype.toJS = function() {
         individualizedLinks:  this.individualizedLinks(),
         ratingValues:  this.ratingValues(),
         raterUserIds:  this.raterUserIds(),
-        publicationDate: this.publicationDate(),
+        publicationDate: this.publicationDate()
 
     };
 };
