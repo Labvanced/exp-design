@@ -3,6 +3,9 @@ var ExperimentStartupScreen = function(experiment) {
     this.exp_name = ko.observable(experiment.publishing_data.exp_name());
     this.jdenticonHash = ko.observable(experiment.publishing_data.jdenticonHash());
     this.description = ko.observable(experiment.publishing_data.description());
+    this.imgSource = ko.computed( function() {
+        return "/files/" + experiment.publishing_data.img_file_id() + "/" + experiment.publishing_data.img_file_orig_name();
+    }, this);
 };
 
 ExperimentStartupScreen.prototype.dummyFunction = function() {
