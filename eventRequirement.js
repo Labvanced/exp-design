@@ -104,6 +104,9 @@ var RequirementAND = function(event) {
 
     // serialized
     this.childRequirements = ko.observableArray([]);
+    this.childRequirements.subscribe(function(newVal) {
+        var test = 1;
+    });
 };
 
 RequirementAND.prototype.type = "RequirementAND";

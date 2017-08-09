@@ -50,20 +50,46 @@ Event.prototype.deleteAction = function(index) {
  * @param parameters
  */
 Event.prototype.triggerActions = function(parameters) {
-    if (this.requirement()==null || this.requirement().checkIfTrue()) {
-
-        this.runActions(parameters);
-    }
+    this.checkRequirementAndRun(parameters);
 };
 
 /**
  * runs all actions.
  * @param parameters
  */
-Event.prototype.runActions = function(parameters) {
+Event.prototype.checkRequirementAndRun = function(parameters) {
     var actions = this.actions();
+
     for (var i=0; i<actions.length; i++) {
-        actions[i].run(parameters);
+        if (actions[i] instanceof ActionConditional){
+            var conditionalAction = actions[i];
+            var ifElseConditions = conditionalAction.ifElseConditions();
+            var foundTrueCase = false;
+            var caseIndex = 0;
+            while (foundTrueCase ==false && caseIndex<=ifElseConditions.length){
+                var requirement = ifElseConditions[caseIndex].requirement();
+                var actionList = ifElseConditions[caseIndex].subActions();
+                if (requirement==null || requirement.checkIfTrue(parameters)) {
+                    foundTrueCase = true;
+                    for (var j=0; j<actionList.length; j++) {
+                        actionList[j].run(parameters);
+                    }
+
+                }
+                caseIndex ++;
+            }
+            if (foundTrueCase==false && conditionalAction.defaultConditionActive()){
+                var actionList = conditionalAction.defaultSubActions();
+                for (var j=0; j<actionList.length; j++) {
+                    actionList[j].run(parameters);
+                }
+            }
+
+        }
+        else{
+            actions[i].run(parameters);
+        }
+
     }
 };
 

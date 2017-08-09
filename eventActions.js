@@ -462,7 +462,7 @@ var ActionSetProp = function(event) {
 };
 
 ActionSetProp.prototype.type = "ActionSetProp";
-ActionSetProp.prototype.label = "Set Property";
+ActionSetProp.prototype.label = "Set Obj Property";
 
 ActionSetProp.prototype.isValid = function(){
     return true;
@@ -537,11 +537,6 @@ var ActionJumpTo = function(event) {
     this.event = event;
     this.jumpType = ko.observable(null);
     this.frameToJump= ko.observable(null);
-
-
-    this.frameToJump.subscribe(function(newVal) {
-       console.log("change")
-    });
 };
 
 ActionJumpTo.prototype.type = "ActionJumpTo";
@@ -763,6 +758,281 @@ ActionDelayedActions.prototype.toJS = function() {
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+////////////////////////////////////////////   ActionConditional   /////////////////////////////////////////////////////
+
+/**
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
+
+
+
+var ActionConditional = function(event) {
+    this.event = event;
+
+    // serialized:
+    this.ifElseConditions = ko.observableArray([new ActionIfCondition(this.event)]);
+    this.defaultSubActions =  ko.observableArray([]);
+    this.defaultConditionActive = ko.observable(false);
+
+};
+
+ActionConditional.prototype.type = "ActionConditional";
+ActionConditional.prototype.label = "Requirement Actions";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionConditional.prototype.isValid = function(){
+    return true;
+};
+
+ActionConditional.prototype.deleteIfCondition = function(index){
+   this.ifElseConditions.splice(index,1);
+};
+
+
+
+ActionConditional.prototype.addIfCondition = function(){
+    this.ifElseConditions.push(new ActionIfCondition(this.event));
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It either jumps to the
+ * next frame or to specific frame or next trial.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionConditional.prototype.run = function(triggerParams) {
+    var self = this;
+
+};
+
+
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionConditional.prototype.setPointers = function(entitiesArr) {
+    jQuery.each( this.defaultSubActions(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+    jQuery.each( this.ifElseConditions(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+};
+
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionConditional.prototype.reAddEntities = function(entitiesArr) {
+    jQuery.each( this.defaultSubActions(), function( index, elem ) {
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (elem.reAddEntities)
+            elem.reAddEntities(entitiesArr);
+    } );
+    jQuery.each( this.ifElseConditions(), function( index, elem ) {
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (elem.reAddEntities)
+            elem.reAddEntities(entitiesArr);
+    } );
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionDelayedActions}
+ */
+ActionConditional.prototype.fromJS = function(data) {
+
+    var defaultSubActions = [];
+    for (var i=0; i<data.defaultSubActions.length; i++) {
+        var subAction = actionFactory(this.event, data.defaultSubActions[i].type);
+        subAction.fromJS(data.defaultSubActions[i]);
+        defaultSubActions.push(subAction);
+    }
+    this.defaultSubActions(defaultSubActions);
+
+    var ifElseConditions = [];
+    for (var i=0; i<data.ifElseConditions.length; i++) {
+        var ifCondition = new ActionIfCondition(this.event);
+        ifCondition.fromJS(data.ifElseConditions[i]);
+        ifElseConditions.push(ifCondition);
+    }
+    this.ifElseConditions(ifElseConditions);
+
+
+
+    this.defaultConditionActive(data.defaultConditionActive);
+
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionConditional.prototype.toJS = function() {
+    var defaultSubActions = this.defaultSubActions();
+    var defSubActions = [];
+    for (var i=0; i<defaultSubActions.length; i++) {
+        defSubActions.push(defaultSubActions[i].toJS());
+    }
+    var ifElseConditions = this.ifElseConditions();
+    var ifConditions = [];
+    for (var i=0; i<ifElseConditions.length; i++) {
+        ifConditions.push(ifElseConditions[i].toJS());
+    }
+
+    return {
+        type: this.type,
+        defaultSubActions: defSubActions,
+        ifElseConditions: ifConditions,
+        defaultConditionActive: this.defaultConditionActive()
+    };
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+////////////////////////////////////////////   ActionIfCondition  /////////////////////////////////////////////////////
+
+/**
+ * This action jumps to another frame or next trial.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
+var ActionIfCondition = function(event) {
+    this.event = event;
+    this.requirement = ko.observable(new RequirementAND(this.event));
+    this.subActions = ko.observableArray([]);
+};
+
+ActionIfCondition.prototype.type = "ActionIfCondition";
+ActionIfCondition.prototype.label = "If Condition";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionIfCondition.prototype.isValid = function(){
+    return true;
+};
+
+
+/**
+ * deletes all requirements.
+ */
+ActionIfCondition.prototype.deleteRequirement = function() {
+    this.requirement(new RequirementAND(this));
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It either jumps to the
+ * next frame or to specific frame or next trial.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionIfCondition.prototype.run = function(triggerParams) {
+    var self = this;
+};
+
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionIfCondition.prototype.setPointers = function(entitiesArr) {
+    jQuery.each( this.subActions(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+    this.requirement().setPointers(entitiesArr);
+};
+
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionIfCondition.prototype.reAddEntities = function(entitiesArr) {
+    jQuery.each( this.subActions(), function( index, elem ) {
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (elem.reAddEntities)
+            elem.reAddEntities(entitiesArr);
+    } );
+    this.requirement().reAddEntities(entitiesArr);
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionDelayedActions}
+ */
+ActionIfCondition.prototype.fromJS = function(data) {
+
+    var requirement = requirementFactory(this.event, data.requirement.type);
+    requirement.fromJS(data.requirement);
+    this.requirement(requirement);
+
+    var subActions = [];
+    for (var i=0; i<data.subActions.length; i++) {
+        var subAction = actionFactory(this.event, data.subActions[i].type);
+        subAction.fromJS(data.subActions[i]);
+        subActions.push(subAction);
+    }
+    this.subActions(subActions);
+
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionIfCondition.prototype.toJS = function() {
+    var subActions = this.subActions();
+    var subActionsData = [];
+    for (var i=0; i<subActions.length; i++) {
+        subActionsData.push(subActions[i].toJS());
+    }
+
+    var requirement = this.requirement().toJS();
+
+    return {
+        type: this.type,
+        subActions: subActionsData,
+        requirement: requirement
+    };
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
 
 
