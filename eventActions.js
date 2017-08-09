@@ -673,25 +673,11 @@ ActionDelayedActions.prototype.isValid = function(){
 ActionDelayedActions.prototype.run = function(triggerParams) {
     var self = this;
     this.timeoutFcn = setTimeout(function() {
-        self.runDelayed(triggerParams);
+        var actions = self.subActions();
+        self.event.checkRequirementAndRun(triggerParams,actions);
     }, this.delayInMs());
 };
 
-/**
- * This function is called when the delay finished.
- *
- * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
- */
-ActionDelayedActions.prototype.runDelayed = function(triggerParams) {
-
-    if (this.event.requirement()==null || this.event.requirement().checkIfTrue()) {
-        var actions = this.subActions();
-        for (var i=0; i<actions.length; i++) {
-            actions[i].run(triggerParams);
-        }
-    }
-
-};
 
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually

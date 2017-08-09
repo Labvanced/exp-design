@@ -50,15 +50,14 @@ Event.prototype.deleteAction = function(index) {
  * @param parameters
  */
 Event.prototype.triggerActions = function(parameters) {
-    this.checkRequirementAndRun(parameters);
+    this.checkRequirementAndRun(parameters,this.actions());
 };
 
 /**
  * runs all actions.
  * @param parameters
  */
-Event.prototype.checkRequirementAndRun = function(parameters) {
-    var actions = this.actions();
+Event.prototype.checkRequirementAndRun = function(parameters,actions) {
 
     for (var i=0; i<actions.length; i++) {
         if (actions[i] instanceof ActionConditional){
