@@ -164,12 +164,6 @@ Event.prototype.fromJS = function(data) {
     trigger.fromJS(data.trigger);
     this.trigger(trigger);
 
-    if (data.requirement) {
-        var requirement = requirementFactory(self, data.requirement.type);
-        requirement.fromJS(data.requirement);
-        this.requirement(requirement);
-    }
-
     var actions = [];
     for (var i=0; i<data.actions.length; i++) {
         var action = actionFactory(self, data.actions[i].type);
@@ -178,8 +172,33 @@ Event.prototype.fromJS = function(data) {
     }
     this.actions(actions);
 
+
+    if (data.requirement) {
+        var requirement = requirementFactory(self, data.requirement.type);
+        requirement.fromJS(data.requirement);
+        this.requirement(requirement);
+
+        this.requirementConverter(data);
+    }
+
     return this;
 };
+
+Event.prototype.requirementConverter = function(data) {
+
+    if (data.requirement.childRequirements.length>0){
+        var requirement = this.requirement();
+        this.requirement(null);
+        var actions = this.actions();
+        this.actions([]);
+        var wrapperAction = new ActionConditional(this);
+        wrapperAction.ifElseConditions()[0].requirement(requirement);
+        wrapperAction.ifElseConditions()[0].subActions(actions);
+        this.actions.push(wrapperAction);
+
+    }
+};
+
 
 /**
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
