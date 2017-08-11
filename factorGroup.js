@@ -349,6 +349,10 @@ FactorGroup.prototype.addFactor = function(factor) {
     this.factors.push(factor);
     this.addFactorToCondition(factor);
 
+    for (var i = 0; i<this.factors().length; i++){
+        this.factors()[i].addFactorDependency(factor);
+    }
+
 };
 
 /**
@@ -395,6 +399,10 @@ FactorGroup.prototype.removeFactor = function(factor) {
     jQuery.each( this.conditionsLinear(), function(index, cond) {
         cond.factorLevels.splice(idx,1);
     } );
+
+    for (var i = 0; i<this.factors().length; i++){
+        this.factors()[i].removeFactorDependency(idx);
+    }
 
     this.factors.splice(idx,1);
 };

@@ -177,58 +177,33 @@ ExpTrialLoop.prototype.renameGroup = function(facGroupIdx,flag) {
 
 ExpTrialLoop.prototype.getCondGroups = function () {
     var factorGroups = this.factorGroups();
-    var fixedFactorCondGrops = [];
     var fixedFactorConds =  [];
-    for (var i = 0; i < factorGroups.length; i++) {
-        fixedFactorCondGrops.push(factorGroups[i].getFixedFactorConditions());
-    }
-    var count = 0;
     var totalNrTrialsMin = 0;
     var totalNrTrialsMax = 0;
-    for (var i = 0; i < fixedFactorCondGrops.length; i++) {
-        var arrOfOneFacGroup = fixedFactorCondGrops[i];
-        var conditions = factorGroups[i].conditionsLinear();
-        for (var k = 0; k < arrOfOneFacGroup.length; k++) {
-            count++;
-            var condArray = arrOfOneFacGroup[k];
-            var totalVariations = 0;
-            var varArray = [];
 
-            for (var j = 0; j < condArray.length; j++) {
-                totalVariations += conditions[condArray[j]].trials().length;
-                varArray.push(conditions[condArray[j]].trials().length);
-            }
-
-            var minVar = Math.min.apply(null, varArray);
-            var maxVar = Math.max.apply(null, varArray);
-            totalNrTrialsMin += minVar;
-            totalNrTrialsMax += maxVar;
-
-            var obj = {
-                nrOfCondition: count,
-                nameOfFactorGroup: factorGroups[i].name(),
-                nrOfVariations:totalVariations,
-                minNrOfTrials: minVar,
-                maxNrOfTrials: maxVar
-            };
-            fixedFactorConds.push(obj);
+    for (var i = 0; i < factorGroups.length; i++) {
+        var obj = this.getCondGroupsOneTrialGroup(factorGroups[i]);
+        for (var k = 0; k<obj.fixedFactorConds.length;k++){
+            fixedFactorConds.push(obj.fixedFactorConds[k]);
         }
+        totalNrTrialsMin += obj.totalNrTrialsMin;
+        totalNrTrialsMax += obj.totalNrTrialsMax;
+
     }
 
-    var obj = {
+    var obj2 = {
         fixedFactorConds: fixedFactorConds,
         totalNrTrialsMax: totalNrTrialsMax,
         totalNrTrialsMin: totalNrTrialsMin
 
     };
-    return obj;
+    return obj2;
 
 };
 
 
-ExpTrialLoop.prototype.getCondGroups2 = function (facGroupIdx) {
+ExpTrialLoop.prototype.getCondGroupsOneTrialGroup = function (factorGroup) {
 
-    var factorGroup = this.factorGroups()[facGroupIdx];
     var conditions = factorGroup.conditionsLinear();
     var arrOfOneFacGroup = factorGroup.getFixedFactorConditions();
     var fixedFactorConds =  [];
@@ -264,13 +239,13 @@ ExpTrialLoop.prototype.getCondGroups2 = function (facGroupIdx) {
     }
 
 
-    var obj = {
+    var obj2 = {
         fixedFactorConds: fixedFactorConds,
         totalNrTrialsMax: totalNrTrialsMax,
         totalNrTrialsMin: totalNrTrialsMin
 
     };
-    return obj;
+    return obj2;
 
 };
 
@@ -278,7 +253,8 @@ ExpTrialLoop.prototype.getCondGroups2 = function (facGroupIdx) {
 ExpTrialLoop.prototype.getTrialRandomizationOneRun = function() {
     var allTrials = [];
     for (var facGroupIdx =0; facGroupIdx <  this.factorGroups().length; facGroupIdx++) {
-        var outArr = this.getFactorLevels(facGroupIdx);
+        var factorGroup = this.factorGroups()[facGroupIdx];
+        var outArr = this.getFactorLevels(factorGroup);
         var factorLevels = outArr[0];
         var factorIndicies = outArr[1];
         var conditions = this.getConditionFromFactorLevels(factorIndicies,factorLevels,facGroupIdx);
@@ -403,17 +379,23 @@ ExpTrialLoop.prototype.getCondGroup = function(conditionIdx,ffConds) {
 };
 
 
-ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
+ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
 
-    var arr = this.factorGroups()[factorGroupIdx].getFixedFactorLevels();
+    var arr = factorGroup.getFixedFactorLevels();
     var allConds = arr[0];
     var factorNames = arr[1];
-    var ffConds = this.factorGroups()[factorGroupIdx].getFixedFactorConditions();
-    var factors = this.factorGroups()[factorGroupIdx].factors();
+    var ffConds =factorGroup.getFixedFactorConditions();
+    var factors = factorGroup.factors();
     var factorLevels = [];
 
-    var obj= this.getCondGroups2(factorGroupIdx);
+    var obj= this.getCondGroupsOneTrialGroup(factorGroup);
     var fixedFactorConds = obj.fixedFactorConds;
+
+    var globalVarNames = [];
+    for (var facIdx=0; facIdx < factors.length; facIdx++) {
+        globalVarNames.push(factors[facIdx].globalVar().name());
+    }
+
 
     for (var i=0; i < ffConds.length; i++) {
         for (var k=0; k < fixedFactorConds[i].minNrOfTrials; k++) {
@@ -497,65 +479,17 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
                     }
                 }
             }
-
-            else if (factor.randomizationType()=='balancedBetweenSubjects'){
-                // ToDO
-            }
-
         }
     }
 
-
-    var globalVarNames = [];
-    for (var facIdx=0; facIdx < factors.length; facIdx++) {
-        globalVarNames.push(factors[facIdx].globalVar().name());
-    }
-
-    // get nested dependencies
-    var resolvedFactors = [];
-    for (var facIdx=0; facIdx < factorNames.length; facIdx++) {
-        resolvedFactors.push(factors[factorNames[facIdx]]);
-    }
-    var unresolvedFactors = [];
-    for (var facIdx=0; facIdx < factors.length; facIdx++) {
-        if (factorNames.indexOf(facIdx)<0){
-            unresolvedFactors.push(factors[facIdx]);
-        }
-    }
-
-    var factorDependencies = [];
-    for (var facIdx=0; facIdx < unresolvedFactors.length; facIdx++) {
-        factorDependencies.push(unresolvedFactors[facIdx].balancedInFactor());
-    }
-
-
-    var resolutionOrder= [];
-    var outerIdx = 0;
-    var l = unresolvedFactors.length;
-    while(unresolvedFactors.length>0 && outerIdx<=l){
-        var found = false;
-        var idx = 0;
-        while(!found && idx<=factorDependencies.length){
-            var depFactor = factorDependencies[idx];
-            var unresFactor = unresolvedFactors[idx];
-
-            if(resolvedFactors.indexOf(depFactor)>=0){
-                found = true;
-                resolutionOrder.push(unresFactor);
-                resolvedFactors.push(unresFactor);
-                unresolvedFactors.splice(idx,1);
-                factorDependencies.splice(idx,1);
-            }
-            else{
-                idx++;
-            }
-        }
-        outerIdx++;
-    }
+   var arr=  this.getResolutionOrder(factors,factorNames);
+   var resolutionOrder= arr[0];
+   var factorDependencies= arr[1];
 
 
     for (var facIndx=0; facIndx < resolutionOrder.length; facIndx++) {
-        factor = resolutionOrder[facIndx];
+        var factor = resolutionOrder[facIndx];
+        var dependencies = factorDependencies[facIndx];
 
         if (factor.factorType()=='random' && factor.randomizationType()=='balancedInFactor') {
 
@@ -601,8 +535,79 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
                 }
 
             }
+        }
 
 
+        else if (factor.factorType()=='random' && factor.randomizationType()=='balancedInFactors') {
+
+
+            var levelLegthes= [];
+            var levelNames= [];
+            var facNames= [];
+            for (var depIdx=0; depIdx < dependencies.length; depIdx++) {
+                levelLegthes.push(dependencies[depIdx].globalVar().levels().length);
+                facNames.push(dependencies[depIdx].globalVar().name());
+                levelNames.push([]);
+                for (var k=0; k < dependencies[depIdx].globalVar().levels().length; k++) {
+                    levelNames[depIdx].push(dependencies[depIdx].globalVar().levels()[k].name());
+                }
+            }
+
+
+            var count = 1;
+            var existingNames = [];
+            for (var i=0; i < levelLegthes.length; i++) {
+                count*=levelLegthes[i];
+
+                var facName = facNames[i];
+                var newNames = levelNames[i];
+
+                var existingNamesCopy = existingNames.slice();
+                existingNames=[];
+                for (var k=0; k < newNames.length; k++) {
+                    var newName = '/'+ facName +'_' +newNames[k]+'/';
+                    if (i>0){
+                        for (var j=0; j < existingNamesCopy.length; j++) {
+                            var newEntry = existingNamesCopy[j]+newName;
+                            existingNames.push(newEntry);
+                        }
+                    }
+                    else{
+                        existingNames.push(newName);
+                    }
+                }
+            }
+            var counterArr = new Array(count);
+            counterArr.fill(0);
+
+            var levels = factor.globalVar().levels();
+
+            for (var trial=0; trial < factorLevels.length; trial++) {
+                var combinedVal ='';
+                for (var facneedIdx=0; facneedIdx < facNames.length; facneedIdx++) {
+                    var idx1=  globalVarNames.indexOf(facNames[facneedIdx]);
+                    var idx2 = factorNames.indexOf(idx1);
+                    var levelVal = factorLevels[trial][idx2];
+                    combinedVal+= '/'+ facNames[facneedIdx] +'_' +levelVal+'/';
+                }
+               var conditionIndex = existingNames.indexOf(combinedVal);
+                if (conditionIndex>=0){
+                    var currentLevelVal = counterArr[conditionIndex];
+                    var value = levels[currentLevelVal].name();
+                    factorLevels[trial].push(value);
+                    counterArr[conditionIndex]++;
+                    if( counterArr[conditionIndex]>levels.length-1){
+                        counterArr[conditionIndex] = 0;
+                    }
+                }
+                else{
+                    console.log("error: the factor combination could not be found.")
+                }
+
+            }
+
+            var facIdx = factors.indexOf(factor);
+            factorNames.push(facIdx);
 
         }
     }
@@ -611,6 +616,71 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroupIdx) {
     return [factorLevels,factorNames]
 
 };
+
+
+ExpTrialLoop.prototype.getResolutionOrder = function(factors,factorNames) {
+
+    // get nested dependencies
+    var resolvedFactors = [];
+    for (var facIdx=0; facIdx < factorNames.length; facIdx++) {
+        resolvedFactors.push(factors[factorNames[facIdx]]);
+    }
+    var unresolvedFactors = [];
+    for (var facIdx=0; facIdx < factors.length; facIdx++) {
+        if (factorNames.indexOf(facIdx)<0){
+            unresolvedFactors.push(factors[facIdx]);
+        }
+    }
+
+    var factorDependencies = [];
+    for (var facIdx=0; facIdx < unresolvedFactors.length; facIdx++) {
+        factorDependencies.push([]);
+        var dependencies  = unresolvedFactors[facIdx].balancedInFactors();
+        for (var k=0; k < dependencies.length; k++) {
+
+            if (dependencies[k].hasDependency()){
+                var factor = this.expData.entities.byId[dependencies[k].id];
+                factorDependencies[facIdx].push(factor);
+            }
+        }
+    }
+
+   var factorDependenciesCopy = factorDependencies.slice();
+
+    var resolutionOrder= [];
+    var outerIdx = 0;
+    var l = unresolvedFactors.length;
+    while(unresolvedFactors.length>0 && outerIdx<=l){
+        var found = false;
+        var idx = 0;
+        while(!found && idx<=factorDependencies.length){
+            var depFactors = factorDependencies[idx];
+            var unresFactor = unresolvedFactors[idx];
+
+            var ok = true;
+            for (var d = 0;d< depFactors.length; d++){
+                var depFactor =  depFactors[d];
+                if(resolvedFactors.indexOf(depFactor)==-1){
+                    ok = false;
+                }
+            }
+            if (ok ==true){
+                found = true;
+                resolutionOrder.push(unresFactor);
+                resolvedFactors.push(unresFactor);
+                unresolvedFactors.splice(idx,1);
+                factorDependencies.splice(idx,1);
+            }
+            else{
+                idx++;
+            }
+
+        }
+        outerIdx++;
+    }
+    return [resolutionOrder,factorDependenciesCopy];
+};
+
 
 
 ExpTrialLoop.prototype.getConditionFromFactorLevels = function(factorIndicies,factorLevels,factorGroup) {
@@ -662,6 +732,10 @@ ExpTrialLoop.prototype.getConditionFromFactorLevels = function(factorIndicies,fa
   return presentedConditions
 
 };
+
+
+
+
 
 ExpTrialLoop.prototype.reshuffle = function(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;

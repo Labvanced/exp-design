@@ -7,6 +7,7 @@
  * @constructor
  */
 var Factor = function(expData, factorGroup) {
+    var self = this;
     this.expData = expData;
     this.factorGroup = factorGroup;
 
@@ -16,22 +17,53 @@ var Factor = function(expData, factorGroup) {
     this.factorType =  ko.observable('fixed');// either 'fixed' or 'random'
     this.randomizationType =  ko.observable('unbalanced');
     this.balancedInFactor =  ko.observable(null);
-
+    this.balancedInFactors =  ko.observableArray([]);
 
     // or maybe better: either 'allFactorialInteractions' or 'redrawRandomPerTrial' or 'balancedBetweenSubjects'
 
     // not serialized:
     this.nrLevels =  ko.observable(1);
     this.editName = ko.observable(false);
+
 };
 
+
+Factor.prototype.addFactorDependency = function(factor) {
+
+    var obj ={
+        name:factor.globalVar().name(),
+        id:factor.id(),
+        hasDependency:  ko.observable(false)
+    };
+    this.balancedInFactors.push(obj);
+};
+
+
+Factor.prototype.removeFactorDependency = function(index) {
+    this.balancedInFactors.splice(index,1);
+};
+
+
 Factor.prototype.init = function(name) {
+
+    for (var i = 0; i<this.factorGroup.factors().length; i++){
+        var fac = this.factorGroup.factors()[i];
+        var obj ={
+            name:fac.globalVar().name(),
+            id:fac.id(),
+            hasDependency:  ko.observable(false)
+        };
+        this.balancedInFactors.push(obj);
+    }
+
     var globalVar = (new GlobalVar(this.expData)).initProperties('categorical', 'trial', 'nominal', name);
     globalVar.isFactor(true);
     globalVar.isInteracting(true);
     this.globalVar(globalVar);
     this.expData.entities.push(globalVar);
     this.updateLevels();
+
+    this.randomizationConverter();
 };
 
 Factor.prototype.updateLevels = function() {
@@ -64,6 +96,7 @@ Factor.prototype._addLevel = function() {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 Factor.prototype.setPointers = function(entitiesArr) {
+    var self = this;
     if (entitiesArr.byId[this.globalVar()]){
         this.globalVar(entitiesArr.byId[this.globalVar()]);
     }
@@ -73,6 +106,19 @@ Factor.prototype.setPointers = function(entitiesArr) {
     else {
         this.balancedInFactor(null);
     }
+
+    var balancedInFactors = [];
+    jQuery.each( this.balancedInFactors(), function( index, elem ) {
+        var obj = {
+            name:  elem.name,
+            id:  elem.id,
+            hasDependency:  ko.observable(elem.hasDependency)
+        };
+        balancedInFactors.push(obj);
+    });
+    this.balancedInFactors(balancedInFactors);
+
+    this.randomizationConverter();
 };
 
 /**
@@ -106,10 +152,54 @@ Factor.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('balancedInFactor')){
         this.balancedInFactor(data.balancedInFactor);
     }
-
+    if (data.hasOwnProperty("balancedInFactors")) {
+        this.balancedInFactors(data.balancedInFactors);
+    }
     this.globalVar(data.globalVar);
+
+
+
     return this;
 };
+
+
+Factor.prototype.randomizationConverter = function() {
+
+    if (this.randomizationType() == 'balancedInFactor'){
+        var varId = this.balancedInFactor();
+        for (var i=0; i < this.balancedInFactors().length; i++){
+            if (this.balancedInFactors()[i].id == varId){
+                this.balancedInFactors()[i].hasDependency(true);
+            }
+        }
+        this.randomizationType('balancedInFactors');
+        this.balancedInFactor(null);
+    }
+
+    else if (this.randomizationType() == 'balancedConditions'){
+        var varIds = [];
+        var allFactors  =  this.factorGroup.factors();
+        for (var i=0; i < allFactors.length; i++){
+            if (allFactors[i].factorType() == 'fixed'){
+                varIds.push(allFactors[i].id());
+            }
+        }
+
+        for (var i=0; i < this.balancedInFactors().length; i++){
+            for (var k=0; k < varIds.length; k++){
+                var varId = varIds[k];
+                if (this.balancedInFactors()[i].id == varId){
+                    this.balancedInFactors()[i].hasDependency(true);
+                }
+            }
+        }
+        this.randomizationType('balancedInFactors');
+        this.balancedInFactor(null);
+    }
+};
+
+
+
 
 /**
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
@@ -123,12 +213,26 @@ Factor.prototype.toJS = function() {
         }
     }
 
+    var balancedInFactors = [];
+    for (var i=0; i < this.balancedInFactors().length; i++){
+        var obj = {
+            name:  this.balancedInFactors()[i].name,
+            id:  this.balancedInFactors()[i].id,
+            hasDependency:  this.balancedInFactors()[i].hasDependency()
+        };
+        balancedInFactors.push(obj);
+    }
+
+
+
+
     return {
         type: "Factor",
         id: this.id(),
         factorType: this.factorType(),
         randomizationType:this.randomizationType(),
         balancedInFactor: balancedInFactorId,
+        balancedInFactors: balancedInFactors,
         globalVar: this.globalVar().id()
     };
 };
