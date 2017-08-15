@@ -102,10 +102,37 @@ FrameData.prototype.copyChildEntity = function(entity) {
         entityCopy.id(guid());
     }
 
+    // for content elements which have pre-defined sub-variables
+    if (entityCopy.content().hasOwnProperty('variable')){
+
+        var varEntity = entityCopy.content().variable();
+        if (varEntity){
+            var variableCopy =  this.copyVariable(varEntity);
+            this.expData.entities.push(variableCopy);
+            entityCopy.content().variable(variableCopy.id());
+            this.localWorkspaceVars.splice(index+1, 0, variableCopy);
+        }
+
+    }
+    if ( entityCopy.content().hasOwnProperty("elements")){
+        var subElements = entityCopy.content().elements();
+        for(var i = 0; i<subElements.length;i++){
+            if (subElements[i].hasOwnProperty("variable")){
+                var varEntity = subElements[i].variable();
+                var variableCopy =  this.copyVariable(varEntity);
+                this.expData.entities.push(variableCopy);
+                subElements[i].variable(variableCopy.id());
+                this.localWorkspaceVars.splice(index+1, 0, variableCopy);
+
+            }
+        }
+    }
+
     entityCopy.name(entityCopy.name() + "_copy");
     entityCopy.parent = this;
     entityCopy.setPointers(this.expData.entities);
     obsArr.splice(index+1, 0, entityCopy);
+    this.expData.parentExperiment.save();
 };
 
 /**
@@ -120,6 +147,26 @@ FrameData.prototype.addVariableToLocalWorkspace = function(variable) {
         variable.addBackRef(this, this, false, false, 'workspace variable');
     }
 };
+
+
+
+FrameData.prototype.copyVariable = function(varEntity) {
+
+    if (!(varEntity instanceof GlobalVar)){
+        varEntity= this.expData.entities.byId[varEntity];
+    }
+    var variableCopy = entityFactory(varEntity.toJS(), this.expData);
+    variableCopy.name(variableCopy.name() + "_copy");
+    variableCopy.parent = this;
+    variableCopy.setPointers(this.expData.entities);
+    variableCopy.id(guid());
+    variableCopy.fromJS(variableCopy.toJS());
+    variableCopy.setPointers(this.expData.entities);
+
+    return variableCopy
+};
+
+
 
 /**
  * add a new frame element to this frame.
