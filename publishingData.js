@@ -5,7 +5,7 @@ var PublishingData = function(experiment) {
     var self = this;
 
     // others
-    this.dateLastModified = ko.observable(getCurrentDate());
+    this.dateLastModified = ko.observable(this.getCurrentDate());
     
     // page 1 //
     this.sharingDesign = ko.observable('none'); // 'none', 'public'
@@ -136,6 +136,16 @@ var PublishingData = function(experiment) {
 
 };
 
+
+
+
+PublishingData.prototype.getCurrentDate = function() {
+    if (this.experiment.expData){
+       var offset =  this.experiment.exp_data.studySettings.timeZoneOffset();
+    }
+   return getCurrentDate(offset);
+};
+
 PublishingData.prototype.fromJS = function(data) {
 
     if (data.hasOwnProperty('dateLastModified')) {
@@ -203,8 +213,6 @@ PublishingData.prototype.fromJS = function(data) {
         }
         this.externalLinks(externalLinks);
     }
-
-
 
     if (data.hasOwnProperty('duration')) {
         this.duration(data.duration);
@@ -314,6 +322,7 @@ PublishingData.prototype.toJS = function() {
         ratingValues:  this.ratingValues(),
         raterUserIds:  this.raterUserIds(),
         publicationDate: this.publicationDate()
+
 
     };
 };

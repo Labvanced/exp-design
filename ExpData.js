@@ -29,7 +29,7 @@ var ExpData = function (parentExperiment) {
     //not serialized
     this.languages = ['Chinese', 'Dutch', 'English', 'French', 'German', 'Spanish'];
 
-    this.dateLastModified = ko.observable(getCurrentDate());
+    this.dateLastModified = ko.observable(getCurrentDate(this.studySettings.timeZoneOffset()));
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         this[ExpData.prototype.fixedVarNames[i]] = ko.observable();
@@ -448,7 +448,7 @@ ExpData.prototype.toJS = function() {
         studySettings = this.studySettings.toJS();
     }
 
-    this.dateLastModified(getCurrentDate());
+    this.dateLastModified(getCurrentDate(this.studySettings.timeZoneOffset()));
 
     var data = {
         dateLastModified: this.dateLastModified(),

@@ -16,11 +16,26 @@ function guid() {
 }
 
 
-function getCurrentDate() {
+function getCurrentDate(offset) {
     var today = new Date();
     var dd = today.getDate();
     var mm = today.getMonth()+1; //January is 0!
     var yyyy = today.getFullYear();
+    if (offset){
+        var hh = today.getHours()+offset;
+    }
+    else{
+        var hh = today.getHours();
+    }
+    if (hh<0){
+        dd --;
+        hh = 24-hh;
+    }
+    else if (hh>23){
+        dd++;
+        hh=hh-24
+    }
+
     if(dd<10){
         dd='0'+dd;
     }
@@ -29,4 +44,39 @@ function getCurrentDate() {
     }
     var today = dd+'/'+mm+'/'+yyyy;
     return today
+};
+
+
+function getCurrentDateModified(offset) {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+    var hh = today.getHours()+offset;
+    if (hh<0){
+        dd --;
+        hh = 24-hh;
+    }
+    else if (hh>23){
+        dd++;
+        hh=hh-24
+    }
+    var min = today.getMinutes();
+
+    if(dd<10){
+        dd='0'+dd;
+    }
+    if(mm<10){
+        mm='0'+mm;
+    }
+    var date = yyyy+"-"+mm+"-"+dd ;
+    var time = hh+":"+min;
+
+    var obj = {
+        date: date,
+        time: time,
+        data: [yyyy,parseInt(mm),parseInt(dd),hh,min]
+    };
+    return obj;
+
 };

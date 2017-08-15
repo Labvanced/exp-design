@@ -8,23 +8,27 @@ var SessionTimeData= function (expData) {
     
     this.id = ko.observable(guid());
     this.type = "SessionTimeSettings";
-    // variables for manning the timing
     this.startCondition  = ko.observable('anytime');
     this.startTime = ko.observable(null);
     this.endTime = ko.observable(null);
     this.startDay = ko.observable(null);
     this.endDay = ko.observable(null);
-    this.periodStartOption  = ko.observable('specific');
-    this.startWeekDay = ko.observable(null);
-    this.endWeekDay = ko.observable(null);
-    this.startMonthDay = ko.observable(null);
-    this.endMonthDay  = ko.observable(null);
     this.startInterval  = ko.observable(null);
-    this.possibleMonthDays  = ko.observableArray(['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th','13th','14th','15th','16th','17th','18th','19th','20th','21st','22th','23th','24th','25th','26th','27th','28th','29th','30th','31th']);
-    this.possibleWeekDays  = ko.observableArray(['monday','tuesday','wednesday','thursday','friday','saturday','sunday']);
     this.possibleIntervals  = ko.observableArray(['every day','every week','every month']);
     this.minimalDaysAfterLast = ko.observable(null);
     this.maximalDaysAfterLast = ko.observable(null);
+
+
+
+    // deprecated
+
+   //  this.periodStartOption  = ko.observable('specific');
+   // this.possibleMonthDays  = ko.observableArray(['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th','13th','14th','15th','16th','17th','18th','19th','20th','21st','22th','23th','24th','25th','26th','27th','28th','29th','30th','31th']);
+  //  this.possibleWeekDays  = ko.observableArray(['monday','tuesday','wednesday','thursday','friday','saturday','sunday']);
+  //  this.startWeekDay = ko.observable(null);
+  //  this.endWeekDay = ko.observable(null);
+  //  this.startMonthDay = ko.observable(null);
+  //  this.endMonthDay  = ko.observable(null);
 };
 
 /**
@@ -59,17 +63,20 @@ SessionTimeData.prototype.fromJS = function(data) {
     this.endTime(data.endTime);
     this.startDay(data.startDay);
     this.endDay(data.endDay);
-    this.periodStartOption(data.periodStartOption);
-    this.startWeekDay(data.startWeekDay) ;
-    this.endWeekDay(data.endWeekDay) ;
-    this.startMonthDay(data.startMonthDay) ;
-    this.endMonthDay(data.endMonthDay);
     this.startInterval(data.startInterval) ;
-    this.possibleMonthDays(data.possibleMonthDays);
-    this.possibleWeekDays(data.possibleWeekDays);
-    this.possibleIntervals(data.possibleIntervals);
     this.minimalDaysAfterLast(data.minimalDaysAfterLast);
     this.maximalDaysAfterLast(data.maximalDaysAfterLast);
+    this.possibleIntervals(data.possibleIntervals);
+
+
+   // this.periodStartOption(data.periodStartOption);
+   // this.possibleMonthDays(data.possibleMonthDays);
+   // this.possibleWeekDays(data.possibleWeekDays);
+   // this.startWeekDay(data.startWeekDay) ;
+   // this.endWeekDay(data.endWeekDay) ;
+   // this.startMonthDay(data.startMonthDay) ;
+   // this.endMonthDay(data.endMonthDay);
+
     return this;
 };
 
@@ -87,17 +94,18 @@ SessionTimeData.prototype.toJS = function() {
         endTime: this.endTime(),
         startDay: this.startDay(),
         endDay: this.endDay(),
-        periodStartOption: this.periodStartOption(),
-        startWeekDay: this.startWeekDay(),
-        endWeekDay: this.endWeekDay(),
-        startMonthDay: this.startMonthDay(),
-        endMonthDay: this.endMonthDay(),
         startInterval: this.startInterval(),
-        possibleMonthDays: this.possibleMonthDays(),
-        possibleWeekDays: this.possibleWeekDays(),
         possibleIntervals:  this.possibleIntervals(),
         minimalDaysAfterLast: this.minimalDaysAfterLast(),
         maximalDaysAfterLast: this.maximalDaysAfterLast()
+
+      //  possibleMonthDays: this.possibleMonthDays(),
+      //  possibleWeekDays: this.possibleWeekDays(),
+      //  periodStartOption: this.periodStartOption(),
+      //  startWeekDay: this.startWeekDay(),
+      //  endWeekDay: this.endWeekDay(),
+      //  startMonthDay: this.startMonthDay(),
+      //  endMonthDay: this.endMonthDay()
     };
 
 };
