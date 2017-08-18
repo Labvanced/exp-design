@@ -491,15 +491,14 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
         var factor = resolutionOrder[facIndx];
         var dependencies = factorDependencies[facIndx];
 
+        /**
         if (factor.factorType()=='random' && factor.randomizationType()=='balancedInFactor') {
-
 
             var facName = factor.globalVar().name();
             var levels = factor.globalVar().levels();
             var facIdx = factors.indexOf(factor);
             var nrLevels = levels.length;
             var balanceInFactor = null;
-
 
             if (factor.balancedInFactor()){
                 var idx = globalVarNames.indexOf(factor.balancedInFactor().globalVar().name());
@@ -536,79 +535,112 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
 
             }
         }
+         **/
 
 
-        else if (factor.factorType()=='random' && factor.randomizationType()=='balancedInFactors') {
+        if (factor.factorType()=='random' && factor.randomizationType()=='balancedInFactors') {
+
+            if (dependencies.length==0){ //if their are no dependencies just balance this factor in the task
+                var facName = factor.globalVar().name();
+                var levels = factor.globalVar().levels();
+                var facIdx = factors.indexOf(factor);
+                var nrLevels = levels.length;
+
+                factorNames.push(facIdx);
+                var trialSplit = Math.floor(factorLevels.length/nrLevels);
+                var remainder = factorLevels.length%nrLevels;
 
 
-            var levelLegthes= [];
-            var levelNames= [];
-            var facNames= [];
-            for (var depIdx=0; depIdx < dependencies.length; depIdx++) {
-                levelLegthes.push(dependencies[depIdx].globalVar().levels().length);
-                facNames.push(dependencies[depIdx].globalVar().name());
-                levelNames.push([]);
-                for (var k=0; k < dependencies[depIdx].globalVar().levels().length; k++) {
-                    levelNames[depIdx].push(dependencies[depIdx].globalVar().levels()[k].name());
+                var randIdx = [];
+                for (var trialIdx=0; trialIdx <factorLevels.length; trialIdx++) {
+                    randIdx.push(trialIdx);
+                }
+                var randIndicies = this.reshuffle(randIdx);
+
+                var trialIdx = 0;
+                for (var lvlIndex=0; lvlIndex <levels.length; lvlIndex++) {
+                    for (var repIndex=0; repIndex <trialSplit; repIndex++) {
+                        factorLevels[randIndicies[trialIdx]].push(levels[lvlIndex].name());
+                        trialIdx ++;
+                    }
+                }
+
+                for (var remain=0; remain < remainder; remain++) {
+                    factorLevels[randIndicies[trialIdx]].push(levels[remain].name());
+                    trialIdx ++;
                 }
             }
 
+            else{
 
-            var count = 1;
-            var existingNames = [];
-            for (var i=0; i < levelLegthes.length; i++) {
-                count*=levelLegthes[i];
+                var levelLegthes= [];
+                var levelNames= [];
+                var facNames= [];
+                for (var depIdx=0; depIdx < dependencies.length; depIdx++) {
+                    levelLegthes.push(dependencies[depIdx].globalVar().levels().length);
+                    facNames.push(dependencies[depIdx].globalVar().name());
+                    levelNames.push([]);
+                    for (var k=0; k < dependencies[depIdx].globalVar().levels().length; k++) {
+                        levelNames[depIdx].push(dependencies[depIdx].globalVar().levels()[k].name());
+                    }
+                }
 
-                var facName = facNames[i];
-                var newNames = levelNames[i];
 
-                var existingNamesCopy = existingNames.slice();
-                existingNames=[];
-                for (var k=0; k < newNames.length; k++) {
-                    var newName = '/'+ facName +'_' +newNames[k]+'/';
-                    if (i>0){
-                        for (var j=0; j < existingNamesCopy.length; j++) {
-                            var newEntry = existingNamesCopy[j]+newName;
-                            existingNames.push(newEntry);
+                var count = 1;
+                var existingNames = [];
+                for (var i=0; i < levelLegthes.length; i++) {
+                    count*=levelLegthes[i];
+
+                    var facName = facNames[i];
+                    var newNames = levelNames[i];
+
+                    var existingNamesCopy = existingNames.slice();
+                    existingNames=[];
+                    for (var k=0; k < newNames.length; k++) {
+                        var newName = '/'+ facName +'_' +newNames[k]+'/';
+                        if (i>0){
+                            for (var j=0; j < existingNamesCopy.length; j++) {
+                                var newEntry = existingNamesCopy[j]+newName;
+                                existingNames.push(newEntry);
+                            }
+                        }
+                        else{
+                            existingNames.push(newName);
+                        }
+                    }
+                }
+                var counterArr = new Array(count);
+                counterArr.fill(0);
+
+                var levels = factor.globalVar().levels();
+
+                for (var trial=0; trial < factorLevels.length; trial++) {
+                    var combinedVal ='';
+                    for (var facneedIdx=0; facneedIdx < facNames.length; facneedIdx++) {
+                        var idx1=  globalVarNames.indexOf(facNames[facneedIdx]);
+                        var idx2 = factorNames.indexOf(idx1);
+                        var levelVal = factorLevels[trial][idx2];
+                        combinedVal+= '/'+ facNames[facneedIdx] +'_' +levelVal+'/';
+                    }
+                    var conditionIndex = existingNames.indexOf(combinedVal);
+                    if (conditionIndex>=0){
+                        var currentLevelVal = counterArr[conditionIndex];
+                        var value = levels[currentLevelVal].name();
+                        factorLevels[trial].push(value);
+                        counterArr[conditionIndex]++;
+                        if( counterArr[conditionIndex]>levels.length-1){
+                            counterArr[conditionIndex] = 0;
                         }
                     }
                     else{
-                        existingNames.push(newName);
+                        console.log("error: the factor combination could not be found.")
                     }
                 }
-            }
-            var counterArr = new Array(count);
-            counterArr.fill(0);
 
-            var levels = factor.globalVar().levels();
-
-            for (var trial=0; trial < factorLevels.length; trial++) {
-                var combinedVal ='';
-                for (var facneedIdx=0; facneedIdx < facNames.length; facneedIdx++) {
-                    var idx1=  globalVarNames.indexOf(facNames[facneedIdx]);
-                    var idx2 = factorNames.indexOf(idx1);
-                    var levelVal = factorLevels[trial][idx2];
-                    combinedVal+= '/'+ facNames[facneedIdx] +'_' +levelVal+'/';
-                }
-               var conditionIndex = existingNames.indexOf(combinedVal);
-                if (conditionIndex>=0){
-                    var currentLevelVal = counterArr[conditionIndex];
-                    var value = levels[currentLevelVal].name();
-                    factorLevels[trial].push(value);
-                    counterArr[conditionIndex]++;
-                    if( counterArr[conditionIndex]>levels.length-1){
-                        counterArr[conditionIndex] = 0;
-                    }
-                }
-                else{
-                    console.log("error: the factor combination could not be found.")
-                }
+                var facIdx = factors.indexOf(factor);
+                factorNames.push(facIdx);
 
             }
-
-            var facIdx = factors.indexOf(factor);
-            factorNames.push(facIdx);
-
         }
     }
 
@@ -645,8 +677,7 @@ ExpTrialLoop.prototype.getResolutionOrder = function(factors,factorNames) {
         }
     }
 
-   var factorDependenciesCopy = factorDependencies.slice();
-
+    var newFactorDependencies = [];
     var resolutionOrder= [];
     var outerIdx = 0;
     var l = unresolvedFactors.length;
@@ -667,6 +698,7 @@ ExpTrialLoop.prototype.getResolutionOrder = function(factors,factorNames) {
             if (ok ==true){
                 found = true;
                 resolutionOrder.push(unresFactor);
+                newFactorDependencies.push(depFactors);
                 resolvedFactors.push(unresFactor);
                 unresolvedFactors.splice(idx,1);
                 factorDependencies.splice(idx,1);
@@ -678,7 +710,7 @@ ExpTrialLoop.prototype.getResolutionOrder = function(factors,factorNames) {
         }
         outerIdx++;
     }
-    return [resolutionOrder,factorDependenciesCopy];
+    return [resolutionOrder,newFactorDependencies];
 };
 
 
