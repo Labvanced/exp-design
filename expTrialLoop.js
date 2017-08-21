@@ -682,6 +682,7 @@ ExpTrialLoop.prototype.getResolutionOrder = function(factors,factorNames) {
     var outerIdx = 0;
     var l = unresolvedFactors.length;
     while(unresolvedFactors.length>0 && outerIdx<=l){
+
         var found = false;
         var idx = 0;
         while(!found && idx<=factorDependencies.length){
