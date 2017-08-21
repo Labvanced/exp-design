@@ -655,7 +655,7 @@ ExpTrialLoop.prototype.getResolutionOrder = function(factors,factorNames) {
     // get nested dependencies
     var resolvedFactors = [];
     for (var facIdx=0; facIdx < factorNames.length; facIdx++) {
-        resolvedFactors.push(factors[factorNames[facIdx]]);
+        resolvedFactors.push(factors[factorNames[facIdx]].globalVar().id());
     }
     var unresolvedFactors = [];
     for (var facIdx=0; facIdx < factors.length; facIdx++) {
@@ -691,7 +691,7 @@ ExpTrialLoop.prototype.getResolutionOrder = function(factors,factorNames) {
             var ok = true;
             for (var d = 0;d< depFactors.length; d++){
                 var depFactor =  depFactors[d];
-                if(resolvedFactors.indexOf(depFactor)==-1){
+                if(resolvedFactors.indexOf(depFactor.globalVar().id())==-1){
                     ok = false;
                 }
             }
@@ -699,7 +699,7 @@ ExpTrialLoop.prototype.getResolutionOrder = function(factors,factorNames) {
                 found = true;
                 resolutionOrder.push(unresFactor);
                 newFactorDependencies.push(depFactors);
-                resolvedFactors.push(unresFactor);
+                resolvedFactors.push(unresFactor.globalVar().id());
                 unresolvedFactors.splice(idx,1);
                 factorDependencies.splice(idx,1);
             }
