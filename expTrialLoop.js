@@ -690,23 +690,29 @@ ExpTrialLoop.prototype.getResolutionOrder = function(factors,factorNames) {
             var unresFactor = unresolvedFactors[idx];
 
             var ok = true;
-            for (var d = 0;d< depFactors.length; d++){
-                var depFactor =  depFactors[d];
-                if(resolvedFactors.indexOf(depFactor.globalVar().id())==-1){
-                    ok = false;
+            if (depFactors){
+                for (var d = 0;d< depFactors.length; d++){
+                    var depFactor =  depFactors[d];
+                    if(resolvedFactors.indexOf(depFactor.globalVar().id())==-1){
+                        ok = false;
+                    }
                 }
-            }
-            if (ok ==true){
-                found = true;
-                resolutionOrder.push(unresFactor);
-                newFactorDependencies.push(depFactors);
-                resolvedFactors.push(unresFactor.globalVar().id());
-                unresolvedFactors.splice(idx,1);
-                factorDependencies.splice(idx,1);
+                if (ok ==true){
+                    found = true;
+                    resolutionOrder.push(unresFactor);
+                    newFactorDependencies.push(depFactors);
+                    resolvedFactors.push(unresFactor.globalVar().id());
+                    unresolvedFactors.splice(idx,1);
+                    factorDependencies.splice(idx,1);
+                }
+                else{
+                    idx++;
+                }
             }
             else{
                 idx++;
             }
+
 
         }
         outerIdx++;
@@ -714,6 +720,16 @@ ExpTrialLoop.prototype.getResolutionOrder = function(factors,factorNames) {
     return [resolutionOrder,newFactorDependencies];
 };
 
+
+
+ExpTrialLoop.prototype.resetFactorDependencies = function() {
+    for (var i = 0; i<this.factorGroups().length; i++){
+      var facs =  this.factorGroups()[i].factors();
+        for (var k = 0; k<facs.length; k++){
+            facs[k].resetFactorDependencies();
+        }
+    }
+}
 
 
 ExpTrialLoop.prototype.getConditionFromFactorLevels = function(factorIndicies,factorLevels,factorGroup) {

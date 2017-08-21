@@ -160,23 +160,27 @@ Factor.prototype.fromJS = function(data) {
     return this;
 };
 
+Factor.prototype.resetFactorDependencies = function() {
+    this.balancedInFactors([]);
+    for (var i = 0; i<this.factorGroup.factors().length; i++){
+        var fac = this.factorGroup.factors()[i];
+        var globalV= fac.globalVar();
+        if (!(fac.globalVar().hasOwnProperty("name"))){
+            globalV = this.expData.entities.byId[globalV];
+        }
+        var obj ={
+            name:globalV.name(),
+            id:fac.id(),
+            hasDependency:  ko.observable(false)
+        };
+        this.balancedInFactors.push(obj);
+    }
+};
 
 Factor.prototype.randomizationConverter = function() {
 
     if (this.balancedInFactors().length==0){
-        for (var i = 0; i<this.factorGroup.factors().length; i++){
-            var fac = this.factorGroup.factors()[i];
-            var globalV= fac.globalVar();
-            if (!(fac.globalVar().hasOwnProperty("name"))){
-                globalV = this.expData.entities.byId[globalV];
-            }
-            var obj ={
-                name:globalV.name(),
-                id:fac.id(),
-                hasDependency:  ko.observable(false)
-            };
-            this.balancedInFactors.push(obj);
-        }
+       this.resetFactorDependencies();
     }
 
     if (this.randomizationType() == 'balancedInFactor'){
