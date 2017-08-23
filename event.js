@@ -65,8 +65,8 @@ Event.prototype.checkRequirementAndRun = function(parameters,actions) {
             var ifElseConditions = conditionalAction.ifElseConditions();
             var foundTrueCase = false;
             var caseIndex = 0;
-            while (foundTrueCase ==false && caseIndex<=ifElseConditions.length){
-                var requirement = ifElseConditions[caseIndex].requirement();
+            while (foundTrueCase ==false && caseIndex<ifElseConditions.length){
+                   var requirement = ifElseConditions[caseIndex].requirement();
                 var actionList = ifElseConditions[caseIndex].subActions();
                 if (requirement==null || requirement.checkIfTrue(parameters)) {
                     foundTrueCase = true;
