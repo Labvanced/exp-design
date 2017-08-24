@@ -162,3 +162,15 @@ Event.prototype.toJS = function() {
     };
 };
 
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+Event.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    this.trigger().destroyOnPlayerFrame(playerFrame);
+    var actions = this.actions();
+    for (var i = 0; i < actions.length; i++){
+        actions[i].destroyOnPlayerFrame(playerFrame);
+    }
+};

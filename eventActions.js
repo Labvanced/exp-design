@@ -646,9 +646,11 @@ ActionJumpTo.prototype.toJS = function() {
  */
 var ActionDelayedActions = function(event) {
     this.event = event;
-    this.timeoutFcn = null;
+    this.timeoutFcns = [];
 
     // serialized:
+    this.repeatEnabled = ko.observable(false);
+    this.numRepeat = ko.observable(2);
     this.delayInMs = ko.observable(1000);
     this.subActions = ko.observableArray([]);
 };
@@ -672,14 +674,50 @@ ActionDelayedActions.prototype.isValid = function(){
  */
 ActionDelayedActions.prototype.run = function(triggerParams) {
     var self = this;
-    this.timeoutFcn = setTimeout(function() {
+
+    /* use this for repeated actions:
+
+    var start;
+    var nextAt;
+
+    var f = function() {
+        if (!start) {
+            start = new Date().getTime();
+            nextAt = start;
+        }
+        nextAt += this.delayInMs();
+        var currTime = new Date().getTime();
+        setTimeout(f, nextAt - currTime);
+
+        var drift = (currTime - start) % this.delayInMs();
+        console.log("drift: "+drift);
+    };
+    f();
+    */
+
+    var timeoutFcn = setTimeout(function() {
         var actions = self.subActions();
         for (var i=0; i<actions.length; i++) {
             actions[i].run(triggerParams);
         }
     }, this.delayInMs());
+
+    this.timeoutFcns.push(timeoutFcn);
 };
 
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionDelayedActions.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    jQuery.each( this.timeoutFcns, function( index, fcn ) {
+        clearTimeout(fcn);
+    } );
+    jQuery.each( this.subActions(), function( index, action ) {
+        action.destroyOnPlayerFrame(playerFrame);
+    } );
+};
 
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
@@ -822,7 +860,18 @@ ActionConditional.prototype.run = function(triggerParams) {
     }
 };
 
-
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionConditional.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    jQuery.each( this.defaultSubActions(), function( index, action ) {
+        action.destroyOnPlayerFrame(playerFrame);
+    } );
+    jQuery.each( this.ifElseConditions(), function( index, ifElseCond ) {
+        ifElseCond.destroyOnPlayerFrame(playerFrame);
+    } );
+};
 
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
@@ -962,6 +1011,15 @@ ActionIfCondition.prototype.run = function(triggerParams) {
     var self = this;
 };
 
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionConditional.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    jQuery.each( this.subActions(), function( index, action ) {
+        action.destroyOnPlayerFrame(playerFrame);
+    } );
+};
 
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
