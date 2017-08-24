@@ -674,7 +674,9 @@ ActionDelayedActions.prototype.run = function(triggerParams) {
     var self = this;
     this.timeoutFcn = setTimeout(function() {
         var actions = self.subActions();
-        self.event.checkRequirementAndRun(triggerParams,actions);
+        for (var i=0; i<actions.length; i++) {
+            actions[i].run(triggerParams);
+        }
     }, this.delayInMs());
 };
 
@@ -798,8 +800,26 @@ ActionConditional.prototype.addIfCondition = function(){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionConditional.prototype.run = function(triggerParams) {
-    var self = this;
-
+    var ifElseConditions = this.ifElseConditions();
+    var foundTrueCase = false;
+    var caseIndex = 0;
+    while (foundTrueCase ==false && caseIndex<ifElseConditions.length){
+        var requirement = ifElseConditions[caseIndex].requirement();
+        var actionList = ifElseConditions[caseIndex].subActions();
+        if (requirement==null || requirement.checkIfTrue(triggerParams)) {
+            foundTrueCase = true;
+            for (var j=0; j<actionList.length; j++) {
+                actionList[j].run(triggerParams);
+            }
+        }
+        caseIndex ++;
+    }
+    if (foundTrueCase==false && this.defaultConditionActive()){
+        var actionList = this.defaultSubActions();
+        for (var j=0; j<actionList.length; j++) {
+            actionList[j].run(triggerParams);
+        }
+    }
 };
 
 

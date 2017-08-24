@@ -2,7 +2,7 @@
 
 /**
  * An event defines all kinds of experimental logic and responsive feedback to the participant. The event is a container
- * that combines a certain trigger with several actions and requirements.
+ * that combines a certain trigger with several actions.
  *
  * @param {FrameData | PageData} parent - the frame or page where this event is defined.
  * @constructor
@@ -12,13 +12,10 @@ var Event= function(parent) {
 
     var self = this;
     // serialized
-    //this.id = ko.observable(guid());
     this.type = "Event";
     this.trigger = ko.observable(null);
-    this.requirement = ko.observable(new RequirementAND(this));
     this.actions = ko.observableArray([]);
     this.name =  ko.observable(null);
-
 
     this.shortName = ko.computed(function() {
         if (self.name()){
@@ -27,14 +24,6 @@ var Event= function(parent) {
         else return '';
     });
 
-};
-
-
-/**
- * deletes all requirements.
- */
-Event.prototype.deleteRequirement = function() {
-    this.requirement(new RequirementAND(this));
 };
 
 /**
@@ -46,49 +35,13 @@ Event.prototype.deleteAction = function(index) {
 };
 
 /**
- * the event is triggered via this function. If the requirmenets are fullfilled then it starts the actions.
+ * the event is triggered via this function.
  * @param parameters
  */
 Event.prototype.triggerActions = function(parameters) {
-    this.checkRequirementAndRun(parameters,this.actions());
-};
-
-/**
- * runs all actions.
- * @param parameters
- */
-Event.prototype.checkRequirementAndRun = function(parameters,actions) {
-
+    var actions = this.actions();
     for (var i=0; i<actions.length; i++) {
-        if (actions[i] instanceof ActionConditional){
-            var conditionalAction = actions[i];
-            var ifElseConditions = conditionalAction.ifElseConditions();
-            var foundTrueCase = false;
-            var caseIndex = 0;
-            while (foundTrueCase ==false && caseIndex<ifElseConditions.length){
-                   var requirement = ifElseConditions[caseIndex].requirement();
-                var actionList = ifElseConditions[caseIndex].subActions();
-                if (requirement==null || requirement.checkIfTrue(parameters)) {
-                    foundTrueCase = true;
-                    for (var j=0; j<actionList.length; j++) {
-                        actionList[j].run(parameters);
-                    }
-
-                }
-                caseIndex ++;
-            }
-            if (foundTrueCase==false && conditionalAction.defaultConditionActive()){
-                var actionList = conditionalAction.defaultSubActions();
-                for (var j=0; j<actionList.length; j++) {
-                    actionList[j].run(parameters);
-                }
-            }
-
-        }
-        else{
-            actions[i].run(parameters);
-        }
-
+        actions[i].run(parameters);
     }
 };
 
@@ -101,9 +54,7 @@ Event.prototype.checkRequirementAndRun = function(parameters,actions) {
  */
 Event.prototype.setPointers = function(entitiesArr) {
     this.trigger().setPointers(entitiesArr);
-    if (this.requirement()) {
-        this.requirement().setPointers(entitiesArr);
-    }
+
     var actions = this.actions();
     for (var i=0; i<actions.length; i++) {
         actions[i].setPointers(entitiesArr);
@@ -139,9 +90,6 @@ Event.prototype.reAddEntities = function(entitiesArr) {
     if (this.trigger() && this.trigger().reAddEntities) {
         this.trigger().reAddEntities(entitiesArr);
     }
-    if (this.requirement() && this.requirement().reAddEntities) {
-        this.requirement().reAddEntities(entitiesArr);
-    }
     jQuery.each( this.actions(), function( index, elem ) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
@@ -174,10 +122,6 @@ Event.prototype.fromJS = function(data) {
 
 
     if (data.requirement) {
-        var requirement = requirementFactory(self, data.requirement.type);
-        requirement.fromJS(data.requirement);
-        this.requirement(requirement);
-
         this.requirementConverter(data);
     }
 
@@ -185,17 +129,16 @@ Event.prototype.fromJS = function(data) {
 };
 
 Event.prototype.requirementConverter = function(data) {
+    var requirement = requirementFactory(this, data.requirement.type);
+    requirement.fromJS(data.requirement);
 
     if (data.requirement.childRequirements.length>0){
-        var requirement = this.requirement();
-        this.requirement(null);
         var actions = this.actions();
         this.actions([]);
         var wrapperAction = new ActionConditional(this);
         wrapperAction.ifElseConditions()[0].requirement(requirement);
         wrapperAction.ifElseConditions()[0].subActions(actions);
         this.actions.push(wrapperAction);
-
     }
 };
 
@@ -210,18 +153,11 @@ Event.prototype.toJS = function() {
     for (var i=0; i<actions.length; i++) {
         actionData.push(actions[i].toJS());
     }
-    
-    var req = null;
-    if (this.requirement()) {
-        req = this.requirement().toJS();
-    }
 
     return {
-        //id: this.id(),
         name:this.name(),
         type: this.type,
         trigger: this.trigger().toJS(),
-        requirement: req,
         actions: actionData
     };
 };
