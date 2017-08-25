@@ -124,6 +124,13 @@ ActionRecord.prototype.run = function(triggerParams) {
 };
 
 /**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionRecord.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
  * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
@@ -321,6 +328,13 @@ ActionSetElementProp.prototype.run = function(triggerParams) {
 };
 
 /**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionSetElementProp.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
  * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
@@ -411,6 +425,13 @@ var ActionSetElementPropChange = function(parentAction) {
 ActionSetElementPropChange.prototype.operatorTypes = ["=", "+", "-", "*", "/"];
 ActionSetElementPropChange.prototype.changeTypes =  ["value", "%", "variable"];
 
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionSetElementPropChange.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
 ActionSetElementPropChange.prototype.setPointers = function(entitiesArr) {
     if (this.changeType() == "variable") {
         var varId = this.variable();
@@ -483,6 +504,13 @@ ActionSetProp.prototype.setVariableBackRef = function(){
 ActionSetProp.prototype.run = function(triggerParams) {
     var rValue = this.operand.getValue(triggerParams);
     this.refToObjectProperty.setValue(rValue);
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionSetProp.prototype.destroyOnPlayerFrame = function(playerFrame) {
 };
 
 /**
@@ -576,6 +604,13 @@ ActionJumpTo.prototype.run = function(triggerParams) {
         player.currentFrame.goToCustomFrame(this.frameToJump());
     }
 
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionJumpTo.prototype.destroyOnPlayerFrame = function(playerFrame) {
 };
 
 ActionJumpTo.prototype.reAddEntities = function(entitiesArr) {
@@ -1015,7 +1050,7 @@ ActionIfCondition.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionConditional.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionIfCondition.prototype.destroyOnPlayerFrame = function(playerFrame) {
     jQuery.each( this.subActions(), function( index, action ) {
         action.destroyOnPlayerFrame(playerFrame);
     } );
@@ -1150,6 +1185,13 @@ ActionSetVariable.prototype.removeVariable = function(){
 ActionSetVariable.prototype.run = function(triggerParams) {
     var rValue = this.operand().getValue(triggerParams);
     this.variable().value().value(rValue);
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionSetVariable.prototype.destroyOnPlayerFrame = function(playerFrame) {
 };
 
 /**
@@ -1362,6 +1404,13 @@ ActionModifyVariable.prototype.run = function(triggerParams) {
 };
 
 /**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionModifyVariable.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
  * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
@@ -1536,6 +1585,13 @@ ActionDrawRandomNumber.prototype.run = function(triggerParams) {
 };
 
 /**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionDrawRandomNumber.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
  * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
@@ -1641,6 +1697,13 @@ ActionControlAV.prototype.run = function(triggerParams) {
         }
     }
 
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionControlAV.prototype.destroyOnPlayerFrame = function(playerFrame) {
 };
 
 /**
@@ -1759,6 +1822,13 @@ ActionControlTimer.prototype.run = function(triggerParams) {
 };
 
 /**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionControlTimer.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
  * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
@@ -1847,6 +1917,13 @@ ActionRecordQuestionaireResponse.prototype.run = function(triggerParams) {
     var recData = new RecData();
     recData.addRecording(this.variable);
     player.addRecording(blockId,trialId,recData.toJS());
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionRecordQuestionaireResponse.prototype.destroyOnPlayerFrame = function(playerFrame) {
 };
 
 /**
