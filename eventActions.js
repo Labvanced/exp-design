@@ -684,8 +684,6 @@ var ActionDelayedActions = function(event) {
     this.timeoutFcns = [];
 
     // serialized:
-    this.repeatEnabled = ko.observable(false);
-    this.numRepeat = ko.observable(2);
     this.delayInMs = ko.observable(1000);
     this.subActions = ko.observableArray([]);
 };
@@ -709,34 +707,12 @@ ActionDelayedActions.prototype.isValid = function(){
  */
 ActionDelayedActions.prototype.run = function(triggerParams) {
     var self = this;
-
-    /* use this for repeated actions:
-
-    var start;
-    var nextAt;
-
-    var f = function() {
-        if (!start) {
-            start = new Date().getTime();
-            nextAt = start;
-        }
-        nextAt += this.delayInMs();
-        var currTime = new Date().getTime();
-        setTimeout(f, nextAt - currTime);
-
-        var drift = (currTime - start) % this.delayInMs();
-        console.log("drift: "+drift);
-    };
-    f();
-    */
-
     var timeoutFcn = setTimeout(function() {
         var actions = self.subActions();
         for (var i=0; i<actions.length; i++) {
             actions[i].run(triggerParams);
         }
     }, this.delayInMs());
-
     this.timeoutFcns.push(timeoutFcn);
 };
 
@@ -787,7 +763,7 @@ ActionDelayedActions.prototype.reAddEntities = function(entitiesArr) {
  * @returns {ActionDelayedActions}
  */
 ActionDelayedActions.prototype.fromJS = function(data) {
-    this.delayInMs(data.delayInMs);
+    this.delayInMs(parseInt(data.delayInMs));
 
     var subActions = [];
     for (var i=0; i<data.subActions.length; i++) {
@@ -813,13 +789,220 @@ ActionDelayedActions.prototype.toJS = function() {
 
     return {
         type: this.type,
-        delayInMs: this.delayInMs(),
+        delayInMs: parseInt(this.delayInMs()),
         subActions: subActionsData
     };
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+////////////////////////////////////////////   ActionStartRepeatedActions   /////////////////////////////////////////////////////
+
+/**
+ * This action jumps to another frame or next trial.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
+var ActionStartRepeatedActions = function(event) {
+    this.event = event;
+    this.timeoutFcns = [];
+
+    // serialized:
+    this.allowMultiple = ko.observable(false); // should it be possible to start this repeatedAction again even if it is still running?
+    this.startWithoutDelay = ko.observable(false); // should the subActions be run for the first time directly without waiting for the first delay?
+    this.stopConditionEnabled = ko.observable(false); // is a stop condition enabled?
+    this.stopCondition = ko.observable(null); // checked before each repetition, if enabled.
+    this.delayInMs = ko.observable(1000);
+    this.subActions = ko.observableArray([]);
+};
+
+ActionStartRepeatedActions.prototype.type = "ActionStartRepeatedActions";
+ActionStartRepeatedActions.prototype.label = "Start Repeated Actions";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionStartRepeatedActions.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It either jumps to the
+ * next frame or to specific frame or next trial.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionStartRepeatedActions.prototype.run = function(triggerParams) {
+    var self = this;
+
+    var start = new Date().getTime();
+    var nextAt = start;
+    var timeoutIdx = this.timeoutFcns.length;
+
+    if (!this.allowMultiple()) {
+        if (timeoutIdx > 0) {
+            // this repeated action is already running, therefore do nothing:
+            return;
+        }
+    }
+
+    this.timeoutFcns.push(null);
+
+    var scheduleNextRepetition = function() {
+
+        // calculate time when next repetition should be scheduled:
+        nextAt += self.delayInMs();
+        var currTime = new Date().getTime();
+        var waitingTime = nextAt - currTime;
+        self.timeoutFcns[timeoutIdx] = setTimeout(runRepetition, waitingTime);
+
+        if (waitingTime < 0) {
+            console.warn("warning: ActionStartRepeatedActions cannot keep up with the desired delayInMs ("+self.delayInMs()+")")
+        }
+
+        // var drift = (currTime - start) % self.delayInMs();
+        // console.log("drift: "+drift);
+
+    };
+
+    var runRepetition = function() {
+
+        // check stopCondition.
+        if (self.stopConditionEnabled()) {
+            if (self.stopCondition().checkIfTrue(triggerParams)) {
+                return;
+            }
+        }
+
+        // run all subActions:
+        var actions = self.subActions();
+        for (var i=0; i<actions.length; i++) {
+            actions[i].run(triggerParams);
+        }
+
+        // schedule next repetition:
+        scheduleNextRepetition();
+
+    };
+
+    if (this.startWithoutDelay()) {
+        runRepetition();
+    }
+    else {
+        scheduleNextRepetition();
+    }
+};
+
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionStartRepeatedActions.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    jQuery.each( this.timeoutFcns, function( index, fcn ) {
+        clearTimeout(fcn);
+    } );
+    jQuery.each( this.subActions(), function( index, action ) {
+        action.destroyOnPlayerFrame(playerFrame);
+    } );
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionStartRepeatedActions.prototype.setPointers = function(entitiesArr) {
+    jQuery.each( this.subActions(), function( index, elem ) {
+        elem.setPointers(entitiesArr);
+    } );
+
+    if (this.stopCondition()) {
+        this.stopCondition().setPointers(entitiesArr);
+    }
+};
+
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionStartRepeatedActions.prototype.reAddEntities = function(entitiesArr) {
+    jQuery.each( this.subActions(), function( index, elem ) {
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (elem.reAddEntities)
+            elem.reAddEntities(entitiesArr);
+    } );
+
+    if (this.stopCondition()) {
+        this.stopCondition().reAddEntities(entitiesArr);
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionStartRepeatedActions}
+ */
+ActionStartRepeatedActions.prototype.fromJS = function(data) {
+    this.allowMultiple(data.allowMultiple);
+    this.startWithoutDelay(data.startWithoutDelay);
+    this.stopConditionEnabled(data.stopConditionEnabled);
+
+    if (data.stopCondition) {
+        var stopCondition = requirementFactory(this.event, data.stopCondition.type);
+        stopCondition.fromJS(data.stopCondition);
+        this.stopCondition(stopCondition);
+    }
+
+    this.delayInMs(parseInt(data.delayInMs));
+
+    var subActions = [];
+    for (var i=0; i<data.subActions.length; i++) {
+        var subAction = actionFactory(this.event, data.subActions[i].type);
+        subAction.fromJS(data.subActions[i]);
+        subActions.push(subAction);
+    }
+    this.subActions(subActions);
+
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionStartRepeatedActions.prototype.toJS = function() {
+    var subActions = this.subActions();
+    var subActionsData = [];
+    for (var i=0; i<subActions.length; i++) {
+        subActionsData.push(subActions[i].toJS());
+    }
+
+    var stopCondition = null;
+    if (this.stopCondition()) {
+        stopCondition = this.stopCondition().toJS();
+    }
+
+    return {
+        type: this.type,
+        allowMultiple: this.allowMultiple(),
+        startWithoutDelay: this.startWithoutDelay(),
+        stopConditionEnabled: this.stopConditionEnabled(),
+        stopCondition: stopCondition,
+        delayInMs: parseInt(this.delayInMs()),
+        subActions: subActionsData
+    };
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
