@@ -43,6 +43,8 @@ var ExpTrialLoop = function (expData) {
     this.orderOfConditions = ko.observable("fixed");
     this.trialRandomization = ko.observable("permute");
     this.fixedTrialOrder = ko.observableArray([]);
+    this.uploadedTrialOrder = ko.observableArray([]);
+    this.showTrialsForSubject = ko.observable(0);
 
     this.randomizationConstraint = ko.observable("none");
     this.minIntervalBetweenRep = ko.observable(0).extend({ numeric: 0 });
@@ -73,14 +75,19 @@ var ExpTrialLoop = function (expData) {
                 l = l+ facGroup.conditionsLinear()[k].trials().length;
             }
         }
-        // update random factors, as soon as amount of trials changes
-
-      //  var condGroups = self.getCondGroups();
-     //   self.numberTrialsToShow(condGroups.totalNrTrialsMin);
-
-
         return l
     }, this);
+
+
+    this.trialsDefinedForNSubjects = ko.computed(function() {
+        var n = self.uploadedTrialOrder().length;
+        var out =[];
+        for (var i = 0; i<n; i++){
+            out.push(i+1);
+        }
+        return out;
+    }, this);
+
 
 
     this.vars = ko.computed(function() {
@@ -870,6 +877,34 @@ ExpTrialLoop.prototype.checkConstraint = function(currentArray,ffConds) {
 
 };
 
+
+ExpTrialLoop.prototype.getTrialsBasedOnInputArray = function(sortedArray) {
+
+    try {
+        var n = this.showTrialsForSubject()-1;
+        var numberArray = this.uploadedTrialOrder()[n];
+        var outArray = [];
+        for (var t = 0; t<numberArray.length; t++){
+            var trial = sortedArray[numberArray[t]];
+            if (trial){
+                outArray.push(trial)
+            }
+            else{
+                console.log("bad input sequence, trial number not specified.")
+            }
+
+        }
+
+        return outArray;
+    }
+    catch(err){
+        console.log(err.message);
+        return sortedArray;
+    }
+
+
+};
+
 ExpTrialLoop.prototype.sortTrialBasedOnInputArray = function(sortedArray) {
 
     var trialOrder = this.fixedTrialOrder();
@@ -1057,6 +1092,12 @@ ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials) {
             var mergedTrials  = [].concat.apply([], allTrials);
             var sortedArray = this.sortTrialBasedOnUniqueId(mergedTrials);
             var outArray = this.sortTrialBasedOnInputArray(sortedArray);
+        }
+
+        else if (this.trialRandomization()=="uploadTrialsSequence") {
+            var mergedTrials  = [].concat.apply([], allTrials);
+            var sortedArray = this.sortTrialBasedOnUniqueId(mergedTrials);
+            var outArray = this.getTrialsBasedOnInputArray(sortedArray);
         }
     }
 
@@ -1327,6 +1368,17 @@ ExpTrialLoop.prototype.fromJS = function(data) {
         this.visualDegreeToUnit(data.visualDegreeToUnit);
     }
 
+    if (data.hasOwnProperty('uploadedTrialOrder')){
+        this.uploadedTrialOrder(data.uploadedTrialOrder);
+    }
+    if (data.hasOwnProperty('showTrialsForSubject')){
+        this.showTrialsForSubject(data.showTrialsForSubject);
+    }
+
+
+
+
+
     this.webcamEnabled(data.webcamEnabled);
     this.eventVariables(data.eventVariables);
 
@@ -1365,6 +1417,9 @@ ExpTrialLoop.prototype.toJS = function() {
         balanceAmountOfConditions: this.balanceAmountOfConditions(),
         maxIntervalSameCondition: this.maxIntervalSameCondition(),
         randomizationConstraint: this.randomizationConstraint(),
+        uploadedTrialOrder:this.uploadedTrialOrder(),
+        showTrialsForSubject:this.showTrialsForSubject(),
+
 
         zoomMode: this.zoomMode(),
         visualDegreeToUnit: this.visualDegreeToUnit(),
