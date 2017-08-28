@@ -882,6 +882,7 @@ ExpTrialLoop.prototype.getTrialsBasedOnInputArray = function(sortedArray) {
 
     try {
         var n = this.showTrialsForSubject()-1;
+        // TODO in the player the sever has to find and insert the subject index.
         var numberArray = this.uploadedTrialOrder()[n];
         var outArray = [];
         for (var t = 0; t<numberArray.length; t++){
