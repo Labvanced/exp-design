@@ -102,31 +102,34 @@ FrameData.prototype.copyChildEntity = function(entity) {
         entityCopy.id(guid());
     }
 
-    // for content elements which have pre-defined sub-variables
-    if (entityCopy.content().hasOwnProperty('variable')){
+    if (entityCopy instanceof FrameElement){
+        if (entityCopy.content().hasOwnProperty('variable')){
 
-        var varEntity = entityCopy.content().variable();
-        if (varEntity){
-            var variableCopy =  this.copyVariable(varEntity);
-            this.expData.entities.push(variableCopy);
-            entityCopy.content().variable(variableCopy.id());
-            this.localWorkspaceVars.splice(index+1, 0, variableCopy);
-        }
-
-    }
-    if ( entityCopy.content().hasOwnProperty("elements")){
-        var subElements = entityCopy.content().elements();
-        for(var i = 0; i<subElements.length;i++){
-            if (subElements[i].hasOwnProperty("variable")){
-                var varEntity = subElements[i].variable();
+            var varEntity = entityCopy.content().variable();
+            if (varEntity){
                 var variableCopy =  this.copyVariable(varEntity);
                 this.expData.entities.push(variableCopy);
-                subElements[i].variable(variableCopy.id());
+                entityCopy.content().variable(variableCopy.id());
                 this.localWorkspaceVars.splice(index+1, 0, variableCopy);
+            }
 
+        }
+        if ( entityCopy.content().hasOwnProperty("elements")){
+            var subElements = entityCopy.content().elements();
+            for(var i = 0; i<subElements.length;i++){
+                if (subElements[i].hasOwnProperty("variable")){
+                    var varEntity = subElements[i].variable();
+                    var variableCopy =  this.copyVariable(varEntity);
+                    this.expData.entities.push(variableCopy);
+                    subElements[i].variable(variableCopy.id());
+                    this.localWorkspaceVars.splice(index+1, 0, variableCopy);
+
+                }
             }
         }
     }
+    // for content elements which have pre-defined sub-variables
+
 
     entityCopy.name(entityCopy.name() + "_copy");
     entityCopy.parent = this;
