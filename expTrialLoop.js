@@ -118,6 +118,13 @@ ExpTrialLoop.prototype.addNewFrame = function() {
     frame.parent = this.subSequence();
 };
 
+ExpTrialLoop.prototype.getTextRefs = function(textArrOuter, label){
+    jQuery.each( this.subSequence().elements(), function( index, elem ) {
+        elem.getTextRefs(textArrOuter, label + '.frame' + (index + 1));
+    } );
+    return textArrOuter;
+};
+
 ExpTrialLoop.prototype.addFactorGroup = function(pageOrFrame,withFactor) {
     var factorGroup = new FactorGroup(this.expData, this);
     var nr_in_task = this.factorGroups().length+1;

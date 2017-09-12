@@ -92,7 +92,7 @@ LikertElement.prototype.getTextRefs = function(textArr, label){
     this.startLabel().getTextRefs(textArr, startlabel);
     var endlabel = label + '.End';
     this.endLabel().getTextRefs(textArr, endlabel);
-
+    return textArr;
 };
 
 LikertElement.prototype.toJS = function() {

@@ -116,6 +116,7 @@ MultipleChoiceElement.prototype.getTextRefs = function(textArr, label){
         var ind = index + 1;
         elem.getTextRefs(textArr, label + '.Entry' + ind);
     } );
+    return textArr;
 };
 
 MultipleChoiceElement.prototype.toJS = function() {

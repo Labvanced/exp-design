@@ -51,6 +51,7 @@ DisplayTextElement.prototype.dispose = function () {
 DisplayTextElement.prototype.getTextRefs = function(textArr, label){
     var questlabel = label + '.Question';
     this.text().getTextRefs(textArr, questlabel);
+    return textArr;
 };
 
 DisplayTextElement.prototype.toJS = function() {

@@ -21,19 +21,18 @@ var ExpData = function (parentExperiment) {
     this.studySettings = new StudySettings(this.expData);
 
     this.translations = ko.observableArray([]);
-    this.languageCodes = ko.observable({});
+    this.translatedLanguages = ko.observableArray(['Original']);
+
+    // not serialized
     this.currentLanguage = ko.observable(0);
-    this.availableTranslations = ko.observableArray(['Original']);
-
-
-    //not serialized
-    this.languages = ['Chinese', 'Dutch', 'English', 'French', 'German', 'Spanish'];
 
     this.dateLastModified = ko.observable(getCurrentDate(this.studySettings.timeZoneOffset()));
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         this[ExpData.prototype.fixedVarNames[i]] = ko.observable();
     }
+
+
 
     this.vars = ko.computed(function() {
         var varArray = [];
@@ -317,6 +316,14 @@ ExpData.prototype.setPointers = function() {
     if (missingVar) {
         this.createVars();
     }
+
+    // relink translations:
+    jQuery.each( this.translations(), function( index, elem ) {
+        if (elem instanceof TranslationEntry) {
+            elem.setPointers(self.entities);
+        }
+    } );
+
 };
 
 /**
@@ -404,19 +411,28 @@ ExpData.prototype.fromJS = function(data) {
 
     if(data.hasOwnProperty('translations')){
         this.translations(jQuery.map(data.translations, function (entryData) {
-            var entry = new TranslationEntry(self);
-            entry.fromJS(entryData);
-            return entry;
+            if (entryData=="removedEntry") {
+                return "removedEntry";
+            }
+            else {
+                var entry = new TranslationEntry(self);
+                entry.fromJS(entryData);
+                return entry;
+            }
         }));
-        this.currentLanguage(data.currentLanguage);
-        this.availableTranslations(data.availableTranslations);
-        this.languageCodes(data.languageCodes);
+    }
+
+    if (data.hasOwnProperty('availableTranslations')) {
+        this.translatedLanguages(data.availableTranslations);
+    }
+    else if (data.hasOwnProperty('translatedLanguages')) {
+        this.translatedLanguages(data.translatedLanguages);
     }
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varName = ExpData.prototype.fixedVarNames[i];
         if (varName === undefined) {
-            oldVarName = ExpData.prototype.oldFixedVarNames[i];
+            var oldVarName = ExpData.prototype.oldFixedVarNames[i];
             this[varName](data[oldVarName]);
         }
         else {
@@ -459,10 +475,15 @@ ExpData.prototype.toJS = function() {
         availableGroups: jQuery.map( this.availableGroups(), function( group ) { return group.id(); }),
         numGroups: this.availableGroups().length,
         sessionsPerGroup: sessionsPerGroup,
-        translations: jQuery.map( this.translations(), function( entry ) { return entry.toJS(); }),
-        currentLanguage: this.currentLanguage(),
-        availableTranslations: this.availableTranslations(),
-        languageCodes: this.languageCodes(),
+        translations: jQuery.map( this.translations(), function( entry ) {
+            if (entry==null || entry=="removedEntry") {
+                return "removedEntry";
+            }
+            else {
+                return entry.toJS();
+            }
+        }),
+        translatedLanguages: this.translatedLanguages(),
         studySettings:studySettings
     };
 

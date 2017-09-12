@@ -142,6 +142,7 @@ ScaleElement.prototype.getTextRefs = function(textArr, label){
         var ind = index + 1;
         elem.getTextRefs(textArr, label + '.Entry' + ind);
     } );
+    return textArr;
 };
 
 ScaleElement.prototype.toJS = function() {
@@ -262,6 +263,7 @@ ScaleEntry.prototype.dispose = function () {
 
 ScaleEntry.prototype.getTextRefs = function(textArr, label){
     this.rowText().getTextRefs(textArr, label);
+    return textArr;
 };
 
 ScaleEntry.prototype.fromJS = function(data) {

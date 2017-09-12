@@ -88,6 +88,7 @@ MultiLineInputElement.prototype.toJS = function() {
 MultiLineInputElement.prototype.getTextRefs = function(textArr, label){
     var questlabel = label + '.Question';
     this.questionText().getTextRefs(textArr, questlabel);
+    return textArr;
 };
 
 MultiLineInputElement.prototype.fromJS = function(data) {

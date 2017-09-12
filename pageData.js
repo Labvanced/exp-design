@@ -146,7 +146,17 @@ PageData.prototype.copyVariable = function(varEntity) {
     return variableCopy
 };
 
-
+PageData.prototype.getTextRefs = function(textArrOuter, label){
+    jQuery.each( this.elements(), function( index, elem ) {
+        var textArr = [];
+        elem.getTextRefs(textArr, label + '.' + elem.name());
+        textArrOuter.push({
+            namedEntity: elem,
+            textArr: textArr
+        })
+    } );
+    return textArrOuter;
+};
 
 /**
  * adds a variable to the local workspace of this page.

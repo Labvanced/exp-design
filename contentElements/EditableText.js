@@ -88,6 +88,7 @@ EditableTextElement.prototype.getTextRefs = function(textArr, label){
             }
         }
     }
+    return textArr;
 };
 
 EditableTextElement.prototype.toJS = function() {

@@ -101,6 +101,7 @@ SelectionElement.prototype.selectTrialType = function(selectionSpec) {
 SelectionElement.prototype.getTextRefs = function(textArr, label){
     var questlabel = label + '.Question';
     this.questionText().getTextRefs(textArr, questlabel);
+    return textArr;
 };
 
 SelectionElement.prototype.toJS = function() {

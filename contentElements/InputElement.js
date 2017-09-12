@@ -83,6 +83,7 @@ InputElement.prototype.dispose = function () {
 InputElement.prototype.getTextRefs = function(textArr, label){
     var questlabel = label + '.Question';
     this.questionText().getTextRefs(textArr, questlabel);
+    return textArr;
 };
 
 InputElement.prototype.toJS = function() {
