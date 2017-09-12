@@ -364,10 +364,10 @@ function createScaleComponents() {
 
     ScaleEditViewModel.prototype.addColumn = function() {
         if (this.dataModel.addDeleteFromCol()=='left'){
-            this.dataModel.labels.splice(0,0,ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">new option</span></span></p>'));
+            this.dataModel.labels.splice(0,0,new ScaleLabel(this));
         }
         else{
-            this.dataModel.labels.push(ko.observable('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">new option</span></span></p>'));
+            this.dataModel.labels.push(new ScaleLabel(this));
         }
 
         // force refresh of observable array to trigger refresh of view:
