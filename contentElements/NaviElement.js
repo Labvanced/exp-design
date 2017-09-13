@@ -6,6 +6,8 @@ var NaviElement = function(expData) {
     //serialized
     this.type= "NaviElement";
     this.id = ko.observable(guid());
+    this.bgColorDefault = ko.observable('#99cc66');
+    this.bgColorHover = ko.observable('#99de50');
 
     var button1 = new ButtonEntry(this);
     button1.buttonText('<div style="text-align: center;">Back</div>');
@@ -62,6 +64,72 @@ NaviElement.prototype.addButton = function() {
     this.buttonEntries.push(button);
 };
 
+
+
+NaviElement.prototype.enableHighlight = function(elem) {
+    var self= this;
+    $(elem).css({
+        'backgroundColor': self.bgColorHover(),
+        'cursor': 'pointer'
+
+    });
+};
+
+
+NaviElement.prototype.disableHighlight = function(elem) {
+    var self= this;
+    $(elem).css({
+        'backgroundColor': self.bgColorDefault(),
+        'cursor': 'default'
+    });
+};
+
+
+NaviElement.prototype.initColorPicker = function() {
+
+    var self = this;
+    $("#bgColorPickerDefault").spectrum({
+        color: self.bgColorDefault(),
+        preferredFormat: "hex",
+        showInput: true,
+        change: function (color) {
+            var colorStr = color.toHexString();
+            self.bgColorDefault(colorStr);
+
+        }
+    });
+    if (this.bg1Subsciption) {
+        this.bg1Subsciption.dispose();
+    }
+    this.bg1Subsciption = this.bgColorDefault.subscribe(function(val){
+        $("#bgColorPickerDefault").spectrum("set", val);
+    });
+
+
+    $("#bgColorPickerHover").spectrum({
+        color: self.bgColorHover(),
+        preferredFormat: "hex",
+        showInput: true,
+        change: function (color) {
+            var colorStr = color.toHexString();
+            self.bgColorHover(colorStr);
+
+        }
+    });
+
+    if (this.bg2Subsciption) {
+        this.bg2Subsciption.dispose();
+    }
+    this.bg2Subsciption = this.bgColorHover.subscribe(function(val){
+        $("#bgColorPickerHover").spectrum("set", val);
+    });
+
+};
+
+
+
+
+
 /**
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
@@ -91,6 +159,8 @@ NaviElement.prototype.toJS = function() {
         type: this.type,
         id: this.id(),
         buttonEntries: buttonEntries,
+        bgColorDefault: this.bgColorDefault(),
+        bgColorHover:this.bgColorHover(),
         modifier: this.modifier().toJS()
     };
 };
@@ -118,6 +188,10 @@ NaviElement.prototype.fromJS = function(data) {
         }
     }
     this.buttonEntries(buttonEntries);
+    if (data.hasOwnProperty('bgColorDefault')) {
+        this.bgColorDefault(data.bgColorDefault);
+        this.bgColorHover(data.bgColorHover);
+    }
 
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
@@ -134,6 +208,7 @@ function createNaviElementComponents() {
 
                 var viewModel = function (dataModel) {
                     this.dataModel = dataModel;
+                    this.dataModel.initColorPicker();
                 };
 
                 viewModel.prototype.addButton = function() {

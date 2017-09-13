@@ -1,11 +1,16 @@
 
 var ButtonElement = function(expData) {
+
+    var self = this;
     this.expData = expData;
     this.parent = null;
 
     // serialized:
     this.type= "ButtonElement";
     this.id = ko.observable(guid());
+    this.bgColorDefault = ko.observable('#99cc66');
+    this.bgColorHover = ko.observable('#99de50');
+
 
     this.buttonEntries = ko.observableArray([]);
     this.addButton();
@@ -45,6 +50,66 @@ ButtonElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 };
 
+ButtonElement.prototype.enableHighlight = function(elem) {
+    var self= this;
+    $(elem).css({
+        'backgroundColor': self.bgColorHover(),
+        'cursor': 'pointer'
+
+    });
+};
+
+
+ButtonElement.prototype.disableHighlight = function(elem) {
+    var self= this;
+    $(elem).css({
+        'backgroundColor': self.bgColorDefault(),
+        'cursor': 'default'
+    });
+};
+
+
+ButtonElement.prototype.initColorPicker = function() {
+
+    var self = this;
+    $("#bgColorPickerDefault").spectrum({
+        color: self.bgColorDefault(),
+        preferredFormat: "hex",
+        showInput: true,
+        change: function (color) {
+            var colorStr = color.toHexString();
+            self.bgColorDefault(colorStr);
+
+        }
+    });
+    if (this.bg1Subsciption) {
+        this.bg1Subsciption.dispose();
+    }
+    this.bg1Subsciption = this.bgColorDefault.subscribe(function(val){
+        $("#bgColorPickerDefault").spectrum("set", val);
+    });
+
+
+    $("#bgColorPickerHover").spectrum({
+        color: self.bgColorHover(),
+        preferredFormat: "hex",
+        showInput: true,
+        change: function (color) {
+            var colorStr = color.toHexString();
+            self.bgColorHover(colorStr);
+
+        }
+    });
+
+    if (this.bg2Subsciption) {
+        this.bg2Subsciption.dispose();
+    }
+    this.bg2Subsciption = this.bgColorHover.subscribe(function(val){
+        $("#bgColorPickerHover").spectrum("set", val);
+    });
+
+};
+
 ButtonElement.prototype.reAddEntities = function(entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 };
@@ -62,6 +127,8 @@ ButtonElement.prototype.toJS = function() {
         type: this.type,
         id: this.id(),
         buttonEntries: buttonEntries,
+        bgColorDefault: this.bgColorDefault(),
+        bgColorHover:this.bgColorHover(),
         modifier: this.modifier().toJS()
     };
 };
@@ -85,6 +152,11 @@ ButtonElement.prototype.fromJS = function(data) {
         }
     }
     this.buttonEntries(buttonEntries);
+    if (data.hasOwnProperty('bgColorDefault')) {
+        this.bgColorDefault(data.bgColorDefault);
+        this.bgColorHover(data.bgColorHover);
+    }
+    this.modifier(new Modifier(this.expData, this));
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
 };
@@ -140,11 +212,14 @@ function createButtonElementComponents() {
 
                 var viewModel = function (dataModel) {
                     this.dataModel = dataModel;
+                    this.dataModel.initColorPicker();
                 };
 
                 viewModel.prototype.addButton = function() {
                     this.dataModel.addButton();
                 };
+
+
 
                 return new viewModel(dataModel);
             }

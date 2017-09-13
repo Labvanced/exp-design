@@ -2,13 +2,16 @@
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Button Group</div>
         <span style="cursor: pointer" data-bind="click: addButton"><img width="20" height="20" src="/resources/icons/add.svg"/> Add Button</span>
+        <br>
+        <span>Default Color: </span><input id="bgColorPickerDefault">
+        <span>Hover Color: </span><input id="bgColorPickerHover">
     </div>
 </template>
 
 <template id="navigation-preview-template">
     <div class="navigationWrapper" data-bind="foreach: dataModel.buttonEntries">
         <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
-            <div class="navi-button" data-bind="wysiwyg: $data.buttonText, valueUpdate: afterkeydown"></div>
+            <div class="navi-button"  style="background-color:red" data-bind="wysiwyg: $data.buttonText, valueUpdate: afterkeydown, style:{backgroundColor: $root.bgColorDefault()}, event:{ mouseover: function(data,event){$root.enableHighlight($element)}, mouseout: function(data,event){$root.disableHighlight($element)}}"></div>
         </div>
     </div>
 </template>
@@ -16,7 +19,7 @@
 <template id="navigation-playerview-template">
     <div class="navigationWrapper" data-bind="foreach: dataModel.buttonEntries">
         <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
-            <div class="navi-button" data-bind="html: $data.buttonText"></div>
+            <div class="navi-button" data-bind="html: $data.buttonText, style:{backgroundColor: $root.bgColorDefault()}, event:{ mouseover: function(data,event){$root.enableHighlight($element)}, mouseout: function(data,event){$root.disableHighlight($element)}}"></div>
         </div>
     </div>
 </template>
