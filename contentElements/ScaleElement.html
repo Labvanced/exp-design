@@ -37,8 +37,14 @@
             </tbody>
         </table>
 
+        <div>Style:</div>
+
         <div>
-            Margin: <input style="display: inline-block; width: 50px" type="text" data-bind="textInput: dataModel.margin">
+            Left-Right Ratio: <input style="display: inline-block; width: 50px" type="number" min="0"  max="100" data-bind="value: dataModel.leftRightRatio,valueUpdate:'input'"> %
+        </div>
+
+        <div>
+            Outer Margin: <input style="display: inline-block; width: 50px" type="number" min="0" data-bind="value: dataModel.margin,valueUpdate:'input'">
         </div>
     </div>
 </template>
@@ -47,19 +53,19 @@
 
     <div data-bind="component: {name : 'editable-text-element-preview', params : dataModel.questionText}"></div>
     <br>
-    <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
+    <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
 
         <div>
             <div style="display: inline-block; width: 100%">
-                <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels">
+                <span style="float: right; height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels,style:{width: dataModel.leftRightRatio()+'%'}">
                     <div class="notDraggable" style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-preview', params : labelText}"></div>
                 </span>
             </div>
         </div>
         <div data-bind="foreach: dataModel.elements">
             <div style="display: inline-block; width: 100%">
-                <div style="float: left; width:25%; display: inline-block;" class="notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : rowText}" ></div>
-                <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: parent.labels">
+                <div style="float: left; display: inline-block;" class="notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : rowText}, style:{width:$root.leftRightRatio2()+'%'}" ></div>
+                <span style="float: right;  height:100%; vertical-align: middle" data-bind="foreach: parent.labels, style:{width: $root.leftRightRatio()+'%'}">
                     <input style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" type="radio" data-bind="style:{width:$parent.parent.calculateWidth()},attr:{value:$index()+1},checked: $parent.variable().startValue().value, click:function(){return true},clickBubble: false">
                 </span>
             </div>

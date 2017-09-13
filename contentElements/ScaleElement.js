@@ -7,24 +7,27 @@ var ScaleElement= function(expData) {
     //serialized
     this.type= "ScaleElement";
     this.id = ko.observable(guid());
-
     this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
     this.addDeleteFromCol = ko.observable(this.addDeleteOptionsCol[1]);
-
+    this.margin = ko.observable(2);
     this.labels = ko.observableArray([]);
+    this.elements = ko.observableArray([]);
+    this.leftRightRatio = ko.observable(75); // in percent
 
+
+
+    ///// not serialized
     this.nrChoices = ko.computed(function() {
         return self.labels().length;
     }, this);
 
-    this.elements = ko.observableArray([]);
+    this.leftRightRatio2 = ko.computed(function() {
+        100-self.leftRightRatio();
+    }, this);
+
     this.nrRows = ko.computed(function() {
         return self.elements().length;
     }, this);
-
-    this.margin = ko.observable('2pt');
-
-    ///// not serialized
     this.selected = ko.observable(false);
     this.converting = false;
     /////
@@ -155,7 +158,8 @@ ScaleElement.prototype.toJS = function() {
         }),
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
-        })
+        }),
+        leftRightRatio:this.leftRightRatio()
     };
 };
 
@@ -202,6 +206,11 @@ ScaleElement.prototype.fromJS = function(data) {
             }
         }
     }
+    if(data.hasOwnProperty('leftRightRatio')) {
+        this.leftRightRatio(data.leftRightRatio);
+    }
+
+
 };
 
 
