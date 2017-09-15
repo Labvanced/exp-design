@@ -17,6 +17,7 @@ var MultipleChoiceElement = function(expData) {
     // content
     this.elements = ko.observableArray([]);
     this.variable = ko.observable();
+    this.subInputElement = ko.observable(null);
 
 
     this.margin = ko.observable('5pt');
@@ -103,6 +104,8 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
     this.addSubscriptions();
 };
 
+
+
 MultipleChoiceElement.prototype.addSubscriptions = function() {
     var self = this;
     if (this.activateAltSubscription){
@@ -110,10 +113,19 @@ MultipleChoiceElement.prototype.addSubscriptions = function() {
     }
     this.activateAltSubscription = this.altAnswerActive.subscribe(function(val) {
         if (val){
-            self.addEntry()
+            var newElem = new InputElement(self.expData);
+            newElem.parent = self.parent;
+            newElem.init();
+            newElem.variable().name(self.parent.name()+'_altInput');
+            newElem.inputType("text");
+            newElem.variable().dataType("string");
+            newElem.variable().resetStartValue();
+            newElem.enableTitle(false);
+            self.subInputElement(newElem);
+            //self.addEntry()
         }
         else{
-            self.removeEntry()
+            self.subInputElement(null);
         }
     });
 };
@@ -178,6 +190,10 @@ MultipleChoiceElement.prototype.toJS = function() {
     if (this.variable()) {
         variableId = this.variable().id();
     }
+    var subInputElement = null;
+    if (this.subInputElement()) {
+        subInputElement = this.subInputElement().toJS();
+    }
 
     return {
         type: this.type,
@@ -188,7 +204,8 @@ MultipleChoiceElement.prototype.toJS = function() {
         }),
         isRequired:this.isRequired(),
         altAnswerActive:this.altAnswerActive(),
-        enableTitle:this.enableTitle()
+        enableTitle:this.enableTitle(),
+        subInputElement:subInputElement
     };
 };
 
@@ -219,6 +236,14 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
         this.enableTitle(data.enableTitle);
     }
 
+    if(data.hasOwnProperty('subInputElement')){
+        if (data.subInputElement){
+            var elem =  new InputElement(self.expData);
+            elem.fromJS(data.subInputElement);
+            this.subInputElement = ko.observable(elem);
+        }
+    }
+
 
 
 
@@ -245,6 +270,9 @@ var MultipleChoiceEntry= function(multChoiceParent) {
 
 MultipleChoiceEntry.prototype.getIndex = function() {
    return this.parent.elements.indexOf(this);
+};
+MultipleChoiceEntry.prototype.nrElems = function() {
+    return this.parent.elements().length-1;
 };
 
 /**

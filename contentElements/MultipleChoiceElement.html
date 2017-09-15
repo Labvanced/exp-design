@@ -60,15 +60,13 @@
         <div>
             <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue().value, click:function(){return true}, clickBubble: false">
             <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" class="notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
-            <!-- ko if: getIndex()== parent.elements().length-1 -->
-            <span style="display:inline-block; width:60%" data-bind="visible:$parent.multipleChoiceElement.altAnswerActive">
-                <input style="position:relative;left: 0" type="text" class="form-control" data-bind="value:$parent.multipleChoiceElement.altAnswer">
-            </span>
-            <!-- /ko -->
         </div>
     </div>
-
-
+    <!-- ko if: (multipleChoiceElement.altAnswerActive())  -->
+    <span style="display:inline-block;">
+        <div data-bind='component: {name : "input-preview", params: multipleChoiceElement.subInputElement()}'></div>
+    </span>
+    <!-- /ko -->
 
     <br>
 </template>
@@ -91,11 +89,6 @@
         <div>
             <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false, attr: {id:'test123'}">
             <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
-            <!-- ko if: getIndex()== parent.elements().length-1 -->
-            <span style="display:inline-block; width:60%" data-bind="visible:$parent.multipleChoiceElement.altAnswerActive">
-                <input style="position:relative;left: 0" type="text" class="form-control" data-bind="value:$parent.multipleChoiceElement.altAnswer">
-            </span>
-            <!-- /ko -->
         </div>
     </div>
     <br>

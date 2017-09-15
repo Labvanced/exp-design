@@ -122,6 +122,7 @@ InputElement.prototype.toJS = function() {
         variable: variableId,
         isRequired:this.isRequired(),
         enableTitle:this.enableTitle()
+
     };
 };
 
@@ -161,13 +162,13 @@ function createInputComponents() {
 
                     this.inputType = ko.pureComputed({
                         read: function () {
-                            return this.dataModel.inputType();
+                            return self.dataModel.inputType();
                         },
                         write: function (inputType) {
                             // switch dataType of variable:
                             var newDataType = InputElement.prototype.dataTypePerInputType[inputType];
-                            this.dataModel.variable().changeDataType(newDataType);
-                            this.dataModel.inputType(inputType);
+                            self.dataModel.variable().changeDataType(newDataType);
+                            self.dataModel.inputType(inputType);
                         },
                         owner: this
                     });
@@ -206,14 +207,15 @@ function createInputComponents() {
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
+                    var self = this;
 
                     this.value = ko.pureComputed({
                         read: function () {
-                            return this.dataModel.variable().startValue().value();
+                            return self.dataModel.variable().startValue().value();
                         },
                         write: function (value) {
                             // setValue will convert to the correct datatype:
-                            this.dataModel.variable().startValue().setValue(value);
+                            self.dataModel.variable().startValue().setValue(value);
                         },
                         owner: this
                     });
@@ -231,14 +233,14 @@ function createInputComponents() {
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
-
+                    var self = this;
                     this.value = ko.pureComputed({
                         read: function () {
-                            return this.dataModel.variable().value().value();
+                            return self.dataModel.variable().value().value();
                         },
                         write: function (value) {
                             // setValue will convert to the correct datatype:
-                            this.dataModel.variable().value().setValue(value);
+                            self.dataModel.variable().value().setValue(value);
                         },
                         owner: this
                     });
