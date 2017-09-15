@@ -30,7 +30,7 @@ TranslationEntry.prototype.toJS = function () {
         namedEntity: this.namedEntity.id(),
         dirty: this.dirty,
         languages: jQuery.map(this.languages, function (elem) {
-            return elem();
+            return [elem()]; // use array so that null values are not removed
         })
     };
 };
