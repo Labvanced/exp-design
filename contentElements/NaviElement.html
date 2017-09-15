@@ -11,7 +11,7 @@
 <template id="navigation-preview-template">
     <div class="navigationWrapper" data-bind="foreach: dataModel.buttonEntries">
         <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
-            <div class="navi-button"  style="background-color:red" data-bind="wysiwyg: $data.buttonText, valueUpdate: afterkeydown, style:{backgroundColor: $root.bgColorDefault()}, event:{ mouseover: function(data,event){$root.enableHighlight($element)}, mouseout: function(data,event){$root.disableHighlight($element)}}"></div>
+            <div class="navi-button"  style="background-color:red" data-bind="wysiwyg: $data.buttonText, valueUpdate: afterkeydown, style:{backgroundColor: $parent.dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){$parent.dataModel.enableHighlight($element)}, mouseout: function(data,event){$parent.dataModel.disableHighlight($element)}}"></div>
         </div>
     </div>
 </template>
@@ -19,7 +19,12 @@
 <template id="navigation-playerview-template">
     <div class="navigationWrapper" data-bind="foreach: dataModel.buttonEntries">
         <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
-            <div class="navi-button" data-bind="html: $data.buttonText, style:{backgroundColor: $root.bgColorDefault()}, event:{ mouseover: function(data,event){$root.enableHighlight($element)}, mouseout: function(data,event){$root.disableHighlight($element)}}"></div>
+            <div class="navi-button" data-bind="html: $data.buttonText, style:{backgroundColor: $parent.dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){$parent.dataModel.enableHighlight($element)}, mouseout: function(data,event){$parent.dataModel.disableHighlight($element)}}"></div>
         </div>
     </div>
+    <!-- ko if: dataModel.showSubmitError() -->
+        <div style="text-align:center;color:red;font-weight:bolder">Please fill out all the required fields before you continue!</div>
+    <!-- /ko -->
+
+
 </template>

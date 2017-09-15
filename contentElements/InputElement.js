@@ -9,9 +9,12 @@ var InputElement = function(expData) {
     this.inputType = ko.observable('number');
 
     this.variable = ko.observable();
+    this.isRequired = ko.observable(false);
 
     ///// not serialized
     this.selected = ko.observable(false);
+    this.triedToSubmit = ko.observable(false);
+    this.dataIsValid = ko.observable(false);
     /////
 };
 
@@ -86,6 +89,26 @@ InputElement.prototype.getTextRefs = function(textArr, label){
     return textArr;
 };
 
+
+InputElement.prototype.isInputValid = function() {
+    this.triedToSubmit(true);
+    if (this.isRequired()==false){
+        this.dataIsValid(true);
+        return true
+    }
+    else{
+        if (this.variable().value().value()==null || this.variable().value().value()=='' ||this.variable().value().value() == this.variable().startValue().value()){
+            this.dataIsValid(false);
+            return false;
+        }
+        else{
+            this.dataIsValid(true);
+            return true
+        }
+    }
+};
+
+
 InputElement.prototype.toJS = function() {
     var variableId = null;
     if (this.variable()) {
@@ -95,7 +118,8 @@ InputElement.prototype.toJS = function() {
         type: this.type,
         questionText: this.questionText().toJS(),
         inputType: this.inputType(),
-        variable: variableId
+        variable: variableId,
+        isRequired:this.isRequired()
     };
 };
 
@@ -112,6 +136,11 @@ InputElement.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('inputType')){
         this.inputType(data.inputType);
     }
+    if (data.hasOwnProperty('isRequired')){
+        this.isRequired(data.isRequired);
+    }
+
+
 };
 
 

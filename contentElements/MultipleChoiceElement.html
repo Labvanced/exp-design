@@ -1,21 +1,31 @@
 <template id='choice-editview-template'>
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Multiple Choice</div>
+
         <div>
+            <span>Add Option</span>
             <span style="cursor: pointer" data-bind="click:addChoice"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
+        </div>
+        <div>
+            <span>Delete Option</span>
             <span style="cursor: pointer" data-bind="click:removeChoice"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
         </div>
-        <br>
         <label>
             Linked Variable:
             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: multipleChoiceElement.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
         </label>
-        <br>
+
+        <div>
+            <span>Required:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.isRequired,click:function(){return true},clickBubble: false">
+        </div>
+
         <table>
             <thead>
             <tr>
                 <th style="width: 50px;">Entry</th>
                 <th>Variable Value</th>
+
             </tr>
             </thead>
             <tbody data-bind="foreach: multipleChoiceElement.elements">
@@ -44,11 +54,21 @@
 </template>
 
 <template id="choice-playerview-template">
-    <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
+    <div>
+        <span style="display:inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
+        <!-- ko if: multipleChoiceElement.triedToSubmit() -->
+            <!-- ko ifnot: multipleChoiceElement.dataIsValid() -->
+                <span style=" display:inline-block; float: right; margin-right:50px" data-bind=" tooltip:'.requiredInfo'">
+                    <img width="16" height="16" src="/resources/no.png"/>
+                </span>
+            <!-- /ko -->
+        <!-- /ko -->
+    </div>
+
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false">
-            <div   style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
+            <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" required data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false, attr: {id:'test123'}">
+            <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
         </div>
     </div>
     <br>

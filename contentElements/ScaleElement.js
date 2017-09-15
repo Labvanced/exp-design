@@ -21,9 +21,7 @@ var ScaleElement= function(expData) {
         return self.labels().length;
     }, this);
 
-    this.leftRightRatio2 = ko.computed(function() {
-        100-self.leftRightRatio();
-    }, this);
+
 
     this.nrRows = ko.computed(function() {
         return self.elements().length;
@@ -59,6 +57,7 @@ ScaleElement.prototype.calculateWidth = function() {
     var inter = 100/this.nrChoices()-2;
     return inter +'%';
 };
+
 
 ScaleElement.prototype.addEntry = function() {
     var scaleEntry = new ScaleEntry(this);
@@ -221,6 +220,10 @@ var ScaleEntry= function(scaleParent) {
     this.parent = scaleParent;
     this.rowText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<span style="font-size:14px;"><span style="font-family:Arial,Helvetica,sans-serif;">your question</span></span>'));
     this.variable=ko.observable(null);
+    this.isRequired=ko.observable(false);
+    // not serialized
+    this.triedToSubmit = ko.observable(false);
+    this.dataIsValid = ko.observable(false);
 };
 
 ScaleEntry.prototype.selectTrialType = function(selectionSpec) {
@@ -266,6 +269,26 @@ ScaleEntry.prototype.reAddEntities = function(entitiesArr) {
     }
 };
 
+
+ScaleEntry.prototype.isInputValid = function() {
+    this.triedToSubmit(true);
+
+    if (this.isRequired()==false){
+        this.dataIsValid(true);
+        return true
+    }
+    else{
+        if (this.variable().value().value() == this.variable().startValue().value()){
+            this.dataIsValid(false);
+            return false;
+        }
+        else{
+            this.dataIsValid(true);
+            return true
+        }
+    }
+};
+
 ScaleEntry.prototype.dispose = function () {
     this.rowText().dispose();
 };
@@ -284,13 +307,19 @@ ScaleEntry.prototype.fromJS = function(data) {
         this.rowText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, data.rowText));
     }
     this.variable(data.variable);
+    if(data.hasOwnProperty('isRequired')) {
+       this.isRequired(data.isRequired);
+    }
+
     return this;
 };
+
 
 ScaleEntry.prototype.toJS = function() {
     return {
         variable:  this.variable().id(),
-        rowText:  this.rowText().toJS()
+        rowText:  this.rowText().toJS(),
+        isRequired: this.isRequired()
     };
 };
 

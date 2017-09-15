@@ -6,12 +6,16 @@
             Linked Variable:
             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
         </label>
+        <div>
+            <span>Required:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
+        </div>
     </div>
 </template>
 
 <template id="multi-line-input-preview-template">
     <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
-    <div>
+    <div style="width: 85%">
         <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" data-bind="value: dataModel().variable().startValue().value"></textarea>
     </div>
     <br>
@@ -20,8 +24,15 @@
 <template id="multi-line-input-playerview-template">
     <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
     <br>
-    <div>
+    <div style="display:inline-block; width: 85%">
         <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" placeholder="Participant Answer" data-bind="value: dataModel().variable().value().value"></textarea>
     </div>
+    <!-- ko if: dataModel().triedToSubmit() -->
+    <!-- ko ifnot: dataModel().dataIsValid() -->
+    <span style=" display:inline-block; width: 10%" data-bind=" tooltip:'.requiredInfo'">
+        <img width="16" height="16" src="/resources/no.png"/>
+    </span>
+    <!-- /ko -->
+    <!-- /ko -->
     <br>
 </template>

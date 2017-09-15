@@ -6,6 +6,7 @@ var MultipleChoiceElement = function(expData) {
     //serialized
     this.type= "MultipleChoiceElement";
     this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
+    this.isRequired = ko.observable(false);
 
    // this.openQuestion=  ko.observable(false);
 
@@ -17,7 +18,11 @@ var MultipleChoiceElement = function(expData) {
 
     ///// not serialized
     this.selected = ko.observable(false);
+    this.triedToSubmit = ko.observable(false);
+    this.dataIsValid = ko.observable(false);
     /////
+
+
 };
 
 MultipleChoiceElement.prototype.label = "Multiple Choice";
@@ -119,6 +124,26 @@ MultipleChoiceElement.prototype.getTextRefs = function(textArr, label){
     return textArr;
 };
 
+
+MultipleChoiceElement.prototype.isInputValid = function() {
+    this.triedToSubmit(true);
+    if (this.isRequired()==false){
+        this.dataIsValid(true);
+        return true
+    }
+    else{
+        if (this.variable().value().value() == this.variable().startValue().value()){
+            this.dataIsValid(false);
+            return false;
+        }
+        else{
+            this.dataIsValid(true);
+            return true
+        }
+    }
+};
+
+
 MultipleChoiceElement.prototype.toJS = function() {
 
     var variableId = null;
@@ -132,7 +157,8 @@ MultipleChoiceElement.prototype.toJS = function() {
         variable: variableId,
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
-        })
+        }),
+        isRequired:this.isRequired()
     };
 };
 
@@ -153,6 +179,11 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
             return (new MultipleChoiceEntry(self)).fromJS(elemData);
         }));
     }
+    if(data.hasOwnProperty('isRequired')){
+        this.isRequired(data.isRequired);
+    }
+
+
 };
 
 

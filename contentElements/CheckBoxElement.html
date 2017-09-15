@@ -2,14 +2,22 @@
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Check Box</div>
         <div>
-            <span style="cursor: pointer" data-bind="click:addChoice"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
-            <span style="cursor: pointer" data-bind="click:removeChoice"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
+
+            <div>
+                <span>Add checkbox</span>
+                <span style="cursor: pointer" data-bind="click:addChoice"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
+            </div>
+            <div>
+                <span>Delete checkbox</span>
+                <span style="cursor: pointer" data-bind="click:removeChoice"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
+            </div>
 
             <table>
                 <thead>
                     <tr>
                         <th style="width: 50px;">Entry</th>
                         <th>Linked Variables</th>
+                        <th>Required</th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: dataModel.elements">
@@ -20,11 +28,14 @@
                         <td>
                             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: variable, allowedDatatypes: ['boolean'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
                         </td>
+                        <td>
+                            <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block; margin-left:45%" type="checkbox" data-bind="checked: isRequired,click:function(){return true},clickBubble: false">
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <br><br>
+
     </div>
 </template>
 
@@ -43,8 +54,17 @@
     <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
     <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: variable().value().value,click:function(){return true},clickBubble: false">
-            <div   style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" data-bind="component: {name : 'editable-text-element-preview', params : checkBoxText}"></div>
+            <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" required data-bind="checked: variable().value().value,click:function(){return true},clickBubble: false">
+            <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" data-bind="component: {name : 'editable-text-element-preview', params : checkBoxText}"></div>
+
+            <!-- ko if: triedToSubmit() -->
+                <!-- ko ifnot: dataIsValid() -->
+                    <span style=" display:inline-block; float: right; margin-right:50px" data-bind=" tooltip:'.requiredInfo'">
+                        <img width="16" height="16" src="/resources/no.png"/>
+                    </span>
+                <!-- /ko -->
+            <!-- /ko -->
+
         </div>
     </div>
     <br>

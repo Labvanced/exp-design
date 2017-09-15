@@ -24,7 +24,9 @@ var NaviElement = function(expData) {
     this.selected = ko.observable(false);
     //navigation event
     this.event = ko.observable(null);
-    /////
+
+    ///// not serialized
+    this.showSubmitError = ko.observable(false);
 };
 
 NaviElement.prototype.label = "Navigation";

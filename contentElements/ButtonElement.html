@@ -11,7 +11,7 @@
 <template id="button-preview-template">
     <div class="navigationWrapper" data-bind="foreach: dataModel.buttonEntries">
         <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
-            <div class="navi-button" data-bind="wysiwyg: $data.buttonText, valueUpdate: afterkeydown, style:{backgroundColor: $root.bgColorDefault()}, event:{ mouseover: function(data,event){$root.enableHighlight($element)}, mouseout: function(data,event){$root.disableHighlight($element)}}"></div>
+            <div class="navi-button" data-bind="wysiwyg: $data.buttonText, valueUpdate: afterkeydown, style:{backgroundColor: $parent.dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){$parent.dataModel.enableHighlight($element)}, mouseout: function(data,event){$parent.dataModel.disableHighlight($element)}}"></div>
         </div>
     </div>
 </template>
@@ -19,7 +19,7 @@
 <template id="button-playerview-template">
     <div class="navigationWrapper" data-bind="foreach: dataModel.buttonEntries">
         <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
-            <div class="navi-button" data-bind="html: $data.buttonText, style:{backgroundColor: $root.bgColorDefault()}, event:{ mouseover: function(data,event){$root.enableHighlight($element)}, mouseout: function(data,event){$root.disableHighlight($element)}}"></div>
+            <div class="navi-button" data-bind="html: $data.buttonText, style:{backgroundColor: $parent.dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){$parent.dataModel.enableHighlight($element)}, mouseout: function(data,event){$parent.dataModel.disableHighlight($element)}}"></div>
         </div>
     </div>
 </template>

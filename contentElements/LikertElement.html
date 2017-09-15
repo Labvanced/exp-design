@@ -11,21 +11,29 @@
             Show numbers
         </div>
         <div>
-            Margins between components:
-            <input type="text" data-bind="textInput: margin">
+            Inner Margin: <input style="display: inline-block; width: 50px" type="number" min="0" data-bind="value:margin,valueUpdate:'input'"> pt
         </div>
+
+
+
         <br>
         <label>
             Linked Variable:
             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['numeric'], relinkCallback: relinkCallback } }"></span>
         </label>
+
+        <div>
+            <span>Required:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
+        </div>
+
     </div>
 </template>
 
 <template id="likert-preview-template">
     <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
     <br>
-    <div data-bind="style: {marginLeft: margin, marginRight: margin}">
+    <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
         <div class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.startLabel}"></div>
         <div style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
             <div style="display: inline-block; margin-left: inherit; margin-right: inherit ">
@@ -39,9 +47,18 @@
 </template>
 
 <template id="likert-playerview-template">
-    <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
+    <div>
+        <span style="display:inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
+        <!-- ko if: dataModel.triedToSubmit() -->
+            <!-- ko ifnot: dataModel.dataIsValid() -->
+                <span style=" display:inline-block; float: right; margin-right:50px" data-bind=" tooltip:'.requiredInfo'">
+                    <img width="16" height="16" src="/resources/no.png"/>
+                </span>
+            <!-- /ko -->
+        <!-- /ko -->
+    </div>
     <br>
-    <div data-bind="style: {marginLeft: margin, marginRight: margin}">
+    <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
         <span style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.startLabel}"></span>
         <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
             <div style="display: inline-block; margin-left: inherit; margin-right: inherit ">

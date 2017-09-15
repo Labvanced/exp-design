@@ -23,6 +23,7 @@
             <tr>
                 <th style="width: 50px;">Entry</th>
                 <th>Linked Variables</th>
+                <th>Required</th>
             </tr>
             </thead>
             <tbody data-bind="foreach: dataModel.elements">
@@ -32,6 +33,9 @@
                 </td>
                 <td>
                     <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: variable, allowedDatatypes: ['numeric'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
+                </td>
+                <td>
+                    <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block; margin-left:45%" type="checkbox" data-bind="checked: isRequired,click:function(){return true},clickBubble: false">
                 </td>
             </tr>
             </tbody>
@@ -56,16 +60,16 @@
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
 
         <div>
-            <div style="display: inline-block; width: 100%">
-                <span style="float: right; height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels,style:{width: dataModel.leftRightRatio()+'%'}">
+            <div style="float: left; display: inline-block;" data-bind="style:{marginLeft:100-dataModel.leftRightRatio()+'%',width:dataModel.leftRightRatio()-10+'%'}">
+                <span style="height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels">
                     <div class="notDraggable" style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-preview', params : labelText}"></div>
                 </span>
             </div>
         </div>
         <div data-bind="foreach: dataModel.elements">
             <div style="display: inline-block; width: 100%">
-                <div style="float: left; display: inline-block;" class="notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : rowText}, style:{width:$root.leftRightRatio2()+'%'}" ></div>
-                <span style="float: right;  height:100%; vertical-align: middle" data-bind="foreach: parent.labels, style:{width: $root.leftRightRatio()+'%'}">
+                <div style="float: left; display: inline-block;" class="notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : rowText}, style:{width:100-$parent.dataModel.leftRightRatio()+'%'}" ></div>
+                <span style="float: left;  height:100%; vertical-align: middle" data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-10+'%'}">
                     <input style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" type="radio" data-bind="style:{width:$parent.parent.calculateWidth()},attr:{value:$index()+1},checked: $parent.variable().startValue().value, click:function(){return true},clickBubble: false">
                 </span>
             </div>
@@ -74,24 +78,33 @@
 
 </template>
 
+
+
 <template id="scale-playerview-template">
 
     <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
     <br>
-    <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
+    <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
         <div>
-            <div style="display: inline-block; width: 100%">
-                <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels">
+            <div style="float: left; display: inline-block" data-bind="style:{marginLeft:100-dataModel.leftRightRatio()+'%',width:dataModel.leftRightRatio()-10+'%'}">
+                <span style="float: left; height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels">
                     <div class="notDraggable" style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-playerview', params : labelText}"></div>
                 </span>
             </div>
         </div>
         <div data-bind="foreach: dataModel.elements">
             <div style="display: inline-block; width: 100%">
-                <div style="float: left; width:25%; display: inline-block;" data-bind="component: {name : 'editable-text-element-playerview', params : rowText}" ></div>
-                <span style="float: right; width:75%; height:100%; vertical-align: middle" data-bind="foreach: parent.labels">
+                <div style="float: left; display: inline-block;" data-bind="component: {name : 'editable-text-element-playerview', params : rowText},style:{width:100-$parent.dataModel.leftRightRatio()+'%'}" ></div>
+                <span style="float: left; height:100%; vertical-align: middle" data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-10+'%'}">
                     <input style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" type="radio" data-bind="style:{width:$parent.parent.calculateWidth()},attr:{value:$index()+1},checked: $parent.variable().value().value, click:function(){return true},clickBubble: false">
                 </span>
+                <!-- ko if: triedToSubmit() -->
+                <!-- ko ifnot: dataIsValid() -->
+                <span style=" display:inline-block; float: right; width: 10%" data-bind=" tooltip:'.requiredInfo'">
+                    <img width="16" height="16" src="/resources/no.png"/>
+                </span>
+                <!-- /ko -->
+                <!-- /ko -->
             </div>
         </div>
     </div>

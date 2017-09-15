@@ -7,9 +7,12 @@ var MultiLineInputElement = function(expData) {
     this.type= "MultiLineInputElement";
     this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
     this.variable = ko.observable();
+    this.isRequired = ko.observable(false);
 
     ///// not serialized
     this.selected = ko.observable(false);
+    this.triedToSubmit = ko.observable(false);
+    this.dataIsValid = ko.observable(false);
     /////
 };
 
@@ -72,6 +75,31 @@ MultiLineInputElement.prototype.dispose = function () {
     this.questionText().dispose();
 };
 
+MultiLineInputElement.prototype.getTextRefs = function(textArr, label){
+    var questlabel = label + '.Question';
+    this.questionText().getTextRefs(textArr, questlabel);
+    return textArr;
+};
+
+MultiLineInputElement.prototype.isInputValid = function() {
+    this.triedToSubmit(true);
+    if (this.isRequired()==false){
+        this.dataIsValid(true);
+        return true
+    }
+    else{
+        if (this.variable().value().value()==null || this.variable().value().value()=='' ||this.variable().value().value() == this.variable().startValue().value()){
+            this.dataIsValid(false);
+            return false;
+        }
+        else{
+            this.dataIsValid(true);
+            return true
+        }
+    }
+};
+
+
 MultiLineInputElement.prototype.toJS = function() {
     var variableId = null;
     if (this.variable()) {
@@ -81,15 +109,12 @@ MultiLineInputElement.prototype.toJS = function() {
     return {
         type: this.type,
         questionText: this.questionText().toJS(),
-        variable: variableId
+        variable: variableId,
+        isRequired:this.isRequired()
     };
 };
 
-MultiLineInputElement.prototype.getTextRefs = function(textArr, label){
-    var questlabel = label + '.Question';
-    this.questionText().getTextRefs(textArr, questlabel);
-    return textArr;
-};
+
 
 MultiLineInputElement.prototype.fromJS = function(data) {
     this.type=data.type;
@@ -101,6 +126,10 @@ MultiLineInputElement.prototype.fromJS = function(data) {
         this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
     }
     this.variable(data.variable);
+    if(data.hasOwnProperty('isRequired')) {
+        this.isRequired(data.isRequired);
+    }
+
 };
 
 function createMultiLineInputComponents() {

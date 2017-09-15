@@ -33,6 +33,11 @@
             </tbody>
         </table>
 
+        <div>
+            <span>Required:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
+        </div>
+
     </div>
 </template>
 
@@ -43,7 +48,7 @@
     <div data-bind="component: {name : 'editable-text-element-preview', params : dataModel.questionText}"></div>
     <br>
     <div>
-        <select class="notDraggable" class="notDraggable"data-placeholder="Please choose" style="width: 100%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: 'Please Choose...', value: dataModel.variable().startValue().value"></select>
+        <select class="notDraggable" class="notDraggable"data-placeholder="Please choose" style="width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: 'Please Choose...', value: dataModel.variable().startValue().value"></select>
 
     </div>
     <br>
@@ -56,7 +61,14 @@
     <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
     <br>
     <div>
-        <select class="notDraggable" style="width: 100%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: 'Please Choose...', value: dataModel.variable().value().value"></select>
+        <select class="notDraggable" style="display:inline-block; width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: 'Please Choose...', value: dataModel.variable().value().value"></select>
+        <!-- ko if: dataModel.triedToSubmit() -->
+        <!-- ko ifnot: dataModel.dataIsValid() -->
+        <span style=" display:inline-block; width: 10%" data-bind=" tooltip:'.requiredInfo'">
+            <img width="16" height="16" src="/resources/no.png"/>
+        </span>
+        <!-- /ko -->
+        <!-- /ko -->
     </div>
     <br>
 

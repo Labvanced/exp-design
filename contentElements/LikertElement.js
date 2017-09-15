@@ -12,12 +12,15 @@ var LikertElement= function(expData) {
     this.choices= ko.observableArray([1,2,3,4,5]);
 
     this.variable = ko.observable();
+    this.isRequired = ko.observable(false);
 
     this.showNums = ko.observable(true);
-    this.margin = ko.observable('2pt');
+    this.margin = ko.observable(2);
 
     ///// not serialized
     this.selected = ko.observable(false);
+    this.triedToSubmit = ko.observable(false);
+    this.dataIsValid = ko.observable(false);
     /////
 };
 
@@ -95,6 +98,26 @@ LikertElement.prototype.getTextRefs = function(textArr, label){
     return textArr;
 };
 
+LikertElement.prototype.isInputValid = function() {
+    this.triedToSubmit(true);
+    if (this.isRequired()==false){
+        this.dataIsValid(true);
+        return true
+    }
+    else{
+        if (this.variable().value().value() == this.variable().startValue().value()){
+            this.dataIsValid(false);
+            return false;
+        }
+        else{
+            this.dataIsValid(true);
+            return true
+        }
+    }
+};
+
+
+
 LikertElement.prototype.toJS = function() {
     var variableId = null;
     if (this.variable()) {
@@ -109,7 +132,8 @@ LikertElement.prototype.toJS = function() {
         startLabel: this.startLabel().toJS(),
         endLabel: this.endLabel().toJS(),
         choices: this.choices(),
-        variable: variableId
+        variable: variableId,
+        isRequired: this.isRequired()
     };
 };
 
@@ -132,6 +156,11 @@ LikertElement.prototype.fromJS = function(data) {
     this.endChoice(data.endChoice);
     this.choices(data.choices);
     this.variable(data.variable);
+    if(data.hasOwnProperty('isRequired')) {
+        this.isRequired(data.isRequired)
+    }
+
+
 };
 
 
