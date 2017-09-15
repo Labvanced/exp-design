@@ -20,6 +20,16 @@
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.isRequired,click:function(){return true},clickBubble: false">
         </div>
 
+        <div>
+            <span>Show Question Header:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.enableTitle,click:function(){return true},clickBubble: false">
+        </div>
+
+        <div>
+            <span>Allow Custom Answer:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.altAnswerActive,click:function(){return true},clickBubble: false">
+        </div>
+
         <table>
             <thead>
             <tr>
@@ -43,19 +53,31 @@
 </template>
 
 <template id="choice-preview-template">
+    <!-- ko if: (multipleChoiceElement.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
+    <!-- /ko -->
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
             <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue().value, click:function(){return true}, clickBubble: false">
             <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" class="notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
+            <!-- ko if: getIndex()== parent.elements().length-1 -->
+            <span style="display:inline-block; width:60%" data-bind="visible:$parent.multipleChoiceElement.altAnswerActive">
+                <input style="position:relative;left: 0" type="text" class="form-control" data-bind="value:$parent.multipleChoiceElement.altAnswer">
+            </span>
+            <!-- /ko -->
         </div>
     </div>
+
+
+
     <br>
 </template>
 
 <template id="choice-playerview-template">
     <div>
+        <!-- ko if: (multipleChoiceElement.enableTitle())  -->
         <span style="display:inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
+        <!-- /ko -->
         <!-- ko if: multipleChoiceElement.triedToSubmit() -->
             <!-- ko ifnot: multipleChoiceElement.dataIsValid() -->
                 <span style=" display:inline-block; float: right; margin-right:50px" data-bind=" tooltip:'.requiredInfo'">
@@ -67,8 +89,13 @@
 
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" required data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false, attr: {id:'test123'}">
+            <input style="margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false, attr: {id:'test123'}">
             <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
+            <!-- ko if: getIndex()== parent.elements().length-1 -->
+            <span style="display:inline-block; width:60%" data-bind="visible:$parent.multipleChoiceElement.altAnswerActive">
+                <input style="position:relative;left: 0" type="text" class="form-control" data-bind="value:$parent.multipleChoiceElement.altAnswer">
+            </span>
+            <!-- /ko -->
         </div>
     </div>
     <br>

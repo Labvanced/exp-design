@@ -11,6 +11,7 @@ var SelectionElement = function(expData) {
     this.elements = ko.observableArray([]);
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
+    this.enableTitle= ko.observable(true);
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -140,7 +141,8 @@ SelectionElement.prototype.toJS = function() {
         isRequired:this.isRequired(),
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
-        })
+        }),
+        enableTitle:this.enableTitle()
     };
 };
 
@@ -162,6 +164,9 @@ SelectionElement.prototype.fromJS = function(data) {
     }
     if (data.hasOwnProperty('isRequired')) {
        this.isRequired(data.isRequired);
+    }
+    if(data.hasOwnProperty('enableTitle')){
+        this.enableTitle(data.enableTitle);
     }
 
 

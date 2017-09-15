@@ -44,6 +44,11 @@
         <div>Style:</div>
 
         <div>
+            <span>Show Question Header:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+        </div>
+
+        <div>
             Left-Right Ratio: <input style="display: inline-block; width: 50px" type="number" min="0"  max="100" data-bind="value: dataModel.leftRightRatio,valueUpdate:'input'"> %
         </div>
 
@@ -55,8 +60,11 @@
 
 <template id="scale-preview-template">
 
+    <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-preview', params : dataModel.questionText}"></div>
     <br>
+    <!-- /ko -->
+
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
 
         <div>
@@ -81,9 +89,10 @@
 
 
 <template id="scale-playerview-template">
-
+    <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
     <br>
+    <!-- /ko -->
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
         <div>
             <div style="float: left; display: inline-block" data-bind="style:{marginLeft:100-dataModel.leftRightRatio()+'%',width:dataModel.leftRightRatio()-10+'%'}">

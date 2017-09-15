@@ -10,11 +10,17 @@
             <span>Required:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
         </div>
+        <div>
+            <span>Show Question Header:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+        </div>
     </div>
 </template>
 
 <template id="multi-line-input-preview-template">
+    <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
+    <!-- /ko -->
     <div style="width: 85%">
         <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" data-bind="value: dataModel().variable().startValue().value"></textarea>
     </div>
@@ -22,8 +28,11 @@
 </template>
 
 <template id="multi-line-input-playerview-template">
+    <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
     <br>
+    <!-- /ko -->
+
     <div style="display:inline-block; width: 85%">
         <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" placeholder="Participant Answer" data-bind="value: dataModel().variable().value().value"></textarea>
     </div>

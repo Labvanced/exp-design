@@ -8,6 +8,7 @@ var MultiLineInputElement = function(expData) {
     this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
+    this.enableTitle= ko.observable(true);
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -110,7 +111,8 @@ MultiLineInputElement.prototype.toJS = function() {
         type: this.type,
         questionText: this.questionText().toJS(),
         variable: variableId,
-        isRequired:this.isRequired()
+        isRequired:this.isRequired(),
+        enableTitle:this.enableTitle()
     };
 };
 
@@ -128,6 +130,9 @@ MultiLineInputElement.prototype.fromJS = function(data) {
     this.variable(data.variable);
     if(data.hasOwnProperty('isRequired')) {
         this.isRequired(data.isRequired);
+    }
+    if(data.hasOwnProperty('enableTitle')){
+        this.enableTitle(data.enableTitle);
     }
 
 };

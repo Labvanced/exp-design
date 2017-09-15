@@ -7,8 +7,12 @@
         <select data-bind="options: values, value: endChoice, event: {change: finish}">
         </select>
         <div>
-            <input type="checkbox" data-bind="checked: showNums">
+            <input type="checkbox" data-bind="checked: dataModel.showNums">
             Show numbers
+        </div>
+        <div>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+            <span>Show Question Header:</span>
         </div>
         <div>
             Inner Margin: <input style="display: inline-block; width: 50px" type="number" min="0" data-bind="value:margin,valueUpdate:'input'"> pt
@@ -27,12 +31,16 @@
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
         </div>
 
+
     </div>
 </template>
 
 <template id="likert-preview-template">
+    <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
     <br>
+    <!-- /ko -->
+
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
         <div class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.startLabel}"></div>
         <div style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
@@ -48,7 +56,9 @@
 
 <template id="likert-playerview-template">
     <div>
+        <!-- ko if: (dataModel.enableTitle())  -->
         <span style="display:inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
+        <!-- /ko -->
         <!-- ko if: dataModel.triedToSubmit() -->
             <!-- ko ifnot: dataModel.dataIsValid() -->
                 <span style=" display:inline-block; float: right; margin-right:50px" data-bind=" tooltip:'.requiredInfo'">

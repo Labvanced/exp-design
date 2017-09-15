@@ -10,6 +10,7 @@ var InputElement = function(expData) {
 
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
+    this.enableTitle= ko.observable(true);
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -119,7 +120,8 @@ InputElement.prototype.toJS = function() {
         questionText: this.questionText().toJS(),
         inputType: this.inputType(),
         variable: variableId,
-        isRequired:this.isRequired()
+        isRequired:this.isRequired(),
+        enableTitle:this.enableTitle()
     };
 };
 
@@ -138,6 +140,9 @@ InputElement.prototype.fromJS = function(data) {
     }
     if (data.hasOwnProperty('isRequired')){
         this.isRequired(data.isRequired);
+    }
+    if(data.hasOwnProperty('enableTitle')){
+        this.enableTitle(data.enableTitle);
     }
 
 

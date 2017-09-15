@@ -13,6 +13,7 @@ var SortableElement = function(expData) {
     this.elements =  ko.observableArray([]).extend({sortById: null});
     this.elementIds =  ko.observableArray([]).extend({sortById: null});
     this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
+    this.enableTitle= ko.observable(true);
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -136,6 +137,9 @@ SortableElement.prototype.fromJS = function(data) {
         return (new SortableEntry(self)).fromJS(elemData);
     }));
     this.elementIds(data.elementIds);
+    if(data.hasOwnProperty('enableTitle')){
+        this.enableTitle(data.enableTitle);
+    }
 };
 
 /**
@@ -150,7 +154,8 @@ SortableElement.prototype.toJS = function() {
         elements: jQuery.map( this.elementIds(), function( elem ) {
             return self.elementIdMap[elem].toJS();
         }),
-        elementIds: this.elementIds()
+        elementIds: this.elementIds(),
+        enableTitle:this.enableTitle
     };
 };
 

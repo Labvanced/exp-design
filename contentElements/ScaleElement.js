@@ -13,7 +13,7 @@ var ScaleElement= function(expData) {
     this.labels = ko.observableArray([]);
     this.elements = ko.observableArray([]);
     this.leftRightRatio = ko.observable(75); // in percent
-
+    this.enableTitle= ko.observable(true);
 
 
     ///// not serialized
@@ -158,7 +158,8 @@ ScaleElement.prototype.toJS = function() {
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
         }),
-        leftRightRatio:this.leftRightRatio()
+        leftRightRatio:this.leftRightRatio(),
+        enableTitle:this.enableTitle()
     };
 };
 
@@ -207,6 +208,9 @@ ScaleElement.prototype.fromJS = function(data) {
     }
     if(data.hasOwnProperty('leftRightRatio')) {
         this.leftRightRatio(data.leftRightRatio);
+    }
+    if(data.hasOwnProperty('enableTitle')){
+        this.enableTitle(data.enableTitle);
     }
 
 

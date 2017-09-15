@@ -12,6 +12,7 @@ var RangeElement= function(expData) {
     this.endLabel = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">label 2</span></span>'));
     this.showNumber = ko.observable(true);
     this.variable = ko.observable();
+    this.enableTitle= ko.observable(true);
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -112,7 +113,8 @@ RangeElement.prototype.toJS = function() {
         startLabel: this.startLabel().toJS(),
         endLabel: this.endLabel().toJS(),
         showNumber: this.showNumber(),
-        variable: variableId
+        variable: variableId,
+        enableTitle:this.enableTitle()
     };
 };
 
@@ -136,6 +138,9 @@ RangeElement.prototype.fromJS = function(data) {
     this.variable(data.variable);
     if (data.hasOwnProperty("showNumber")) {
         this.showNumber(data.showNumber);
+    }
+    if(data.hasOwnProperty('enableTitle')){
+        this.enableTitle(data.enableTitle);
     }
 };
 

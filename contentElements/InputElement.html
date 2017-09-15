@@ -12,12 +12,17 @@
             <span>Required:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
         </div>
+        <div>
+            <span>Show Question Header:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+        </div>
     </div>
 </template>
 
 <template id='input-preview-template'>
-
+    <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
+    <!-- /ko -->
     <div>
         <!-- ko if: (dataModel.inputType()=='number')  -->
         <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="number" class="form-control" data-bind="value: value"></div>
@@ -45,8 +50,9 @@
 </template>
 
 <template id='input-playerview-template'>
+    <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
-    <br>
+    <!-- /ko -->
     <div>
         <!-- ko if: (dataModel.inputType()=='number')  -->
         <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="number" class="form-control" data-bind="value: value"></div>

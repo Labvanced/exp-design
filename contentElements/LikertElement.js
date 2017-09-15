@@ -13,6 +13,7 @@ var LikertElement= function(expData) {
 
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
+    this.enableTitle= ko.observable(true);
 
     this.showNums = ko.observable(true);
     this.margin = ko.observable(2);
@@ -133,7 +134,9 @@ LikertElement.prototype.toJS = function() {
         endLabel: this.endLabel().toJS(),
         choices: this.choices(),
         variable: variableId,
-        isRequired: this.isRequired()
+        isRequired: this.isRequired(),
+        enableTitle:this.enableTitle(),
+        showNums:this.showNums()
     };
 };
 
@@ -158,6 +161,12 @@ LikertElement.prototype.fromJS = function(data) {
     this.variable(data.variable);
     if(data.hasOwnProperty('isRequired')) {
         this.isRequired(data.isRequired)
+    }
+    if(data.hasOwnProperty('enableTitle')){
+        this.enableTitle(data.enableTitle);
+    }
+    if(data.hasOwnProperty('showNums')){
+        this.showNums(data.showNums);
     }
 
 

@@ -37,6 +37,10 @@
             <span>Required:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
         </div>
+        <div>
+            <span>Show Question Header:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+        </div>
 
     </div>
 </template>
@@ -45,8 +49,10 @@
 
 
 <template id='selection-preview-template'>
+    <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-preview', params : dataModel.questionText}"></div>
     <br>
+    <!-- /ko -->
     <div>
         <select class="notDraggable" class="notDraggable"data-placeholder="Please choose" style="width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: 'Please Choose...', value: dataModel.variable().startValue().value"></select>
 
@@ -58,8 +64,10 @@
 
 
 <template id='selection-playerview-template'>
+    <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
     <br>
+    <!-- /ko -->
     <div>
         <select class="notDraggable" style="display:inline-block; width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: 'Please Choose...', value: dataModel.variable().value().value"></select>
         <!-- ko if: dataModel.triedToSubmit() -->

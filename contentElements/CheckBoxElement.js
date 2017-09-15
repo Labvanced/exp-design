@@ -9,6 +9,7 @@ var CheckBoxElement= function(expData) {
 
     // content
     this.elements = ko.observableArray([]);
+    this.enableTitle= ko.observable(true);
 
     // style
     this.margin = ko.observable('5pt');
@@ -100,7 +101,8 @@ CheckBoxElement.prototype.toJS = function() {
         questionText: this.questionText().toJS(),
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
-        })
+        }),
+        enableTitle:this.enableTitle()
     };
 };
 
@@ -118,6 +120,9 @@ CheckBoxElement.prototype.fromJS = function(data) {
         this.elements(jQuery.map(data.elements, function (elemData) {
             return (new CheckBoxEntry(self)).fromJS(elemData);
         }));
+    }
+    if(data.hasOwnProperty('enableTitle')){
+        this.enableTitle(data.enableTitle);
     }
 };
 

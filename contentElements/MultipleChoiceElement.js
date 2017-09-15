@@ -1,5 +1,6 @@
 
 var MultipleChoiceElement = function(expData) {
+    var self = this;
     this.expData = expData;
     this.parent = null;
 
@@ -8,11 +9,15 @@ var MultipleChoiceElement = function(expData) {
     this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
     this.isRequired = ko.observable(false);
 
+    this.altAnswerActive = ko.observable(false);
+    this.enableTitle= ko.observable(true);
+
    // this.openQuestion=  ko.observable(false);
 
     // content
     this.elements = ko.observableArray([]);
     this.variable = ko.observable();
+
 
     this.margin = ko.observable('5pt');
 
@@ -20,7 +25,12 @@ var MultipleChoiceElement = function(expData) {
     this.selected = ko.observable(false);
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
-    /////
+    this.altAnswer = ko.observable('');
+    // update variable
+    this.altAnswer.subscribe(function(val) {
+     self.variable().value().value(val)
+    });
+
 
 
 };
@@ -48,6 +58,7 @@ MultipleChoiceElement.prototype.init = function() {
 
     this.addEntry();
     this.addEntry();
+    this.addSubscriptions();
 };
 
 MultipleChoiceElement.prototype.addEntry = function() {
@@ -77,6 +88,7 @@ MultipleChoiceElement.prototype.getAllModifiers = function(modifiersArr) {
 };
 
 MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
+    var self = this;
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
@@ -88,6 +100,22 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
         this.variable().changeDataType("string");
     }
     this.questionText().setPointers();
+    this.addSubscriptions();
+};
+
+MultipleChoiceElement.prototype.addSubscriptions = function() {
+    var self = this;
+    if (this.activateAltSubscription){
+        this.activateAltSubscription.dispose();
+    }
+    this.activateAltSubscription = this.altAnswerActive.subscribe(function(val) {
+        if (val){
+            self.addEntry()
+        }
+        else{
+            self.removeEntry()
+        }
+    });
 };
 
 MultipleChoiceElement.prototype.reAddEntities = function(entitiesArr) {
@@ -158,7 +186,9 @@ MultipleChoiceElement.prototype.toJS = function() {
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
         }),
-        isRequired:this.isRequired()
+        isRequired:this.isRequired(),
+        altAnswerActive:this.altAnswerActive(),
+        enableTitle:this.enableTitle()
     };
 };
 
@@ -182,6 +212,14 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('isRequired')){
         this.isRequired(data.isRequired);
     }
+    if(data.hasOwnProperty('altAnswerActive')){
+        this.altAnswerActive(data.altAnswerActive);
+    }
+    if(data.hasOwnProperty('enableTitle')){
+        this.enableTitle(data.enableTitle);
+    }
+
+
 
 
 };

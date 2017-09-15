@@ -46,6 +46,11 @@
             </div>
         </div>
 
+        <div>
+            <span>Show Question Header:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+        </div>
+
 
         <div style="margin-left: 10px">
             <label>Activate Sorting / Disable Text-Editing: </label>
@@ -55,10 +60,10 @@
 </template>
 
 <template id='sortable-preview-template'>
-
-
+    <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-preview', params : dataModel.questionText}"></div>
     <br>
+    <!-- /ko -->
 
     <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
         <ul class="sortableElement sortableOuter" id="sortableElementPrev">
@@ -74,8 +79,10 @@
 </template>
 
 <template id='sortable-playerview-template'>
+    <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
     <br>
+    <!-- /ko -->
 
     <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
         <ul class="sortableElement sortableOuter pointer" id="sortableElementPlayer">
