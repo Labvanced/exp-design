@@ -18,7 +18,7 @@
 </template>
 
 <template id="multi-line-input-preview-template">
-    <!-- ko if: (dataModel.enableTitle())  -->
+    <!-- ko if: (dataModel().enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
     <!-- /ko -->
     <div style="width: 85%">
@@ -28,7 +28,7 @@
 </template>
 
 <template id="multi-line-input-playerview-template">
-    <!-- ko if: (dataModel.enableTitle())  -->
+    <!-- ko if: (dataModel().enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
     <br>
     <!-- /ko -->
