@@ -101,6 +101,10 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
         this.variable().changeDataType("string");
     }
     this.questionText().setPointers();
+    if ( this.subInputElement()){
+        this.subInputElement().setPointers(entitiesArr);
+    }
+
     this.addSubscriptions();
 };
 
@@ -118,13 +122,29 @@ MultipleChoiceElement.prototype.addSubscriptions = function() {
             newElem.init();
             newElem.variable().name(self.parent.name()+'_altInput');
             newElem.inputType("text");
+            newElem.variable().scale("nominal");
             newElem.variable().dataType("string");
             newElem.variable().resetStartValue();
             newElem.enableTitle(false);
+            self.expData.entities.push(self.variable());
             self.subInputElement(newElem);
+            self.expData.notifyChanged();
             //self.addEntry()
         }
         else{
+            var vari = self.subInputElement().variable();
+            if(vari.backRefs().length==2 && vari.backRefs()[1].refLabel == 'Input' ){
+                if (self.expData.entities.byId[vari.id()]){
+                    vari.backRefs()[0].entity.deleteChildEntity(vari);
+                    self.expData.deleteGlobalVar(vari);
+                }
+                else{
+                    console.log('error deleting variable')
+                }
+            }
+            else{
+                console.log('variable not deleted, other backrefs exist')
+            }
             self.subInputElement(null);
         }
     });
@@ -138,6 +158,10 @@ MultipleChoiceElement.prototype.reAddEntities = function(entitiesArr) {
         elem.reAddEntities(entitiesArr);
     } );
     this.questionText().reAddEntities(entitiesArr);
+    if ( this.subInputElement()){
+        this.subInputElement().reAddEntities(entitiesArr);
+    }
+
 };
 
 MultipleChoiceElement.prototype.selectTrialType = function(selectionSpec) {
