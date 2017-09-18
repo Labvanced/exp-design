@@ -132,7 +132,11 @@ function createEditableTextComponents() {
 
                         read: function () {
                             if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
-                                return self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages[self.expData.currentLanguage()]();
+                                var rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()]();
+                                if (rawText==null) {
+                                    rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[0]();
+                                }
+                                return rawText;
                             }
                             else{
                                 return self.dataModel.modifier().selectedTrialView.rawText();
@@ -155,7 +159,7 @@ function createEditableTextComponents() {
                                 }
                             }
                             if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
-                                self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages[self.expData.currentLanguage()](value);
+                                self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()](value);
                             }
                             else{
                                 self.dataModel.modifier().selectedTrialView.rawText(value);
@@ -218,7 +222,11 @@ function createEditableTextComponents() {
 
                     this.playerText = ko.computed(function() {
                         if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
-                            return self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages[self.expData.currentLanguage()]().replace(regex, function(match, id){return replaceId(match, id);});
+                            var rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()]();
+                            if (rawText==null) {
+                                rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[0]();
+                            }
+                            return rawText.replace(regex, function(match, id){return replaceId(match, id);});
                         }
                         else{
                             return self.dataModel.modifier().selectedTrialView.rawText().replace(regex, function(match, id){return replaceId(match, id);});
