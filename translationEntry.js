@@ -10,7 +10,7 @@ var TranslationEntry = function (expData) {
     this.namedEntity = null;
     this.dirty = false;
 
-    this.languages = [];
+    this.languages = ko.observableArray([]);
 };
 
 TranslationEntry.prototype.init = function (namedEntity) {
@@ -29,8 +29,8 @@ TranslationEntry.prototype.toJS = function () {
     return {
         namedEntity: this.namedEntity.id(),
         dirty: this.dirty,
-        languages: jQuery.map(this.languages, function (elem) {
-            return elem();
+        languages: jQuery.map(this.languages(), function (elem) {
+            return [elem()]; // use array so that null values are not removed
         })
     };
 };
@@ -38,7 +38,7 @@ TranslationEntry.prototype.toJS = function () {
 TranslationEntry.prototype.fromJS = function (data) {
     this.namedEntity = data.namedEntity;
     this.dirty = data.dirty;
-    this.languages = jQuery.map(data.languages, function (elem) {
+    this.languages(jQuery.map(data.languages, function (elem) {
         return ko.observable(elem);
-    });
+    }));
 };

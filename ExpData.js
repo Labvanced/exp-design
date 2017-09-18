@@ -21,7 +21,7 @@ var ExpData = function (parentExperiment) {
     this.studySettings = new StudySettings(this.expData);
 
     this.translations = ko.observableArray([]);
-    this.translatedLanguages = ko.observableArray(['Original']);
+    this.translatedLanguages = ko.observableArray([]);
 
     // not serialized
     this.currentLanguage = ko.observable(0);

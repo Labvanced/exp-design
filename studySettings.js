@@ -2,8 +2,6 @@ var StudySettings = function (expData) {
     this.expData = expData;
 
     this.studySettings = this.expData.studySettings;
-    this.originalLanguage =  ko.observable('English');
-    this.currentLanguage = ko.observable(0); // current select languge
     this.timeZoneOffset = ko.observable(0);
     this.bgColor = ko.observable('#ffffff')
 };
@@ -22,8 +20,6 @@ StudySettings.prototype.reAddEntities = function(entitiesArr) {
 
 
 StudySettings.prototype.fromJS = function(data) {
-    this.originalLanguage(data.originalLanguage);
-    this.currentLanguage(data.currentLanguage);
     this.timeZoneOffset(data.timeZoneOffset);
     if (data.hasOwnProperty("bgColor")){
         this.bgColor(data.bgColor);
@@ -35,8 +31,6 @@ StudySettings.prototype.fromJS = function(data) {
 
 StudySettings.prototype.toJS = function() {
     var data = {
-        originalLanguage: this.originalLanguage(),
-        currentLanguage: this.currentLanguage(),
         timeZoneOffset: this.timeZoneOffset(),
         bgColor:this.bgColor()
     };
