@@ -19,6 +19,8 @@ var MultiLineInputElement = function(expData) {
 
 MultiLineInputElement.prototype.label = "Paragraph";
 MultiLineInputElement.prototype.iconPath = "/resources/icons/tools/textInput.svg";
+MultiLineInputElement.prototype.dataType =      [ ];
+MultiLineInputElement.prototype.modifiableProp = [ ];
 MultiLineInputElement.prototype.initWidth = 500;
 MultiLineInputElement.prototype.initHeight = 100;
 

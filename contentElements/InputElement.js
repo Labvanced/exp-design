@@ -22,6 +22,8 @@ var InputElement = function(expData) {
 
 InputElement.prototype.label = "Input";
 InputElement.prototype.iconPath = "/resources/icons/tools/tool_input.svg";
+InputElement.prototype.dataType =      [ ];
+InputElement.prototype.modifiableProp = [ ];
 InputElement.prototype.typeOptions = ["number","text","date","week","time","color"];
 InputElement.prototype.initWidth = 300;
 InputElement.prototype.initHeight = 100;

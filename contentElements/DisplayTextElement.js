@@ -15,6 +15,8 @@ var DisplayTextElement = function(expData) {
 
 DisplayTextElement.prototype.label = "DisplayText";
 DisplayTextElement.prototype.iconPath = "/resources/icons/tools/tool_text.svg";
+DisplayTextElement.prototype.dataType =      [ ];
+DisplayTextElement.prototype.modifiableProp = [ ];
 DisplayTextElement.prototype.initWidth = 500;
 DisplayTextElement.prototype.initHeight = 80;
 

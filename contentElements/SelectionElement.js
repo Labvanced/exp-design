@@ -21,6 +21,8 @@ var SelectionElement = function(expData) {
 
 SelectionElement.prototype.label = "Selection";
 SelectionElement.prototype.iconPath = "/resources/icons/tools/selection.svg";
+SelectionElement.prototype.dataType =      [ ];
+SelectionElement.prototype.modifiableProp = [ ];
 SelectionElement.prototype.initWidth = 300;
 SelectionElement.prototype.initHeight = 100;
 

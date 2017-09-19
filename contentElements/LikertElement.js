@@ -27,6 +27,8 @@ var LikertElement= function(expData) {
 
 LikertElement.prototype.label = "Likert";
 LikertElement.prototype.iconPath = "/resources/icons/tools/tool_rating.svg";
+LikertElement.prototype.dataType =      [ ];
+LikertElement.prototype.modifiableProp = [ ];
 LikertElement.prototype.initWidth = 350;
 LikertElement.prototype.initHeight = 120;
 

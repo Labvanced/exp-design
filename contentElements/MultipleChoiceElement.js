@@ -38,6 +38,8 @@ var MultipleChoiceElement = function(expData) {
 
 MultipleChoiceElement.prototype.label = "Multiple Choice";
 MultipleChoiceElement.prototype.iconPath = "/resources/icons/tools/tool_multiplechoice.svg";
+MultipleChoiceElement.prototype.dataType =      [ ];
+MultipleChoiceElement.prototype.modifiableProp = [ ];
 MultipleChoiceElement.prototype.initWidth = 180;
 MultipleChoiceElement.prototype.initHeight = 120;
 
