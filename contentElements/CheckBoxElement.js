@@ -21,6 +21,8 @@ var CheckBoxElement= function(expData) {
 
 CheckBoxElement.prototype.label = "Checkbox";
 CheckBoxElement.prototype.iconPath = "/resources/icons/tools/tool_checkbox.svg";
+CheckBoxElement.prototype.dataType =      [ ];
+CheckBoxElement.prototype.modifiableProp = [ ];
 CheckBoxElement.prototype.initWidth = 180;
 CheckBoxElement.prototype.initHeight = 90;
 

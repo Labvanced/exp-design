@@ -24,6 +24,8 @@ var SortableElement = function(expData) {
 
 SortableElement.prototype.label = "Sortable";
 SortableElement.prototype.iconPath = "/resources/icons/tools/sort.svg";
+SortableElement.prototype.dataType =      [ ];
+SortableElement.prototype.modifiableProp = [ ];
 SortableElement.prototype.initWidth = 350;
 SortableElement.prototype.initHeight = 100;
 
