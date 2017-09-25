@@ -9,7 +9,7 @@
                 <label>
                     <span class="survey-left-label">Subject Code:</span>
                     <span>
-                        <input type="text" data-bind="value: subjectCode"></input>
+                        <input type="text" data-bind="value: subjectCode" />
                     </span>
                 </label>
             </div>
@@ -18,7 +18,9 @@
                 <label>
                     <span class="survey-left-label">Subject Group:</span>
                     <span>
-                        <select data-bind="options: expData().availableGroups,
+                        <select data-bind="
+                            optionsCaption: '-- auto assign --',
+                            options: expData().availableGroups,
                             optionsText: 'name',
                             value: selectedSubjectGroup">
                         </select>
@@ -29,18 +31,13 @@
             <div>
                 <label>
                     <span class="survey-left-label">Session Number:</span>
-                    <select data-bind="options: sessionsInGroup,
+                    <select data-bind="
+                            optionsCaption: '-- auto assign --',
+                            options: sessionsInGroup,
                             optionsText: 'name',
                             optionsValue: 'nr',
                             value: selectedSessionNr">
                     </select>
-                </label>
-            </div>
-
-            <div>
-                <label>
-                    <input type="checkbox" data-bind="checked: includeInitialSurvey">
-                    <span>Include Initial Subject Survey</span>
                 </label>
             </div>
 

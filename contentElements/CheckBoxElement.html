@@ -70,7 +70,7 @@
     <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
             <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" required data-bind="checked: variable().value().value,click:function(){return true},clickBubble: false">
-            <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" data-bind="component: {name : 'editable-text-element-preview', params : checkBoxText}"></div>
+            <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" data-bind="component: {name : 'editable-text-element-playerview', params : checkBoxText}"></div>
 
             <!-- ko if: triedToSubmit() -->
                 <!-- ko ifnot: dataIsValid() -->
