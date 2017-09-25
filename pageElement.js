@@ -93,7 +93,10 @@ PageElement.prototype.reAddEntities = function(entitiesArr) {
  * @returns textArr on highes level
  */
 PageElement.prototype.getTextRefs = function(textArr, label){
-    this.content().getTextRefs(textArr, this.name());
+    var content = this.content();
+    if (content.getTextRefs instanceof Function) {
+        content.getTextRefs(textArr, this.name());
+    }
     return textArr;
 };
 
