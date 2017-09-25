@@ -10,6 +10,11 @@ var InitialSurveyDialog= function(expData) {
     this.expData = ko.observable(expData);
     this.divContainer = null;
 
+    this.okClicked = ko.observable(false);
+    this.serverConfirmed = ko.observable(false);
+    this.cb = null;
+
+
     this.selectedGender = ko.observable(null);
     this.selectedAge = ko.observable(null);
     this.selectedCountry = ko.observable(null);
@@ -21,10 +26,6 @@ var InitialSurveyDialog= function(expData) {
     this.requiredCountry = ko.observable(false);
     this.requiredLanguage = ko.observable(false);
     this.requiredEmail = ko.observable(false);
-
-    this.okClicked = ko.observable(false);
-    this.serverConfirmed = ko.observable(false);
-    this.cb = null;
 
     // calculate required survey fields (it is required if the field is enabled in any group):
     var availableGroups = expData.availableGroups();

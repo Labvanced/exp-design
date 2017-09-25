@@ -1,17 +1,158 @@
-<div id="experimentPreview" style="position: absolute; top: 0px; left: 0px;">
+<div id="experimentPreview" style="position:absolute; height:100%; width: 100%; overflow: auto">
+    <div style="">
+    <div style="position:relative;">
+        <div class="container-fluid" >
+            <div class="row ssp" style="margin: 0px;">
+                <!--StudyContent-->
+                <div class="col-md-12 text-center">
+                    <div class="row ">
+                        <div class="col-md-2 ssp-link mg-t-50">
+                            <a href="/expLibrary.html" class="ssp-link-back"><img width="24px" src="/resources/shapes/dark/left-arrow-1.svg"><span>Library</span></a>
+                        </div>
+                        <div class="col-md-8 ssp-img">
+                            <!-- ko if: (imageType() == 'imgfile') -->
+                            <img class="round-image" style="max-width: 220px;" id="ownImage" width="50%" data-bind="attr:{src: imgSource}"/>
+                            <!-- /ko -->
+                            <!-- ko if: (imageType() == 'jdenticon') -->
+                            <svg class="round-image" style="max-width: 220px;" id="identicon" width="50%" data-bind="attr:{'data-jdenticon-hash': jdenticonHash() }"></svg>
+                            <!-- /ko -->
+                            </div>
+                        </div>
+                    </div>
 
-    <div id="heading" style="position: absolute; top: 0; left: 0; height:12.5%; width:100%; text-align: center;" data-bind="text: exp_name()" ></div>
-    <div style="position:absolute; top: 15%; left:0; height: 75%; width:30%;">
-        <!-- ko if: (imageType() == 'imgfile') -->
-        <img id="ownImage" data-bind="attr:{src: imgSource}"/>
-        <!-- /ko -->
-        <!-- ko if: (imageType() == 'jdenticon') -->
-        <svg id="identicon" data-bind="attr:{'data-jdenticon-hash': jdenticonHash() }"></svg>
-        <!-- /ko -->
+                    <div class="row mg-t-50">
+
+                        <!--Study Description-->
+                        <div class="col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4  ">
+                            <div class="ssp-description">
+                                <h5 class="pt-studyname pointer"><span data-bind="text: exp_name()">Study Name</span></h5>
+
+                                <!-- 1. Select study langauge-->
+                                <div class="row ssp-questionaire" data-bind="visible: wizardStep()=='selectStudyLanguage'">
+                                    <p class="text-medium">This study is available in multiple languages.</p>
+                                    <form data-bind="submit: languageSelected">
+                                        <label>
+                                            <span class="survey-left-label">Study Language:</span>
+                                            <select data-bind="
+                                                options: expData.translatedLanguages(),
+                                                value: selectedStudyLanguage"></select>
+                                        </label>
+                                        <button class="btn-regular btn-green mg-20" data-bind="click: languageSelected"> Submit </button>
+                                    </form>
+                                </div>
+
+                                <!-- 2. Subject Survey-->
+                                <div class="row ssp-questionaire" data-bind="visible: wizardStep()=='initialSurvey'">
+                                    <p class="text-medium">Please fill out the fields below (required fields are marked with *).</p>
+                                    <div class="">
+                                        <form data-bind="submit: checkSurveyData">
+                                            <div>
+                                                <span class="survey-left-label">Gender<span data-bind="visible: requiredGender"> (*)</span>:</span>
+                                                <label><input type="radio" name="genderReq" value="male" data-bind="checked: selectedGender">Male</label>
+                                                <label><input type="radio" name="genderReq" value="female" data-bind="checked: selectedGender">Female</label>
+                                            </div>
+
+                                            <div>
+                                                <label>
+                                                    <span class="survey-left-label">Your Age<span data-bind="visible: requiredAge"> (*)</span>:</span>
+                                                    <input type="number" data-bind="value: selectedAge">
+                                                    years
+                                                </label>
+                                            </div>
+
+                                            <div>
+                                                <label>
+                                                    <span class="survey-left-label">Country of Origin<span data-bind="visible: requiredCountry"> (*)</span>:</span>
+                                                    <span>
+                                                        <select data-bind="
+                                                            options: country_codes,
+                                                            optionsText: 'name',
+                                                            value: selectedCountry,
+                                                            optionsCaption: 'Choose...'">
+                                                        </select>
+                                                    </span>
+                                                </label>
+                                            </div>
+
+                                            <div>
+                                                <label>
+                                                    <span class="survey-left-label">First Language<span data-bind="visible: requiredLanguage"> (*)</span>:</span>
+                                                    <select data-bind="
+                                                        options: language_codes,
+                                                        optionsText: 'name',
+                                                        value: selectedLanguage,
+                                                        optionsCaption: 'Choose...'"></select>
+                                                </label>
+                                            </div>
+
+                                            <div>
+                                                <label>
+                                                    <span class="survey-left-label">Email<span data-bind="visible: requiredEmail"> (*)</span>:</span>
+                                                    <input type="email" data-bind="value: selectedEmail">
+                                                </label>
+                                            </div>
+
+                                            <div class="alert alert-warning" data-bind="visible: (surveySubmitted() && errorString()!='')" >
+                                                <span data-bind="text: errorString"></span>
+                                            </div>
+
+                                            <button class="btn-regular btn-green mg-20" data-bind="click: checkSurveyData"> Submit </button>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                <!-- 3. error shown if sessionNotReady -->
+                                <div id="sessionNotReady" data-bind="visible: wizardStep()=='sessionNotReady'">
+                                    <div>
+                                        You can currently not take part in this experiment because this study can only be started at certain times.
+                                        <br>
+                                        You can start this session in: <span id="timeToNextSession"> </span>
+                                        <button type="button" class="pointer btn btn-default" id="calcStartingTime">Refresh</button>
+                                    </div>
+                                    <br>
+                                </div>
+
+                                <!-- 4. error shown if sessionOver -->
+                                <div id="sessionOver" data-bind="visible: wizardStep()=='sessionOver'">
+                                    <div>
+                                        You can currently not take part in this experiment because there is no starting time window defined for this study.
+                                        <br>
+                                    </div>
+                                    <br>
+                                </div>
+
+                                <!-- 5. Loading -->
+                                <div class="row" data-bind="visible: wizardStep()=='loading'">
+                                    <div class="study-loader"></div>
+                                    <p class="text-bold lightblue">85%</p>
+                                    <div id="progressState"  style="position: absolute; top: 0; left: 0px; width:950px">Loading experiment...<span id="progress"></span></div>
+                                    <div id="progressbar"  style="position: absolute; top:40px; left:0px; width:950px">
+                                        <div class="bar"></div>
+                                    </div>
+                                    <p class="text-medium">Loading, please wait.</p>
+                                    <p class="text-regular">This might take a while.</p>
+                                </div>
+
+                                <!-- 6 Ready to start -->
+                                <div class="row" data-bind="visible: wizardStep()=='readyToStart'">
+                                    <p class="text-medium">Loading Complete!</p>
+                                    <p class="text-medium">You can now start the experiment. This will switch your browser into fullscreen mode.</p>
+                                    <p class="text-regular">
+                                        Please note that during the experiment you should never
+                                        press escape or use the "backward button" in your browser.
+                                    </p>
+                                    <button class="btn-regular btn-lightblue mg-20" data-bind="click: startExp">Start</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div style="position:absolute; top:15%; left:33%; height: 75%; width:67%;" data-bind="text:description()"></div>
-
+    </div>
 </div>
 
 
