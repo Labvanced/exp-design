@@ -112,11 +112,11 @@ CheckBoxElement.prototype.fromJS = function(data) {
     var self = this;
     this.type=data.type;
     if(data.questionText.hasOwnProperty('rawText')){
-        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);
     }
     else{
-        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
+        this.questionText(new EditableTextElement(this.expData, this, data.questionText));
     }
     if (data.elements) {
         this.elements(jQuery.map(data.elements, function (elemData) {
@@ -218,11 +218,11 @@ CheckBoxEntry.prototype.getTextRefs = function(textArr, label){
 
 CheckBoxEntry.prototype.fromJS = function(data) {
     if(data.checkBoxText.hasOwnProperty('rawText')){
-        this.checkBoxText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+        this.checkBoxText(new EditableTextElement(this.parent.expData, this.parent, ''));
         this.checkBoxText().fromJS(data.checkBoxText);
     }
     else{
-        this.checkBoxText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, data.checkBoxText));
+        this.checkBoxText(new EditableTextElement(this.parent.expData, this.parent, data.checkBoxText));
     }
     if(data.hasOwnProperty('isRequired')){
         this.isRequired(data.isRequired);
