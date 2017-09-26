@@ -11,10 +11,10 @@
                         </div>
                         <div class="col-md-8 ssp-img">
                             <!-- ko if: (imageType() == 'imgfile') -->
-                            <img class="round-image" style="max-width: 220px;" id="ownImage" width="50%" data-bind="attr:{src: imgSource}"/>
+                            <img class="round-image" width=" 220px" height=" 220px" id="ownImage" width="50%" data-bind="attr:{src: imgSource}"/>
                             <!-- /ko -->
                             <!-- ko if: (imageType() == 'jdenticon') -->
-                            <svg class="round-image" style="max-width: 220px;" id="identicon" width="50%" data-bind="attr:{'data-jdenticon-hash': jdenticonHash() }"></svg>
+                            <svg class="round-image" style="width:220px; height:220px" id="identicon" width="50%" data-bind="attr:{'data-jdenticon-hash': jdenticonHash() }"></svg>
                             <!-- /ko -->
                             </div>
                         </div>
@@ -44,16 +44,16 @@
 
                                 <!-- 2. Subject Survey-->
                                 <div class="row ssp-questionaire" data-bind="visible: wizardStep()=='initialSurvey'">
-                                    <p class="text-medium" data-bind="text: player.staticStrings().initialSurvey"></p>
+                                    <p class="pt-studydescription text-center" data-bind="text: player.staticStrings().initialSurvey"></p>
                                     <div class="">
                                         <form data-bind="submit: checkSurveyData">
-                                            <div>
+                                            <div class="ssp-question">
                                                 <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourGender"></span><span data-bind="visible: requiredGender"> (*)</span>:</span>
                                                 <label><input type="radio" name="genderReq" value="male" data-bind="checked: selectedGender"><span data-bind="text: player.staticStrings().yourGenderMale"></span></label>
                                                 <label><input type="radio" name="genderReq" value="female" data-bind="checked: selectedGender"><span data-bind="text: player.staticStrings().yourGenderFemale"></span></label>
                                             </div>
 
-                                            <div>
+                                            <div  class="ssp-question">
                                                 <label>
                                                     <span class="survey-left-label" data-bind="text: player.staticStrings().yourAge"><span data-bind="visible: requiredAge"> (*)</span>:</span>
                                                     <input type="number" data-bind="value: selectedAge">
@@ -61,7 +61,7 @@
                                                 </label>
                                             </div>
 
-                                            <div>
+                                            <div  class="ssp-question">
                                                 <label>
                                                     <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourCountry"></span><span data-bind="visible: requiredCountry"> (*)</span>:</span>
                                                     <span>
@@ -75,7 +75,7 @@
                                                 </label>
                                             </div>
 
-                                            <div>
+                                            <div  class="ssp-question">
                                                 <label>
                                                     <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourFirstLang"></span><span data-bind="visible: requiredLanguage"> (*)</span>:</span>
                                                     <select data-bind="
@@ -86,7 +86,7 @@
                                                 </label>
                                             </div>
 
-                                            <div>
+                                            <div  class="ssp-question">
                                                 <label>
                                                     <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourEmail"></span><span data-bind="visible: requiredEmail"> (*)</span>:</span>
                                                     <input type="email" data-bind="value: selectedEmail">
@@ -97,7 +97,10 @@
                                                 <span data-bind="text: errorString"></span>
                                             </div>
 
-                                            <button class="btn-regular btn-green mg-20" data-bind="click: checkSurveyData, text: player.staticStrings().submit"></button>
+                                            <div class="text-center mg-20 mg-t-50">
+                                                <button class="btn-regular btn-lab-green  " data-bind="click: checkSurveyData, text: player.staticStrings().submit"></button>
+                                            </div>
+
                                         </form>
 
                                     </div>
@@ -123,7 +126,7 @@
                                 </div>
 
                                 <!-- 5. Loading -->
-                                <div class="row" data-bind="visible: wizardStep()=='loading'">
+                                <div class="row text-center" data-bind="visible: wizardStep()=='loading'">
                                     <div class="study-loader"></div>
                                     <p class="text-bold lightblue">85%</p>
                                     <div id="progressState"  style="position: absolute; top: 0; left: 0px; width:950px"><span data-bind="text: player.staticStrings().loading1"></span><span id="progress"></span></div>
@@ -135,11 +138,12 @@
                                 </div>
 
                                 <!-- 6 Ready to start -->
-                                <div class="row" data-bind="visible: wizardStep()=='readyToStart'">
+                                <div class="row text-center" data-bind="visible: wizardStep()=='readyToStart'">
                                     <p class="text-medium" data-bind="text: player.staticStrings().loadingComplete"></p>
+                                    <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: player.staticStrings().start"></button>
                                     <p class="text-medium" data-bind="text: player.staticStrings().canStart"></p>
                                     <p class="text-regular" data-bind="text: player.staticStrings().keepFullscreen"></p>
-                                    <button class="btn-regular btn-lightblue mg-20" data-bind="click: startExp, text: player.staticStrings().start"></button>
+
                                 </div>
 
                             </div>
