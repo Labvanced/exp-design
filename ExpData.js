@@ -157,7 +157,7 @@ ExpData.prototype.createVars = function() {
         this.varTrialNr((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'ordinal', 'Trial_Nr'));
     }
     if (!this.varConditionId()) {
-        this.varConditionId((new GlobalVar(this.expData)).initProperties('string', 'trial', 'nominal', 'Condition_Id'));
+        this.varConditionId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Condition_Id'));
     }
 };
 

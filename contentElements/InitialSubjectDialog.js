@@ -15,9 +15,14 @@ var InitialSubjectDialog = function(expData) {
     this.selectedSubjectGroup = ko.observable(null);
     this.selectedGroupNr = ko.pureComputed({
         read: function () {
-            // using 1-based indexing:
-            var groupNr = self.expData().availableGroups().indexOf(self.selectedSubjectGroup()) + 1;
-            return groupNr;
+            if (self.selectedSubjectGroup() !== undefined) {
+                // using 1-based indexing:
+                var groupNr = self.expData().availableGroups().indexOf(self.selectedSubjectGroup()) + 1;
+                return groupNr;
+            }
+            else {
+                return undefined;
+            }
         },
         write: function (value) {
             var group = self.expData().availableGroups()[value - 1];
@@ -27,7 +32,6 @@ var InitialSubjectDialog = function(expData) {
     });
     this.selectedSessionNr = ko.observable(1);
     this.subjectCode = ko.observable("");
-    this.includeInitialSurvey = ko.observable(true);
 
     this.sessionsInGroup = ko.computed(function() {
         var arr = [];
@@ -75,9 +79,7 @@ InitialSubjectDialog.prototype.start = function (cb) {
             modal: true,
             width: 500,
             title: "Experiment Session",
-            closeOnEscape: false,
             open: function(event, ui) {
-                $(".ui-dialog-titlebar-close").hide();
             },
             close: function () {
                 self.closeDialog();
