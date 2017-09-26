@@ -123,11 +123,11 @@ MultiLineInputElement.prototype.toJS = function() {
 MultiLineInputElement.prototype.fromJS = function(data) {
     this.type=data.type;
     if(data.questionText.hasOwnProperty('rawText')) {
-        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);
     }
     else{
-        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
+        this.questionText(new EditableTextElement(this.expData, this, data.questionText));
     }
     this.variable(data.variable);
     if(data.hasOwnProperty('isRequired')) {

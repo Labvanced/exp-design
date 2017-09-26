@@ -66,11 +66,11 @@ DisplayTextElement.prototype.toJS = function() {
 DisplayTextElement.prototype.fromJS = function(data) {
     this.type=data.type;
     if(data.text.hasOwnProperty('rawText')) {
-        this.text = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.text(new EditableTextElement(this.expData, this, ''));
         this.text().fromJS(data.text);
     }
     else{
-        this.text = ko.observable(new EditableTextElement(this.expData, this, data.text));
+        this.text(new EditableTextElement(this.expData, this, data.text));
     }
 };
 

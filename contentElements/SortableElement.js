@@ -129,11 +129,11 @@ SortableElement.prototype.fromJS = function(data) {
     var self = this;
     this.type = data.type;
     if(data.questionText.hasOwnProperty('rawText')) {
-        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);
     }
     else {
-        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
+        this.questionText(new EditableTextElement(this.expData, this, data.questionText));
     }
     this.elements(jQuery.map(data.elements, function (elemData) {
         return (new SortableEntry(self)).fromJS(elemData);
@@ -222,8 +222,14 @@ SortableEntry.prototype.selectTrialType = function(selectionSpec) {
 };
 
 SortableEntry.prototype.setPointers = function(entitiesArr) {
-    this.variable(entitiesArr.byId[this.variable()]);
-    this.setVariableBackRef();
+    var variable = entitiesArr.byId[this.variable()];
+    if (variable) {
+        this.variable(variable);
+        this.setVariableBackRef();
+    }
+    else {
+        this.init();
+    }
     this.sortableText().setPointers(entitiesArr);
 };
 
@@ -236,14 +242,19 @@ SortableEntry.prototype.getTextRefs = function(textArr, label){
 };
 
 SortableEntry.prototype.fromJS = function(data) {
-    if(data.sortableText.hasOwnProperty('rawText')) {
-        this.sortableText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
-        this.sortableText().fromJS(data.sortableText);
+    if (typeof data == "string") {
+        this.sortableText(new EditableTextElement(this.parent.expData, this.parent, data));
     }
-    else{
-        this.sortableText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, data.sortableText));
+    else {
+        if (data.sortableText.hasOwnProperty('rawText')) {
+            this.sortableText(new EditableTextElement(this.parent.expData, this.parent, ''));
+            this.sortableText().fromJS(data.sortableText);
+        }
+        else {
+            this.sortableText(new EditableTextElement(this.parent.expData, this.parent, data.sortableText));
+        }
+        this.variable(data.variable);
     }
-    this.variable(data.variable);
     return this;
 };
 
