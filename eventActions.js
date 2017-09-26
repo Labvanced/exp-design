@@ -357,7 +357,15 @@ ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionSetElementProp.prototype.reAddEntities = function(entitiesArr) {
-
+    var changes = this.changes();
+    for (var i = 0; i <changes.length; i++) {
+        var variable = changes[i].variable();
+        if (variable) {
+            if (!entitiesArr.byId.hasOwnProperty(variable.id())) {
+                entitiesArr.push(variable);
+            }
+        }
+    }
 };
 
 /**
@@ -436,8 +444,13 @@ ActionSetElementPropChange.prototype.setPointers = function(entitiesArr) {
     if (this.changeType() == "variable") {
         var varId = this.variable();
         var globVar = entitiesArr.byId[varId];
-        this.variable(globVar);
-        this.parentAction.setVariableBackRef(globVar);
+        if (globVar) {
+            this.variable(globVar);
+            this.parentAction.setVariableBackRef(globVar);
+        }
+        else {
+            this.variable(null);
+        }
     }
     else {
         this.variable(null);
