@@ -17,12 +17,7 @@ var ExperimentStartupScreen = function(experiment) {
     this.selectedStudyLanguage.subscribe(function(newLang) {
         var langIdx = self.expData.translatedLanguages().indexOf(newLang);
         self.expData.currentLanguage(langIdx);
-        if (Player.prototype.staticTranslations.hasOwnProperty(newLang)) {
-            player.staticStrings(Player.prototype.staticTranslations[newLang]);
-        }
-        else {
-            player.staticStrings(Player.prototype.staticTranslations["English"]);
-        }
+        player.updateLanguage();
     });
     var numLang = this.expData.translatedLanguages().length;
     if (numLang < 2) {
