@@ -7,7 +7,7 @@
                 <div class="col-md-12 text-center">
                     <div class="row ">
                         <div class="col-md-2 ssp-link mg-t-50">
-                            <a href="/expLibrary.html" class="ssp-link-back"><img width="24px" src="/resources/shapes/dark/left-arrow-1.svg"><span>Library</span></a>
+                            <a href="/expLibrary.html" class="ssp-link-back"><img width="24px" src="/resources/shapes/dark/left-arrow-1.svg"><span data-bind="text: player.staticStrings().library"></span></a>
                         </div>
                         <div class="col-md-8 ssp-img">
                             <!-- ko if: (imageType() == 'imgfile') -->
@@ -25,44 +25,45 @@
                         <!--Study Description-->
                         <div class="col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4  ">
                             <div class="ssp-description">
-                                <h5 class="pt-studyname pointer"><span data-bind="text: exp_name()">Study Name</span></h5>
+                                <h5 class="pt-studyname pointer"><span data-bind="text: exp_name()"></span></h5>
 
                                 <!-- 1. Select study langauge-->
                                 <div class="row ssp-questionaire" data-bind="visible: wizardStep()=='selectStudyLanguage'">
-                                    <p class="text-medium">This study is available in multiple languages.</p>
+                                    <p class="text-medium" data-bind="text: player.staticStrings().langSelect"></p>
                                     <form data-bind="submit: languageSelected">
                                         <label>
-                                            <span class="survey-left-label">Study Language:</span>
+                                            <span class="survey-left-label" data-bind="text: player.staticStrings().studyLanguage"></span>
                                             <select data-bind="
                                                 options: expData.translatedLanguages(),
                                                 value: selectedStudyLanguage"></select>
                                         </label>
-                                        <button class="btn-regular btn-green mg-20" data-bind="click: languageSelected"> Submit </button>
+                                        <br>
+                                        <button class="btn-regular btn-green mg-20" data-bind="click: languageSelected, text: player.staticStrings().continue"></button>
                                     </form>
                                 </div>
 
                                 <!-- 2. Subject Survey-->
                                 <div class="row ssp-questionaire" data-bind="visible: wizardStep()=='initialSurvey'">
-                                    <p class="text-medium">Please fill out the fields below (required fields are marked with *).</p>
+                                    <p class="text-medium" data-bind="text: player.staticStrings().initialSurvey"></p>
                                     <div class="">
                                         <form data-bind="submit: checkSurveyData">
                                             <div>
-                                                <span class="survey-left-label">Gender<span data-bind="visible: requiredGender"> (*)</span>:</span>
-                                                <label><input type="radio" name="genderReq" value="male" data-bind="checked: selectedGender">Male</label>
-                                                <label><input type="radio" name="genderReq" value="female" data-bind="checked: selectedGender">Female</label>
+                                                <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourGender"></span><span data-bind="visible: requiredGender"> (*)</span>:</span>
+                                                <label><input type="radio" name="genderReq" value="male" data-bind="checked: selectedGender"><span data-bind="text: player.staticStrings().yourGenderMale"></span></label>
+                                                <label><input type="radio" name="genderReq" value="female" data-bind="checked: selectedGender"><span data-bind="text: player.staticStrings().yourGenderFemale"></span></label>
                                             </div>
 
                                             <div>
                                                 <label>
-                                                    <span class="survey-left-label">Your Age<span data-bind="visible: requiredAge"> (*)</span>:</span>
+                                                    <span class="survey-left-label" data-bind="text: player.staticStrings().yourAge"><span data-bind="visible: requiredAge"> (*)</span>:</span>
                                                     <input type="number" data-bind="value: selectedAge">
-                                                    years
+                                                    <span data-bind="text: player.staticStrings().years"></span>
                                                 </label>
                                             </div>
 
                                             <div>
                                                 <label>
-                                                    <span class="survey-left-label">Country of Origin<span data-bind="visible: requiredCountry"> (*)</span>:</span>
+                                                    <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourCountry"></span><span data-bind="visible: requiredCountry"> (*)</span>:</span>
                                                     <span>
                                                         <select data-bind="
                                                             options: country_codes,
@@ -76,7 +77,7 @@
 
                                             <div>
                                                 <label>
-                                                    <span class="survey-left-label">First Language<span data-bind="visible: requiredLanguage"> (*)</span>:</span>
+                                                    <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourFirstLang"></span><span data-bind="visible: requiredLanguage"> (*)</span>:</span>
                                                     <select data-bind="
                                                         options: language_codes,
                                                         optionsText: 'name',
@@ -87,7 +88,7 @@
 
                                             <div>
                                                 <label>
-                                                    <span class="survey-left-label">Email<span data-bind="visible: requiredEmail"> (*)</span>:</span>
+                                                    <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourEmail"></span><span data-bind="visible: requiredEmail"> (*)</span>:</span>
                                                     <input type="email" data-bind="value: selectedEmail">
                                                 </label>
                                             </div>
@@ -96,7 +97,7 @@
                                                 <span data-bind="text: errorString"></span>
                                             </div>
 
-                                            <button class="btn-regular btn-green mg-20" data-bind="click: checkSurveyData"> Submit </button>
+                                            <button class="btn-regular btn-green mg-20" data-bind="click: checkSurveyData, text: player.staticStrings().submit"></button>
                                         </form>
 
                                     </div>
@@ -105,10 +106,10 @@
                                 <!-- 3. error shown if sessionNotReady -->
                                 <div id="sessionNotReady" data-bind="visible: wizardStep()=='sessionNotReady'">
                                     <div>
-                                        You can currently not take part in this experiment because this study can only be started at certain times.
+                                        <span data-bind="text: player.staticStrings().errorSessionNotReady"></span>
                                         <br>
-                                        You can start this session in: <span id="timeToNextSession"> </span>
-                                        <button type="button" class="pointer btn btn-default" id="calcStartingTime">Refresh</button>
+                                        <span data-bind="text: player.staticStrings().errorSessionStartIn"></span>: <span id="timeToNextSession"> </span>
+                                        <button type="button" class="pointer btn btn-default" id="calcStartingTime" data-bind="text: player.staticStrings().refresh"></button>
                                     </div>
                                     <br>
                                 </div>
@@ -116,8 +117,7 @@
                                 <!-- 4. error shown if sessionOver -->
                                 <div id="sessionOver" data-bind="visible: wizardStep()=='sessionOver'">
                                     <div>
-                                        You can currently not take part in this experiment because there is no starting time window defined for this study.
-                                        <br>
+                                        <span data-bind="text: player.staticStrings().errorSessionOver"></span>
                                     </div>
                                     <br>
                                 </div>
@@ -126,23 +126,20 @@
                                 <div class="row" data-bind="visible: wizardStep()=='loading'">
                                     <div class="study-loader"></div>
                                     <p class="text-bold lightblue">85%</p>
-                                    <div id="progressState"  style="position: absolute; top: 0; left: 0px; width:950px">Loading experiment...<span id="progress"></span></div>
+                                    <div id="progressState"  style="position: absolute; top: 0; left: 0px; width:950px"><span data-bind="text: player.staticStrings().loading1"></span><span id="progress"></span></div>
                                     <div id="progressbar"  style="position: absolute; top:40px; left:0px; width:950px">
                                         <div class="bar"></div>
                                     </div>
-                                    <p class="text-medium">Loading, please wait.</p>
-                                    <p class="text-regular">This might take a while.</p>
+                                    <p class="text-medium" data-bind="text: player.staticStrings().loading2"></p>
+                                    <p class="text-regular" data-bind="text: player.staticStrings().loading3"></p>
                                 </div>
 
                                 <!-- 6 Ready to start -->
                                 <div class="row" data-bind="visible: wizardStep()=='readyToStart'">
-                                    <p class="text-medium">Loading Complete!</p>
-                                    <p class="text-medium">You can now start the experiment. This will switch your browser into fullscreen mode.</p>
-                                    <p class="text-regular">
-                                        Please note that during the experiment you should never
-                                        press escape or use the "backward button" in your browser.
-                                    </p>
-                                    <button class="btn-regular btn-lightblue mg-20" data-bind="click: startExp">Start</button>
+                                    <p class="text-medium" data-bind="text: player.staticStrings().loadingComplete"></p>
+                                    <p class="text-medium" data-bind="text: player.staticStrings().canStart"></p>
+                                    <p class="text-regular" data-bind="text: player.staticStrings().keepFullscreen"></p>
+                                    <button class="btn-regular btn-lightblue mg-20" data-bind="click: startExp, text: player.staticStrings().start"></button>
                                 </div>
 
                             </div>

@@ -13,6 +13,17 @@ var ExperimentStartupScreen = function(experiment) {
 
     this.wizardStep = ko.observable("selectStudyLanguage");
     this.selectedStudyLanguage = ko.observable(this.expData.translatedLanguages()[0]);
+
+    this.selectedStudyLanguage.subscribe(function(newLang) {
+        var langIdx = self.expData.translatedLanguages().indexOf(newLang);
+        self.expData.currentLanguage(langIdx);
+        if (Player.prototype.staticTranslations.hasOwnProperty(newLang)) {
+            player.staticStrings(Player.prototype.staticTranslations[newLang]);
+        }
+        else {
+            player.staticStrings(Player.prototype.staticTranslations["English"]);
+        }
+    });
     var numLang = this.expData.translatedLanguages().length;
     if (numLang < 2) {
         // directly skip to survey if only one language is defined:
@@ -62,27 +73,27 @@ var ExperimentStartupScreen = function(experiment) {
         // validate if all required fields are filled:
         if (this.requiredGender()) {
             if (this.selectedGender() != "male" && this.selectedGender() != "female") {
-                errorString += "Gender missing, ";
+                errorString += player.staticStrings.errorGender + ", ";
             }
         }
         if (this.requiredAge()) {
             if (!(this.selectedAge() > 0)) {
-                errorString += "Age missing, ";
+                errorString += player.staticStrings.errorAge + ", ";
             }
         }
         if (this.requiredCountry()) {
             if (this.selectedCountry() == null) {
-                errorString += "Country missing, ";
+                errorString += player.staticStrings.errorCountry + ", ";
             }
         }
         if (this.requiredLanguage()) {
             if (this.selectedLanguage() == null) {
-                errorString += "Language missing, ";
+                errorString += player.staticStrings.errorLanguage + ", ";
             }
         }
         if (this.requiredEmail()) {
             if (this.requiredEmail() == null) {
-                errorString += "Email missing, ";
+                errorString += player.staticStrings.errorEmail + ", ";
             }
         }
 
@@ -98,8 +109,6 @@ var ExperimentStartupScreen = function(experiment) {
 
 
 ExperimentStartupScreen.prototype.languageSelected = function () {
-    var langIdx = this.expData.translatedLanguages().indexOf(this.selectedStudyLanguage());
-    this.expData.currentLanguage(langIdx);
     this.jumpToSurvey();
 };
 
