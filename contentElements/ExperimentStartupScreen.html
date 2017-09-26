@@ -29,16 +29,19 @@
 
                                 <!-- 1. Select study langauge-->
                                 <div class="row ssp-questionaire" data-bind="visible: wizardStep()=='selectStudyLanguage'">
-                                    <p class="text-medium" data-bind="text: player.staticStrings().langSelect"></p>
+                                    <p class="pt-studydescription text-center" data-bind="text: player.staticStrings().langSelect"></p>
                                     <form data-bind="submit: languageSelected">
-                                        <label>
-                                            <span class="survey-left-label" data-bind="text: player.staticStrings().studyLanguage"></span>
-                                            <select data-bind="
-                                                options: expData.translatedLanguages(),
-                                                value: selectedStudyLanguage"></select>
-                                        </label>
-                                        <br>
-                                        <button class="btn-regular btn-green mg-20" data-bind="click: languageSelected, text: player.staticStrings().continue"></button>
+                                        <div class="text-center">
+                                            <label class="center">
+                                                <span class="survey-left-label" data-bind="text: player.staticStrings().studyLanguage"></span>
+                                                <select data-bind="
+                                                    options: expData.translatedLanguages(),
+                                                    value: selectedStudyLanguage"></select>
+                                            </label>
+                                        </div>
+                                        <div class="text-center mg-10">
+                                            <button class="btn-regular btn-green mg-20" data-bind="click: languageSelected, text: player.staticStrings().continue"></button>
+                                        </div>
                                     </form>
                                 </div>
 
@@ -139,10 +142,9 @@
                                 <!-- 6 Ready to start -->
                                 <div class="row text-center" data-bind="visible: wizardStep()=='readyToStart'">
                                     <p class="text-medium" data-bind="text: player.staticStrings().loadingComplete"></p>
-                                    <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: player.staticStrings().start"></button>
                                     <p class="text-medium" data-bind="text: player.staticStrings().canStart"></p>
                                     <p class="text-regular" data-bind="text: player.staticStrings().keepFullscreen"></p>
-
+                                    <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: player.staticStrings().start"></button>
                                 </div>
 
                             </div>
