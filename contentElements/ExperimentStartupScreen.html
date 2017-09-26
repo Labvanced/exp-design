@@ -125,9 +125,8 @@
                                 <!-- 5. Loading -->
                                 <div class="row" data-bind="visible: wizardStep()=='loading'">
                                     <div class="study-loader"></div>
-                                    <p class="text-bold lightblue">85%</p>
-                                    <div id="progressState"  style="position: absolute; top: 0; left: 0px; width:950px"><span data-bind="text: player.staticStrings().loading1"></span><span id="progress"></span></div>
-                                    <div id="progressbar"  style="position: absolute; top:40px; left:0px; width:950px">
+                                    <p class="text-bold lightblue"><span data-bind="text: preloadingProgressRounded"></span>%</p>
+                                    <div id="progressbar" style="width: 100%">
                                         <div class="bar"></div>
                                     </div>
                                     <p class="text-medium" data-bind="text: player.staticStrings().loading2"></p>

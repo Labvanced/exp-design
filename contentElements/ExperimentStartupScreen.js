@@ -99,6 +99,13 @@ var ExperimentStartupScreen = function(experiment) {
         return errorString;
     }, this);
 
+    this.preloadingProgressRounded = ko.computed(function() {
+        var progressRounded = Math.round(player.playerPreloader.progress() * 100);
+        $("#progressbar .bar").css({
+            'width': progressRounded + "%"
+        });
+        return progressRounded;
+    });
 
 };
 
@@ -174,6 +181,7 @@ ExperimentStartupScreen.prototype.checkSurveyData = function () {
 
 ExperimentStartupScreen.prototype.jumpToLoadingScreen = function() {
     var self = this;
+    this.wizardStep("loading");
 
     // check session start time:
     var nextStartWindow = player.nextStartWindow;
@@ -203,8 +211,6 @@ ExperimentStartupScreen.prototype.jumpToLoadingScreen = function() {
 
 ExperimentStartupScreen.prototype.checkPreloadingState = function() {
     var self = this;
-    $progressbar.addClass("complete");
-    $('#stillLoading').hide();
     if ( player.preloaderCompleted()) {
         this.wizardStep("readyToStart");
     }

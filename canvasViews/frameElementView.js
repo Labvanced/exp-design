@@ -333,7 +333,7 @@ FrameElementView.prototype.renderContent = function(data) {
             var htmlObjectUrl;
             if (typeof queue !== 'undefined') {
                 var file_id = data.modifier().selectedTrialView.file_id();
-                htmlObjectUrl = preloadedObjectUrlsById[file_id];
+                htmlObjectUrl = player.playerPreloader.preloadedObjectUrlsById[file_id];
                 imgElem = queue.getResult(file_id);
             }
 

@@ -159,7 +159,7 @@ function createAudioComponents() {
                 var htmlObjectUrl;
                 if (typeof queue !== 'undefined') {
                     var file_id = self.dataModel.modifier().selectedTrialView.file_id();
-                    htmlObjectUrl = preloadedObjectUrlsById[file_id];
+                    htmlObjectUrl = player.playerPreloader.preloadedObjectUrlsById[file_id];
                     audioElem = queue.getResult(file_id);
                 }
 
