@@ -236,7 +236,7 @@ ExperimentStartupScreen.prototype.startExp = function() {
         top:"50%"
     });
 
-    $('#sectionPreload').html("<div style='font-size: xx-large;'>Starting Experiment...</div>");
+    $('#sectionPreload').html("<div style='font-size: xx-large;'>"+player.staticStrings().startingExp+"</div>");
     $("#startExpSection").hide();
 
     // wait for five seconds:

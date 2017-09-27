@@ -369,12 +369,17 @@ ScaleLabel.prototype.getTextRefs = function(textArr, label){
 };
 
 ScaleLabel.prototype.fromJS = function(data) {
-    if(data.labelText.hasOwnProperty('rawText')){
-        this.labelText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
-        this.labelText().fromJS(data.labelText);
+    if (typeof data == "string") {
+        this.labelText(new EditableTextElement(this.parent.expData, this.parent, data));
     }
-    else{
-        this.labelText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, data.labelText));
+    else {
+        if (data.labelText.hasOwnProperty('rawText')) {
+            this.labelText(new EditableTextElement(this.parent.expData, this.parent, ''));
+            this.labelText().fromJS(data.labelText);
+        }
+        else {
+            this.labelText(new EditableTextElement(this.parent.expData, this.parent, data.labelText));
+        }
     }
     return this;
 };

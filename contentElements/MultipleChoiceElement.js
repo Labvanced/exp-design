@@ -239,11 +239,11 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
     var self = this;
     this.type=data.type;
     if(data.questionText.hasOwnProperty('rawText')){
-        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);
     }
     else{
-        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
+        this.questionText(new EditableTextElement(this.expData, this, data.questionText));
     }
     this.variable(data.variable);
 
@@ -343,11 +343,11 @@ MultipleChoiceEntry.prototype.getTextRefs = function(textArr, label){
 
 MultipleChoiceEntry.prototype.fromJS = function(data) {
     if(data.multChoiceText.hasOwnProperty('rawText')) {
-        this.multChoiceText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+        this.multChoiceText(new EditableTextElement(this.parent.expData, this.parent, ''));
         this.multChoiceText().fromJS(data.multChoiceText);
     }
     else{
-        this.multChoiceText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, data.multChoiceText));
+        this.multChoiceText(new EditableTextElement(this.parent.expData, this.parent, data.multChoiceText));
     }
     if (data.hasOwnProperty('multChoiceValue')) {
         this.multChoiceValue(data.multChoiceValue);

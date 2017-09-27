@@ -123,17 +123,17 @@ RangeElement.prototype.toJS = function() {
 RangeElement.prototype.fromJS = function(data) {
     this.type=data.type;
     if(data.questionText.hasOwnProperty('rawText')) {
-        this.questionText = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);
-        this.startLabel = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.startLabel(new EditableTextElement(this.expData, this, ''));
         this.startLabel().fromJS(data.startLabel);
-        this.endLabel = ko.observable(new EditableTextElement(this.expData, this, ''));
+        this.endLabel(new EditableTextElement(this.expData, this, ''));
         this.endLabel().fromJS(data.endLabel);
     }
     else{
-        this.questionText = ko.observable(new EditableTextElement(this.expData, this, data.questionText));
-        this.startLabel = ko.observable(new EditableTextElement(this.expData, this, data.startLabel));
-        this.endLabel = ko.observable(new EditableTextElement(this.expData, this, data.endLabel));
+        this.questionText(new EditableTextElement(this.expData, this, data.questionText));
+        this.startLabel(new EditableTextElement(this.expData, this, data.startLabel));
+        this.endLabel(new EditableTextElement(this.expData, this, data.endLabel));
     }
     this.minChoice(data.minChoice);
     this.maxChoice(data.maxChoice);
