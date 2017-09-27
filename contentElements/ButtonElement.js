@@ -38,6 +38,12 @@ ButtonElement.prototype.addButton = function() {
     this.buttonEntries.push(button);
 };
 
+
+NaviElement.prototype.deleteButton = function() {
+    var self = this;
+    this.buttonEntries.splice(0,1);
+};
+
 /**
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
@@ -218,7 +224,9 @@ function createButtonElementComponents() {
                 viewModel.prototype.addButton = function() {
                     this.dataModel.addButton();
                 };
-
+                viewModel.prototype.deleteButton = function() {
+                    this.dataModel.deleteButton();
+                };
 
 
                 return new viewModel(dataModel);

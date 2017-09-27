@@ -598,36 +598,44 @@ ActionJumpTo.prototype.isValid = function(){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionJumpTo.prototype.run = function(triggerParams) {
-    var isValid = true;
 
-    var elements = player.currentFrame.frameData.elements();
-    elements.forEach(function(element) {
-       if (element.content() instanceof MultipleChoiceElement || element.content() instanceof LikertElement || element.content() instanceof SelectionElement || element.content() instanceof InputElement || element.content() instanceof MultiLineInputElement){
-           var isValid1 = element.content().isInputValid();
-           if (isValid1 == false){
-               isValid = false;
-           }
-       }
-       else if(element.content() instanceof CheckBoxElement || element.content() instanceof ScaleElement){
-           var elem = element.content();
-           elem.elements().forEach(function(subElem) {
-               var isValid2 = subElem.isInputValid();
-               if (isValid2 == false){
-                   isValid = false;
-               }
-           });
-       }
-    });
+    // check validity only if the jump is to next frame
+    if (this.jumpType() == "nextFrame"){
+        var isValid = true;
 
-    // now display error message at navigation element
-    var elements = player.currentFrame.frameData.elements();
-    elements.forEach(function(element) {
-        if(element.content() instanceof NaviElement){
-            element.content().showSubmitError(!isValid);
+        var elements = player.currentFrame.frameData.elements();
+        elements.forEach(function(element) {
+            if (element.content() instanceof MultipleChoiceElement || element.content() instanceof LikertElement || element.content() instanceof SelectionElement || element.content() instanceof InputElement || element.content() instanceof MultiLineInputElement){
+                var isValid1 = element.content().isInputValid();
+                if (isValid1 == false){
+                    isValid = false;
+                }
+            }
+            else if(element.content() instanceof CheckBoxElement || element.content() instanceof ScaleElement){
+                var elem = element.content();
+                elem.elements().forEach(function(subElem) {
+                    var isValid2 = subElem.isInputValid();
+                    if (isValid2 == false){
+                        isValid = false;
+                    }
+                });
+            }
+        });
+
+        // now display error message at navigation element
+        var elements = player.currentFrame.frameData.elements();
+        elements.forEach(function(element) {
+            if(element.content() instanceof NaviElement){
+                element.content().showSubmitError(!isValid);
+            }
+        });
+
+        if (isValid){
+            player.currentFrame.endFrame();
         }
-    });
+    }
 
-    if (isValid){
+    else {
         if (this.jumpType() == "previousFrame"){
             player.currentFrame.endFrameAndGoBack();
         }
