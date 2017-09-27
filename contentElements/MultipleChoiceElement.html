@@ -95,5 +95,10 @@
             </label>
         </div>
     </div>
+    <!-- ko if: (multipleChoiceElement.altAnswerActive())  -->
+    <span style="display:inline-block;">
+        <div data-bind='component: {name : "input-playerview", params: multipleChoiceElement.subInputElement()}'></div>
+    </span>
+    <!-- /ko -->
     <br>
 </template>

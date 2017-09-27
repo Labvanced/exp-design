@@ -39,7 +39,7 @@ ButtonElement.prototype.addButton = function() {
 };
 
 
-NaviElement.prototype.deleteButton = function() {
+ButtonElement.prototype.deleteButton = function() {
     var self = this;
     this.buttonEntries.splice(0,1);
 };
