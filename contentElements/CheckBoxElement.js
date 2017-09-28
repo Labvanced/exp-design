@@ -10,12 +10,16 @@ var CheckBoxElement= function(expData) {
     // content
     this.elements = ko.observableArray([]);
     this.enableTitle= ko.observable(true);
+    this.isRequired=ko.observable(false);
+
 
     // style
     this.margin = ko.observable('5pt');
 
     ///// not serialized
     this.selected = ko.observable(false);
+    this.triedToSubmit = ko.observable(false);
+    this.dataIsValid = ko.observable(false);
     /////
 };
 
@@ -42,6 +46,29 @@ CheckBoxElement.prototype.removeEntry = function() {
     // delete associated global vars
     this.parent.parent.localWorkspaceVars.remove(entry.variable());
     this.elements.splice(idx,1);
+};
+
+
+CheckBoxElement.prototype.isInputValid = function() {
+    this.triedToSubmit(true);
+    if (this.isRequired()==false){
+        this.dataIsValid(true);
+        return true
+    }
+    else{
+        var elems = this.elements();
+        var valid = false;
+        elems.forEach(function(subElem) {
+            var isValid2 = subElem.variable().value().value() != subElem.variable().startValue().value();
+            if (isValid2 == true){
+                valid = true;
+            }
+        });
+        if (!valid){
+            this.dataIsValid(false);
+        }
+        return valid
+    }
 };
 
 /**
@@ -104,7 +131,8 @@ CheckBoxElement.prototype.toJS = function() {
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
         }),
-        enableTitle:this.enableTitle()
+        enableTitle:this.enableTitle(),
+        isRequired:this.isRequired()
     };
 };
 
@@ -126,6 +154,10 @@ CheckBoxElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('enableTitle')){
         this.enableTitle(data.enableTitle);
     }
+    if(data.hasOwnProperty('isRequired')){
+        this.isRequired(data.isRequired);
+    }
+
 };
 
 

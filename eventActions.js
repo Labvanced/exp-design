@@ -605,7 +605,7 @@ ActionJumpTo.prototype.run = function(triggerParams) {
 
         var elements = player.currentFrame.frameData.elements();
         elements.forEach(function(element) {
-            if (element.content() instanceof MultipleChoiceElement || element.content() instanceof LikertElement || element.content() instanceof SelectionElement || element.content() instanceof InputElement || element.content() instanceof MultiLineInputElement){
+            if (element.content() instanceof MultipleChoiceElement || element.content() instanceof LikertElement || element.content() instanceof SelectionElement || element.content() instanceof InputElement || element.content() instanceof MultiLineInputElement  || element.content() instanceof CheckBoxElement){
                 var isValid1 = element.content().isInputValid();
                 if (isValid1 == false){
                     isValid = false;
