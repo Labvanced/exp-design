@@ -16,6 +16,24 @@
             <span>Show Question Header:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
         </div>
+
+        <!-- ko if: (dataModel.inputType()=='number')  -->
+
+        <div>
+            <span style="display:inline-block">Min-Value:</span><input style="display:inline-block; width: 80px; margin-left: 10px" type="number" class="form-control" data-bind="value: dataModel.minValue">
+        </div>
+
+        <div>
+            <span  style="display:inline-block">Max-Value:</span><input style="display:inline-block; width: 80px; margin-left: 10px" type="number" class="form-control" data-bind="value: dataModel.maxValue">
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: (dataModel.inputType()=='text')  -->
+        <div>
+            <span  style="display:inline-block">Max-Nr-Chars:</span><input style="display:inline-block; width: 80px; margin-left: 10px" type="number" class="form-control" data-bind="value: dataModel.maxNrChars">
+        </div>
+        <!-- /ko -->
+
     </div>
 </template>
 
@@ -25,10 +43,10 @@
     <!-- /ko -->
     <div>
         <!-- ko if: (dataModel.inputType()=='number')  -->
-        <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="number" class="form-control" data-bind="value: value"></div>
+        <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="number" class="form-control" data-bind="value: value, attr:{min: dataModel.minValue, max:dataModel.maxValue}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='text')  -->
-        <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="text" class="form-control" data-bind="text: value"></div>
+        <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="text" class="form-control" data-bind="text: value,attr:{maxlength: dataModel.maxNrChars}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='date')  -->
         <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="date" class="form-control" data-bind="value: value" ></div>
@@ -55,10 +73,10 @@
     <!-- /ko -->
     <div>
         <!-- ko if: (dataModel.inputType()=='number')  -->
-        <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="number" class="form-control" data-bind="value: value"></div>
+        <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="number" class="form-control" data-bind="value: value, attr:{min: dataModel.minValue, max:dataModel.maxValue}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='text')  -->
-        <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="text" class="form-control" data-bind="value: value"></div>
+        <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="text" class="form-control" data-bind="value: value,attr:{maxlength: dataModel.maxNrChars}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='date')  -->
         <div style="display:inline-block;  width: 85%"><input style="position:relative;left: 0%;" type="date" class="form-control" data-bind="value: value"></div>

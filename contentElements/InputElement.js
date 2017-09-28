@@ -12,6 +12,11 @@ var InputElement = function(expData) {
     this.isRequired = ko.observable(false);
     this.enableTitle= ko.observable(true);
 
+    this.minValue = ko.observable(null);
+    this.maxValue = ko.observable(null);
+
+    this.maxNrChars = ko.observable(null);
+
     ///// not serialized
     this.selected = ko.observable(false);
     this.triedToSubmit = ko.observable(false);
@@ -123,10 +128,14 @@ InputElement.prototype.toJS = function() {
         inputType: this.inputType(),
         variable: variableId,
         isRequired:this.isRequired(),
-        enableTitle:this.enableTitle()
+        enableTitle:this.enableTitle(),
+        minValue:this.minValue(),
+        maxValue:this.maxValue(),
+        maxNrChars:this.maxNrChars()
 
     };
 };
+
 
 InputElement.prototype.fromJS = function(data) {
     this.type=data.type;
@@ -146,6 +155,15 @@ InputElement.prototype.fromJS = function(data) {
     }
     if(data.hasOwnProperty('enableTitle')){
         this.enableTitle(data.enableTitle);
+    }
+    if(data.hasOwnProperty('minValue')){
+        this.minValue(data.minValue);
+    }
+    if(data.hasOwnProperty('maxValue')){
+        this.maxValue(data.maxValue);
+    }
+    if(data.hasOwnProperty('maxNrChars')){
+        this.maxNrChars(data.maxNrChars);
     }
 
 
@@ -225,7 +243,7 @@ function createInputComponents() {
                 return new viewModel(dataModel);
             }
         },
-        template: { element: 'input-preview-template' }
+        template: { element: 'input-preview-template'  }
     });
 
 

@@ -67,7 +67,8 @@ ScaleElement.prototype.addEntry = function() {
     this.elements.push(scaleEntry);
 };
 
-ScaleElement.prototype.removeEntry = function(idx) {
+ScaleElement.prototype.removeEntry = function() {
+    var idx = this.elements.length-1;
     this.elements.splice(idx,1);
 };
 

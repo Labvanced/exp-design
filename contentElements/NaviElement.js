@@ -68,6 +68,20 @@ NaviElement.prototype.addButton = function() {
 
 
 
+NaviElement.prototype.deleteButton = function() {
+    var self = this;
+    this.buttonEntries.splice(0,1);
+
+    if (this.buttonEntries().length = 1){
+        var events = this.parent.parent.events();
+        events.forEach(function(elem,index){
+            if (elem.name()=='Go Backward'){
+                self.parent.parent.deleteChildEntity(elem)
+            }
+        });
+    }
+};
+
 NaviElement.prototype.enableHighlight = function(elem) {
     var self= this;
     $(elem).css({
@@ -215,6 +229,9 @@ function createNaviElementComponents() {
 
                 viewModel.prototype.addButton = function() {
                     this.dataModel.addButton();
+                };
+                viewModel.prototype.deleteButton = function() {
+                    this.dataModel.deleteButton();
                 };
 
                 return new viewModel(dataModel);

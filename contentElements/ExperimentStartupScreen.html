@@ -52,14 +52,14 @@
                                         <form data-bind="submit: checkSurveyData">
                                             <div class="ssp-question">
                                                 <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourGender"></span><span data-bind="visible: requiredGender"> (*)</span>:</span>
-                                                <label><input type="radio" name="genderReq" value="male" data-bind="checked: selectedGender"><span data-bind="text: player.staticStrings().yourGenderMale"></span></label>
-                                                <label><input type="radio" name="genderReq" value="female" data-bind="checked: selectedGender"><span data-bind="text: player.staticStrings().yourGenderFemale"></span></label>
+                                                <label class="mg-r-10 ssp-radio"><input type="radio" name="genderReq" value="male" data-bind="checked: selectedGender"><span data-bind="text: player.staticStrings().yourGenderMale"></span></label>
+                                                <label class="ssp-radio"><input type="radio" name="genderReq" value="female" data-bind="checked: selectedGender"><span data-bind="text: player.staticStrings().yourGenderFemale"></span></label>
                                             </div>
 
                                             <div  class="ssp-question">
                                                 <label>
                                                     <span class="survey-left-label" data-bind="text: player.staticStrings().yourAge"><span data-bind="visible: requiredAge"> (*)</span>:</span>
-                                                    <input type="number" data-bind="value: selectedAge">
+                                                    <input style="min-width: 230px" type="number" data-bind="value: selectedAge">
                                                     <span data-bind="text: player.staticStrings().years"></span>
                                                 </label>
                                             </div>
@@ -68,7 +68,7 @@
                                                 <label>
                                                     <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourCountry"></span><span data-bind="visible: requiredCountry"> (*)</span>:</span>
                                                     <span>
-                                                        <select data-bind="
+                                                        <select class="ssp-input-long" data-bind="
                                                             options: country_codes,
                                                             optionsText: 'name',
                                                             value: selectedCountry,
@@ -81,7 +81,7 @@
                                             <div  class="ssp-question">
                                                 <label>
                                                     <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourFirstLang"></span><span data-bind="visible: requiredLanguage"> (*)</span>:</span>
-                                                    <select data-bind="
+                                                    <select class="ssp-input-long" data-bind="
                                                         options: language_codes,
                                                         optionsText: 'name',
                                                         value: selectedLanguage,
@@ -92,7 +92,7 @@
                                             <div  class="ssp-question">
                                                 <label>
                                                     <span class="survey-left-label"><span data-bind="text: player.staticStrings().yourEmail"></span><span data-bind="visible: requiredEmail"> (*)</span>:</span>
-                                                    <input type="email" data-bind="value: selectedEmail">
+                                                    <input class="ssp-input-long" type="email" data-bind="value: selectedEmail">
                                                 </label>
                                             </div>
 
