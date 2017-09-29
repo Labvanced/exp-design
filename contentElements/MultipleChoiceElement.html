@@ -50,7 +50,9 @@
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.altAnswerActive,click:function(){return true},clickBubble: false">
 
             <!-- ko if: (multipleChoiceElement.altAnswerActive())  -->
-            <span>Show only if last option is selected:</span>
+            <br>
+            <div class="taskeditor-header">Custom Answer</div>
+            <span>Show only if last option selected:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.altAnswerOnlyWhenLastSelected, click:function(){return true},clickBubble: false">
 
             <span>
