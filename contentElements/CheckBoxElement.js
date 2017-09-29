@@ -51,23 +51,20 @@ CheckBoxElement.prototype.removeEntry = function() {
 
 CheckBoxElement.prototype.isInputValid = function() {
     this.triedToSubmit(true);
-    if (this.isRequired()==false){
+    if (this.isRequired()===false){
         this.dataIsValid(true);
-        return true
+        return true;
     }
     else{
-        var elems = this.elements();
         var valid = false;
-        elems.forEach(function(subElem) {
-            var isValid2 = subElem.variable().value().value() != subElem.variable().startValue().value();
-            if (isValid2 == true){
+        // answer is counted as valid if at least one checkbox is marked:
+        this.elements().forEach(function(subElem) {
+            if (subElem.variable().value().value()){
                 valid = true;
             }
         });
-        if (!valid){
-            this.dataIsValid(false);
-        }
-        return valid
+        this.dataIsValid(valid);
+        return valid;
     }
 };
 
@@ -168,32 +165,7 @@ var CheckBoxEntry= function(checkBoxParent) {
     this.parent = checkBoxParent;
     this.checkBoxText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">check</span></span>'));
     this.variable=ko.observable(null);
-    this.isRequired=ko.observable(false);
-    // not serialized
-    this.triedToSubmit = ko.observable(false);
-    this.dataIsValid = ko.observable(false);
 };
-
-
-CheckBoxEntry.prototype.isInputValid = function() {
-    this.triedToSubmit(true);
-
-    if (this.isRequired()==false){
-        this.dataIsValid(true);
-        return true
-    }
-    else{
-        if (this.variable().value().value() == this.variable().startValue().value()){
-            this.dataIsValid(false);
-            return false;
-        }
-        else{
-            this.dataIsValid(true);
-            return true
-        }
-    }
-};
-
 
 
 CheckBoxEntry.prototype.selectTrialType = function(selectionSpec) {
@@ -256,9 +228,6 @@ CheckBoxEntry.prototype.fromJS = function(data) {
     else{
         this.checkBoxText(new EditableTextElement(this.parent.expData, this.parent, data.checkBoxText));
     }
-    if(data.hasOwnProperty('isRequired')){
-        this.isRequired(data.isRequired);
-    }
 
     this.variable(data.variable);
     return this;
@@ -267,8 +236,7 @@ CheckBoxEntry.prototype.fromJS = function(data) {
 CheckBoxEntry.prototype.toJS = function() {
     return {
         variable:  this.variable().id(),
-        checkBoxText:  this.checkBoxText().toJS(),
-        isRequired: this.isRequired()
+        checkBoxText:  this.checkBoxText().toJS()
     };
 };
 

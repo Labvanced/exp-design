@@ -600,25 +600,15 @@ ActionJumpTo.prototype.isValid = function(){
 ActionJumpTo.prototype.run = function(triggerParams) {
 
     // check validity only if the jump is to next frame
-    if (this.jumpType() == "nextFrame"){
+    if (this.jumpType() === "nextFrame"){
         var isValid = true;
 
         var elements = player.currentFrame.frameData.elements();
         elements.forEach(function(element) {
             if (element.content() instanceof MultipleChoiceElement || element.content() instanceof LikertElement || element.content() instanceof SelectionElement || element.content() instanceof InputElement || element.content() instanceof MultiLineInputElement  || element.content() instanceof CheckBoxElement){
-                var isValid1 = element.content().isInputValid();
-                if (isValid1 == false){
+                if (!element.content().isInputValid()){
                     isValid = false;
                 }
-            }
-            else if(element.content() instanceof CheckBoxElement || element.content() instanceof ScaleElement){
-                var elem = element.content();
-                elem.elements().forEach(function(subElem) {
-                    var isValid2 = subElem.isInputValid();
-                    if (isValid2 == false){
-                        isValid = false;
-                    }
-                });
             }
         });
 

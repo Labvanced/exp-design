@@ -72,6 +72,16 @@ ScaleElement.prototype.removeEntry = function() {
     this.elements.splice(idx,1);
 };
 
+ScaleElement.prototype.isInputValid = function() {
+    var isValid = true;
+    this.elements().forEach(function(subElem) {
+        if (!subElem.isInputValid()){
+            isValid = false;
+        }
+    });
+    return isValid;
+};
+
 /**
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
@@ -280,18 +290,18 @@ ScaleEntry.prototype.reAddEntities = function(entitiesArr) {
 ScaleEntry.prototype.isInputValid = function() {
     this.triedToSubmit(true);
 
-    if (this.isRequired()==false){
+    if (this.isRequired()===false){
         this.dataIsValid(true);
-        return true
+        return true;
     }
     else{
-        if (this.variable().value().value() == this.variable().startValue().value()){
+        if (this.variable().value().value() === this.variable().startValue().value()){
             this.dataIsValid(false);
             return false;
         }
         else{
             this.dataIsValid(true);
-            return true
+            return true;
         }
     }
 };
