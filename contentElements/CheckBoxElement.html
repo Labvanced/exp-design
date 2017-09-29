@@ -16,7 +16,7 @@
                 <span>Show Question Header:</span>
                 <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
             </div>
-            <div>
+            <div data-toggle="tooltip" title="Answer is only counted as valid, if at least one checkbox is marked.">
                 <span>Required:</span>
                 <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
             </div>
@@ -26,7 +26,6 @@
                     <tr>
                         <th style="width: 50px;">Entry</th>
                         <th>Linked Variables</th>
-                        <th>Required</th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: dataModel.elements">
@@ -36,9 +35,6 @@
                         </td>
                         <td>
                             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: variable, allowedDatatypes: ['boolean'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
-                        </td>
-                        <td>
-                            <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block; margin-left:45%" type="checkbox" data-bind="checked: isRequired,click:function(){return true},clickBubble: false">
                         </td>
                     </tr>
                 </tbody>
@@ -84,21 +80,12 @@
     </div>
     <!-- /ko -->
 
-
     <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
             <label style="display: block">
                 <input class="checkbox-element" style="vertical-align: top; margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" required data-bind="checked: variable().value().value,click:function(){return true},clickBubble: false">
                 <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" data-bind="component: {name : 'editable-text-element-playerview', params : checkBoxText}"></div>
             </label>
-            <!-- ko if: triedToSubmit() -->
-                <!-- ko ifnot: dataIsValid() -->
-                    <span style=" display:inline-block; float: right; margin-right:50px" data-bind=" tooltip:'.requiredInfo'">
-                        <img width="16" height="16" src="/resources/no.png"/>
-                    </span>
-                <!-- /ko -->
-            <!-- /ko -->
-
         </div>
     </div>
     <br>

@@ -59,7 +59,7 @@ GlobalVarValueString.prototype.toString = function () {
 GlobalVarValueNumeric = function(parentVar) {
     var self = this;
     this.parentVar = parentVar;
-    this.value = ko.observable(0);
+    this.value = ko.observable(null);
     this.value.subscribe(function() {
         self.parentVar.notifyValueChanged();
     });

@@ -105,7 +105,7 @@ InputElement.prototype.isInputValid = function() {
         return true
     }
     else{
-        if (this.variable().value().value()==null || this.variable().value().value()=='' ||this.variable().value().value() == this.variable().startValue().value()){
+        if (this.variable().value().value()===null || this.variable().value().value()==='' || this.variable().value().value() === this.variable().startValue().value() ){
             this.dataIsValid(false);
             return false;
         }

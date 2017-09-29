@@ -25,11 +25,6 @@
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.enableTitle,click:function(){return true},clickBubble: false">
         </div>
 
-        <div>
-            <span>Allow Custom Answer:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.altAnswerActive,click:function(){return true},clickBubble: false">
-        </div>
-
         <table>
             <thead>
             <tr>
@@ -49,6 +44,22 @@
             </tr>
             </tbody>
         </table>
+
+        <div>
+            <span>Allow Custom Answer:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.altAnswerActive,click:function(){return true},clickBubble: false">
+
+            <!-- ko if: (multipleChoiceElement.altAnswerActive())  -->
+            <span>Show only if last option is selected:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.altAnswerOnlyWhenLastSelected, click:function(){return true},clickBubble: false">
+
+            <span>
+                <div data-bind='component: {name : "input-editview", params: multipleChoiceElement.subInputElement()}'></div>
+            </span>
+            <!-- /ko -->
+        </div>
+
+
     </div>
 </template>
 
@@ -64,7 +75,7 @@
             </div>
         </div>
     </div>
-    <!-- ko if: (multipleChoiceElement.altAnswerActive())  -->
+    <!-- ko if: altAnswerVisible -->
     <span style="display:inline-block;">
         <div data-bind='component: {name : "input-preview", params: multipleChoiceElement.subInputElement()}'></div>
     </span>
@@ -90,12 +101,12 @@
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
             <label style="display: block">
-                <input style="vertical-align: top; margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false, attr: {id:'test123'}">
+                <input style="vertical-align: top; margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false">
                 <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block;  width:90%" data-bind="component: {name : 'editable-text-element-playerview', params : multChoiceText}"></div>
             </label>
         </div>
     </div>
-    <!-- ko if: (multipleChoiceElement.altAnswerActive())  -->
+    <!-- ko if: altAnswerVisible -->
     <span style="display:inline-block;">
         <div data-bind='component: {name : "input-playerview", params: multipleChoiceElement.subInputElement()}'></div>
     </span>

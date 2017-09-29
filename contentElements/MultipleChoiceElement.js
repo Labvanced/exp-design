@@ -10,6 +10,7 @@ var MultipleChoiceElement = function(expData) {
     this.isRequired = ko.observable(false);
 
     this.altAnswerActive = ko.observable(false);
+    this.altAnswerOnlyWhenLastSelected = ko.observable(false);
     this.enableTitle= ko.observable(true);
 
    // this.openQuestion=  ko.observable(false);
@@ -193,20 +194,30 @@ MultipleChoiceElement.prototype.getTextRefs = function(textArr, label){
 
 MultipleChoiceElement.prototype.isInputValid = function() {
     this.triedToSubmit(true);
-    if (this.isRequired()==false){
-        this.dataIsValid(true);
-        return true
-    }
-    else{
-        if (this.variable().value().value() == this.variable().startValue().value()){
-            this.dataIsValid(false);
-            return false;
-        }
-        else{
-            this.dataIsValid(true);
-            return true
+
+    var isValid = true;
+    if (this.isRequired()){
+        if (this.variable().value().value() === this.variable().startValue().value()){
+            isValid = false;
         }
     }
+
+    // up to here, already mark as invalid if radio option is not start value:
+    this.dataIsValid(isValid);
+
+    // now also check the sub element validity if it is active:
+    if (this.altAnswerActive()){
+        var allElem = this.elements();
+        var lastOptionValue = allElem[allElem.length - 1].multChoiceValue();
+        // only check validity if the last option selected:
+        if (this.variable().value().value() === lastOptionValue) {
+            if (!this.subInputElement().isInputValid()) {
+                isValid = false;
+            }
+        }
+    }
+
+    return isValid;
 };
 
 
@@ -228,10 +239,11 @@ MultipleChoiceElement.prototype.toJS = function() {
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
         }),
-        isRequired:this.isRequired(),
-        altAnswerActive:this.altAnswerActive(),
-        enableTitle:this.enableTitle(),
-        subInputElement:subInputElement
+        isRequired: this.isRequired(),
+        altAnswerActive: this.altAnswerActive(),
+        altAnswerOnlyWhenLastSelected: this.altAnswerOnlyWhenLastSelected(),
+        enableTitle: this.enableTitle(),
+        subInputElement: subInputElement
     };
 };
 
@@ -257,6 +269,9 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
     }
     if(data.hasOwnProperty('altAnswerActive')){
         this.altAnswerActive(data.altAnswerActive);
+    }
+    if(data.hasOwnProperty('altAnswerOnlyWhenLastSelected')){
+        this.altAnswerOnlyWhenLastSelected(data.altAnswerOnlyWhenLastSelected);
     }
     if(data.hasOwnProperty('enableTitle')){
         this.enableTitle(data.enableTitle);
@@ -408,9 +423,28 @@ function createMultipleChoiceComponents() {
         viewModel: {
             createViewModel: function(multipleChoiceElement, componentInfo){
                 var viewModel = function(multipleChoiceElement){
+                    var self = this;
+
                     this.multipleChoiceElement = multipleChoiceElement;
                     this.questionText = multipleChoiceElement.questionText;
                     this.margin = multipleChoiceElement.margin;
+
+                    this.altAnswerVisible = ko.computed(function() {
+                        if (!self.multipleChoiceElement.altAnswerActive()){
+                            return false;
+                        }
+
+                        if (!self.multipleChoiceElement.altAnswerOnlyWhenLastSelected()){
+                            return true;
+                        }
+
+                        var allElem = self.multipleChoiceElement.elements();
+                        var lastOptionValue = allElem[allElem.length - 1].multChoiceValue();
+                        if (self.multipleChoiceElement.variable().startValue().value() === lastOptionValue){
+                            return true;
+                        }
+                        return false;
+                    });
                 };
                 return new viewModel(multipleChoiceElement);
             }
@@ -423,9 +457,28 @@ function createMultipleChoiceComponents() {
             createViewModel: function(multipleChoiceElement, componentInfo){
 
                 var viewModel = function (multipleChoiceElement) {
+                    var self = this;
+
                     this.multipleChoiceElement = multipleChoiceElement;
                     this.questionText = multipleChoiceElement.questionText;
                     this.margin = multipleChoiceElement.margin;
+
+                    this.altAnswerVisible = ko.computed(function() {
+                        if (!self.multipleChoiceElement.altAnswerActive()){
+                            return false;
+                        }
+
+                        if (!self.multipleChoiceElement.altAnswerOnlyWhenLastSelected()){
+                            return true;
+                        }
+
+                        var allElem = self.multipleChoiceElement.elements();
+                        var lastOptionValue = allElem[allElem.length - 1].multChoiceValue();
+                        if (self.multipleChoiceElement.variable().value().value() === lastOptionValue){
+                            return true;
+                        }
+                        return false;
+                    });
                 };
                 return new viewModel(multipleChoiceElement);
             }
