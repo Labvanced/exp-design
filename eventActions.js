@@ -1409,7 +1409,9 @@ ActionSetVariable.prototype.removeVariable = function(){
  */
 ActionSetVariable.prototype.run = function(triggerParams) {
     var rValue = this.operand().getValue(triggerParams);
-    this.variable().value().value(rValue);
+    if (this.variable()) {
+        this.variable().value().value(rValue);
+    }
 };
 
 /**
@@ -1454,7 +1456,9 @@ ActionSetVariable.prototype.fromJS = function(data) {
 ActionSetVariable.prototype.toJS = function() {
     var varId = null;
     if (this.variable()) {
-        varId = this.variable().id();
+        if (typeof this.variable().id == 'function') {
+            varId = this.variable().id();
+        }
     }
     return {
         variable: varId,
