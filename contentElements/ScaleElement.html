@@ -96,7 +96,7 @@
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
         <div>
             <div style="float: left; display: inline-block" data-bind="style:{marginLeft:100-dataModel.leftRightRatio()+'%',width:dataModel.leftRightRatio()-10+'%'}">
-                <span style="float: left; height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels">
+                <span style="height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels">
                     <div class="notDraggable" style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-playerview', params : labelText}"></div>
                 </span>
             </div>

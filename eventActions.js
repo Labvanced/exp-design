@@ -605,7 +605,7 @@ ActionJumpTo.prototype.run = function(triggerParams) {
 
         var elements = player.currentFrame.frameData.elements();
         elements.forEach(function(element) {
-            if (element.content() instanceof MultipleChoiceElement || element.content() instanceof LikertElement || element.content() instanceof SelectionElement || element.content() instanceof InputElement || element.content() instanceof MultiLineInputElement  || element.content() instanceof CheckBoxElement){
+            if (typeof element.content().isInputValid == "function"){
                 if (!element.content().isInputValid()){
                     isValid = false;
                 }
@@ -1409,7 +1409,9 @@ ActionSetVariable.prototype.removeVariable = function(){
  */
 ActionSetVariable.prototype.run = function(triggerParams) {
     var rValue = this.operand().getValue(triggerParams);
-    this.variable().value().value(rValue);
+    if (this.variable()) {
+        this.variable().value().value(rValue);
+    }
 };
 
 /**
@@ -1454,7 +1456,9 @@ ActionSetVariable.prototype.fromJS = function(data) {
 ActionSetVariable.prototype.toJS = function() {
     var varId = null;
     if (this.variable()) {
-        varId = this.variable().id();
+        if (typeof this.variable().id == 'function') {
+            varId = this.variable().id();
+        }
     }
     return {
         variable: varId,
