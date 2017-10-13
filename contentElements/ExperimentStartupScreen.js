@@ -1,29 +1,12 @@
 var ExperimentStartupScreen = function(experiment) {
     var self = this;
 
+    this.expData = experiment.exp_data;
+
     this.imageType = ko.observable(experiment.publishing_data.imageType());
     this.exp_name = ko.observable(experiment.publishing_data.exp_name());
     this.jdenticonHash = ko.observable(experiment.publishing_data.jdenticonHash());
     this.description = ko.observable(experiment.publishing_data.description());
-    this.imgSource = ko.computed( function() {
-        return "/files/" + experiment.publishing_data.img_file_id() + "/" + experiment.publishing_data.img_file_orig_name();
-    }, this);
-
-    this.expData = experiment.exp_data;
-
-    this.wizardStep = ko.observable("selectStudyLanguage");
-    this.selectedStudyLanguage = ko.observable(this.expData.translatedLanguages()[0]);
-
-    this.selectedStudyLanguage.subscribe(function(newLang) {
-        var langIdx = self.expData.translatedLanguages().indexOf(newLang);
-        self.expData.currentLanguage(langIdx);
-        player.updateLanguage();
-    });
-    var numLang = this.expData.translatedLanguages().length;
-    if (numLang < 2) {
-        // directly skip to survey if only one language is defined:
-        this.jumpToSurvey();
-    }
 
     this.surveySubmitted = ko.observable(false);
 
@@ -33,62 +16,49 @@ var ExperimentStartupScreen = function(experiment) {
     this.selectedLanguage = ko.observable(null);
     this.selectedEmail = ko.observable(null);
 
-    this.requiredGender = ko.observable(false);
-    this.requiredAge = ko.observable(false);
-    this.requiredCountry = ko.observable(false);
-    this.requiredLanguage = ko.observable(false);
-    this.requiredEmail = ko.observable(false);
+    this.requiredGender = ko.observable(this.expData.parentExperiment.publishing_data.surveyItemGender());
+    this.requiredAge = ko.observable(this.expData.parentExperiment.publishing_data.surveyItemAge());
+    this.requiredCountry = ko.observable(this.expData.parentExperiment.publishing_data.surveyItemCountry());
+    this.requiredLanguage = ko.observable(this.expData.parentExperiment.publishing_data.surveyItemLanguage());
+    this.requiredEmail = ko.observable(this.expData.parentExperiment.publishing_data.surveyItemEmail());
 
-    // calculate required survey fields (it is required if the field is enabled in any group):
-    var availableGroups = this.expData.availableGroups();
-    for (var i=0; i<availableGroups.length; i++) {
-        if (availableGroups[i].enabledGender()) {
-            this.requiredGender(true);
-        }
-        if (availableGroups[i].enabledAge()) {
-            this.requiredAge(true);
-        }
-        if (availableGroups[i].enabledCountry()) {
-            this.requiredCountry(true);
-        }
-        if (availableGroups[i].enabledLanguage()) {
-            this.requiredLanguage(true);
-        }
+    this.wizardStep = ko.observable("selectStudyLanguage");
+    this.selectedStudyLanguage = ko.observable(this.expData.translatedLanguages()[0]);
 
-        // email is required if more than one session:
-        var sessionTimeData = availableGroups[i].sessionTimeData();
-        if (sessionTimeData.length > 1) {
-            this.requiredEmail(true);
-        }
-    }
+
+
+
+    this.imgSource = ko.computed( function() {
+        return "/files/" + experiment.publishing_data.img_file_id() + "/" + experiment.publishing_data.img_file_orig_name();
+    }, this);
 
     this.errorString = ko.computed(function() {
         var errorString = "";
 
         // validate if all required fields are filled:
-        if (this.requiredGender()) {
+        if (this.requiredGender()== 'required') {
             if (this.selectedGender() != "male" && this.selectedGender() != "female") {
-                errorString += player.staticStrings.errorGender + ", ";
+                errorString += player.staticStrings().errorGender + ", ";
             }
         }
-        if (this.requiredAge()) {
+        if (this.requiredAge()== 'required') {
             if (!(this.selectedAge() > 0)) {
-                errorString += player.staticStrings.errorAge + ", ";
+                errorString += player.staticStrings().errorAge + ", ";
             }
         }
-        if (this.requiredCountry()) {
+        if (this.requiredCountry()== 'required') {
             if (this.selectedCountry() == null) {
-                errorString += player.staticStrings.errorCountry + ", ";
+                errorString += player.staticStrings().errorCountry + ", ";
             }
         }
-        if (this.requiredLanguage()) {
+        if (this.requiredLanguage()== 'required') {
             if (this.selectedLanguage() == null) {
-                errorString += player.staticStrings.errorLanguage + ", ";
+                errorString += player.staticStrings().errorLanguage + ", ";
             }
         }
-        if (this.requiredEmail()) {
-            if (this.requiredEmail() == null) {
-                errorString += player.staticStrings.errorEmail + ", ";
+        if (this.requiredEmail()== 'required') {
+            if (this.selectedEmail() == null) {
+                errorString += player.staticStrings().errorEmail + ", ";
             }
         }
 
@@ -106,6 +76,18 @@ var ExperimentStartupScreen = function(experiment) {
         });
         return progressRounded;
     });
+
+    this.selectedStudyLanguage.subscribe(function(newLang) {
+        var langIdx = self.expData.translatedLanguages().indexOf(newLang);
+        self.expData.currentLanguage(langIdx);
+        player.updateLanguage();
+    });
+
+    var numLang = this.expData.translatedLanguages().length;
+    if (numLang < 2) {
+        // directly skip to survey if only one language is defined:
+        this.jumpToSurvey();
+    }
 
 };
 
@@ -140,43 +122,56 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
         return;
     }
 
-    this.wizardStep("initialSurvey");
+    if (this.requiredGender() =='hidden' && this.requiredAge() =='hidden' && this.requiredCountry() =='hidden' && this.requiredLanguage() =='hidden' && this.requiredEmail() =='hidden'){
+        this.sendDataAndContinue();
+    }
+    else{
+        this.wizardStep("initialSurvey");
+    }
+
 };
+
 
 ExperimentStartupScreen.prototype.checkSurveyData = function () {
     var self = this;
     this.surveySubmitted(true);
     if (this.errorString() == "") {
-        var survey_data = {
-            selectedGender: this.selectedGender(),
-            selectedAge: this.selectedAge(),
-            selectedCountry: this.selectedCountry() ? this.selectedCountry().code : null,
-            selectedLanguage: this.selectedLanguage() ? this.selectedLanguage().code : null,
-            selectedEmail: this.selectedEmail()
-        };
-        playerAjaxPost('/startFirstPlayerSession',
-            {
-                expId: player.expId,
-                subject_code: player.subject_code,
-                survey_data: survey_data,
-                isTestrun: player.isTestrun
-            },
-            function(data) {
-                if (data.hasOwnProperty('success') && data.success == false) {
-                    if (data.msg == "no matching subject group") {
-                        player.finishSessionWithError("There is no matching subject group defined which matches your criteria.");
-                    }
-                    else {
-                        player.finishSessionWithError("Could not initialize first session of experiment. Error Message: " + data.msg);
-                    }
-                    return;
-                }
-                player.setSubjectGroupNr(data.groupNr, data.sessionNr);
-                player.preloadAllContent();
-                self.jumpToLoadingScreen();
-            }
-        );
+      this.sendDataAndContinue();
     }
+};
+
+ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
+
+    var self = this;
+    var survey_data = {
+        selectedGender: this.selectedGender(),
+        selectedAge: this.selectedAge(),
+        selectedCountry: this.selectedCountry() ? this.selectedCountry().code : null,
+        selectedLanguage: this.selectedLanguage() ? this.selectedLanguage().code : null,
+        selectedEmail: this.selectedEmail()
+    };
+    playerAjaxPost('/startFirstPlayerSession',
+        {
+            expId: player.expId,
+            subject_code: player.subject_code,
+            survey_data: survey_data,
+            isTestrun: player.isTestrun
+        },
+        function(data) {
+            if (data.hasOwnProperty('success') && data.success == false) {
+                if (data.msg == "no matching subject group") {
+                    player.finishSessionWithError("There is no matching subject group defined which matches your criteria.");
+                }
+                else {
+                    player.finishSessionWithError("Could not initialize first session of experiment. Error Message: " + data.msg);
+                }
+                return;
+            }
+            player.setSubjectGroupNr(data.groupNr, data.sessionNr);
+            player.preloadAllContent();
+            self.jumpToLoadingScreen();
+        }
+    );
 };
 
 ExperimentStartupScreen.prototype.jumpToLoadingScreen = function() {

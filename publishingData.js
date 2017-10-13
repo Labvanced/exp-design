@@ -49,6 +49,14 @@ var PublishingData = function(experiment) {
     this.externalLinks = ko.observableArray([]);
 
 
+    this.surveyItemGender = ko.observable('hidden');  // hidden, optional, required
+    this.surveyItemAge = ko.observable('hidden');
+    this.surveyItemCountry = ko.observable('hidden');
+    this.surveyItemLanguage = ko.observable('hidden');
+    this.surveyItemEmail = ko.observable('hidden');
+
+
+
     // page 3 //
     this.advertisement = ko.observable(null);
     this.addHighlight= ko.observable(false);
@@ -218,6 +226,23 @@ PublishingData.prototype.fromJS = function(data) {
         this.duration(data.duration);
     }
 
+    if (data.hasOwnProperty('surveyItemGender')) {
+        this.surveyItemGender(data.surveyItemGender);
+    }
+    if (data.hasOwnProperty('surveyItemAge')) {
+        this.surveyItemAge(data.surveyItemAge);
+    }
+    if (data.hasOwnProperty('surveyItemCountry')) {
+        this.surveyItemCountry(data.surveyItemCountry);
+    }
+    if (data.hasOwnProperty('surveyItemLanguage')) {
+        this.surveyItemLanguage(data.surveyItemLanguage);
+    }
+    if (data.hasOwnProperty('surveyItemEmail')) {
+        this.surveyItemEmail(data.surveyItemEmail);
+    }
+
+
     // page 3 //
     this.addHighlight(data.addHighlight);
     this.addLabVancedSearch(data.addLabVancedSearch);
@@ -297,7 +322,11 @@ PublishingData.prototype.toJS = function() {
         referenceURLs:referenceURLs,
         externalnfo:externalnfo,
         externalLinks:externalLinks,
-
+        surveyItemGender:this.surveyItemGender(),
+        surveyItemAge:this.surveyItemAge(),
+        surveyItemCountry:this.surveyItemCountry(),
+        surveyItemLanguage:this.surveyItemLanguage(),
+        surveyItemEmail:this.surveyItemEmail(),
 
 
         // page 3 //
