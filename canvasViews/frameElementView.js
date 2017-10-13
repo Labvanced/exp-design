@@ -252,11 +252,82 @@ FrameElementView.prototype.update = function(size, position){
             top = self.selectedTrialView.editorY() - self.selectedTrialView.editorHeight()/2;
         }
 
+
         $(this.div).css({
             "left": left * self.scale(),
             "top": top * self.scale()
         });
 
+    }
+    self.setTransformOrigin();
+
+};
+
+
+FrameElementView.prototype.setTransformOrigin = function() {
+
+    if (this.dataModel.anchorPointX() == 'low' && this.dataModel.anchorPointY() == 'low'){
+        $(this.div).css({
+        "-ms-transform-origin": "left top", /* IE 9 */
+        "-webkit-transform-origin": "left top", /* Chrome, Safari, Opera */
+        "transform-origin": "left top"
+        })
+    }
+    else if(this.dataModel.anchorPointX() == 'low' && this.dataModel.anchorPointY() == 'center'){
+        $(this.div).css({
+            "-ms-transform-origin": "left center", /* IE 9 */
+            "-webkit-transform-origin": "left center", /* Chrome, Safari, Opera */
+            "transform-origin": "left center"
+        })
+    }
+    else if (this.dataModel.anchorPointX() == 'low'  && this.dataModel.anchorPointY() == 'high'){
+        $(this.div).css({
+            "-ms-transform-origin": "left bottom", /* IE 9 */
+            "-webkit-transform-origin": "left bottom", /* Chrome, Safari, Opera */
+            "transform-origin": "left bottom"
+        })
+    }
+    else if (this.dataModel.anchorPointX() == 'center' && this.dataModel.anchorPointY() == 'low'){
+        $(this.div).css({
+            "-ms-transform-origin": "center top", /* IE 9 */
+            "-webkit-transform-origin": "center top", /* Chrome, Safari, Opera */
+            "transform-origin": "center top"
+        })
+    }
+    else if (this.dataModel.anchorPointX() == 'center' && this.dataModel.anchorPointY() == 'center'){
+        $(this.div).css({
+            "-ms-transform-origin": "center center", /* IE 9 */
+            "-webkit-transform-origin": "center center", /* Chrome, Safari, Opera */
+            "transform-origin": "center center"
+        })
+    }
+    else if (this.dataModel.anchorPointX() == 'center' && this.dataModel.anchorPointY() == 'high'){
+        $(this.div).css({
+            "-ms-transform-origin": "center bottom", /* IE 9 */
+            "-webkit-transform-origin": "center bottom", /* Chrome, Safari, Opera */
+            "transform-origin": "center bottom"
+        })
+    }
+    else if (this.dataModel.anchorPointX() == 'high' && this.dataModel.anchorPointY() == 'low'){
+        $(this.div).css({
+            "-ms-transform-origin": "right top", /* IE 9 */
+            "-webkit-transform-origin": "right top", /* Chrome, Safari, Opera */
+            "transform-origin": "right top"
+        })
+    }
+    else if (this.dataModel.anchorPointX() == 'high' && this.dataModel.anchorPointY() == 'center'){
+        $(this.div).css({
+            "-ms-transform-origin": "right center", /* IE 9 */
+            "-webkit-transform-origin": "right center", /* Chrome, Safari, Opera */
+            "transform-origin": "right center"
+        })
+    }
+    else if (this.dataModel.anchorPointX() == 'high' && this.dataModel.anchorPointY() == 'high'){
+        $(this.div).css({
+            "-ms-transform-origin": "right bottom", /* IE 9 */
+            "-webkit-transform-origin": "right bottom", /* Chrome, Safari, Opera */
+            "transform-origin": "right bottom"
+        })
     }
 
 };
