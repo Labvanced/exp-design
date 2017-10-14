@@ -439,6 +439,8 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
             self.mouseX = playerFrame.mouseX;
             self.mouseY = playerFrame.mouseY;
             self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
+            ev.preventDefault();
+            return false;
         }
     };
 
