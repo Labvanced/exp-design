@@ -174,10 +174,12 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
             }
             var videoElem;
             var htmlObjectUrl;
-            if (typeof queue !== 'undefined') {
-                var file_id = self.dataModel.modifier().selectedTrialView.file_id();
-                htmlObjectUrl = player.playerPreloader.preloadedObjectUrlsById[file_id];
-                videoElem = queue.getResult(file_id);
+            if (player) {
+                if (typeof player.playerPreloader.queue !== 'undefined') {
+                    var file_id = self.dataModel.modifier().selectedTrialView.file_id();
+                    htmlObjectUrl = player.playerPreloader.preloadedObjectUrlsById[file_id];
+                    videoElem = player.playerPreloader.queue.getResult(file_id);
+                }
             }
 
             if (videoElem instanceof HTMLVideoElement && htmlObjectUrl) {
