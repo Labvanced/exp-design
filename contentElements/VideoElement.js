@@ -145,8 +145,8 @@ function getBlobURL(url, mime, callback) {
         var blob = new Blob( [ arrayBufferView ], { type: mime } );
         var url = null;
 
-        if ( window.webkitURL ) {
-            url = window.webkitURL.createObjectURL(blob);
+        if ( window.URL ) {
+            url = window.URL.createObjectURL(blob);
         } else if ( window.URL && window.URL.createObjectURL ) {
             url = window.URL.createObjectURL(blob);
         }
