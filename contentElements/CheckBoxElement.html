@@ -51,12 +51,15 @@
 
 <template id="checkbox-preview-template">
     <!-- ko if: (dataModel.enableTitle())  -->
-    <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
+    <div>
+        <span  style="display: inline-block" data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></span>
+    </div>
+
     <!-- /ko -->
 
     <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
-            <div style="">
+            <div style="display: block">
                 <input class="checkbox-element" style="vertical-align: top; margin-top: 5px; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: variable().startValue().value,click:function(){return true},clickBubble: false">
                 <div class="checkbox-img"></div>
                 <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" class="notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : checkBoxText}"></div>

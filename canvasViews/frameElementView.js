@@ -402,7 +402,7 @@ FrameElementView.prototype.renderContent = function(data) {
             // check if we have it preloaded:
             var imgElem;
             var htmlObjectUrl;
-            if (player){
+            if (typeof player !== 'undefined'){
                 if (typeof player.playerPreloader.queue !== 'undefined') {
                     var file_id = data.modifier().selectedTrialView.file_id();
                     htmlObjectUrl = player.playerPreloader.preloadedObjectUrlsById[file_id];
