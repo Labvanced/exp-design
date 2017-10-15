@@ -5,11 +5,11 @@ var RangeElement= function(expData) {
 
     //serialized
     this.type= "RangeElement";
-    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
+    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;">Your Question</span>'));
     this.minChoice= ko.observable(1);
     this.maxChoice= ko.observable(5);
-    this.startLabel = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">label 1</span></span>'));
-    this.endLabel = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:16px;"><span style="font-family:Arial,Helvetica,sans-serif;">label 2</span></span>'));
+    this.startLabel = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:16px;">label 1</span>'));
+    this.endLabel = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:16px;">label 2</span>'));
     this.showNumber = ko.observable(true);
     this.variable = ko.observable();
     this.enableTitle= ko.observable(true);

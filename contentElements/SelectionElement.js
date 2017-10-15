@@ -6,7 +6,7 @@ var SelectionElement = function(expData) {
 
     //serialized
     this.type = "SelectionElement";
-    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'))
+    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;">Your Question</span>'));
 
     this.elements = ko.observableArray([]);
     this.variable = ko.observable();

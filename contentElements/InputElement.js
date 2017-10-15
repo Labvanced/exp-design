@@ -5,7 +5,7 @@ var InputElement = function(expData) {
 
     //serialized
     this.type = "InputElement";
-    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
+    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;">Your Question</span>'));
     this.inputType = ko.observable('number');
 
     this.variable = ko.observable();

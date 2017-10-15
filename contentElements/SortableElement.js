@@ -12,7 +12,7 @@ var SortableElement = function(expData) {
 
     this.elements =  ko.observableArray([]).extend({sortById: null});
     this.elementIds =  ko.observableArray([]).extend({sortById: null});
-    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
+    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;">Your Question</span>'));
     this.enableTitle= ko.observable(true);
 
     ///// not serialized
@@ -42,7 +42,7 @@ SortableElement.prototype.addElem = function (elemId) {
         var text = 'element' + (this.elements().length+1);
         var elem = new SortableEntry(this);
         elem.init();
-        elem.sortableText().setText('<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">'+text+'</span></span>');
+        elem.sortableText().setText('<span style="font-size:20px;">'+text+'</span>');
         this.elements.push(elem);
         this.elementIds.push(elemId);
         this.elementIdMap[elemId] = elem;

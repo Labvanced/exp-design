@@ -7,7 +7,7 @@ var ScaleElement= function(expData) {
     //serialized
     this.type= "ScaleElement";
     this.id = ko.observable(guid());
-    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;"><span style="font-family:Arial,Helvetica,sans-serif;">Your Question</span></span>'));
+    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;">Your Question</span>'));
     this.addDeleteFromCol = ko.observable(this.addDeleteOptionsCol[1]);
     this.margin = ko.observable(2);
     this.labels = ko.observableArray([]);
@@ -47,11 +47,11 @@ ScaleElement.prototype.init = function() {
         this.labels.push(new ScaleLabel(this));
     }
 
-    this.labels()[0].labelText().setText('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">totally agree</span></span></p>');
-    this.labels()[1].labelText().setText('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly agree</span></span></p>');
-    this.labels()[2].labelText().setText('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">undecided</span></span></p>');
-    this.labels()[3].labelText().setText('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">mostly disagree</span></span></p>');
-    this.labels()[4].labelText().setText('<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;">totally disagree</span></span></p>');
+    this.labels()[0].labelText().setText('<p style="text-align: center;"><span style="font-size:16px">totally agree</span></p>');
+    this.labels()[1].labelText().setText('<p style="text-align: center;"><span style="font-size:16px">mostly agree</span></p>');
+    this.labels()[2].labelText().setText('<p style="text-align: center;"><span style="font-size:16px">undecided</span></p>');
+    this.labels()[3].labelText().setText('<p style="text-align: center;"><span style="font-size:16px">mostly disagree</span></p>');
+    this.labels()[4].labelText().setText('<p style="text-align: center;"><span style="font-size:16px">totally disagree</span></p>');
 };
 
 
@@ -206,7 +206,7 @@ ScaleElement.prototype.fromJS = function(data) {
             this.converting = true;
             var nrChoices = data.choices.length;
             for (var i=0; i<nrChoices; i++) {
-                var label = '<p style="text-align: center;"><span style="font-size:16px"><span style="font-family:Arial,Helvetica,sans-serif;"></span></span></p>';
+                var label = '<p style="text-align: center;"><span style="font-size:16px"></span></p>';
                 if (i==0) {
                     label = data.startLabel;
                 }
@@ -235,7 +235,7 @@ ScaleElement.prototype.fromJS = function(data) {
 var ScaleEntry= function(scaleParent) {
     var self = this;
     this.parent = scaleParent;
-    this.rowText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<span style="font-size:14px;"><span style="font-family:Arial,Helvetica,sans-serif;">your question</span></span>'));
+    this.rowText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<span style="font-size:14px;">your question</span></span>'));
     this.variable=ko.observable(null);
     this.isRequired=ko.observable(false);
     // not serialized
