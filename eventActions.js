@@ -2106,6 +2106,82 @@ ActionControlTimer.prototype.toJS = function() {
 
 
 
+//////////////////////////////////////  ActionEndSession  //////////////////////////////////////////
+
+/**
+ * This action end the session, sends end session time and leaves the fullscreen.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
+var ActionEndSession = function(event) {
+    this.event = event;
+
+};
+
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionEndSession.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It records the answers
+ * of a questionaire and directly sends them to the server.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionEndSession.prototype.run = function(triggerParams) {
+
+    var test = 1;
+    // time time to server
+    // exist fullscreen
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionEndSession.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionEndSession.prototype.setPointers = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionRecordQuestionaireResponse}
+ */
+ActionEndSession.prototype.fromJS = function(data) {
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionEndSession.prototype.toJS = function() {
+    return {
+        type: this.type
+    };
+};
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 //////////////////////////////////////  ActionRecordQuestionaireResponse  //////////////////////////////////////////
 
 /**

@@ -157,12 +157,10 @@ function createAudioComponents() {
                 // check if we have it preloaded:
                 var audioElem;
                 var htmlObjectUrl;
-                if (player) {
-                    if (typeof player.playerPreloader.queue !== 'undefined') {
-                        var file_id = self.dataModel.modifier().selectedTrialView.file_id();
-                        htmlObjectUrl = player.playerPreloader.preloadedObjectUrlsById[file_id];
-                        audioElem = player.playerPreloader.queue.getResult(file_id);
-                    }
+                if (typeof player !== 'undefined') {
+                    var file_id = self.dataModel.modifier().selectedTrialView.file_id();
+                    htmlObjectUrl = player.playerPreloader.preloadedObjectUrlsById[file_id];
+                    audioElem = player.playerPreloader.queue.getResult(file_id);
                 }
 
                 if (audioElem instanceof HTMLAudioElement && htmlObjectUrl) {
