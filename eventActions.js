@@ -2116,8 +2116,12 @@ ActionControlTimer.prototype.toJS = function() {
  */
 var ActionEndSession = function(event) {
     this.event = event;
+    this.showEndPage = ko.observable(true);
 
 };
+ActionEndSession.prototype.type = "ActionEndSession";
+ActionEndSession.prototype.label = "End Session";
+
 
 
 /**
@@ -2135,10 +2139,7 @@ ActionEndSession.prototype.isValid = function(){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionEndSession.prototype.run = function(triggerParams) {
-
-    var test = 1;
-    // time time to server
-    // exist fullscreen
+    player.finishSession(this.showEndPage());
 };
 
 /**
@@ -2165,6 +2166,7 @@ ActionEndSession.prototype.setPointers = function(entitiesArr) {
  * @returns {ActionRecordQuestionaireResponse}
  */
 ActionEndSession.prototype.fromJS = function(data) {
+    this.showEndPage(data.showEndPage);
     return this;
 };
 
@@ -2174,7 +2176,8 @@ ActionEndSession.prototype.fromJS = function(data) {
  */
 ActionEndSession.prototype.toJS = function() {
     return {
-        type: this.type
+        type: this.type,
+        showEndPage: this.showEndPage()
     };
 };
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
