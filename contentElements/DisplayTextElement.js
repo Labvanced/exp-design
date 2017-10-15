@@ -5,7 +5,7 @@ var DisplayTextElement = function(expData) {
 
     //serialized
     this.type = "DisplayTextElement";
-    this.text = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:24px;"><span style="font-family:Arial,Helvetica,sans-serif;">You can display your custom text here.</span></span>'));
+    this.text = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:24px;">You can display your custom text here.</span>'));
 
     ///// not serialized
     this.selected = ko.observable(false);
