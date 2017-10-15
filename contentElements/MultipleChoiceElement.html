@@ -73,6 +73,7 @@
         <div>
             <div style="">
                 <input style="vertical-align: top; margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue().value, click:function(){return true}, clickBubble: false">
+                <div class="radiobutton-img"></div>
                 <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" class="notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
             </div>
         </div>
@@ -103,7 +104,8 @@
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div>
             <label style="display: block">
-                <input style="vertical-align: top; margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false">
+                <input class="radiobutton-element" style="vertical-align: top; margin-bottom: inherit; margin-top: inherit; display: inline-block;" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false">
+                <div class="radiobutton-img"></div>
                 <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block;  width:90%" data-bind="component: {name : 'editable-text-element-playerview', params : multChoiceText}"></div>
             </label>
         </div>

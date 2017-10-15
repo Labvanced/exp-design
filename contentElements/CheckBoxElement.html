@@ -58,6 +58,7 @@
         <div>
             <div style="">
                 <input class="checkbox-element" style="vertical-align: top; margin-top: 5px; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: variable().startValue().value,click:function(){return true},clickBubble: false">
+                <div class="checkbox-img"></div>
                 <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" class="notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : checkBoxText}"></div>
             </div>
         </div>
@@ -84,6 +85,7 @@
         <div>
             <label style="display: block">
                 <input class="checkbox-element" style="vertical-align: top; margin-top: 5px; margin-bottom: inherit; display: inline-block;" type="checkbox" required data-bind="checked: variable().value().value,click:function(){return true},clickBubble: false">
+                <div class="checkbox-img"></div>
                 <div style="margin-top: inherit; margin-bottom: inherit; display: inline-block; width:90%" data-bind="component: {name : 'editable-text-element-playerview', params : checkBoxText}"></div>
             </label>
         </div>
