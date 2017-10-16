@@ -12,19 +12,26 @@ GlobalVarValueString = function(parentVar) {
     });
 };
 
+GlobalVarValueString.prototype.convert = function(data) {
+    if (data === null) {
+        return null;
+    }
+    if ((typeof data) != "string") {
+        return String(data);
+    }
+    return data;
+};
+
 /**
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
- * @param valueObj
+ * @param data
  */
-GlobalVarValueString.prototype.setValue = function(valueObj) {
-    if (valueObj.hasOwnProperty('parentVar')){
-        valueObj = valueObj.toJS();
+GlobalVarValueString.prototype.setValue = function(data) {
+    if (data.hasOwnProperty('parentVar')){
+        data = data.toJS();
     }
     // convert other data types to string:
-    if ((typeof valueObj) != "string") {
-        valueObj = String(valueObj);
-    }
-    this.value(valueObj);
+    this.value(this.convert(data));
 };
 
 /**
@@ -33,7 +40,7 @@ GlobalVarValueString.prototype.setValue = function(valueObj) {
  * @returns {GlobalVar}
  */
 GlobalVarValueString.prototype.fromJS = function(data) {
-    this.value(data);
+    this.value(this.convert(data));
 };
 
 /**
@@ -65,20 +72,26 @@ GlobalVarValueNumeric = function(parentVar) {
     });
 };
 
+GlobalVarValueNumeric.prototype.convert = function(data) {
+    if (data === null) {
+        return null;
+    }
+    if ((typeof data) != "number") {
+        return Number(data);
+    }
+    return data;
+};
 
 /**
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
- * @param valueObj
+ * @param data
  */
-GlobalVarValueNumeric.prototype.setValue = function(valueObj) {
-    if (valueObj.hasOwnProperty('parentVar')){
-        valueObj = valueObj.toJS();
+GlobalVarValueNumeric.prototype.setValue = function(data) {
+    if (data.hasOwnProperty('parentVar')){
+        data = data.toJS();
     }
     // convert other data types to numeric:
-    if ((typeof valueObj) != "number") {
-        valueObj = Number(valueObj);
-    }
-    this.value(valueObj);
+    this.value(this.convert(data));
 };
 
 /**
@@ -87,7 +100,7 @@ GlobalVarValueNumeric.prototype.setValue = function(valueObj) {
  * @returns {GlobalVar}
  */
 GlobalVarValueNumeric.prototype.fromJS = function(data) {
-    this.value(data);
+    this.value(this.convert(data));
 };
 
 /**
@@ -122,19 +135,25 @@ GlobalVarValueBoolean = function(parentVar) {
     });
 };
 
+GlobalVarValueBoolean.prototype.convert = function(data) {
+    if (data === null) {
+        return null;
+    }
+    if ((typeof data) != "boolean") {
+        return Boolean(data);
+    }
+    return data;
+};
+
 /**
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
- * @param valueObj
+ * @param data
  */
-GlobalVarValueBoolean.prototype.setValue = function(valueObj) {
-    if (valueObj.hasOwnProperty('parentVar')){
-        valueObj = valueObj.toJS();
+GlobalVarValueBoolean.prototype.setValue = function(data) {
+    if (data.hasOwnProperty('parentVar')){
+        data = data.toJS();
     }
-    // convert other data types to string:
-    if ((typeof valueObj) != "boolean") {
-        valueObj = Boolean(valueObj);
-    }
-    this.value(valueObj);
+    this.value(this.convert(data));
 };
 
 /**
@@ -143,7 +162,7 @@ GlobalVarValueBoolean.prototype.setValue = function(valueObj) {
  * @returns {GlobalVar}
  */
 GlobalVarValueBoolean.prototype.fromJS = function(data) {
-    this.value(data);
+    this.value(this.convert(data));
 };
 
 /**
@@ -178,23 +197,32 @@ GlobalVarValueCategorical = function(parentVar) {
     });
 };
 
+GlobalVarValueCategorical.prototype.convert = function(data) {
+    if (data === null) {
+        return null;
+    }
+    if ((typeof data) != "string") {
+        return String(data);
+    }
+    return data;
+};
+
 /**
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
- * @param valueObj
+ * @param data
  */
-GlobalVarValueCategorical.prototype.setValue = function(valueObj) {
-    if (valueObj.hasOwnProperty('parentVar')){
-        valueObj = valueObj.toJS();
+GlobalVarValueCategorical.prototype.setValue = function(data) {
+    if (data.hasOwnProperty('parentVar')){
+        data = data.toJS();
     }
     // convert other data types to string:
-    if ((typeof valueObj) != "string") {
-        valueObj = String(valueObj);
-    }
-    if (this.parentVar.levels().indexOf(valueObj) == -1){
+    data = this.convert(data);
+
+    if (this.parentVar.levels().indexOf(data) == -1){
         this.value(null);
     }
     else {
-        this.value(valueObj);
+        this.value(data);
     }
 };
 
@@ -204,7 +232,7 @@ GlobalVarValueCategorical.prototype.setValue = function(valueObj) {
  * @returns {GlobalVar}
  */
 GlobalVarValueCategorical.prototype.fromJS = function(data) {
-    this.value(data);
+    this.value(this.convert(data));
 };
 
 /**
@@ -227,17 +255,23 @@ GlobalVarValueDatetime = function(parentVar) {
     });
 };
 
+GlobalVarValueDatetime.prototype.convert = function(data) {
+    if (data === null) {
+        return null;
+    }
+    data = new Date(data);
+    return data;
+};
+
 /**
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
- * @param valueObj
+ * @param data
  */
-GlobalVarValueDatetime.prototype.setValue = function(valueObj) {
-    if (valueObj.hasOwnProperty('parentVar')){
-        valueObj = valueObj.toJS();
+GlobalVarValueDatetime.prototype.setValue = function(data) {
+    if (data.hasOwnProperty('parentVar')){
+        data = data.toJS();
     }
-    // convert to Date object:
-    valueObj = new Date(valueObj);
-    this.value(valueObj);
+    this.value(this.convert(data));
 };
 
 /**
@@ -246,7 +280,7 @@ GlobalVarValueDatetime.prototype.setValue = function(valueObj) {
  * @returns {GlobalVar}
  */
 GlobalVarValueDatetime.prototype.fromJS = function(data) {
-    this.value(new Date( data ));
+    this.value(this.convert(data));
 };
 
 /**
@@ -544,9 +578,9 @@ GlobalVarValueStructure = function(parentVar) {
 
 /**
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
- * @param valueObj
+ * @param data
  */
-GlobalVarValueStructure.prototype.setValue = function(valueObj) {
+GlobalVarValueStructure.prototype.setValue = function(data) {
 
 };
 

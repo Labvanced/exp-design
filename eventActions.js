@@ -1410,7 +1410,7 @@ ActionSetVariable.prototype.removeVariable = function(){
 ActionSetVariable.prototype.run = function(triggerParams) {
     var rValue = this.operand().getValue(triggerParams);
     if (this.variable()) {
-        this.variable().value().value(rValue);
+        this.variable().setValue(rValue);
     }
 };
 
