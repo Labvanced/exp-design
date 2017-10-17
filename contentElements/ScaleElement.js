@@ -56,7 +56,7 @@ ScaleElement.prototype.init = function() {
 
 
 ScaleElement.prototype.calculateWidth = function() {
-    var inter = 100/this.nrChoices()-2;
+    var inter = 100/this.nrChoices();
     return inter +'%';
 };
 

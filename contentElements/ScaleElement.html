@@ -66,23 +66,23 @@
     <!-- /ko -->
 
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
-
         <div>
-            <div style="float: left; display: inline-block;" data-bind="style:{marginLeft:100-dataModel.leftRightRatio()+'%',width:dataModel.leftRightRatio()-10+'%'}">
-                <span style="float: left;height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels">
-                    <div class="notDraggable" style="float: left; margin-left: 1%; margin-right: 1%; display: inline-block; vertical-align: middle" data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-preview', params : labelText}"></div>
-                </span>
+            <div class="scale-wrapper">
+                <span class="scale-left-text" data-bind="style:{width:100-dataModel.leftRightRatio()+'%'}" >&nbsp;</span>
+                <span class="scale-right-side" data-bind="foreach: dataModel.labels, style:{width: dataModel.leftRightRatio()-1+'%'}"><!-- removing white space
+                --><div class="scale-right-entry notDraggable" data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-preview', params : labelText}"></div><!-- removing white space
+                --></span>
             </div>
         </div>
         <div data-bind="foreach: dataModel.elements">
-            <div style="display: inline-block; width: 100%">
-                <div style="float: left; display: inline-block;" class="notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : rowText}, style:{width:100-$parent.dataModel.leftRightRatio()+'%'}" ></div>
-                <span style="float: left; vertical-align: middle;" data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-10+'%'}">
-                    <label style="text-align: center; margin: 0" class="scalebutton"  data-bind="style:{width:$parent.parent.calculateWidth()}">
+            <div class="scale-wrapper">
+                <span class="scale-left-text notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : rowText}, style:{width:100-$parent.dataModel.leftRightRatio()+'%'}" ></span>
+                <span class="scale-right-side" data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-1+'%'}"><!-- removing white space
+                --><label class="scale-right-entry scalebutton" data-bind="style:{width:$parent.parent.calculateWidth()}">
                         <input class="scalebutton-element" type="radio" data-bind="attr: {value:$index()+1}, checked: $parent.variable().startValue().value">
                         <div class="scalebutton-img"></div>
-                    </label>
-                </span>
+                    </label><!-- removing white space
+                --></span>
             </div>
         </div>
     </div>
@@ -98,21 +98,24 @@
     <!-- /ko -->
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
         <div>
-            <div style="float: left; display: inline-block" data-bind="style:{marginLeft:100-dataModel.leftRightRatio()+'%',width:dataModel.leftRightRatio()-10+'%'}">
-                <span style="height:100%; vertical-align: middle" data-bind="foreach: dataModel.labels">
-                    <div class="notDraggable" style="float: left; margin-left:1%; margin-right: 1%; display: inline-block; vertical-align: middle" data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-playerview', params : labelText}"></div>
-                </span>
+            <div class="scale-wrapper">
+                <span class="scale-left-text" data-bind="style:{width:100-dataModel.leftRightRatio()+'%'}" >&nbsp;</span>
+                <span class="scale-right-side" data-bind="foreach: dataModel.labels, style:{width: dataModel.leftRightRatio()-1+'%'}"><!-- removing white space
+                --><div class="scale-right-entry notDraggable" data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-playerview', params : labelText}"></div><!-- removing white space
+                --></span>
             </div>
         </div>
         <div data-bind="foreach: dataModel.elements">
-            <div style="display: inline-block; width: 100%">
-                <div style="float: left; display: inline-block;" data-bind="component: {name : 'editable-text-element-playerview', params : rowText},style:{width:100-$parent.dataModel.leftRightRatio()+'%'}" ></div>
-                <span style="float: left; vertical-align: middle; text-align: center;" data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-10+'%'}">
-                    <label class="scalebutton" data-bind="style:{width:$parent.parent.calculateWidth()}">
-                        <input class="scalebutton-element" type="radio" data-bind="attr: {value:$index()+1}, checked: $parent.variable().startValue().value">
+            <div class="scale-wrapper">
+                <div class="scale-left-text notDraggable" data-bind="component: {name : 'editable-text-element-playerview', params : rowText},style:{width:100-$parent.dataModel.leftRightRatio()+'%'}" ></div>
+
+                <span class="scale-right-side" data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-1+'%'}"><!-- removing white space
+                --><label class="scale-right-entry scalebutton" data-bind="style:{width:$parent.parent.calculateWidth()}">
+                        <input class="scalebutton-element" type="radio" data-bind="attr: {value:$index()+1}, checked: $parent.variable().value().value">
                         <div class="scalebutton-img"></div>
-                    </label>
-                </span>
+                    </label><!-- removing white space
+                --></span>
+
                 <!-- ko if: triedToSubmit() -->
                 <!-- ko ifnot: dataIsValid() -->
                 <span style=" display:inline-block; float: right; width: 10%" data-bind=" tooltip:'.requiredInfo'">
