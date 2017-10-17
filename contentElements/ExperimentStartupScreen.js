@@ -16,11 +16,11 @@ var ExperimentStartupScreen = function(experiment) {
     this.selectedLanguage = ko.observable(null);
     this.selectedEmail = ko.observable(null);
 
-    this.requiredGender = ko.observable(this.expData.parentExperiment.publishing_data.surveyItemGender());
-    this.requiredAge = ko.observable(this.expData.parentExperiment.publishing_data.surveyItemAge());
-    this.requiredCountry = ko.observable(this.expData.parentExperiment.publishing_data.surveyItemCountry());
-    this.requiredLanguage = ko.observable(this.expData.parentExperiment.publishing_data.surveyItemLanguage());
-    this.requiredEmail = ko.observable(this.expData.parentExperiment.publishing_data.surveyItemEmail());
+    this.requiredGender = this.expData.parentExperiment.publishing_data.surveyItemGender;
+    this.requiredAge = this.expData.parentExperiment.publishing_data.surveyItemAge;
+    this.requiredCountry = this.expData.parentExperiment.publishing_data.surveyItemCountry;
+    this.requiredLanguage = this.expData.parentExperiment.publishing_data.surveyItemLanguage;
+    this.requiredEmail = this.expData.parentExperiment.publishing_data.surveyItemEmail;
 
     this.wizardStep = ko.observable("selectStudyLanguage");
     this.selectedStudyLanguage = ko.observable(this.expData.translatedLanguages()[0]);

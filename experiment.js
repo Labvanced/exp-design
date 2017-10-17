@@ -367,6 +367,7 @@ Experiment.prototype.setPointers = function() {
     if (this.exp_data instanceof ExpData) {
         this.exp_data.setPointers();
     }
+    this.publishing_data.setPointers();
 };
 
 /**

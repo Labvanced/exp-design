@@ -48,14 +48,17 @@ var PublishingData = function(experiment) {
     this.externalnfo = ko.observableArray([]);
     this.externalLinks = ko.observableArray([]);
 
-
     this.surveyItemGender = ko.observable('hidden');  // hidden, optional, required
     this.surveyItemAge = ko.observable('hidden');
     this.surveyItemCountry = ko.observable('hidden');
     this.surveyItemLanguage = ko.observable('hidden');
     this.surveyItemEmail = ko.observable('hidden');
 
-
+    this.requiredGender = ko.observable(false);
+    this.requiredAge = ko.observable(false);
+    this.requiredCountry = ko.observable(false);
+    this.requiredLanguage = ko.observable(false);
+    this.requiredEmail = ko.observable(false);
 
     // page 3 //
     this.advertisement = ko.observable(null);
@@ -144,14 +147,50 @@ var PublishingData = function(experiment) {
 
 };
 
+PublishingData.prototype.updateReqProperties = function () {
+    // calculate required survey fields (it is required if the field is enabled in any group):
+    var availableGroups = this.experiment.exp_data.availableGroups();
+    for (var i=0; i<availableGroups.length; i++) {
+        if (availableGroups[i].enabledGender()) {
+            this.surveyItemGender('required');
+            this.requiredGender(true);
+        }
 
+        if (availableGroups[i].enabledAge()) {
+            this.surveyItemAge('required');
+            this.requiredAge(true);
+        }
 
+        if (availableGroups[i].enabledCountry()) {
+            this.surveyItemCountry('required');
+            this.requiredCountry(true);
+        }
+
+        if (availableGroups[i].enabledLanguage()) {
+            this.surveyItemLanguage('required');
+            this.requiredLanguage(true);
+        }
+
+        // email is required if more than one session:
+        var sessionTimeData = availableGroups[i].sessionTimeData();
+        if (sessionTimeData.length > 1) {
+            this.surveyItemEmail('required');
+            this.requiredEmail(true);
+        }
+    }
+};
 
 PublishingData.prototype.getCurrentDate = function() {
     if (this.experiment.expData){
        var offset =  this.experiment.exp_data.studySettings.timeZoneOffset();
     }
    return getCurrentDate(offset);
+};
+
+PublishingData.prototype.setPointers = function() {
+    if (this.experiment.exp_data instanceof ExpData) {
+        this.updateReqProperties();
+    }
 };
 
 PublishingData.prototype.fromJS = function(data) {
@@ -241,7 +280,6 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('surveyItemEmail')) {
         this.surveyItemEmail(data.surveyItemEmail);
     }
-
 
     // page 3 //
     this.addHighlight(data.addHighlight);
