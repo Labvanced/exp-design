@@ -38,27 +38,27 @@ var ExperimentStartupScreen = function(experiment) {
         // validate if all required fields are filled:
         if (this.requiredGender()== 'required') {
             if (this.selectedGender() != "male" && this.selectedGender() != "female") {
-                errorString += player.staticStrings().errorGender + ", ";
+                errorString += self.expData.staticStrings().errorGender + ", ";
             }
         }
         if (this.requiredAge()== 'required') {
             if (!(this.selectedAge() > 0)) {
-                errorString += player.staticStrings().errorAge + ", ";
+                errorString += self.expData.staticStrings().errorAge + ", ";
             }
         }
         if (this.requiredCountry()== 'required') {
             if (this.selectedCountry() == null) {
-                errorString += player.staticStrings().errorCountry + ", ";
+                errorString += self.expData.staticStrings().errorCountry + ", ";
             }
         }
         if (this.requiredLanguage()== 'required') {
             if (this.selectedLanguage() == null) {
-                errorString += player.staticStrings().errorLanguage + ", ";
+                errorString += self.expData.staticStrings().errorLanguage + ", ";
             }
         }
         if (this.requiredEmail()== 'required') {
             if (this.selectedEmail() == null) {
-                errorString += player.staticStrings().errorEmail + ", ";
+                errorString += self.expData.staticStrings().errorEmail + ", ";
             }
         }
 
@@ -80,7 +80,7 @@ var ExperimentStartupScreen = function(experiment) {
     this.selectedStudyLanguage.subscribe(function(newLang) {
         var langIdx = self.expData.translatedLanguages().indexOf(newLang);
         self.expData.currentLanguage(langIdx);
-        player.updateLanguage();
+        self.expData.updateLanguage();
     });
 
     var numLang = this.expData.translatedLanguages().length;
@@ -231,7 +231,7 @@ ExperimentStartupScreen.prototype.startExp = function() {
         top:"50%"
     });
 
-    $('#sectionPreload').html("<div style='font-size: xx-large;'>"+player.staticStrings().startingExp+"</div>");
+    $('#sectionPreload').html("<div style='font-size: xx-large;'>"+this.expData.staticStrings().startingExp+"</div>");
     $("#startExpSection").hide();
 
     // wait for five seconds:

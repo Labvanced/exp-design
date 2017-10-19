@@ -54,7 +54,7 @@
     <br>
     <!-- /ko -->
     <div>
-        <select class="notDraggable" class="notDraggable"data-placeholder="Please choose" style="width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: 'Please Choose...', value: dataModel.variable().startValue().value"></select>
+        <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().startValue().value"></select>
 
     </div>
     <br>
@@ -69,7 +69,7 @@
     <br>
     <!-- /ko -->
     <div>
-        <select class="notDraggable" style="display:inline-block; width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: 'Please Choose...', value: dataModel.variable().value().value"></select>
+        <select class="notDraggable" style="display:inline-block; width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().value().value"></select>
         <!-- ko if: dataModel.triedToSubmit() -->
         <!-- ko ifnot: dataModel.dataIsValid() -->
         <span style=" display:inline-block; width: 10%" data-bind=" tooltip:'.requiredInfo'">
