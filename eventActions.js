@@ -564,6 +564,126 @@ ActionSetProp.prototype.toJS = function() {
 
 
 
+////////////////////////////////////////  ActionSelectFileId ///////////////////////////////////////////////////
+
+var ActionSelectFileId = function(event) {
+    this.event = event;
+
+    // serialized
+    this.files = ko.observableArray([]);
+    this.inVarIndex = ko.observable(null);
+    this.outVarFileId = ko.observable(null);
+};
+
+ActionSelectFileId.prototype.type = "ActionSelectFileId";
+ActionSelectFileId.prototype.label = "Select File Id";
+
+ActionSelectFileId.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionSelectFileId.prototype.setInVarBackRef = function(){
+    this.inVarIndex().addBackRef(this, this.event, false, true, 'select file index');
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionSelectFileId.prototype.setOutVarBackRef = function(){
+    this.outVarFileId().addBackRef(this, this.event, true, false, 'set file id');
+};
+
+ActionSelectFileId.prototype.removeInVariable = function(){
+    this.inVarIndex(null);
+};
+
+ActionSelectFileId.prototype.removeOutVariable = function(){
+    this.outVarFileId(null);
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionSelectFileId.prototype.run = function(triggerParams) {
+    var index = parseInt(this.inVarIndex().value().value());
+    var file_id =  this.files()[index].id;
+    this.outVarFileId().value().setValue(file_id)
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionSelectFileId.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionSelectFileId.prototype.setPointers = function(entitiesArr) {
+    var inVarIndex = entitiesArr.byId[this.inVarIndex()];
+    if (inVarIndex){
+        this.inVarIndex(inVarIndex);
+    }
+    var outVarFileId = entitiesArr.byId[this.outVarFileId()];
+    if (outVarFileId){
+        this.outVarFileId(outVarFileId);
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionSetVariable}
+ */
+ActionSelectFileId.prototype.fromJS = function(data) {
+    this.files(data.files);
+    this.inVarIndex(data.inVarIndex);
+    this.outVarFileId(data.outVarFileId);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionSelectFileId.prototype.toJS = function() {
+
+    var inVarIndex = null;
+    if (this.inVarIndex()) {
+        if (typeof this.inVarIndex().id == 'function') {
+            inVarIndex = this.inVarIndex().id();
+        }
+    }
+    var outVarFileId = null;
+    if (this.outVarFileId()) {
+        if (typeof this.outVarFileId().id == 'function') {
+            outVarFileId = this.outVarFileId().id();
+        }
+    }
+    return {
+        type: this.type,
+        files: this.files(),
+        inVarIndex: inVarIndex,
+        outVarFileId: outVarFileId
+    };
+};
+
+
+
+
 
 
 ////////////////////////////////////////////   ActionJumpTo   /////////////////////////////////////////////////////

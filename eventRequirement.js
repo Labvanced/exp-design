@@ -572,7 +572,7 @@ RefToObjectProperty.prototype.getValue = function() {
  */
 RefToObjectProperty.prototype.setValue = function(newVal) {
 
-    var propertyPath = this.property().split(" ");
+    var propertyPath = this.property().split(".");
     var target = this.target();
 
     for (var k=0; k < propertyPath.length-1; k++) {

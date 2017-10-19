@@ -18,6 +18,7 @@ var GlobalVar = function (expData) {
     this.dataType = ko.observable('undefined');
     this.scale = ko.observable('undefined');
     this.scope = ko.observable("undefined");
+    this.isArray = ko.observable(false);
 
     this.isFactor =  ko.observable(false);
     this.isInteracting = ko.observable(false); // TODO: remove
