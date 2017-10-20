@@ -24,7 +24,12 @@ var ExpData = function (parentExperiment) {
     this.translatedLanguages = ko.observableArray([]);
 
     // not serialized
+    var self = this;
+    this.staticStrings = ko.observable(ExpData.prototype.staticTranslations["English"]);
     this.currentLanguage = ko.observable(0);
+    this.currentLanguageSubscription = this.currentLanguage.subscribe(function(newLang) {
+            self.updateLanguage();
+    });
 
     this.dateLastModified = ko.observable(getCurrentDate(this.studySettings.timeZoneOffset()));
 
@@ -99,6 +104,123 @@ ExpData.prototype.fixedVarNames = [
     'varTrialNr',
     'varConditionId'
 ];
+
+
+ExpData.prototype.staticTranslations = {
+    English: {
+        library: "Library",
+        langSelect: "This study is available in multiple languages.",
+        studyLanguage: "Study Language:",
+        continue: "Continue",
+        submit: "Submit",
+        confirm: "Confirm",
+        initialSurvey: "Please fill out the fields below (required fields are marked with *):",
+        yourGender: "Gender",
+        yourGenderMale: "Male",
+        yourGenderFemale: "Female",
+        yourAge: "Your Age",
+        years: "years",
+        yourCountry: "Country of Origin",
+        yourFirstLang: "First Language",
+        yourEmail: "Email",
+        errorGender: "Gender missing",
+        errorAge: "Age missing",
+        errorCountry: "Country missing",
+        errorLanguage: "Language missing",
+        errorEmail: "Email missing",
+        errorSessionNotReady: "You can currently not take part in this experiment because this study can only be started at certain times.",
+        errorSessionStartIn: "You can start this session in",
+        refresh: "Refresh",
+        errorSessionOver: "You can currently not take part in this experiment because there is no starting time window defined for this study.",
+        loading1: "Loading experiment...",
+        loading2: "Loading, please wait",
+        loading3: "This might take a while.",
+        loadingComplete: "Loading Complete!",
+        canStart: "You can now start the experiment. This will switch your browser into fullscreen mode.",
+        keepFullscreen: "Please note that during the experiment you should never press escape or use the \"backward\" button in your browser.",
+        start: "Start",
+        playerErrorNoSubjGroup: "Error: there is no subject group defined in the experiment.",
+        playerErrorNoSession: "Error: there is no session defined in the subject group in the experiment.",
+        playerErrorNoBlock: "Error: there is no block defined in this experiment session.",
+        startingExp: "Starting Experiment...",
+        startingIn: "Starting in ",
+        calibrateIntro: "You have the following two options to calibrate your screen size:",
+        calibrateMethod1: "1) Specify your screen size manually if you know the size of your monitor.",
+        calibrateScreenSize: "Screen size (diagonal):",
+        calibrateInches: "inches",
+        calibrateMsgOr: "OR",
+        calibrateMethod2: "2) Use a standardized ID card (85.60 × 53.98 mm) or any other card of the same size against the screen and try to match the size of the displayed card. " +
+        "You can change the size of the image by dragging the arrow. The calibration is correct if the image is no longer visible and the image exactly matches the size of the card.",
+        endExpMsg: "Thank you! The experiment session is finished.",
+        goToLib: "Go to experiment library",
+        chooseSelection: "Please Choose...",
+        answerPlaceholder: "Participant Answer..."
+    },
+    German: {
+        library: "Experimente",
+        langSelect: "Diese Studie ist in mehreren Sprachen verfügbar.",
+        studyLanguage: "Studiensprache:",
+        continue: "Weiter",
+        submit: "Ok",
+        confirm: "Bestätigen",
+        initialSurvey: "Bitte füllen Sie die untenstehenden Felder aus (Pflichtfelder sind mit * gekennzeichnet):",
+        yourGender: "Geschlecht",
+        yourGenderMale: "Männlich",
+        yourGenderFemale: "Weiblich",
+        yourAge: "Dein Alter",
+        years: "Jahre",
+        yourCountry: "Herkunftsland",
+        yourFirstLang: "Muttersprache",
+        yourEmail: "Email",
+        errorGender: "Geschlecht fehlt",
+        errorAge: "Age fehlt",
+        errorCountry: "Land fehlt",
+        errorLanguage: "Sprache fehlt",
+        errorEmail: "Email fehlt",
+        errorSessionNotReady: "Sie können derzeit nicht an diesem Experiment teilnehmen, da diese Studie nur zu bestimmten Zeiten gestartet werden kann.",
+        errorSessionStartIn: "Sie können diese Sitzung starten in",
+        refresh: "Aktualisieren",
+        errorSessionOver: "Sie können derzeit nicht an diesem Experiment teilnehmen, da für diese Studie kein Startzeitfenster definiert ist.",
+        loading1: "Lade experiment...",
+        loading2: "Lade, bitte warten",
+        loading3: "Dies kann eine Weile dauern.",
+        loadingComplete: "Fertig geladen!",
+        canStart: "Sie können nun das Experiment starten. Dies schaltet Ihren Browser in den Vollbildmodus um.",
+        keepFullscreen: "Bitte beachten Sie, dass Sie während des Experiments niemals die Escape-Taste drücken oder die Schaltfläche \"Zurück\" in Ihrem Browser verwenden sollten.",
+        start: "Start",
+        playerErrorNoSubjGroup: "Fehler: Im Experiment ist keine Versuchspersonengruppe definiert.",
+        playerErrorNoSession: "Fehler: in der Versuchspersonengruppe ist keine Experimentssitzung definiert.",
+        playerErrorNoBlock: "Fehler: In dieser Experimentssitzung ist kein Versuchsblock definiert.",
+        startingExp: "Experiment wird gestartet...",
+        startingIn: "Start in ",
+        calibrateIntro: "Sie haben die folgenden zwei Optionen, um Ihre Bildschirmgröße zu kalibrieren:",
+        calibrateMethod1: "1) Geben Sie Ihre Bildschirmgröße manuell an, wenn Sie die Größe Ihres Monitors kennen.",
+        calibrateScreenSize: "Bildschirmgröße (Diagonal):",
+        calibrateInches: "Inch",
+        calibrateMsgOr: "ODER",
+        calibrateMethod2: "2) Halten Sie einen standardisierten Ausweis (85.60 × 53.98 mm) oder eine andere Karte der gleichen Größe gegen den Bildschirm und versuchen Sie, die Größe der angezeigten Karte anzupassen. " +
+        "Sie können die Größe des Bildes durch Ziehen des Pfeils ändern. Die Kalibrierung ist korrekt, wenn das Bild nicht mehr sichtbar ist und das Bild genau der Größe der Karte entspricht.",
+        endExpMsg: "Vielen Dank! Die Experimentssitzung ist beendet.",
+        goToLib: "Gehe zur Experiment-Bibliothek",
+        chooseSelection: "Bitte Auswählen...",
+        answerPlaceholder: "Teilnehmer Antwort"
+    }
+};
+
+
+ExpData.prototype.updateLanguage = function() {
+    var langIdx = this.currentLanguage();
+    var langStr = this.translatedLanguages()[langIdx];
+
+    // use static translations if they exist for the selected language or otherwise use english for static texts:
+    if (ExpData.prototype.staticTranslations.hasOwnProperty(langStr)) {
+        this.staticStrings(ExpData.prototype.staticTranslations[langStr]);
+    }
+    else {
+        this.staticStrings(ExpData.prototype.staticTranslations["English"]);
+    }
+};
+
 
 ExpData.prototype.initVars = function() {
 
@@ -323,6 +445,8 @@ ExpData.prototype.setPointers = function() {
             elem.setPointers(self.entities);
         }
     } );
+
+    this.updateLanguage();
 
 };
 

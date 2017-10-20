@@ -22,7 +22,7 @@
     <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
     <!-- /ko -->
     <div style="width: 85%">
-        <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" data-bind="value: dataModel().variable().startValue().value"></textarea>
+        <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" data-bind="attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().startValue().value"></textarea>
     </div>
     <br>
 </template>
@@ -34,7 +34,7 @@
     <!-- /ko -->
 
     <div style="display:inline-block; width: 85%">
-        <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" placeholder="Participant Answer" data-bind="value: dataModel().variable().value().value"></textarea>
+        <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" data-bind="attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().value().value"></textarea>
     </div>
     <!-- ko if: dataModel().triedToSubmit() -->
     <!-- ko ifnot: dataModel().dataIsValid() -->
