@@ -18,7 +18,7 @@ var GlobalVar = function (expData) {
     this.dataType = ko.observable('undefined');
     this.scale = ko.observable('undefined');
     this.scope = ko.observable("undefined");
-    this.isArray = ko.observable(false);
+    this.dataFormat = ko.observable("scalar");
 
     this.isFactor =  ko.observable(false);
     this.isInteracting = ko.observable(false); // TODO: remove
@@ -61,6 +61,7 @@ var GlobalVar = function (expData) {
 GlobalVar.scales = ['nominal', 'ordinal', 'interval', 'ratio','undefined'];
 GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'timer', 'structure','undefined'];
 GlobalVar.scopes = ['subject','task','trial'];
+GlobalVar.dataFormats = ['scalar','array'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];
@@ -133,7 +134,7 @@ GlobalVar.prototype.resetStartValue = function() {
     this.initValue();
 };
 
-GlobalVar.prototype.createValueFromDataType = function() {
+GlobalVar.prototype.createScalarValueFromDataType = function() {
     switch (this.dataType()) {
         case 'string':
             return new GlobalVarValueString(this);
@@ -151,6 +152,18 @@ GlobalVar.prototype.createValueFromDataType = function() {
             return new GlobalVarValueStructure(this);
         case 'undefined':
             return new GlobalVarValueUndefined(this);
+    }
+};
+
+GlobalVar.prototype.createValueFromDataType = function() {
+    if (this.dataFormat() == "array") {
+        var val = new GlobalVarValueArray(this);
+        // add a first element to the empty array:
+        val.value.push(this.createScalarValueFromDataType());
+        return val;
+    }
+    else {
+        return this.createScalarValueFromDataType();
     }
 };
 
@@ -197,7 +210,7 @@ GlobalVar.prototype.removeBackRef = function(entity) {
  */
 GlobalVar.prototype.notifyValueChanged = function() {
     if (this.value()) {
-        if(this.recType()=='timeseries') {
+        if (this.recType()=='timeseries') {
             if (!this.recValue) {
                 this.recValue = [];
             }
@@ -281,6 +294,9 @@ GlobalVar.prototype.fromJS = function(data) {
     this.dataType(data.dataType);
     this.scale(data.scale);
     this.scope(data.scope);
+    if (data.hasOwnProperty('dataFormat')) {
+        this.dataFormat(data.dataFormat);
+    }
     this.isFactor(data.isFactor);
     this.isRecorded(data.isRecorded);
     this.isInteracting(data.isInteracting);
@@ -294,33 +310,7 @@ GlobalVar.prototype.fromJS = function(data) {
         this.recType(data.recType);
     }
     if (data.hasOwnProperty('startValue')) {
-        var startValue = null;
-        switch (data.dataType) {
-            case 'string':
-                startValue = new GlobalVarValueString(self);
-                break;
-            case 'numeric':
-                startValue = new GlobalVarValueNumeric(self);
-                break;
-            case 'boolean':
-                startValue = new GlobalVarValueBoolean(self);
-                break;
-            case 'categorical':
-                startValue = new GlobalVarValueCategorical(self);
-                break;
-            case 'datetime':
-                startValue = new GlobalVarValueDatetime(self);
-                break;
-            case 'timer':
-                startValue = new GlobalVarValueTimer(self);
-                break;
-            case 'structure':
-                startValue = new GlobalVarValueStructure(self);
-                break;
-            case 'undefined':
-                startValue = new GlobalVarValueUndefined(self);
-                break;
-        }
+        var startValue = this.createValueFromDataType();
         if (startValue) {
             startValue.fromJS(data.startValue);
             this.startValue(startValue);
@@ -359,6 +349,7 @@ GlobalVar.prototype.toJS = function() {
         dataType: this.dataType(),
         scale: this.scale(),
         scope: this.scope(),
+        dataFormat: this.dataFormat(),
         isFactor: this.isFactor(),
         isInteracting: this.isInteracting(),
 

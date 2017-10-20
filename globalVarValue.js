@@ -565,6 +565,80 @@ GlobalVarValueTimer.prototype.toJS = function() {
     return this.value();
 };
 
+////////////////////  GlobalVarValueArray  ///////////////////////////////////
+
+GlobalVarValueArray = function(parentVar) {
+    var self = this;
+    this.parentVar = parentVar;
+    this.value = ko.observableArray([]);
+    this.value.subscribe(function() {
+        self.parentVar.notifyValueChanged();
+    });
+};
+
+GlobalVarValueArray.prototype.convert = function(data) {
+    var self = this;
+    if (data === null) {
+        return [];
+    }
+
+    if (data instanceof Array) {
+        var arrValues = jQuery.map(data, function(scalar) {
+            var newDatType = self.parentVar.createScalarValueFromDataType();
+            newDatType.setValue(scalar);
+            return newDatType;
+        });
+    }
+    return arrValues;
+};
+
+/**
+ * modify the value either by a supplying a globalVarValue instance or a javascript string or number
+ * @param data
+ */
+GlobalVarValueArray.prototype.setValue = function(data) {
+    if (data.hasOwnProperty('parentVar')){
+        data = data.toJS();
+    }
+    this.value(this.convert(data));
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {GlobalVar}
+ */
+GlobalVarValueArray.prototype.fromJS = function(data) {
+    this.value(this.convert(data));
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+GlobalVarValueArray.prototype.toJS = function() {
+    var arrValuesJS = jQuery.map(this.value(), function(scalar) {
+        return scalar.toJS();
+    });
+    return arrValuesJS;
+};
+
+/**
+ * return string representation of value
+ * @returns {object}
+ */
+
+GlobalVarValueArray.prototype.toString = function () {
+    if(this.value() !== null){
+        var arrValuesString = jQuery.map(this.value(), function(scalar) {
+            return scalar.toString();
+        });
+        return arrValuesString.join();
+    }else{
+        return null;
+    }
+};
+
 ////////////////////  GlobalVarValueStructure  ///////////////////////////////////
 
 GlobalVarValueStructure = function(parentVar) {
