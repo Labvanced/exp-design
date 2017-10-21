@@ -27,7 +27,7 @@ GlobalVarValueString.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueString.prototype.setValue = function(data) {
-    if (data.hasOwnProperty('parentVar')){
+    if (typeof data.parentVar == "GlobalVar"){
         data = data.toJS();
     }
     // convert other data types to string:
@@ -87,7 +87,7 @@ GlobalVarValueNumeric.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueNumeric.prototype.setValue = function(data) {
-    if (data.hasOwnProperty('parentVar')){
+    if (typeof data.parentVar == "GlobalVar"){
         data = data.toJS();
     }
     // convert other data types to numeric:
@@ -150,7 +150,7 @@ GlobalVarValueBoolean.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueBoolean.prototype.setValue = function(data) {
-    if (data.hasOwnProperty('parentVar')){
+    if (typeof data.parentVar == "GlobalVar"){
         data = data.toJS();
     }
     this.value(this.convert(data));
@@ -212,7 +212,7 @@ GlobalVarValueCategorical.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueCategorical.prototype.setValue = function(data) {
-    if (data.hasOwnProperty('parentVar')){
+    if (typeof data.parentVar == "GlobalVar"){
         data = data.toJS();
     }
     // convert other data types to string:
@@ -268,7 +268,7 @@ GlobalVarValueDatetime.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueDatetime.prototype.setValue = function(data) {
-    if (data.hasOwnProperty('parentVar')){
+    if (typeof data.parentVar == "GlobalVar"){
         data = data.toJS();
     }
     this.value(this.convert(data));
@@ -596,8 +596,26 @@ GlobalVarValueArray.prototype.convert = function(data) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
+GlobalVarValueArray.prototype.getValueAt = function(idx) {
+    return this.value()[idx];
+};
+
+/**
+ * modify the value either by a supplying a globalVarValue instance or a javascript string or number
+ * @param data
+ */
+GlobalVarValueArray.prototype.pushValue = function(scalarData) {
+    var newScalar = this.parentVar.createScalarValueFromDataType();
+    newScalar.setValue(scalarData);
+    this.value.push(newScalar);
+};
+
+/**
+ * modify the value either by a supplying a globalVarValue instance or a javascript string or number
+ * @param data
+ */
 GlobalVarValueArray.prototype.setValue = function(data) {
-    if (data.hasOwnProperty('parentVar')){
+    if (typeof data.parentVar == "GlobalVar"){
         data = data.toJS();
     }
     this.value(this.convert(data));

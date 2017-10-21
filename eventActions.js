@@ -564,21 +564,21 @@ ActionSetProp.prototype.toJS = function() {
 
 
 
-////////////////////////////////////////  ActionSelectFileId ///////////////////////////////////////////////////
+////////////////////////////////////////  ActionSelectFromArray ///////////////////////////////////////////////////
 
-var ActionSelectFileId = function(event) {
+var ActionSelectFromArray = function(event) {
     this.event = event;
 
     // serialized
-    this.files = ko.observableArray([]);
+    this.inVarArr = ko.observable(null);
     this.inVarIndex = ko.observable(null);
-    this.outVarFileId = ko.observable(null);
+    this.outVar = ko.observable(null);
 };
 
-ActionSelectFileId.prototype.type = "ActionSelectFileId";
-ActionSelectFileId.prototype.label = "Select File Id";
+ActionSelectFromArray.prototype.type = "ActionSelectFromArray";
+ActionSelectFromArray.prototype.label = "Select From Array";
 
-ActionSelectFileId.prototype.isValid = function(){
+ActionSelectFromArray.prototype.isValid = function(){
     return true;
 };
 
@@ -586,24 +586,36 @@ ActionSelectFileId.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionSelectFileId.prototype.setInVarBackRef = function(){
-    this.inVarIndex().addBackRef(this, this.event, false, true, 'select file index');
+ActionSelectFromArray.prototype.setInVarArrBackRef = function(){
+    this.inVarArr().addBackRef(this, this.event, false, true, 'array to select from');
 };
 
 /**
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionSelectFileId.prototype.setOutVarBackRef = function(){
-    this.outVarFileId().addBackRef(this, this.event, true, false, 'set file id');
+ActionSelectFromArray.prototype.setInVarIndexBackRef = function(){
+    this.inVarIndex().addBackRef(this, this.event, false, true, 'as index');
 };
 
-ActionSelectFileId.prototype.removeInVariable = function(){
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionSelectFromArray.prototype.setOutVarBackRef = function(){
+    this.outVar().addBackRef(this, this.event, true, false, 'selected from array');
+};
+
+ActionSelectFromArray.prototype.removeInArrVariable = function(){
+    this.inVarArr(null);
+};
+
+ActionSelectFromArray.prototype.removeInVariable = function(){
     this.inVarIndex(null);
 };
 
-ActionSelectFileId.prototype.removeOutVariable = function(){
-    this.outVarFileId(null);
+ActionSelectFromArray.prototype.removeOutVariable = function(){
+    this.outVar(null);
 };
 
 /**
@@ -612,17 +624,17 @@ ActionSelectFileId.prototype.removeOutVariable = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionSelectFileId.prototype.run = function(triggerParams) {
+ActionSelectFromArray.prototype.run = function(triggerParams) {
     var index = parseInt(this.inVarIndex().value().value());
-    var file_id =  this.files()[index].id;
-    this.outVarFileId().value().setValue(file_id)
+    var value = this.inVarArr().value().getValueAt(index);
+    this.outVar().value().setValue(value)
 };
 
 /**
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionSelectFileId.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionSelectFromArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
 };
 
 /**
@@ -632,14 +644,18 @@ ActionSelectFileId.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSelectFileId.prototype.setPointers = function(entitiesArr) {
+ActionSelectFromArray.prototype.setPointers = function(entitiesArr) {
+    var inVarArr = entitiesArr.byId[this.inVarArr()];
+    if (inVarArr){
+        this.inVarArr(inVarArr);
+    }
     var inVarIndex = entitiesArr.byId[this.inVarIndex()];
     if (inVarIndex){
         this.inVarIndex(inVarIndex);
     }
-    var outVarFileId = entitiesArr.byId[this.outVarFileId()];
-    if (outVarFileId){
-        this.outVarFileId(outVarFileId);
+    var outVar = entitiesArr.byId[this.outVar()];
+    if (outVar){
+        this.outVar(outVar);
     }
 };
 
@@ -648,10 +664,10 @@ ActionSelectFileId.prototype.setPointers = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionSetVariable}
  */
-ActionSelectFileId.prototype.fromJS = function(data) {
-    this.files(data.files);
+ActionSelectFromArray.prototype.fromJS = function(data) {
+    this.inVarArr(data.inVarArr);
     this.inVarIndex(data.inVarIndex);
-    this.outVarFileId(data.outVarFileId);
+    this.outVar(data.outVar);
     return this;
 };
 
@@ -659,31 +675,131 @@ ActionSelectFileId.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionSelectFileId.prototype.toJS = function() {
-
+ActionSelectFromArray.prototype.toJS = function() {
+    var inVarArr = null;
+    if (this.inVarArr()) {
+        if (typeof this.inVarArr().id == 'function') {
+            inVarArr = this.inVarArr().id();
+        }
+    }
     var inVarIndex = null;
     if (this.inVarIndex()) {
         if (typeof this.inVarIndex().id == 'function') {
             inVarIndex = this.inVarIndex().id();
         }
     }
-    var outVarFileId = null;
-    if (this.outVarFileId()) {
-        if (typeof this.outVarFileId().id == 'function') {
-            outVarFileId = this.outVarFileId().id();
+    var outVar = null;
+    if (this.outVar()) {
+        if (typeof this.outVar().id == 'function') {
+            outVar = this.outVar().id();
         }
     }
     return {
         type: this.type,
-        files: this.files(),
+        inVarArr: inVarArr,
         inVarIndex: inVarIndex,
-        outVarFileId: outVarFileId
+        outVar: outVar
     };
 };
 
 
 
 
+////////////////////////////////////////  ActionLoadFileIds ///////////////////////////////////////////////////
+
+var ActionLoadFileIds = function(event) {
+    this.event = event;
+
+    // serialized
+    this.files = ko.observableArray([]);
+    this.outVarFileIds = ko.observable(null);
+};
+
+ActionLoadFileIds.prototype.type = "ActionLoadFileIds";
+ActionLoadFileIds.prototype.label = "Load File Ids";
+
+ActionLoadFileIds.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionLoadFileIds.prototype.setOutVarBackRef = function(){
+    this.outVarFileIds().addBackRef(this, this.event, true, false, 'set file ids');
+};
+
+ActionLoadFileIds.prototype.removeOutVariable = function(){
+    this.outVarFileIds(null);
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionLoadFileIds.prototype.run = function(triggerParams) {
+    // clear array:
+    var arrVarValue = this.outVarFileIds().value();
+    arrVarValue.value([]);
+
+    // fill values:
+    jQuery.each(this.files(), function(idx, file) {
+        arrVarValue.pushValue(file.id);
+    })
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionLoadFileIds.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionLoadFileIds.prototype.setPointers = function(entitiesArr) {
+    var outVarFileIds = entitiesArr.byId[this.outVarFileIds()];
+    if (outVarFileIds){
+        this.outVarFileIds(outVarFileIds);
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionSetVariable}
+ */
+ActionLoadFileIds.prototype.fromJS = function(data) {
+    this.files(data.files);
+    this.outVarFileIds(data.outVarFileIds);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionLoadFileIds.prototype.toJS = function() {
+    var outVarFileIds = null;
+    if (this.outVarFileIds()) {
+        if (typeof this.outVarFileIds().id == 'function') {
+            outVarFileIds = this.outVarFileIds().id();
+        }
+    }
+    return {
+        type: this.type,
+        files: this.files(),
+        outVarFileIds: outVarFileIds
+    };
+};
 
 
 ////////////////////////////////////////////   ActionJumpTo   /////////////////////////////////////////////////////
