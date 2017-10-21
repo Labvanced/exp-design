@@ -220,6 +220,20 @@ ExperimentStartupScreen.prototype.checkPreloadingState = function() {
 
 ExperimentStartupScreen.prototype.startExp = function() {
 
+    function launchIntoFullscreen(element) {
+        if(element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if(element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if(element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if(element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+    }
+    // set fullscreen check variable to true
+    player.experiment.exp_data.varFullscreenSpec().value().value(true);
+
     launchIntoFullscreen(document.documentElement);
 
     $('#sectionPreload').css({

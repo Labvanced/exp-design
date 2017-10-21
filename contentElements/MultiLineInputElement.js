@@ -28,7 +28,7 @@ MultiLineInputElement.prototype.initHeight = 100;
 MultiLineInputElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[0]);
-    globalVar.scope(GlobalVar.scopes[4]);
+    globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[1]);
     var name = this.parent.name();
     globalVar.name(name);

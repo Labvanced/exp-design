@@ -49,7 +49,7 @@ MultipleChoiceElement.prototype.initHeight = 120;
 MultipleChoiceElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType('string');
-    globalVar.scope(GlobalVar.scopes[2]);
+    globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[0]);
     var name = this.parent.name();
     globalVar.name(name);
