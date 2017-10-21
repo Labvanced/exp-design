@@ -30,7 +30,7 @@ RangeElement.prototype.init = function() {
 
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[1]);
-    globalVar.scope(GlobalVar.scopes[2]);
+    globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[2]);
     var name = this.parent.name();
     globalVar.name(name);

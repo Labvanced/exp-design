@@ -44,7 +44,7 @@ InputElement.prototype.dataTypePerInputType = {
 InputElement.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType("numeric");
-    globalVar.scope(GlobalVar.scopes[2]);
+    globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[1]);
     var name = this.parent.name();
     globalVar.name(name);

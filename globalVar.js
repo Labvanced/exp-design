@@ -59,7 +59,7 @@ var GlobalVar = function (expData) {
 // enum definitions:
 GlobalVar.scales = ['nominal', 'ordinal', 'interval', 'ratio','undefined'];
 GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'timer', 'structure','undefined'];
-GlobalVar.scopes = ['subject','task','trial'];
+GlobalVar.scopes = ['subject','session','task','trial','undefined'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];

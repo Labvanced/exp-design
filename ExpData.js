@@ -85,7 +85,13 @@ ExpData.prototype.oldFixedVarNames = [
     'varTaskIndex',
     'varTrialId',
     'varTrialIndex',
-    'varCondition'
+    'varCondition',
+    'varBrowserSpecEMPTY',
+    'varSystemSpecEMPTY',
+    'varTimeMeasureSpecMeanEMPTY',
+    'varFullscreenSpecEMPTY',
+    'varBrowserVersionSpecEMPTY',
+    'varTimeMeasureSpecMaxEMPTY'
 ];
 
 ExpData.prototype.fixedVarNames = [
@@ -102,8 +108,15 @@ ExpData.prototype.fixedVarNames = [
     'varTaskNr',
     'varTrialId',
     'varTrialNr',
-    'varConditionId'
+    'varConditionId',
+    'varBrowserSpec',
+    'varSystemSpec',
+    'varTimeMeasureSpecMean',
+    'varFullscreenSpec',
+    'varBrowserVersionSpec',
+    'varTimeMeasureSpecMax'
 ];
+
 
 
 ExpData.prototype.staticTranslations = {
@@ -249,16 +262,16 @@ ExpData.prototype.createVars = function() {
         this.varGroupName((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group_Name'));
     }
     if (!this.varSessionTimeStamp()) {
-        this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'interval', 'Session_Start_Time'));
+        this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'session', 'interval', 'Session_Start_Time'));
     }
     if (!this.varSessionTimeStampEnd()) {
-        this.varSessionTimeStampEnd((new GlobalVar(this.expData)).initProperties('datetime', 'task', 'interval', 'Session_End_Time'));
+        this.varSessionTimeStampEnd((new GlobalVar(this.expData)).initProperties('datetime', 'session', 'interval', 'Session_End_Time'));
     }
     if (!this.varSessionName()) {
-        this.varSessionName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Session_Name'));
+        this.varSessionName((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Session_Name'));
     }
     if (!this.varSessionNr()) {
-        this.varSessionNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'ordinal', 'Session_Nr'));
+        this.varSessionNr((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Session_Nr'));
     }
     if (!this.varBlockName()) {
         this.varBlockName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Block_Name'));
@@ -281,13 +294,35 @@ ExpData.prototype.createVars = function() {
     if (!this.varConditionId()) {
         this.varConditionId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Condition_Id'));
     }
+    if (!this.varBrowserSpec()) {
+        this.varBrowserSpec((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Browser_Spec'));
+    }
+    if (!this.varSystemSpec()) {
+        this.varSystemSpec((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'System_Spec'));
+    }
+    if (!this.varTimeMeasureSpecMean()) {
+        this.varTimeMeasureSpecMean((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Mean'));
+    }
+    if (!this.varTimeMeasureSpecMax()) {
+        this.varTimeMeasureSpecMax((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Max'));
+    }
+    if (!this.varFullscreenSpec()) {
+        this.varFullscreenSpec((new GlobalVar(this.expData)).initProperties('boolean', 'session', 'nominal', 'Always_Fullscreen'));
+        this.varFullscreenSpec().resetStartValue();
+        this.varFullscreenSpec().startValue().value(true);
+    }
+    if (!this.varBrowserVersionSpec()) {
+        this.varBrowserVersionSpec((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'BrowserVersion_Spec'));
+    }
 };
+
+
 
 
 
 ExpData.prototype.isSystemVar = function(globalVar) {
 
-    var systemVarList = ['Subject_Code','Subject_Nr','Group_Name','Session_Start_Time','Session_End_Time','Session_Name','Session_Nr','Block_Name','Block_Nr','Task_Name','Task_Nr','Trial_Id','Trial_Nr','Condition_Id'];
+    var systemVarList = ['Subject_Code','Subject_Nr','Group_Name','Session_Start_Time','Session_End_Time','Session_Name','Session_Nr','Block_Name','Block_Nr','Task_Name','Task_Nr','Trial_Id','Trial_Nr','Condition_Id','Browser_Spec','System_Spec','TimeMeasure_Mean','TimeMeasure_Max','Always_Fullscreen','BrowserVersion_Spec'];
 
     if (systemVarList.indexOf(globalVar.name())>=0 || globalVar.isFactor()){
         return true;

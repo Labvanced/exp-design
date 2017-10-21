@@ -175,7 +175,7 @@ CheckBoxEntry.prototype.selectTrialType = function(selectionSpec) {
 CheckBoxEntry.prototype.init = function() {
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[2]);
-    globalVar.scope(GlobalVar.scopes[4]);
+    globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[1]);
     var name = this.parent.parent.name() +'_'+ this.parent.elements().length;
     globalVar.name(name);
