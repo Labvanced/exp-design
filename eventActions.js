@@ -626,7 +626,7 @@ ActionSelectFromArray.prototype.removeOutVariable = function(){
  */
 ActionSelectFromArray.prototype.run = function(triggerParams) {
     var index = parseInt(this.inVarIndex().value().value());
-    var value = this.inVarArr().value().getValueAt(index);
+    var value = this.inVarArr().value().getValueAt(index-1);
     this.outVar().value().setValue(value)
 };
 
@@ -1950,16 +1950,123 @@ var ActionDrawRandomNumber = function(event) {
 
     // serialized
     this.variable = ko.observable(null);
+    this.discrete = ko.observable(false);
+    this.multiple = ko.observable(false);
+    this.replacement = ko.observable(false);
+    this.numDraws = ko.observable(1);
     this.distribution = ko.observable('Uniform');
     this.distributionParam1 = ko.observable(0).extend({ numeric: 4 }); // i.e. lower bound of Uniform or mean of Gaussian
     this.distributionParam2 = ko.observable(1).extend({ numeric: 4 }); // i.e. upper bound of Uniform or std of Gaussian
 };
 ActionDrawRandomNumber.prototype.type = "ActionDrawRandomNumber";
 ActionDrawRandomNumber.prototype.label = "Draw Random Number";
-ActionDrawRandomNumber.prototype.distributions = ["Uniform", "Gaussian"];
-ActionDrawRandomNumber.prototype.distributionParamLabels = {
-    "Uniform": ["min", "max"],
-    "Gaussian": ["mean", "std"]
+ActionDrawRandomNumber.prototype.continousDistributions = ["Uniform", "Gaussian"];
+ActionDrawRandomNumber.prototype.discreteDistributions = ["Uniform"];
+
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It draws a random number
+ * and saves it into the globalVar.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionDrawRandomNumber.prototype.run = function(triggerParams) {
+    var value;
+    if (this.discrete()) { // draw from discrete distribution
+
+        if (this.multiple()) { // draw multiple values at the same time
+
+            if (this.replacement()) { // draw with replacement
+
+                var numDraws = this.numDraws();
+                var randNums = [];
+                if (this.distribution() == "Uniform") {
+                    for (var k = 0; k < numDraws; k++) {
+                        var min = this.distributionParam1();
+                        var max = this.distributionParam2();
+                        max += 1;
+                        value = Math.floor( Math.random() * (max - min) + min );
+                        if (value > max) {
+                            value = max;
+                        }
+                        randNums.push(value);
+                    }
+                }
+                this.variable().value().value(randNums);
+
+            }
+            else { // without replacement
+
+                var randNums = [];
+                if (this.distribution() == "Uniform") {
+                    var min = this.distributionParam1();
+                    var max = this.distributionParam2();
+                    var randNumsPossible = [];
+                    for (var k = min; k <= max; k++) {
+                        value = k;
+                        randNumsPossible.push(value);
+                    }
+                    var numDraws = this.numDraws();
+                    while (randNums.length < numDraws) {
+                        var randNumsTmp = ExpTrialLoop.prototype.reshuffle(randNumsPossible);
+                        randNums = randNums.concat(randNumsTmp);
+                    }
+                    randNums = randNums.slice(0, numDraws);
+                }
+                this.variable().value().value(randNums);
+
+            }
+
+        }
+        else { // single
+
+            if (this.distribution() == "Uniform") {
+                var min = this.distributionParam1();
+                var max = this.distributionParam2();
+                max += 1;
+                value = Math.floor( Math.random() * (max - min) + min );
+                if (value > max) {
+                    value = max;
+                }
+                this.variable().value().value(value);
+            }
+
+        }
+    }
+    else { // continuous
+
+        if (this.multiple()) { // draw multiple values at the same time
+            var randNums = [];
+            for (var k = 0, len = this.numDraws(); k < numDraws; k++) {
+                randNums.push(this.drawFromContinous());
+            }
+            this.variable().value().value(randNums);
+        }
+        else {
+            this.variable().value().value(this.drawFromContinous());
+        }
+
+    }
+
+};
+
+/**
+ * draw a single value from a continous distribution.
+ * @returns {*}
+ */
+ActionDrawRandomNumber.prototype.drawFromContinous = function(){
+    var value = null;
+    if (this.distribution() == "Uniform") {
+        var min = this.distributionParam1();
+        var max = this.distributionParam2();
+        value = Math.random() * (max - min) + min;
+    }
+    else if (this.distribution() == "Gaussian") {
+        var mean = this.distributionParam1();
+        var std = this.distributionParam2();
+        value = mean + randn_marsaglia_polar() * std;
+    }
+    return value;
 };
 
 /**
@@ -2028,28 +2135,6 @@ var randn_marsaglia_polar = (function() {
 })();
 
 /**
- * This function is called when the parent event was triggered and the requirements are true. It draws a random number
- * and saves it into the globalVar.
- *
- * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
- */
-ActionDrawRandomNumber.prototype.run = function(triggerParams) {
-    var value;
-    if (this.distribution() == "Uniform") {
-        var min = this.distributionParam1();
-        var max = this.distributionParam2();
-        value = Math.random() * (max - min) + min;
-        this.variable().value().value(value);
-    }
-    else if (this.distribution() == "Gaussian") {
-        var mean = this.distributionParam1();
-        var std = this.distributionParam2();
-        value = mean + randn_marsaglia_polar() * std;
-        this.variable().value().value(value);
-    }
-};
-
-/**
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
@@ -2078,6 +2163,18 @@ ActionDrawRandomNumber.prototype.setPointers = function(entitiesArr) {
  */
 ActionDrawRandomNumber.prototype.fromJS = function(data) {
     this.variable(data.variable);
+    if(data.hasOwnProperty('discrete')) {
+        this.discrete(data.discrete);
+    }
+    if(data.hasOwnProperty('multiple')) {
+        this.multiple(data.multiple);
+    }
+    if(data.hasOwnProperty('replacement')) {
+        this.replacement(data.replacement);
+    }
+    if(data.hasOwnProperty('numDraws')) {
+        this.numDraws(data.numDraws);
+    }
     this.distribution(data.distribution);
     this.distributionParam1(data.distributionParam1);
     this.distributionParam2(data.distributionParam2);
@@ -2096,6 +2193,10 @@ ActionDrawRandomNumber.prototype.toJS = function() {
     return {
         type: this.type,
         variable: variableId,
+        discrete: this.discrete(),
+        multiple: this.multiple(),
+        replacement: this.replacement(),
+        numDraws: this.numDraws(),
         distribution: this.distribution(),
         distributionParam1: this.distributionParam1(),
         distributionParam2: this.distributionParam2()
