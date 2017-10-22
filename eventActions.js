@@ -648,14 +648,17 @@ ActionSelectFromArray.prototype.setPointers = function(entitiesArr) {
     var inVarArr = entitiesArr.byId[this.inVarArr()];
     if (inVarArr){
         this.inVarArr(inVarArr);
+        this.setInVarArrBackRef();
     }
     var inVarIndex = entitiesArr.byId[this.inVarIndex()];
     if (inVarIndex){
         this.inVarIndex(inVarIndex);
+        this.setInVarIndexBackRef();
     }
     var outVar = entitiesArr.byId[this.outVar()];
     if (outVar){
         this.outVar(outVar);
+        this.setOutVarBackRef();
     }
 };
 
@@ -769,6 +772,7 @@ ActionLoadFileIds.prototype.setPointers = function(entitiesArr) {
     var outVarFileIds = entitiesArr.byId[this.outVarFileIds()];
     if (outVarFileIds){
         this.outVarFileIds(outVarFileIds);
+        this.setOutVarBackRef();
     }
 };
 
@@ -1992,7 +1996,7 @@ ActionDrawRandomNumber.prototype.run = function(triggerParams) {
                         randNums.push(value);
                     }
                 }
-                this.variable().value().value(randNums);
+                this.variable().value().setValue(randNums);
 
             }
             else { // without replacement
@@ -2013,7 +2017,7 @@ ActionDrawRandomNumber.prototype.run = function(triggerParams) {
                     }
                     randNums = randNums.slice(0, numDraws);
                 }
-                this.variable().value().value(randNums);
+                this.variable().value().setValue(randNums);
 
             }
 
@@ -2028,7 +2032,7 @@ ActionDrawRandomNumber.prototype.run = function(triggerParams) {
                 if (value > max) {
                     value = max;
                 }
-                this.variable().value().value(value);
+                this.variable().value().setValue(value);
             }
 
         }
@@ -2040,10 +2044,10 @@ ActionDrawRandomNumber.prototype.run = function(triggerParams) {
             for (var k = 0, len = this.numDraws(); k < numDraws; k++) {
                 randNums.push(this.drawFromContinous());
             }
-            this.variable().value().value(randNums);
+            this.variable().value().setValue(randNums);
         }
         else {
-            this.variable().value().value(this.drawFromContinous());
+            this.variable().value().setValue(this.drawFromContinous());
         }
 
     }
@@ -2082,7 +2086,7 @@ ActionDrawRandomNumber.prototype.isValid = function(){
  * @param {GlobalVar} variable - the variable which is recorded.
  */
 ActionDrawRandomNumber.prototype.setVariableBackRef = function(variable){
-    variable.addBackRef(this, this.event, true, false, 'Action Draw Random Number');
+    variable.addBackRef(this, this.event, true, false, 'Save Random Num');
 };
 
 /**

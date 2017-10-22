@@ -589,6 +589,11 @@ GlobalVarValueArray.prototype.convert = function(data) {
             return newDatType;
         });
     }
+    else {
+        var newDatType = self.parentVar.createScalarValueFromDataType();
+        newDatType.setValue(data);
+        var arrValues = [newDatType];
+    }
     return arrValues;
 };
 

@@ -332,7 +332,7 @@ OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
  * @param {GlobalVar} variable - the variable which is recorded.
  */
 OperandVariable.prototype.setVariableBackRef = function(variable){
-    variable.addBackRef(this, this.event, false, true, 'In Boolean Expression');
+    variable.addBackRef(this, this.event, false, true, 'In Equation');
 };
 
 /**
