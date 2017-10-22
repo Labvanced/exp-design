@@ -21,6 +21,7 @@ var RecSession = function(parentExperiment) {
     // dynamically added:
     this.session_name = null;
     this.group_name = null;
+    this.timeDelayMeanTrimed = null;
 };
 
 /**

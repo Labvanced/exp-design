@@ -88,6 +88,7 @@ ExpData.prototype.oldFixedVarNames = [
     'varCondition',
     'varBrowserSpecEMPTY',
     'varSystemSpecEMPTY',
+    'varAgentSpecEMPTY',
     'varTimeMeasureSpecMeanEMPTY',
     'varFullscreenSpecEMPTY',
     'varBrowserVersionSpecEMPTY',
@@ -111,6 +112,7 @@ ExpData.prototype.fixedVarNames = [
     'varConditionId',
     'varBrowserSpec',
     'varSystemSpec',
+    'varAgentSpec',
     'varTimeMeasureSpecMean',
     'varFullscreenSpec',
     'varBrowserVersionSpec',
@@ -299,6 +301,9 @@ ExpData.prototype.createVars = function() {
     }
     if (!this.varSystemSpec()) {
         this.varSystemSpec((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'System_Spec'));
+    }
+    if (!this.varAgentSpec()) {
+        this.varAgentSpec((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Agent_Spec'));
     }
     if (!this.varTimeMeasureSpecMean()) {
         this.varTimeMeasureSpecMean((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Mean'));
