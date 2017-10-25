@@ -75,8 +75,9 @@
         <span style="display:inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
         <!-- ko if: dataModel.triedToSubmit() -->
         <!-- ko ifnot: dataModel.dataIsValid() -->
-            <span style=" display:inline-block; float: right; margin-right:50px" data-bind=" tooltip:'.requiredInfo'">
-                <img width="16" height="16" src="/resources/no.png"/>
+            <span class="required-question-icon"  data-bind=" tooltip:'.requiredInfo'">
+
+                <img width="20" height="20" src="/resources/icons/exmark.svg"/>
             </span>
         <!-- /ko -->
         <!-- /ko -->
