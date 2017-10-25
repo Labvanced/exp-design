@@ -72,8 +72,8 @@
         <select class="notDraggable" style="display:inline-block; width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().value().value"></select>
         <!-- ko if: dataModel.triedToSubmit() -->
         <!-- ko ifnot: dataModel.dataIsValid() -->
-        <span style=" display:inline-block; width: 10%" data-bind=" tooltip:'.requiredInfo'">
-            <img width="16" height="16" src="/resources/no.png"/>
+        <span class="required-question-icon"  data-bind=" tooltip:'.requiredInfo'">
+            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
         </span>
         <!-- /ko -->
         <!-- /ko -->
