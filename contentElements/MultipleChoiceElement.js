@@ -103,7 +103,7 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
         // convert to string type:
         this.variable().changeDataType("string");
     }
-    this.questionText().setPointers();
+    this.questionText().setPointers(entitiesArr);
     if ( this.subInputElement()){
         this.subInputElement().setPointers(entitiesArr);
     }
