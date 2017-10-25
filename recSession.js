@@ -21,7 +21,6 @@ var RecSession = function(parentExperiment) {
     // dynamically added:
     this.session_name = null;
     this.group_name = null;
-    this.timeDelayMeanTrimed = null;
 };
 
 /**
@@ -40,6 +39,11 @@ RecSession.prototype.fromJS = function(data) {
     this.name = data.name;
     this.subject_code = data.subject_code;
     this.survey_data = data.survey_data;
-    this.var_data = data.var_data;
+    this.var_data = new RecSessionVarData(this);
+
+    if (data.var_data) {
+        this.var_data.fromJS(data.var_data);
+    }
+
     return this;
 };
