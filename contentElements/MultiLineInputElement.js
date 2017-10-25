@@ -56,7 +56,7 @@ MultiLineInputElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
-    this.questionText().setPointers();
+    this.questionText().setPointers(entitiesArr);
 };
 
 MultiLineInputElement.prototype.reAddEntities = function(entitiesArr) {

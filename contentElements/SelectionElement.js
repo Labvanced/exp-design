@@ -87,7 +87,7 @@ SelectionElement.prototype.setPointers = function(entitiesArr) {
         } );
         this.variable().changeDataType("string");
     }
-    this.questionText().setPointers();
+    this.questionText().setPointers(entitiesArr);
 };
 
 SelectionElement.prototype.reAddEntities = function(entitiesArr) {
