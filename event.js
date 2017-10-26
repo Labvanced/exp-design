@@ -46,6 +46,19 @@ Event.prototype.triggerActions = function(parameters) {
 };
 
 /**
+ * recursively fill arr with all nested sub actions
+ */
+Event.prototype.getAllActions = function(arr) {
+    var actions = this.actions();
+    for (var i=0; i<actions.length; i++) {
+        arr.push(actions[i]);
+        if (typeof actions[i].getAllActions === "function") {
+            actions[i].getAllActions(arr);
+        }
+    }
+};
+
+/**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
  * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.

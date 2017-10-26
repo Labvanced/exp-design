@@ -974,6 +974,19 @@ ActionDelayedActions.prototype.type = "ActionDelayedActions";
 ActionDelayedActions.prototype.label = "Delayed Actions";
 
 /**
+ * recursively fill arr with all nested sub actions
+ */
+ActionDelayedActions.prototype.getAllActions = function(arr) {
+    var actions = this.subActions();
+    for (var i=0; i<actions.length; i++) {
+        arr.push(actions[i]);
+        if (typeof actions[i].getAllActions === "function") {
+            actions[i].getAllActions(arr);
+        }
+    }
+};
+
+/**
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
@@ -1103,6 +1116,19 @@ var ActionStartRepeatedActions = function(event) {
 
 ActionStartRepeatedActions.prototype.type = "ActionStartRepeatedActions";
 ActionStartRepeatedActions.prototype.label = "Start Repeated Actions";
+
+/**
+ * recursively fill arr with all nested sub actions
+ */
+ActionStartRepeatedActions.prototype.getAllActions = function(arr) {
+    var actions = this.subActions();
+    for (var i=0; i<actions.length; i++) {
+        arr.push(actions[i]);
+        if (typeof actions[i].getAllActions === "function") {
+            actions[i].getAllActions(arr);
+        }
+    }
+};
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -1484,6 +1510,19 @@ var ActionIfCondition = function(event) {
 
 ActionIfCondition.prototype.type = "ActionIfCondition";
 ActionIfCondition.prototype.label = "If Condition";
+
+/**
+ * recursively fill arr with all nested sub actions
+ */
+ActionIfCondition.prototype.getAllActions = function(arr) {
+    var actions = this.subActions();
+    for (var i=0; i<actions.length; i++) {
+        arr.push(actions[i]);
+        if (typeof actions[i].getAllActions === "function") {
+            actions[i].getAllActions(arr);
+        }
+    }
+};
 
 /**
  * returns true if all settings are valid (used in the editor).
