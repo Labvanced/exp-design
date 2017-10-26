@@ -350,13 +350,18 @@ TriggerButtonClick.prototype.toJS = function() {
  * @constructor
  */
 var TriggerKeyboard = function(event) {
+    var self = this;
     this.event = event;
 
     // serialized
     this.buttons = ko.observableArray([]);
     this.interactionType = ko.observable("Pressed");
+    this.alphaNumericEnabled = ko.observable(false); // if true, then disable fullscreen in safari
 
     // not serialized:
+    this.validKeyCodes = ko.computed(function() {
+        return self.getValidKeyCodes();
+    });
     this.eventHandleForCleanUp = null;
 
 };
@@ -369,13 +374,17 @@ TriggerKeyboard.prototype.buttonTypesArrows = ["ArrowLeft", "ArrowUp", "ArrowRig
 TriggerKeyboard.prototype.buttonTypesNumbers = ["0","1", "2", "3", "4", "5", "6", "7", "8", "9"];
 TriggerKeyboard.prototype.buttonTypesLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 TriggerKeyboard.prototype.buttonTypesSpecial= ["Space","Enter","Ctrl","Tab","Shift"];
-TriggerKeyboard.prototype.buttonTypesFkeys= ["F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12"];
+TriggerKeyboard.prototype.buttonTypesFkeys= ["F1","F2","F3","F4","F5","F6","F7","F8","F9","F10"];
 
 TriggerKeyboard.prototype.buttonTypesArrowsCode = [37,38,39,40];
 TriggerKeyboard.prototype.buttonTypesNumbersCode = [48,49,50,51,52,53,54,55,56,57];
 TriggerKeyboard.prototype.buttonTypesLettersCode = [65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90];
 TriggerKeyboard.prototype.buttonTypesSpecialCode= [32,13,17,9,16];
-TriggerKeyboard.prototype.buttonTypesFkeysCode= [112,113,114,115,116,117,118,119,120,121,122,123];
+TriggerKeyboard.prototype.buttonTypesFkeysCode= [112,113,114,115,116,117,118,119,120,121];
+
+TriggerKeyboard.prototype.allKeys = TriggerKeyboard.prototype.buttonTypesFkeys.concat(TriggerKeyboard.prototype.buttonTypesSpecial.concat(TriggerKeyboard.prototype.buttonTypesLetters.concat(TriggerKeyboard.prototype.buttonTypesArrows.concat(TriggerKeyboard.prototype.buttonTypesNumbers))));
+TriggerKeyboard.prototype.allKeysCode = TriggerKeyboard.prototype.buttonTypesFkeysCode.concat(TriggerKeyboard.prototype.buttonTypesSpecialCode.concat(TriggerKeyboard.prototype.buttonTypesLettersCode.concat(TriggerKeyboard.prototype.buttonTypesArrowsCode.concat(TriggerKeyboard.prototype.buttonTypesNumbersCode))));
+
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -396,14 +405,12 @@ TriggerKeyboard.prototype.isValid = function() {
  * @returns {string[]}
  */
 TriggerKeyboard.prototype.getValidKeyCodes = function() {
-    var allKeys = this.buttonTypesFkeys.concat(this.buttonTypesSpecial.concat(this.buttonTypesLetters.concat(this.buttonTypesArrows.concat(this.buttonTypesNumbers))));
-    var allKeysCode = this.buttonTypesFkeysCode.concat(this.buttonTypesSpecialCode.concat(this.buttonTypesLettersCode.concat(this.buttonTypesArrowsCode.concat(this.buttonTypesNumbersCode))));
 
     var validKeyCodes = [];
     var validKeys = this.buttons();
     for (var i = 0; i<this.buttons().length; i++) {
-        var index =  allKeys.indexOf(validKeys[i]);
-        validKeyCodes.push(allKeysCode[index]);
+        var index =  TriggerKeyboard.prototype.allKeys.indexOf(validKeys[i]);
+        validKeyCodes.push(TriggerKeyboard.prototype.allKeysCode[index]);
     }
 
     return validKeyCodes;
@@ -427,7 +434,7 @@ TriggerKeyboard.prototype.getParameterSpec = function() {
  */
 TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
     var self = this;
-    var validKeyCodes = this.getValidKeyCodes();
+    var validKeyCodes = this.validKeyCodes();
 
     this.eventHandleForCleanUp = function (ev){
         var keyIdx = validKeyCodes.indexOf(ev.keyCode);
@@ -485,6 +492,26 @@ TriggerKeyboard.prototype.setPointers = function(entitiesArr) {
 TriggerKeyboard.prototype.fromJS = function(data) {
     this.buttons(data.buttons);
     this.interactionType(data.interactionType);
+    if (data.hasOwnProperty("alphaNumericEnabled")) {
+        this.alphaNumericEnabled(data.alphaNumericEnabled);
+    }
+    else {
+        // check if alpha numeric is used:
+        var alphaNumericEnabled = false;
+        $.each(this.buttons(), function(idx, buttonName) {
+            var keyIdx = TriggerKeyboard.prototype.buttonTypesNumbers.indexOf(buttonName);
+            if (keyIdx>=0){
+                alphaNumericEnabled = true;
+            }
+        });
+        $.each(this.buttons(), function(idx, buttonName) {
+            var keyIdx = TriggerKeyboard.prototype.buttonTypesLetters.indexOf(buttonName);
+            if (keyIdx>=0){
+                alphaNumericEnabled = true;
+            }
+        });
+        this.alphaNumericEnabled(alphaNumericEnabled);
+    }
     return this;
 };
 
@@ -496,7 +523,8 @@ TriggerKeyboard.prototype.toJS = function() {
     return {
         type: this.type,
         buttons: this.buttons().slice(0),
-        interactionType: this.interactionType()
+        interactionType: this.interactionType(),
+        alphaNumericEnabled: this.alphaNumericEnabled()
     };
 };
 

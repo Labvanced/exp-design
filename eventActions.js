@@ -744,14 +744,16 @@ ActionLoadFileIds.prototype.removeOutVariable = function(){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionLoadFileIds.prototype.run = function(triggerParams) {
-    // clear array:
-    var arrVarValue = this.outVarFileIds().value();
-    arrVarValue.value([]);
+    if (this.outVarFileIds()) {
+        // clear array:
+        var arrVarValue = this.outVarFileIds().value();
+        arrVarValue.value([]);
 
-    // fill values:
-    jQuery.each(this.files(), function(idx, file) {
-        arrVarValue.pushValue(file.id);
-    })
+        // fill values:
+        jQuery.each(this.files(), function (idx, file) {
+            arrVarValue.pushValue(file.id);
+        });
+    }
 };
 
 /**
