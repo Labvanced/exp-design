@@ -119,8 +119,6 @@ ExpData.prototype.fixedVarNames = [
     'varTimeMeasureSpecMax'
 ];
 
-
-
 ExpData.prototype.staticTranslations = {
     English: {
         library: "Library",
@@ -326,10 +324,7 @@ ExpData.prototype.createVars = function() {
 
 
 ExpData.prototype.isSystemVar = function(globalVar) {
-
-    var systemVarList = ['Subject_Code','Subject_Nr','Group_Name','Session_Start_Time','Session_End_Time','Session_Name','Session_Nr','Block_Name','Block_Nr','Task_Name','Task_Nr','Trial_Id','Trial_Nr','Condition_Id','Browser_Spec','System_Spec','TimeMeasure_Mean','TimeMeasure_Max','Always_Fullscreen','BrowserVersion_Spec'];
-
-    if (systemVarList.indexOf(globalVar.name())>=0 || globalVar.isFactor()){
+    if (this.vars().indexOf(globalVar)>=0 || globalVar.isFactor()){
         return true;
     }
     else{
