@@ -19,23 +19,30 @@
 
 <template id="multi-line-input-preview-template">
     <!-- ko if: (dataModel().enableTitle())  -->
-    <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
+    <span data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></span>
     <!-- /ko -->
+
     <div style="width: 85%">
         <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" data-bind="attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().startValue().value"></textarea>
     </div>
+
+    <!-- ko if: dataModel().isRequired() -->
+    <span class="required-question-icon"  data-bind=" tooltip:'.requiredInfoEditor'">
+        <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+    </span>
+    <!-- /ko -->
     <br>
 </template>
 
 <template id="multi-line-input-playerview-template">
     <!-- ko if: (dataModel().enableTitle())  -->
-    <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
-    <br>
+    <span data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
     <!-- /ko -->
 
     <div style="display:inline-block; width: 85%">
         <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" data-bind="attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().value().value"></textarea>
     </div>
+
     <!-- ko if: dataModel().triedToSubmit() -->
     <!-- ko ifnot: dataModel().dataIsValid() -->
     <span class="required-question-icon"  data-bind=" tooltip:'.requiredInfo'">

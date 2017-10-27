@@ -83,6 +83,12 @@
                         <div class="scalebutton-img"></div>
                     </label><!-- removing white space
                 --></span>
+
+                <!-- ko if: isRequired() -->
+                <span class="required-question-icon"  data-bind="tooltip:'.requiredInfoEditor'">
+                   <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+                </span>
+                <!-- /ko -->
             </div>
         </div>
     </div>
@@ -92,10 +98,12 @@
 
 
 <template id="scale-playerview-template">
+
     <!-- ko if: (dataModel.enableTitle())  -->
     <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
     <br>
     <!-- /ko -->
+
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
         <div>
             <div class="scale-wrapper">

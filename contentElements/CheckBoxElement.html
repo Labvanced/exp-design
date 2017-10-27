@@ -50,11 +50,18 @@
 
 
 <template id="checkbox-preview-template">
-    <!-- ko if: (dataModel.enableTitle())  -->
+
     <div>
-        <span style="display: inline-block" data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></span>
+        <!-- ko if: (dataModel.enableTitle())  -->
+            <span style="display: inline-block" data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></span>
+        <!-- /ko -->
+
+        <!-- ko if: dataModel.isRequired() -->
+            <span class="required-question-icon" data-bind="tooltip:'.requiredInfoEditor'">
+                <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+            </span>
+        <!-- /ko -->
     </div>
-    <!-- /ko -->
 
     <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <div class="checkbox-wrapper">
@@ -70,9 +77,11 @@
 
 <template id="checkbox-playerview-template">
 
-    <!-- ko if: (dataModel.enableTitle())  -->
     <div>
-        <span style="display:inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
+        <!-- ko if: (dataModel.enableTitle())  -->
+            <span style="display:inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
+        <!-- /ko -->
+
         <!-- ko if: dataModel.triedToSubmit() -->
         <!-- ko ifnot: dataModel.dataIsValid() -->
             <span class="required-question-icon" data-bind="tooltip:'.requiredInfo'">
@@ -81,7 +90,6 @@
         <!-- /ko -->
         <!-- /ko -->
     </div>
-    <!-- /ko -->
 
     <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <label class="checkbox-wrapper">

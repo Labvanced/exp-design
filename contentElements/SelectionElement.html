@@ -55,7 +55,11 @@
     <!-- /ko -->
     <div>
         <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().startValue().value"></select>
-
+        <!-- ko if: dataModel.isRequired() -->
+        <span class="required-question-icon"  data-bind="tooltip:'.requiredInfoEditor'">
+            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+        </span>
+        <!-- /ko -->
     </div>
     <br>
 </template>
@@ -72,7 +76,7 @@
         <select class="notDraggable" style="display:inline-block; width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().value().value"></select>
         <!-- ko if: dataModel.triedToSubmit() -->
         <!-- ko ifnot: dataModel.dataIsValid() -->
-        <span class="required-question-icon"  data-bind=" tooltip:'.requiredInfo'">
+        <span class="required-question-icon"  data-bind="tooltip:'.requiredInfo'">
             <img width="20" height="20" src="/resources/icons/exmark.svg"/>
         </span>
         <!-- /ko -->

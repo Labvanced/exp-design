@@ -66,9 +66,18 @@
 </template>
 
 <template id="choice-preview-template">
-    <!-- ko if: (multipleChoiceElement.enableTitle())  -->
-    <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
-    <!-- /ko -->
+    <div>
+        <!-- ko if: (multipleChoiceElement.enableTitle())  -->
+        <div data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></div>
+        <!-- /ko -->
+
+        <!-- ko if: multipleChoiceElement.isRequired() -->
+        <span class="required-question-icon" data-bind="tooltip:'.requiredInfoEditor'">
+            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+        </span>
+        <!-- /ko -->
+    </div>
+
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
         <div class="radiobutton-wrapper">
             <label class="radiobutton-left">
@@ -92,12 +101,13 @@
         <!-- ko if: (multipleChoiceElement.enableTitle())  -->
         <span style="display:inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
         <!-- /ko -->
+
         <!-- ko if: multipleChoiceElement.triedToSubmit() -->
-            <!-- ko ifnot: multipleChoiceElement.dataIsValid() -->
-                <span class="required-question-icon"  data-bind=" tooltip:'.requiredInfo'">
-                    <img width="20" height="20" src="/resources/icons/exmark.svg"/>
-                </span>
-            <!-- /ko -->
+        <!-- ko ifnot: multipleChoiceElement.dataIsValid() -->
+            <span class="required-question-icon"  data-bind=" tooltip:'.requiredInfo'">
+                <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+            </span>
+        <!-- /ko -->
         <!-- /ko -->
     </div>
 
