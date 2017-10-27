@@ -22,6 +22,8 @@ var ExperimentStartupScreen = function(experiment) {
     this.requiredLanguage = this.expData.parentExperiment.publishing_data.surveyItemLanguage;
     this.requiredEmail = this.expData.parentExperiment.publishing_data.surveyItemEmail;
 
+    this.displayBackToLib = this.expData.parentExperiment.publishing_data.displayBackToLib;
+
     this.wizardStep = ko.observable("selectStudyLanguage");
     this.selectedStudyLanguage = ko.observable(this.expData.translatedLanguages()[0]);
 

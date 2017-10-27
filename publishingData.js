@@ -60,6 +60,8 @@ var PublishingData = function(experiment) {
     this.requiredLanguage = ko.observable(false);
     this.requiredEmail = ko.observable(false);
 
+    this.displayBackToLib = ko.observable(true);
+
     // page 3 //
     this.advertisement = ko.observable(null);
     this.addHighlight= ko.observable(false);
@@ -281,6 +283,10 @@ PublishingData.prototype.fromJS = function(data) {
         this.surveyItemEmail(data.surveyItemEmail);
     }
 
+    if (data.hasOwnProperty('displayBackToLib')) {
+        this.displayBackToLib(data.displayBackToLib);
+    }
+
     // page 3 //
     this.addHighlight(data.addHighlight);
     this.addLabVancedSearch(data.addLabVancedSearch);
@@ -365,6 +371,8 @@ PublishingData.prototype.toJS = function() {
         surveyItemCountry:this.surveyItemCountry(),
         surveyItemLanguage:this.surveyItemLanguage(),
         surveyItemEmail:this.surveyItemEmail(),
+
+        displayBackToLib: this.displayBackToLib(),
 
 
         // page 3 //

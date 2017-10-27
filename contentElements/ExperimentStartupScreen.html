@@ -7,7 +7,9 @@
                 <div class="col-md-12 text-center">
                     <div class="row ">
                         <div class="col-md-2 ssp-link mg-t-50">
-                            <a href="/expLibrary.html" class="ssp-link-back"><img width="24px" src="/resources/shapes/dark/left-arrow-1.svg"><span data-bind="text: expData.staticStrings().library"></span></a>
+                            <div data-bind="if: displayBackToLib">
+                                <a href="/expLibrary.html" class="ssp-link-back"><img width="24px" src="/resources/shapes/dark/left-arrow-1.svg"><span data-bind="text: expData.staticStrings().library"></span></a>
+                            </div>
                         </div>
                         <div class="col-md-8 ssp-img">
                             <!-- ko if: (imageType() == 'imgfile') -->
