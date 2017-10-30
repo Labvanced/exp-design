@@ -88,16 +88,35 @@ GlobalVar.allowedDataTypePerScale = {
     'ratio': ['numeric', 'datetime', 'timer']
 };
 
-// definition of what scales allowed for each datatype:
+// definition of icons for each datatype:
 GlobalVar.iconPerDataType = {
-    'undefined': "/resources/icons/variables/string.svg",
+    'undefined': "/resources/icons/variables/structure.svg",
     'string': "/resources/icons/variables/string.svg",
     'numeric': "/resources/icons/variables/numeric.svg",
     'boolean': "/resources/icons/variables/boolean.svg",
-    'categorical': "/resources/icons/variables/string.svg",
+    'categorical': "/resources/icons/variables/categorical.svg",
     'datetime': "/resources/icons/variables/datetime.svg",
-    'timer': "/resources/icons/timer.svg",
-    'structure': "/resources/icons/variables/string.svg"
+    'timer': "/resources/icons/variables/timer.svg",
+    'structure': "/resources/icons/variables/structure.svg"
+};
+GlobalVar.iconArrayPerDataType = {
+    'undefined': "/resources/icons/variables/array/structure.svg",
+    'string': "/resources/icons/variables/array/string.svg",
+    'numeric': "/resources/icons/variables/array/numeric.svg",
+    'boolean': "/resources/icons/variables/array/boolean.svg",
+    'categorical': "/resources/icons/variables/array/categorical.svg",
+    'datetime': "/resources/icons/variables/array/datetime.svg",
+    'timer': "/resources/icons/variables/array/timer.svg",
+    'structure': "/resources/icons/variables/array/structure.svg"
+};
+
+GlobalVar.prototype.getIconPath = function() {
+    if (this.dataFormat() === "array") {
+        return GlobalVar.iconArrayPerDataType[this.dataType()];
+    }
+    else {
+        return GlobalVar.iconPerDataType[this.dataType()];
+    }
 };
 
 GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
