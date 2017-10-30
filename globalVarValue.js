@@ -711,6 +711,14 @@ GlobalVarValueUndefined = function(parentVar) {
 };
 
 /**
+ * modify the value either by a supplying a globalVarValue instance or a javascript string or number
+ * @param data
+ */
+GlobalVarValueUndefined.prototype.setValue = function(data) {
+    this.value(data);
+};
+
+/**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
