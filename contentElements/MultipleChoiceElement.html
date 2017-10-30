@@ -99,7 +99,7 @@
 <template id="choice-playerview-template">
     <div>
         <!-- ko if: (multipleChoiceElement.enableTitle())  -->
-        <span style="display:inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
+        <div data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></div>
         <!-- /ko -->
 
         <!-- ko if: multipleChoiceElement.triedToSubmit() -->
