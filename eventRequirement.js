@@ -324,7 +324,7 @@ var OperandVariable = function(event) {
 
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
-OperandVariable.prototype.operandTypes = ['undefined', "arithmetic", "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean"];
+OperandVariable.prototype.operandTypes = ['undefined', "arithmetic", "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean","round0decimal"];
 OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
 
 /**
@@ -411,6 +411,24 @@ OperandVariable.prototype.getValue = function(parameters) {
                 }
             }
             return value;
+
+        case "round0decimal":
+            return Math.round(value.left.getValue());
+
+        case "round1decimal":
+            return Math.round( value.left.getValue()*10)/10;
+
+        case "round2decimals":
+            return Math.round( value.left.getValue()*100)/100;
+
+        case "round3decimals":
+            return Math.round( value.left.getValue()*1000)/1000;
+
+        case "floor":
+            return Math.floor(value.left.getValue());
+
+        case "ceil":
+            return Math.ceil(value.left.getValue());
     }
 };
 
@@ -451,6 +469,9 @@ OperandVariable.prototype.setPointers = function(entitiesArr) {
         this.operandValueOrObject().left.setPointers(entitiesArr);
         this.operandValueOrObject().right.setPointers(entitiesArr);
     }
+    if (this.operandType() == "round0decimal" || this.operandType() == "round1decimal" || this.operandType() == "round2decimals"  || this.operandType() == "round3decimals" || this.operandType() == "ceil" || this.operandType() == "floor") {
+        this.operandValueOrObject().left.setPointers(entitiesArr);
+    }
 };
 
 /**
@@ -469,6 +490,10 @@ OperandVariable.prototype.reAddEntities = function(entitiesArr) {
     if (this.operandType() == "arithmetic"){
         this.operandValueOrObject().left.reAddEntities(entitiesArr);
         this.operandValueOrObject().right.reAddEntities(entitiesArr);
+    }
+    if (this.operandType() == "round0decimal" || this.operandType() == "round1decimal" || this.operandType() == "round2decimals"  || this.operandType() == "round3decimals" || this.operandType() == "ceil" || this.operandType() == "floor"){
+        this.operandValueOrObject().left.reAddEntities(entitiesArr);
+
     }
 };
 
@@ -495,6 +520,15 @@ OperandVariable.prototype.fromJS = function(data) {
             op: data.operandValueOrObject.op
         });
     }
+    else if (data.operandType == "round0decimal" || data.operandType == "round1decimal" || data.operandType== "round2decimals"  || data.operandType == "round3decimals" || data.operandType == "ceil" || data.operandType == "floor") {
+        var left = new OperandVariable(this.event);
+        left.fromJS(data.operandValueOrObject.left);
+        this.operandValueOrObject({
+            left: left,
+            op: data.operandValueOrObject.op
+        });
+    }
+
     else {
         this.operandValueOrObject(data.operandValueOrObject);
     }
@@ -525,6 +559,12 @@ OperandVariable.prototype.toJS = function() {
         data.operandValueOrObject = {
             left: data.operandValueOrObject.left.toJS(),
             right: data.operandValueOrObject.right.toJS(),
+            op: data.operandValueOrObject.op
+        };
+    }
+    if (data.operandType == "round0decimal" || data.operandType == "round1decimal" || data.operandType== "round2decimals"  || data.operandType == "round3decimals" || data.operandType == "ceil" || data.operandType == "floor") {
+        data.operandValueOrObject = {
+            left: data.operandValueOrObject.left.toJS(),
             op: data.operandValueOrObject.op
         };
     }
