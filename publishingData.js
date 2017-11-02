@@ -5,7 +5,7 @@ var PublishingData = function(experiment) {
     var self = this;
 
     // others
-    this.dateLastModified = ko.observable(this.getCurrentDate());
+    this.dateLastModified = ko.observable(""); // deprecated
     
     // page 1 //
     this.sharingDesign = ko.observable('none'); // 'none', 'public'
@@ -197,10 +197,6 @@ PublishingData.prototype.setPointers = function() {
 
 PublishingData.prototype.fromJS = function(data) {
 
-    if (data.hasOwnProperty('dateLastModified')) {
-        this.dateLastModified(data.dateLastModified);
-    }
-
     // page 1 //
     this.sharingDesign(data.sharingDesign);
     this.recruitInLibrary(data.recruitInLibrary);
@@ -337,8 +333,6 @@ PublishingData.prototype.toJS = function() {
     }
 
     return {
-        dateLastModified: this.dateLastModified(),
-
         // page 1 //
         sharingDesign:this.sharingDesign(),
         recruitInLibrary: this.recruitInLibrary(),

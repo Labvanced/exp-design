@@ -21,6 +21,9 @@ var Experiment = function () {
     this.num_exp_subjects = ko.observable(null);
     this.rec_session_data = [];
 
+    this.add_time = ko.observable("");
+    this.modified_time = ko.observable("");
+
     // setup class instances for experiment functions
     this.exp_data = new ExpData(this);
     this.exp_data_obs = ko.observable(this.exp_data);
@@ -384,6 +387,12 @@ Experiment.prototype.fromJS = function(data) {
     this.version(data.version);
     this.status(data.status);
     this.num_exp_subjects(data.num_exp_subjects);
+    if (data.hasOwnProperty("add_time")) {
+        this.add_time(data.add_time);
+    }
+    if (data.hasOwnProperty("modified_time")) {
+        this.modified_time(data.modified_time);
+    }
     if (data.hasOwnProperty("exp_data")){
         this.exp_data = new ExpData(this);
         this.exp_data.fromJS(data.exp_data);
@@ -455,6 +464,8 @@ Experiment.prototype.toJS = function() {
         exp_name: this.exp_name(),
         version: this.version(),
         status: this.status(),
+        add_time: this.add_time(),
+        modified_time: this.modified_time(),
         exp_data: exp_data_serialized,
         publishing_data: publishing_data_serialized,
         analysis_data: analysisData_serialized,
