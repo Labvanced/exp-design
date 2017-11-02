@@ -5,7 +5,7 @@ var MultiLineInputElement = function(expData) {
 
     //serialized
     this.type= "MultiLineInputElement";
-    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;">Your Question</span>'));
+    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
     this.enableTitle= ko.observable(true);

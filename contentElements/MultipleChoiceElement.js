@@ -6,7 +6,7 @@ var MultipleChoiceElement = function(expData) {
 
     //serialized
     this.type= "MultipleChoiceElement";
-    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;">Your Question</span>'));
+    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.isRequired = ko.observable(false);
 
     this.altAnswerActive = ko.observable(false);
@@ -330,7 +330,7 @@ MultipleChoiceEntry.prototype.selectTrialType = function(selectionSpec) {
 
 MultipleChoiceEntry.prototype.init = function() {
     var nr = this.parent.elements().length;
-    var initText = '<span style="font-size:16px;">option_' +nr+'</span>';
+    var initText = '<p><span style="font-size:16px;">option_' +nr+'</span></p>';
     this.multChoiceText().rawText( initText );
     this.multChoiceValue( 'option_' +nr );
 };

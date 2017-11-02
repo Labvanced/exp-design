@@ -4,11 +4,11 @@ var LikertElement= function(expData) {
 
     //serialized
     this.type= "LikertElement";
-    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:20px;">Your Question</span>'));
+    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.startChoice= ko.observable(1);
     this.endChoice= ko.observable(5);
-    this.startLabel = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:16px;">Left Label</span>'));
-    this.endLabel = ko.observable(new EditableTextElement(this.expData, this, '<span style="font-size:16px;">Right Label</span>'));
+    this.startLabel = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:16px;">Left Label</span></p>'));
+    this.endLabel = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:16px;">Right Label</span></p>'));
     this.choices= ko.observableArray([1,2,3,4,5]);
 
     this.variable = ko.observable();

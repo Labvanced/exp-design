@@ -5,7 +5,7 @@ var CheckBoxElement= function(expData) {
 
     //serialized
     this.type= "CheckBoxElement";
-    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;">Your Question</span>'));
+    this.questionText = ko.observable(new EditableTextElement(expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
 
     // content
     this.elements = ko.observableArray([]);
@@ -163,7 +163,7 @@ CheckBoxElement.prototype.fromJS = function(data) {
 
 var CheckBoxEntry= function(checkBoxParent) {
     this.parent = checkBoxParent;
-    this.checkBoxText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<span style="font-size:16px;">check</span>'));
+    this.checkBoxText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">check</span></p>'));
     this.variable=ko.observable(null);
 };
 

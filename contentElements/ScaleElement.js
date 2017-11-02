@@ -7,7 +7,7 @@ var ScaleElement= function(expData) {
     //serialized
     this.type= "ScaleElement";
     this.id = ko.observable(guid());
-    this.questionText = ko.observable(new EditableTextElement(expData, this, '<span style="font-size:20px;">Your Question</span>'));
+    this.questionText = ko.observable(new EditableTextElement(expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.addDeleteFromCol = ko.observable(this.addDeleteOptionsCol[1]);
     this.margin = ko.observable(2);
     this.labels = ko.observableArray([]);
@@ -235,7 +235,7 @@ ScaleElement.prototype.fromJS = function(data) {
 var ScaleEntry= function(scaleParent) {
     var self = this;
     this.parent = scaleParent;
-    this.rowText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<span style="font-size:14px;">your question</span></span>'));
+    this.rowText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:14px;">your question</span></p>'));
     this.variable=ko.observable(null);
     this.isRequired=ko.observable(false);
     // not serialized
