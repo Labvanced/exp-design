@@ -324,7 +324,7 @@ var OperandVariable = function(event) {
 
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
-OperandVariable.prototype.operandTypes = ['undefined', "arithmetic", "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean","round0decimal"];
+OperandVariable.prototype.operandTypes = ['undefined', "arithmetic", "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean","round0decimal","round1decimal","round2decimals","round3decimals","floor","ceil"];
 OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
 
 /**
