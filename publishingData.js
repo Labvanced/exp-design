@@ -68,7 +68,9 @@ var PublishingData = function(experiment) {
     this.addLabVancedSearch= ko.observable(false);
     this.postOnAMT = ko.observable("no");
     this.termsCrowdsourcing = ko.observable(false);
-    this.amountOfSubjects = ko.observable(0);
+    this.amountOfSubjects = ko.observable(100);
+    this.moneyPerSubject = ko.observable(0.5);
+    this.crowdsourcingStatus = ko.observable('inactive');
 
     // page 4 //
     this.termsAccepted = ko.observable(false);
@@ -282,6 +284,14 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('displayBackToLib')) {
         this.displayBackToLib(data.displayBackToLib);
     }
+    if (data.hasOwnProperty('moneyPerSubject')) {
+        this.moneyPerSubject(data.moneyPerSubject);
+    }
+    if (data.hasOwnProperty('crowdsourcingStatus')) {
+        this.crowdsourcingStatus(data.crowdsourcingStatus);
+    }
+
+
 
     // page 3 //
     this.addHighlight(data.addHighlight);
@@ -376,6 +386,8 @@ PublishingData.prototype.toJS = function() {
         postOnAMT : this.postOnAMT(),
         termsCrowdsourcing: this.termsCrowdsourcing(),
         amountOfSubjects: this.amountOfSubjects(),
+        moneyPerSubject: this.moneyPerSubject(),
+        crowdsourcingStatus: this.crowdsourcingStatus(),
         
         // page 4 //
         termsAccepted: this.termsAccepted(),
