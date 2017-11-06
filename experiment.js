@@ -159,10 +159,12 @@ Experiment.prototype.save = function() {
 /**
  * save this experiment and send to server
  */
-Experiment.prototype.saveExpData = function(cb) {
+Experiment.prototype.saveExpData = function(cb, force) {
     var self = this;
 
-    if (this.status() == "create"){
+    force = typeof force !== 'undefined' ? force : false;
+
+    if (this.status() == "create" || force){
         console.log("save experiment " + this.exp_name() + " and send to server...");
         try {
             var serializedExp = this.toJS();
@@ -223,7 +225,7 @@ Experiment.prototype.saveExpData = function(cb) {
 
 Experiment.prototype.startLockingDialog = function() {
     var self= this;
-    var tempDialog = $('<div><p>Editing this experiment is not possible because it is not in "create" state. In order to keep the specification of the experiment and the recorded data synchronized, you have three options: </p><ul><li>You can delete all recordings and switch this experiment back to "create" mode.</li><li>You can copy this experiment and then edit the new instance (this will be implemented soon).</li><li>Cancel the editing and keep everything as it is.</li></ul></div>');
+    var tempDialog = $('<div><p>Editing this experiment is not recommended, because it is not in "create" state. In order to keep the specification of the experiment and the recorded data synchronized, it is advised to create a copy of this study if you want to change the specification. You have four options: </p><ul><li>You can delete all recordings and switch this experiment back to "create" mode.</li><li>Cancel the editing and keep everything as it is.</li><li>Force saving the experiment anyway (only if you know the risks).</li><li>You can copy this experiment and then edit the new instance.</li></ul></div>');
     tempDialog.dialog({
         modal: true,
         title: "Experiment is Locked",
@@ -243,6 +245,16 @@ Experiment.prototype.startLockingDialog = function() {
                 text: "Cancel editing and reload from server",
                 click: function () {
                     window.location.reload(false);
+                    $( this ).dialog( "close" );
+                }
+            },
+            {
+                text: "I know what I am doing and save anyway",
+                click: function () {
+                    var force = true;
+                    self.saveExpData(function() {
+
+                    }, force);
                     $( this ).dialog( "close" );
                 }
             }
