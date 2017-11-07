@@ -627,7 +627,9 @@ ActionSelectFromArray.prototype.removeOutVariable = function(){
 ActionSelectFromArray.prototype.run = function(triggerParams) {
     var index = parseInt(this.inVarIndex().value().value());
     var value = this.inVarArr().value().getValueAt(index-1);
-    this.outVar().value().setValue(value)
+    if (this.outVar()) {
+        this.outVar().value().setValue(value);
+    }
 };
 
 /**
@@ -716,6 +718,7 @@ var ActionLoadFileIds = function(event) {
     // serialized
     this.files = ko.observableArray([]);
     this.outVarFileIds = ko.observable(null);
+    this.outVarFileNames = ko.observable(null);
 };
 
 ActionLoadFileIds.prototype.type = "ActionLoadFileIds";
@@ -732,8 +735,15 @@ ActionLoadFileIds.prototype.isValid = function(){
 ActionLoadFileIds.prototype.setOutVarBackRef = function(){
     this.outVarFileIds().addBackRef(this, this.event, true, false, 'set file ids');
 };
+ActionLoadFileIds.prototype.setOutVarFileNamesBackRef = function(){
+    this.outVarFileNames().addBackRef(this, this.event, true, false, 'set file names');
+};
 
 ActionLoadFileIds.prototype.removeOutVariable = function(){
+    this.outVarFileIds(null);
+};
+
+ActionLoadFileIds.prototype.removeOutVariableFileNames = function(){
     this.outVarFileIds(null);
 };
 
@@ -752,6 +762,16 @@ ActionLoadFileIds.prototype.run = function(triggerParams) {
         // fill values:
         jQuery.each(this.files(), function (idx, file) {
             arrVarValue.pushValue(file.id);
+        });
+    }
+    if (this.outVarFileNames()) {
+        // clear array:
+        var arrVarNamesValue = this.outVarFileNames().value();
+        arrVarNamesValue.value([]);
+
+        // fill values:
+        jQuery.each(this.files(), function (idx, file) {
+            arrVarNamesValue.pushValue(file.name_original);
         });
     }
 };
@@ -776,6 +796,11 @@ ActionLoadFileIds.prototype.setPointers = function(entitiesArr) {
         this.outVarFileIds(outVarFileIds);
         this.setOutVarBackRef();
     }
+    var outVarFileNames = entitiesArr.byId[this.outVarFileNames()];
+    if (outVarFileNames){
+        this.outVarFileNames(outVarFileNames);
+        this.setOutVarFileNamesBackRef();
+    }
 };
 
 /**
@@ -786,6 +811,9 @@ ActionLoadFileIds.prototype.setPointers = function(entitiesArr) {
 ActionLoadFileIds.prototype.fromJS = function(data) {
     this.files(data.files);
     this.outVarFileIds(data.outVarFileIds);
+    if (data.hasOwnProperty('outVarFileNames')) {
+        this.outVarFileNames(data.outVarFileNames);
+    }
     return this;
 };
 
@@ -800,10 +828,17 @@ ActionLoadFileIds.prototype.toJS = function() {
             outVarFileIds = this.outVarFileIds().id();
         }
     }
+    var outVarFileNames = null;
+    if (this.outVarFileNames()) {
+        if (typeof this.outVarFileNames().id == 'function') {
+            outVarFileNames = this.outVarFileNames().id();
+        }
+    }
     return {
         type: this.type,
         files: this.files(),
-        outVarFileIds: outVarFileIds
+        outVarFileIds: outVarFileIds,
+        outVarFileNames: outVarFileNames
     };
 };
 
