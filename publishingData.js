@@ -25,9 +25,11 @@ var PublishingData = function(experiment) {
     this.secrecyType= ko.observable('link');
     this.passwordType= ko.observable('oneForAll');
     this.stopCondition= ko.observable('none');
-    this.recordingStopDate= ko.observable(null);
+    this.maxDaysCrowdsourcing= ko.observable(90);
+    this.enableMaxDaysCrowdsourcing= ko.observable(false);
     this.recordingStopTime= ko.observable(null);
     this.recordingStopNrSubjects =  ko.observable(1);
+
 
 
     // page 2  //
@@ -153,26 +155,31 @@ var PublishingData = function(experiment) {
 
 PublishingData.prototype.updateReqProperties = function () {
     // calculate required survey fields (it is required if the field is enabled in any group):
+    var someRequirements = false;
     var availableGroups = this.experiment.exp_data.availableGroups();
     for (var i=0; i<availableGroups.length; i++) {
         if (availableGroups[i].enabledGender()) {
             this.surveyItemGender('required');
             this.requiredGender(true);
+            someRequirements = true;
         }
 
         if (availableGroups[i].enabledAge()) {
             this.surveyItemAge('required');
             this.requiredAge(true);
+            someRequirements = true;
         }
 
         if (availableGroups[i].enabledCountry()) {
             this.surveyItemCountry('required');
             this.requiredCountry(true);
+            someRequirements = true;
         }
 
         if (availableGroups[i].enabledLanguage()) {
             this.surveyItemLanguage('required');
             this.requiredLanguage(true);
+            someRequirements = true;
         }
 
         // email is required if more than one session:
@@ -180,8 +187,10 @@ PublishingData.prototype.updateReqProperties = function () {
         if (sessionTimeData.length > 1) {
             this.surveyItemEmail('required');
             this.requiredEmail(true);
+            someRequirements = true;
         }
     }
+    return someRequirements
 };
 
 PublishingData.prototype.getCurrentDate = function() {
@@ -208,7 +217,13 @@ PublishingData.prototype.fromJS = function(data) {
     this.secrecyType(data.secrecyType);
     this.passwordType(data.passwordType);
     this.stopCondition(data.stopCondition);
-    this.recordingStopDate(data.recordingStopDate);
+    if (data.hasOwnProperty('maxDaysCrowdsourcing')) {
+        this.maxDaysCrowdsourcing(data.maxDaysCrowdsourcing);
+    }
+    if (data.hasOwnProperty('enableMaxDaysCrowdsourcing')) {
+        this.enableMaxDaysCrowdsourcing(data.enableMaxDaysCrowdsourcing);
+    }
+
     this.recordingStopTime(data.recordingStopTime);
     this.recordingStopNrSubjects(data.recordingStopNrSubjects);
 
@@ -352,9 +367,11 @@ PublishingData.prototype.toJS = function() {
         secrecyType: this.secrecyType(),
         passwordType: this.passwordType(),
         stopCondition: this.stopCondition(),
-        recordingStopDate: this.recordingStopDate(),
+        maxDaysCrowdsourcing: this.maxDaysCrowdsourcing(),
+        enableMaxDaysCrowdsourcing:this.enableMaxDaysCrowdsourcing(),
         recordingStopTime: this.recordingStopTime(),
         recordingStopNrSubjects: this.recordingStopNrSubjects(),
+
 
         // page 2  //
         exp_name: this.exp_name(),

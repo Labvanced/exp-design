@@ -361,7 +361,7 @@ ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupId
     // sanity check
     var trialRepIdx = [];
     for (var trialIndex=0; trialIndex < Trials.length; trialIndex++) {
-        trialRepIdx.push(Trials[trialIndex].nr());
+        trialRepIdx.push(Trials[trialIndex].uniqueId());
     }
     var checkSortArray = trialRepIdx.slice().sort();
     var results = [];
