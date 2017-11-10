@@ -19,6 +19,7 @@ var GlobalVar = function (expData) {
     this.scale = ko.observable('undefined');
     this.scope = ko.observable("undefined");
     this.dataFormat = ko.observable("scalar");
+    this.description = ko.observable('variable description');
 
     this.isFactor =  ko.observable(false);
     this.isInteracting = ko.observable(false); // TODO: remove
@@ -342,6 +343,10 @@ GlobalVar.prototype.fromJS = function(data) {
     else {
         this.resetStartValue();
     }
+    if (data.hasOwnProperty('description')) {
+        this.description(data.description);
+    }
+
 
 
     this.levels(jQuery.map( data.levels, function( lvlData, index ) {
@@ -371,6 +376,7 @@ GlobalVar.prototype.toJS = function() {
         dataFormat: this.dataFormat(),
         isFactor: this.isFactor(),
         isInteracting: this.isInteracting(),
+        description:this.description(),
 
         resetAtTrialStart: this.resetAtTrialStart(),
         recordAtTrialEnd: this.recordAtTrialEnd(),

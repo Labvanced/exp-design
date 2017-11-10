@@ -16,6 +16,7 @@ var Event= function(parent) {
     this.trigger = ko.observable(null);
     this.actions = ko.observableArray([]);
     this.name =  ko.observable(null);
+    this.description = ko.observable('event description');
 
     this.shortName = ko.computed(function() {
         if (self.name()){
@@ -132,11 +133,16 @@ Event.prototype.fromJS = function(data) {
         actions.push(action);
     }
     this.actions(actions);
-
+    if (data.hasOwnProperty('description')) {
+        this.description(data.description);
+    }
 
     if (data.requirement) {
         this.requirementConverter(data);
     }
+
+
+
 
     return this;
 };
@@ -171,7 +177,8 @@ Event.prototype.toJS = function() {
         name:this.name(),
         type: this.type,
         trigger: this.trigger().toJS(),
-        actions: actionData
+        actions: actionData,
+        description:this.description()
     };
 };
 

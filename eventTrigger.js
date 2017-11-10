@@ -423,7 +423,7 @@ TriggerKeyboard.prototype.getValidKeyCodes = function() {
  */
 TriggerKeyboard.prototype.getParameterSpec = function() {
     return [
-        'Id of Key',
+        'Id of Key'
     ];
 };
 
@@ -438,7 +438,8 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
 
     this.eventHandleForCleanUp = function (ev){
         var keyIdx = validKeyCodes.indexOf(ev.keyCode);
-        if (keyIdx>=0){
+        var anyAllowed = self.buttons().indexOf("any");
+        if (keyIdx>=0 || anyAllowed>=0){
             if (self.buttonTypesFkeysCode.indexOf(ev.keyCode) >= 0) {
                 // only prevent default for F keys:
                 ev.preventDefault();
