@@ -92,7 +92,8 @@ ExpData.prototype.oldFixedVarNames = [
     'varTimeMeasureSpecMeanEMPTY',
     'varFullscreenSpecEMPTY',
     'varBrowserVersionSpecEMPTY',
-    'varTimeMeasureSpecMaxEMPTY'
+    'varTimeMeasureSpecMaxEMPTY',
+    'varCrowdsourcingCodeEMPTY'
 ];
 
 ExpData.prototype.fixedVarNames = [
@@ -116,7 +117,8 @@ ExpData.prototype.fixedVarNames = [
     'varTimeMeasureSpecMean',
     'varFullscreenSpec',
     'varBrowserVersionSpec',
-    'varTimeMeasureSpecMax'
+    'varTimeMeasureSpecMax',
+    'varCrowdsourcingCode'
 ];
 
 ExpData.prototype.staticTranslations = {
@@ -317,7 +319,12 @@ ExpData.prototype.createVars = function() {
     if (!this.varBrowserVersionSpec()) {
         this.varBrowserVersionSpec((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'BrowserVersion_Spec'));
     }
+    if (!this.varCrowdsourcingCode()) {
+        this.varCrowdsourcingCode((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'nominal', 'Crowdsourcing_Code'));
+    }
 };
+
+
 
 
 
