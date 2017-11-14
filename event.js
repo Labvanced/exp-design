@@ -35,6 +35,31 @@ Event.prototype.deleteAction = function(index) {
     this.actions.splice(index, 1);
 };
 
+Event.prototype.moveActionDown = function(index) {
+    this.moveAction(index,"Down");
+};
+
+Event.prototype.moveActionUp = function(index) {
+    this.moveAction(index,"Up");
+};
+
+Event.prototype.moveAction = function(index,UpOrDown) {
+    //var elem = this.dataModel.elements()[index];
+
+    //  var index = this.frameView.geIndexOfViewElement(elem);
+    if (UpOrDown=="Up"  && index < this.actions().length-1){
+        var elem = this.actions.splice(index, 1)[0];
+        this.actions.splice(index+1, 0, elem);
+
+    }
+    else if (UpOrDown=="Down" && index >0){
+        var elem = this.actions.splice(index, 1)[0];
+        this.actions.splice(index-1, 0, elem);
+    }
+    this.parent.expData.notifyChanged();
+};
+
+
 /**
  * the event is triggered via this function.
  * @param parameters
