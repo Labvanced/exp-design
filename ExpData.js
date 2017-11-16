@@ -22,6 +22,9 @@ var ExpData = function (parentExperiment) {
 
     this.translations = ko.observableArray([]);
     this.translatedLanguages = ko.observableArray([]);
+    this.languageTransferOption = ko.observable('transfer');
+    this.transferLanguage = ko.observable(null);
+
 
     // not serialized
     var self = this;
@@ -594,6 +597,13 @@ ExpData.prototype.fromJS = function(data) {
     else if (data.hasOwnProperty('translatedLanguages')) {
         this.translatedLanguages(data.translatedLanguages);
     }
+    if (data.hasOwnProperty('languageTransferOption')) {
+        this.languageTransferOption(data.languageTransferOption);
+    }
+    if (data.hasOwnProperty('transferLanguage')) {
+        this.transferLanguage(data.transferLanguage);
+    }
+
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varName = ExpData.prototype.fixedVarNames[i];
@@ -650,6 +660,8 @@ ExpData.prototype.toJS = function() {
             }
         }),
         translatedLanguages: this.translatedLanguages(),
+        languageTransferOption: this.languageTransferOption(),
+        transferLanguage:this.transferLanguage(),
         studySettings:studySettings
     };
 
