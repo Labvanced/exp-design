@@ -5,7 +5,7 @@ var MultiLineInputElement = function(expData) {
 
     //serialized
     this.type= "MultiLineInputElement";
-    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText = ko.observable(null); // EditableTextElement
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
     this.enableTitle= ko.observable(true);
@@ -26,6 +26,10 @@ MultiLineInputElement.prototype.initHeight = 100;
 
 
 MultiLineInputElement.prototype.init = function() {
+
+    this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText().init();
+
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[0]);
     globalVar.scope('trial');

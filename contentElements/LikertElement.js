@@ -4,11 +4,11 @@ var LikertElement= function(expData) {
 
     //serialized
     this.type= "LikertElement";
-    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText = ko.observable(null); // EditableTextElement
     this.startChoice= ko.observable(1);
     this.endChoice= ko.observable(5);
-    this.startLabel = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:16px;">Left Label</span></p>'));
-    this.endLabel = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:16px;">Right Label</span></p>'));
+    this.startLabel = ko.observable(null); // EditableTextElement
+    this.endLabel = ko.observable(null); // EditableTextElement
     this.choices= ko.observableArray([1,2,3,4,5]);
 
     this.variable = ko.observable();
@@ -33,6 +33,14 @@ LikertElement.prototype.initWidth = 350;
 LikertElement.prototype.initHeight = 120;
 
 LikertElement.prototype.init = function() {
+
+    this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText().init();
+    this.startLabel(new EditableTextElement(this.expData, this, '<p><span style="font-size:16px;">Left Label</span></p>'));
+    this.startLabel().init();
+    this.endLabel(new EditableTextElement(this.expData, this, '<p><span style="font-size:16px;">Right Label</span></p>'));
+    this.endLabel().init();
+
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope('trial');

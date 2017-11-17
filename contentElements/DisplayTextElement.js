@@ -5,7 +5,7 @@ var DisplayTextElement = function(expData) {
 
     //serialized
     this.type = "DisplayTextElement";
-    this.text = ko.observable(new EditableTextElement(expData, this, '<p><span style="font-size:24px;">You can display your custom text here.</span></p>'));
+    this.text = ko.observable(null); // is EditableTextElement
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -22,7 +22,8 @@ DisplayTextElement.prototype.initHeight = 80;
 
 
 DisplayTextElement.prototype.init = function() {
-
+    this.text(new EditableTextElement(this.expData, this, '<p><span style="font-size:24px;">You can display your custom text here.</span></p>'));
+    this.text().init();
 };
 
 /**

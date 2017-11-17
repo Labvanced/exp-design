@@ -12,7 +12,7 @@ var SortableElement = function(expData) {
 
     this.elements =  ko.observableArray([]).extend({sortById: null});
     this.elementIds =  ko.observableArray([]).extend({sortById: null});
-    this.questionText = ko.observable(new EditableTextElement(expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText = ko.observable(null); // EditableTextElement
     this.enableTitle= ko.observable(true);
 
     ///// not serialized
@@ -30,6 +30,8 @@ SortableElement.prototype.initWidth = 350;
 SortableElement.prototype.initHeight = 100;
 
 SortableElement.prototype.init = function() {
+    this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText().init();
 
     this.addElem('id1');
     this.addElem('id2');
@@ -169,11 +171,14 @@ SortableElement.prototype.toJS = function() {
 
 var SortableEntry= function(selectionParent) {
     this.parent = selectionParent;
-    this.sortableText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+    this.sortableText = ko.observable(null); // EditableTextElement
     this.variable = ko.observable(null);
 };
 
 SortableEntry.prototype.init = function() {
+    this.sortableText(new EditableTextElement(this.parent.expData, this.parent, ''));
+    this.sortableText().init();
+
     var globalVar = new GlobalVar(this.parent.expData);
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope('trial');

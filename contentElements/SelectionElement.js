@@ -6,7 +6,7 @@ var SelectionElement = function(expData) {
 
     //serialized
     this.type = "SelectionElement";
-    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText = ko.observable(null); // EditableTextElement
 
     this.elements = ko.observableArray([]);
     this.variable = ko.observable();
@@ -39,6 +39,10 @@ SelectionElement.prototype.removeEntry = function(idx) {
 };
 
 SelectionElement.prototype.init = function() {
+
+    this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText().init();
+
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType('string');
     globalVar.scope('trial');

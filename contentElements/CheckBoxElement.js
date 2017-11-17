@@ -5,7 +5,7 @@ var CheckBoxElement= function(expData) {
 
     //serialized
     this.type= "CheckBoxElement";
-    this.questionText = ko.observable(new EditableTextElement(expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText = ko.observable(null); // needs to be an EditableTextElement
 
     // content
     this.elements = ko.observableArray([]);
@@ -31,6 +31,8 @@ CheckBoxElement.prototype.initWidth = 180;
 CheckBoxElement.prototype.initHeight = 90;
 
 CheckBoxElement.prototype.init = function() {
+    this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText().init();
     this.addEntry();
 };
 
@@ -163,7 +165,7 @@ CheckBoxElement.prototype.fromJS = function(data) {
 
 var CheckBoxEntry= function(checkBoxParent) {
     this.parent = checkBoxParent;
-    this.checkBoxText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">check</span></p>'));
+    this.checkBoxText = ko.observable(null); // needs to be an EditableTextElement
     this.variable=ko.observable(null);
 };
 
@@ -173,6 +175,9 @@ CheckBoxEntry.prototype.selectTrialType = function(selectionSpec) {
 };
 
 CheckBoxEntry.prototype.init = function() {
+    this.checkBoxText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">check</span></p>'));
+    this.checkBoxText().init();
+
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[2]);
     globalVar.scope('trial');

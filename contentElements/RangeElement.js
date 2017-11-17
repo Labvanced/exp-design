@@ -5,11 +5,11 @@ var RangeElement= function(expData) {
 
     //serialized
     this.type= "RangeElement";
-    this.questionText = ko.observable(new EditableTextElement(expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText = ko.observable(null); // EditableTextElement
     this.minChoice= ko.observable(1);
     this.maxChoice= ko.observable(5);
-    this.startLabel = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:16px;">label 1</span></p>'));
-    this.endLabel = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:16px;">label 2</span></p>'));
+    this.startLabel = ko.observable(null); // EditableTextElement
+    this.endLabel = ko.observable(null); // EditableTextElement
     this.showNumber = ko.observable(true);
     this.variable = ko.observable();
     this.enableTitle= ko.observable(true);
@@ -27,6 +27,13 @@ RangeElement.prototype.initWidth = 500;
 RangeElement.prototype.initHeight = 100;
 
 RangeElement.prototype.init = function() {
+
+    this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText().init();
+    this.startLabel(new EditableTextElement(this.expData, this, '<p><span style="font-size:16px;">label 1</span></p>'));
+    this.startLabel().init();
+    this.endLabel(new EditableTextElement(this.expData, this, '<p><span style="font-size:16px;">label 2</span></p>'));
+    this.endLabel().init();
 
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[1]);

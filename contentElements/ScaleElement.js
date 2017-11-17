@@ -7,7 +7,7 @@ var ScaleElement= function(expData) {
     //serialized
     this.type= "ScaleElement";
     this.id = ko.observable(guid());
-    this.questionText = ko.observable(new EditableTextElement(expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText = ko.observable(null); // EditableTextElement
     this.addDeleteFromCol = ko.observable(this.addDeleteOptionsCol[1]);
     this.margin = ko.observable(2);
     this.labels = ko.observableArray([]);
@@ -41,10 +41,15 @@ ScaleElement.prototype.initHeight = 170;
 ScaleElement.prototype.addDeleteOptionsCol = ["left","right"];
 
 ScaleElement.prototype.init = function() {
+    this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText().init();
+
     this.addEntry();
 
     for(var i = 0; i<5; i++){
-        this.labels.push(new ScaleLabel(this));
+        var scaleLabel = new ScaleLabel(this);
+        scaleLabel.init();
+        this.labels.push(scaleLabel);
     }
 
     this.labels()[0].labelText().setText('<p style="text-align: center;"><span style="font-size:16px">totally agree</span></p>');
@@ -214,6 +219,7 @@ ScaleElement.prototype.fromJS = function(data) {
                     label = data.endLabel;
                 }
                 var labelElement = new ScaleLabel(self);
+                labelElement.init();
                 labelElement.labelText().setText(label);
                 this.labels.push(labelElement);
             }
@@ -235,7 +241,7 @@ ScaleElement.prototype.fromJS = function(data) {
 var ScaleEntry= function(scaleParent) {
     var self = this;
     this.parent = scaleParent;
-    this.rowText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:14px;">your question</span></p>'));
+    this.rowText = ko.observable(null); // EditableTextElement
     this.variable=ko.observable(null);
     this.isRequired=ko.observable(false);
     // not serialized
@@ -248,6 +254,10 @@ ScaleEntry.prototype.selectTrialType = function(selectionSpec) {
 };
 
 ScaleEntry.prototype.init = function() {
+
+    this.rowText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:14px;">your question</span></p>'));
+    this.rowText().init();
+
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope('trial');
@@ -348,7 +358,12 @@ ScaleEntry.prototype.toJS = function() {
 var ScaleLabel= function(scaleParent) {
     var self = this;
     this.parent = scaleParent;
-    this.labelText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+    this.labelText = ko.observable(null); // EditableTextElement
+};
+
+ScaleLabel.prototype.init = function(selectionSpec) {
+    this.labelText(new EditableTextElement(this.parent.expData, this.parent, ''));
+    this.labelText().init();
 };
 
 ScaleLabel.prototype.selectTrialType = function(selectionSpec) {
@@ -425,11 +440,13 @@ function createScaleComponents() {
     };
 
     ScaleEditViewModel.prototype.addColumn = function() {
+        var newScaleLabel = new ScaleLabel(this.dataModel);
+        newScaleLabel.init();
         if (this.dataModel.addDeleteFromCol()=='left'){
-            this.dataModel.labels.splice(0,0,new ScaleLabel(this));
+            this.dataModel.labels.splice(0,0,newScaleLabel);
         }
         else{
-            this.dataModel.labels.push(new ScaleLabel(this));
+            this.dataModel.labels.push(newScaleLabel);
         }
 
         // force refresh of observable array to trigger refresh of view:

@@ -6,7 +6,7 @@ var MultipleChoiceElement = function(expData) {
 
     //serialized
     this.type= "MultipleChoiceElement";
-    this.questionText = ko.observable(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText = ko.observable(null); // EditableTextElement
     this.isRequired = ko.observable(false);
 
     this.altAnswerActive = ko.observable(false);
@@ -47,6 +47,9 @@ MultipleChoiceElement.prototype.initHeight = 120;
 
 
 MultipleChoiceElement.prototype.init = function() {
+    this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText().init();
+
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType('string');
     globalVar.scope('trial');
@@ -302,7 +305,7 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
 var MultipleChoiceEntry= function(multChoiceParent) {
     this.parent = multChoiceParent;
 
-    this.multChoiceText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, ''));
+    this.multChoiceText = ko.observable(null); // EditableTextElement
     this.multChoiceValue = ko.observable(null);
 
 };
@@ -330,8 +333,8 @@ MultipleChoiceEntry.prototype.selectTrialType = function(selectionSpec) {
 
 MultipleChoiceEntry.prototype.init = function() {
     var nr = this.parent.elements().length;
-    var initText = '<p><span style="font-size:16px;">option_' +nr+'</span></p>';
-    this.multChoiceText().rawText( initText );
+    this.multChoiceText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">option_' +nr+'</span></p>'));
+    this.multChoiceText().init();
     this.multChoiceValue( 'option_' +nr );
 };
 

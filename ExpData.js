@@ -5,6 +5,7 @@
  * @constructor
  */
 var ExpData = function (parentExperiment) {
+    var self = this;
     this.parentExperiment = parentExperiment;
 
     this.expData = this; // self reference for consistency with other classes..
@@ -22,9 +23,17 @@ var ExpData = function (parentExperiment) {
 
     this.translations = ko.observableArray([]);
     this.translatedLanguages = ko.observableArray([]);
-    this.languageTransferOption = ko.observable('transfer');
+    this.languageTransferOption = ko.observable('empty');
     this.transferLanguage = ko.observable(null);
 
+    this.translationsEnabled = ko.computed(function() {
+        if (self.translations().length > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    });
 
     // not serialized
     var self = this;
@@ -239,6 +248,18 @@ ExpData.prototype.updateLanguage = function() {
     }
 };
 
+ExpData.prototype.markAllTextsTranslatable = function() {
+    $.each(this.availableTasks(), function(index, task) {
+        $.each(task.subSequence().elements(), function(index, frame) {
+            $.each(frame.elements(), function(index, elem) {
+                var allTextRefs = elem.getTextRefs([], '');
+                $.each(allTextRefs, function(index, textRef) {
+                    textRef[2].markTranslatable();
+                });
+            });
+        });
+    });
+};
 
 ExpData.prototype.initVars = function() {
 
@@ -490,6 +511,11 @@ ExpData.prototype.setPointers = function() {
             elem.setPointers(self.entities);
         }
     } );
+
+    // make sure that if translations are eneabled, that all text elements are in translation table:
+    if (this.translationsEnabled()) {
+        this.markAllTextsTranslatable();
+    }
 
     this.updateLanguage();
 

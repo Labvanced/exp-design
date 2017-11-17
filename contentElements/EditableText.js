@@ -25,11 +25,36 @@ EditableTextElement.prototype.modifiableProp = ["rawText"];
 EditableTextElement.prototype.dataType =  ["string"];
 
 EditableTextElement.prototype.init = function() {
-
+    if (this.expData.translationsEnabled()) {
+        this.markTranslatable();
+    }
 };
 
 EditableTextElement.prototype.getAllModifiers = function(modifiersArr) {
     modifiersArr.push(this.modifier());
+};
+
+EditableTextElement.prototype.markTranslatable = function () {
+    var text = this.rawText();
+
+    if (typeof text !== 'number') {
+        var namedEntity = this.parent;
+        for (var k = 0; k <= 50 && !(namedEntity instanceof FrameElement || namedEntity instanceof PageElement); k++) {
+            namedEntity = namedEntity.parent;
+        }
+
+        var translationEntry = new TranslationEntry(this.expData);
+        translationEntry.init(namedEntity);
+        translationEntry.languages.push(ko.observable(text));
+        for (var k = 1; k < this.expData.translatedLanguages().length; k++) {
+            // Starts at k=1 because main is already added above!!
+            translationEntry.languages.push(ko.observable(null));
+        }
+
+        var translationIdx = this.expData.translations().length;
+        this.expData.translations.push(translationEntry);
+        this.rawText(translationIdx);
+    }
 };
 
 EditableTextElement.prototype.setText = function (text) {
@@ -75,16 +100,16 @@ EditableTextElement.prototype.selectTrialType = function(selectionSpec) {
 
 EditableTextElement.prototype.getTextRefs = function(textArr, label){
     if(this.modifier().ndimModifierTrialTypes.length ==0){
-        textArr.push([label, this.rawText]);
+        textArr.push([label, this.rawText, this]);
     }
     else{
         var flattend = this.modifier().getFlattendArray();
         for(var k=0; k<flattend.length; k++){
             if(flattend[k].modifiedProp.rawText) {
-                textArr.push([label, flattend[k].modifiedProp.rawText]);
+                textArr.push([label, flattend[k].modifiedProp.rawText, this]);
             }
             else {
-                textArr.push([label, this.rawText]);
+                textArr.push([label, this.rawText, this]);
             }
         }
     }
