@@ -48,7 +48,7 @@ EditableTextElement.prototype.markTranslatable = function () {
         translationEntry.languages.push(ko.observable(text));
         for (var k = 1; k < this.expData.translatedLanguages().length; k++) {
             // Starts at k=1 because main is already added above!!
-            translationEntry.languages.push(ko.observable(null));
+            translationEntry.languages.push(ko.observable(''));
         }
 
         var translationIdx = this.expData.translations().length;
