@@ -46,17 +46,19 @@ ScaleElement.prototype.init = function() {
 
     this.addEntry();
 
+    var initTexts = [
+        "totally agree",
+        "mostly agree",
+        "undecided",
+        "mostly disagree",
+        "totally disagree"
+    ];
+
     for(var i = 0; i<5; i++){
         var scaleLabel = new ScaleLabel(this);
-        scaleLabel.init();
+        scaleLabel.init('<p style="text-align: center;"><span style="font-size:16px">' + initTexts[i] + '</span></p>');
         this.labels.push(scaleLabel);
     }
-
-    this.labels()[0].labelText().setText('<p style="text-align: center;"><span style="font-size:16px">totally agree</span></p>');
-    this.labels()[1].labelText().setText('<p style="text-align: center;"><span style="font-size:16px">mostly agree</span></p>');
-    this.labels()[2].labelText().setText('<p style="text-align: center;"><span style="font-size:16px">undecided</span></p>');
-    this.labels()[3].labelText().setText('<p style="text-align: center;"><span style="font-size:16px">mostly disagree</span></p>');
-    this.labels()[4].labelText().setText('<p style="text-align: center;"><span style="font-size:16px">totally disagree</span></p>');
 };
 
 
@@ -211,16 +213,15 @@ ScaleElement.prototype.fromJS = function(data) {
             this.converting = true;
             var nrChoices = data.choices.length;
             for (var i=0; i<nrChoices; i++) {
-                var label = '<p style="text-align: center;"><span style="font-size:16px"></span></p>';
+                var initText = '<p style="text-align: center;"><span style="font-size:16px"></span></p>';
                 if (i==0) {
-                    label = data.startLabel;
+                    initText = data.startLabel;
                 }
                 if (i==nrChoices-1) {
-                    label = data.endLabel;
+                    initText = data.endLabel;
                 }
                 var labelElement = new ScaleLabel(self);
-                labelElement.init();
-                labelElement.labelText().setText(label);
+                labelElement.init(initText);
                 this.labels.push(labelElement);
             }
         }
@@ -361,8 +362,8 @@ var ScaleLabel= function(scaleParent) {
     this.labelText = ko.observable(null); // EditableTextElement
 };
 
-ScaleLabel.prototype.init = function(selectionSpec) {
-    this.labelText(new EditableTextElement(this.parent.expData, this.parent, ''));
+ScaleLabel.prototype.init = function(initText) {
+    this.labelText(new EditableTextElement(this.parent.expData, this.parent, initText));
     this.labelText().init();
 };
 
@@ -441,7 +442,7 @@ function createScaleComponents() {
 
     ScaleEditViewModel.prototype.addColumn = function() {
         var newScaleLabel = new ScaleLabel(this.dataModel);
-        newScaleLabel.init();
+        newScaleLabel.init('');
         if (this.dataModel.addDeleteFromCol()=='left'){
             this.dataModel.labels.splice(0,0,newScaleLabel);
         }

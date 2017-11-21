@@ -41,10 +41,8 @@ SortableElement.prototype.init = function() {
 
 SortableElement.prototype.addElem = function (elemId) {
     if (elemId){
-        var text = 'element' + (this.elements().length+1);
         var elem = new SortableEntry(this);
         elem.init();
-        elem.sortableText().setText('<p><span style="font-size:20px;">'+text+'</span></p>');
         this.elements.push(elem);
         this.elementIds.push(elemId);
         this.elementIdMap[elemId] = elem;
@@ -176,7 +174,8 @@ var SortableEntry= function(selectionParent) {
 };
 
 SortableEntry.prototype.init = function() {
-    this.sortableText(new EditableTextElement(this.parent.expData, this.parent, ''));
+    var text = '<p><span style="font-size:20px;">element' + (this.parent.elements().length+1) + '</span></p>';
+    this.sortableText(new EditableTextElement(this.parent.expData, this.parent, text));
     this.sortableText().init();
 
     var globalVar = new GlobalVar(this.parent.expData);
