@@ -24,7 +24,6 @@ var ExpData = function (parentExperiment) {
     this.translations = ko.observableArray([]);
     this.translatedLanguages = ko.observableArray([]);
     this.languageTransferOption = ko.observable('empty');
-    this.transferLanguage = ko.observable(null);
 
     this.translationsEnabled = ko.computed(function() {
         if (self.translations().length > 0) {
@@ -626,9 +625,6 @@ ExpData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('languageTransferOption')) {
         this.languageTransferOption(data.languageTransferOption);
     }
-    if (data.hasOwnProperty('transferLanguage')) {
-        this.transferLanguage(data.transferLanguage);
-    }
 
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
@@ -687,7 +683,6 @@ ExpData.prototype.toJS = function() {
         }),
         translatedLanguages: this.translatedLanguages(),
         languageTransferOption: this.languageTransferOption(),
-        transferLanguage:this.transferLanguage(),
         studySettings:studySettings
     };
 
