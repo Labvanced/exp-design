@@ -162,7 +162,7 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
         function(data) {
             if (data.hasOwnProperty('success') && data.success == false) {
                 if (data.msg == "no matching subject group") {
-                    player.finishSessionWithError("There is no matching subject group defined which matches your criteria.");
+                    player.finishSessionWithError("We are sorry, but the experiment is currently not available.");
                 }
                 else {
                     player.finishSessionWithError("Could not initialize first session of experiment. Error Message: " + data.msg);
