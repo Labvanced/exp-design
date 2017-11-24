@@ -4,13 +4,15 @@
 
         <label class="property-description" for="imgFile3">Filename: </label>
         <span style="width: 180px;">
-                <span id="imgFile3" class="taskeditor-input" style="display: inline-flex;margin-top: 8px; overflow: hidden" data-bind="{text: dataModel.modifier().selectedTrialView.file_orig_name, css: { 'modified-prop': !( dataModel.file_orig_name()=== dataModel.modifier().selectedTrialView.file_orig_name()) }}" ></span>
-                <span class="file-button"  data-bind="click: function() { uc.currentEditorView.mediaEditor.openFileManager(true)}" style="cursor: pointer">
-                    <img  src="/resources/icons/openFile.svg" style="width: 20px;"/>
-                </span>
+            <span id="imgFile3" class="taskeditor-input" style="display: inline-flex;margin-top: 8px; overflow: hidden" data-bind="{text: dataModel.modifier().selectedTrialView.file_orig_name, css: { 'modified-prop': !( dataModel.file_orig_name()=== dataModel.modifier().selectedTrialView.file_orig_name()) }}" ></span>
+            <span class="file-button"  data-bind="click: function() { uc.currentEditorView.mediaEditor.openFileManager(true)}" style="cursor: pointer">
+                <img  src="/resources/icons/openFile.svg" style="width: 20px;"/>
             </span>
-        <br>
+        </span>
 
+        <div style="font-size: 12px; margin-left: 25px">
+            Use <b>mp3 files</b> for best inter-browser compatibility.
+        </div>
 
         <span class="property-description">
             Show Media Controls:
@@ -30,9 +32,7 @@
             <source data-bind="attr: {src: dataModel.audioSource()}">
             Your browser does not support HTML5 audio.
         </audio>
-        <span data-bind="ifnot: dataModel.showMediaControls" style="height: 100%">
-            <img src="/resources/icons/tools/tool_sound.svg" style="height: 100%">
-        </span>
+
         <span data-bind="if: dataModel.showMediaControls" class="media-controls">
             <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
             <span data-bind="ifnot: dataModel.currentlyPlaying"><button  type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
@@ -46,9 +46,6 @@
         <source data-bind="attr: {src: dataModel.audioSource()}">
         Your browser does not support HTML5 audio.
     </audio>
-    <div data-bind="ifnot: dataModel.showMediaControls" style="height: 100%">
-        <img src="/resources/icons/tools/tool_sound.svg" height="100%" style="max-height: 100%">
-    </div>
     <span data-bind="if: dataModel.showMediaControls" class="media-controls">
         <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
         <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
