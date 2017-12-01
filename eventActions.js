@@ -855,6 +855,8 @@ var ActionJumpTo = function(event) {
     this.event = event;
     this.jumpType = ko.observable(null);
     this.frameToJump= ko.observable(null);
+    this.taskToJumpId= ko.observable(null);
+    this.taskToJumpId= ko.observable(null);
 };
 
 ActionJumpTo.prototype.type = "ActionJumpTo";
@@ -921,6 +923,12 @@ ActionJumpTo.prototype.run = function(triggerParams) {
         else if (this.jumpType() == "specificFrame"){
             player.currentFrame.goToCustomFrame(this.frameToJump());
         }
+        else if (this.jumpType() == "specificTask"){
+            player.currentFrame.goToCustomTask(this.taskToJumpId());
+        }
+        else if (this.jumpType() == "specificTrial"){
+            // TODO
+        }
     }
 
 };
@@ -962,6 +970,9 @@ ActionJumpTo.prototype.setPointers = function(entitiesArr) {
 ActionJumpTo.prototype.fromJS = function(data) {
     this.jumpType(data.jumpType);
     this.frameToJump(data.frameToJump);
+    if (data.hasOwnProperty('taskToJumpId')){
+        this.taskToJumpId(data.taskToJumpId);
+    }
     return this;
 };
 
@@ -978,10 +989,12 @@ ActionJumpTo.prototype.toJS = function() {
         frameToJump = null;
     }
 
+
     return {
         type: this.type,
         jumpType: this.jumpType(),
-        frameToJump: frameToJump
+        frameToJump: frameToJump,
+        taskToJumpId:this.taskToJumpId()
 
     };
 };
