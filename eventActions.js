@@ -857,6 +857,7 @@ var ActionJumpTo = function(event) {
     this.frameToJump= ko.observable(null);
     this.taskToJumpId= ko.observable(null);
     this.trialToJumpId= ko.observable(null);
+    this.blockToJumpId= ko.observable(null);
     this.conditionGroupIdx = ko.observable(null);
 };
 
@@ -921,6 +922,12 @@ ActionJumpTo.prototype.run = function(triggerParams) {
             player.recordData();
             player.jumpToNextTask();
         }
+        else if (this.jumpType() == "nextBlock"){
+            player.currentFrame.finishFrame();
+            player.recordData();
+            player.startNextBlock();
+        }
+
         else if (this.jumpType() == "specificFrame"){
             player.currentFrame.goToCustomFrame(this.frameToJump());
         }
@@ -933,6 +940,11 @@ ActionJumpTo.prototype.run = function(triggerParams) {
             player.currentFrame.finishFrame();
             player.recordData();
             player.jumpToSpecificTask(this.taskToJumpId());
+        }
+        else if (this.jumpType() == "specificBlock"){
+            player.currentFrame.finishFrame();
+            player.recordData();
+            player.jumpToSpecificBlock(this.blockToJumpId());
         }
 
         else if (this.jumpType() == "conditionGroup"){
@@ -988,6 +1000,9 @@ ActionJumpTo.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('conditionGroupIdx')){
         this.conditionGroupIdx(data.conditionGroupIdx);
     }
+    if (data.hasOwnProperty('blockToJumpId')){
+        this.blockToJumpId(data.blockToJumpId);
+    }
 
 
     return this;
@@ -1013,7 +1028,8 @@ ActionJumpTo.prototype.toJS = function() {
         frameToJump: frameToJump,
         taskToJumpId:this.taskToJumpId(),
         trialToJumpId:this.trialToJumpId(),
-        conditionGroupIdx:this.conditionGroupIdx()
+        conditionGroupIdx:this.conditionGroupIdx(),
+        blockToJumpId:this.blockToJumpId()
 
     };
 };
