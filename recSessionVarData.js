@@ -13,6 +13,7 @@ var RecSessionVarData = function(recSession) {
     this.fullscreen = ko.observable(null);
     this.timeDelayMean = ko.observable(null);
     this.timeDelayMax = ko.observable(null);
+    this.crowdsourcingCode = ko.observable(null);
 
     // dynamically added:
     this.timeDelayMeanTrimed = ko.observable("not measured");
@@ -49,6 +50,9 @@ RecSessionVarData.prototype.fromJS = function(data) {
         this.timeDelayMax(data.timeDelayMax);
     }
 
+    if (data.hasOwnProperty('crowdsourcingCode')){
+        this.crowdsourcingCode(data.crowdsourcingCode);
+    }
 
     return this;
 };
