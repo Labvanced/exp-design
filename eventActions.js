@@ -856,7 +856,8 @@ var ActionJumpTo = function(event) {
     this.jumpType = ko.observable(null);
     this.frameToJump= ko.observable(null);
     this.taskToJumpId= ko.observable(null);
-    this.taskToJumpId= ko.observable(null);
+    this.trialToJumpId= ko.observable(null);
+    this.conditionGroupIdx = ko.observable(null);
 };
 
 ActionJumpTo.prototype.type = "ActionJumpTo";
@@ -923,11 +924,19 @@ ActionJumpTo.prototype.run = function(triggerParams) {
         else if (this.jumpType() == "specificFrame"){
             player.currentFrame.goToCustomFrame(this.frameToJump());
         }
-        else if (this.jumpType() == "specificTask"){
-            player.currentFrame.goToCustomTask(this.taskToJumpId());
-        }
         else if (this.jumpType() == "specificTrial"){
-            // TODO
+            player.currentFrame.finishFrame();
+            player.recordData();
+            player.startSpecificTrial(this.trialToJumpId());
+        }
+        else if (this.jumpType() == "specificTask"){
+            player.currentFrame.finishFrame();
+            player.recordData();
+            player.jumpToSpecificTask(this.taskToJumpId());
+        }
+
+        else if (this.jumpType() == "conditionGroup"){
+           // Todo
         }
     }
 
@@ -973,6 +982,14 @@ ActionJumpTo.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('taskToJumpId')){
         this.taskToJumpId(data.taskToJumpId);
     }
+    if (data.hasOwnProperty('trialToJumpId')){
+        this.trialToJumpId(data.trialToJumpId);
+    }
+    if (data.hasOwnProperty('conditionGroupIdx')){
+        this.conditionGroupIdx(data.conditionGroupIdx);
+    }
+
+
     return this;
 };
 
@@ -994,7 +1011,9 @@ ActionJumpTo.prototype.toJS = function() {
         type: this.type,
         jumpType: this.jumpType(),
         frameToJump: frameToJump,
-        taskToJumpId:this.taskToJumpId()
+        taskToJumpId:this.taskToJumpId(),
+        trialToJumpId:this.trialToJumpId(),
+        conditionGroupIdx:this.conditionGroupIdx()
 
     };
 };

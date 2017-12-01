@@ -283,6 +283,9 @@ TriggerButtonClick.prototype.setupOnPlayerFrame = function(playerFrame) {
     var target = this.target();
     var targetElem = $(playerFrame.frameView.viewElements.byId[target.id()].div);
     var buttonElem = $(targetElem.find('.navi-button'))[this.buttonIdx()];
+    if (buttonElem===undefined){
+        buttonElem = $(targetElem).children()[this.buttonIdx()];
+    }
     this.eventHandleForCleanUp = function(ev) {
         ev.stopImmediatePropagation();
         self.triggerOnTarget(playerFrame,target);
