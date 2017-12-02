@@ -14,34 +14,47 @@ var SelectionElement = function(expData) {
     this.enableTitle= ko.observable(true);
 
 
-    this.usePredefinedList = ko.observable(false);
+    this.listType = ko.observable('selfCreation');
     this.predefinedListOptions =  ko.observableArray(['countryList','languageList']);
-    this.selectedPredefinedOption = ko.observable(null);
+    this.selectedPredefinedOption = ko.observable('countryList');
 
 
     ///// not serialized
     this.countryData= ko.observableArray([]);  // general country list
+    this.languageData= ko.observableArray([]); // general language list
+
+    this.selected = ko.observable(false);
+    this.triedToSubmit = ko.observable(false);
+    this.dataIsValid = ko.observable(false);
+
+
     $.ajax({
         url: "/api/1/countries",
         type: 'GET',
         async: true
     }).done(function (result) {
-        ko.mapping.fromJS(result, {}, self.countryData);
+       // ko.mapping.fromJS(result, {}, self.countryData);
+        self.countryData(result);
     });
 
-    this.languageData= ko.observableArray([]); // general language list
     $.ajax({
         url: "/api/1/languages",
         type: 'GET',
         async: true
     }).done(function (result) {
-        ko.mapping.fromJS(result, {}, self.languageData);
+       // ko.mapping.fromJS(result, {}, self.languageData);
+        self.languageData(result);
     });
 
 
-    this.selected = ko.observable(false);
-    this.triedToSubmit = ko.observable(false);
-    this.dataIsValid = ko.observable(false);
+    this.predefinedData = ko.computed(function() {
+        if (self.selectedPredefinedOption()=='countryList'){
+            return self.countryData();
+        }
+        else if (self.selectedPredefinedOption()=='languageList'){
+            return self.languageData();
+        }
+    });
 };
 
 SelectionElement.prototype.label = "Selection";
@@ -174,7 +187,7 @@ SelectionElement.prototype.toJS = function() {
             return elem.toJS();
         }),
         enableTitle:this.enableTitle(),
-        usePredefinedList:this.usePredefinedList(),
+        listType:this.listType(),
         predefinedListOptions:this.predefinedListOptions(),
         selectedPredefinedOption:this.selectedPredefinedOption()
     };
@@ -202,8 +215,8 @@ SelectionElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('enableTitle')){
         this.enableTitle(data.enableTitle);
     }
-    if(data.hasOwnProperty('usePredefinedList')){
-        this.usePredefinedList(data.usePredefinedList);
+    if(data.hasOwnProperty('listType')){
+        this.listType(data.listType);
     }
     if(data.hasOwnProperty('predefinedListOptions')){
         this.predefinedListOptions(data.predefinedListOptions);

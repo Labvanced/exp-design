@@ -6,45 +6,50 @@
             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
         </label>
         <br>
-
         <br>
-        <label><input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">Use Predefined List: </label><br>
 
-
-        <label>Add New Option: </label><br>
-        <input style="width: 120px; display: inline-block" type="text" class="form-control" data-bind="value:currentEntry"> <span style="cursor: pointer" data-bind="click:addEntry"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
+        <label style="cursor: pointer"><input class="checkbox-element" style="display: inline-block" value="predefined" type="radio" data-bind="checked: dataModel.listType">Use Predefined List: </label>
+            <!-- ko if: (dataModel.listType()=='predefined')  -->
+            <select class="notDraggable" style="display:inline-block" data-bind="options: dataModel.predefinedListOptions, value: dataModel.selectedPredefinedOption"></select>
+            <!-- /ko -->
         <br>
-        <label>Available Options: </label>
-        <table>
-            <thead>
-            <tr>
-                <th style="width: 50px;">Text Entry</th>
-                <th>Variable Value</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody data-bind="foreach: dataModel.elements">
-            <tr>
-                <td>
-                    <input class="taskeditor-input" style="width: 130px; margin: 5px;" type="text" data-bind="textInput: selectionText">
-                </td>
-                <td>
-                    <input class="taskeditor-input" style="width: 130px; margin: 5px;" type="text" data-bind="textInput: selectionValue">
-                </td>
-                <td>
-                    <span style="cursor: pointer" data-bind=" event: {click: function(data,event) {$parent.removeEntry($index())}}"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
-                </td>
-            </tr>
-            </tbody>
-        </table>
 
+        <label style="cursor: pointer"><input class="checkbox-element" style="display: inline-block;" value="selfCreation" type="radio" data-bind="checked: dataModel.listType">Create Manually: </label>
+            <!-- ko if: (dataModel.listType()=="selfCreation")  -->
+            <input style="width: 120px; display: inline-block" type="text" class="form-control" data-bind="value:currentEntry"> <span style="cursor: pointer" data-bind="click:addEntry"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
+            <br>
+            <label style="font-weight: bold">Available Options: </label>
+            <table>
+                <thead>
+                <tr>
+                    <th style="width: 50px;">Text Entry</th>
+                    <th>Variable Value</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody data-bind="foreach: dataModel.elements">
+                <tr>
+                    <td>
+                        <input class="taskeditor-input" style="width: 130px; margin: 5px;" type="text" data-bind="textInput: selectionText">
+                    </td>
+                    <td>
+                        <input class="taskeditor-input" style="width: 130px; margin: 5px;" type="text" data-bind="textInput: selectionValue">
+                    </td>
+                    <td>
+                        <span style="cursor: pointer" data-bind=" event: {click: function(data,event) {$parent.removeEntry($index())}}"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!-- /ko -->
+        <br>
         <div>
-            <span>Required:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
+            <label style="cursor: pointer">Required:<input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false"></label>
+
         </div>
         <div>
-            <span>Show Question Header:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+            <label style="cursor: pointer">Show Question Header: <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false"></label>
+
         </div>
 
     </div>
@@ -59,7 +64,15 @@
     <br>
     <!-- /ko -->
     <div>
-        <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().startValue().value"></select>
+        <!-- ko if: (dataModel.listType()=='predefined')  -->
+            <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.predefinedData, optionsText: 'name', optionsValue: 'name', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().startValue().value"></select>
+        <!-- /ko -->
+
+        <!-- ko if: (dataModel.listType()=='selfCreation')  -->
+            <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().startValue().value"></select>
+        <!-- /ko -->
+
+
         <!-- ko if: dataModel.isRequired() -->
         <span class="required-question-icon"  data-bind="tooltip:'.requiredInfoEditor'">
             <img width="20" height="20" src="/resources/icons/exmark.svg"/>
@@ -78,13 +91,20 @@
     <br>
     <!-- /ko -->
     <div>
-        <select class="notDraggable" style="display:inline-block; width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().value().value"></select>
-        <!-- ko if: dataModel.triedToSubmit() -->
-        <!-- ko ifnot: dataModel.dataIsValid() -->
-        <span class="required-question-icon"  data-bind="tooltip:'.requiredInfo'">
-            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
-        </span>
+        <!-- ko if: (dataModel.listType()=='predefined')  -->
+            <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.predefinedData, optionsText: 'name', optionsValue: 'name', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().value().value"></select>
         <!-- /ko -->
+
+        <!-- ko if: (dataModel.listType()=='selfCreation')  -->
+            <select class="notDraggable" style="display:inline-block; width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().value().value"></select>
+        <!-- /ko -->
+
+        <!-- ko if: dataModel.triedToSubmit() -->
+            <!-- ko ifnot: dataModel.dataIsValid() -->
+                <span class="required-question-icon"  data-bind="tooltip:'.requiredInfo'">
+                    <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+                </span>
+            <!-- /ko -->
         <!-- /ko -->
     </div>
     <br>
