@@ -43,8 +43,10 @@ var PublishingData = function(experiment) {
     this.jdenticonHash = ko.observable(guid());
     this.imageType = ko.observable("jdenticon"); // "jdenticon" or "imgfile"
     this.categories = ko.observableArray([]);
-    this.affiliations = ko.observableArray([ko.observable('')]);
-    this.duration = ko.observable(15);
+    this.affiliation= ko.observable('');
+    this.affiliations = ko.observableArray([ko.observable('')]);  // deprecated
+    this.duration = ko.observable(null);
+    this.durationMax = ko.observable(null);
     this.references = ko.observableArray([]);
     this.referenceURLs = ko.observableArray([]);
     this.externalnfo = ko.observableArray([]);
@@ -73,6 +75,8 @@ var PublishingData = function(experiment) {
     this.amountOfSubjects = ko.observable(100);
     this.moneyPerSubject = ko.observable(0.5);
     this.crowdsourcingStatus = ko.observable('inactive');
+    this.measuredAverageTime =  ko.observable(null);
+
 
     // page 4 //
     this.termsAccepted = ko.observable(false);
@@ -96,14 +100,28 @@ var PublishingData = function(experiment) {
 
     this.isDescriptionValid = ko.computed(function () {
 
-        if (this.exp_name().length == 0)
+        if (this.exp_name().length == 0){
             return false;
+        }
 
-        if (this.description().length == 0)
+        if (this.categories().length == 0){
             return false;
+        }
 
-        if (this.categories().length == 0)
+        if (this.affiliation() == ''){
             return false;
+        }
+        if (this.duration() === null){
+            return false;
+        }
+
+        if (this.durationMax() === null){
+            return false;
+        }
+
+        if (parseInt(this.durationMax())<=parseInt(this.duration())){
+            return false;
+        }
 
         if (this.imageType() == "jdenticon") {
             if (!this.jdenticonHash())
@@ -124,12 +142,21 @@ var PublishingData = function(experiment) {
         if (this.exp_name().length == 0) {
             errorString += "No name, ";
         }
-        if (this.description().length == 0) {
-            errorString += "No description, ";
-        }
         if (this.categories().length == 0) {
             errorString += "No categories, ";
         }
+        if (this.affiliation() == ''){
+            errorString += "No affiliation, ";
+        }
+        if (this.duration() === null){
+            errorString += "No minimum time, ";
+        }
+
+        if (this.durationMax() === null){
+            errorString += "No maximum time, ";
+        }
+
+
         if (this.imageType() == "jdenticon") {
             if (!this.jdenticonHash()) {
                 errorString += "No image, ";
@@ -305,6 +332,16 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('crowdsourcingStatus')) {
         this.crowdsourcingStatus(data.crowdsourcingStatus);
     }
+    if (data.hasOwnProperty('durationMax')) {
+        this.durationMax(data.durationMax);
+    }
+    if (data.hasOwnProperty('affiliation')) {
+        this.affiliation(data.affiliation);
+    }
+    if (data.hasOwnProperty('measuredAverageTime')) {
+        this.measuredAverageTime(data.measuredAverageTime);
+    }
+
 
 
 
@@ -382,7 +419,9 @@ PublishingData.prototype.toJS = function() {
         imageType: this.imageType(),
         categories: this.categories(),
         affiliations:affi,
+        affiliation:this.affiliation(),
         duration: this.duration(),
+        durationMax:this.durationMax(),
         references:references,
         referenceURLs:referenceURLs,
         externalnfo:externalnfo,
@@ -405,6 +444,7 @@ PublishingData.prototype.toJS = function() {
         amountOfSubjects: this.amountOfSubjects(),
         moneyPerSubject: this.moneyPerSubject(),
         crowdsourcingStatus: this.crowdsourcingStatus(),
+        measuredAverageTime:this.measuredAverageTime,
         
         // page 4 //
         termsAccepted: this.termsAccepted(),
