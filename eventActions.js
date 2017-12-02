@@ -855,6 +855,10 @@ var ActionJumpTo = function(event) {
     this.event = event;
     this.jumpType = ko.observable(null);
     this.frameToJump= ko.observable(null);
+    this.taskToJumpId= ko.observable(null);
+    this.trialToJumpId= ko.observable(null);
+    this.blockToJumpId= ko.observable(null);
+    this.conditionGroupIdx = ko.observable(null);
 };
 
 ActionJumpTo.prototype.type = "ActionJumpTo";
@@ -918,8 +922,33 @@ ActionJumpTo.prototype.run = function(triggerParams) {
             player.recordData();
             player.jumpToNextTask();
         }
+        else if (this.jumpType() == "nextBlock"){
+            player.currentFrame.finishFrame();
+            player.recordData();
+            player.startNextBlock();
+        }
+
         else if (this.jumpType() == "specificFrame"){
             player.currentFrame.goToCustomFrame(this.frameToJump());
+        }
+        else if (this.jumpType() == "specificTrial"){
+            player.currentFrame.finishFrame();
+            player.recordData();
+            player.startSpecificTrial(this.trialToJumpId());
+        }
+        else if (this.jumpType() == "specificTask"){
+            player.currentFrame.finishFrame();
+            player.recordData();
+            player.jumpToSpecificTask(this.taskToJumpId());
+        }
+        else if (this.jumpType() == "specificBlock"){
+            player.currentFrame.finishFrame();
+            player.recordData();
+            player.jumpToSpecificBlock(this.blockToJumpId());
+        }
+
+        else if (this.jumpType() == "conditionGroup"){
+           // Todo
         }
     }
 
@@ -962,6 +991,20 @@ ActionJumpTo.prototype.setPointers = function(entitiesArr) {
 ActionJumpTo.prototype.fromJS = function(data) {
     this.jumpType(data.jumpType);
     this.frameToJump(data.frameToJump);
+    if (data.hasOwnProperty('taskToJumpId')){
+        this.taskToJumpId(data.taskToJumpId);
+    }
+    if (data.hasOwnProperty('trialToJumpId')){
+        this.trialToJumpId(data.trialToJumpId);
+    }
+    if (data.hasOwnProperty('conditionGroupIdx')){
+        this.conditionGroupIdx(data.conditionGroupIdx);
+    }
+    if (data.hasOwnProperty('blockToJumpId')){
+        this.blockToJumpId(data.blockToJumpId);
+    }
+
+
     return this;
 };
 
@@ -978,10 +1021,15 @@ ActionJumpTo.prototype.toJS = function() {
         frameToJump = null;
     }
 
+
     return {
         type: this.type,
         jumpType: this.jumpType(),
-        frameToJump: frameToJump
+        frameToJump: frameToJump,
+        taskToJumpId:this.taskToJumpId(),
+        trialToJumpId:this.trialToJumpId(),
+        conditionGroupIdx:this.conditionGroupIdx(),
+        blockToJumpId:this.blockToJumpId()
 
     };
 };
