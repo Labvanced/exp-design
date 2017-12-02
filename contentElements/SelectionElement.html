@@ -6,6 +6,11 @@
             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
         </label>
         <br>
+
+        <br>
+        <label><input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">Use Predefined List: </label><br>
+
+
         <label>Add New Option: </label><br>
         <input style="width: 120px; display: inline-block" type="text" class="form-control" data-bind="value:currentEntry"> <span style="cursor: pointer" data-bind="click:addEntry"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
         <br>

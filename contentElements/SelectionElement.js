@@ -13,7 +13,32 @@ var SelectionElement = function(expData) {
     this.isRequired = ko.observable(false);
     this.enableTitle= ko.observable(true);
 
+
+    this.usePredefinedList = ko.observable(false);
+    this.predefinedListOptions =  ko.observableArray(['countryList','languageList']);
+    this.selectedPredefinedOption = ko.observable(null);
+
+
     ///// not serialized
+    this.countryData= ko.observableArray([]);  // general country list
+    $.ajax({
+        url: "/api/1/countries",
+        type: 'GET',
+        async: true
+    }).done(function (result) {
+        ko.mapping.fromJS(result, {}, self.countryData);
+    });
+
+    this.languageData= ko.observableArray([]); // general language list
+    $.ajax({
+        url: "/api/1/languages",
+        type: 'GET',
+        async: true
+    }).done(function (result) {
+        ko.mapping.fromJS(result, {}, self.languageData);
+    });
+
+
     this.selected = ko.observable(false);
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
@@ -148,7 +173,10 @@ SelectionElement.prototype.toJS = function() {
         elements: jQuery.map( this.elements(), function( elem ) {
             return elem.toJS();
         }),
-        enableTitle:this.enableTitle()
+        enableTitle:this.enableTitle(),
+        usePredefinedList:this.usePredefinedList(),
+        predefinedListOptions:this.predefinedListOptions(),
+        selectedPredefinedOption:this.selectedPredefinedOption()
     };
 };
 
@@ -173,6 +201,15 @@ SelectionElement.prototype.fromJS = function(data) {
     }
     if(data.hasOwnProperty('enableTitle')){
         this.enableTitle(data.enableTitle);
+    }
+    if(data.hasOwnProperty('usePredefinedList')){
+        this.usePredefinedList(data.usePredefinedList);
+    }
+    if(data.hasOwnProperty('predefinedListOptions')){
+        this.predefinedListOptions(data.predefinedListOptions);
+    }
+    if(data.hasOwnProperty('selectedPredefinedOption')){
+        this.selectedPredefinedOption(data.selectedPredefinedOption);
     }
 
 
