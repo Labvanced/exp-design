@@ -143,7 +143,7 @@ var PublishingData = function(experiment) {
             errorString += "No name, ";
         }
         if (this.categories().length == 0) {
-            errorString += "No categories, ";
+            errorString += "No keyword(s), ";
         }
         if (this.affiliation() == ''){
             errorString += "No affiliation, ";
