@@ -104,7 +104,10 @@ ExpData.prototype.oldFixedVarNames = [
     'varFullscreenSpecEMPTY',
     'varBrowserVersionSpecEMPTY',
     'varTimeMeasureSpecMaxEMPTY',
-    'varCrowdsourcingCodeEMPTY'
+    'varCrowdsourcingCodeEMPTY',
+    'varTimeMeasureSpecMaxEMPTY',
+    'varGazeXEMPTY',
+    'varGazeYEMPTY'
 ];
 
 ExpData.prototype.fixedVarNames = [
@@ -129,7 +132,10 @@ ExpData.prototype.fixedVarNames = [
     'varFullscreenSpec',
     'varBrowserVersionSpec',
     'varTimeMeasureSpecMax',
-    'varCrowdsourcingCode'
+    'varCrowdsourcingCode',
+    'varTimeMeasureSpecMax',
+    'varGazeX',
+    'varGazeY'
 ];
 
 ExpData.prototype.staticTranslations = {
@@ -344,6 +350,12 @@ ExpData.prototype.createVars = function() {
     }
     if (!this.varCrowdsourcingCode()) {
         this.varCrowdsourcingCode((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'nominal', 'Crowdsourcing_Code'));
+    }
+    if (!this.varGazeX()) {
+        this.varGazeX((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeX'));
+    }
+    if (!this.varGazeY()) {
+        this.varGazeY((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeY'));
     }
 };
 

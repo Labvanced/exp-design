@@ -249,7 +249,9 @@ GlobalVar.prototype.getRecAtEndOfTrial = function() {
     if(this.recType()=='overwrite'){
         return this.value().toJS();
     } else if(this.recType()=='timeseries'){
-        return this.recValue;
+        var recValue = this.recValue;
+        this.recValue = [];
+        return recValue;
     }
 };
 
