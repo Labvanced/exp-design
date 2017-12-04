@@ -116,7 +116,9 @@ ExpData.prototype.fixedVarNames = [
     'varTimeMeasureSpecMean',
     'varFullscreenSpec',
     'varBrowserVersionSpec',
-    'varTimeMeasureSpecMax'
+    'varTimeMeasureSpecMax',
+    'varGazeX',
+    'varGazeY'
 ];
 
 ExpData.prototype.staticTranslations = {
@@ -316,6 +318,12 @@ ExpData.prototype.createVars = function() {
     }
     if (!this.varBrowserVersionSpec()) {
         this.varBrowserVersionSpec((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'BrowserVersion_Spec'));
+    }
+    if (!this.varGazeX()) {
+        this.varGazeX((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeX'));
+    }
+    if (!this.varGazeY()) {
+        this.varGazeY((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeY'));
     }
 };
 

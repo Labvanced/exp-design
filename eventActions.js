@@ -57,7 +57,6 @@ ActionRecord.prototype.addRecording = function(type){
 
     this.selectedRecordings.push(newRec);
 
-
 };
 
 /**
@@ -2162,7 +2161,9 @@ ActionDrawRandomNumber.prototype.isValid = function(){
  * @param {GlobalVar} variable - the variable which is recorded.
  */
 ActionDrawRandomNumber.prototype.setVariableBackRef = function(variable){
-    variable.addBackRef(this, this.event, true, false, 'Save Random Num');
+    if (variable) {
+        variable.addBackRef(this, this.event, true, false, 'Save Random Num');
+    }
 };
 
 /**

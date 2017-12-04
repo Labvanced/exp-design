@@ -54,6 +54,10 @@ var createExpDesignComponents = (function() {
                     createCompFcn: createDisplayTextComponents
                 },
                 {
+                    filepath: "/html_views/EyetrackerVideoStream.html?FILE_VERSION_PLACEHOLDER",
+                    createCompFcn: createEyetrackerVideoStreamComponents
+                },
+                {
                     filepath: "/html_views/CheckBoxElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createCheckBoxComponents
                 },
