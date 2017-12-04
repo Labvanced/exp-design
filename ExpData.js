@@ -105,7 +105,6 @@ ExpData.prototype.oldFixedVarNames = [
     'varBrowserVersionSpecEMPTY',
     'varTimeMeasureSpecMaxEMPTY',
     'varCrowdsourcingCodeEMPTY',
-    'varTimeMeasureSpecMaxEMPTY',
     'varGazeXEMPTY',
     'varGazeYEMPTY'
 ];
@@ -133,7 +132,6 @@ ExpData.prototype.fixedVarNames = [
     'varBrowserVersionSpec',
     'varTimeMeasureSpecMax',
     'varCrowdsourcingCode',
-    'varTimeMeasureSpecMax',
     'varGazeX',
     'varGazeY'
 ];

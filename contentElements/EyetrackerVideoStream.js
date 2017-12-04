@@ -133,8 +133,9 @@ function createEyetrackerVideoStreamComponents() {
                             setTimeout(checkIfReady, 100);
                         }
                     }
-                    setTimeout(checkIfReady,100);
-
+                    if (window.hasOwnProperty('webgazer')) {
+                        setTimeout(checkIfReady,100);
+                    }
                 };
                 return new viewModel(dataModel);
             }
