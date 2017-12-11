@@ -6,33 +6,9 @@ var PublishingData = function(experiment) {
 
     // others
     this.dateLastModified = ko.observable(""); // deprecated
-    
-    // page 1 //
     this.sharingDesign = ko.observable('none'); // 'none', 'public'
-    this.recruitInLibrary = ko.observable(false);
-    this.recruitSecretly = ko.observable(false);
-    this.recruitExternal= ko.observable(false);
-    this.recruitingEnabled= ko.computed(function () {
-        if (self.recruitInLibrary() || self.recruitSecretly() || self.recruitExternal()) {
-            return true;
-        }
-        else  {
-            return false;
-        }
-    }, this);
 
-    this.brandingType= ko.observable('LabVanced');
-    this.secrecyType= ko.observable('link');
-    this.passwordType= ko.observable('oneForAll');
-    this.stopCondition= ko.observable('none');
-    this.maxDaysCrowdsourcing= ko.observable(90);
-    this.enableMaxDaysCrowdsourcing= ko.observable(false);
-    this.recordingStopTime= ko.observable(null);
-    this.recordingStopNrSubjects =  ko.observable(1);
-
-
-
-    // page 2  //
+    // description  //
     this.exp_name = ko.observable("");
     if (experiment){
         this.exp_name(experiment.exp_name());
@@ -44,7 +20,6 @@ var PublishingData = function(experiment) {
     this.imageType = ko.observable("jdenticon"); // "jdenticon" or "imgfile"
     this.categories = ko.observableArray([]);
     this.affiliation= ko.observable('');
-    this.affiliations = ko.observableArray([ko.observable('')]);  // deprecated
     this.duration = ko.observable(null);
     this.durationMax = ko.observable(null);
     this.references = ko.observableArray([]);
@@ -52,6 +27,25 @@ var PublishingData = function(experiment) {
     this.externalnfo = ko.observableArray([]);
     this.externalLinks = ko.observableArray([]);
 
+    
+    // recruiting options //
+    this.recruitInLibrary = ko.observable(true);
+    this.recruitViaDirectLink = ko.observable(true);
+    this.recruitViaCrowdsourcing = ko.observable(true);
+    this.recruitViaCustomLink= ko.observable(true);
+
+
+    // crowdsourcing
+    this.enableMaxDaysCrowdsourcing= ko.observable(false);
+    this.maxDaysCrowdsourcing= ko.observable(90);
+    this.postOnAMT = ko.observable("no");
+    this.amountOfSubjects = ko.observable(100);
+    this.moneyPerSubject = ko.observable(0.5);
+    this.crowdsourcingStatus = ko.observable('inactive');
+    this.measuredAverageTime =  ko.observable(null);
+
+
+    // initial subject survey info
     this.surveyItemGender = ko.observable('hidden');  // hidden, optional, required
     this.surveyItemAge = ko.observable('hidden');
     this.surveyItemCountry = ko.observable('hidden');
@@ -64,28 +58,14 @@ var PublishingData = function(experiment) {
     this.requiredLanguage = ko.observable(false);
     this.requiredEmail = ko.observable(false);
 
-    this.displayBackToLib = ko.observable(true);
-
-    // page 3 //
-    this.advertisement = ko.observable(null);
-    this.addHighlight= ko.observable(false);
-    this.addLabVancedSearch= ko.observable(false);
-    this.postOnAMT = ko.observable("no");
-    this.termsCrowdsourcing = ko.observable(false);
-    this.amountOfSubjects = ko.observable(100);
-    this.moneyPerSubject = ko.observable(0.5);
-    this.crowdsourcingStatus = ko.observable('inactive');
-    this.measuredAverageTime =  ko.observable(null);
 
 
-    // page 4 //
+    // terms and conditions //
     this.termsAccepted = ko.observable(false);
     this.copyrightsOk = ko.observable(false);
     this.materialOk = ko.observable(false);
-    this.addSpaceInMB = ko.observable(0);
-    this.addNrStudiesToPublish= ko.observable(0);
-    this.addRecordingsPerWeek= ko.observable(0);
-    this.upgradeLevel= ko.observable(0);
+    this.termsCrowdsourcing = ko.observable(false);
+
     
     // After publication
     this.individualizedLinks =  ko.observableArray([]);
@@ -93,9 +73,19 @@ var PublishingData = function(experiment) {
     this.raterUserIds=  ko.observableArray([]);
     this.publicationDate =  ko.observable(null);
 
+    this.displayBackToLib = ko.observable(true);
     // test
-    this.ratingValues.push(4);
-    this.raterUserIds.push('test');
+
+
+    this.recruitingEnabled= ko.computed(function () {
+        if (self.recruitInLibrary() || self.recruitViaDirectLink() || self.recruitViaCrowdsourcing() || self.recruitViaCustomLink()) {
+            return true;
+        }
+        else  {
+            return false;
+        }
+    }, this);
+
 
 
     this.isDescriptionValid = ko.computed(function () {
@@ -235,26 +225,9 @@ PublishingData.prototype.setPointers = function() {
 
 PublishingData.prototype.fromJS = function(data) {
 
-    // page 1 //
     this.sharingDesign(data.sharingDesign);
-    this.recruitInLibrary(data.recruitInLibrary);
-    this.recruitSecretly(data.recruitSecretly);
-    this.recruitExternal(data.recruitExternal);
-    this.brandingType(data.brandingType);
-    this.secrecyType(data.secrecyType);
-    this.passwordType(data.passwordType);
-    this.stopCondition(data.stopCondition);
-    if (data.hasOwnProperty('maxDaysCrowdsourcing')) {
-        this.maxDaysCrowdsourcing(data.maxDaysCrowdsourcing);
-    }
-    if (data.hasOwnProperty('enableMaxDaysCrowdsourcing')) {
-        this.enableMaxDaysCrowdsourcing(data.enableMaxDaysCrowdsourcing);
-    }
 
-    this.recordingStopTime(data.recordingStopTime);
-    this.recordingStopNrSubjects(data.recordingStopNrSubjects);
-
-    // page 2  //
+    // description //
     this.exp_name(data.exp_name);
     this.description(data.description);
     this.img_file_id(data.img_file_id);
@@ -262,14 +235,6 @@ PublishingData.prototype.fromJS = function(data) {
     this.jdenticonHash(data.jdenticonHash);
     this.imageType(data.imageType);
     this.categories(data.categories);
-
-    if (data.hasOwnProperty('affiliations')) {
-        var affi = [];
-        for (var i = 0; i<data.affiliations.length; i++){
-            affi.push(ko.observable(data.affiliations[i]));
-        }
-        this.affiliations(affi);
-    }
 
     if (data.hasOwnProperty('references')) {
         var references = [];
@@ -306,7 +271,31 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('duration')) {
         this.duration(data.duration);
     }
+    if (data.hasOwnProperty('durationMax')) {
+        this.durationMax(data.durationMax);
+    }
+    if (data.hasOwnProperty('affiliation')) {
+        this.affiliation(data.affiliation);
+    }
 
+
+
+    // recruiting options //
+    this.recruitInLibrary(data.recruitInLibrary);
+
+    if (data.hasOwnProperty('recruitSecretly') || data.hasOwnProperty('recruitViaDirectLink') ) {
+        this.recruitViaDirectLink(data.recruitViaDirectLink);
+    }
+
+    if (data.hasOwnProperty('recruitViaCrowdsourcing') ) {
+        this.recruitViaCrowdsourcing(data.recruitViaCrowdsourcing);
+    }
+    if (data.hasOwnProperty('recruitViaCustomLink') ) {
+        this.recruitViaCustomLink(data.recruitViaCustomLink);
+    }
+
+
+    // initial subject survery
     if (data.hasOwnProperty('surveyItemGender')) {
         this.surveyItemGender(data.surveyItemGender);
     }
@@ -323,8 +312,15 @@ PublishingData.prototype.fromJS = function(data) {
         this.surveyItemEmail(data.surveyItemEmail);
     }
 
-    if (data.hasOwnProperty('displayBackToLib')) {
-        this.displayBackToLib(data.displayBackToLib);
+    // crowdsourcing //
+    this.postOnAMT(data.postOnAMT);
+
+    this.amountOfSubjects(data.amountOfSubjects);
+    if (data.hasOwnProperty('maxDaysCrowdsourcing')) {
+        this.maxDaysCrowdsourcing(data.maxDaysCrowdsourcing);
+    }
+    if (data.hasOwnProperty('enableMaxDaysCrowdsourcing')) {
+        this.enableMaxDaysCrowdsourcing(data.enableMaxDaysCrowdsourcing);
     }
     if (data.hasOwnProperty('moneyPerSubject')) {
         this.moneyPerSubject(data.moneyPerSubject);
@@ -332,34 +328,17 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('crowdsourcingStatus')) {
         this.crowdsourcingStatus(data.crowdsourcingStatus);
     }
-    if (data.hasOwnProperty('durationMax')) {
-        this.durationMax(data.durationMax);
-    }
-    if (data.hasOwnProperty('affiliation')) {
-        this.affiliation(data.affiliation);
-    }
+
     if (data.hasOwnProperty('measuredAverageTime')) {
         this.measuredAverageTime(data.measuredAverageTime);
     }
 
 
-
-
-    // page 3 //
-    this.addHighlight(data.addHighlight);
-    this.addLabVancedSearch(data.addLabVancedSearch);
-    this.postOnAMT(data.postOnAMT);
-    this.termsCrowdsourcing(data.termsCrowdsourcing);
-    this.amountOfSubjects(data.amountOfSubjects);
-
-    // page 4 //
+    // terms //
     this.termsAccepted(data.termsAccepted);
     this.copyrightsOk(data.copyrightsOk);
     this.materialOk(data.materialOk);
-    this.addSpaceInMB(data.addSpaceInMB);
-    this.addNrStudiesToPublish(data.addNrStudiesToPublish);
-    this.addRecordingsPerWeek(data.addRecordingsPerWeek);
-    this.upgradeLevel(data.upgradeLevel);
+    this.termsCrowdsourcing(data.termsCrowdsourcing);
 
     // After publication
     this.individualizedLinks(data.individualizedLinks);
@@ -367,15 +346,14 @@ PublishingData.prototype.fromJS = function(data) {
     this.raterUserIds(data.raterUserIds);
     this.publicationDate(data.publicationDate);
 
+    if (data.hasOwnProperty('displayBackToLib')) {
+        this.displayBackToLib(data.displayBackToLib);
+    }
+
 };
 
 
 PublishingData.prototype.toJS = function() {
-
-    var affi = [];
-    for (var i = 0; i<this.affiliations().length; i++){
-        affi.push(this.affiliations()[i]());
-    }
 
     var references = [];
     for (var i = 0; i<this.references().length; i++){
@@ -395,22 +373,10 @@ PublishingData.prototype.toJS = function() {
     }
 
     return {
-        // page 1 //
+
         sharingDesign:this.sharingDesign(),
-        recruitInLibrary: this.recruitInLibrary(),
-        recruitSecretly: this.recruitSecretly(),
-        recruitExternal: this.recruitExternal(),
-        brandingType: this.brandingType(),
-        secrecyType: this.secrecyType(),
-        passwordType: this.passwordType(),
-        stopCondition: this.stopCondition(),
-        maxDaysCrowdsourcing: this.maxDaysCrowdsourcing(),
-        enableMaxDaysCrowdsourcing:this.enableMaxDaysCrowdsourcing(),
-        recordingStopTime: this.recordingStopTime(),
-        recordingStopNrSubjects: this.recordingStopNrSubjects(),
 
-
-        // page 2  //
+        // description //
         exp_name: this.exp_name(),
         description: this.description(),
         img_file_id: this.img_file_id(),
@@ -418,7 +384,6 @@ PublishingData.prototype.toJS = function() {
         jdenticonHash: this.jdenticonHash(),
         imageType: this.imageType(),
         categories: this.categories(),
-        affiliations:affi,
         affiliation:this.affiliation(),
         duration: this.duration(),
         durationMax:this.durationMax(),
@@ -426,40 +391,42 @@ PublishingData.prototype.toJS = function() {
         referenceURLs:referenceURLs,
         externalnfo:externalnfo,
         externalLinks:externalLinks,
+
+        // recruiting options
+        recruitInLibrary: this.recruitInLibrary(),
+        recruitViaDirectLink: this.recruitViaDirectLink(),
+        recruitViaCrowdsourcing: this.recruitViaCrowdsourcing(),
+        recruitViaCustomLink: this.recruitViaCustomLink(),
+
+        // crowdsourcing
+        maxDaysCrowdsourcing: this.maxDaysCrowdsourcing(),
+        enableMaxDaysCrowdsourcing:this.enableMaxDaysCrowdsourcing(),
+        postOnAMT : this.postOnAMT(),
+        amountOfSubjects: this.amountOfSubjects(),
+        moneyPerSubject: this.moneyPerSubject(),
+        crowdsourcingStatus: this.crowdsourcingStatus(),
+        measuredAverageTime:this.measuredAverageTime,
+
+        // initial subject survey
         surveyItemGender:this.surveyItemGender(),
         surveyItemAge:this.surveyItemAge(),
         surveyItemCountry:this.surveyItemCountry(),
         surveyItemLanguage:this.surveyItemLanguage(),
         surveyItemEmail:this.surveyItemEmail(),
 
-        displayBackToLib: this.displayBackToLib(),
-
-
-        // page 3 //
-        advertisement: this.advertisement(),
-        addHighlight: this.addHighlight(),
-        addLabVancedSearch: this.addLabVancedSearch(),
-        postOnAMT : this.postOnAMT(),
-        termsCrowdsourcing: this.termsCrowdsourcing(),
-        amountOfSubjects: this.amountOfSubjects(),
-        moneyPerSubject: this.moneyPerSubject(),
-        crowdsourcingStatus: this.crowdsourcingStatus(),
-        measuredAverageTime:this.measuredAverageTime,
-        
-        // page 4 //
+        // terms //
         termsAccepted: this.termsAccepted(),
         copyrightsOk: this.copyrightsOk(),
         materialOk: this.materialOk(),
-        addSpaceInMB:this.addSpaceInMB(),
-        addNrStudiesToPublish:this.addNrStudiesToPublish(),
-        addRecordingsPerWeek:this.addRecordingsPerWeek(),
-        upgradeLevel:this.upgradeLevel(),
+        termsCrowdsourcing: this.termsCrowdsourcing(),
 
         // After publication
         individualizedLinks:  this.individualizedLinks(),
         ratingValues:  this.ratingValues(),
         raterUserIds:  this.raterUserIds(),
-        publicationDate: this.publicationDate()
+        publicationDate: this.publicationDate(),
+
+        displayBackToLib: this.displayBackToLib()
 
 
     };

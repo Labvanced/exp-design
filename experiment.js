@@ -75,8 +75,7 @@ Experiment.prototype.viewRecordings = function() {
 Experiment.prototype.disableRecruiting = function(cb) {
     if (this.publishing_data.recruitingEnabled()) {
         this.publishing_data.recruitInLibrary(false);
-        this.publishing_data.recruitSecretly(false);
-        this.publishing_data.recruitExternal(false);
+        this.publishing_data.recruitViaDirectLink(false);
         this.savePublishingData(function() {
             cb();
         });
