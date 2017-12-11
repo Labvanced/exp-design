@@ -29,20 +29,22 @@ var PublishingData = function(experiment) {
 
     
     // recruiting options //
-    this.recruitInLibrary = ko.observable(true);
-    this.recruitViaDirectLink = ko.observable(true);
-    this.recruitViaCrowdsourcing = ko.observable(true);
-    this.recruitViaCustomLink= ko.observable(true);
+    this.recruitInLibrary = ko.observable(null);
+    this.recruitViaDirectLink = ko.observable(null);
+    this.recruitViaCrowdsourcing = ko.observable(null);
+    this.recruitViaCustomLink= ko.observable(null);
 
 
     // crowdsourcing
     this.enableMaxDaysCrowdsourcing= ko.observable(false);
     this.maxDaysCrowdsourcing= ko.observable(90);
-    this.postOnAMT = ko.observable("no");
+    this.crowdsourcingSubType = ko.observable('labvanced');  // labvanced, own
+    this.postOnAMT = ko.observable("no"); // yes, no, own
     this.amountOfSubjects = ko.observable(100);
     this.moneyPerSubject = ko.observable(0.5);
     this.crowdsourcingStatus = ko.observable('inactive');
     this.measuredAverageTime =  ko.observable(null);
+    this.existingCSCode =  ko.observable('');
 
 
     // initial subject survey info
@@ -332,6 +334,12 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('measuredAverageTime')) {
         this.measuredAverageTime(data.measuredAverageTime);
     }
+    if (data.hasOwnProperty('crowdsourcingSubType')) {
+        this.crowdsourcingSubType(data.crowdsourcingSubType);
+    }
+
+
+
 
 
     // terms //
@@ -406,6 +414,7 @@ PublishingData.prototype.toJS = function() {
         moneyPerSubject: this.moneyPerSubject(),
         crowdsourcingStatus: this.crowdsourcingStatus(),
         measuredAverageTime:this.measuredAverageTime,
+        crowdsourcingSubType:this.crowdsourcingSubType(),
 
         // initial subject survey
         surveyItemGender:this.surveyItemGender(),
