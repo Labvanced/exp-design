@@ -44,7 +44,7 @@ var PublishingData = function(experiment) {
     this.moneyPerSubject = ko.observable(0.5);
     this.crowdsourcingStatus = ko.observable('inactive');
     this.measuredAverageTime =  ko.observable(null);
-    this.existingCSCode =  ko.observable('');
+
 
 
     // initial subject survey info
