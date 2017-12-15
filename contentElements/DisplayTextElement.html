@@ -2,12 +2,27 @@
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Text</div>
         <div>
-            <span style="display: inline-block">Displayed Text</span>
-            <span style="display: inline-block">
-                <img style="cursor: pointer" width="20" height="20" src="/resources/edit.png" data-bind="click: focus">
-            </span>
+            <table>
+                <thead>
+                <tr>
+                    <th style="width: 50px;">Entry</th>
+                    <th>Linked Variables</th>
+                </tr>
+                </thead>
+                <tbody data-bind="foreach: dataModel.variablesInText">
+                <tr>
+                    <td>
+                        <div data-bind="text: $index()+1"></div>
+                    </td>
+                    <td>
+                        <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: $rawData, allowedDatatypes: ['numeric','string','datetime'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
         </div>
-        <br><br>
+
     </div>
 </template>
 

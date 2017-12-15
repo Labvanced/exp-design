@@ -8,6 +8,7 @@ var EditableTextElement = function(expData, parent, text) {
     this.type = "EditableTextElement";
     this.rawText = ko.observable(text);// for example: '<span>Your score: <variable varid="239da92acb23"></span>'
     this.globalVars = [];
+    this.globalVarIds = ko.observableArray([]);
 
     // not serialized
     this.selected = ko.observable(false);
@@ -63,6 +64,7 @@ EditableTextElement.prototype.setText = function (text) {
 
 EditableTextElement.prototype.addVar = function (globalVarId) {
     this.globalVars.push(globalVarId);
+    this.globalVarIds.push(globalVarId);
 };
 
 EditableTextElement.prototype.addRef = function(globalVarId){
@@ -121,7 +123,8 @@ EditableTextElement.prototype.toJS = function() {
         type: this.type,
         rawText: this.rawText(),
         modifier: this.modifier().toJS(),
-        globalVars: this.globalVars
+        globalVars: this.globalVars,
+        globalVarIds: this.globalVarIds()
     };
 };
 
@@ -131,6 +134,11 @@ EditableTextElement.prototype.fromJS = function(data) {
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
     this.globalVars = data.globalVars;
+
+    if (data.hasOwnProperty('globalVarIds')){
+        this.globalVarIds(data.globalVarIds);
+    }
+
 };
 
 EditableTextElement.prototype.dispose = function () {

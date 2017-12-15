@@ -1,5 +1,6 @@
 
 var DisplayTextElement = function(expData) {
+    var self  = this;
     this.expData = expData;
     this.parent = null;
 
@@ -8,6 +9,7 @@ var DisplayTextElement = function(expData) {
     this.text = ko.observable(null); // is EditableTextElement
 
     ///// not serialized
+    this.variablesInText = ko.observableArray();
     this.selected = ko.observable(false);
     this.editText = ko.observable(false);
     /////
@@ -36,6 +38,22 @@ DisplayTextElement.prototype.getAllModifiers = function(modifiersArr) {
 
 DisplayTextElement.prototype.setPointers = function(entitiesArr) {
     this.text().setPointers(entitiesArr);
+    this.recalcTextVariables();
+    var self = this;
+    this.text().globalVarIds.subscribe(function(val) {
+        self.recalcTextVariables();
+    });
+};
+
+DisplayTextElement.prototype.recalcTextVariables = function() {
+    var variables = [];
+    if (this.text()){
+        var textVarIds = this.text().globalVarIds();
+        for (var i= 0; i<textVarIds.length; i++){
+            variables.push(ko.observable(this.expData.entities.byId[textVarIds[i]]));
+        }
+    }
+    this.variablesInText(variables);
 };
 
 DisplayTextElement.prototype.reAddEntities = function(entitiesArr) {
@@ -80,12 +98,27 @@ function createDisplayTextComponents() {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
+                    var self = this;
                     this.dataModel = dataModel;
                     this.text = dataModel.text;
                     this.focus = function () {
                         this.dataModel.ckInstance.focus();
                     };
+
+                    this.relinkCallback = function(index) {
+                        var frameData = self.dataModel.parent.parent;
+                        var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
+                            frameData.addVariableToLocalWorkspace(newVariable);
+                            self.text().globalVars[index] = newVariable.id();
+                            self.text().addRef(newVariable.id());
+                            self.text().globalVarIds().splice(1,index,newVariable.id());
+
+                        }, frameData);
+                        variableDialog.show();
+                    };
                 };
+
+
                 return new viewModel(dataModel);
             }
 
