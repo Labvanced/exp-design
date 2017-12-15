@@ -25,6 +25,21 @@ EditableTextElement.prototype.iconPath = "/resources/icons/tools/tool_text.svg";
 EditableTextElement.prototype.modifiableProp = ["rawText"];
 EditableTextElement.prototype.dataType =  ["string"];
 
+
+EditableTextElement.prototype.reLinkVar = function(oldVar,newVar) {
+    var oldVarId = oldVar.id();
+    var newVarId = newVar.id();
+    var oldVarName = oldVar.name();
+    var newVarName = newVar.name();
+    var replStrin1= oldVarId+'">'+oldVarName;
+    var replStrin2= oldVarId+'">null';
+    var newString = newVarId+'">'+newVarName;
+
+    this.rawText(this.rawText().replace(replStrin1,newString));
+    this.rawText(this.rawText().replace(replStrin2,newString));
+};
+
+
 EditableTextElement.prototype.init = function() {
     if (this.expData.translationsEnabled()) {
         this.markTranslatable();
@@ -67,6 +82,15 @@ EditableTextElement.prototype.addVar = function (globalVarId) {
     this.globalVarIds.push(globalVarId);
 };
 
+EditableTextElement.prototype.removeVar = function (varId) {
+    var index =this.globalVars.indexOf(varId);
+    if(index>=0){
+        this.globalVars.splice(index,1);
+        this.globalVarIds.splice(index,1);
+    }
+
+};
+
 EditableTextElement.prototype.addRef = function(globalVarId){
     var entity = this.expData.entities.byId[globalVarId];
     if(entity) {
@@ -83,6 +107,19 @@ EditableTextElement.prototype.removeRefs = function () {
         }
     }
 };
+
+EditableTextElement.prototype.removeRefbyId = function (varId) {
+
+    if(this.globalVarRefs.hasOwnProperty(varId)){
+        var entity = this.expData.entities.byId[varId];
+        entity.removeBackRef(this.globalVarRefs[varId]);
+    }
+
+};
+
+
+
+
 
 EditableTextElement.prototype.setPointers = function(entitiesArr) {
     for(var k=0; k<this.globalVars.length; k++){
@@ -161,6 +198,7 @@ function createEditableTextComponents() {
                     //regex to parse variable id
                     var regex = /<vars.*?globvarid="([^"]*)">.*?<\/vars>/g;
 
+
                     this.text = ko.pureComputed({
 
                         read: function () {
@@ -185,6 +223,20 @@ function createEditableTextComponents() {
                                     ids.push(match[1]);
                                 }
                             }
+
+                            // remove variable references
+                            var nrVars = self.dataModel.globalVarIds().length;
+                            for(var i=0; i<nrVars; i++){
+                                var id = self.dataModel.globalVarIds()[i];
+                                 var index = ids.indexOf(id);
+                                 if (index<0){
+                                     self.dataModel.removeVar(id);
+                                     self.dataModel.removeRefbyId(id);
+                                 }
+                            }
+
+
+                            // add variable references
                             for(var i=0; i<ids.length; i++){
                                 if(!(ids[i] in self.dataModel.globalVarRefs)) {
                                     self.dataModel.addVar(ids[i]);
@@ -200,6 +252,7 @@ function createEditableTextComponents() {
                         },
                         owner: self
                     });
+
 
                     //function to replace globalvar in rawText
                     var replaceId = function (_match, id){

@@ -24,8 +24,12 @@ DisplayTextElement.prototype.initHeight = 80;
 
 
 DisplayTextElement.prototype.init = function() {
+    var self = this;
     this.text(new EditableTextElement(this.expData, this, '<p><span style="font-size:24px;">You can display your custom text here.</span></p>'));
     this.text().init();
+    this.text().globalVarIds.subscribe(function(val) {
+        self.recalcTextVariables();
+    });
 };
 
 /**
@@ -107,11 +111,10 @@ function createDisplayTextComponents() {
 
                     this.relinkCallback = function(index) {
                         var frameData = self.dataModel.parent.parent;
+                        var oldVar = self.dataModel.variablesInText()[index]();
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
-                            self.text().globalVars[index] = newVariable.id();
-                            self.text().addRef(newVariable.id());
-                            self.text().globalVarIds().splice(1,index,newVariable.id());
+                            self.dataModel.text().reLinkVar(oldVar,newVariable);
 
                         }, frameData);
                         variableDialog.show();
