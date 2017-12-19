@@ -9,12 +9,19 @@ var MultiLineInputElement = function(expData) {
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
     this.enableTitle= ko.observable(true);
+    this.customHeight = ko.observable(100);
+    this.customWidth = ko.observable(100);
+
+    this.outerHeight = ko.observable(50);
 
     ///// not serialized
     this.selected = ko.observable(false);
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
-    /////
+
+
+
+
 };
 
 MultiLineInputElement.prototype.label = "Paragraph";
@@ -24,6 +31,17 @@ MultiLineInputElement.prototype.modifiableProp = [ ];
 MultiLineInputElement.prototype.initWidth = 500;
 MultiLineInputElement.prototype.initHeight = 100;
 
+
+
+
+
+
+MultiLineInputElement.prototype.recalcHeight = function() {
+    if (this.parent.hasOwnProperty('editorHeight')){
+        this.outerHeight((this.parent.editorHeight()-50));
+    }
+
+};
 
 MultiLineInputElement.prototype.init = function() {
 
@@ -42,6 +60,9 @@ MultiLineInputElement.prototype.init = function() {
     var frameOrPageElement = this.parent;
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
+
+    this.recalcHeight();
+
 };
 
 MultiLineInputElement.prototype.setVariableBackRef = function() {
@@ -61,6 +82,7 @@ MultiLineInputElement.prototype.setPointers = function(entitiesArr) {
         this.variable(entitiesArr.byId[this.variable()]);
     }
     this.questionText().setPointers(entitiesArr);
+    this.recalcHeight();
 };
 
 MultiLineInputElement.prototype.reAddEntities = function(entitiesArr) {
@@ -118,7 +140,11 @@ MultiLineInputElement.prototype.toJS = function() {
         questionText: this.questionText().toJS(),
         variable: variableId,
         isRequired:this.isRequired(),
-        enableTitle:this.enableTitle()
+        enableTitle:this.enableTitle(),
+        customHeight:this.customHeight(),
+        customWidth:this.customWidth(),
+        outerHeight:this.outerHeight()
+
     };
 };
 
@@ -140,6 +166,16 @@ MultiLineInputElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('enableTitle')){
         this.enableTitle(data.enableTitle);
     }
+    if(data.hasOwnProperty('customHeight')){
+        this.customHeight(data.customHeight);
+    }
+    if(data.hasOwnProperty('customWidth')){
+        this.customWidth(data.customWidth);
+    }
+    if(data.hasOwnProperty('outerHeight')){
+        this.outerHeight(data.outerHeight);
+    }
+
 
 };
 
@@ -150,7 +186,7 @@ function createMultiLineInputComponents() {
                 var viewModel = function(dataModel){
                     var self = this;
 
-                    this.dataModel = dataModel;
+                    this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
 
                     this.focus = function () {
@@ -158,11 +194,11 @@ function createMultiLineInputComponents() {
                     };
 
                     this.relinkCallback = function() {
-                        var frameData = self.dataModel.parent.parent;
-                        var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
+                        var frameData = self.dataModel().parent.parent;
+                        var variableDialog = new AddNewVariable(self.dataModel().expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
-                            self.dataModel.variable(newVariable);
-                            self.dataModel.setVariableBackRef(newVariable);
+                            self.dataModel().variable(newVariable);
+                            self.dataModel().setVariableBackRef(newVariable);
                         }, frameData);
                         variableDialog.show();
                     };

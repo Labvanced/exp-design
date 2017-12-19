@@ -71,7 +71,13 @@ FrameElementView.prototype.setupSubscriber = function() {
 
     this.disposables.push(this.selectedTrialView.editorHeight.subscribe(function(h) {
         self.update(true,false);
+        if (self.dataModel.content() instanceof MultiLineInputElement){
+            self.dataModel.content().recalcHeight()
+        }
     }));
+
+
+
 
     this.disposables.push(this.selectedTrialView.contentScaling.subscribe(function(newValue){
         self.update(true,false);

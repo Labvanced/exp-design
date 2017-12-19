@@ -1,18 +1,29 @@
 <template id="multi-line-input-editview-template">
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Multiline Answer</div>
+
+        <div>
+
+            <!-- ko if: (dataModel().parent.parent instanceof PageData)  -->
+            <span>outer height: </span><input style="display: inline-block; width: 50px" min="1" type="number" data-bind="value: dataModel().outerHeight, valueUpdate: 'input'"> px<br>
+            <!-- /ko -->
+
+            <span>inner height: </span><input style="display: inline-block; width: 50px"  min="1" max="100" type="number" data-bind="value: dataModel().customHeight, valueUpdate: 'input'"> %<br>
+            <span>inner width: </span><input style="display: inline-block; width: 50px" min="1" max="100" type="number" data-bind="value: dataModel().customWidth, valueUpdate: 'input'"> %<br>
+        </div>
+
         <br>
         <label>
             Linked Variable:
-            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
+            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel().variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
         </label>
         <div>
             <span>Required:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel().isRequired,click:function(){return true},clickBubble: false">
         </div>
         <div>
             <span>Show Question Header:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel().enableTitle,click:function(){return true},clickBubble: false">
         </div>
     </div>
 </template>
@@ -22,8 +33,8 @@
     <span data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></span>
     <!-- /ko -->
 
-    <div style="width: 85%">
-        <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" data-bind="attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().startValue().value"></textarea>
+    <div style="width: 98%" data-bind="style:{height:dataModel().outerHeight()+'px'}">
+        <textarea style="position:relative;resize: none;" class="form-control" data-bind="attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().startValue().value,style:{width:dataModel().customWidth()+'%',height:dataModel().customHeight()+'%'}"></textarea>
     </div>
 
     <!-- ko if: dataModel().isRequired() -->
@@ -39,8 +50,8 @@
     <span data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
     <!-- /ko -->
 
-    <div style="display:inline-block; width: 85%">
-        <textarea style="position:relative;left: 0%; max-width:100%" class="form-control" data-bind="attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().value().value"></textarea>
+    <div style="width: 98%" data-bind="style:{height:dataModel().outerHeight()+'px'}">
+        <textarea style="position:relative;resize: none;" class="form-control" data-bind="attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().value().value,style:{width:dataModel().customWidth()+'%',height:dataModel().customHeight()+'%'}"></textarea>
     </div>
 
     <!-- ko if: dataModel().triedToSubmit() -->
