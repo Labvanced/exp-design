@@ -79,6 +79,12 @@ NaviElement.prototype.deleteButton = function() {
                 self.parent.parent.deleteChildEntity(elem)
             }
         });
+        events.forEach(function(elem,index){
+            if (elem.name()=='Go Forward'){
+                elem.trigger().buttonIdx( elem.trigger().buttonIdx()-1);
+            }
+        });
+
     }
 };
 

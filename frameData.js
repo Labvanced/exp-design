@@ -42,6 +42,7 @@ FrameData.prototype.modifiableProp = ["name","offset","offsetEnabled","frameWidt
 
 
 FrameData.prototype.deleteChildEntity = function(entity) {
+    var self = this;
     var obsArr;
     if (entity instanceof Event) {
         obsArr = this.events;
@@ -66,6 +67,21 @@ FrameData.prototype.deleteChildEntity = function(entity) {
                 }
 
             }
+        }
+
+        // delete associated events
+        if (entity.content() instanceof NaviElement){
+            var events = this.events();
+            events.forEach(function(elem,index){
+                if (elem.name()=='Go Backward' || elem.name()=='Go Forward'){
+                    self.deleteChildEntity(elem)
+                }
+            });
+            events.forEach(function(elem,index){
+                if (elem.name()=='Go Backward' || elem.name()=='Go Forward'){
+                    self.deleteChildEntity(elem)
+                }
+            });
         }
 
         if (typeof entity.content().dispose === 'function'){
