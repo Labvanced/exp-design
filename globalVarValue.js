@@ -244,6 +244,71 @@ GlobalVarValueCategorical.prototype.toJS = function() {
 };
 
 
+
+
+
+
+
+
+////////////////////  GlobalVarValueTime  ///////////////////////////////////
+
+GlobalVarValueTime = function(parentVar) {
+    var self = this;
+    this.parentVar = parentVar;
+    this.value = ko.observable(null);
+    this.value.subscribe(function() {
+        self.parentVar.notifyValueChanged();
+    });
+};
+
+GlobalVarValueTime.prototype.convert = function(data) {
+    if (data === null) {
+        return null;
+    }
+    else   {
+        var indSep = data.split(":");
+        if (indSep.length==2 && parseInt(indSep[0])>=0 && parseInt(indSep[0])<=23 && parseInt(indSep[1])>=0 && parseInt(indSep[1])<=59 ){
+            return data;
+        }
+        else return null
+
+    }
+};
+
+/**
+ * modify the value either by a supplying a globalVarValue instance or a javascript string or number
+ * @param data
+ */
+GlobalVarValueTime.prototype.setValue = function(data) {
+    if (typeof data.parentVar == "GlobalVar"){
+        data = data.toJS();
+    }
+    this.value(this.convert(data));
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {GlobalVar}
+ */
+GlobalVarValueTime.prototype.fromJS = function(data) {
+    this.value(this.convert(data));
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+GlobalVarValueTime.prototype.toJS = function() {
+    return this.value();
+};
+
+
+
+
+
+
+
 ////////////////////  GlobalVarValueDatetime  ///////////////////////////////////
 
 GlobalVarValueDatetime = function(parentVar) {
@@ -271,6 +336,9 @@ GlobalVarValueDatetime.prototype.setValue = function(data) {
     if (typeof data.parentVar == "GlobalVar"){
         data = data.toJS();
     }
+    if (data.hasOwnProperty("value")){
+        data = null;
+    }
     this.value(this.convert(data));
 };
 
@@ -288,7 +356,13 @@ GlobalVarValueDatetime.prototype.fromJS = function(data) {
  * @returns {object}
  */
 GlobalVarValueDatetime.prototype.toJS = function() {
-    return JSON.stringify( this.value() );
+    if (this.value()!=null){
+        return this.value().toISOString();
+    }
+    else{
+        return null
+    }
+
 };
 
 ////////////////////  GlobalVarValueTimer  ///////////////////////////////////

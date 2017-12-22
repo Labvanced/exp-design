@@ -29,15 +29,14 @@ InputElement.prototype.label = "Input";
 InputElement.prototype.iconPath = "/resources/icons/tools/tool_input.svg";
 InputElement.prototype.dataType =      [ ];
 InputElement.prototype.modifiableProp = [ ];
-InputElement.prototype.typeOptions = ["number","text","date","week","time","color"];
+InputElement.prototype.typeOptions = ["number","text","date","time","color"];
 InputElement.prototype.initWidth = 300;
 InputElement.prototype.initHeight = 100;
 InputElement.prototype.dataTypePerInputType = {
     "number": 'numeric',
     "text": 'string',
     "date": 'datetime',
-    "week": 'string',
-    "time": 'string',
+    "time": 'time',
     "color": 'string'
 };
 
@@ -234,7 +233,17 @@ function createInputComponents() {
 
                     this.value = ko.pureComputed({
                         read: function () {
-                            return self.dataModel.variable().startValue().value();
+                            if (self.dataModel.variable().startValue() instanceof GlobalVarValueDatetime){
+                                if (self.dataModel.variable().startValue().value()!=null){
+                                    return self.dataModel.variable().startValue().value().toISOString().substring(0,10);
+                                }
+                                else{
+                                    return null
+                                }
+                            }
+                            else{
+                                return self.dataModel.variable().startValue().value();
+                            }
                         },
                         write: function (value) {
                             // setValue will convert to the correct datatype:
@@ -259,8 +268,19 @@ function createInputComponents() {
                     var self = this;
                     this.value = ko.pureComputed({
                         read: function () {
-                            return self.dataModel.variable().value().value();
+                            if (self.dataModel.variable().value() instanceof GlobalVarValueDatetime){
+                                if (self.dataModel.variable().value().value()!=null){
+                                    return self.dataModel.variable().value().value().toISOString().substring(0,10);
+                                }
+                                else{
+                                    return null
+                                }
+                            }
+                            else{
+                                return self.dataModel.variable().value().value();
+                            }
                         },
+
                         write: function (value) {
                             // setValue will convert to the correct datatype:
                             self.dataModel.variable().value().setValue(value);
