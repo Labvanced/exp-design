@@ -357,7 +357,8 @@ GlobalVarValueDatetime.prototype.fromJS = function(data) {
  */
 GlobalVarValueDatetime.prototype.toJS = function() {
     if (this.value()!=null){
-        return this.value().toISOString();
+        this.value(this.convert(this.value()));
+        return this.value().toISOString().substring(0,10)
     }
     else{
         return null

@@ -264,7 +264,15 @@ function createEditableTextComponents() {
                             return id;
                         }
                         else{
-                            return entity.startValue().toString();
+                            if (entity.startValue() instanceof GlobalVarValueDatetime){
+                                return entity.startValue().value().toISOString().substring(0,10);
+                            }
+                            else if(entity.startValue() instanceof GlobalVarValueTime || entity.startValue() instanceof GlobalVarValueCategorical){
+                                return entity.startValue().value().toString();
+                            }
+                            else{
+                                return entity.startValue().toString();
+                            }
                         }
                     };
 
@@ -301,8 +309,30 @@ function createEditableTextComponents() {
                         if(!entity){
                             return id;
                         }
-                        else{
-                            return entity.value().toString();
+                        else {
+                            if (entity.value() instanceof GlobalVarValueDatetime){
+                                if (entity.value().value()!= null){
+                                    return entity.value().value().toISOString().substring(0,10);
+                                }
+                                else{
+                                    return null
+                                }
+
+                            }
+                            else if(entity.value() instanceof GlobalVarValueTime || entity.value() instanceof GlobalVarValueCategorical){
+                                if (entity.value().value()!= null){
+                                    return entity.value().value().toString();
+                                }
+                                else{
+                                    return null
+                                }
+
+                            }
+                            else{
+                                return entity.value().toString();
+                            }
+
+
                         }
                     };
 
