@@ -321,7 +321,7 @@ GlobalVarValueDatetime = function(parentVar) {
 };
 
 GlobalVarValueDatetime.prototype.convert = function(data) {
-    if (data === null) {
+    if (data === null || data === "null" ) {
         return null;
     }
     data = new Date(data);
