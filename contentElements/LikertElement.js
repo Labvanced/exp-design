@@ -10,6 +10,8 @@ var LikertElement= function(expData) {
     this.startLabel = ko.observable(null); // EditableTextElement
     this.endLabel = ko.observable(null); // EditableTextElement
     this.choices= ko.observableArray([1,2,3,4,5]);
+    this.reshuffleElements = ko.observable(false);
+
 
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
@@ -58,6 +60,24 @@ LikertElement.prototype.init = function() {
 LikertElement.prototype.setVariableBackRef = function() {
     this.variable().addBackRef(this, this.parent, true, true, 'Likert');
 };
+
+
+
+LikertElement.prototype.doReshuffle = function() {
+   var randi =  Math.random();
+   if (randi >0.5){
+       this.valuesInverted = true;
+       var startLabel = this.startLabel();
+       var endLabel = this.endLabel();
+       var choices = this.choices().reverse();
+
+       this.startLabel(endLabel);
+       this.endLabel(startLabel);
+       this.choices(choices);
+   }
+};
+
+
 
 /**
  * This function is used recursively to retrieve an array with all modifiers.
@@ -146,7 +166,8 @@ LikertElement.prototype.toJS = function() {
         variable: variableId,
         isRequired: this.isRequired(),
         enableTitle:this.enableTitle(),
-        showNums:this.showNums()
+        showNums:this.showNums(),
+        reshuffleElements:this.reshuffleElements()
     };
 };
 
@@ -178,6 +199,11 @@ LikertElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('showNums')){
         this.showNums(data.showNums);
     }
+    if(data.hasOwnProperty('reshuffleElements')){
+        this.reshuffleElements(data.reshuffleElements);
+    }
+
+
 
 
 };

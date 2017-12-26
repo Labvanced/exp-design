@@ -2,6 +2,13 @@
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Multiple Choice</div>
 
+
+        <div>
+            <span>Randomize Order:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.reshuffleElements,click:function(){return true},clickBubble: false">
+        </div>
+
+
         <!-- ko if: (multipleChoiceElement.parent.parent instanceof PageData)  -->
         <div>
             <span>Shuffle position on page:</span>

@@ -11,6 +11,7 @@ var CheckBoxElement= function(expData) {
     this.elements = ko.observableArray([]);
     this.enableTitle= ko.observable(true);
     this.isRequired=ko.observable(false);
+    this.reshuffleElements = ko.observable(false);
 
 
     // style
@@ -48,6 +49,13 @@ CheckBoxElement.prototype.removeEntry = function() {
     // delete associated global vars
     this.parent.parent.localWorkspaceVars.remove(entry.variable());
     this.elements.splice(idx,1);
+};
+
+
+CheckBoxElement.prototype.doReshuffle = function() {
+    var elemCopy = this.elements().slice();
+    var reshuffledArray = this.parent.parent.parent.parent.reshuffle(elemCopy);
+    this.elements(reshuffledArray);
 };
 
 
@@ -131,7 +139,8 @@ CheckBoxElement.prototype.toJS = function() {
             return elem.toJS();
         }),
         enableTitle:this.enableTitle(),
-        isRequired:this.isRequired()
+        isRequired:this.isRequired(),
+        reshuffleElements:this.reshuffleElements()
     };
 };
 
@@ -156,6 +165,11 @@ CheckBoxElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('isRequired')){
         this.isRequired(data.isRequired);
     }
+    if(data.hasOwnProperty('reshuffleElements')){
+        this.reshuffleElements(data.reshuffleElements);
+    }
+
+
 
 };
 

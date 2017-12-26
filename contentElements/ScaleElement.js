@@ -14,6 +14,7 @@ var ScaleElement= function(expData) {
     this.elements = ko.observableArray([]);
     this.leftRightRatio = ko.observable(75); // in percent
     this.enableTitle= ko.observable(true);
+    this.reshuffleElements = ko.observable(false);
 
 
     ///// not serialized
@@ -60,6 +61,14 @@ ScaleElement.prototype.init = function() {
         this.labels.push(scaleLabel);
     }
 };
+
+ScaleElement.prototype.doReshuffle = function() {
+    var elemCopy = this.elements().slice();
+    var reshuffledArray = this.parent.parent.parent.parent.reshuffle(elemCopy);
+    this.elements(reshuffledArray);
+};
+
+
 
 
 ScaleElement.prototype.calculateWidth = function() {
@@ -179,7 +188,8 @@ ScaleElement.prototype.toJS = function() {
             return elem.toJS();
         }),
         leftRightRatio:this.leftRightRatio(),
-        enableTitle:this.enableTitle()
+        enableTitle:this.enableTitle(),
+        reshuffleElements:this.reshuffleElements()
     };
 };
 
@@ -232,6 +242,10 @@ ScaleElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('enableTitle')){
         this.enableTitle(data.enableTitle);
     }
+    if(data.hasOwnProperty('reshuffleElements')){
+        this.reshuffleElements(data.reshuffleElements);
+    }
+
 
 
 };

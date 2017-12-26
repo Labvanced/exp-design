@@ -12,6 +12,7 @@ var MultipleChoiceElement = function(expData) {
     this.altAnswerActive = ko.observable(false);
     this.altAnswerOnlyWhenLastSelected = ko.observable(false);
     this.enableTitle= ko.observable(true);
+    this.reshuffleElements = ko.observable(false);
 
    // this.openQuestion=  ko.observable(false);
 
@@ -81,6 +82,13 @@ MultipleChoiceElement.prototype.removeEntry = function() {
 
 MultipleChoiceElement.prototype.setVariableBackRef = function() {
     this.variable().addBackRef(this, this.parent, true, true, 'multipleChoice');
+};
+
+
+MultipleChoiceElement.prototype.doReshuffle = function() {
+    var elemCopy = this.elements().slice();
+    var reshuffledArray = this.parent.parent.parent.parent.reshuffle(elemCopy);
+    this.elements(reshuffledArray);
 };
 
 /**
@@ -246,7 +254,8 @@ MultipleChoiceElement.prototype.toJS = function() {
         altAnswerActive: this.altAnswerActive(),
         altAnswerOnlyWhenLastSelected: this.altAnswerOnlyWhenLastSelected(),
         enableTitle: this.enableTitle(),
-        subInputElement: subInputElement
+        subInputElement: subInputElement,
+        reshuffleElements:this.reshuffleElements()
     };
 };
 
@@ -287,9 +296,9 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
             this.subInputElement = ko.observable(elem);
         }
     }
-
-
-
+    if(data.hasOwnProperty('reshuffleElements')){
+        this.reshuffleElements(data.reshuffleElements);
+    }
 
 };
 
