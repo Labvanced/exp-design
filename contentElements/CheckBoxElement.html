@@ -5,7 +5,7 @@
 
 
             <div>
-                <span>Randomize Order:</span>
+                <span>Randomize Item Order:</span>
                 <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.reshuffleElements,click:function(){return true},clickBubble: false">
             </div>
 
@@ -17,6 +17,17 @@
             <!-- /ko -->
 
             <div>
+                <span>Show Question Header:</span>
+                <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+            </div>
+            <div data-toggle="tooltip" title="Answer is only counted as valid, if at least one checkbox is marked.">
+                <span>Required Answer:</span>
+                <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
+            </div>
+            <hr>
+
+
+            <div>
                 <span>Add checkbox</span>
                 <span style="cursor: pointer" data-bind="click:addChoice"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
             </div>
@@ -24,16 +35,6 @@
                 <span>Delete checkbox</span>
                 <span style="cursor: pointer" data-bind="click:removeChoice"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
             </div>
-
-            <div>
-                <span>Show Question Header:</span>
-                <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
-            </div>
-            <div data-toggle="tooltip" title="Answer is only counted as valid, if at least one checkbox is marked.">
-                <span>Required:</span>
-                <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
-            </div>
-
             <table>
                 <thead>
                     <tr>

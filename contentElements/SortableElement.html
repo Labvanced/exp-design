@@ -9,6 +9,17 @@
         </div>
         <!-- /ko -->
 
+        <div>
+            <span>Show Question Header:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+        </div>
+
+        <div style="margin-left: 10px">
+            <label>Activate Sorting / Disable Text-Editing: </label>
+            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: dataModel.activeSorting">
+        </div>
+        <hr>
+
 
         <div>
             <label>Nr Of Sortable Elements: </label>
@@ -55,16 +66,6 @@
             </div>
         </div>
 
-        <div>
-            <span>Show Question Header:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
-        </div>
-
-
-        <div style="margin-left: 10px">
-            <label>Activate Sorting / Disable Text-Editing: </label>
-            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: dataModel.activeSorting">
-        </div>
     </div>
 </template>
 

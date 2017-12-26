@@ -3,7 +3,7 @@
         <div class="taskeditor-header">Matrix</div>
 
         <div>
-            <span>Randomize Order:</span>
+            <span>Randomize Question Order:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.reshuffleElements,click:function(){return true},clickBubble: false">
         </div>
 
@@ -13,6 +13,12 @@
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.parent.includeInPageShuffle,click:function(){return true},clickBubble: false">
         </div>
         <!-- /ko -->
+        <div>
+            <span>Show Question Header:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+        </div>
+        <hr>
+
 
         <div>
             <label>Nr of Choices: </label>
@@ -54,12 +60,6 @@
         </table>
 
         <div>Style:</div>
-
-        <div>
-            <span>Show Question Header:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
-        </div>
-
         <div>
             Left-Right Ratio: <input style="display: inline-block; width: 50px" type="number" min="0"  max="100" data-bind="value: dataModel.leftRightRatio,valueUpdate:'input'"> %
         </div>

@@ -9,6 +9,18 @@
         </div>
         <!-- /ko -->
 
+        <div>
+            <label style="cursor: pointer">Show Question Header: <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false"></label>
+        </div>
+
+        <div>
+            <label style="cursor: pointer">Required:<input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false"></label>
+
+        </div>
+        <hr>
+
+
+
 
         <label>
             Linked Variable:
@@ -52,14 +64,7 @@
             </table>
             <!-- /ko -->
         <br>
-        <div>
-            <label style="cursor: pointer">Required:<input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false"></label>
 
-        </div>
-        <div>
-            <label style="cursor: pointer">Show Question Header: <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false"></label>
-
-        </div>
 
     </div>
 </template>

@@ -10,6 +10,25 @@
         <!-- /ko -->
 
         <div>
+            <label>
+                Linked Variable:
+                <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel().variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
+            </label>
+        </div>
+
+        <div>
+            <span>Show Question Header:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel().enableTitle,click:function(){return true},clickBubble: false">
+        </div>
+
+        <div>
+            <span>Required:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel().isRequired,click:function(){return true},clickBubble: false">
+        </div>
+        <hr>
+
+
+        <div>
             <!-- ko if: (dataModel().parent.parent instanceof PageData)  -->
             <span>outer height: </span><input style="display: inline-block; width: 50px" min="1" type="number" data-bind="value: dataModel().outerHeight, valueUpdate: 'input'"> px<br>
             <!-- /ko -->
@@ -18,19 +37,6 @@
             <span>inner width: </span><input style="display: inline-block; width: 50px" min="1" max="100" type="number" data-bind="value: dataModel().customWidth, valueUpdate: 'input'"> %<br>
         </div>
 
-        <br>
-        <label>
-            Linked Variable:
-            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel().variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
-        </label>
-        <div>
-            <span>Required:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel().isRequired,click:function(){return true},clickBubble: false">
-        </div>
-        <div>
-            <span>Show Question Header:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel().enableTitle,click:function(){return true},clickBubble: false">
-        </div>
     </div>
 </template>
 

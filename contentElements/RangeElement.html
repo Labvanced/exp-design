@@ -10,6 +10,12 @@
         </div>
         <!-- /ko -->
 
+        <div>
+            <span>Show Question Header:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+        </div>
+        <hr>
+
         <input style="max-width: 30px" type="text" data-bind="value: minChoice">
         To
         <input style="max-width: 30px" type="text" data-bind="value: maxChoice">
@@ -20,10 +26,7 @@
             Linked Variable:
             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['numeric'], relinkCallback: relinkCallback } }"></span>
         </label>
-        <div>
-            <span>Show Question Header:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
-        </div>
+
     </div>
 </template>
 

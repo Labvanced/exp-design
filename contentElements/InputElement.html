@@ -11,19 +11,22 @@
         </div>
         <!-- /ko -->
 
-        <label>
-            Linked Variable:
-            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: allowedDataTypes(), relinkCallback: relinkCallback } }"></span>
-        </label>
-
-        <div>
-            <span>Required:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
-        </div>
         <div>
             <span>Show Question Header:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
         </div>
+
+        <div>
+            <span>Required Answer:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
+        </div>
+        <hr>
+
+
+        <label>
+            Linked Variable:
+            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: allowedDataTypes(), relinkCallback: relinkCallback } }"></span>
+        </label>
 
         <!-- ko if: (dataModel.inputType()=='number')  -->
 

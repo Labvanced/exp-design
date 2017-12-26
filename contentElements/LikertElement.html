@@ -4,7 +4,7 @@
 
 
         <div>
-            <span>Randomize Order:</span>
+            <span>Balance Label Sides:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.reshuffleElements,click:function(){return true},clickBubble: false">
         </div>
 
@@ -15,34 +15,41 @@
         </div>
         <!-- /ko -->
 
-        <select data-bind="options: values, value: startChoice, event: {change: finish}"></select>
-        To
-        <select data-bind="options: values, value: endChoice, event: {change: finish}">
-        </select>
         <div>
-            <input type="checkbox" data-bind="checked: dataModel.showNums">
-            Show numbers
-        </div>
-        <div>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
             <span>Show Question Header:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
         </div>
+
         <div>
-            Inner Margin: <input style="display: inline-block; width: 50px" type="number" min="0" data-bind="value:margin,valueUpdate:'input'"> pt
+            <span>Show numbers</span>
+            <input type="checkbox" data-bind="checked: dataModel.showNums">
         </div>
-
-
-
-        <br>
-        <label>
-            Linked Variable:
-            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['numeric'], relinkCallback: relinkCallback } }"></span>
-        </label>
 
         <div>
             <span>Required:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
         </div>
+        <hr>
+
+
+        <select data-bind="options: values, value: startChoice, event: {change: finish}"></select>
+        To
+        <select data-bind="options: values, value: endChoice, event: {change: finish}">
+        </select>
+
+
+
+        <div>
+            Inner Margin: <input style="display: inline-block; width: 50px" type="number" min="0" data-bind="value:margin,valueUpdate:'input'"> pt
+        </div>
+
+
+        <label>
+            Linked Variable:
+            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['numeric'], relinkCallback: relinkCallback } }"></span>
+        </label>
+
+
 
 
     </div>
