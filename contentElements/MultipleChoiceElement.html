@@ -2,6 +2,13 @@
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Multiple Choice</div>
 
+        <!-- ko if: (multipleChoiceElement.parent.parent instanceof PageData)  -->
+        <div>
+            <span>Shuffle position on page:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.parent.includeInPageShuffle,click:function(){return true},clickBubble: false">
+        </div>
+        <!-- /ko -->
+
         <div>
             <span>Add Option</span>
             <span style="cursor: pointer" data-bind="click:addChoice"><img width="20" height="20" src="/resources/icons/add.svg"/></span>

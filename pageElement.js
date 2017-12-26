@@ -14,6 +14,7 @@ var PageElement = function(expData) {
     this.name = ko.observable("pageElement");
     this.id = ko.observable(guid());
     this.selected = ko.observable(false);
+    this.includeInPageShuffle  = ko.observable(false);
 
     // new
     this.stimulusInformation  = ko.observable(null);
@@ -118,7 +119,9 @@ PageElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('stimulusInformation')) {
         this.stimulusInformation(data.stimulusInformation);
     }
-
+    if(data.hasOwnProperty('includeInPageShuffle')) {
+        this.includeInPageShuffle(data.includeInPageShuffle);
+    }
 
     if(data.content){
         var classObj = window[data.content.type];
@@ -158,7 +161,8 @@ PageElement.prototype.toJS = function() {
         name: this.name(),
         stimulusInformation: this.stimulusInformation(),
         modifier: this.modifier().toJS(),
-        content: contentData
+        content: contentData,
+        includeInPageShuffle: this.includeInPageShuffle()
     };
 };
 

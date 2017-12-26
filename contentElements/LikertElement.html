@@ -1,7 +1,14 @@
 <template id="likert-editview-template">
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Likert</div>
-        <br>
+
+        <!-- ko if: (dataModel.parent.parent instanceof PageData)  -->
+        <div>
+            <span>Shuffle position on page:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.parent.includeInPageShuffle,click:function(){return true},clickBubble: false">
+        </div>
+        <!-- /ko -->
+
         <select data-bind="options: values, value: startChoice, event: {change: finish}"></select>
         To
         <select data-bind="options: values, value: endChoice, event: {change: finish}">

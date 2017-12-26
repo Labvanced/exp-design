@@ -7,6 +7,7 @@
  * @constructor
  */
 var PageData = function(expData) {
+    var self = this;
     this.expData = expData;
     this.currSelectedElement = ko.observable(null);
     this.parent = null;
@@ -34,9 +35,74 @@ var PageData = function(expData) {
     // not serialized
     this.label = "PageData";
     this.playerFrame = null; // pointer to the playerFrame if running in player.
+
+
+    this.needsToBeShuffled = ko.computed(function() {
+     if (self.elements().length<2){
+         return false
+     }
+     else{
+         var reshuffleCount = 0;
+         for (var entry= 0; entry<self.elements().length; entry++){
+             var elem = self.elements()[entry];
+             if (elem instanceof PageElement){
+                 if (elem.includeInPageShuffle()){
+                     reshuffleCount++
+                 }
+             }
+
+         }
+         if (reshuffleCount<2){
+             return false
+         }
+         else{
+             return true
+         }
+     }
+
+    });
 };
 
 PageData.prototype.modifiableProp = ["name","offset","offsetEnabled","hideMouse"];
+
+
+
+PageData.prototype.reshuffleEntries = function() {
+
+    var elemCopy = [];
+    var elemCopyIdx = [];
+
+    // select items to reshuffle
+    for (var entry= 0; entry<this.elements().length; entry++){
+        var elem = this.elements()[entry];
+        if (elem.includeInPageShuffle()){
+            elemCopy.push(elem);
+            elemCopyIdx.push(entry);
+        }
+    }
+    // reshuffle
+    var reshuffledArray = this.parent.parent.reshuffle(elemCopy);
+
+
+    // merge old and reshuffled array
+    var newArr = [];
+    var reshuffleIdx = 0;
+    for (var entry= 0; entry<this.elements().length; entry++){
+        if (this.elements()[entry].includeInPageShuffle()){
+            var elem =reshuffledArray[reshuffleIdx];
+            newArr.push(elem);
+            reshuffleIdx++;
+        }
+        else{
+            var elem = this.elements()[entry];
+            newArr.push(elem);
+        }
+    }
+
+    // replace element array
+    this.elements(newArr)
+
+};
 
 PageData.prototype.deleteChildEntity = function(entity) {
     var obsArr;

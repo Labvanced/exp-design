@@ -2,8 +2,14 @@
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Multiline Answer</div>
 
+        <!-- ko if: (dataModel().parent.parent instanceof PageData)  -->
         <div>
+            <span>Shuffle position on page:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel().parent.includeInPageShuffle,click:function(){return true},clickBubble: false">
+        </div>
+        <!-- /ko -->
 
+        <div>
             <!-- ko if: (dataModel().parent.parent instanceof PageData)  -->
             <span>outer height: </span><input style="display: inline-block; width: 50px" min="1" type="number" data-bind="value: dataModel().outerHeight, valueUpdate: 'input'"> px<br>
             <!-- /ko -->
