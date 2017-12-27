@@ -19,6 +19,10 @@ var PageElement = function(expData) {
     // new
     this.stimulusInformation  = ko.observable(null);
 
+
+    this.isActive = ko.observable(true);
+    this.isVisible = ko.observable(true);
+
     this.shortName = ko.computed(function() {
         if (self.name()){
             return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
@@ -27,8 +31,12 @@ var PageElement = function(expData) {
 
     });
 
+    // not serialized
+    this.activeOptions = ko.observableArray([false,true]);
+
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
+
 };
 
 PageElement.prototype.addContent = function(element){
@@ -43,8 +51,9 @@ PageElement.prototype.selectTrialType = function(selectionSpec) {
     }
 };
 
-PageElement.prototype.modifiableProp = [];
-PageElement.prototype.dataType =      [];
+
+PageElement.prototype.modifiableProp = ["isVisible","isActive"];
+PageElement.prototype.dataType =    [ "boolean", "boolean"];
 PageElement.prototype.subElementProp = ["content"];
 
 /**
@@ -122,6 +131,13 @@ PageElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('includeInPageShuffle')) {
         this.includeInPageShuffle(data.includeInPageShuffle);
     }
+    if(data.hasOwnProperty('isActive')) {
+        this.isActive(data.isActive);
+    }
+    if(data.hasOwnProperty('isVisible')) {
+        this.isVisible(data.isVisible);
+    }
+
 
     if(data.content){
         var classObj = window[data.content.type];
@@ -162,7 +178,9 @@ PageElement.prototype.toJS = function() {
         stimulusInformation: this.stimulusInformation(),
         modifier: this.modifier().toJS(),
         content: contentData,
-        includeInPageShuffle: this.includeInPageShuffle()
+        includeInPageShuffle: this.includeInPageShuffle(),
+        isActive:this.isActive(),
+        isVisible:this.isVisible()
     };
 };
 

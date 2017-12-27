@@ -39,6 +39,8 @@ var FrameElement= function(expData) {
 
     });
 
+    // not serialized
+    this.activeOptions = ko.observableArray([false,true]);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -55,8 +57,9 @@ FrameElement.prototype.addContent = function(element){
     element.parent = this;
 };
 
-FrameElement.prototype.dataType =      [ "numeric", "numeric", "numeric", "numeric","numeric","boolean","boolean","numeric","numeric"];
-FrameElement.prototype.modifiableProp = ["visibility","editorX", "editorY", "editorWidth","editorHeight","isActive","keepAspectRatio","contentScaling","contentRotation"];
+
+FrameElement.prototype.dataType =      [ "numeric","boolean", "numeric", "numeric", "numeric","numeric","boolean","numeric","numeric"];
+FrameElement.prototype.modifiableProp = ["visibility","isActive","editorX", "editorY", "editorWidth","editorHeight","keepAspectRatio","contentScaling","contentRotation"];
 FrameElement.prototype.subElementProp = ["content"];
 
 FrameElement.prototype.setAnchorPoint = function(horizontal, vertical) {

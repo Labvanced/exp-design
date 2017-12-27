@@ -70,14 +70,19 @@
     <br>
 
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
-        <div class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.startLabel}"></div>
-        <div style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
+        <span class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.startLabel}"></span>
+        <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
             <div style="display: inline-block; margin-left: inherit; margin-right: inherit ">
                 <span style="display:block; margin-left: 5px;  margin-right: 5px" data-bind="visible: $root.showNums, text: $data"></span>
-                <input style="display:block; margin-left: 5px; margin-right: 5px;" type="radio" data-bind="attr:{value:$data}, checked: $parent.dataModel.variable().startValue().value, click: function(){return true}, clickBubble: false">
+                <!-- removing white space
+                --><label  class="scale-right-entry scalebutton" style="display: inline-block; width: 16px; height: 16px">
+                        <input class="radiobutton-element" style="display:block; margin-left: 5px; margin-right: 5px; cursor: pointer" type="radio" data-bind="attr:{value:$data}, checked: $parent.dataModel.variable().startValue().value, click: function(){return true}, clickBubble: false">
+                        <div class="radiobutton-img"></div>
+                    </label><!-- removing white space
+                -->
             </div>
-        </div>
-        <div class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.endLabel}"></div>
+        </span>
+        <span class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.endLabel}"></span>
     </div>
     <br>
 </template>
@@ -102,7 +107,12 @@
         <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
             <div style="display: inline-block; margin-left: inherit; margin-right: inherit ">
                 <span style="display:block; margin-left: 5px;  margin-right: 5px" data-bind="visible: $root.showNums,  text: $data"></span>
-                <input style="display:block; margin-left: 5px; margin-right: 5px;" type="radio" value="$data" data-bind="attr: {value:$data}, checked: $parent.variable().value().value, click: function(){return true}, clickBubble: false">
+                <!-- removing white space
+                --><label  class="scale-right-entry scalebutton"  style="display: inline-block; width: 16px;  height: 16px">
+                        <input class="radiobutton-element" style="display:block; margin-left: 5px; margin-right: 5px; cursor: pointer" type="radio" value="$data" data-bind="attr: {value:$data}, checked: $parent.variable().value().value, click: function(){return true}, clickBubble: false">
+                        <div class="radiobutton-img"></div>
+                    </label><!-- removing white space
+                -->
             </div>
         </span>
         <span style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.endLabel}"></span>

@@ -4,7 +4,7 @@
         <div class="pageInnerDiv" data-bind="style: { backgroundColor: pageDataObs().bgColor, maxWidth: pageDataObs().maxWidth()+'px' }">
             <!-- ko if: pageDataObs() -->
 
-                <!-- ko if: !parent.previewPlayerView() -->
+                <!-- ko ifnot: parent.previewPlayerView() -->
                 <div class="pageElementsList" data-bind="sortable: {data: pageDataObs().elements, options: {handle: '.pageElementHandle'}} ">
                     <div class="pageElementOuterBorder" data-bind="css: {selectedPageElement: $parent.pageDataObs().currSelectedElement()==$data}, click: function(){$parent.setSelectedElement($data)}">
                         <div class="pageElement" data-bind='component: {name : "pageElement-preview-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
@@ -13,11 +13,14 @@
                 <!-- /ko -->
 
                 <!-- ko if: parent.previewPlayerView() -->
-                <div class="pageElementsList" data-bind="foreach: pageDataObs().elements">
-                    <div class="pageElementOuterBorderPlayer">
-                        <div class="pageElement" data-bind='component: {name : "pageElement-player-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
+                    <div class="pageElementsList" data-bind="foreach: pageDataObs().elements">
+                        <!-- ko if: (modifier().selectedTrialView.isVisible())  -->
+                        <div class="pageElementOuterBorderPlayer">
+                            <div class="pageElement" data-bind='component: {name : "pageElement-player-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
+                        </div>
+                        <!-- /ko -->
                     </div>
-                </div>
+
                 <!-- /ko -->
 
             <!-- /ko -->
@@ -29,13 +32,13 @@
     <div class="pageOuterDiv" data-bind="with: pageView">
         <div class="pageInnerDiv" data-bind="style: { backgroundColor: pageDataObs().bgColor, maxWidth: pageDataObs().maxWidth()+'px' }">
             <!-- ko if: pageDataObs() -->
-
             <div class="pageElementsList" data-bind="foreach: pageDataObs().elements">
+                <!-- ko if: (modifier().selectedTrialView.isVisible())  -->
                 <div class="pageElementOuterBorderPlayer">
                     <div class="pageElement" data-bind='component: {name : "pageElement-player-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
                 </div>
+                <!-- /ko -->
             </div>
-
             <!-- /ko -->
         </div>
     </div>

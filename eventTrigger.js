@@ -61,15 +61,17 @@ TriggerMouse.prototype.getParameterSpec = function() {
  * @param target
  */
 TriggerMouse.prototype.triggerOnTarget = function(playerFrame,target) {
-    var stimulusInformation = null;
-    if (target.content().hasOwnProperty("stimulusInformation")){
-        stimulusInformation =  target.content().modifier().selectedTrialView.stimulusInformation();
-    }
-    this.event.triggerActions([
-        target.name(),
-        playerFrame.getFrameTime(),
-        stimulusInformation
-    ]);
+   if (target.modifier().selectedTrialView.isActive()){
+       var stimulusInformation = null;
+       if (target.content().hasOwnProperty("stimulusInformation")){
+           stimulusInformation =  target.content().modifier().selectedTrialView.stimulusInformation();
+       }
+       this.event.triggerActions([
+           target.name(),
+           playerFrame.getFrameTime(),
+           stimulusInformation
+       ]);
+   }
 };
 
 /**
@@ -262,15 +264,17 @@ TriggerButtonClick.prototype.getParameterSpec = function() {
  * @param target
  */
 TriggerButtonClick.prototype.triggerOnTarget = function(playerFrame,target) {
-    var stimulusInformation = null;
-    if (target.content().hasOwnProperty("stimulusInformation")){
-        stimulusInformation =  target.content().modifier().selectedTrialView.stimulusInformation();
+    if (target.modifier().selectedTrialView.isActive()) {
+        var stimulusInformation = null;
+        if (target.content().hasOwnProperty("stimulusInformation")) {
+            stimulusInformation = target.content().modifier().selectedTrialView.stimulusInformation();
+        }
+        this.event.triggerActions([
+            target.name(),
+            playerFrame.getFrameTime(),
+            stimulusInformation
+        ]);
     }
-    this.event.triggerActions([
-        target.name(),
-        playerFrame.getFrameTime(),
-        stimulusInformation
-    ]);
 };
 
 /**

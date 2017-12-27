@@ -95,17 +95,17 @@
     </div>
 
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
-        <div class="radiobutton-wrapper">
-            <label class="radiobutton-left">
+        <label class="radiobutton-wrapper"  style="display: block; cursor: pointer">
+            <div class="radiobutton-left">
                 <input class="radiobutton-element" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue().value, click:function(){return true}, clickBubble: false">
                 <div class="radiobutton-img"></div>
-            </label>
+            </div>
             <div class="radiobutton-text notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
-        </div>
+        </label>
     </div>
     <!-- ko if: altAnswerVisible -->
     <span style="display:inline-block;">
-        <div data-bind='component: {name : "input-preview", params: multipleChoiceElement.subInputElement()}'></div>
+        <span data-bind='component: {name : "input-preview", params: multipleChoiceElement.subInputElement()}'></span>
     </span>
     <!-- /ko -->
 
@@ -128,7 +128,7 @@
     </div>
 
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
-        <label class="radiobutton-wrapper">
+        <label class="radiobutton-wrapper" style="display: block; cursor: pointer">
             <div class="radiobutton-left">
                 <input class="radiobutton-element" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false">
                 <div class="radiobutton-img"></div>

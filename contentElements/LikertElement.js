@@ -167,7 +167,8 @@ LikertElement.prototype.toJS = function() {
         isRequired: this.isRequired(),
         enableTitle:this.enableTitle(),
         showNums:this.showNums(),
-        reshuffleElements:this.reshuffleElements()
+        reshuffleElements:this.reshuffleElements(),
+        margin:this.margin()
     };
 };
 
@@ -202,9 +203,9 @@ LikertElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('reshuffleElements')){
         this.reshuffleElements(data.reshuffleElements);
     }
-
-
-
+    if(data.hasOwnProperty('margin')){
+        this.margin(data.margin);
+    }
 
 };
 
