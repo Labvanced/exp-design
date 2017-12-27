@@ -9,6 +9,7 @@ var ScaleElement= function(expData) {
     this.id = ko.observable(guid());
     this.questionText = ko.observable(null); // EditableTextElement
     this.addDeleteFromCol = ko.observable(this.addDeleteOptionsCol[1]);
+    this.addDeleteFromRow = ko.observable(this.addDeleteOptionsRow[1]);
     this.margin = ko.observable(2);
     this.labels = ko.observableArray([]);
     this.elements = ko.observableArray([]);
@@ -40,6 +41,7 @@ ScaleElement.prototype.modifiableProp = [ ];
 ScaleElement.prototype.initWidth = 750;
 ScaleElement.prototype.initHeight = 170;
 ScaleElement.prototype.addDeleteOptionsCol = ["left","right"];
+ScaleElement.prototype.addDeleteOptionsRow = ["top","bottom"];
 
 ScaleElement.prototype.init = function() {
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
@@ -80,11 +82,22 @@ ScaleElement.prototype.calculateWidth = function() {
 ScaleElement.prototype.addEntry = function() {
     var scaleEntry = new ScaleEntry(this);
     scaleEntry.init();
-    this.elements.push(scaleEntry);
+    if (this.addDeleteFromRow() =="bottom"){
+        this.elements.push(scaleEntry);
+    }
+    else{
+        this.elements.splice(0,0,scaleEntry);
+    }
+
 };
 
 ScaleElement.prototype.removeEntry = function() {
-    var idx = this.elements.length-1;
+    if (this.addDeleteFromRow() =="bottom"){
+        var idx = this.elements.length-1;
+    }
+    else{
+        var idx = 0;
+    }
     this.elements.splice(idx,1);
 };
 
@@ -189,7 +202,8 @@ ScaleElement.prototype.toJS = function() {
         }),
         leftRightRatio:this.leftRightRatio(),
         enableTitle:this.enableTitle(),
-        reshuffleElements:this.reshuffleElements()
+        reshuffleElements:this.reshuffleElements(),
+        addDeleteFromRow:this.addDeleteFromRow()
     };
 };
 
@@ -245,7 +259,9 @@ ScaleElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('reshuffleElements')){
         this.reshuffleElements(data.reshuffleElements);
     }
-
+    if(data.hasOwnProperty('addDeleteFromRow')){
+        this.addDeleteFromRow(data.addDeleteFromRow);
+    }
 
 
 };
