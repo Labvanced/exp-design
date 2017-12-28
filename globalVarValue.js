@@ -680,6 +680,11 @@ GlobalVarValueArray.prototype.getValueAt = function(idx) {
     return this.value()[idx];
 };
 
+GlobalVarValueArray.prototype.setValueAt = function(idx,val) {
+    this.value()[idx].value(val);
+};
+
+
 /**
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data

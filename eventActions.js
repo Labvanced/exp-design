@@ -571,11 +571,13 @@ var ActionSelectFromArray = function(event) {
     // serialized
     this.inVarArr = ko.observable(null);
     this.inVarIndex = ko.observable(null);
+    this.InsertOption = ko.observable("fixed");
+    this.indexFixedVal = ko.observable(1);
     this.outVar = ko.observable(null);
 };
 
 ActionSelectFromArray.prototype.type = "ActionSelectFromArray";
-ActionSelectFromArray.prototype.label = "Select From Array";
+ActionSelectFromArray.prototype.label = "Select From Array (Read)";
 
 ActionSelectFromArray.prototype.isValid = function(){
     return true;
@@ -624,8 +626,17 @@ ActionSelectFromArray.prototype.removeOutVariable = function(){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionSelectFromArray.prototype.run = function(triggerParams) {
-    var index = parseInt(this.inVarIndex().value().value());
-    var value = this.inVarArr().value().getValueAt(index-1);
+    if (this.InsertOption()=='fixed') {
+        var index = parseInt(this.indexFixedVal())-1;
+    }
+    else if (this.InsertOption()=='end'){
+        var index = this.inVarArr().value().value().length-1;
+    }
+    else {
+        var index = parseInt(this.inVarIndex().value().value())-1;
+    }
+
+    var value = this.inVarArr().value().getValueAt(index).value();
     if (this.outVar()) {
         this.outVar().value().setValue(value);
     }
@@ -672,6 +683,13 @@ ActionSelectFromArray.prototype.fromJS = function(data) {
     this.inVarArr(data.inVarArr);
     this.inVarIndex(data.inVarIndex);
     this.outVar(data.outVar);
+    if (data.hasOwnProperty('InsertOption')){
+      this.InsertOption(data.InsertOption)
+    }
+    if (data.hasOwnProperty('indexFixedVal')){
+        this.indexFixedVal(data.indexFixedVal)
+    }
+
     return this;
 };
 
@@ -702,9 +720,368 @@ ActionSelectFromArray.prototype.toJS = function() {
         type: this.type,
         inVarArr: inVarArr,
         inVarIndex: inVarIndex,
-        outVar: outVar
+        outVar: outVar,
+        InsertOption:this.InsertOption(),
+        indexFixedVal:this.indexFixedVal()
     };
 };
+
+
+
+////////////////////////////////////////  ActionWriteToArray ///////////////////////////////////////////////////
+
+var ActionWriteToArray = function(event) {
+    this.event = event;
+
+    // serialized
+    this.inVarArr = ko.observable(null);
+    this.inVarIndex = ko.observable(null);
+    this.InsertOption = ko.observable("fixed");
+    this.indexFixedVal = ko.observable(1);
+    this.inVar = ko.observable(null);
+};
+
+ActionWriteToArray.prototype.type = "ActionWriteToArray";
+ActionWriteToArray.prototype.label = "Change Array Entry (Write)";
+
+ActionWriteToArray.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionWriteToArray.prototype.setInVarArrBackRef = function(){
+    this.inVarArr().addBackRef(this, this.event, false, true, 'write to array');
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionWriteToArray.prototype.setInVarIndexBackRef = function(){
+    this.inVarIndex().addBackRef(this, this.event, false, true, 'as index');
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionWriteToArray.prototype.setInVarBackRef = function(){
+    this.inVar().addBackRef(this, this.event, true, false, 'selected from array');
+};
+
+ActionWriteToArray.prototype.removeInArrVariable = function(){
+    this.inVarArr(null);
+};
+
+ActionWriteToArray.prototype.removeIndexVariable = function(){
+    this.inVarIndex(null);
+};
+
+ActionWriteToArray.prototype.removeInVariable = function(){
+    this.inVar(null);
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionWriteToArray.prototype.run = function(triggerParams) {
+    if (this.InsertOption()=='fixed') {
+        var index = parseInt(this.indexFixedVal())-1;
+    }
+    else if (this.InsertOption()=='end'){
+        var index = this.inVarArr().value().value().length-1;
+    }
+    else {
+        var index = parseInt(this.inVarIndex().value().value())-1;
+    }
+
+    var value = this.inVar().value().value();
+    if (this.inVarArr) {
+        this.inVarArr().value().setValueAt(index,value);
+    }
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionWriteToArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionWriteToArray.prototype.setPointers = function(entitiesArr) {
+    var inVarArr = entitiesArr.byId[this.inVarArr()];
+    if (inVarArr){
+        this.inVarArr(inVarArr);
+        this.setInVarArrBackRef();
+    }
+    var inVarIndex = entitiesArr.byId[this.inVarIndex()];
+    if (inVarIndex){
+        this.inVarIndex(inVarIndex);
+        this.setInVarIndexBackRef();
+    }
+    var inVar = entitiesArr.byId[this.inVar()];
+    if (inVar){
+        this.inVar(inVar);
+        this.setInVarBackRef();
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionSetVariable}
+ */
+ActionWriteToArray.prototype.fromJS = function(data) {
+    this.inVarArr(data.inVarArr);
+    this.inVarIndex(data.inVarIndex);
+    this.inVar(data.inVar);
+    this.InsertOption(data.InsertOption);
+    this.indexFixedVal(data.indexFixedVal);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionWriteToArray.prototype.toJS = function() {
+    var inVarArr = null;
+    if (this.inVarArr()) {
+        if (typeof this.inVarArr().id == 'function') {
+            inVarArr = this.inVarArr().id();
+        }
+    }
+    var inVarIndex = null;
+    if (this.inVarIndex()) {
+        if (typeof this.inVarIndex().id == 'function') {
+            inVarIndex = this.inVarIndex().id();
+        }
+    }
+    var inVar = null;
+    if (this.inVar()) {
+        if (typeof this.inVar().id == 'function') {
+            inVar = this.inVar().id();
+        }
+    }
+    return {
+        type: this.type,
+        inVarArr: inVarArr,
+        inVarIndex: inVarIndex,
+        inVar: inVar,
+        InsertOption:this.InsertOption(),
+        indexFixedVal:this.indexFixedVal()
+    };
+};
+
+
+
+
+
+
+
+
+////////////////////////////////////////  ActionModifyArray ///////////////////////////////////////////////////
+
+var ActionModifyArray = function(event) {
+    this.event = event;
+
+    // serialized
+    this.inVarArr = ko.observable(null);
+    this.InsertOption = ko.observable("fixed");
+    this.indexFixedVal = ko.observable(1);
+    this.inVarIndex = ko.observable(null);
+    this.insertVarList = ko.observableArray([]);
+    this.nrOfDeletions = ko.observable(0);
+};
+
+ActionModifyArray.prototype.type = "ActionModifyArray";
+ActionModifyArray.prototype.label = "Modify Array (Splice)";
+
+ActionModifyArray.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionModifyArray.prototype.setInVarArrBackRef = function(){
+    this.inVarArr().addBackRef(this, this.event, false, true, 'modify to array');
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionModifyArray.prototype.setInVarIndexBackRef = function(){
+    this.inVarIndex().addBackRef(this, this.event, false, true, 'as index');
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+
+ActionModifyArray.prototype.setOutVarBackRefForOne = function(newVar){
+
+    newVar.addBackRef(this, this.event, true, false, 'modify array');
+};
+
+ActionModifyArray.prototype.setOutVarBackRef = function(){
+    var list = this.insertVarList();
+    for (var i = 0; i<list.length; i++){
+        list[i].addBackRef(this, this.event, true, false, 'modify array');
+    }
+};
+
+ActionModifyArray.prototype.removeInArrVariable = function(){
+    this.inVarArr(null);
+};
+
+ActionModifyArray.prototype.removeInVariable = function(){
+    this.inVarIndex(null);
+};
+
+ActionModifyArray.prototype.removeOutVariable = function(){
+    this.insertVarList([]);
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionModifyArray.prototype.run = function(triggerParams) {
+    if (this.InsertOption()=='fixed') {
+        var index = parseInt(this.indexFixedVal())-1;
+    }
+    else if (this.InsertOption()=='end'){
+        var index = this.inVarArr().value().value().length;
+    }
+    else {
+        var index = parseInt(this.inVarIndex().value().value())-1;
+    }
+
+    var valueList = [];
+    for (var i = 0; i<this.insertVarList().length;i++){
+        valueList.push(this.insertVarList()[i].value());
+    }
+
+    if (this.inVarArr()) {
+        this.inVarArr().value().value().splice(index-1,parseInt(this.nrOfDeletions()));
+        for (var i = 0; i<valueList.length; i++){
+            this.inVarArr().value().value().splice(index,0,valueList[i]);
+        }
+
+    }
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionModifyArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionModifyArray.prototype.setPointers = function(entitiesArr) {
+    var inVarArr = entitiesArr.byId[this.inVarArr()];
+    if (inVarArr){
+        this.inVarArr(inVarArr);
+        this.setInVarArrBackRef();
+    }
+    var inVarIndex = entitiesArr.byId[this.inVarIndex()];
+    if (inVarIndex){
+        this.inVarIndex(inVarIndex);
+        this.setInVarIndexBackRef();
+    }
+
+
+    var list = this.insertVarList();
+    var newList = []
+    for (var i = 0; i<list.length; i++){
+        newList.push(entitiesArr.byId[list[i]]);
+    }
+    this.insertVarList(newList);
+    this.setOutVarBackRef();
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionSetVariable}
+ */
+ActionModifyArray.prototype.fromJS = function(data) {
+    this.inVarArr(data.inVarArr);
+    this.inVarIndex(data.inVarIndex);
+    this.insertVarList(data.insertVarList);
+    this.nrOfDeletions(data.nrOfDeletions);
+    this.InsertOption(data.InsertOption);
+    this.indexFixedVal(data.indexFixedVal);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionModifyArray.prototype.toJS = function() {
+    var inVarArr = null;
+    if (this.inVarArr()) {
+        if (typeof this.inVarArr().id == 'function') {
+            inVarArr = this.inVarArr().id();
+        }
+    }
+    var inVarIndex = null;
+    if (this.inVarIndex()) {
+        if (typeof this.inVarIndex().id == 'function') {
+            inVarIndex = this.inVarIndex().id();
+        }
+    }
+    var insertVarList = null;
+    if (this.insertVarList()) {
+        var list = this.insertVarList();
+        var insertVarList = [];
+        for (var i = 0; i<list.length; i++){
+            insertVarList.push(list[i].id());
+        }
+
+    }
+    return {
+        type: this.type,
+        inVarArr: inVarArr,
+        inVarIndex: inVarIndex,
+        insertVarList: insertVarList,
+        nrOfDeletions:this.nrOfDeletions(),
+        InsertOption:this.InsertOption(),
+        indexFixedVal:this.indexFixedVal()
+
+    };
+};
+
+
+
 
 
 
@@ -1055,7 +1432,7 @@ var ActionDelayedActions = function(event) {
 };
 
 ActionDelayedActions.prototype.type = "ActionDelayedActions";
-ActionDelayedActions.prototype.label = "Delayed Actions";
+ActionDelayedActions.prototype.label = "Delayed Actions (Time Callback)";
 
 /**
  * recursively fill arr with all nested sub actions
@@ -1196,10 +1573,12 @@ var ActionStartRepeatedActions = function(event) {
     this.stopCondition = ko.observable(null); // checked before each repetition, if enabled.
     this.delayInMs = ko.observable(1000);
     this.subActions = ko.observableArray([]);
+
+    this.executionType = ko.observable('time');
 };
 
 ActionStartRepeatedActions.prototype.type = "ActionStartRepeatedActions";
-ActionStartRepeatedActions.prototype.label = "Start Repeated Actions";
+ActionStartRepeatedActions.prototype.label = "Repeated Actions (While Loop)";
 
 /**
  * recursively fill arr with all nested sub actions
@@ -1364,6 +1743,10 @@ ActionStartRepeatedActions.prototype.fromJS = function(data) {
     }
     this.subActions(subActions);
 
+    if(data.hasOwnProperty('executionType')) {
+        this.executionType(data.executionType);
+    }
+
     return this;
 };
 
@@ -1390,7 +1773,8 @@ ActionStartRepeatedActions.prototype.toJS = function() {
         stopConditionEnabled: this.stopConditionEnabled(),
         stopCondition: stopCondition,
         delayInMs: parseInt(this.delayInMs()),
-        subActions: subActionsData
+        subActions: subActionsData,
+        executionType:this.executionType()
     };
 };
 
@@ -1421,7 +1805,7 @@ var ActionConditional = function(event) {
 };
 
 ActionConditional.prototype.type = "ActionConditional";
-ActionConditional.prototype.label = "Requirement Actions";
+ActionConditional.prototype.label = "Requirement Actions (If...Then)";
 
 /**
  * returns true if all settings are valid (used in the editor).
