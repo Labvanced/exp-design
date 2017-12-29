@@ -908,7 +908,7 @@ var ActionModifyArray = function(event) {
 };
 
 ActionModifyArray.prototype.type = "ActionModifyArray";
-ActionModifyArray.prototype.label = "Modify Array (Splice)";
+ActionModifyArray.prototype.label = "Add / Remove Entries (Splice)";
 
 ActionModifyArray.prototype.isValid = function(){
     return true;
@@ -1608,64 +1608,79 @@ ActionStartRepeatedActions.prototype.isValid = function(){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionStartRepeatedActions.prototype.run = function(triggerParams) {
-    var self = this;
 
-    var start = new Date().getTime();
-    var nextAt = start;
-    var timeoutIdx = this.timeoutFcns.length;
 
-    if (!this.allowMultiple()) {
-        if (timeoutIdx > 0) {
-            // this repeated action is already running, therefore do nothing:
-            return;
-        }
-    }
+    if (this.executionType() =='time'){
+        var self = this;
+        var start = new Date().getTime();
+        var nextAt = start;
+        var timeoutIdx = this.timeoutFcns.length;
 
-    this.timeoutFcns.push(null);
-
-    var scheduleNextRepetition = function() {
-
-        // calculate time when next repetition should be scheduled:
-        nextAt += self.delayInMs();
-        var currTime = new Date().getTime();
-        var waitingTime = nextAt - currTime;
-        self.timeoutFcns[timeoutIdx] = setTimeout(runRepetition, waitingTime);
-
-        if (waitingTime < 0) {
-            console.warn("warning: ActionStartRepeatedActions cannot keep up with the desired delayInMs ("+self.delayInMs()+")")
-        }
-
-        // var drift = (currTime - start) % self.delayInMs();
-        // console.log("drift: "+drift);
-
-    };
-
-    var runRepetition = function() {
-
-        // check stopCondition.
-        if (self.stopConditionEnabled()) {
-            if (self.stopCondition().checkIfTrue(triggerParams)) {
+        if (!this.allowMultiple()) {
+            if (timeoutIdx > 0) {
+                // this repeated action is already running, therefore do nothing:
                 return;
             }
         }
 
-        // run all subActions:
-        var actions = self.subActions();
-        for (var i=0; i<actions.length; i++) {
-            actions[i].run(triggerParams);
+        this.timeoutFcns.push(null);
+
+        var scheduleNextRepetition = function() {
+
+            // calculate time when next repetition should be scheduled:
+            nextAt += self.delayInMs();
+            var currTime = new Date().getTime();
+            var waitingTime = nextAt - currTime;
+            self.timeoutFcns[timeoutIdx] = setTimeout(runRepetition, waitingTime);
+
+            if (waitingTime < 0) {
+                console.warn("warning: ActionStartRepeatedActions cannot keep up with the desired delayInMs ("+self.delayInMs()+")")
+            }
+
+            // var drift = (currTime - start) % self.delayInMs();
+            // console.log("drift: "+drift);
+
+        };
+
+        var runRepetition = function() {
+
+            // check stopCondition.
+            if (self.stopConditionEnabled()) {
+                if (self.stopCondition().checkIfTrue(triggerParams)) {
+                    return;
+                }
+            }
+
+            // run all subActions:
+            var actions = self.subActions();
+            for (var i=0; i<actions.length; i++) {
+                actions[i].run(triggerParams);
+            }
+
+            // schedule next repetition:
+            scheduleNextRepetition();
+
+        };
+
+        if (this.startWithoutDelay()) {
+            runRepetition();
         }
-
-        // schedule next repetition:
-        scheduleNextRepetition();
-
-    };
-
-    if (this.startWithoutDelay()) {
-        runRepetition();
+        else {
+            scheduleNextRepetition();
+        }
     }
-    else {
-        scheduleNextRepetition();
+    else{
+        var stopping =  this.stopCondition().checkIfTrue(triggerParams);
+        var actions = this.subActions();
+        while (!stopping){
+            for (var i=0; i<actions.length; i++) {
+                actions[i].run(triggerParams);
+            }
+            stopping = this.stopCondition().checkIfTrue(triggerParams)
+        }
     }
+
+
 };
 
 

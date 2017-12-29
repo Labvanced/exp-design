@@ -35,27 +35,42 @@ Event.prototype.deleteAction = function(index) {
     this.actions.splice(index, 1);
 };
 
-Event.prototype.moveActionDown = function(index) {
-    this.moveAction(index,"Down");
+Event.prototype.moveActionDown = function(index,parent) {
+    this.moveAction(index,"Down",parent.parent);
 };
 
-Event.prototype.moveActionUp = function(index) {
-    this.moveAction(index,"Up");
+Event.prototype.moveActionUp = function(index,parent) {
+    this.moveAction(index,"Up",parent.parent);
 };
 
-Event.prototype.moveAction = function(index,UpOrDown) {
+Event.prototype.moveAction = function(index,UpOrDown,subElement) {
     //var elem = this.dataModel.elements()[index];
+    if (subElement != undefined){
+         var actions = subElement.subActions.slice();
+        if (UpOrDown=="Up"  && index < actions.length-1){
+            var elem = actions.splice(index, 1)[0];
+            actions.splice(index+1, 0, elem);
 
-    //  var index = this.frameView.geIndexOfViewElement(elem);
-    if (UpOrDown=="Up"  && index < this.actions().length-1){
-        var elem = this.actions.splice(index, 1)[0];
-        this.actions.splice(index+1, 0, elem);
+        }
+        else if (UpOrDown=="Down" && index >0){
+            var elem = actions.splice(index, 1)[0];
+            actions.splice(index-1, 0, elem);
+        }
+        subElement.subActions(actions);
+    }
+    else{
 
+        if (UpOrDown=="Up"  && index < this.actions().length-1){
+            var elem = this.actions.splice(index, 1)[0];
+            this.actions.splice(index+1, 0, elem);
+
+        }
+        else if (UpOrDown=="Down" && index >0){
+            var elem = this.actions.splice(index, 1)[0];
+            this.actions.splice(index-1, 0, elem);
+        }
     }
-    else if (UpOrDown=="Down" && index >0){
-        var elem = this.actions.splice(index, 1)[0];
-        this.actions.splice(index-1, 0, elem);
-    }
+
     this.parent.expData.notifyChanged();
 };
 
