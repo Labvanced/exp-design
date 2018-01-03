@@ -55,8 +55,11 @@ var ExpTrialLoop = function (expData) {
     this.numberTrialsToShow = ko.observable(null);
     this.balanceAmountOfConditions = ko.observable(true);
 
+    this.trialLoopActivated = ko.observable(true);
+
     // external devices
     this.webcamEnabled = ko.observable(false);
+
 
 
     // not serialized
@@ -1389,6 +1392,10 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('showTrialsForSubject')){
         this.showTrialsForSubject(data.showTrialsForSubject);
     }
+    if (data.hasOwnProperty('trialLoopActivated')){
+        this.trialLoopActivated(data.trialLoopActivated);
+    }
+
 
 
 
@@ -1435,6 +1442,8 @@ ExpTrialLoop.prototype.toJS = function() {
         randomizationConstraint: this.randomizationConstraint(),
         uploadedTrialOrder:this.uploadedTrialOrder(),
         showTrialsForSubject:this.showTrialsForSubject(),
+
+        trialLoopActivated:this.trialLoopActivated(),
 
 
         zoomMode: this.zoomMode(),
