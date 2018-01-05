@@ -31,9 +31,11 @@ var Event= function(parent) {
  * delete the action at the specified index.
  * @param {number} index
  */
+// TODO: unused
 Event.prototype.deleteAction = function(index) {
     this.actions.splice(index, 1);
 };
+
 
 Event.prototype.moveActionDown = function(index,parent) {
     this.moveAction(index,"Down",parent.parent);

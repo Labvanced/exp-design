@@ -1835,6 +1835,16 @@ ActionConditional.prototype.deleteIfCondition = function(index){
 };
 
 
+ActionConditional.prototype.copyIfCondition = function(index){
+   var copyData =  this.ifElseConditions()[index].toJS();
+   var newCondition = new ActionIfCondition(this.event);
+   newCondition.fromJS(copyData);
+   var entiriesArr = this.event.parent.expData.entities;
+   newCondition.setPointers(entiriesArr);
+   this.ifElseConditions.push(newCondition);
+};
+
+
 
 ActionConditional.prototype.addIfCondition = function(){
     this.ifElseConditions.push(new ActionIfCondition(this.event));
@@ -1988,6 +1998,7 @@ ActionConditional.prototype.toJS = function() {
 var ActionIfCondition = function(event) {
     this.event = event;
     this.requirement = ko.observable(new RequirementAND(this.event));
+    this.requirement().setParent(this);
     this.subActions = ko.observableArray([]);
 };
 

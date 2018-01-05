@@ -11,6 +11,7 @@
  */
 var RequirementOR = function(event) {
     this.event = event;
+    this.parent= ko.observable(null);
 
     // serialized
     this.childRequirements = ko.observableArray([]);
@@ -45,6 +46,17 @@ RequirementOR.prototype.checkIfTrue = function(parameters) {
 RequirementOR.prototype.setPointers = function(entitiesArr) {
     jQuery.each( this.childRequirements(), function( index, elem ) {
         elem.setPointers(entitiesArr);
+    } );
+};
+
+
+RequirementOR.prototype.setParent = function(parent) {
+    if (parent){
+        this.parent(parent);
+    }
+    var self= this;
+    jQuery.each( this.childRequirements(), function( index, elem ) {
+        elem.setParent(self);
     } );
 };
 
@@ -101,12 +113,10 @@ RequirementOR.prototype.toJS = function() {
  */
 var RequirementAND = function(event) {
     this.event = event;
+    this.parent= ko.observable(null);
 
     // serialized
     this.childRequirements = ko.observableArray([]);
-    this.childRequirements.subscribe(function(newVal) {
-        var test = 1;
-    });
 };
 
 RequirementAND.prototype.type = "RequirementAND";
@@ -140,6 +150,18 @@ RequirementAND.prototype.setPointers = function(entitiesArr) {
         elem.setPointers(entitiesArr);
     } );
 };
+
+RequirementAND.prototype.setParent = function(parent) {
+    if (parent){
+        this.parent(parent);
+    }
+
+    var self= this;
+    jQuery.each( this.childRequirements(), function( index, elem ) {
+        elem.setParent(self);
+    } );
+};
+
 
 /**
  * Recursively adds all child objects that have a unique id to the global list of entities.
@@ -195,6 +217,7 @@ RequirementAND.prototype.toJS = function() {
  */
 var RequirementVariableHasValue = function(event) {
     this.event = event;
+    this.parent = ko.observable(null);
 
     // serialized
     this.comparisonType = ko.observable("==");
@@ -248,6 +271,10 @@ RequirementVariableHasValue.prototype.setPointers = function(entitiesArr) {
     if (this.operandRight()){
         this.operandRight().setPointers(entitiesArr);
     }
+};
+
+RequirementVariableHasValue.prototype.setParent = function(parent) {
+    this.parent(parent);
 };
 
 /**
