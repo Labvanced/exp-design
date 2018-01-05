@@ -1429,10 +1429,24 @@ var ActionDelayedActions = function(event) {
     // serialized:
     this.delayInMs = ko.observable(1000);
     this.subActions = ko.observableArray([]);
+
+    this.delayType = ko.observable('fixed');
+    this.variable = ko.observable(null);
 };
 
 ActionDelayedActions.prototype.type = "ActionDelayedActions";
 ActionDelayedActions.prototype.label = "Delayed Actions (Time Callback)";
+
+
+ActionDelayedActions.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'Delayed Action');
+};
+
+
+ActionDelayedActions.prototype.removeVariable = function(){
+    this.variable(null);
+};
+
 
 /**
  * recursively fill arr with all nested sub actions
@@ -1463,12 +1477,19 @@ ActionDelayedActions.prototype.isValid = function(){
  */
 ActionDelayedActions.prototype.run = function(triggerParams) {
     var self = this;
+    if (this.delayType() =='variable'){
+        var delayInMs = parseInt(this.variable().getValue(triggerParams));
+    }
+    else{
+        var delayInMs =  this.delayInMs();
+    }
+
     var timeoutFcn = setTimeout(function() {
         var actions = self.subActions();
         for (var i=0; i<actions.length; i++) {
             actions[i].run(triggerParams);
         }
-    }, this.delayInMs());
+    },delayInMs);
     this.timeoutFcns.push(timeoutFcn);
 };
 
@@ -1494,6 +1515,12 @@ ActionDelayedActions.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionDelayedActions.prototype.setPointers = function(entitiesArr) {
+
+    var varToSet = entitiesArr.byId[this.variable()];
+    if (varToSet){
+        this.variable(varToSet);
+    }
+
     jQuery.each( this.subActions(), function( index, elem ) {
         elem.setPointers(entitiesArr);
     } );
@@ -1529,6 +1556,14 @@ ActionDelayedActions.prototype.fromJS = function(data) {
     }
     this.subActions(subActions);
 
+    if (data.hasOwnProperty("variable")){
+        this.variable(data.variable);
+    }
+    if (data.hasOwnProperty("delayType")){
+        this.delayType(data.delayType);
+    }
+
+
     return this;
 };
 
@@ -1543,10 +1578,19 @@ ActionDelayedActions.prototype.toJS = function() {
         subActionsData.push(subActions[i].toJS());
     }
 
+    var varId = null;
+    if (this.variable()) {
+        if (typeof this.variable().id == 'function') {
+            varId = this.variable().id();
+        }
+    }
+
     return {
         type: this.type,
         delayInMs: parseInt(this.delayInMs()),
-        subActions: subActionsData
+        subActions: subActionsData,
+        variable: varId,
+        delayType:this.delayType()
     };
 };
 
