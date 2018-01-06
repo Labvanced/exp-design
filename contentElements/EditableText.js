@@ -265,7 +265,13 @@ function createEditableTextComponents() {
                         }
                         else{
                             if (entity.startValue() instanceof GlobalVarValueDatetime){
-                                return entity.startValue().value().toISOString().substring(0,10);
+                                if (entity.startValue().value()){
+                                    return entity.startValue().value().toISOString().substring(0,10);
+                                }
+                                else{
+                                    return ''
+                                }
+
                             }
                             else if(entity.startValue() instanceof GlobalVarValueTime || entity.startValue() instanceof GlobalVarValueCategorical){
                                 return entity.startValue().value().toString();
