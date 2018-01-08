@@ -636,7 +636,7 @@ ActionSelectFromArray.prototype.run = function(triggerParams) {
         var index = parseInt(this.inVarIndex().value().value())-1;
     }
 
-    var value = this.inVarArr().value().getValueAt(index).value();
+    var value = this.inVarArr().value().getValueAt(index);
     if (this.outVar()) {
         this.outVar().value().setValue(value);
     }
