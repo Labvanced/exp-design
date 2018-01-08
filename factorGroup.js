@@ -88,10 +88,6 @@ FactorGroup.prototype.getFixedFactorConditions = function() {
     var type = [];
     for (var i = 0; i < factors.length; i++) {
         type.push(factors[i].factorType());
-        if (factors[i].factorType() == "random") {
-
-        }
-
     }
 
     // get factor levels for each condition, remove factors levels of random factors
@@ -103,7 +99,14 @@ FactorGroup.prototype.getFixedFactorConditions = function() {
         var levels = conditions[i].factorLevels();
         for (var k = 0; k < levels.length; k++) {
             if (type[k] == "fixed") {
-                factorLevels[i].push(levels[k].name());
+                if ( levels[k] instanceof Level){
+                    factorLevels[i].push(levels[k].name());
+                }
+                else{
+                    console.log("error Level ist not properly defined, Level is: " +levels[k]);
+                    factorLevels[i].push('unknownLevelName');
+                }
+
             }
         }
     }
