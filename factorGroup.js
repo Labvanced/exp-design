@@ -99,14 +99,7 @@ FactorGroup.prototype.getFixedFactorConditions = function() {
         var levels = conditions[i].factorLevels();
         for (var k = 0; k < levels.length; k++) {
             if (type[k] == "fixed") {
-                if ( levels[k] instanceof Level){
-                    factorLevels[i].push(levels[k].name());
-                }
-                else{
-                    console.log("error Level ist not properly defined, Level is: " +levels[k]);
-                    factorLevels[i].push('unknownLevelName');
-                }
-
+                factorLevels[i].push(levels[k].name());
             }
         }
     }
@@ -448,6 +441,11 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
                     globalVar = entitiesArr.byId[globalVar];
                 }
                 levels[depth] = globalVar.levels()[t];
+                // HACK to fix experiments  with diverging global var level structure vs. condition structure.
+                if  (globalVar.levels()[t] === undefined){
+                    console.log("error: level not in globalVar but it should be, creating new Level to avoid corrupted file structure...");
+                    levels[depth] = globalVar.addLevel();
+                }
                 deepDive(condMultiDim[t], factors, levels, depth+1);
             }
         }
