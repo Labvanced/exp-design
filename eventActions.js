@@ -571,7 +571,7 @@ var ActionSelectFromArray = function(event) {
     // serialized
     this.inVarArr = ko.observable(null);
     this.inVarIndex = ko.observable(null);
-    this.InsertOption = ko.observable("fixed");
+    this.InsertOption = ko.observable("variable"); // either variable or fixed or end
     this.indexFixedVal = ko.observable(1);
     this.outVar = ko.observable(null);
 };
@@ -636,7 +636,7 @@ ActionSelectFromArray.prototype.run = function(triggerParams) {
         var index = parseInt(this.inVarIndex().value().value())-1;
     }
 
-    var value = this.inVarArr().value().getValueAt(index).value();
+    var value = this.inVarArr().value().getValueAt(index);
     if (this.outVar()) {
         this.outVar().value().setValue(value);
     }
