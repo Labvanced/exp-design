@@ -101,7 +101,7 @@ ExperimentStartupScreen.prototype.languageSelected = function () {
 ExperimentStartupScreen.prototype.jumpToSurvey = function () {
 
     if (player.runOnlyTaskId) {
-        // directly skip to loading screen:
+        // directly skip to loading screen (no need to initialize recording session on server):
         player.setSubjectGroupNr(1, 1);
         player.preloadAllContent();
         this.jumpToLoadingScreen();
@@ -109,16 +109,25 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
     }
 
     if (player.runOnlyGroupNr && player.runOnlySessionNr) {
-        // directly skip to loading screen:
+        // still need to send data (initialize recording session on server) before loading screen
         player.setSubjectGroupNr(player.runOnlyGroupNr, player.runOnlySessionNr);
         player.preloadAllContent();
-        this.jumpToLoadingScreen();
+        this.sendDataAndContinue();
         return;
     }
 
     if (player.runOnlyGroupNr) {
-        // directly skip to loading screen:
-        player.setSubjectGroupNr(player.runOnlyGroupNr, 1);
+        // still need to send data (initialize recording session on server) before loading screen
+        player.runOnlySessionNr = "1";
+        player.setSubjectGroupNr(player.runOnlyGroupNr, player.runOnlySessionNr);
+        player.preloadAllContent();
+        this.sendDataAndContinue();
+        return;
+    }
+
+    if (player.groupNrAssignedByServer && player.sessionNrAssignedByServer) {
+        // directly skip to loading screen (recording session already initialized on server:
+        player.setSubjectGroupNr(player.groupNrAssignedByServer, player.sessionNrAssignedByServer);
         player.preloadAllContent();
         this.jumpToLoadingScreen();
         return;
@@ -157,7 +166,9 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
             expId: player.expId,
             subject_code: player.subject_code,
             survey_data: survey_data,
-            isTestrun: player.isTestrun
+            isTestrun: player.isTestrun,
+            runOnlyGroupNr: player.runOnlyGroupNr,
+            runOnlySessionNr: player.runOnlySessionNr
         },
         function(data) {
             if (data.hasOwnProperty('success') && data.success == false) {
