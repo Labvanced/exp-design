@@ -928,8 +928,10 @@ TriggerVariableValueChanged.prototype.setPointers = function(entitiesArr) {
     var variables = [];
     for (var i=0; i<variableIds.length; i++) {
         var globVar = entitiesArr.byId[variableIds[i]];
-        variables.push(globVar);
-        this.setVariableBackRef(globVar);
+        if (globVar) {
+            variables.push(globVar);
+            this.setVariableBackRef(globVar);
+        }
     }
     this.variables(variables);
 };
