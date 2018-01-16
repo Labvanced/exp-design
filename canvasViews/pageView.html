@@ -33,11 +33,9 @@
         <div class="pageInnerDiv" data-bind="style: { backgroundColor: pageDataObs().bgColor, maxWidth: pageDataObs().maxWidth()+'px' }">
             <!-- ko if: pageDataObs() -->
             <div class="pageElementsList" data-bind="foreach: pageDataObs().elements">
-                <!-- ko if: (modifier().selectedTrialView.isVisible())  -->
-                <div class="pageElementOuterBorderPlayer">
+                <div class="pageElementOuterBorderPlayer" data-bind="style: { display: modifier().selectedTrialView.isVisible() ? 'block' : 'none' }">
                     <div class="pageElement" data-bind='component: {name : "pageElement-player-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
                 </div>
-                <!-- /ko -->
             </div>
             <!-- /ko -->
         </div>
