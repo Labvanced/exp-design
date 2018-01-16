@@ -289,6 +289,9 @@ PageData.prototype.setPointers = function(entitiesArr) {
     // convert ids to actual pointers:
     this.elements(jQuery.map( this.elements(), function( id ) {
         var elem = entitiesArr.byId[id];
+        if (elem){
+            elem.parent = self;
+        }
         return elem;
     } ));
 
