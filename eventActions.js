@@ -1248,6 +1248,24 @@ ActionLoadFileIds.prototype.setPointers = function(entitiesArr) {
 };
 
 /**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionLoadFileIds.prototype.reAddEntities = function(entitiesArr) {
+    if (this.outVarFileIds()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.outVarFileIds().id())) {
+            entitiesArr.push(this.outVarFileIds());
+        }
+    }
+    if (this.outVarFileNames()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.outVarFileNames().id())) {
+            entitiesArr.push(this.outVarFileNames());
+        }
+    }
+};
+
+/**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
  * @returns {ActionSetVariable}
