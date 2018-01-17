@@ -467,6 +467,11 @@ ExpData.prototype.setPointers = function() {
     jQuery.each( allEntitiesArray, function( index, elem ) {
         elem.setPointers(self.entities);
     } );
+    jQuery.each( allEntitiesArray, function( index, elem ) {
+         if (elem instanceof PageData){
+             elem.reAddLocalWorkspace();
+         }
+    } );
 
     // relink availableTasks:
     var availableTaskIds = this.availableTasks();
@@ -529,6 +534,8 @@ ExpData.prototype.setPointers = function() {
     }
 
     this.updateLanguage();
+
+
 
 };
 

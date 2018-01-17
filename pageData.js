@@ -304,7 +304,33 @@ PageData.prototype.setPointers = function(entitiesArr) {
     jQuery.each( this.events(), function( idx, event ) {
         event.setPointers(entitiesArr);
     } );
+
 };
+
+
+
+
+
+PageData.prototype.reAddLocalWorkspace = function() {
+    var self= this;
+    var tmpEntities = ko.observableArray([]).extend({sortById: null});
+    this.reAddEntities(tmpEntities);
+    jQuery.each(tmpEntities(), function (idx, entity) {
+        if ( entity instanceof GlobalVar) {
+            if (!self.localWorkspaceVars.byId.hasOwnProperty(entity.id())) {
+                self.localWorkspaceVars.push(entity);
+            }
+        }
+    });
+    var test = 1;
+
+};
+
+
+
+
+
+
 
 /**
  * Recursively adds all child objects that have a unique id to the global list of entities.
