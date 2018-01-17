@@ -55,6 +55,7 @@ NaviElement.prototype.init = function() {
     event2.trigger().buttonIdx(1);
     var newAction2 = actionFactory(event2, "ActionJumpTo");
     newAction2.jumpType("nextFrame");
+    newAction2.checkRequired(true);
     event2.actions.push(newAction2);
     event2.name("Go Forward");
     this.parent.parent.events.push(event2);

@@ -1303,6 +1303,7 @@ var ActionJumpTo = function(event) {
     this.trialToJumpId= ko.observable(null);
     this.blockToJumpId= ko.observable(null);
     this.conditionGroupIdx = ko.observable(null);
+    this.checkRequired= ko.observable(null);
 };
 
 ActionJumpTo.prototype.type = "ActionJumpTo";
@@ -1325,9 +1326,8 @@ ActionJumpTo.prototype.isValid = function(){
 ActionJumpTo.prototype.run = function(triggerParams) {
 
     // check validity only if the jump is to next frame
-    if (this.jumpType() === "nextFrame"){
+    if (this.checkRequired()){
         var isValid = true;
-
         var elements = player.currentFrame.frameData.elements();
         elements.forEach(function(element) {
             if (typeof element.content().isInputValid == "function"){
@@ -1336,7 +1336,6 @@ ActionJumpTo.prototype.run = function(triggerParams) {
                 }
             }
         });
-
         // now display error message at navigation element
         var elements = player.currentFrame.frameData.elements();
         elements.forEach(function(element) {
@@ -1344,13 +1343,12 @@ ActionJumpTo.prototype.run = function(triggerParams) {
                 element.content().showSubmitError(!isValid);
             }
         });
-
-        if (isValid){
-            player.currentFrame.endFrame();
-        }
     }
 
-    else {
+    if (isValid || !this.checkRequired()) {
+        if (this.jumpType() == "nextFrame"){
+            player.currentFrame.endFrame();
+        }
         if (this.jumpType() == "previousFrame"){
             player.currentFrame.endFrameAndGoBack();
         }
@@ -1425,6 +1423,11 @@ ActionJumpTo.prototype.reAddEntities = function(entitiesArr) {
 ActionJumpTo.prototype.setPointers = function(entitiesArr) {
     var frame = entitiesArr.byId[this.frameToJump()];
     this.frameToJump(frame);
+
+    // converter for old studies
+    if (this.checkRequired()=== null && this.jumpType() == "nextFrame"){
+        this.checkRequired(true);
+    }
 };
 
 /**
@@ -1446,6 +1449,10 @@ ActionJumpTo.prototype.fromJS = function(data) {
     }
     if (data.hasOwnProperty('blockToJumpId')){
         this.blockToJumpId(data.blockToJumpId);
+    }
+
+    if (data.hasOwnProperty('checkRequired')){
+        this.checkRequired(data.checkRequired);
     }
 
 
@@ -1473,7 +1480,8 @@ ActionJumpTo.prototype.toJS = function() {
         taskToJumpId:this.taskToJumpId(),
         trialToJumpId:this.trialToJumpId(),
         conditionGroupIdx:this.conditionGroupIdx(),
-        blockToJumpId:this.blockToJumpId()
+        blockToJumpId:this.blockToJumpId(),
+        checkRequired:this.checkRequired()
 
     };
 };
