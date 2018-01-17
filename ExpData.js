@@ -184,7 +184,8 @@ ExpData.prototype.staticTranslations = {
         endExpMsg: "Thank you! The experiment session is finished.",
         goToLib: "Go to experiment library",
         chooseSelection: "Please Choose...",
-        answerPlaceholder: "Participant Answer..."
+        answerPlaceholder: "Participant Answer...",
+        endExpMsgTest:  "The test recording of this tak is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel."
     },
     German: {
         library: "Experimente",
@@ -233,7 +234,8 @@ ExpData.prototype.staticTranslations = {
         endExpMsg: "Vielen Dank! Die Experimentssitzung ist beendet.",
         goToLib: "Gehe zur Experiment-Bibliothek",
         chooseSelection: "Bitte Auswählen...",
-        answerPlaceholder: "Teilnehmer Antwort"
+        answerPlaceholder: "Teilnehmer Antwort",
+        endExpMsgTest:  "Die Test-Aufnahme dieses Taks ist beendet. Um das ganze Experiment zu testen, oder um Daten aufzunehmen, starten Sie die Studie unter 'Run' in der Navigationsleite."
     }
 };
 
