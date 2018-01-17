@@ -456,6 +456,15 @@ ActionSetElementPropChange.prototype.setPointers = function(entitiesArr) {
     }
 };
 
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionSetElementPropChange.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
 ActionSetElementPropChange.prototype.fromJS = function(data) {
     this.property(data.property);
     this.operatorType(data.operatorType);
@@ -538,6 +547,20 @@ ActionSetProp.prototype.setPointers = function(entitiesArr) {
 };
 
 /**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionSetProp.prototype.reAddEntities = function(entitiesArr) {
+    if (this.operand && this.operand.reAddEntities) {
+        this.operand.reAddEntities(entitiesArr);
+    }
+    if (this.refToObjectProperty && this.refToObjectProperty.reAddEntities) {
+        this.refToObjectProperty.reAddEntities(entitiesArr);
+    }
+};
+
+/**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
  * @returns {ActionSetVariable}
@@ -608,6 +631,14 @@ ActionRecordData.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionRecordData.prototype.setPointers = function(entitiesArr) {
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionRecordData.prototype.reAddEntities = function(entitiesArr) {
 };
 
 /**
@@ -739,6 +770,29 @@ ActionSelectFromArray.prototype.setPointers = function(entitiesArr) {
     if (outVar){
         this.outVar(outVar);
         this.setOutVarBackRef();
+    }
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionSelectFromArray.prototype.reAddEntities = function(entitiesArr) {
+    if (this.inVarArr()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.inVarArr().id())) {
+            entitiesArr.push(this.inVarArr());
+        }
+    }
+    if (this.inVarIndex()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.inVarIndex().id())) {
+            entitiesArr.push(this.inVarIndex());
+        }
+    }
+    if (this.outVar()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.outVar().id())) {
+            entitiesArr.push(this.outVar());
+        }
     }
 };
 
@@ -904,6 +958,29 @@ ActionWriteToArray.prototype.setPointers = function(entitiesArr) {
     if (inVar){
         this.inVar(inVar);
         this.setInVarBackRef();
+    }
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionWriteToArray.prototype.reAddEntities = function(entitiesArr) {
+    if (this.inVarArr()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.inVarArr().id())) {
+            entitiesArr.push(this.inVarArr());
+        }
+    }
+    if (this.inVarIndex()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.inVarIndex().id())) {
+            entitiesArr.push(this.inVarIndex());
+        }
+    }
+    if (this.inVar()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.inVar().id())) {
+            entitiesArr.push(this.inVar());
+        }
     }
 };
 
@@ -1093,6 +1170,30 @@ ActionModifyArray.prototype.setPointers = function(entitiesArr) {
     this.insertVarList(newList);
     this.setOutVarBackRef();
 
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionModifyArray.prototype.reAddEntities = function(entitiesArr) {
+    if (this.inVarArr()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.inVarArr().id())) {
+            entitiesArr.push(this.inVarArr());
+        }
+    }
+    if (this.inVarIndex()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.inVarIndex().id())) {
+            entitiesArr.push(this.inVarIndex());
+        }
+    }
+    var list = this.insertVarList();
+    for (var i = 0; i<list.length; i++){
+        if (!entitiesArr.byId.hasOwnProperty(list[i].id())) {
+            entitiesArr.push(list[i]);
+        }
+    }
 };
 
 /**
@@ -2586,6 +2687,24 @@ ActionModifyVariable.prototype.setPointers = function(entitiesArr) {
 };
 
 /**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionModifyVariable.prototype.reAddEntities = function(entitiesArr) {
+    if (this.variable()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
+    }
+    if (this.value()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.value().id())) {
+            entitiesArr.push(this.value());
+        }
+    }
+};
+
+/**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
  * @returns {ActionModifyVariable}
@@ -2851,6 +2970,19 @@ ActionDrawRandomNumber.prototype.setPointers = function(entitiesArr) {
 };
 
 /**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionDrawRandomNumber.prototype.reAddEntities = function(entitiesArr) {
+    if (this.variable()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
+    }
+};
+
+/**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
  * @returns {ActionDrawRandomNumber}
@@ -2977,6 +3109,14 @@ ActionControlAV.prototype.setPointers = function(entitiesArr) {
     this.target(entitiesArr.byId[this.target()]);
 };
 
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionControlAV.prototype.reAddEntities = function(entitiesArr) {
+
+};
 
 /**
  * load from a json object to deserialize the states.
@@ -3102,6 +3242,18 @@ ActionControlTimer.prototype.setPointers = function(entitiesArr) {
     }
 };
 
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionControlTimer.prototype.reAddEntities = function(entitiesArr) {
+    if (this.timerVar()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.timerVar().id())) {
+            entitiesArr.push(this.timerVar());
+        }
+    }
+};
 
 /**
  * load from a json object to deserialize the states.
@@ -3192,6 +3344,15 @@ ActionEndSession.prototype.setPointers = function(entitiesArr) {
 };
 
 /**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionEndSession.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
  * @returns {ActionRecordQuestionaireResponse}
@@ -3274,6 +3435,15 @@ ActionRecordQuestionaireResponse.prototype.destroyOnPlayerFrame = function(playe
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionRecordQuestionaireResponse.prototype.setPointers = function(entitiesArr) {
+
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionRecordQuestionaireResponse.prototype.reAddEntities = function(entitiesArr) {
 
 };
 
