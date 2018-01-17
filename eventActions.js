@@ -2,7 +2,7 @@
 
 
 
-/////////////////////////////////////////////////  ActionRecord  ///////////////////////////////////////////////////
+/////////////////////////////////////////////////  ActionRecord  /////////////////////////////////////////////////// // depreciated!
 
 /**
  * This action can record values (i.e. elementTag or reactiontime) into variables and sends them to the server.
@@ -559,6 +559,74 @@ ActionSetProp.prototype.toJS = function() {
         operand: this.operand.toJS()
     };
 };
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////  ActionRecordData ///////////////////////////////////////////////////
+
+var ActionRecordData = function(event) {
+    this.event = event;
+};
+
+ActionRecordData.prototype.type = "ActionRecordData";
+ActionRecordData.prototype.label = "Record Variables Instantly";
+
+ActionRecordData.prototype.isValid = function(){
+    return true;
+};
+
+
+/**s
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionRecordData.prototype.run = function(triggerParams) {
+    player.recordData()
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionRecordData.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionRecordData.prototype.setPointers = function(entitiesArr) {
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionSetVariable}
+ */
+ActionRecordData.prototype.fromJS = function(data) {
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionRecordData.prototype.toJS = function() {
+    return { type: this.type};
+};
+
 
 
 
@@ -3105,7 +3173,8 @@ ActionEndSession.prototype.toJS = function() {
 
 
 
-//////////////////////////////////////  ActionRecordQuestionaireResponse  //////////////////////////////////////////
+
+//////////////////////////////////////  ActionRecordQuestionaireResponse  //////////////////////////////////////////// depreciated!
 
 /**
  * This action records the response from a questionaire element.
