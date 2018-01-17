@@ -289,22 +289,17 @@ PageData.prototype.setPointers = function(entitiesArr) {
     // convert ids to actual pointers:
     this.elements(jQuery.map( this.elements(), function( id ) {
         var elem = entitiesArr.byId[id];
-        if (elem){
-            elem.parent = self;
-        }
+        elem.parent = self;
         return elem;
     } ));
 
     // convert ids to actual pointers:
-    var localWorkspaceVars = [];
-    jQuery.each( this.localWorkspaceVars(), function( id ) {
+    this.localWorkspaceVars(jQuery.map( this.localWorkspaceVars(), function( id ) {
         var localVar = entitiesArr.byId[id];
-        if (localVar) {
-            localVar.addBackRef(self, self, false, false, 'workspace variable');
-            localWorkspaceVars.push(localVar);
-        }
-    } );
-    this.localWorkspaceVars(localWorkspaceVars);
+        localVar.addBackRef(self, self, false, false, 'workspace variable');
+        return localVar;
+    } ));
+
 
     jQuery.each( this.events(), function( idx, event ) {
         event.setPointers(entitiesArr);
