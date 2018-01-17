@@ -1346,9 +1346,6 @@ ActionJumpTo.prototype.run = function(triggerParams) {
     }
 
     if (isValid || !this.checkRequired()) {
-        if (this.jumpType() == "nextFrame"){
-            player.currentFrame.endFrame();
-        }
         if (this.jumpType() == "previousFrame"){
             player.currentFrame.endFrameAndGoBack();
         }
