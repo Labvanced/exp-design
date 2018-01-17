@@ -2318,7 +2318,27 @@ ActionSetVariable.prototype.setPointers = function(entitiesArr) {
     if (varToSet){
         this.variable(varToSet);
     }
+    else {
+        console.log("warning: missing variable!")
+    }
     this.operand().setPointers(entitiesArr);
+};
+
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionSetVariable.prototype.reAddEntities = function(entitiesArr) {
+    if (this.variable()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
+    }
+    if (this.operand() && this.operand().reAddEntities) {
+        this.operand().reAddEntities(entitiesArr);
+    }
 };
 
 /**

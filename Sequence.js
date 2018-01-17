@@ -62,7 +62,7 @@ Sequence.prototype.getDeepCopyForPlayer = function() {
     var entitiesArrCopyObs = ko.observableArray([]).extend({sortById: null});
     entitiesArrCopyObs(entitiesArrCopy);
     jQuery.each( entitiesArrCopy, function( index, elem ) {
-        elem. setPointers(entitiesArrCopyObs);
+        elem.setPointers(entitiesArrCopyObs);
     } );
 
     // find this frame:
