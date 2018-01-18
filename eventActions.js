@@ -2438,12 +2438,14 @@ ActionSetVariable.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionSetVariable.prototype.setPointers = function(entitiesArr) {
-    var varToSet = entitiesArr.byId[this.variable()];
-    if (varToSet){
-        this.variable(varToSet);
-    }
-    else {
-        console.log("warning: missing variable!")
+    if (this.variable()) {
+        var varToSet = entitiesArr.byId[this.variable()];
+        if (varToSet) {
+            this.variable(varToSet);
+        }
+        else {
+            console.log("warning: missing variable!")
+        }
     }
     this.operand().setPointers(entitiesArr);
 };
