@@ -54,6 +54,8 @@ var GlobalVar = function (expData) {
 
     });
 
+    this.unused =  ko.observable(true);
+    this.calcUnused();
 
 };
 
@@ -209,8 +211,10 @@ GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, 
     if (window.uc!==undefined && (uc instanceof Client)) {
         var obj = new GlobalVarRef(entity, parentNamedEntity, isWritten, isRead, refLabel);
         this.backRefs.push(obj);
+        this.calcUnused();
         return obj;
     }
+
 };
 
 GlobalVar.prototype.removeBackRef = function(entity) {
@@ -219,6 +223,7 @@ GlobalVar.prototype.removeBackRef = function(entity) {
         for (var k = 0; k < backRefs.length; k++) {
             if (backRefs[k] == entity) {
                 this.backRefs.splice(k, 1);
+                this.calcUnused();
                 break;
             }
         }
@@ -227,9 +232,25 @@ GlobalVar.prototype.removeBackRef = function(entity) {
         for (var k = 0; k < backRefs.length; k++) {
             if (backRefs[k].entity == entity) {
                 this.backRefs.splice(k, 1);
+                this.calcUnused();
                 break;
             }
         }
+    }
+
+};
+
+GlobalVar.prototype.calcUnused = function() {
+    if (this.backRefs().length>0){
+        if (this.backRefs().length==1 && this.backRefs()[0].refLabel=="workspace variable"){
+            this.unused(true);
+        }
+        else{
+            this.unused(false);
+        }
+    }
+    else{
+        this.unused(true);
     }
 };
 

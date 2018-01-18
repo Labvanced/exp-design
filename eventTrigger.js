@@ -751,7 +751,12 @@ TriggerTimerReached.prototype.label = "Timer Reached Trigger";
  * @returns {boolean}
  */
 TriggerTimerReached.prototype.isValid = function() {
-    return true;
+    if (this.event.trigger() && !(this.timerVar()===null)){
+        return true;
+    }
+    else{
+        return false;
+    }
 };
 
 
@@ -875,7 +880,12 @@ TriggerVariableValueChanged.prototype.removeVariable = function(variable) {
  * @returns {boolean}
  */
 TriggerVariableValueChanged.prototype.isValid = function() {
-    return true;
+    if (this.event.trigger() && this.variables().length>0){
+        return true;
+    }
+    else{
+        return false;
+    }
 };
 
 /**
@@ -1008,7 +1018,12 @@ TriggerAudioVideoEvent.prototype.getParameterSpec = function() {
 };
 
 TriggerAudioVideoEvent.prototype.isValid = function() {
-    return true;
+    if (this.event.trigger() && !(this.target()===null)){
+        return true;
+    }
+    else{
+        return false;
+    }
 };
 
 TriggerAudioVideoEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
