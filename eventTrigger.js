@@ -182,6 +182,15 @@ TriggerMouse.prototype.setPointers = function(entitiesArr) {
 };
 
 /**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerMouse.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
  * @returns {TriggerMouse}
@@ -318,6 +327,15 @@ TriggerButtonClick.prototype.destroyOnPlayerFrame = function(playerFrame) {
  */
 TriggerButtonClick.prototype.setPointers = function(entitiesArr) {
     this.target(entitiesArr.byId[this.target()]);
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerButtonClick.prototype.reAddEntities = function(entitiesArr) {
+
 };
 
 /**
@@ -493,6 +511,15 @@ TriggerKeyboard.prototype.setPointers = function(entitiesArr) {
 };
 
 /**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerKeyboard.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
  * @returns {TriggerKeyboard}
@@ -610,6 +637,15 @@ TriggerOnFrameStart.prototype.setPointers = function(entitiesArr) {
 };
 
 /**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerOnFrameStart.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
  * @returns {TriggerOnFrameStart}
@@ -700,6 +736,15 @@ TriggerOnFrameEnd.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 TriggerOnFrameEnd.prototype.setPointers = function(entitiesArr) {
+
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerOnFrameEnd.prototype.reAddEntities = function(entitiesArr) {
 
 };
 
@@ -810,6 +855,19 @@ TriggerTimerReached.prototype.setPointers = function(entitiesArr) {
     var timerVar = entitiesArr.byId[this.timerVar()];
     if (timerVar){
         this.timerVar(timerVar);
+    }
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerTimerReached.prototype.reAddEntities = function(entitiesArr) {
+    if (this.timerVar()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.timerVar().id())) {
+            entitiesArr.push(this.timerVar());
+        }
     }
 };
 
@@ -1086,6 +1144,14 @@ TriggerAudioVideoEvent.prototype.setPointers = function(entitiesArr) {
 };
 
 
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerAudioVideoEvent.prototype.reAddEntities = function(entitiesArr) {
+
+};
 
 TriggerAudioVideoEvent.prototype.fromJS = function(data) {
     this.target(data.target);

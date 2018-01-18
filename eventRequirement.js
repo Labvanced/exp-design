@@ -670,6 +670,15 @@ RefToObjectProperty.prototype.setPointers = function(entitiesArr) {
 };
 
 /**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+RefToObjectProperty.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
  * @returns {RefToObjectProperty}
