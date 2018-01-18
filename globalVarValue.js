@@ -356,12 +356,17 @@ GlobalVarValueDatetime.prototype.fromJS = function(data) {
  * @returns {object}
  */
 GlobalVarValueDatetime.prototype.toJS = function() {
-    if (this.value()!=null){
-        this.value(this.convert(this.value()));
-        return this.value().toISOString().substring(0,10)
+    if (this.value()!=null){ // check for invalid Date object
+        if (this.value() instanceof Date && !isNaN(this.value().valueOf())) {
+            this.value(this.convert(this.value()));
+            return this.value().toISOString().substring(0,10)
+        }
+        else {
+            return null;
+        }
     }
     else{
-        return null
+        return null;
     }
 
 };
