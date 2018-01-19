@@ -3302,6 +3302,7 @@ ActionControlTimer.prototype.toJS = function() {
 var ActionEndSession = function(event) {
     this.event = event;
     this.showEndPage = ko.observable(true);
+    this.recordDataBeforeFinish =  ko.observable(true);
 
 };
 ActionEndSession.prototype.type = "ActionEndSession";
@@ -3324,6 +3325,9 @@ ActionEndSession.prototype.isValid = function(){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionEndSession.prototype.run = function(triggerParams) {
+    if(this.recordDataBeforeFinish){
+        player.recordData();
+    }
     player.finishSession(this.showEndPage());
 };
 
@@ -3361,6 +3365,9 @@ ActionEndSession.prototype.reAddEntities = function(entitiesArr) {
  */
 ActionEndSession.prototype.fromJS = function(data) {
     this.showEndPage(data.showEndPage);
+    if(data.hasOwnProperty('recordDataBeforeFinish')) {
+        this.recordDataBeforeFinish(data.recordDataBeforeFinish);
+    }
     return this;
 };
 
@@ -3371,7 +3378,8 @@ ActionEndSession.prototype.fromJS = function(data) {
 ActionEndSession.prototype.toJS = function() {
     return {
         type: this.type,
-        showEndPage: this.showEndPage()
+        showEndPage: this.showEndPage(),
+        recordDataBeforeFinish:this.recordDataBeforeFinish()
     };
 };
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

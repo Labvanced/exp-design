@@ -331,7 +331,7 @@ GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 GlobalVar.prototype.setPointers = function(entitiesArr) {
-
+    this.calcUnused()
 };
 
 /**
