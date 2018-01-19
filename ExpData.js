@@ -185,8 +185,10 @@ ExpData.prototype.staticTranslations = {
         goToLib: "Go to experiment library",
         chooseSelection: "Please Choose...",
         answerPlaceholder: "Participant Answer...",
-        endExpMsgTest:  "The test recording of this tak is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel."
-    },
+        endExpMsgTest:  "The test recording of this tak is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel.",
+        participationAgreement1: " I agree that all the personal data, which I provide here and all my responses will be recorded, and can be used for research purposes in a pseudonymised way. I also agree to the",
+        participationAgreement2: "of the Scicovery GmbH for recording, storing, and handling, participant data."
+},
     German: {
         library: "Experimente",
         langSelect: "Diese Studie ist in mehreren Sprachen verfügbar.",
@@ -235,7 +237,9 @@ ExpData.prototype.staticTranslations = {
         goToLib: "Gehe zur Experiment-Bibliothek",
         chooseSelection: "Bitte Auswählen...",
         answerPlaceholder: "Teilnehmer Antwort",
-        endExpMsgTest:  "Die Test-Aufnahme dieses Taks ist beendet. Um das ganze Experiment zu testen, oder um Daten aufzunehmen, starten Sie die Studie unter 'Run' in der Navigationsleite."
+        endExpMsgTest:  "Die Test-Aufnahme dieses Taks ist beendet. Um das ganze Experiment zu testen, oder um Daten aufzunehmen, starten Sie die Studie unter 'Run' in der Navigationsleite.",
+        participationAgreement1: "Ich stimme zu, dass alle persönlichen Daten, die ich hier zur Verfügung stelle, und alle meine Antworten aufgezeichnet werden und zu Forschungszwecken pseudonymisiert verwendet werden dürfen. Zudem stimme ich den",
+        participationAgreement2: "der Scicovery GmbH bzgl Datenaufnahme, Datenspeicherung, und Datenverwaltung von Teilnehmerdaten zu."
     }
 };
 
