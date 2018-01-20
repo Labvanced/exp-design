@@ -80,6 +80,7 @@ MultiLineInputElement.prototype.getAllModifiers = function(modifiersArr) {
 MultiLineInputElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
+        this.setVariableBackRef();
     }
     this.questionText().setPointers(entitiesArr);
     this.recalcHeight();

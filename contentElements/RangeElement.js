@@ -71,6 +71,7 @@ RangeElement.prototype.getAllModifiers = function(modifiersArr) {
 RangeElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
+        this.setVariableBackRef();
     }
     this.questionText().setPointers(entitiesArr);
     this.startLabel().setPointers(entitiesArr);

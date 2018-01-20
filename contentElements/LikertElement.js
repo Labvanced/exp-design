@@ -92,6 +92,7 @@ LikertElement.prototype.getAllModifiers = function(modifiersArr) {
 LikertElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
+        this.setVariableBackRef();
     }
     this.questionText().setPointers(entitiesArr);
     this.startLabel().setPointers(entitiesArr);

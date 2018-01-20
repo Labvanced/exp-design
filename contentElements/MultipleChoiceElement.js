@@ -106,6 +106,7 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
     var self = this;
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
+        this.setVariableBackRef();
     }
     jQuery.each( this.elements(), function( index, elem ) {
         elem.setPointers(entitiesArr);
@@ -117,6 +118,7 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
     this.questionText().setPointers(entitiesArr);
     if ( this.subInputElement()){
         this.subInputElement().setPointers(entitiesArr);
+        this.subInputElement().setVariableBackRef();
     }
 
     this.addSubscriptions();

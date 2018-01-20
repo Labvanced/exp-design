@@ -52,6 +52,7 @@ ProgressBarElement.prototype.getAllModifiers = function(modifiersArr) {
 ProgressBarElement.prototype.setPointers = function(entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
+        this.setVariableBackRef();
     }
 
     this.modifier().setPointers(entitiesArr);

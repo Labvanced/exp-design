@@ -115,6 +115,7 @@ SelectionElement.prototype.setPointers = function(entitiesArr) {
     var self = this;
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
+        this.setVariableBackRef();
     }
     jQuery.each( this.elements(), function( index, elem ) {
         elem.setPointers(entitiesArr);
