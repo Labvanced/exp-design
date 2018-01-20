@@ -325,7 +325,7 @@ Experiment.prototype.savePrivateData = function(cb) {
     if (this.private_data instanceof PrivateData){
         var saveData = {
             exp_id: this.exp_id(),
-            private_data: this.private_data().toJS()
+            private_data: this.private_data.toJS()
         };
         uc.socket.emit('updateExperiment', saveData, function(response){
             if (response.success){
