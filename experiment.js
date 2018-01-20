@@ -30,6 +30,7 @@ var Experiment = function () {
     this.publishing_data = new PublishingData(this);
     this.analysis_data = new AnalysisData(this);
     this.private_data = new PrivateData(this);
+    this.exp_server_data = null;
 
     // local temporary member variables:
     this.hasLocalChanges = false;
@@ -422,6 +423,10 @@ Experiment.prototype.fromJS = function(data) {
 
     if (data.hasOwnProperty("private_data") && data.private_data != null){
         this.private_data.fromJS(data.private_data);
+    }
+
+    if (data.hasOwnProperty("exp_server_data")){
+        this.exp_server_data  = data.exp_server_data;
     }
 
     if (data.hasOwnProperty("rec_session_data")) {
