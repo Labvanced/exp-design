@@ -181,7 +181,7 @@ PageData.prototype.copyChildEntity = function(entity) {
                 var variableCopy =  this.copyVariable(varEntity);
                 this.expData.entities.push(variableCopy);
                 subElements[i].variable(variableCopy.id());
-                this.localWorkspaceVars.splice(index+1, 0, variableCopy);
+                this.addVariableToLocalWorkspace(variableCopy)
 
             }
         }
