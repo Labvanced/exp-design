@@ -856,6 +856,9 @@ TriggerTimerReached.prototype.setPointers = function(entitiesArr) {
     if (timerVar){
         this.timerVar(timerVar);
     }
+    else {
+        this.timerVar(null);
+    }
 };
 
 /**
