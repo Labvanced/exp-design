@@ -16,7 +16,7 @@ var ExperimentStartupScreen = function(experiment) {
     this.selectedLanguage = ko.observable(null);
     this.selectedEmail = ko.observable(null);
 
-    this.agreeToTermsAndConditions = ko.observable(true);
+    this.agreeToTermsAndConditions = ko.observable(false);
 
     this.requiredGender = this.expData.parentExperiment.publishing_data.surveyItemGender;
     this.requiredAge = this.expData.parentExperiment.publishing_data.surveyItemAge;

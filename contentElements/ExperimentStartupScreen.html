@@ -156,6 +156,9 @@
                                     <!-- ko if: (agreeToTermsAndConditions) -->
                                         <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: expData.staticStrings().start"></button>
                                     <!-- /ko -->
+                                    <!-- ko ifnot: (agreeToTermsAndConditions) -->
+                                    <button class="btn-regular btn-lab-gray mg-20" disabled data-bind="text: expData.staticStrings().start"></button>
+                                    <!-- /ko -->
                                     <!-- /ko -->
                                     <!-- ko if:(player.isTestrun) -->
                                         <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: expData.staticStrings().start"></button>
