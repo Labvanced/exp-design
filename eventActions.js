@@ -563,7 +563,7 @@ ActionSetProp.prototype.reAddEntities = function(entitiesArr) {
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {ActionSetVariable}
+ * @returns {ActionSetProp}
  */
 ActionSetProp.prototype.fromJS = function(data) {
     this.refToObjectProperty.fromJS(data.refToObjectProperty);
@@ -644,7 +644,7 @@ ActionRecordData.prototype.reAddEntities = function(entitiesArr) {
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {ActionSetVariable}
+ * @returns {ActionRecordData}
  */
 ActionRecordData.prototype.fromJS = function(data) {
     return this;
@@ -799,7 +799,7 @@ ActionSelectFromArray.prototype.reAddEntities = function(entitiesArr) {
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {ActionSetVariable}
+ * @returns {ActionSelectFromArray}
  */
 ActionSelectFromArray.prototype.fromJS = function(data) {
     this.inVarArr(data.inVarArr);
@@ -987,7 +987,7 @@ ActionWriteToArray.prototype.reAddEntities = function(entitiesArr) {
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {ActionSetVariable}
+ * @returns {ActionWriteToArray}
  */
 ActionWriteToArray.prototype.fromJS = function(data) {
     this.inVarArr(data.inVarArr);
@@ -1199,7 +1199,7 @@ ActionModifyArray.prototype.reAddEntities = function(entitiesArr) {
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {ActionSetVariable}
+ * @returns {ActionModifyArray}
  */
 ActionModifyArray.prototype.fromJS = function(data) {
     this.inVarArr(data.inVarArr);
@@ -1369,7 +1369,7 @@ ActionLoadFileIds.prototype.reAddEntities = function(entitiesArr) {
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {ActionSetVariable}
+ * @returns {ActionLoadFileIds}
  */
 ActionLoadFileIds.prototype.fromJS = function(data) {
     this.files(data.files);
@@ -2445,6 +2445,7 @@ ActionSetVariable.prototype.setPointers = function(entitiesArr) {
         }
         else {
             console.log("warning: missing variable!")
+            this.variable(null);
         }
     }
     this.operand().setPointers(entitiesArr);
