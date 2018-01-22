@@ -268,6 +268,26 @@ FrameData.prototype.setPointers = function(entitiesArr) {
 };
 
 /**
+ * this function is automatically called after all setPointers have been executed.
+ */
+FrameData.prototype.onFinishedLoading = function() {
+    this.reAddLocalWorkspace();
+};
+
+FrameData.prototype.reAddLocalWorkspace = function() {
+    var self= this;
+    var tmpEntities = ko.observableArray([]).extend({sortById: null});
+    this.reAddEntities(tmpEntities);
+    jQuery.each(tmpEntities(), function (idx, entity) {
+        if ( entity instanceof GlobalVar) {
+            if (!self.localWorkspaceVars.byId.hasOwnProperty(entity.id())) {
+                self.localWorkspaceVars.push(entity);
+            }
+        }
+    });
+};
+
+/**
  * Recursively adds all child objects that have a unique id to the global list of entities.
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.

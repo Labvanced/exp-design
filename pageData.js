@@ -298,13 +298,15 @@ PageData.prototype.setPointers = function(entitiesArr) {
         }
     } ));
 
-    // convert ids to actual pointers:
-    this.localWorkspaceVars(jQuery.map( this.localWorkspaceVars(), function( id ) {
+    var localWorkspaceVars = [];
+    jQuery.each( this.localWorkspaceVars(), function( id ) {
         var localVar = entitiesArr.byId[id];
-        localVar.addBackRef(self, self, false, false, 'workspace variable');
-        return localVar;
-    } ));
-
+        if (localVar) {
+            localVar.addBackRef(self, self, false, false, 'workspace variable');
+            localWorkspaceVars.push(localVar);
+        }
+    } );
+    this.localWorkspaceVars(localWorkspaceVars);
 
     jQuery.each( this.events(), function( idx, event ) {
         event.setPointers(entitiesArr);
@@ -312,9 +314,12 @@ PageData.prototype.setPointers = function(entitiesArr) {
 
 };
 
-
-
-
+/**
+ * this function is automatically called after all setPointers have been executed.
+ */
+PageData.prototype.onFinishedLoading = function() {
+    this.reAddLocalWorkspace();
+};
 
 PageData.prototype.reAddLocalWorkspace = function() {
     var self= this;
@@ -327,8 +332,6 @@ PageData.prototype.reAddLocalWorkspace = function() {
             }
         }
     });
-    var test = 1;
-
 };
 
 
