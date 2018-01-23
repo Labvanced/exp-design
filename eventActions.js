@@ -108,11 +108,11 @@ ActionRecord.prototype.run = function(triggerParams) {
                 break;
             // mouse properties
             case "Mouse X-Position":
-                val = self.event.trigger().mouseX;
+                val = 0;
                 break;
             // mouse properties
             case "Mouse Y-Position":
-                val = self.event.trigger().mouseX;
+                val = 0;
                 break;
         }
 

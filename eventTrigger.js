@@ -11,8 +11,6 @@
  */
 var TriggerMouse = function(event) {
     this.event = event;
-    this.mouseX = null;
-    this.mouseY = null;
 
     // serialized
     this.buttonType = ko.observable("Left");
@@ -51,7 +49,9 @@ TriggerMouse.prototype.getParameterSpec = function() {
     return [
         'Stimulus Name',
         'Time From Frame Onset',
-        'Stimulus Info'
+        'Stimulus Info',
+        'MouseX',
+        'MouseY'
     ];
 };
 
@@ -60,16 +60,32 @@ TriggerMouse.prototype.getParameterSpec = function() {
  * @param playerFrame
  * @param target
  */
-TriggerMouse.prototype.triggerOnTarget = function(playerFrame,target) {
+TriggerMouse.prototype.triggerOnTarget = function(playerFrame, target, ev) {
    if (target.modifier().selectedTrialView.isActive()){
        var stimulusInformation = null;
        if (target.content().hasOwnProperty("stimulusInformation")){
            stimulusInformation =  target.content().modifier().selectedTrialView.stimulusInformation();
        }
+
+       var mouseX = ev.clientX;
+       var mouseY = ev.clientY;
+
+       // convert to frame coordinates if this is not a page:
+       var playerFrame = player.currentFrame;
+       if(playerFrame.frameData instanceof FrameData) {
+           var scale = playerFrame.frameView.scale();
+           var offX = (window.innerWidth - playerFrame.frameData.frameWidth() * scale) / 2;
+           var offY = (window.innerHeight - playerFrame.frameData.frameHeight() * scale) / 2;
+           mouseX = (mouseX - offX) / scale;
+           mouseY = (mouseY - offY) / scale;
+       }
+
        this.event.triggerActions([
            target.name(),
            playerFrame.getFrameTime(),
-           stimulusInformation
+           stimulusInformation,
+           mouseX,
+           mouseY
        ]);
    }
 };
@@ -97,17 +113,13 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 if (self.buttonType() === "Left"){
                     eventHandle.eventName = 'click';
                     eventHandle.cb = function(ev) {
-                        self.mouseX = playerFrame.mouseX;
-                        self.mouseY = playerFrame.mouseY;
-                        self.triggerOnTarget(playerFrame,target);
+                        self.triggerOnTarget(playerFrame,target,ev);
                     };
                 }
                 else if (self.buttonType() === "Right"){
                     eventHandle.eventName = 'contextmenu';
                     eventHandle.cb = function(ev) {
-                        self.mouseX = playerFrame.mouseX;
-                        self.mouseY = playerFrame.mouseY;
-                        self.triggerOnTarget(playerFrame,target);
+                        self.triggerOnTarget(playerFrame,target,ev);
                     };
                 }
                 break;
@@ -116,9 +128,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 eventHandle.eventName = 'mousedown';
                 eventHandle.cb = function(ev) {
                     if ((self.buttonType() === "Left" && ev.button==0) || (self.buttonType() === "Right" && ev.button==2)){
-                        self.mouseX = playerFrame.mouseX;
-                        self.mouseY = playerFrame.mouseY;
-                        self.triggerOnTarget(playerFrame,target);
+                        self.triggerOnTarget(playerFrame,target,ev);
                     }
                 };
                 break;
@@ -127,9 +137,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
                 eventHandle.eventName = 'mouseup';
                 eventHandle.cb = function(ev) {
                     if ((self.buttonType() === "Left" && ev.button==0) || (self.buttonType() === "Right" && ev.button==2)){
-                        self.mouseX = playerFrame.mouseX;
-                        self.mouseY = playerFrame.mouseY;
-                        self.triggerOnTarget(playerFrame,target);
+                        self.triggerOnTarget(playerFrame,target,ev);
                     }
                 };
                 break;
@@ -137,9 +145,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
             case "Hover":
                 eventHandle.eventName = 'mouseover';
                 eventHandle.cb = function(ev) {
-                    self.mouseX = playerFrame.mouseX;
-                    self.mouseY = playerFrame.mouseY;
-                    self.triggerOnTarget(playerFrame,target);
+                    self.triggerOnTarget(playerFrame,target,ev);
                 };
                 break;
 
@@ -469,8 +475,6 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
                 // only prevent default for F keys:
                 ev.preventDefault();
             }
-            self.mouseX = playerFrame.mouseX;
-            self.mouseY = playerFrame.mouseY;
             self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
             ev.preventDefault();
             return false;
