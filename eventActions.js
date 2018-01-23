@@ -1711,6 +1711,7 @@ ActionDelayedActions.prototype.setPointers = function(entitiesArr) {
     var varToSet = entitiesArr.byId[this.variable()];
     if (varToSet){
         this.variable(varToSet);
+        this.setVariableBackRef(varToSet);
     }
 
     jQuery.each( this.subActions(), function( index, elem ) {
@@ -2442,6 +2443,7 @@ ActionSetVariable.prototype.setPointers = function(entitiesArr) {
         var varToSet = entitiesArr.byId[this.variable()];
         if (varToSet) {
             this.variable(varToSet);
+            this.setVariableBackRef(varToSet);
         }
         else {
             console.log("warning: missing variable!")
@@ -3242,6 +3244,7 @@ ActionControlTimer.prototype.setPointers = function(entitiesArr) {
     var timerVar = entitiesArr.byId[this.timerVar()];
     if (timerVar){
         this.timerVar(timerVar);
+        this.setVariableBackRef(timerVar);
     }
 };
 
