@@ -29,11 +29,11 @@ var PublishingData = function(experiment) {
 
     
     // recruiting options //
-    this.recruitInLibrary = ko.observable(null);
-    this.recruitSecretly = ko.observable(null);
-    this.recruitViaCrowdsourcing = ko.observable(null);
-    this.recruitViaCustomLink= ko.observable(null);
-
+    this.recruitInLibrary = ko.observable(false);
+    this.recruitSecretly = ko.observable(false);
+    this.recruitViaCrowdsourcing = ko.observable(false);
+    this.recruitViaOwnCrowdsourcing = ko.observable(false);
+    this.recruitViaCustomLink= ko.observable(false);
 
     // crowdsourcing
     this.enableMaxDaysCrowdsourcing= ko.observable(false);
@@ -80,7 +80,7 @@ var PublishingData = function(experiment) {
 
 
     this.recruitingEnabled= ko.computed(function () {
-        if (self.recruitInLibrary() || self.recruitSecretly() || self.recruitViaCrowdsourcing() || self.recruitViaCustomLink()) {
+        if (self.recruitInLibrary() || self.recruitSecretly() || self.recruitViaCrowdsourcing() || self.recruitViaOwnCrowdsourcing() || self.recruitViaCustomLink()) {
             return true;
         }
         else  {
@@ -292,6 +292,9 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('recruitViaCrowdsourcing') ) {
         this.recruitViaCrowdsourcing(data.recruitViaCrowdsourcing);
     }
+    if (data.hasOwnProperty('recruitViaOwnCrowdsourcing') ) {
+        this.recruitViaOwnCrowdsourcing(data.recruitViaOwnCrowdsourcing);
+    }
     if (data.hasOwnProperty('recruitViaCustomLink') ) {
         this.recruitViaCustomLink(data.recruitViaCustomLink);
     }
@@ -404,6 +407,7 @@ PublishingData.prototype.toJS = function() {
         recruitInLibrary: this.recruitInLibrary(),
         recruitSecretly: this.recruitSecretly(),
         recruitViaCrowdsourcing: this.recruitViaCrowdsourcing(),
+        recruitViaOwnCrowdsourcing: this.recruitViaOwnCrowdsourcing(),
         recruitViaCustomLink: this.recruitViaCustomLink(),
 
         // crowdsourcing
