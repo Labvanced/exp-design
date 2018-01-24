@@ -36,12 +36,6 @@ var PublishingData = function(experiment) {
     this.recruitViaCustomLink= ko.observable(false);
 
     // crowdsourcing
-    this.enableMaxDaysCrowdsourcing= ko.observable(false);
-    this.maxDaysCrowdsourcing= ko.observable(90);
-    this.crowdsourcingSubType = ko.observable('labvanced');  // labvanced, own
-    this.postOnAMT = ko.observable("no"); // yes, no, own
-    this.amountOfSubjects = ko.observable(100);
-    this.moneyPerSubject = ko.observable(0.5);
     this.crowdsourcingStatus = ko.observable('inactive');
     this.measuredAverageTime =  ko.observable(null);
 
@@ -59,14 +53,6 @@ var PublishingData = function(experiment) {
     this.requiredCountry = ko.observable(false);
     this.requiredLanguage = ko.observable(false);
     this.requiredEmail = ko.observable(false);
-
-
-
-    // terms and conditions //
-    this.termsAccepted = ko.observable(false);
-    this.copyrightsOk = ko.observable(false);
-    this.materialOk = ko.observable(false);
-    this.termsCrowdsourcing = ko.observable(false);
 
     
     // After publication
@@ -317,19 +303,7 @@ PublishingData.prototype.fromJS = function(data) {
         this.surveyItemEmail(data.surveyItemEmail);
     }
 
-    // crowdsourcing //
-    this.postOnAMT(data.postOnAMT);
 
-    this.amountOfSubjects(data.amountOfSubjects);
-    if (data.hasOwnProperty('maxDaysCrowdsourcing')) {
-        this.maxDaysCrowdsourcing(data.maxDaysCrowdsourcing);
-    }
-    if (data.hasOwnProperty('enableMaxDaysCrowdsourcing')) {
-        this.enableMaxDaysCrowdsourcing(data.enableMaxDaysCrowdsourcing);
-    }
-    if (data.hasOwnProperty('moneyPerSubject')) {
-        this.moneyPerSubject(data.moneyPerSubject);
-    }
     if (data.hasOwnProperty('crowdsourcingStatus')) {
         this.crowdsourcingStatus(data.crowdsourcingStatus);
     }
@@ -337,19 +311,7 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('measuredAverageTime')) {
         this.measuredAverageTime(data.measuredAverageTime);
     }
-    if (data.hasOwnProperty('crowdsourcingSubType')) {
-        this.crowdsourcingSubType(data.crowdsourcingSubType);
-    }
 
-
-
-
-
-    // terms //
-    this.termsAccepted(data.termsAccepted);
-    this.copyrightsOk(data.copyrightsOk);
-    this.materialOk(data.materialOk);
-    this.termsCrowdsourcing(data.termsCrowdsourcing);
 
     // After publication
     this.individualizedLinks(data.individualizedLinks);
@@ -411,14 +373,8 @@ PublishingData.prototype.toJS = function() {
         recruitViaCustomLink: this.recruitViaCustomLink(),
 
         // crowdsourcing
-        maxDaysCrowdsourcing: this.maxDaysCrowdsourcing(),
-        enableMaxDaysCrowdsourcing:this.enableMaxDaysCrowdsourcing(),
-        postOnAMT : this.postOnAMT(),
-        amountOfSubjects: this.amountOfSubjects(),
-        moneyPerSubject: this.moneyPerSubject(),
         crowdsourcingStatus: this.crowdsourcingStatus(),
         measuredAverageTime:this.measuredAverageTime,
-        crowdsourcingSubType:this.crowdsourcingSubType(),
 
         // initial subject survey
         surveyItemGender:this.surveyItemGender(),
@@ -426,12 +382,6 @@ PublishingData.prototype.toJS = function() {
         surveyItemCountry:this.surveyItemCountry(),
         surveyItemLanguage:this.surveyItemLanguage(),
         surveyItemEmail:this.surveyItemEmail(),
-
-        // terms //
-        termsAccepted: this.termsAccepted(),
-        copyrightsOk: this.copyrightsOk(),
-        materialOk: this.materialOk(),
-        termsCrowdsourcing: this.termsCrowdsourcing(),
 
         // After publication
         individualizedLinks:  this.individualizedLinks(),
