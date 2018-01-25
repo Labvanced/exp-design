@@ -472,8 +472,8 @@ ExpData.prototype.setPointers = function() {
         elem.setPointers(self.entities);
     } );
     jQuery.each( allEntitiesArray, function( index, elem ) {
-         if (elem instanceof PageData){
-             elem.reAddLocalWorkspace();
+         if (typeof elem.onFinishedLoading === "function"){
+             elem.onFinishedLoading();
          }
     } );
 
