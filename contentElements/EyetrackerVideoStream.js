@@ -15,8 +15,8 @@ EyetrackerVideoStream.prototype.label = "EyetrackerVideoStream";
 EyetrackerVideoStream.prototype.iconPath = "/resources/icons/tools/tool_text.svg";
 EyetrackerVideoStream.prototype.dataType =      [ ];
 EyetrackerVideoStream.prototype.modifiableProp = [ ];
-EyetrackerVideoStream.prototype.initWidth = 500;
-EyetrackerVideoStream.prototype.initHeight = 80;
+EyetrackerVideoStream.prototype.initWidth = 280;
+EyetrackerVideoStream.prototype.initHeight = 240;
 
 
 EyetrackerVideoStream.prototype.init = function() {
@@ -100,6 +100,8 @@ function createEyetrackerVideoStreamComponents() {
                         var eyetrackingCanvas = document.createElement('canvas');
                         eyetrackingCanvas.id = 'eyetrackingCanvas';
                         eyetrackingCanvas.style.position = 'absolute';
+                        eyetrackingCanvas.style.width = "100%";
+                        eyetrackingCanvas.style.height = "100%";
                         eyetrackingCanvas.width = width;
                         eyetrackingCanvas.height = height;
                         componentInfo.element.appendChild(eyetrackingCanvas);
@@ -107,6 +109,8 @@ function createEyetrackerVideoStreamComponents() {
                         var overlay = document.createElement('canvas');
                         overlay.id = 'overlay';
                         overlay.style.position = 'absolute';
+                        overlay.style.width = "100%";
+                        overlay.style.height = "100%";
                         overlay.width = width;
                         overlay.height = height;
                         componentInfo.element.appendChild(overlay);
