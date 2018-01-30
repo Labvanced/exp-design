@@ -46,6 +46,28 @@ var GlobalVar = function (expData) {
     this.backRefs = ko.observableArray([]).extend({sortById: null});
     this.recValue = null; // takes care of buffering
 
+    this.allVarNames= [];
+    var allEntities = this.expData.entities();
+    for (var i=0; i<allEntities.length; i++){
+        if (allEntities[i].type == "GlobalVar") {
+            if (this.allVarNames.indexOf(allEntities[i].name().toLowerCase())==-1){
+                this.allVarNames.push(allEntities[i].name().toLowerCase());
+            }
+
+        }
+    }
+
+    this.varNameValid = ko.computed(function() {
+        if (self.name()=="" || self.allVarNames.indexOf(self.name().toLowerCase())>=0){
+            return false
+        }
+        else{
+            return true;
+
+        }
+    }, this);
+
+
     this.shortName = ko.computed(function() {
         if (self.name()){
             return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
