@@ -74,9 +74,16 @@ Experiment.prototype.viewRecordings = function() {
 };
 
 Experiment.prototype.disableRecruiting = function(cb) {
+    if (this.publishing_data.recruitViaCrowdsourcing()) {
+        console.log("cannot disable crowdsourcing!!!");
+        return;
+    }
     if (this.publishing_data.recruitingEnabled()) {
         this.publishing_data.recruitInLibrary(false);
-        this.publishing_data.recruitViaDirectLink(false);
+        this.publishing_data.recruitSecretly(false);
+        this.publishing_data.recruitViaCrowdsourcing(false);
+        this.publishing_data.recruitViaOwnCrowdsourcing(false);
+        this.publishing_data.recruitViaCustomLink(false);
         this.savePublishingData(function() {
             cb();
         });
@@ -226,39 +233,45 @@ Experiment.prototype.saveExpData = function(cb, force) {
 Experiment.prototype.startLockingDialog = function() {
     var self= this;
     var tempDialog = $('<div><p>Editing this experiment is not recommended, because it is not in "create" state. In order to keep the specification of the experiment and the recorded data synchronized, it is advised to create a copy of this study if you want to change the specification. You have four options: </p><ul><li>You can delete all recordings and switch this experiment back to "create" mode.</li><li>Cancel the editing and keep everything as it is.</li><li>Force saving the experiment anyway (only if you know the risks).</li><li>You can copy this experiment and then edit the new instance.</li></ul></div>');
+
+    var buttons = [];
+    if (!this.publishing_data.recruitViaCrowdsourcing()) {
+        buttons.push({
+            text: "Delete and disable all recordings",
+            click: function () {
+                self.switchToCreateState(function() {
+                    console.log("successfully switched experiment to create state.");
+                    tempDialog.dialog( "close" );
+                });
+            }
+        });
+    }
+
+    buttons.push({
+            text: "Cancel editing and reload from server",
+            click: function () {
+                window.location.reload(false);
+                $( this ).dialog( "close" );
+            }
+        });
+
+    buttons.push({
+            text: "I know what I am doing and save anyway",
+            click: function () {
+                var force = true;
+                self.saveExpData(function() {
+
+                }, force);
+                $( this ).dialog( "close" );
+            }
+        });
+
     tempDialog.dialog({
         modal: true,
         title: "Experiment is Locked",
         resizable: false,
         width: 400,
-        buttons: [
-            {
-                text: "Delete and disable all recordings",
-                click: function () {
-                    self.switchToCreateState(function() {
-                        console.log("successfully switched experiment to create state.");
-                        tempDialog.dialog( "close" );
-                    });
-                }
-            },
-            {
-                text: "Cancel editing and reload from server",
-                click: function () {
-                    window.location.reload(false);
-                    $( this ).dialog( "close" );
-                }
-            },
-            {
-                text: "I know what I am doing and save anyway",
-                click: function () {
-                    var force = true;
-                    self.saveExpData(function() {
-
-                    }, force);
-                    $( this ).dialog( "close" );
-                }
-            }
-        ]
+        buttons: buttons
     });
 };
 
