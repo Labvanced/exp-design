@@ -43,11 +43,11 @@ ScaleElement.prototype.initHeight = 170;
 ScaleElement.prototype.addDeleteOptionsCol = ["left","right"];
 ScaleElement.prototype.addDeleteOptionsRow = ["top","bottom"];
 
-ScaleElement.prototype.init = function() {
+ScaleElement.prototype.init = function(variableName) {
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
 
-    this.addEntry();
+    this.addEntry(variableName);
 
     var initTexts = [
         "totally agree",
@@ -79,15 +79,35 @@ ScaleElement.prototype.calculateWidth = function() {
 };
 
 
-ScaleElement.prototype.addEntry = function() {
-    var scaleEntry = new ScaleEntry(this);
-    scaleEntry.init();
-    if (this.addDeleteFromRow() =="bottom"){
-        this.elements.push(scaleEntry);
+ScaleElement.prototype.addEntry = function(variableName) {
+
+    var self = this;
+    if (variableName){
+        var scaleEntry = new ScaleEntry(this);
+        scaleEntry.init(variableName);
+        if (this.addDeleteFromRow() =="bottom"){
+            this.elements.push(scaleEntry);
+        }
+        else{
+            this.elements.splice(0,0,scaleEntry);
+        }
     }
     else{
-        this.elements.splice(0,0,scaleEntry);
+        var cb = function (varName) {
+
+            var scaleEntry = new ScaleEntry(self);
+            scaleEntry.init(varName);
+            if (self.addDeleteFromRow() =="bottom"){
+                self.elements.push(scaleEntry);
+            }
+            else{
+                self.elements.splice(0,0,scaleEntry);
+            }
+        };
+        var nameDialog = new AddVarUniqueName(this.expData,cb);
+        nameDialog.start();
     }
+
 
 };
 
@@ -284,7 +304,7 @@ ScaleEntry.prototype.selectTrialType = function(selectionSpec) {
     this.rowText().selectTrialType(selectionSpec);
 };
 
-ScaleEntry.prototype.init = function() {
+ScaleEntry.prototype.init = function(varName) {
 
     this.rowText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:14px;">your question</span></p>'));
     this.rowText().init();
@@ -293,8 +313,7 @@ ScaleEntry.prototype.init = function() {
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[1]);
-    var name = this.parent.parent.name() +'_'+ this.parent.elements().length;
-    globalVar.name(name);
+    globalVar.name(varName);
     globalVar.resetStartValue();
     this.variable(globalVar);
 

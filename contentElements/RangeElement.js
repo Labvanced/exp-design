@@ -26,7 +26,7 @@ RangeElement.prototype.modifiableProp = [ ];
 RangeElement.prototype.initWidth = 500;
 RangeElement.prototype.initHeight = 100;
 
-RangeElement.prototype.init = function() {
+RangeElement.prototype.init = function(variableName) {
 
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
@@ -39,8 +39,7 @@ RangeElement.prototype.init = function() {
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[2]);
-    var name = this.parent.name();
-    globalVar.name(name);
+    globalVar.name(variableName);
     globalVar.resetStartValue();
     this.variable(globalVar);
 

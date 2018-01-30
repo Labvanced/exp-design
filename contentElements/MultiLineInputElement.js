@@ -43,7 +43,7 @@ MultiLineInputElement.prototype.recalcHeight = function() {
 
 };
 
-MultiLineInputElement.prototype.init = function() {
+MultiLineInputElement.prototype.init = function(variableName) {
 
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
@@ -52,8 +52,7 @@ MultiLineInputElement.prototype.init = function() {
     globalVar.dataType(GlobalVar.dataTypes[0]);
     globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[1]);
-    var name = this.parent.name();
-    globalVar.name(name);
+    globalVar.name(variableName);
     globalVar.resetStartValue();
     this.variable(globalVar);
 

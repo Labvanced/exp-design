@@ -31,16 +31,30 @@ CheckBoxElement.prototype.modifiableProp = [ ];
 CheckBoxElement.prototype.initWidth = 180;
 CheckBoxElement.prototype.initHeight = 90;
 
-CheckBoxElement.prototype.init = function() {
+CheckBoxElement.prototype.init = function(variableName) {
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
-    this.addEntry();
+    this.addEntry(variableName);
 };
 
-CheckBoxElement.prototype.addEntry = function() {
-     var checkBoxEntry = new CheckBoxEntry(this);
-     checkBoxEntry.init();
-     this.elements.push(checkBoxEntry);
+CheckBoxElement.prototype.addEntry = function(variableName) {
+    var self = this;
+    if (variableName){
+        var checkBoxEntry = new CheckBoxEntry(this);
+        checkBoxEntry.init(variableName);
+        this.elements.push(checkBoxEntry);
+    }
+    else{
+        var cb = function (varName) {
+            var checkBoxEntry = new CheckBoxEntry(self);
+            checkBoxEntry.init(varName);
+            self.elements.push(checkBoxEntry);
+        };
+        var nameDialog = new AddVarUniqueName(this.expData,cb);
+        nameDialog.start();
+    }
+
+
 };
 
 CheckBoxElement.prototype.removeEntry = function() {
@@ -188,7 +202,8 @@ CheckBoxEntry.prototype.selectTrialType = function(selectionSpec) {
     this.checkBoxText().selectTrialType(selectionSpec);
 };
 
-CheckBoxEntry.prototype.init = function() {
+CheckBoxEntry.prototype.init = function(varName) {
+
     this.checkBoxText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">check</span></p>'));
     this.checkBoxText().init();
 
@@ -196,15 +211,17 @@ CheckBoxEntry.prototype.init = function() {
     globalVar.dataType(GlobalVar.dataTypes[2]);
     globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[1]);
-    var name = this.parent.parent.name() +'_'+ this.parent.elements().length;
-    globalVar.name(name);
+    // var name = this.parent.parent.name() +'_'+ this.parent.elements().length;
+    globalVar.name(varName);
     globalVar.resetStartValue();
     this.variable(globalVar);
 
     var frameOrPageElement = this.parent.parent;
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
+
 };
+
 
 CheckBoxEntry.prototype.setVariableBackRef = function() {
     this.variable().addBackRef(this, this.parent.parent, true, true, 'checkbox');

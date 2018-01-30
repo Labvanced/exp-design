@@ -47,7 +47,7 @@ MultipleChoiceElement.prototype.initHeight = 120;
 
 
 
-MultipleChoiceElement.prototype.init = function() {
+MultipleChoiceElement.prototype.init = function(variableName) {
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
 
@@ -55,8 +55,7 @@ MultipleChoiceElement.prototype.init = function() {
     globalVar.dataType('string');
     globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[0]);
-    var name = this.parent.name();
-    globalVar.name(name);
+    globalVar.name(variableName);
     globalVar.resetStartValue();
     this.variable(globalVar);
 
@@ -133,35 +132,47 @@ MultipleChoiceElement.prototype.addSubscriptions = function() {
     }
     this.activateAltSubscription = this.altAnswerActive.subscribe(function(val) {
         if (val){
-            var newElem = new InputElement(self.expData);
-            newElem.parent = self.parent;
-            newElem.init();
-            newElem.variable().name(self.parent.name()+'_altInput');
-            newElem.inputType("text");
-            newElem.variable().scale("nominal");
-            newElem.variable().dataType("string");
-            newElem.variable().resetStartValue();
-            newElem.enableTitle(false);
-            self.expData.entities.push(self.variable());
-            self.subInputElement(newElem);
-            self.expData.notifyChanged();
-            //self.addEntry()
+
+            var cb = function (varName) {
+                var newElem = new InputElement(self.expData);
+                newElem.parent = self.parent;
+                newElem.init(varName);
+                newElem.inputType("text");
+                newElem.variable().scale("nominal");
+                newElem.variable().dataType("string");
+                newElem.variable().resetStartValue();
+                newElem.enableTitle(false);
+                self.expData.entities.push(self.variable());
+                self.subInputElement(newElem);
+                self.expData.notifyChanged();
+                //self.addEntry()
+            };
+
+            var revertCB = function (varName) {
+                self.altAnswerActive(false)
+            };
+            var nameDialog = new AddVarUniqueName(self.expData,cb,revertCB);
+            nameDialog.start();
+
         }
         else{
-            var vari = self.subInputElement().variable();
-            if(vari.backRefs().length==2 && vari.backRefs()[1].refLabel == 'Input' ){
-                if (self.expData.entities.byId[vari.id()]){
-                    vari.backRefs()[0].entity.deleteChildEntity(vari);
-                    self.expData.deleteGlobalVar(vari);
+            if ( self.subInputElement()){
+                var vari = self.subInputElement().variable();
+                if(vari.backRefs().length==2 && vari.backRefs()[1].refLabel == 'Input' ){
+                    if (self.expData.entities.byId[vari.id()]){
+                        vari.backRefs()[0].entity.deleteChildEntity(vari);
+                        self.expData.deleteGlobalVar(vari);
+                    }
+                    else{
+                        console.log('error deleting variable')
+                    }
                 }
                 else{
-                    console.log('error deleting variable')
+                    console.log('variable not deleted, other backrefs exist')
                 }
+                self.subInputElement(null);
             }
-            else{
-                console.log('variable not deleted, other backrefs exist')
-            }
-            self.subInputElement(null);
+
         }
     });
 };
@@ -404,6 +415,7 @@ function createMultipleChoiceComponents() {
                     this.questionText = multipleChoiceElement.questionText;
                     this.margin = multipleChoiceElement.margin;
 
+
                     this.addChoice = function() {
                         self.multipleChoiceElement.addEntry();
                     };
@@ -425,6 +437,8 @@ function createMultipleChoiceComponents() {
                         }, frameData);
                         variableDialog.show();
                     };
+
+
                 };
 
                 return new viewModel(multipleChoiceElement);

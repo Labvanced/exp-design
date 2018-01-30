@@ -76,7 +76,7 @@ SelectionElement.prototype.removeEntry = function(idx) {
     this.elements.splice(idx,1);
 };
 
-SelectionElement.prototype.init = function() {
+SelectionElement.prototype.init = function(variableName) {
 
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
@@ -85,8 +85,7 @@ SelectionElement.prototype.init = function() {
     globalVar.dataType('string');
     globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[0]);
-    var name = this.parent.name();
-    globalVar.name(name);
+    globalVar.name(variableName);
     globalVar.resetStartValue();
     this.variable(globalVar);
 
