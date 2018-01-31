@@ -309,7 +309,7 @@ ScaleEntry.prototype.init = function(varName) {
     this.rowText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:14px;">your question</span></p>'));
     this.rowText().init();
 
-    var globalVar = new GlobalVar(this.expData);
+    var globalVar = new GlobalVar(this.parent.expData);
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[1]);

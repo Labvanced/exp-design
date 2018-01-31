@@ -207,7 +207,7 @@ CheckBoxEntry.prototype.init = function(varName) {
     this.checkBoxText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">check</span></p>'));
     this.checkBoxText().init();
 
-    var globalVar = new GlobalVar(this.expData);
+    var globalVar = new GlobalVar(this.parent.expData);
     globalVar.dataType(GlobalVar.dataTypes[2]);
     globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[1]);
