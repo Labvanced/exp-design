@@ -19,8 +19,6 @@ var ExpTrialLoop = function (expData) {
    
     this.id = ko.observable(guid());
     this.displayInitialCountdown = ko.observable(true);
-    // eyetracker: Add Checkbox value for eye tracker, by copying the above line
-    this.recordEyetracker = ko.observable(false);
 
     this.zoomMode = ko.observable('fullscreen'); // fullscreen or visualDegree or pixel or millimeter
     this.visualDegreeToUnit = ko.observable(20);
@@ -1322,11 +1320,6 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('displayInitialCountdown')) {
         this.displayInitialCountdown(data.displayInitialCountdown);
     }
-    // TODO et: copy above three lines to load the data of the eyetracking checkbox
-
-    if (data.hasOwnProperty('recordEyetracker')) {
-        this.recordEyetracker(data.recordEyetracker);
-    }
 
     this.type =  data.type;
 
@@ -1420,8 +1413,7 @@ ExpTrialLoop.prototype.toJS = function() {
         editorY:  this.editorY(),
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
-        displayInitialCountdown: this.displayInitialCountdown(), // TODO et: copy this line for the eyetracker checkbox
-        recordEyetracker: this.recordEyetracker(),
+        displayInitialCountdown: this.displayInitialCountdown(),
         type: this.type,
         factorGroups: jQuery.map( this.factorGroups(), function( factorGroup ) { return factorGroup.toJS(); }),
         subSequencePerFactorGroup: jQuery.map( this.subSequencePerFactorGroup(), function( subSequence ) { return subSequence.id(); }),

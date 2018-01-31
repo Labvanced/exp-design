@@ -3037,6 +3037,144 @@ ActionDrawRandomNumber.prototype.toJS = function() {
 
 
 
+/////////////////////////////////////////////////  ActionControlWebGazer/  //////////////////////////////////////////////
+
+/**
+ * This action allows to clear WG's data.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
+var ActionControlWebGazer = function(event) {
+    this.event = event;
+
+    // serialized
+    this.actionType = ko.observable("clear");
+
+};
+
+
+ActionControlWebGazer.prototype.type = "ActionControlWebGazer";
+ActionControlWebGazer.prototype.label = "Eyetracker Controlflow";
+ActionControlWebGazer.prototype.actionTypes = ["start","pause","end","clear"];
+
+
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionControlWebGazer.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It starts or stops
+ * playback of audio or video files in the player.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionControlWebGazer.prototype.run = function(triggerParams) {
+
+    if (this.actionType() == 'start') {
+        if (!player.eyetrackerLoaded) {
+            player.eyetrackerLoaded = true;
+            webgazer.setRegression('weightedRidge') /* currently must set regression and tracker */
+                .setTracker('clmtrackr')
+                .setGazeListener(function(data, clock) {
+                    if (data) {
+                        var scale =player.currentFrame.frameView.scale();
+
+                        if(typeof player.currentFrame.frameData.frameWidth == "function"){
+                            var offX = (window.innerWidth - player.currentFrame.frameData.frameWidth() * scale) / 2;
+                            var offY = (window.innerHeight - player.currentFrame.frameData.frameHeight() * scale) / 2;
+
+                            var convertedX = (data.x - offX) / scale;
+                            var convertedY = (data.y - offY) / scale;
+
+                            player.experiment.exp_data.varGazeX().value().value(convertedX);
+                            player.experiment.exp_data.varGazeY().value().value(convertedY);
+                        }else{
+                            console.log("player.currentFrame.frameData.frameWidth is not a function");
+                        }
+                    }
+                    //console.log(data); /* data is an object containing an x and y key which are the x and y prediction coordinates (no bounds limiting) */
+                    //console.log(clock); /* elapsed time in milliseconds since webgazer.begin() was called */
+                })
+                .begin();
+            //.showPredictionPoints(true); /* shows a square every 100 milliseconds where current prediction is */
+        }
+    }
+    else if (this.actionType() == 'end') {
+        if (player.eyetrackerLoaded) {
+            webgazer.clearGazeListener();
+            webgazer.end();
+            player.eyetrackerLoaded = false;
+        }
+    }
+    else if (this.actionType() == 'pause') {
+        webgazer.pause();
+    }
+    else if (this.actionType() == 'clear') {
+        webgazer.clearData();
+    }
+
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionControlWebGazer.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionControlWebGazer.prototype.setPointers = function(entitiesArr) {
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionControlWebGazer.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionControlWebGazer}
+ */
+ActionControlWebGazer.prototype.fromJS = function(data) {
+    this.actionType(data.actionType);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionControlWebGazer.prototype.toJS = function() {
+    return {
+        type: this.type,
+        actionType: this.actionType()
+    };
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
 /////////////////////////////////////////////////  ActionControlAV/  //////////////////////////////////////////////
 
 /**
