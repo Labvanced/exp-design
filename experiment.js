@@ -75,7 +75,15 @@ Experiment.prototype.viewRecordings = function() {
 
 Experiment.prototype.disableRecruiting = function(cb) {
     if (this.publishing_data.recruitViaCrowdsourcing()) {
-        console.log("cannot disable crowdsourcing!!!");
+        console.log("cannot disable recordings because crowdsourcing is still enabled!");
+        var tempDialog = $('<div><p>cannot disable recordings because crowdsourcing is still enabled!</li></ul></div>');
+        tempDialog.dialog({
+            modal: true,
+            title: "Experiment is Locked",
+            resizable: false,
+            width: 520,
+            height:100
+        });
         return;
     }
     if (this.publishing_data.recruitingEnabled()) {
@@ -96,7 +104,38 @@ Experiment.prototype.disableRecruiting = function(cb) {
 Experiment.prototype.switchToCreateState = function(cb) {
     var self = this;
 
+    var orderSubmitData = new OrderSubmitData();
+    orderSubmitData.expId = this.exp_id();
+    orderSubmitData.useExpLicense = null;
+
+    // first stop publishing
+    uc.socket.emit('submitOrder', orderSubmitData.toJS(), function(response){
+        if (response.success){
+            uc.loadExperiment(orderSubmitData.expId, true, function(exp){
+               // uc.loadPublishingPage(exp);
+                self.disableRecruiting(function() {  // then stop recording
+                    // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
+                    uc.socket.emit('deleteAllRecsOfExpAndSwitchToCreate', {exp_id: self.exp_id()}, function(response){
+                        if (response.success){
+                            self.status("create");
+                            self.saveExpData(cb);
+                        }
+                        else {
+                            console.log("error: could not switch experiment to create state.");
+                        }
+                    });
+                });
+
+
+            });
+        }
+        else {
+            console.log("error: could not transmit order data to server.");
+        }
+    });
+
     // need to disable all recruiting options first:
+    /**
     this.disableRecruiting(function() {
         // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
         uc.socket.emit('deleteAllRecsOfExpAndSwitchToCreate', {exp_id: self.exp_id()}, function(response){
@@ -109,6 +148,7 @@ Experiment.prototype.switchToCreateState = function(cb) {
             }
         });
     });
+     **/
 };
 
 Experiment.prototype.switchToRecordState = function(cb){
@@ -119,12 +159,28 @@ Experiment.prototype.switchToRecordState = function(cb){
 Experiment.prototype.switchToAnalyzeState = function(cb) {
     var self = this;
 
-    // need to disable all recruiting options first:
-    this.disableRecruiting(function() {
-        // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
-        self.status('analyze');
-        self.saveMetaData(cb);
+    var orderSubmitData = new OrderSubmitData();
+    orderSubmitData.expId = this.exp_id();
+    orderSubmitData.useExpLicense = null;
+
+    uc.socket.emit('submitOrder', orderSubmitData.toJS(), function(response){
+        if (response.success){
+            uc.loadExperiment(orderSubmitData.expId, true, function(exp){
+                // need to disable all recruiting options first:
+                self.disableRecruiting(function() {
+                    // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
+                   // self.status('analyze');
+                    self.saveMetaData(cb);
+                });
+            });
+        }
+        else {
+            console.log("error: could not transmit order data to server.");
+        }
     });
+
+
+
 };
 
 /**
@@ -237,7 +293,7 @@ Experiment.prototype.startLockingDialog = function() {
     var buttons = [];
     if (!this.publishing_data.recruitViaCrowdsourcing()) {
         buttons.push({
-            text: "Delete and disable all recordings",
+            text: "DELETE ALL DATA, disable recordings and publishing",
             click: function () {
                 self.switchToCreateState(function() {
                     console.log("successfully switched experiment to create state.");
@@ -270,7 +326,7 @@ Experiment.prototype.startLockingDialog = function() {
         modal: true,
         title: "Experiment is Locked",
         resizable: false,
-        width: 400,
+        width: 450,
         buttons: buttons
     });
 };
