@@ -30,7 +30,7 @@ var Experiment = function () {
     this.publishing_data = new PublishingData(this);
     this.analysis_data = new AnalysisData(this);
     this.private_data = new PrivateData(this);
-    this.exp_server_data = null;
+    this.exp_server_data = ko.observable(null);
 
     // local temporary member variables:
     this.hasLocalChanges = false;
@@ -119,8 +119,7 @@ Experiment.prototype.refreshStatusFromServer = function(cb) {
             var exp = response.exp;
 
             self.status(exp.status);
-
-            self.private_data.activeLicense(exp.private_data.activeLicense);
+            self.exp_server_data(exp.exp_server_data);
 
             self.publishing_data.recruitInLibrary(exp.publishing_data.recruitInLibrary);
             self.publishing_data.recruitSecretly(exp.publishing_data.recruitSecretly);
@@ -128,21 +127,6 @@ Experiment.prototype.refreshStatusFromServer = function(cb) {
             self.publishing_data.recruitViaOwnCrowdsourcing(exp.publishing_data.recruitViaOwnCrowdsourcing);
             self.publishing_data.recruitViaCustomLink(exp.publishing_data.recruitViaCustomLink);
 
-            self.exp_server_data.recruitInLibrary = exp.exp_server_data.recruitInLibrary;
-            self.exp_server_data.recruitSecretly = exp.exp_server_data.recruitSecretly;
-            self.exp_server_data.recruitViaCrowdsourcing = exp.exp_server_data.recruitViaCrowdsourcing;
-            self.exp_server_data.recruitViaOwnCrowdsourcing = exp.exp_server_data.recruitViaOwnCrowdsourcing;
-            self.exp_server_data.recruitViaCustomLink = exp.exp_server_data.recruitViaCustomLink;
-
-            self.exp_server_data.crowdsourcingStatus = exp.exp_server_data.crowdsourcingStatus;
-            self.exp_server_data.numSubjectsRecordedCrowd = exp.exp_server_data.numSubjectsRecordedCrowd;
-            self.exp_server_data.numSubjectsRecordedExternal = exp.exp_server_data.numSubjectsRecordedExternal;
-            self.exp_server_data.numSubjectsRecordedLibrary = exp.exp_server_data.numSubjectsRecordedLibrary;
-            self.exp_server_data.numSubjectsRecordedSmart = exp.exp_server_data.numSubjectsRecordedSmart;
-            self.exp_server_data.numSubjectsPurchasedCrowd = exp.exp_server_data.numSubjectsPurchasedCrowd;
-            self.exp_server_data.numSubjectsPurchasedSmart = exp.exp_server_data.numSubjectsPurchasedSmart;
-
-            self.exp_server_data.activeLicense = exp.exp_server_data.activeLicense;
             cb();
         }
     });
@@ -497,7 +481,7 @@ Experiment.prototype.fromJS = function(data) {
     }
 
     if (data.hasOwnProperty("exp_server_data")){
-        this.exp_server_data  = data.exp_server_data;
+        this.exp_server_data(data.exp_server_data);
     }
 
     if (data.hasOwnProperty("rec_session_data")) {
