@@ -74,6 +74,8 @@ Experiment.prototype.viewRecordings = function() {
 };
 
 Experiment.prototype.stopPublishExp = function(cb) {
+    var self = this;
+
     if (this.publishing_data.recruitingEnabled()) {
         if (this.publishing_data.recruitViaCrowdsourcing()) {
             console.log("cannot disable publishing because crowdsourcing is still enabled!");
