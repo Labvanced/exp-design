@@ -40,6 +40,9 @@ RecSession.prototype.fromJS = function(data) {
     this.subject_code = data.subject_code;
     this.survey_data = data.survey_data;
     this.var_data = new RecSessionVarData(this);
+    if (data.hasOwnProperty("recquotaexceeded")) {
+        this.recQuotaExceeded =  data.recquotaexceeded;
+    }
 
     if (data.var_data) {
         this.var_data.fromJS(data.var_data);
