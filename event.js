@@ -124,13 +124,16 @@ Event.prototype.setPointers = function(entitiesArr) {
                 console.log("converting from trigger type TriggerMouse to trigger type TriggerButtonClick...");
                 var newTrigger = new TriggerButtonClick(this);
                 newTrigger.target(targets[0]);
-                if (this.actions()[0].jumpType() == "nextFrame") {
-                    newTrigger.buttonIdx(1);
+                if (this.actions()[0] instanceof ActionJumpTo){
+                    if (this.actions()[0].jumpType() == "nextFrame") {
+                        newTrigger.buttonIdx(1);
+                    }
+                    else {
+                        newTrigger.buttonIdx(0);
+                    }
+                    this.trigger(newTrigger);
                 }
-                else {
-                    newTrigger.buttonIdx(0);
-                }
-                this.trigger(newTrigger);
+
             }
         }
     }

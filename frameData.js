@@ -251,14 +251,21 @@ FrameData.prototype.setPointers = function(entitiesArr) {
     // convert ids to actual pointers:
     this.elements(jQuery.map( this.elements(), function( id ) {
         var elem = entitiesArr.byId[id];
-        elem.parent = self;
-        return elem;
+        if (elem) {
+            elem.parent = self;
+            return elem;
+        }
+        else {
+            return null;
+        }
     } ));
 
     // convert ids to actual pointers:
     this.localWorkspaceVars(jQuery.map( this.localWorkspaceVars(), function( id ) {
         var localVar = entitiesArr.byId[id];
-        localVar.addBackRef(self, self, false, false, 'workspace variable');
+        if (localVar) {
+            localVar.addBackRef(self, self, false, false, 'workspace variable');
+        }
         return localVar;
     } ));
 
