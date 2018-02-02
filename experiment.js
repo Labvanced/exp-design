@@ -73,82 +73,97 @@ Experiment.prototype.viewRecordings = function() {
     page("/page/recordingsPage/"+this.exp_id());
 };
 
-Experiment.prototype.disableRecruiting = function(cb) {
-    if (this.publishing_data.recruitViaCrowdsourcing()) {
-        console.log("cannot disable recordings because crowdsourcing is still enabled!");
-        var tempDialog = $('<div><p>cannot disable recordings because crowdsourcing is still enabled!</li></ul></div>');
-        tempDialog.dialog({
-            modal: true,
-            title: "Experiment is Locked",
-            resizable: false,
-            width: 520,
-            height:100
-        });
-        return;
-    }
+Experiment.prototype.stopPublishExp = function(cb) {
     if (this.publishing_data.recruitingEnabled()) {
-        this.publishing_data.recruitInLibrary(false);
-        this.publishing_data.recruitSecretly(false);
-        this.publishing_data.recruitViaCrowdsourcing(false);
-        this.publishing_data.recruitViaOwnCrowdsourcing(false);
-        this.publishing_data.recruitViaCustomLink(false);
-        this.savePublishingData(function() {
-            cb();
+        if (this.publishing_data.recruitViaCrowdsourcing()) {
+            console.log("cannot disable publishing because crowdsourcing is still enabled!");
+            var tempDialog = $('<div><p>cannot disable publishing because crowdsourcing is still enabled!</li></ul></div>');
+            tempDialog.dialog({
+                modal: true,
+                title: "Experiment is Locked",
+                resizable: false,
+                width: 520,
+                height: 100
+            });
+            cb(false);
+            return;
+        }
+
+        var orderSubmitData = new OrderSubmitData();
+        orderSubmitData.expId = this.exp_id();
+        orderSubmitData.useExpLicense = null;
+
+        uc.socket.emit('submitOrder', orderSubmitData.toJS(), function (response) {
+            if (response.success) {
+                self.refreshStatusFromServer(function () {
+                    cb(true);
+                });
+            }
+            else {
+                console.log("error: could not transmit order data to server.");
+                cb(false);
+            }
         });
     }
     else {
-        cb();
+        cb(true);
     }
+};
+
+Experiment.prototype.refreshStatusFromServer = function(cb) {
+    var self = this;
+    uc.socket.emit('getPublishingStates', {exp_id: self.exp_id()}, function(response){
+        if (response.success) {
+            var exp = response.exp;
+
+            self.status(exp.status);
+
+            self.private_data.activeLicense(exp.private_data.activeLicense);
+
+            self.publishing_data.recruitInLibrary(exp.publishing_data.recruitInLibrary);
+            self.publishing_data.recruitSecretly(exp.publishing_data.recruitSecretly);
+            self.publishing_data.recruitViaCrowdsourcing(exp.publishing_data.recruitViaCrowdsourcing);
+            self.publishing_data.recruitViaOwnCrowdsourcing(exp.publishing_data.recruitViaOwnCrowdsourcing);
+            self.publishing_data.recruitViaCustomLink(exp.publishing_data.recruitViaCustomLink);
+
+            self.exp_server_data.recruitInLibrary = exp.exp_server_data.recruitInLibrary;
+            self.exp_server_data.recruitSecretly = exp.exp_server_data.recruitSecretly;
+            self.exp_server_data.recruitViaCrowdsourcing = exp.exp_server_data.recruitViaCrowdsourcing;
+            self.exp_server_data.recruitViaOwnCrowdsourcing = exp.exp_server_data.recruitViaOwnCrowdsourcing;
+            self.exp_server_data.recruitViaCustomLink = exp.exp_server_data.recruitViaCustomLink;
+
+            self.exp_server_data.crowdsourcingStatus = exp.exp_server_data.crowdsourcingStatus;
+            self.exp_server_data.numSubjectsRecordedCrowd = exp.exp_server_data.numSubjectsRecordedCrowd;
+            self.exp_server_data.numSubjectsRecordedExternal = exp.exp_server_data.numSubjectsRecordedExternal;
+            self.exp_server_data.numSubjectsRecordedLibrary = exp.exp_server_data.numSubjectsRecordedLibrary;
+            self.exp_server_data.numSubjectsRecordedSmart = exp.exp_server_data.numSubjectsRecordedSmart;
+            self.exp_server_data.numSubjectsPurchasedCrowd = exp.exp_server_data.numSubjectsPurchasedCrowd;
+            self.exp_server_data.numSubjectsPurchasedSmart = exp.exp_server_data.numSubjectsPurchasedSmart;
+
+            self.exp_server_data.activeLicense = exp.exp_server_data.activeLicense;
+            cb();
+        }
+    });
 };
 
 Experiment.prototype.switchToCreateState = function(cb) {
     var self = this;
 
-    var orderSubmitData = new OrderSubmitData();
-    orderSubmitData.expId = this.exp_id();
-    orderSubmitData.useExpLicense = null;
-
-    // first stop publishing
-    uc.socket.emit('submitOrder', orderSubmitData.toJS(), function(response){
-        if (response.success){
-            uc.loadExperiment(orderSubmitData.expId, true, function(exp){
-               // uc.loadPublishingPage(exp);
-                self.disableRecruiting(function() {  // then stop recording
-                    // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
-                    uc.socket.emit('deleteAllRecsOfExpAndSwitchToCreate', {exp_id: self.exp_id()}, function(response){
-                        if (response.success){
-                            self.status("create");
-                            self.saveExpData(cb);
-                        }
-                        else {
-                            console.log("error: could not switch experiment to create state.");
-                        }
-                    });
-                });
-
-
+    // need to disable all recruiting options first:
+    this.stopPublishExp(function (success) {
+        if (success) {
+            // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
+            uc.socket.emit('deleteAllRecsOfExpAndSwitchToCreate', {exp_id: self.exp_id()}, function (response) {
+                if (response.success) {
+                    self.status("create");
+                    self.saveExpData(cb);
+                }
+                else {
+                    console.log("error: could not switch experiment to create state.");
+                }
             });
         }
-        else {
-            console.log("error: could not transmit order data to server.");
-        }
     });
-
-    // need to disable all recruiting options first:
-    /**
-    this.disableRecruiting(function() {
-        // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
-        uc.socket.emit('deleteAllRecsOfExpAndSwitchToCreate', {exp_id: self.exp_id()}, function(response){
-            if (response.success){
-                self.status("create");
-                self.saveExpData(cb);
-            }
-            else {
-                console.log("error: could not switch experiment to create state.");
-            }
-        });
-    });
-     **/
 };
 
 Experiment.prototype.switchToRecordState = function(cb){
@@ -158,29 +173,14 @@ Experiment.prototype.switchToRecordState = function(cb){
 
 Experiment.prototype.switchToAnalyzeState = function(cb) {
     var self = this;
-
-    var orderSubmitData = new OrderSubmitData();
-    orderSubmitData.expId = this.exp_id();
-    orderSubmitData.useExpLicense = null;
-
-    uc.socket.emit('submitOrder', orderSubmitData.toJS(), function(response){
-        if (response.success){
-            uc.loadExperiment(orderSubmitData.expId, true, function(exp){
-                // need to disable all recruiting options first:
-                self.disableRecruiting(function() {
-                    // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
-                   // self.status('analyze');
-                    self.saveMetaData(cb);
-                });
-            });
-        }
-        else {
-            console.log("error: could not transmit order data to server.");
+    // need to disable all recruiting options first:
+    this.stopPublishExp(function(success) {
+        if (success) {
+            // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
+            self.status('analyze');
+            self.saveMetaData(cb);
         }
     });
-
-
-
 };
 
 /**
