@@ -169,7 +169,7 @@ Experiment.prototype.switchToAnalyzeState = function(cb) {
                 // need to disable all recruiting options first:
                 self.disableRecruiting(function() {
                     // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
-                   // self.status('analyze');
+                    self.status('analyze');
                     self.saveMetaData(cb);
                 });
             });

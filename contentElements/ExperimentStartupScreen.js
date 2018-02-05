@@ -182,6 +182,7 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
                 }
                 return;
             }
+            player.selectedEmail = self.selectedEmail();
             player.setSubjectGroupNr(data.groupNr, data.sessionNr);
             player.preloadAllContent();
             self.jumpToLoadingScreen();
@@ -209,8 +210,9 @@ ExperimentStartupScreen.prototype.jumpToLoadingScreen = function() {
         $('#timeToNextSession').text(timeToWait[3]);
         this.wizardStep("sessionNotReady");
         $('#calcStartingTime').click(function(){
-            var currentDate = new Date();
-            var timeToWait =  player.getDifferenceBetweenDates(currentDate,nextStartWindow.start);
+            player.calculateStartWindow("current");
+            var nextStartWindow= player.nextStartWindow;
+            var timeToWait =  player.getDifferenceBetweenDates(nextStartWindow.current,nextStartWindow.start);
             $('#timeToNextSession').text(timeToWait[3]);
             if (timeToWait[3]== 'ready'){
                 self.checkPreloadingState();
