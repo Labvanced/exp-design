@@ -2,7 +2,7 @@
 
 <div id="groupSettingsView" class="taskeditor-dialog" title="Group Settings">
     <div>
-        <div>
+        <form data-bind="submit: ok">
             <div>Please enter a subject code and which subject group or session you want to start?</div>
 
             <div>
@@ -44,6 +44,6 @@
             <div style="float: right;">
                 <button class="ok-button" data-bind="click: ok">Ok</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
