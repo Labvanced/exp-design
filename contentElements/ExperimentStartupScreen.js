@@ -219,7 +219,7 @@ ExperimentStartupScreen.prototype.recalcStartingTime = function() {
     var nextStartWindow= player.nextStartWindow;
     var timeToWait =  player.getDifferenceBetweenDates(nextStartWindow.current,nextStartWindow.start);
     self.timeToNextSession(timeToWait[3]);
-    if (timeToWait[3]== 'ready'){
+    if (timeToWait[3]== 'now'){
         self.checkPreloadingState();
     }
 };
