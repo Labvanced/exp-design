@@ -162,7 +162,7 @@ if (typeof CKEDITOR !== 'undefined') {
                     },
                     instanceReady: function() {
                         if (selectAll) {
-                            instance.execCommand( 'selectAll' );
+                            //instance.execCommand( 'selectAll' );
                         }
                     }
                 }

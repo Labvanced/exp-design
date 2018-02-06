@@ -167,6 +167,7 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
         {
             expId: player.expId,
             subject_code: player.subject_code,
+            token: player.token,
             survey_data: survey_data,
             isTestrun: player.isTestrun,
             runOnlyGroupNr: player.runOnlyGroupNr,
