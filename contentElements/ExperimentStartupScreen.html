@@ -116,8 +116,8 @@
                                     <div>
                                         <span data-bind="text: expData.staticStrings().errorSessionNotReady"></span>
                                         <br>
-                                        <span data-bind="text: expData.staticStrings().errorSessionStartIn"></span>: <span id="timeToNextSession"> </span>
-                                        <button type="button" class="pointer btn btn-default" id="calcStartingTime" data-bind="text: expData.staticStrings().refresh"></button>
+                                        <span data-bind="text: expData.staticStrings().errorSessionStartIn"></span>: <span data-bind="text: timeToNextSession"> </span>
+                                        <button type="button" class="pointer btn btn-default" data-bind="click: recalcStartingTime, text: expData.staticStrings().refresh"></button>
                                     </div>
                                     <br>
                                 </div>

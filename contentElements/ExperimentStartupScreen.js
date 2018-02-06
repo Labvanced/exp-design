@@ -29,8 +29,7 @@ var ExperimentStartupScreen = function(experiment) {
     this.wizardStep = ko.observable("selectStudyLanguage");
     this.selectedStudyLanguage = ko.observable(this.expData.translatedLanguages()[0]);
 
-
-
+    this.timeToNextSession = ko.observable("");
 
     this.imgSource = ko.computed( function() {
         return "/files/" + experiment.publishing_data.img_file_id() + "/" + experiment.publishing_data.img_file_orig_name();
@@ -92,6 +91,7 @@ var ExperimentStartupScreen = function(experiment) {
         // directly skip to survey if only one language is defined:
         this.jumpToSurvey();
     }
+
 
 };
 
@@ -208,17 +208,19 @@ ExperimentStartupScreen.prototype.jumpToLoadingScreen = function() {
     else if (nextStartWindow.start>nextStartWindow.current){
         // running in the future
         var timeToWait = player.getDifferenceBetweenDates(nextStartWindow.current,nextStartWindow.start);
-        $('#timeToNextSession').text(timeToWait[3]);
+        self.timeToNextSession(timeToWait[3]);
         this.wizardStep("sessionNotReady");
-        $('#calcStartingTime').click(function(){
-            player.calculateStartWindow("current");
-            var nextStartWindow= player.nextStartWindow;
-            var timeToWait =  player.getDifferenceBetweenDates(nextStartWindow.current,nextStartWindow.start);
-            $('#timeToNextSession').text(timeToWait[3]);
-            if (timeToWait[3]== 'ready'){
-                self.checkPreloadingState();
-            }
-        });
+    }
+};
+
+ExperimentStartupScreen.prototype.recalcStartingTime = function() {
+    var self = this;
+    player.calculateStartWindow("current");
+    var nextStartWindow= player.nextStartWindow;
+    var timeToWait =  player.getDifferenceBetweenDates(nextStartWindow.current,nextStartWindow.start);
+    self.timeToNextSession(timeToWait[3]);
+    if (timeToWait[3]== 'ready'){
+        self.checkPreloadingState();
     }
 };
 
