@@ -196,28 +196,33 @@ ExperimentStartupScreen.prototype.jumpToLoadingScreen = function() {
     this.wizardStep("loading");
 
     // check session start time:
-    var nextStartWindow = player.nextStartWindow;
-    if (nextStartWindow.end<nextStartWindow.current){
-        // last available session in the past
-        this.wizardStep("sessionOver");
+    var currentStartWindow = player.getCurrentStartWindow();
+    if (currentStartWindow.start) {
+        if (currentStartWindow.end < currentStartWindow.current) {
+            // last available session in the past
+            this.wizardStep("sessionOver");
+        }
+        else if (currentStartWindow.start <= currentStartWindow.current && currentStartWindow.end >= currentStartWindow.current) {
+            // currently running
+            this.checkPreloadingState();
+        }
+        else if (currentStartWindow.start > currentStartWindow.current) {
+            // running in the future
+            var timeToWait = player.getDifferenceBetweenDates(currentStartWindow.current, currentStartWindow.start);
+            self.timeToNextSession(timeToWait[3]);
+            this.wizardStep("sessionNotReady");
+        }
     }
-    else if (nextStartWindow.start<=nextStartWindow.current && nextStartWindow.end>=nextStartWindow.current)  {
-        // currently running
+    else {
+        // no time requirement specified:
         this.checkPreloadingState();
-    }
-    else if (nextStartWindow.start>nextStartWindow.current){
-        // running in the future
-        var timeToWait = player.getDifferenceBetweenDates(nextStartWindow.current,nextStartWindow.start);
-        self.timeToNextSession(timeToWait[3]);
-        this.wizardStep("sessionNotReady");
     }
 };
 
 ExperimentStartupScreen.prototype.recalcStartingTime = function() {
     var self = this;
-    player.calculateStartWindow("current");
-    var nextStartWindow= player.nextStartWindow;
-    var timeToWait =  player.getDifferenceBetweenDates(nextStartWindow.current,nextStartWindow.start);
+    var currentStartWindow = player.getCurrentStartWindow();
+    var timeToWait =  player.getDifferenceBetweenDates(currentStartWindow.current,currentStartWindow.start);
     self.timeToNextSession(timeToWait[3]);
     if (timeToWait[3]== 'now'){
         self.checkPreloadingState();

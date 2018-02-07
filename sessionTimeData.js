@@ -9,14 +9,14 @@ var SessionTimeData= function (expData) {
     this.id = ko.observable(guid());
     this.type = "SessionTimeSettings";
     this.startCondition  = ko.observable('anytime');
-    this.startTime = ko.observable(null);
-    this.endTime = ko.observable(null);
+    this.startTime = ko.observable("00:00");
+    this.endTime = ko.observable("23:59");
     this.startDay = ko.observable(null);
     this.endDay = ko.observable(null);
     this.startInterval  = ko.observable(null);
     this.possibleIntervals  = ko.observableArray(['every day','every week','every month']);
-    this.minimalDaysAfterLast = ko.observable(null);
-    this.maximalDaysAfterLast = ko.observable(null);
+    this.minimalDaysAfterLast = ko.observable(0);
+    this.maximalDaysAfterLast = ko.observable(1);
 
 
 
@@ -61,6 +61,14 @@ SessionTimeData.prototype.fromJS = function(data) {
     this.startCondition(data.startCondition);
     this.startTime(data.startTime);
     this.endTime(data.endTime);
+
+    if (!this.startTime()) {
+        this.startTime("00:00");
+    }
+    if (!this.endTime()) {
+        this.endTime("23:59");
+    }
+
     this.startDay(data.startDay);
     this.endDay(data.endDay);
     this.startInterval(data.startInterval) ;
