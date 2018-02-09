@@ -9,17 +9,21 @@ var SortableElement = function(expData) {
 
     this.type = "SortableElement";
     this.margin = ko.observable('0pt');
+    this.questionText = ko.observable(null); // EditableTextElement
+    this.enableTitle= ko.observable(true);
+
 
     this.elements =  ko.observableArray([]).extend({sortById: null});
     this.elementIds =  ko.observableArray([]).extend({sortById: null});
-    this.questionText = ko.observable(null); // EditableTextElement
-    this.enableTitle= ko.observable(true);
+    this.variable = ko.observable(null); // array variable
 
     ///// not serialized
     this.selected = ko.observable(false);
     this.activeSorting = ko.observable(false);
     this.elementIdMap = {};
     /////
+
+
 };
 
 SortableElement.prototype.label = "Sortable";
@@ -27,22 +31,44 @@ SortableElement.prototype.iconPath = "/resources/icons/tools/sort.svg";
 SortableElement.prototype.dataType =      [ ];
 SortableElement.prototype.modifiableProp = [ ];
 SortableElement.prototype.initWidth = 350;
-SortableElement.prototype.initHeight = 100;
+SortableElement.prototype.initHeight = 150;
 
-SortableElement.prototype.init = function() {
+SortableElement.prototype.init = function(variableName) {
+
+
+
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
+
+    var globalVar = new GlobalVar(this.parent.expData);
+    globalVar.dataType(GlobalVar.dataTypes[0]);
+    globalVar.dataFormat(GlobalVar.dataFormats[1]);
+    globalVar.scope('trial');
+    globalVar.scale(GlobalVar.scales[1]);
+    globalVar.name(variableName);
+    globalVar.resetStartValue();
+    globalVar.startValue().value([]);
+    this.variable(globalVar);
+
+    var frameOrPageElement = this.parent;
+    frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
+    this.setVariableBackRef();
+
 
     this.addElem('id1');
     this.addElem('id2');
     this.addElem('id3');
-
 };
+
+SortableElement.prototype.setVariableBackRef = function() {
+    this.variable().addBackRef(this, this.parent,true, true, 'sortableArray');
+};
+
 
 SortableElement.prototype.addElem = function (elemId) {
     if (elemId){
         var elem = new SortableEntry(this);
-        elem.init();
+        elem.init(elemId);
         this.elements.push(elem);
         this.elementIds.push(elemId);
         this.elementIdMap[elemId] = elem;
@@ -50,12 +76,11 @@ SortableElement.prototype.addElem = function (elemId) {
 
 };
 
-SortableElement.prototype.removeElem = function () {
-    var idx = this.elements().length-1;
-    delete this.elementIdMap[this.elementIds()[idx]];
+SortableElement.prototype.removeElem = function (idx) {
     this.elements.splice(idx,1);
+    this.variable().startValue().value.splice(idx,1);
     this.elementIds.splice(idx,1);
-
+    delete this.elementIdMap[this.elementIds()[idx]];
 };
 
 /**
@@ -81,6 +106,15 @@ SortableElement.prototype.setPointers = function(entitiesArr) {
         this.elementIdMap[this.elementIds()[i]] = this.elements()[i];
     }
 
+    var variable = entitiesArr.byId[this.variable()];
+    if (variable) {
+        this.variable(variable);
+        this.setVariableBackRef();
+    }
+    else {
+        this.init();
+    }
+
     this.questionText().setPointers(entitiesArr);
 };
 
@@ -93,6 +127,9 @@ SortableElement.prototype.reAddEntities = function(entitiesArr) {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.reAddEntities(entitiesArr);
     } );
+    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+        entitiesArr.push(this.variable());
+    }
     this.questionText().reAddEntities(entitiesArr);
 };
 
@@ -142,6 +179,9 @@ SortableElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('enableTitle')){
         this.enableTitle(data.enableTitle);
     }
+    if(data.hasOwnProperty('variable')){
+        this.variable(data.variable);
+    }
 };
 
 /**
@@ -157,7 +197,8 @@ SortableElement.prototype.toJS = function() {
             return self.elementIdMap[elem].toJS();
         }),
         elementIds: this.elementIds(),
-        enableTitle:this.enableTitle
+        enableTitle:this.enableTitle(),
+        variable:  this.variable().id()
     };
 };
 
@@ -170,14 +211,19 @@ SortableElement.prototype.toJS = function() {
 var SortableEntry= function(selectionParent) {
     this.parent = selectionParent;
     this.sortableText = ko.observable(null); // EditableTextElement
-    this.variable = ko.observable(null);
+    //this.variable = ko.observable(null);
 };
 
-SortableEntry.prototype.init = function() {
+SortableEntry.prototype.init = function(entryName) {
     var text = '<p><span style="font-size:20px;">element' + (this.parent.elements().length+1) + '</span></p>';
     this.sortableText(new EditableTextElement(this.parent.expData, this.parent, text));
     this.sortableText().init();
 
+    var newScalarStartVal = this.parent.variable().createScalarValueFromDataType();
+    newScalarStartVal.setValue(entryName);
+    this.parent.variable().startValue().value.push(newScalarStartVal);
+    this.name = 'element' + this.parent.elements().length;
+/**
     var globalVar = new GlobalVar(this.parent.expData);
     globalVar.dataType(GlobalVar.dataTypes[1]);
     globalVar.scope('trial');
@@ -190,9 +236,11 @@ SortableEntry.prototype.init = function() {
     var frameOrPageElement = this.parent.parent;
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
+    this.variable().startValue().value(this.parent.elements().length);
+ **/
 
     this.name = 'element' + this.parent.elements().length;
-    this.variable().startValue().value(this.parent.elements().length);
+
 
 };
 
@@ -202,9 +250,11 @@ SortableEntry.prototype.setVariableBackRef = function() {
 
 
 SortableEntry.prototype.reAddEntities = function(entitiesArr) {
+    /**
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
+     **/
     this.sortableText().reAddEntities(entitiesArr);
 
 };
@@ -226,6 +276,7 @@ SortableEntry.prototype.selectTrialType = function(selectionSpec) {
 };
 
 SortableEntry.prototype.setPointers = function(entitiesArr) {
+    /**
     var variable = entitiesArr.byId[this.variable()];
     if (variable) {
         this.variable(variable);
@@ -234,6 +285,7 @@ SortableEntry.prototype.setPointers = function(entitiesArr) {
     else {
         this.init();
     }
+     **/
     this.sortableText().setPointers(entitiesArr);
 };
 
@@ -257,14 +309,14 @@ SortableEntry.prototype.fromJS = function(data) {
         else {
             this.sortableText(new EditableTextElement(this.parent.expData, this.parent, data.sortableText));
         }
-        this.variable(data.variable);
+        //this.variable(data.variable);
     }
     return this;
 };
 
 SortableEntry.prototype.toJS = function() {
     return {
-        variable:  this.variable().id(),
+       // variable:  this.variable().id(),
         sortableText:  this.sortableText().toJS()
     };
 };
@@ -306,7 +358,6 @@ function createSortableElementComponents() {
                         }, frameData);
                         variableDialog.show();
                     };
-
                 };
 
                 viewModel.prototype.addElem= function() {
@@ -314,8 +365,8 @@ function createSortableElementComponents() {
                     this.currentEntry('');
                 };
 
-                viewModel.prototype.removeElem= function() {
-                    this.dataModel.removeElem();
+                viewModel.prototype.removeElem= function(idx) {
+                    this.dataModel.removeElem(idx);
                 };
 
 
@@ -347,26 +398,27 @@ function createSortableElementComponents() {
 
                     this.sortableElement.sortable({
                         disabled: true,
-                        scrollSpeed: 20,
-                        scrollSensitivity: 10,
                         start: function( event, ui ) {
                             self.startPosition(ui.item.index());
+                        },
+
+                        sort: function(evt,ui) {
+                            var scale = 1/uc.currentEditorView.mediaEditor.frameView.scale();
+                            $(ui.helper).css("top",parseInt($(ui.helper).css("top"))*scale);
+                            $(ui.helper).css("left",parseInt($(ui.helper).css("left"))*scale);
                         },
                         stop: function( event, ui ) {
                             self.stopPosition(ui.item.index());
                             if (self.startPosition()!=null){
-                                var elem =  self.dataModel.elementIds()[self.startPosition()];
-                                self.dataModel.elementIds.splice(self.startPosition(),1);
-                                self.dataModel.elementIds.splice(self.stopPosition(),0,elem);
+                                var elem =  self.dataModel.variable().startValue().value()[self.startPosition()];
+                                self.dataModel.variable().startValue().value.splice(self.startPosition(),1);
+                                self.dataModel.variable().startValue().value.splice(self.stopPosition(),0,elem);
+
                                 self.startPosition(null);
                                 self.stopPosition(null);
-
-                                var entry =  self.dataModel.elementIdMap[elem];
-                                entry.variable().value().value(self.stopPosition);
                             }
                         }
                     });
-
                 };
 
 
@@ -395,21 +447,24 @@ function createSortableElementComponents() {
                     this.sortableElement.attr("id",varNewId);
 
                     this.sortableElement.sortable({
-                        scrollSpeed: 20,
-                        scrollSensitivity: 10,
                         start: function( event, ui ) {
                             self.startPosition(ui.item.index());
+                        },
+                        sort: function(evt,ui) {
+                            var scale = 1/player.currentFrame.frameView.scale();
+                            $(ui.helper).css("top",parseInt($(ui.helper).css("top"))*scale);
+                            $(ui.helper).css("left",parseInt($(ui.helper).css("left"))*scale);
                         },
                         stop: function( event, ui ) {
                             self.stopPosition(ui.item.index());
                             if (self.startPosition()!=null){
-                                var elem =  self.dataModel.elementIds()[self.startPosition()];
-                                self.dataModel.elementIds.splice(self.startPosition(),1);
-                                self.dataModel.elementIds.splice(self.stopPosition(),0,elem);
+                                var elem =  self.dataModel.variable().value().value()[self.startPosition()];
+                                self.dataModel.variable().value().value.splice(self.startPosition(),1);
+                                self.dataModel.variable().value().value.splice(self.stopPosition(),0,elem);
+
                                 self.startPosition(null);
                                 self.stopPosition(null);
-                                var entry =  self.dataModel.elementIdMap[elem];
-                                entry.variable().value().value(self.stopPosition);
+
                             }
                         }
                     });

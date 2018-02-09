@@ -10,6 +10,13 @@ GlobalVarValueString = function(parentVar) {
     this.value.subscribe(function() {
         self.parentVar.notifyValueChanged();
     });
+
+    // not serialized
+    this.editVal = ko.observable(false)
+};
+
+GlobalVarValueString.prototype.editEntry = function() {
+    this.editVal(true);
 };
 
 GlobalVarValueString.prototype.convert = function(data) {
