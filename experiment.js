@@ -280,7 +280,7 @@ Experiment.prototype.startLockingDialog = function() {
     var buttons = [];
     if (!this.publishing_data.recruitViaCrowdsourcing()) {
         buttons.push({
-            text: "DELETE ALL DATA, disable recordings and publishing",
+            text: "DELETE all recorded data, disable recordings and publishing",
             click: function () {
                 self.switchToCreateState(function() {
                     console.log("successfully switched experiment to create state.");
