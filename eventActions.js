@@ -1423,6 +1423,8 @@ var ActionJumpTo = function(event) {
     this.blockToJumpId= ko.observable(null);
     this.conditionGroupIdx = ko.observable(null);
     this.checkRequired= ko.observable(null);
+
+    this.alreadyTriggered = false;
 };
 
 ActionJumpTo.prototype.type = "ActionJumpTo";
@@ -1443,6 +1445,11 @@ ActionJumpTo.prototype.isValid = function(){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionJumpTo.prototype.run = function(triggerParams) {
+
+    if (this.alreadyTriggered) {
+        // Prevent Bug due to double clicking leading to duplicate execution and jumping over trials etc.
+        return;
+    }
 
     // check validity only if the jump is to next frame
     if (this.checkRequired()){
@@ -1465,6 +1472,8 @@ ActionJumpTo.prototype.run = function(triggerParams) {
     }
 
     if (isValid || !this.checkRequired()) {
+        this.alreadyTriggered = true;
+
         if (this.jumpType() == "previousFrame"){
             player.currentFrame.endFrameAndGoBack();
         }
@@ -1510,6 +1519,15 @@ ActionJumpTo.prototype.run = function(triggerParams) {
         }
     }
 
+};
+
+/**
+ * this function is called in the player when the frame starts. It sets up the knockout subscribers at the globalVars.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+ActionJumpTo.prototype.setupOnPlayerFrame = function(playerFrame) {
+    this.alreadyTriggered = false;
 };
 
 /**
@@ -1685,6 +1703,19 @@ ActionDelayedActions.prototype.run = function(triggerParams) {
     this.timeoutFcns.push(timeoutFcn);
 };
 
+
+/**
+ * this function is called in the player when the frame starts. It sets up the knockout subscribers at the globalVars.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+ActionDelayedActions.prototype.setupOnPlayerFrame = function(playerFrame) {
+    jQuery.each( this.subActions(), function( index, action ) {
+        if (typeof action.setupOnPlayerFrame === "function") {
+            action.setupOnPlayerFrame(playerFrame);
+        }
+    } );
+};
 
 /**
  * cleans up the subscribers and callbacks in the player when the frame ended.
@@ -1922,6 +1953,19 @@ ActionStartRepeatedActions.prototype.run = function(triggerParams) {
 
 
 /**
+ * this function is called in the player when the frame starts. It sets up the knockout subscribers at the globalVars.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+ActionStartRepeatedActions.prototype.setupOnPlayerFrame = function(playerFrame) {
+    jQuery.each( this.subActions(), function( index, action ) {
+        if (typeof action.setupOnPlayerFrame === "function") {
+            action.setupOnPlayerFrame(playerFrame);
+        }
+    } );
+};
+
+/**
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
@@ -2117,6 +2161,24 @@ ActionConditional.prototype.run = function(triggerParams) {
 };
 
 /**
+ * this function is called in the player when the frame starts. It sets up the knockout subscribers at the globalVars.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+ActionConditional.prototype.setupOnPlayerFrame = function(playerFrame) {
+    jQuery.each( this.defaultSubActions(), function( index, action ) {
+        if (typeof action.setupOnPlayerFrame === "function") {
+            action.setupOnPlayerFrame(playerFrame);
+        }
+    } );
+    jQuery.each( this.ifElseConditions(), function( index, condition ) {
+        if (typeof condition.setupOnPlayerFrame === "function") {
+            condition.setupOnPlayerFrame(playerFrame);
+        }
+    } );
+};
+
+/**
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
@@ -2279,6 +2341,19 @@ ActionIfCondition.prototype.deleteRequirement = function() {
  */
 ActionIfCondition.prototype.run = function(triggerParams) {
     var self = this;
+};
+
+/**
+ * this function is called in the player when the frame starts. It sets up the knockout subscribers at the globalVars.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+ActionIfCondition.prototype.setupOnPlayerFrame = function(playerFrame) {
+    jQuery.each( this.subActions(), function( index, action ) {
+        if (typeof action.setupOnPlayerFrame === "function") {
+            action.setupOnPlayerFrame(playerFrame);
+        }
+    } );
 };
 
 /**

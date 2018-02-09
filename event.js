@@ -102,6 +102,22 @@ Event.prototype.getAllActions = function(arr) {
 };
 
 /**
+ * this function is called in the player when the frame starts. It sets up the knockout subscribers at the globalVars.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+Event.prototype.setupOnPlayerFrame = function(playerFrame) {
+    this.trigger().setupOnPlayerFrame(playerFrame);
+    var actions = this.actions();
+    for (var i = 0; i < actions.length; i++){
+        var action =  actions[i];
+        if (typeof action.setupOnPlayerFrame === "function") {
+            action.setupOnPlayerFrame(playerFrame);
+        }
+    }
+};
+
+/**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
  * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
