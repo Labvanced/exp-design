@@ -58,13 +58,15 @@ var GlobalVar = function (expData) {
     }
 
     this.varNameValid = ko.computed(function() {
+        return true;
+        /**
         if (self.name()=="" || self.allVarNames.indexOf(self.name().toLowerCase())>=0){
             return false
         }
         else{
             return true;
 
-        }
+        }*/
     }, this);
 
 
