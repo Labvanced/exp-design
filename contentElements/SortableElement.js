@@ -16,10 +16,11 @@ var SortableElement = function(expData) {
     this.elements =  ko.observableArray([]).extend({sortById: null});
     this.elementIds =  ko.observableArray([]).extend({sortById: null});
     this.variable = ko.observable(null); // array variable
+    this.activeSorting = ko.observable(false);
 
     ///// not serialized
     this.selected = ko.observable(false);
-    this.activeSorting = ko.observable(false);
+
     this.elementIdMap = {};
     /////
 
@@ -182,6 +183,12 @@ SortableElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('variable')){
         this.variable(data.variable);
     }
+
+    if(data.hasOwnProperty('activeSorting')){
+        this.activeSorting(data.activeSorting);
+    }
+
+
 };
 
 /**
@@ -198,7 +205,8 @@ SortableElement.prototype.toJS = function() {
         }),
         elementIds: this.elementIds(),
         enableTitle:this.enableTitle(),
-        variable:  this.variable().id()
+        variable:  this.variable().id(),
+        activeSorting:this.activeSorting()
     };
 };
 
@@ -397,16 +405,19 @@ function createSortableElementComponents() {
                     this.sortableElement.attr("id",varNewId);
 
                     this.sortableElement.sortable({
-                        disabled: true,
+                        disabled: !self.dataModel.activeSorting(),
                         start: function( event, ui ) {
                             self.startPosition(ui.item.index());
                         },
 
                         sort: function(evt,ui) {
-                            var scale = 1/uc.currentEditorView.mediaEditor.frameView.scale();
-                            $(ui.helper).css("top",parseInt($(ui.helper).css("top"))*scale);
-                            $(ui.helper).css("left",parseInt($(ui.helper).css("left"))*scale);
-                        },
+                            if (self.dataModel.parent.parent instanceof FrameData) {
+                                var scale = 1 / uc.currentEditorView.mediaEditor.frameView.scale();
+                                $(ui.helper).css("top", parseInt($(ui.helper).css("top")) * scale);
+                                $(ui.helper).css("left", parseInt($(ui.helper).css("left")) * scale);
+                            }
+                            },
+
                         stop: function( event, ui ) {
                             self.stopPosition(ui.item.index());
                             if (self.startPosition()!=null){
@@ -451,9 +462,11 @@ function createSortableElementComponents() {
                             self.startPosition(ui.item.index());
                         },
                         sort: function(evt,ui) {
-                            var scale = 1/player.currentFrame.frameView.scale();
-                            $(ui.helper).css("top",parseInt($(ui.helper).css("top"))*scale);
-                            $(ui.helper).css("left",parseInt($(ui.helper).css("left"))*scale);
+                            if (self.dataModel.parent.parent instanceof FrameData) {
+                                var scale = 1 / player.currentFrame.frameView.scale();
+                                $(ui.helper).css("top", parseInt($(ui.helper).css("top")) * scale);
+                                $(ui.helper).css("left", parseInt($(ui.helper).css("left")) * scale);
+                            }
                         },
                         stop: function( event, ui ) {
                             self.stopPosition(ui.item.index());

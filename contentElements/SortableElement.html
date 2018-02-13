@@ -93,9 +93,6 @@
                 border: 1px solid lightgray;" class="sortableInner ui-state-default" data-bind="style: {cursor: $parent.dataModel.activeSorting() ? 'pointer': 'default'}">
                 <div style="display: inline-block" data-bind="component: {name : 'editable-text-element-preview', params : sortableText},style: {cursor: $parent.dataModel.activeSorting() ? 'pointer': 'default'}"></div>
             </li>
-
-
-
             <!-- /ko -->
         </ul>
     </div>
@@ -110,13 +107,18 @@
     <!-- /ko -->
 
     <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
-        <ul class="sortableElement sortableOuter pointer" id="sortableElementPlayer">
+        <ul class="sortableElement sortableOuter" id="sortableElementPlayer">
             <!-- ko foreach: dataModel.elements -->
-            <ul class=" ui-state-default">
-                <span style="cursor: pointer;  margin: 0; padding: 10px; list-style-type: none;" data-bind="component: {name : 'editable-text-element-playerview', params : sortableText}"></span>
-            </ul>
-
-
+            <li style="margin: 15px;
+                padding: 10px 5px;
+                min-width: 20px;
+                min-height: 25px;
+                background-color: #fff;
+                border-radius: 5px;
+                border: 1px solid lightgray;
+                cursor: pointer"class="sortableInner ui-state-default">
+                <div style="display: inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : sortableText}"></div>
+            </li>
             <!-- /ko -->
         </ul>
     </div>
