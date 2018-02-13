@@ -742,6 +742,7 @@ ExpData.prototype.toJS = function() {
     var i;
 
     // make sure that we have an up to date global list of all entities:
+    // TODO: @Caspar: Remove this rebuildEntities and TEST if all elements and Events can still be saved and later loaded again:
     this.rebuildEntities();
 
     var sessionsPerGroup = [];

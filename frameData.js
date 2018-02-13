@@ -142,6 +142,7 @@ FrameData.prototype.deleteChildEntity = function(entity) {
 
     obsArr.remove(entity);
     if (entity instanceof GlobalVar){
+        // TODO: @Caspar: we need to remove this, otherwise it would trigger rebuild of variables with o(n^2):
         this.expData.rebuildEntities();
     }
 

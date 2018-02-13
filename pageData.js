@@ -207,6 +207,7 @@ PageData.prototype.deleteChildEntity = function(entity) {
     }
     obsArr.remove(entity);
     if (entity instanceof GlobalVar){
+        // TODO: @Caspar: we need to remove this:
         this.expData.rebuildEntities();
     }
 

@@ -46,6 +46,8 @@ var GlobalVar = function (expData) {
     this.backRefs = ko.observableArray([]).extend({sortById: null});
     this.recValue = null; // takes care of buffering
 
+
+    // TODO: @Caspar: This computable needs to be removed. Otherwise the computables of ALL variables will always re-execute whenever there is some change!
     this.varNameValid = ko.computed(function() {
         return self.expData.varNameValid(self.name().toLowerCase());
     }, this);
