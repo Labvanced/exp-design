@@ -113,6 +113,8 @@ PageData.prototype.deleteChildEntity = function(entity) {
     else if (entity instanceof GlobalVar) {
         obsArr = this.localWorkspaceVars;
         // remove back Ref from workspace
+
+        // TODO: @Caspar, nicht hier über alle backRefs loopen. stattdessen hier einfach nur: entity.removeBackRef(self);
         entity.backRefs().every(function(backRef,idx){
             if (backRef.entity === self){
                 entity.removeBackRef(backRef);
@@ -126,8 +128,12 @@ PageData.prototype.deleteChildEntity = function(entity) {
     else {
         obsArr = this.elements;
 
+        // TODO: @Caspar, alle diese Operationen in die dispose function der elemente verschieben, statt hier fall unterscheidungen zu machen.
+
         // delete back references
         if (entity.content().hasOwnProperty('variable')){
+
+            // TODO: @Caspar, siehe oben
             entity.content().variable().backRefs().every(function(backRef,idx){
                 if (backRef.entity.parent === entity){
                     entity.content().variable().removeBackRef(backRef);
@@ -144,6 +150,7 @@ PageData.prototype.deleteChildEntity = function(entity) {
             var i;
             for (i=0; i< elems.length; i++){
                 if (elems[i].hasOwnProperty('variable')){
+                    // TODO: @Caspar, siehe oben
                     elems[i].variable().backRefs().every(function(backRef,idx){
                         if (backRef.entity.parent.parent === entity){
                             entity.content().elements()[i].variable().removeBackRef(backRef);
@@ -163,6 +170,8 @@ PageData.prototype.deleteChildEntity = function(entity) {
             var elems  = entity.content().variablesInText();
             var i;
             for (i=0; i< elems.length; i++){
+
+                // TODO: @Caspar, siehe oben
                 elems[i]().backRefs().every(function(backRef,idx){
                     if (backRef.entity.parent.parent === entity){
                         entity.content().variablesInText()[i]().removeBackRef(backRef);

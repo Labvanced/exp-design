@@ -48,6 +48,8 @@ FrameData.prototype.deleteChildEntity = function(entity) {
         obsArr = this.events;
     }
     else if (entity instanceof GlobalVar) {
+
+        // TODO: @Caspar, siehe Kommentare in PageData. Also hier keine loops und alles verschieben in die child classes:
         obsArr = this.localWorkspaceVars;
         // remove back Ref from workspace
         entity.backRefs().every(function(backRef,idx){
