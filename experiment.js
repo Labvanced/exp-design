@@ -31,6 +31,7 @@ var Experiment = function () {
     this.analysis_data = new AnalysisData(this);
     this.private_data = new PrivateData(this);
     this.exp_server_data = ko.observable(null);
+    this.exp_run_data = new ExpRunData();
 
     // local temporary member variables:
     this.hasLocalChanges = false;
@@ -482,6 +483,10 @@ Experiment.prototype.fromJS = function(data) {
         this.publishing_data.fromJS(data.publishing_data);
     }
 
+    if (data.hasOwnProperty("exp_run_data") && data.exp_run_data != null){
+        this.exp_run_data.fromJS(data.exp_run_data);
+    }
+
     if (data.hasOwnProperty("analysis_data") && data.analysis_data != null){
         this.analysis_data.fromJS(data.analysis_data);
     }
@@ -525,6 +530,13 @@ Experiment.prototype.toJS = function() {
         throw Error("cannot save publishing_data");
     }
 
+    if (this.exp_run_data_serialized instanceof ExpRunData){
+        var exp_run_data_serialized = this.exp_run_data.toJS();
+    }
+    else {
+        throw Error("cannot save exp_run_data");
+    }
+
     if (this.analysis_data instanceof AnalysisData){
         var analysisData_serialized = this.analysis_data.toJS();
     }
@@ -549,6 +561,7 @@ Experiment.prototype.toJS = function() {
         modified_time: this.modified_time(),
         exp_data: exp_data_serialized,
         publishing_data: publishing_data_serialized,
+        exp_run_data: exp_run_data_serialized,
         analysis_data: analysisData_serialized,
         private_data: private_data_serialized
     };
