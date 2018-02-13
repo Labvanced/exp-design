@@ -49,22 +49,69 @@ FrameData.prototype.deleteChildEntity = function(entity) {
     }
     else if (entity instanceof GlobalVar) {
         obsArr = this.localWorkspaceVars;
+        // remove back Ref from workspace
+        entity.backRefs().every(function(backRef,idx){
+            if (backRef.entity === self){
+                entity.removeBackRef(backRef);
+                return false
+            }
+            else{
+                return true;
+            }
+        });
+
     }
     else {
         obsArr = this.elements;
 
-        // delete associated global vars
+        // delete back references
         if (entity.content().hasOwnProperty('variable')){
-            this.localWorkspaceVars.remove(entity.content().variable());
+            entity.content().variable().backRefs().every(function(backRef,idx){
+                if (backRef.entity.parent === entity){
+                    entity.content().variable().removeBackRef(backRef);
+                    return false
+                }
+                else{
+                    return true;
+                }
+            });
+
         }
 
-        // delete associated global vars
         if (entity.content().hasOwnProperty('elements')){
             var elems  = entity.content().elements();
-            for (var i = 0; i< elems.length; i++){
+            var i;
+            for (i=0; i< elems.length; i++){
                 if (elems[i].hasOwnProperty('variable')){
-                    this.localWorkspaceVars.remove(elems[i].variable());
+                    elems[i].variable().backRefs().every(function(backRef,idx){
+                        if (backRef.entity.parent.parent === entity){
+                            entity.content().elements()[i].variable().removeBackRef(backRef);
+                            return false
+                        }
+                        else{
+                            return true;
+                        }
+                    })
                 }
+
+            }
+        }
+
+        //  for TextElements
+        if (entity.content().hasOwnProperty('variablesInText')){
+            var elems  = entity.content().variablesInText();
+            var i;
+            for (i=0; i< elems.length; i++){
+                elems[i]().backRefs().every(function(backRef,idx){
+                    if (backRef.entity.parent.parent === entity){
+                        entity.content().variablesInText()[i]().removeBackRef(backRef);
+                        return false
+                    }
+                    else{
+                        return true;
+                    }
+                })
+
 
             }
         }
@@ -92,6 +139,9 @@ FrameData.prototype.deleteChildEntity = function(entity) {
 
 
     obsArr.remove(entity);
+    if (entity instanceof GlobalVar){
+        this.expData.rebuildEntities();
+    }
 
     // if this element was selected, set selection to null
     if (entity === this.currSelectedElement()) {

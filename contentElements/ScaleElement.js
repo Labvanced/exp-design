@@ -112,12 +112,28 @@ ScaleElement.prototype.addEntry = function(variableName) {
 };
 
 ScaleElement.prototype.removeEntry = function() {
+    var self = this;
     if (this.addDeleteFromRow() =="bottom"){
-        var idx = this.elements.length-1;
+        var idx = this.elements().length-1;
     }
     else{
         var idx = 0;
     }
+    // remove variable reference
+    this.elements()[idx].variable().backRefs().every(function(backRef,idx){
+        if (backRef.entity.parent.parent === self.parent){
+            self.elements()[idx].variable().backRefs().splice(idx,1);
+            if (self.elements()[idx].variable().backRefs().length==1){
+                self.elements()[idx].variable().unused(true);
+            }
+            return false
+        }
+        else{
+            return true;
+        }
+    });
+
+
     this.elements.splice(idx,1);
 };
 

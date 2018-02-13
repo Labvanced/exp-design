@@ -30,7 +30,7 @@ SortableElement.prototype.label = "Sortable";
 SortableElement.prototype.iconPath = "/resources/icons/tools/sort.svg";
 SortableElement.prototype.dataType =      [ ];
 SortableElement.prototype.modifiableProp = [ ];
-SortableElement.prototype.initWidth = 350;
+SortableElement.prototype.initWidth = 400;
 SortableElement.prototype.initHeight = 150;
 
 SortableElement.prototype.init = function(variableName) {

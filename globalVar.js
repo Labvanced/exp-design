@@ -46,27 +46,8 @@ var GlobalVar = function (expData) {
     this.backRefs = ko.observableArray([]).extend({sortById: null});
     this.recValue = null; // takes care of buffering
 
-    this.allVarNames= [];
-    var allEntities = this.expData.entities();
-    for (var i=0; i<allEntities.length; i++){
-        if (allEntities[i].type == "GlobalVar") {
-            if (this.allVarNames.indexOf(allEntities[i].name().toLowerCase())==-1){
-                this.allVarNames.push(allEntities[i].name().toLowerCase());
-            }
-
-        }
-    }
-
     this.varNameValid = ko.computed(function() {
-        return true;
-        /**
-        if (self.name()=="" || self.allVarNames.indexOf(self.name().toLowerCase())>=0){
-            return false
-        }
-        else{
-            return true;
-
-        }*/
+        return self.expData.varNameValid(self.name().toLowerCase());
     }, this);
 
 
@@ -262,6 +243,8 @@ GlobalVar.prototype.removeBackRef = function(entity) {
         }
     }
 
+    // check if variable is now unused
+
 };
 
 GlobalVar.prototype.calcUnused = function() {
@@ -270,7 +253,13 @@ GlobalVar.prototype.calcUnused = function() {
             this.unused(true);
         }
         else{
-            this.unused(false);
+            var unused = true;
+            this.backRefs().forEach(function(backRef){
+                if (backRef.refLabel!="workspace variable"){
+                    unused = false;
+                }
+            });
+            this.unused(unused);
         }
     }
     else{

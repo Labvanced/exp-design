@@ -35,12 +35,14 @@ var ExpData = function (parentExperiment) {
     });
 
     // not serialized
-    var self = this;
+    this.allVariables = {};
     this.staticStrings = ko.observable(ExpData.prototype.staticTranslations["English"]);
     this.currentLanguage = ko.observable(0);
     this.currentLanguageSubscription = this.currentLanguage.subscribe(function(newLang) {
             self.updateLanguage();
     });
+
+    this.variableSubscription = null;
 
     this.dateLastModified = ko.observable(getCurrentDate(this.studySettings.timeZoneOffset()));
 
@@ -383,7 +385,7 @@ ExpData.prototype.isSystemVar = function(globalVar) {
 ExpData.prototype.deleteGlobalVar = function(globalVar) {
     var idx = this.entities().indexOf(globalVar);
     if (idx>=0){
-        this.entities().splice(idx,1);
+        this.entities.splice(idx,1);
     }
 };
 
@@ -539,9 +541,77 @@ ExpData.prototype.setPointers = function() {
 
     this.updateLanguage();
 
+    // update current variable List
+    var allEntities = this.entities();
+    for (var i=0; i<allEntities.length; i++){
+        if (allEntities[i].type == "GlobalVar") {
+            if (!(this.allVariables.hasOwnProperty(allEntities[i].name().toLowerCase()))){
+                this.allVariables[allEntities[i].name().toLowerCase()] = allEntities[i];
+            }
+            else if (this.allVariables[allEntities[i].name().toLowerCase()] instanceof Array){
+                this.allVariables[allEntities[i].name().toLowerCase()].push(allEntities[i]);
+            }
+            else{
+                var temp =  this.allVariables[allEntities[i].name().toLowerCase()];
+                this.allVariables[allEntities[i].name().toLowerCase()] = [temp,allEntities[i]];
+            }
 
+        }
+    }
+    if (this.variableSubscription){
+        this.variableSubscription.dispose();
+    }
+    this.variableSubscription =   this.entities.subscribe(function(changes) {
+        ko.utils.arrayForEach(changes, function (change) {
+
+            if (change.value instanceof GlobalVar){
+                if (change.status =="added"){
+                    if (!(self.allVariables.hasOwnProperty(change.value.name().toLowerCase()))){
+                        self.allVariables[change.value.name().toLowerCase()] = change.value;
+                    }
+
+                    else if (self.allVariables[change.value.name().toLowerCase()] instanceof Array){
+                        self.allVariables[change.value.name().toLowerCase()].push(change.value);
+                    }
+
+                    else {
+                        var temp =  self.allVariables[change.value.name().toLowerCase()];
+                        self.allVariables[change.value.name().toLowerCase()] =  [temp,allEntities[i]];
+                    }
+                }
+                else if (change.status =="deleted"){
+                    if (self.allVariables.hasOwnProperty(change.value.name().toLowerCase())){
+                        if (self.allVariables[change.value.name().toLowerCase()] instanceof Array){
+                            var idx = self.allVariables[change.value.name().toLowerCase()].indexOf(change.value);
+                            if (idx >=0){
+                                self.allVariables[change.value.name().toLowerCase()].splice(idx,1);
+                            }
+                        }
+
+                        else{
+                            delete self.allVariables[change.value.name().toLowerCase()];
+                        }
+
+                    }
+                }
+
+            }
+
+        });
+    }, null, "arrayChange");
 
 };
+
+ExpData.prototype.varNameValid = function(varName) {
+    if (varName=="" || this.allVariables.hasOwnProperty(varName)){
+        return false;
+    }
+    else{
+        return true;
+    }
+
+};
+
 
 /**
  * Recursively adds all child objects that have a unique id to the global list of entities.

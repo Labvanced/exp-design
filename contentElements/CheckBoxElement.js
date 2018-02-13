@@ -58,10 +58,24 @@ CheckBoxElement.prototype.addEntry = function(variableName) {
 };
 
 CheckBoxElement.prototype.removeEntry = function() {
+    var self = this;
     var idx = this.elements().length-1;
-    var entry =  this.elements()[idx];
-    // delete associated global vars
-    this.parent.parent.localWorkspaceVars.remove(entry.variable());
+
+    // remove variable reference
+    this.elements()[idx].variable().backRefs().every(function(backRef,idx){
+        if (backRef.entity.parent.parent === self.parent){
+            self.elements()[idx].variable().backRefs().splice(idx,1);
+            if (self.elements()[idx].variable().backRefs().length==1){
+                self.elements()[idx].variable().unused(true);
+            }
+            return false
+        }
+        else{
+            return true;
+        }
+    });
+
+
     this.elements.splice(idx,1);
 };
 
