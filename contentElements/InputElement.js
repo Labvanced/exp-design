@@ -91,6 +91,7 @@ InputElement.prototype.selectTrialType = function(selectionSpec) {
 
 InputElement.prototype.dispose = function () {
     this.questionText().dispose();
+    this.variable().removeBackRef(this);
 };
 
 InputElement.prototype.getTextRefs = function(textArr, label){

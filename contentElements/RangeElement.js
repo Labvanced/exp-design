@@ -96,6 +96,7 @@ RangeElement.prototype.dispose = function () {
     this.questionText().dispose();
     this.startLabel().dispose();
     this.endLabel().dispose();
+    this.variable().removeBackRef(this);
 };
 
 RangeElement.prototype.getTextRefs = function(textArr, label){

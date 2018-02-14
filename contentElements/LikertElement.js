@@ -117,6 +117,7 @@ LikertElement.prototype.dispose = function () {
   this.questionText().dispose();
   this.startLabel().dispose();
   this.endLabel().dispose();
+  this.variable().removeBackRef(this);
 };
 
 LikertElement.prototype.getTextRefs = function(textArr, label){

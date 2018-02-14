@@ -146,6 +146,8 @@ SortableElement.prototype.dispose = function () {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.dispose();
     } );
+
+    this.variable().removeBackRef(this);
 };
 
 SortableElement.prototype.getTextRefs = function(textArr, label){
@@ -231,25 +233,6 @@ SortableEntry.prototype.init = function(entryName) {
     newScalarStartVal.setValue(entryName);
     this.parent.variable().startValue().value.push(newScalarStartVal);
     this.name = 'element' + this.parent.elements().length;
-/**
-    var globalVar = new GlobalVar(this.parent.expData);
-    globalVar.dataType(GlobalVar.dataTypes[1]);
-    globalVar.scope('trial');
-    globalVar.scale(GlobalVar.scales[1]);
-    var name = this.parent.parent.name() +'_'+ this.parent.elements().length;
-    globalVar.name(name);
-    globalVar.resetStartValue();
-    this.variable(globalVar);
-
-    var frameOrPageElement = this.parent.parent;
-    frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
-    this.setVariableBackRef();
-    this.variable().startValue().value(this.parent.elements().length);
- **/
-
-    this.name = 'element' + this.parent.elements().length;
-
-
 };
 
 SortableEntry.prototype.setVariableBackRef = function() {
@@ -258,14 +241,14 @@ SortableEntry.prototype.setVariableBackRef = function() {
 
 
 SortableEntry.prototype.reAddEntities = function(entitiesArr) {
-    /**
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
-    }
-     **/
     this.sortableText().reAddEntities(entitiesArr);
-
 };
+
+
+SortableEntry.prototype.dispose = function() {
+    this.sortableText().dispose();
+};
+
 
 SortableEntry.prototype.getIndex = function() {
     return this.parent.elements.indexOf(this);

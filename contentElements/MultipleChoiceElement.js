@@ -200,9 +200,15 @@ MultipleChoiceElement.prototype.selectTrialType = function(selectionSpec) {
 
 MultipleChoiceElement.prototype.dispose = function () {
     this.questionText().dispose();
+    if (this.subInputElement()){
+        this.subInputElement().dispose();
+    }
+
     jQuery.each( this.elements(), function( index, elem ) {
         elem.dispose();
     } );
+
+    this.variable().removeBackRef(this);
 };
 
 MultipleChoiceElement.prototype.getTextRefs = function(textArr, label){

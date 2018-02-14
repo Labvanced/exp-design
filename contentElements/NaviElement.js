@@ -165,6 +165,21 @@ NaviElement.prototype.setPointers = function(entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 };
 
+NaviElement.prototype.dispose = function() {
+    var self = this;
+    var events = this.parent.parent.events();
+    events.forEach(function(elem,index){
+        if (elem.name()=='Go Backward' || elem.name()=='Go Forward'){
+            self.parent.parent.deleteChildEntity(elem)
+        }
+    });
+    events.forEach(function(elem,index){
+        if (elem.name()=='Go Backward' || elem.name()=='Go Forward'){
+            self.parent.parent.deleteChildEntity(elem)
+        }
+    });
+};
+
 NaviElement.prototype.reAddEntities = function(entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 };

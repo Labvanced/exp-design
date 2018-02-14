@@ -145,6 +145,7 @@ CheckBoxElement.prototype.dispose = function () {
         elem.dispose();
     } );
     this.questionText().dispose();
+
 };
 
 CheckBoxElement.prototype.getTextRefs = function(textArr, label){
@@ -264,6 +265,7 @@ CheckBoxEntry.prototype.reAddEntities = function(entitiesArr) {
 
 CheckBoxEntry.prototype.dispose = function () {
   this.checkBoxText().dispose();
+  this.variable().removeBackRef(this);
 };
 
 CheckBoxEntry.prototype.getTextRefs = function(textArr, label){

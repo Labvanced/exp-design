@@ -29,6 +29,13 @@ ProgressBarElement.prototype.init = function() {
 
 };
 
+ProgressBarElement.prototype.dispose = function() {
+    if (this.variable()){
+        this.variable().removeBackRef(this);
+    }
+
+};
+
 
 ProgressBarElement.prototype.bindToVariable = function(variable) {
 

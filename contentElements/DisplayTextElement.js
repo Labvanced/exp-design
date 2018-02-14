@@ -70,6 +70,7 @@ DisplayTextElement.prototype.selectTrialType = function(selectionSpec) {
 };
 
 DisplayTextElement.prototype.dispose = function () {
+    this.text().removeRefs();
     this.text().dispose();
 };
 

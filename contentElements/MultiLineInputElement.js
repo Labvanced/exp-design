@@ -102,6 +102,7 @@ MultiLineInputElement.prototype.setVariableBackRef = function() {
 
 MultiLineInputElement.prototype.dispose = function () {
     this.questionText().dispose();
+    this.variable().removeBackRef(this);
 };
 
 MultiLineInputElement.prototype.getTextRefs = function(textArr, label){

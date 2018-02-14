@@ -115,21 +115,14 @@ PageData.prototype.deleteChildEntity = function(entity) {
         // remove back Ref from workspace
 
         // TODO: @Caspar, nicht hier über alle backRefs loopen. stattdessen hier einfach nur: entity.removeBackRef(self);
-        entity.backRefs().every(function(backRef,idx){
-            if (backRef.entity === self){
-                entity.removeBackRef(backRef);
-                return false
-            }
-            else{
-                return true;
-            }
-        });
+        entity.removeBackRef(self);
     }
     else {
         obsArr = this.elements;
 
         // TODO: @Caspar, alle diese Operationen in die dispose function der elemente verschieben, statt hier fall unterscheidungen zu machen.
 
+        /**
         // delete back references
         if (entity.content().hasOwnProperty('variable')){
 
@@ -166,6 +159,7 @@ PageData.prototype.deleteChildEntity = function(entity) {
         }
 
         //  for TextElements
+
         if (entity.content().hasOwnProperty('variablesInText')){
             var elems  = entity.content().variablesInText();
             var i;
@@ -181,13 +175,12 @@ PageData.prototype.deleteChildEntity = function(entity) {
                         return true;
                     }
                 })
-
-
             }
         }
 
-        // delete associated events
-        if (entity.content() instanceof NaviElement){
+
+         // delete associated events
+         if (entity.content() instanceof NaviElement){
             var events = this.events();
             events.forEach(function(elem,index){
                 if (elem.name()=='Go Backward' || elem.name()=='Go Forward'){
@@ -201,15 +194,14 @@ PageData.prototype.deleteChildEntity = function(entity) {
             });
         }
 
+         **/
+
         if (typeof entity.content().dispose === 'function'){
             entity.content().dispose();
         }
     }
     obsArr.remove(entity);
-    if (entity instanceof GlobalVar){
-        // TODO: @Caspar: we need to remove this:
-        this.expData.rebuildEntities();
-    }
+
 
     // if this element was selected, set selection to null
     if (entity === this.currSelectedElement()) {

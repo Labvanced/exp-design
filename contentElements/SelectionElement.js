@@ -76,6 +76,16 @@ SelectionElement.prototype.removeEntry = function(idx) {
     this.elements.splice(idx,1);
 };
 
+
+SelectionElement.prototype.dispose = function() {
+    this.questionText().dispose();
+    this.variable().removeBackRef(this);
+    jQuery.each( this.elements(), function( index, elem ) {
+        elem.dispose();
+    } );
+};
+
+
 SelectionElement.prototype.init = function(variableName) {
 
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
@@ -247,6 +257,10 @@ var SelectionEntry= function(selectionParent) {
 
 SelectionEntry.prototype.getIndex = function() {
     return this.selectionParent.elements.indexOf(this);
+};
+
+SelectionEntry.prototype.dispose = function() {
+
 };
 
 /**

@@ -384,6 +384,7 @@ ScaleEntry.prototype.isInputValid = function() {
 
 ScaleEntry.prototype.dispose = function () {
     this.rowText().dispose();
+    this.variable().removeBackRef(this);
 };
 
 ScaleEntry.prototype.getTextRefs = function(textArr, label){
