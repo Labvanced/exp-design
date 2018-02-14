@@ -15,6 +15,7 @@ var ExpBlock = function (expData) {
     this.type = "ExpBlock";
     this.subTasks = ko.observableArray([]).extend({sortById: null});
     this.editName =  ko.observable(false);
+    this.taskRandomization =ko.observable('fixed'); // fixed, or 'permute' per subject
 };
 
 ExpBlock.prototype.rename = function(idx,flag,data,event) {
@@ -82,7 +83,11 @@ ExpBlock.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
     this.subTasks(data.subTasks);
+    if (data.hasOwnProperty('taskRandomization')) {
+        this.taskRandomization(data.taskRandomization);
+    }
     return this;
+
 };
 
 /**
@@ -95,7 +100,8 @@ ExpBlock.prototype.toJS = function() {
         id: this.id(),
         name: this.name(),
         type: this.type,
-        subTasks: jQuery.map( this.subTasks(), function( subTask ) { return subTask.id(); } )
+        subTasks: jQuery.map( this.subTasks(), function( subTask ) { return subTask.id(); } ),
+        taskRandomization:this.taskRandomization()
     };
 
 };
