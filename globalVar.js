@@ -14,7 +14,7 @@ var GlobalVar = function (expData) {
     // serialized:
     this.id = ko.observable(guid());
     this.type = "GlobalVar";
-    this.name = ko.observable("newVariable");
+    this.name = ko.observable("");
     this.dataType = ko.observable('undefined');
     this.scale = ko.observable('undefined');
     this.scope = ko.observable("undefined");
@@ -48,9 +48,7 @@ var GlobalVar = function (expData) {
 
 
     // TODO: @Caspar: This computable needs to be removed. Otherwise the computables of ALL variables will always re-execute whenever there is some change!
-    this.varNameValid = ko.computed(function() {
-        return self.expData.varNameValid(self.name().toLowerCase());
-    }, this);
+
 
 
     this.shortName = ko.computed(function() {
@@ -65,6 +63,7 @@ var GlobalVar = function (expData) {
     this.calcUnused();
 
 };
+
 
 
 // enum definitions:

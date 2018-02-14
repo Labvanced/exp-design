@@ -56,87 +56,11 @@ FrameData.prototype.deleteChildEntity = function(entity) {
     else {
         obsArr = this.elements;
 
-        /**
-        // delete back references
-        if (entity.content().hasOwnProperty('variable')){
-            entity.content().variable().backRefs().every(function(backRef,idx){
-                if (backRef.entity.parent === entity){
-                    entity.content().variable().removeBackRef(backRef);
-                    return false
-                }
-                else{
-                    return true;
-                }
-            });
-
-        }
-
-        if (entity.content().hasOwnProperty('elements')){
-            var elems  = entity.content().elements();
-            var i;
-            for (i=0; i< elems.length; i++){
-                if (elems[i].hasOwnProperty('variable')){
-                    elems[i].variable().backRefs().every(function(backRef,idx){
-                        if (backRef.entity.parent.parent === entity){
-                            entity.content().elements()[i].variable().removeBackRef(backRef);
-                            return false
-                        }
-                        else{
-                            return true;
-                        }
-                    })
-                }
-
-            }
-        }
-
-        //  for TextElements
-        if (entity.content().hasOwnProperty('variablesInText')){
-            var elems  = entity.content().variablesInText();
-            var i;
-            for (i=0; i< elems.length; i++){
-                elems[i]().backRefs().every(function(backRef,idx){
-                    if (backRef.entity.parent.parent === entity){
-                        entity.content().variablesInText()[i]().removeBackRef(backRef);
-                        return false
-                    }
-                    else{
-                        return true;
-                    }
-                })
-
-
-            }
-        }
-
-        // delete associated events
-        if (entity.content() instanceof NaviElement){
-            var events = this.events();
-            events.forEach(function(elem,index){
-                if (elem.name()=='Go Backward' || elem.name()=='Go Forward'){
-                    self.deleteChildEntity(elem)
-                }
-            });
-            events.forEach(function(elem,index){
-                if (elem.name()=='Go Backward' || elem.name()=='Go Forward'){
-                    self.deleteChildEntity(elem)
-                }
-            });
-        }
-         **/
-
         if (typeof entity.content().dispose === 'function'){
             entity.content().dispose();
         }
     }
-
-
-
     obsArr.remove(entity);
-    if (entity instanceof GlobalVar){
-        // TODO: @Caspar: we need to remove this, otherwise it would trigger rebuild of variables with o(n^2):
-        this.expData.rebuildEntities();
-    }
 
     // if this element was selected, set selection to null
     if (entity === this.currSelectedElement()) {

@@ -113,89 +113,10 @@ PageData.prototype.deleteChildEntity = function(entity) {
     else if (entity instanceof GlobalVar) {
         obsArr = this.localWorkspaceVars;
         // remove back Ref from workspace
-
-        // TODO: @Caspar, nicht hier über alle backRefs loopen. stattdessen hier einfach nur: entity.removeBackRef(self);
         entity.removeBackRef(self);
     }
     else {
         obsArr = this.elements;
-
-        // TODO: @Caspar, alle diese Operationen in die dispose function der elemente verschieben, statt hier fall unterscheidungen zu machen.
-
-        /**
-        // delete back references
-        if (entity.content().hasOwnProperty('variable')){
-
-            // TODO: @Caspar, siehe oben
-            entity.content().variable().backRefs().every(function(backRef,idx){
-                if (backRef.entity.parent === entity){
-                    entity.content().variable().removeBackRef(backRef);
-                    return false
-                }
-                else{
-                    return true;
-                }
-            });
-        }
-
-        if (entity.content().hasOwnProperty('elements')){
-            var elems  = entity.content().elements();
-            var i;
-            for (i=0; i< elems.length; i++){
-                if (elems[i].hasOwnProperty('variable')){
-                    // TODO: @Caspar, siehe oben
-                    elems[i].variable().backRefs().every(function(backRef,idx){
-                        if (backRef.entity.parent.parent === entity){
-                            entity.content().elements()[i].variable().removeBackRef(backRef);
-                            return false
-                        }
-                        else{
-                            return true;
-                        }
-                    })
-                }
-
-            }
-        }
-
-        //  for TextElements
-
-        if (entity.content().hasOwnProperty('variablesInText')){
-            var elems  = entity.content().variablesInText();
-            var i;
-            for (i=0; i< elems.length; i++){
-
-                // TODO: @Caspar, siehe oben
-                elems[i]().backRefs().every(function(backRef,idx){
-                    if (backRef.entity.parent.parent === entity){
-                        entity.content().variablesInText()[i]().removeBackRef(backRef);
-                        return false
-                    }
-                    else{
-                        return true;
-                    }
-                })
-            }
-        }
-
-
-         // delete associated events
-         if (entity.content() instanceof NaviElement){
-            var events = this.events();
-            events.forEach(function(elem,index){
-                if (elem.name()=='Go Backward' || elem.name()=='Go Forward'){
-                    self.deleteChildEntity(elem)
-                }
-            });
-            events.forEach(function(elem,index){
-                if (elem.name()=='Go Backward' || elem.name()=='Go Forward'){
-                    self.deleteChildEntity(elem)
-                }
-            });
-        }
-
-         **/
-
         if (typeof entity.content().dispose === 'function'){
             entity.content().dispose();
         }

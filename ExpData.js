@@ -561,38 +561,14 @@ ExpData.prototype.setPointers = function() {
     if (this.variableSubscription){
         this.variableSubscription.dispose();
     }
-    this.variableSubscription =   this.entities.subscribe(function(changes) {
+    this.variableSubscription = this.entities.subscribe(function(changes) {
         ko.utils.arrayForEach(changes, function (change) {
-
             if (change.value instanceof GlobalVar){
                 if (change.status =="added"){
-                    if (!(self.allVariables.hasOwnProperty(change.value.name().toLowerCase()))){
-                        self.allVariables[change.value.name().toLowerCase()] = change.value;
-                    }
-
-                    else if (self.allVariables[change.value.name().toLowerCase()] instanceof Array){
-                        self.allVariables[change.value.name().toLowerCase()].push(change.value);
-                    }
-
-                    else {
-                        var temp =  self.allVariables[change.value.name().toLowerCase()];
-                        self.allVariables[change.value.name().toLowerCase()] =  [temp,allEntities[i]];
-                    }
+                    self.addVarToHashList(change.value);
                 }
                 else if (change.status =="deleted"){
-                    if (self.allVariables.hasOwnProperty(change.value.name().toLowerCase())){
-                        if (self.allVariables[change.value.name().toLowerCase()] instanceof Array){
-                            var idx = self.allVariables[change.value.name().toLowerCase()].indexOf(change.value);
-                            if (idx >=0){
-                                self.allVariables[change.value.name().toLowerCase()].splice(idx,1);
-                            }
-                        }
-
-                        else{
-                            delete self.allVariables[change.value.name().toLowerCase()];
-                        }
-
-                    }
+                    self.deleteVarFromHashList(change.value,null);
                 }
 
             }
@@ -602,6 +578,54 @@ ExpData.prototype.setPointers = function() {
 
 };
 
+
+ExpData.prototype.addVarToHashList = function(variable) {
+    if (!(this.allVariables.hasOwnProperty(variable.name().toLowerCase()))){
+        this.allVariables[variable.name().toLowerCase()] = variable;
+    }
+
+    else if (this.allVariables[variable.name().toLowerCase()] instanceof Array){
+        var idx = this.allVariables[variable.name().toLowerCase()].indexOf(variable);
+        if (idx==-1){
+            this.allVariables[variable.name().toLowerCase()].push(variable);
+        }
+
+    }
+
+    else {
+        var temp =  this.allVariables[variable.name().toLowerCase()];
+        if (temp !==variable) {
+            this.allVariables[variable.name().toLowerCase()] =  [temp,variable];
+        }
+
+    }
+};
+
+ExpData.prototype.deleteVarFromHashList = function(variable,oldName) {
+    if (oldName){
+        var name = oldName;
+    }
+    else{
+        var name = variable.name();
+    }
+    if (name !=""){
+        if (this.allVariables.hasOwnProperty(name.toLowerCase())){
+            if (this.allVariables[name.toLowerCase()] instanceof Array){
+                var idx = this.allVariables[name.toLowerCase()].indexOf(variable);
+                if (idx >=0){
+                 this.allVariables[name.toLowerCase()].splice(idx,1);
+                }
+            }
+            else{
+             delete this.allVariables[name.toLowerCase()];
+            }
+        }
+    }
+
+
+};
+
+
 ExpData.prototype.varNameValid = function(varName) {
     if (varName=="" || this.allVariables.hasOwnProperty(varName)){
         return false;
@@ -609,7 +633,25 @@ ExpData.prototype.varNameValid = function(varName) {
     else{
         return true;
     }
+};
 
+ExpData.prototype.varNameValidExisting = function(varName) {
+    if (this.allVariables.hasOwnProperty(varName)){
+       if(this.allVariables[varName] instanceof Array){
+           if (this.allVariables[varName].length <=1){
+               return true
+           }
+           else{
+               return false;
+           }
+       }
+       else{
+           return true;
+       }
+    }
+    else{
+        return true;
+    }
 };
 
 
