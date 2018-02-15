@@ -121,10 +121,10 @@ var ExperimentStartupScreen = function(experiment) {
         var settings =  self.expData.studySettings;
         var list = [];
         if (settings.allowAndroidMobile()){
-            list.push("androidMobile");
+            list.push("Android-Mobile");
         }
         if (settings.allowAndroidTablet()){
-            list.push("androidTablet");
+            list.push("Android-Tablet");
         }
         if (settings.allowIPhone()){
             list.push("iPhone");
@@ -133,13 +133,13 @@ var ExperimentStartupScreen = function(experiment) {
             list.push("iPad");
         }
         if (settings.allowMac()){
-            list.push("Mac");
+            list.push("Mac/OS-X");
         }
         if (settings.allowPCWindows()){
-            list.push("Windows");
+            list.push("Windows-PC");
         }
         if (settings.allowPCLinux()){
-            list.push("Linux");
+            list.push("Linux-PC");
         }
         if (settings.allowOtherOS()){
             list.push("others");
@@ -149,7 +149,9 @@ var ExperimentStartupScreen = function(experiment) {
 
 
     this.allowOtherBrowser =  self.expData.studySettings.allowOtherBrowser();
+    this.miniRes = ko.observable('');
 
+    this.resolutionAllowed = ko.observable(null);
     this.browserAllowed = ko.observable(null);
     this.osAllowed = ko.observable(null);
     this.detectBrowserAndSystemSpecs()
@@ -167,6 +169,21 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
         var height = (screen.height) ? screen.height : '';
         screenSize += '' + width + " x " + height;
     }
+
+
+    if (this.expData.studySettings.minRes()){
+        this.miniRes(this.expData.studySettings.minWidth() + "x" + this.expData.studySettings.minHeight());
+        if (width>=parseInt(this.expData.studySettings.minWidth()) && height>=parseInt(this.expData.studySettings.minHeight())){
+            this.resolutionAllowed(true);
+        }
+        else{
+            this.resolutionAllowed(false);
+        }
+    }
+    else{
+        this.resolutionAllowed(true);
+    }
+
 
     var nVer = navigator.appVersion;
     var nAgt = navigator.userAgent;
@@ -245,25 +262,25 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
     // system
     var os = "others";
     var clientStrings = [
-        {s: 'Windows', r: /(Windows 10.0|Windows NT 10.0)/},
-        {s: 'Windows', r: /(Windows 8.1|Windows NT 6.3)/},
-        {s: 'Windows', r: /(Windows 8|Windows NT 6.2)/},
-        {s: 'Windows', r: /(Windows 7|Windows NT 6.1)/},
-        {s: 'Windows', r: /Windows NT 6.0/},
-        {s: 'Windows', r: /Windows NT 5.2/},
-        {s: 'Windows', r: /(Windows NT 5.1|Windows XP)/},
-        {s: 'Windows', r: /(Windows NT 5.0|Windows 2000)/},
-        {s: 'Windows', r: /(Win 9x 4.90|Windows ME)/},
-        {s: 'Windows', r: /(Windows 98|Win98)/},
-        {s: 'Windows', r: /(Windows 95|Win95|Windows_95)/},
-        {s: 'Windows', r: /(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/},
-        {s: 'Windows', r: /Windows CE/},
-        {s: 'Windows', r: /Win16/},
+        {s: 'Windows-PC', r: /(Windows 10.0|Windows NT 10.0)/},
+        {s: 'Windows-PC', r: /(Windows 8.1|Windows NT 6.3)/},
+        {s: 'Windows-PC', r: /(Windows 8|Windows NT 6.2)/},
+        {s: 'Windows-PC', r: /(Windows 7|Windows NT 6.1)/},
+        {s: 'Windows-PC', r: /Windows NT 6.0/},
+        {s: 'Windows-PC', r: /Windows NT 5.2/},
+        {s: 'Windows-PC', r: /(Windows NT 5.1|Windows XP)/},
+        {s: 'Windows-PC', r: /(Windows NT 5.0|Windows 2000)/},
+        {s: 'Windows-PC', r: /(Win 9x 4.90|Windows ME)/},
+        {s: 'Windows-PC', r: /(Windows 98|Win98)/},
+        {s: 'Windows-PC', r: /(Windows 95|Win95|Windows_95)/},
+        {s: 'Windows-PC', r: /(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/},
+        {s: 'Windows-PC', r: /Windows CE/},
+        {s: 'Windows-PC', r: /Win16/},
 
-        {s: 'Mac', r: /Mac OS X/},
-        {s: 'Mac', r: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/},
+        {s: 'Mac/OS-X', r: /Mac OS X/},
+        {s: 'Mac/OS-X', r: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/},
 
-        {s: 'Linux', r: /(Linux|X11)/},
+        {s: 'Linux-PC', r: /(Linux|X11)/},
 
         {s: 'Android', r: /Android/},
 
@@ -291,10 +308,10 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
 
     if (os == "Android"){
         if (/Mobile/.test(nAgt)){
-            os = "androidMobile";
+            os = "Android-Mobile";
         }
         else{
-            os = "androidTablet";
+            os = "Android-Tablet";
         }
     }
 

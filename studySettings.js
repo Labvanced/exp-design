@@ -24,6 +24,11 @@ var StudySettings = function (expData) {
     this.allowPCWindows = ko.observable(true);
     this.allowPCLinux = ko.observable(true);
     this.allowOtherOS= ko.observable(true);
+
+    // resolution
+    this.minRes = ko.observable(false);
+    this.minWidth = ko.observable(800);
+    this.minHeight = ko.observable(600);
 };
 StudySettings.prototype.timezones = ["-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0","+1","+2","+3","+4","+5","+6","+7","+8","+9","+10","+11","+12"];
 
@@ -93,9 +98,15 @@ StudySettings.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("allowEdge")){
         this.allowEdge(data.allowEdge);
     }
-
-
-
+    if (data.hasOwnProperty("minRes")){
+        this.minRes(data.minRes);
+    }
+    if (data.hasOwnProperty("minWidth")){
+        this.minWidth(data.minWidth);
+    }
+    if (data.hasOwnProperty("minHeight")){
+        this.minHeight(data.minHeight);
+    }
 };
 
 
@@ -119,7 +130,11 @@ StudySettings.prototype.toJS = function() {
         allowPCWindows:this.allowPCWindows(),
         allowPCLinux:this.allowPCLinux(),
         allowOtherOS:this.allowOtherOS(),
-        allowEdge:this.allowEdge()
+        allowEdge:this.allowEdge(),
+        minRes:this.minRes(),
+        minWidth:this.minWidth(),
+        minHeight:this.minHeight()
     };
     return data;
 };
+
