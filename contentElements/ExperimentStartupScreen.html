@@ -2,9 +2,12 @@
     <div style="">
     <div style="position:relative;">
         <div class="container-fluid" >
+
+            <!-- ko if: (browserAllowed && osAllowed) -->
             <div class="row ssp" style="margin: 0px;">
                 <!--StudyContent-->
                 <div class="col-md-12 text-center">
+
                     <div class="row ">
                         <div class="col-md-2 ssp-link mg-t-50">
                             <div data-bind="if: displayBackToLib">
@@ -169,6 +172,46 @@
                         </div>
                     </div>
                 </div>
+                <!-- /ko -->
+
+                <!-- ko ifnot: (osAllowed) -->
+                        <div style="margin-top: 25%">
+                            <div class="text-center" style="font-size: x-large">Please use a different device / operating system for taking part in this study! </div>
+                            <div class="text-center"  style="font-size: x-large">
+                                Allowed devices:
+                                <!-- ko foreach: allowedSystems -->
+                                <span data-bind="text:$data+', '"></span>
+                                <!-- /ko -->
+                            </div>
+                            <!-- ko ifnot: (browserAllowed) -->
+                                <div class="text-center"  style="font-size: x-large">
+                                    Allowed browsers:
+                                    <!-- ko foreach: allowedBrowsers -->
+                                    <span data-bind="text:$data+', '"></span>
+                                    <!-- /ko -->
+                                </div>
+                            <!-- /ko -->
+                        </div>
+                <!-- /ko -->
+
+                <!-- ko if: (osAllowed) -->
+                    <!-- ko ifnot: (browserAllowed) -->
+                        <div style="margin-top: 25%">
+                            <div class="text-center" style="font-size: x-large">Please use a different browser for taking part in this study!</div>
+                            <div class="text-center"  style="font-size: x-large">
+                                Allowed browsers:
+                                <!-- ko foreach: allowedBrowsers -->
+                                <span data-bind="text:$data+', '"></span>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                    <!-- /ko -->
+                <!-- /ko -->
+
+
+
+
+
             </div>
         </div>
     </div>

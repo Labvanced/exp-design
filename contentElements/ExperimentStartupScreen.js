@@ -92,8 +92,222 @@ var ExperimentStartupScreen = function(experiment) {
         this.jumpToSurvey();
     }
 
+    this.allowedBrowsers = ko.computed( function() {
+          var settings =  self.expData.studySettings;
+          var list = [];
+        if (settings.allowChrome()){
+            list.push("Chrome");
+        }
+        if (settings.allowFirefox()){
+            list.push("Firefox");
+        }
+        if (settings.allowInternetExplorer()){
+            list.push("Microsoft Internet Explorer");
+        }
+        if (settings.allowEdge()){
+            list.push("Microsoft Edge");
+        }
+        if (settings.allowSafari()){
+            list.push("Safari");
+        }
+        if (settings.allowOpera()){
+            list.push("Opera");
+        }
+        return list;
+        }, this);
+
+
+    this.allowedSystems= ko.computed( function() {
+        var settings =  self.expData.studySettings;
+        var list = [];
+        if (settings.allowAndroidMobile()){
+            list.push("androidMobile");
+        }
+        if (settings.allowAndroidTablet()){
+            list.push("androidTablet");
+        }
+        if (settings.allowIPhone()){
+            list.push("iPhone");
+        }
+        if (settings.allowIPad()){
+            list.push("iPad");
+        }
+        if (settings.allowMac()){
+            list.push("Mac");
+        }
+        if (settings.allowPCWindows()){
+            list.push("Windows");
+        }
+        if (settings.allowPCLinux()){
+            list.push("Linux");
+        }
+        if (settings.allowOtherOS()){
+            list.push("others");
+        }
+        return list;
+    }, this);
+
+
+    this.allowOtherBrowser =  self.expData.studySettings.allowOtherBrowser();
+
+    this.browserAllowed = ko.observable(null);
+    this.osAllowed = ko.observable(null);
+    this.detectBrowserAndSystemSpecs()
+
 
 };
+
+ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
+    var unknown = '-';
+
+    // screen
+    var screenSize = '';
+    if (screen.width) {
+        var width = (screen.width) ? screen.width : '';
+        var height = (screen.height) ? screen.height : '';
+        screenSize += '' + width + " x " + height;
+    }
+
+    var nVer = navigator.appVersion;
+    var nAgt = navigator.userAgent;
+    var browser = navigator.appName;
+    var version = '' + parseFloat(navigator.appVersion);
+    var majorVersion = parseInt(navigator.appVersion, 10);
+    var nameOffset, verOffset, ix;
+    var isOtherBrowser = false;
+
+    // Opera
+    if ((verOffset = nAgt.indexOf('Opera')) != -1) {
+        browser = 'Opera';
+        version = nAgt.substring(verOffset + 6);
+        if ((verOffset = nAgt.indexOf('Version')) != -1) {
+            version = nAgt.substring(verOffset + 8);
+        }
+    }
+    // Opera Next
+    if ((verOffset = nAgt.indexOf('OPR')) != -1) {
+        browser = 'Opera';
+        version = nAgt.substring(verOffset + 4);
+    }
+    // Edge
+    else if ((verOffset = nAgt.indexOf('Edge')) != -1) {
+        browser = 'Microsoft Edge';
+        version = nAgt.substring(verOffset + 5);
+    }
+    // MSIE
+    else if ((verOffset = nAgt.indexOf('MSIE')) != -1) {
+        browser = 'Microsoft Internet Explorer';
+        version = nAgt.substring(verOffset + 5);
+    }
+    // Chrome
+    else if ((verOffset = nAgt.indexOf('Chrome')) != -1) {
+        browser = 'Chrome';
+        version = nAgt.substring(verOffset + 7);
+    }
+    // Safari
+    else if ((verOffset = nAgt.indexOf('Safari')) != -1) {
+        browser = 'Safari';
+        version = nAgt.substring(verOffset + 7);
+        if ((verOffset = nAgt.indexOf('Version')) != -1) {
+            version = nAgt.substring(verOffset + 8);
+        }
+    }
+    // Firefox
+    else if ((verOffset = nAgt.indexOf('Firefox')) != -1) {
+        browser = 'Firefox';
+        version = nAgt.substring(verOffset + 8);
+    }
+    // MSIE 11+
+    else if (nAgt.indexOf('Trident/') != -1) {
+        browser = 'Microsoft Internet Explorer';
+        version = nAgt.substring(nAgt.indexOf('rv:') + 3);
+    }
+    // Other browsers
+    else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) < (verOffset = nAgt.lastIndexOf('/'))) {
+        browser = nAgt.substring(nameOffset, verOffset);
+        isOtherBrowser = true;
+        version = nAgt.substring(verOffset + 1);
+        if (browser.toLowerCase() == browser.toUpperCase()) {
+            browser = navigator.appName;
+        }
+    }
+    if (this.allowedBrowsers().indexOf(browser)>=0){
+        this.browserAllowed(true);
+    }
+    else if (isOtherBrowser && this.allowOtherBrowser){
+        this.browserAllowed(true);
+    }
+    else{
+        this.browserAllowed(false);
+    }
+
+
+    // system
+    var os = "others";
+    var clientStrings = [
+        {s: 'Windows', r: /(Windows 10.0|Windows NT 10.0)/},
+        {s: 'Windows', r: /(Windows 8.1|Windows NT 6.3)/},
+        {s: 'Windows', r: /(Windows 8|Windows NT 6.2)/},
+        {s: 'Windows', r: /(Windows 7|Windows NT 6.1)/},
+        {s: 'Windows', r: /Windows NT 6.0/},
+        {s: 'Windows', r: /Windows NT 5.2/},
+        {s: 'Windows', r: /(Windows NT 5.1|Windows XP)/},
+        {s: 'Windows', r: /(Windows NT 5.0|Windows 2000)/},
+        {s: 'Windows', r: /(Win 9x 4.90|Windows ME)/},
+        {s: 'Windows', r: /(Windows 98|Win98)/},
+        {s: 'Windows', r: /(Windows 95|Win95|Windows_95)/},
+        {s: 'Windows', r: /(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/},
+        {s: 'Windows', r: /Windows CE/},
+        {s: 'Windows', r: /Win16/},
+
+        {s: 'Mac', r: /Mac OS X/},
+        {s: 'Mac', r: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/},
+
+        {s: 'Linux', r: /(Linux|X11)/},
+
+        {s: 'Android', r: /Android/},
+
+        {s: 'iPhone', r: /iPhone/},
+
+        {s: 'iPad', r: /iPad/},
+
+        {s: 'others', r: /iPod/},
+        {s: 'others', r: /OpenBSD/},
+        {s: 'others', r: /SunOS/},
+        {s: 'others', r: /QNX/},
+        {s: 'others', r: /UNIX/},
+        {s: 'others', r: /BeOS/},
+        {s: 'others', r: /OS\/2/},
+        {s: 'others', r: /(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/}
+    ];
+
+    for (var id in clientStrings) {
+        var cs = clientStrings[id];
+        if (cs.r.test(nAgt)) {
+            os = cs.s;
+            break;
+        }
+    }
+
+    if (os == "Android"){
+        if (/Mobile/.test(nAgt)){
+            os = "androidMobile";
+        }
+        else{
+            os = "androidTablet";
+        }
+    }
+
+    if (this.allowedSystems().indexOf(os)>=0){
+        this.osAllowed(true);
+    }
+    else{
+        this.osAllowed(false);
+    }
+
+};
+
+
 
 
 ExperimentStartupScreen.prototype.languageSelected = function () {
