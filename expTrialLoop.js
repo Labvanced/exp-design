@@ -43,7 +43,7 @@ var ExpTrialLoop = function (expData) {
     this.trialRandomization = ko.observable("permute");
     this.fixedTrialOrder = ko.observableArray([]);
     this.uploadedTrialOrder = ko.observableArray([]);
-    this.showTrialsForSubject = ko.observable(0);
+    this.subjectCounterType = ko.observable("global");
 
     this.randomizationConstraint = ko.observable("none");
     this.minIntervalBetweenRep = ko.observable(0).extend({ numeric: 0 });
@@ -85,8 +85,8 @@ var ExpTrialLoop = function (expData) {
     this.trialsDefinedForNSubjects = ko.computed(function() {
         var n = self.uploadedTrialOrder().length;
         var out =[];
-        for (var i = 0; i<n; i++){
-            out.push(i+1);
+        for (var i = 1; i<=n; i++){
+            out.push(i);
         }
         return out;
     }, this);
@@ -105,6 +105,8 @@ var ExpTrialLoop = function (expData) {
 
     }, this);
 
+    // not serialized:
+    this.showTrialsForSubject = ko.observable(1);
 
 };
 
@@ -267,7 +269,7 @@ ExpTrialLoop.prototype.getCondGroupsOneTrialGroup = function (factorGroup) {
 };
 
 
-ExpTrialLoop.prototype.getTrialRandomizationOneRun = function() {
+ExpTrialLoop.prototype.getTrialRandomizationOneRun = function(subjCounterGlobal, subjCounterPerGroup) {
     var allTrials = [];
     for (var facGroupIdx =0; facGroupIdx <  this.factorGroups().length; facGroupIdx++) {
         var factorGroup = this.factorGroups()[facGroupIdx];
@@ -278,15 +280,17 @@ ExpTrialLoop.prototype.getTrialRandomizationOneRun = function() {
         var trials = this.drawTrialsFromConditions(conditions,facGroupIdx);
         allTrials.push(trials);
     }
-    var trialsRandomized = this.getRandomizedTrials(allTrials);
+    var trialsRandomized = this.getRandomizedTrials(allTrials, subjCounterGlobal, subjCounterPerGroup);
     return trialsRandomized;
 };
 
 
-ExpTrialLoop.prototype.doTrialRandomization = function() {
+ExpTrialLoop.prototype.doTrialRandomization = function(subjCounterGlobal, subjCounterPerGroup) {
+
+    this.showTrialsForSubject(subjCounterGlobal);
 
     if (this.allTrialsToAllSubjects()) {
-        return this.getTrialRandomizationOneRun();
+        return this.getTrialRandomizationOneRun(subjCounterGlobal, subjCounterPerGroup);
     }
     else {
 
@@ -299,8 +303,7 @@ ExpTrialLoop.prototype.doTrialRandomization = function() {
 
             // do new random draws until we have the number trials requested:
             while (trialsRandomizedAll.length < parseInt(numberTrialsToShow)) {
-                $.merge( trialsRandomizedAll, this.getTrialRandomizationOneRun() );
-            }
+                $.merge( trialsRandomizedAll, this.getTrialRandomizationOneRun(subjCounterGlobal, subjCounterPerGroup) );
 
             // reduce number to amount requested:
             if (trialsRandomizedAll.length > numberTrialsToShow) {
@@ -312,7 +315,7 @@ ExpTrialLoop.prototype.doTrialRandomization = function() {
         }
         else {
 
-            var trialsRandomized = this.getTrialRandomizationOneRun();
+            var trialsRandomized = this.getTrialRandomizationOneRun(subjCounterGlobal, subjCounterPerGroup);
 
             // TODO: filter trialsRandomized based on defined proportions between conditions
             if (trialsRandomized.length > numberTrialsToShow) {
@@ -979,7 +982,7 @@ ExpTrialLoop.prototype.sortTrialBasedOnUniqueId = function(trials) {
 
 
 
-ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials) {
+ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials, subjCounterGlobal, subjCounterPerGroup) {
 
     console.log("get randomization...");
 
@@ -1386,11 +1389,11 @@ ExpTrialLoop.prototype.fromJS = function(data) {
         this.visualDegreeToUnit(data.visualDegreeToUnit);
     }
 
+    if (data.hasOwnProperty('subjectCounterType')){
+        this.subjectCounterType(data.subjectCounterType);
+    }
     if (data.hasOwnProperty('uploadedTrialOrder')){
         this.uploadedTrialOrder(data.uploadedTrialOrder);
-    }
-    if (data.hasOwnProperty('showTrialsForSubject')){
-        this.showTrialsForSubject(data.showTrialsForSubject);
     }
     if (data.hasOwnProperty('trialLoopActivated')){
         this.trialLoopActivated(data.trialLoopActivated);
@@ -1443,8 +1446,8 @@ ExpTrialLoop.prototype.toJS = function() {
         balanceAmountOfConditions: this.balanceAmountOfConditions(),
         maxIntervalSameCondition: this.maxIntervalSameCondition(),
         randomizationConstraint: this.randomizationConstraint(),
+        subjectCounterType:this.subjectCounterType(),
         uploadedTrialOrder:this.uploadedTrialOrder(),
-        showTrialsForSubject:this.showTrialsForSubject(),
 
         trialLoopActivated:this.trialLoopActivated(),
         customStartTrial:this.customStartTrial(),

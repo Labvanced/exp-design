@@ -530,7 +530,7 @@ Experiment.prototype.toJS = function() {
         throw Error("cannot save publishing_data");
     }
 
-    if (this.exp_run_data_serialized instanceof ExpRunData){
+    if (this.exp_run_data instanceof ExpRunData){
         var exp_run_data_serialized = this.exp_run_data.toJS();
     }
     else {
