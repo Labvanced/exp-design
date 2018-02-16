@@ -244,7 +244,10 @@ GlobalVar.prototype.removeBackRef = function(entity) {
         }
     }
 
-    // check if variable is now unused
+    // check if variable is now completely without backRefs, then remove from entity list (update)
+    if (backRefs.length==0){
+        this.expData.deleteGlobalVar(this);
+    }
 
 };
 

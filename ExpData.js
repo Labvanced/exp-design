@@ -783,8 +783,9 @@ ExpData.prototype.fromJS = function(data) {
 ExpData.prototype.toJS = function() {
     var i;
 
-    // make sure that we have an up to date global list of all entities:
     // TODO: @Caspar: Remove this rebuildEntities and TEST if all elements and Events can still be saved and later loaded again:
+    // TODO: @Holger:: I removed all other places where rebuildEntities was used. However this cannot be removed, otherwise many errors occur. In fact this is the only place where rebuild entities is still executed.
+    // TODO: @Holger: Also this was in here for a ver long time, and it has nothing to do with my recent commit about variable names etc. I suggest keep it here or change it later.
     this.rebuildEntities();
 
     var sessionsPerGroup = [];
