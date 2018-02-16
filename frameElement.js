@@ -24,6 +24,9 @@ var FrameElement= function(expData) {
 
     // new
     this.stimulusInformation  = ko.observable(null);
+    this.canBeSelected = ko.observable(false);
+    this.canBeDragged= ko.observable(false);
+    this.canBeResized= ko.observable(false);
 
     this.id = ko.observable(guid());
     this.type = "FrameElement";
@@ -58,8 +61,8 @@ FrameElement.prototype.addContent = function(element){
 };
 
 
-FrameElement.prototype.dataType =      [ "numeric","boolean", "numeric", "numeric", "numeric","numeric","boolean","numeric","numeric"];
-FrameElement.prototype.modifiableProp = ["visibility","isActive","editorX", "editorY", "editorWidth","editorHeight","keepAspectRatio","contentScaling","contentRotation"];
+FrameElement.prototype.dataType =      [ "numeric","boolean", "numeric", "numeric", "numeric","numeric","boolean","numeric","numeric","boolean","boolean","boolean"];
+FrameElement.prototype.modifiableProp = ["visibility","isActive","editorX", "editorY", "editorWidth","editorHeight","keepAspectRatio","contentScaling","contentRotation","canBeSelected","canBeDragged","canBeResized"];
 FrameElement.prototype.subElementProp = ["content"];
 
 FrameElement.prototype.setAnchorPoint = function(horizontal, vertical) {
@@ -166,7 +169,15 @@ FrameElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('stimulusInformation')) {
         this.stimulusInformation(data.stimulusInformation);
     }
-
+    if(data.hasOwnProperty('canBeSelected')) {
+        this.canBeSelected(data.canBeSelected);
+    }
+    if(data.hasOwnProperty('canBeDragged')) {
+        this.canBeDragged(data.canBeDragged);
+    }
+    if(data.hasOwnProperty('canBeResized')) {
+        this.canBeResized(data.canBeResized);
+    }
 
     this.isActive(data.isActive);
     this.keepAspectRatio(data.keepAspectRatio);
@@ -220,7 +231,9 @@ FrameElement.prototype.toJS = function() {
         isActive:  this.isActive(),
         keepAspectRatio: this.keepAspectRatio(),
         stimulusInformation: this.stimulusInformation(),
-        content: contentData
+        content: contentData,
+        canBeSelected:this.canBeSelected(),
+        canBeDragged:this.canBeDragged(),
+        canBeResized:this.canBeResized()
     };
 };
-

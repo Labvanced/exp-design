@@ -284,7 +284,10 @@ FrameView.prototype.addElem = function(elementData,index) {
     var elemView = new FrameElementView(elementData, this);
 
     if (this.type == "editorView") {
-        var callbacks = new EditorCallbacks(elemView, this);  // is this used?
+        var callbacks = new EditorCallbacks(elemView, this,'editor',true,true,true);
+    }
+    else if (this.type == "playerView") {
+        var callbacks = new EditorCallbacks(elemView, this,'player',elementData.canBeResized(),elementData.canBeDragged(),elementData.canBeSelected());
     }
     this.viewElements.splice(index, 0, elemView);
 
