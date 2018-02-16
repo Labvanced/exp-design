@@ -62,7 +62,9 @@ var PublishingData = function(experiment) {
     this.publicationDate =  ko.observable(null);
 
     this.displayBackToLib = ko.observable(true);
+    this.lastLoadedNrRecordings =  ko.observable(0);
     // test
+
 
 
     this.recruitingEnabled= ko.computed(function () {
@@ -311,6 +313,11 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('measuredAverageTime')) {
         this.measuredAverageTime(data.measuredAverageTime);
     }
+    if (data.hasOwnProperty('lastLoadedNrRecordings')) {
+        this.lastLoadedNrRecordings(data.lastLoadedNrRecordings);
+    }
+
+
 
 
     // After publication
@@ -389,7 +396,8 @@ PublishingData.prototype.toJS = function() {
         raterUserIds:  this.raterUserIds(),
         publicationDate: this.publicationDate(),
 
-        displayBackToLib: this.displayBackToLib()
+        displayBackToLib: this.displayBackToLib(),
+        lastLoadedNrRecordings:this.lastLoadedNrRecordings()
 
 
     };
