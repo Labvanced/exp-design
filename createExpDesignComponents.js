@@ -92,6 +92,10 @@ var createExpDesignComponents = (function() {
                 {
                     filepath: "/html_views/ProgressBarElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createProgressBarComponents
+                },
+                {
+                    filepath: "/html_views/AudioRecordingElement.html?FILE_VERSION_PLACEHOLDER",
+                    createCompFcn: createAudioRecordingComponents
                 }
             ];
 
