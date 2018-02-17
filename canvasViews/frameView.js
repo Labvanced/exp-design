@@ -18,6 +18,8 @@ var FrameView = function(divContainer,parent,type) {
     this.width = 0;
     this.height = 0;
 
+    this.subElemSelected = false;
+
     this.scale = ko.observable(1);
     this.scale.subscribe(function(scale){
         if (self.type== "editorView") {

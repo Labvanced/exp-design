@@ -10,8 +10,6 @@ var EditorCallbacks = function(frameElementView,frameView,editorOrPlayer, resize
     this.div = this.frameElementView.div;
     this.dataModel = this.frameElementView.dataModel;
     this.frameView = frameView;
-    this.subElemSelected = false;
-
 
    this.addHandles();
 
@@ -87,25 +85,15 @@ EditorCallbacks.prototype.addCallbacks = function() {
     var self2 = this;
 
     if (this.select){
-
-        if (self2.editorOrPlayer == 'player') {
-            $('#experimentViewPort').click(function () {
-                if (self2.subElemSelected == false) {
-                    self2.frameView.parent.selectElement(null);
-                }
-            });
-        }
-
         $(this.div).click(function() {
             self2.frameView.parent.selectElement(self2.dataModel);
             if (self2.editorOrPlayer == 'player') {
-                self2.subElemSelected = true;
+                self2.frameView.subElemSelected = true;
                 setTimeout(function () {
-                    self2.subElemSelected = false;
+                    self2.frameView.subElemSelected = false;
                 },100)
             }
         });
-
     }
 
     if (this.drag){
@@ -119,9 +107,15 @@ EditorCallbacks.prototype.addCallbacks = function() {
             },
             start: function(event, ui) {
 
-                self2.frameView.setSelectedElement(self2.dataModel);
-                // temporarily disable autosaving during dragging:
+                if (self2.editorOrPlayer == 'player'){
+                    if (self2.select){
+                        self2.frameView.setSelectedElement(self2.dataModel);
+                    }
+                }
+
                 if (self2.editorOrPlayer == 'editor'){
+                    self2.frameView.setSelectedElement(self2.dataModel);
+                    // temporarily disable autosaving during dragging:
                     self2.dataModel.expData.parentExperiment.tempDisableAutosave = true;
                 }
 
@@ -166,7 +160,10 @@ EditorCallbacks.prototype.addCallbacks = function() {
 
             }
         });
-        $(self2.div).resizable("disable");
+        if (self2.editorOrPlayer == 'editor'){
+            $(self2.div).resizable("disable");
+        }
+
     }
 
 };
