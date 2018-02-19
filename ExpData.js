@@ -545,15 +545,18 @@ ExpData.prototype.setPointers = function() {
     var allEntities = this.entities();
     for (var i=0; i<allEntities.length; i++){
         if (allEntities[i].type == "GlobalVar") {
-            if (!(this.allVariables.hasOwnProperty(allEntities[i].name().toLowerCase()))){
-                this.allVariables[allEntities[i].name().toLowerCase()] = allEntities[i];
-            }
-            else if (this.allVariables[allEntities[i].name().toLowerCase()] instanceof Array){
-                this.allVariables[allEntities[i].name().toLowerCase()].push(allEntities[i]);
-            }
-            else{
-                var temp =  this.allVariables[allEntities[i].name().toLowerCase()];
-                this.allVariables[allEntities[i].name().toLowerCase()] = [temp,allEntities[i]];
+            if (allEntities[i].name()){
+                if (!(this.allVariables.hasOwnProperty(allEntities[i].name().toLowerCase()))){
+                    this.allVariables[allEntities[i].name().toLowerCase()] = allEntities[i];
+                }
+                else if (this.allVariables[allEntities[i].name().toLowerCase()] instanceof Array){
+                    this.allVariables[allEntities[i].name().toLowerCase()].push(allEntities[i]);
+                }
+                else{
+                    var temp =  this.allVariables[allEntities[i].name().toLowerCase()];
+                    this.allVariables[allEntities[i].name().toLowerCase()] = [temp,allEntities[i]];
+                }
+
             }
 
         }
@@ -580,25 +583,28 @@ ExpData.prototype.setPointers = function() {
 
 
 ExpData.prototype.addVarToHashList = function(variable) {
-    if (!(this.allVariables.hasOwnProperty(variable.name().toLowerCase()))){
-        this.allVariables[variable.name().toLowerCase()] = variable;
-    }
-
-    else if (this.allVariables[variable.name().toLowerCase()] instanceof Array){
-        var idx = this.allVariables[variable.name().toLowerCase()].indexOf(variable);
-        if (idx==-1){
-            this.allVariables[variable.name().toLowerCase()].push(variable);
+    if (variable.name()){
+        if (!(this.allVariables.hasOwnProperty(variable.name().toLowerCase()))){
+            this.allVariables[variable.name().toLowerCase()] = variable;
         }
 
-    }
+        else if (this.allVariables[variable.name().toLowerCase()] instanceof Array){
+            var idx = this.allVariables[variable.name().toLowerCase()].indexOf(variable);
+            if (idx==-1){
+                this.allVariables[variable.name().toLowerCase()].push(variable);
+            }
 
-    else {
-        var temp =  this.allVariables[variable.name().toLowerCase()];
-        if (temp !==variable) {
-            this.allVariables[variable.name().toLowerCase()] =  [temp,variable];
         }
 
+        else {
+            var temp =  this.allVariables[variable.name().toLowerCase()];
+            if (temp !==variable) {
+                this.allVariables[variable.name().toLowerCase()] =  [temp,variable];
+            }
+
+        }
     }
+
 };
 
 ExpData.prototype.deleteVarFromHashList = function(variable,oldName) {
@@ -608,7 +614,7 @@ ExpData.prototype.deleteVarFromHashList = function(variable,oldName) {
     else{
         var name = variable.name();
     }
-    if (name !=""){
+    if (name && name !=""){
         if (this.allVariables.hasOwnProperty(name.toLowerCase())){
             if (this.allVariables[name.toLowerCase()] instanceof Array){
                 var idx = this.allVariables[name.toLowerCase()].indexOf(variable);
