@@ -62,10 +62,6 @@ var PublishingData = function(experiment) {
     this.publicationDate =  ko.observable(null);
 
     this.displayBackToLib = ko.observable(true);
-    this.lastLoadedNrRecordings =  ko.observable(0);
-    // test
-
-
 
     this.recruitingEnabled= ko.computed(function () {
         if (self.recruitInLibrary() || self.recruitSecretly() || self.recruitViaCrowdsourcing() || self.recruitViaOwnCrowdsourcing() || self.recruitViaCustomLink()) {
@@ -313,9 +309,6 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('measuredAverageTime')) {
         this.measuredAverageTime(data.measuredAverageTime);
     }
-    if (data.hasOwnProperty('lastLoadedNrRecordings')) {
-        this.lastLoadedNrRecordings(data.lastLoadedNrRecordings);
-    }
 
 
 
@@ -396,8 +389,7 @@ PublishingData.prototype.toJS = function() {
         raterUserIds:  this.raterUserIds(),
         publicationDate: this.publicationDate(),
 
-        displayBackToLib: this.displayBackToLib(),
-        lastLoadedNrRecordings:this.lastLoadedNrRecordings()
+        displayBackToLib: this.displayBackToLib()
 
 
     };

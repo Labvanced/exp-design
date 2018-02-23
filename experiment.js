@@ -46,6 +46,15 @@ var Experiment = function () {
     /////////////////////////////////////////////////////////////////
 
     var self = this;
+    this.total_num_recordings = ko.computed(function() {
+        if (self.exp_server_data()) {
+            var d = self.exp_server_data();
+            return d.numSubjectsRecordedCrowd + d.numSubjectsRecordedExternal +d.numSubjectsRecordedLibrary + d.numSubjectsRecordedSmart;
+        }
+        else {
+            return 0;
+        }
+    });
 
     this.canBeModifiedOrDeleted = ko.computed(function () {
         if (this.status() == "create"){
