@@ -292,12 +292,12 @@ ExpTrialLoop.prototype.doTrialRandomization = function() {
         var condGroups = this.getCondGroups();
         var numberTrialsToShow = this.numberTrialsToShow();
 
-        if (condGroups.totalNrTrialsMin < numberTrialsToShow) {
+        if (condGroups.totalNrTrialsMin < numberTrialsToShow && condGroups.totalNrTrialsMin>0) {
 
             var trialsRandomizedAll = [];
 
             // do new random draws until we have the number trials requested:
-            while (trialsRandomizedAll.length < numberTrialsToShow) {
+            while (trialsRandomizedAll.length < parseInt(numberTrialsToShow)) {
                 $.merge( trialsRandomizedAll, this.getTrialRandomizationOneRun() );
             }
 
@@ -344,6 +344,7 @@ ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupId
 
         var options = [];
         for (var i=0; i <nrExistingTrials; i++) {
+            // TODO replace with hash table
             if (excludedTrialsPerCondGroup[condGroup].indexOf(i)<0){
                 options.push(i);
             }
@@ -432,7 +433,7 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
 
             if (factor.randomizationType()=='unbalanced'){
                 factorNames.push(facIdx);
-                for (var trialIdx =0; trialIdx < factorLevels.length; trialIdx++) {factorLevels
+                for (var trialIdx =0; trialIdx < factorLevels.length; trialIdx++) {
                     var randValue = Math.floor(Math.random()*nrLevels);
                     factorLevels[trialIdx].push(levels[randValue].name());
                 }
@@ -985,7 +986,7 @@ ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials) {
         if (this.trialRandomization()=="permute"){ // all trials permuted
             if (this.randomizationConstraint()=="maximum"){
                 // do trial ordering with constraint for each factor group
-                preOutArray = [];
+                var preOutArray = [];
                 for (var facGroup = 0; facGroup < allTrials.length; facGroup++) {
                     var out = [];
                     var ffConds = this.factorGroups()[facGroup].getFixedFactorConditions();
@@ -1011,7 +1012,7 @@ ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials) {
                 for (var l = 0; l < preOutArray.length; l++) {
                     lengthArr.push(preOutArray[l].length);
                 }
-                maxi = lengthArr.indexOf(Math.max.apply(null, lengthArr));
+                var maxi = lengthArr.indexOf(Math.max.apply(null, lengthArr));
                 var copy = preOutArray[maxi].slice(0);
                 outArray = preOutArray[maxi];
 
