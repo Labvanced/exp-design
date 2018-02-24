@@ -54,6 +54,7 @@ var ExpTrialLoop = function (expData) {
     this.balanceAmountOfConditions = ko.observable(true);
 
     this.trialLoopActivated = ko.observable(true);
+    this.customStartTrial =  ko.observable(1);
 
     // external devices
     this.webcamEnabled = ko.observable(false);
@@ -1107,8 +1108,13 @@ ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials) {
 
         else if (this.trialRandomization()=="uploadTrialsSequence") {
             var mergedTrials  = [].concat.apply([], allTrials);
-            var sortedArray = this.sortTrialBasedOnUniqueId(mergedTrials);
+            var sortedArray = this.sortTrialBasedOnUniqueId(mergedTrials);gi
             var outArray = this.getTrialsBasedOnInputArray(sortedArray);
+        }
+        else if (this.trialRandomization()=="adaptive") {
+            var mergedTrials  = [].concat.apply([], allTrials);
+            var outArray = this.sortTrialBasedOnUniqueId(mergedTrials);
+            // TODO change first  trial ID to custom start
         }
     }
 
@@ -1389,6 +1395,10 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('trialLoopActivated')){
         this.trialLoopActivated(data.trialLoopActivated);
     }
+    if (data.hasOwnProperty('customStartTrial')){
+        this.customStartTrial(data.customStartTrial);
+    }
+
 
 
 
@@ -1437,6 +1447,7 @@ ExpTrialLoop.prototype.toJS = function() {
         showTrialsForSubject:this.showTrialsForSubject(),
 
         trialLoopActivated:this.trialLoopActivated(),
+        customStartTrial:this.customStartTrial(),
 
 
         zoomMode: this.zoomMode(),
