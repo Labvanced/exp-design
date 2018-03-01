@@ -43,7 +43,7 @@ var ExpTrialLoop = function (expData) {
     this.trialRandomization = ko.observable("permute");
     this.fixedTrialOrder = ko.observableArray([]);
     this.uploadedTrialOrder = ko.observableArray([]);
-    this.subjectCounterType = ko.observable("global");
+    this.subjectCounterType = ko.observable("global"); // global or group
 
     this.randomizationConstraint = ko.observable("none");
     this.minIntervalBetweenRep = ko.observable(0).extend({ numeric: 0 });
@@ -105,8 +105,6 @@ var ExpTrialLoop = function (expData) {
 
     }, this);
 
-    // not serialized:
-    this.showTrialsForSubject = ko.observable(1);
 
 };
 
@@ -287,8 +285,6 @@ ExpTrialLoop.prototype.getTrialRandomizationOneRun = function(subjCounterGlobal,
 
 ExpTrialLoop.prototype.doTrialRandomization = function(subjCounterGlobal, subjCounterPerGroup) {
 
-    this.showTrialsForSubject(subjCounterGlobal);
-
     if (this.allTrialsToAllSubjects()) {
         return this.getTrialRandomizationOneRun(subjCounterGlobal, subjCounterPerGroup);
     }
@@ -303,7 +299,8 @@ ExpTrialLoop.prototype.doTrialRandomization = function(subjCounterGlobal, subjCo
 
             // do new random draws until we have the number trials requested:
             while (trialsRandomizedAll.length < parseInt(numberTrialsToShow)) {
-                $.merge( trialsRandomizedAll, this.getTrialRandomizationOneRun(subjCounterGlobal, subjCounterPerGroup) );
+                $.merge(trialsRandomizedAll, this.getTrialRandomizationOneRun(subjCounterGlobal, subjCounterPerGroup));
+            }
 
             // reduce number to amount requested:
             if (trialsRandomizedAll.length > numberTrialsToShow) {
@@ -892,12 +889,12 @@ ExpTrialLoop.prototype.checkConstraint = function(currentArray,ffConds) {
 };
 
 
-ExpTrialLoop.prototype.getTrialsBasedOnInputArray = function(sortedArray) {
+ExpTrialLoop.prototype.getTrialsBasedOnInputArray = function(sortedArray, subjectIdx) {
 
     try {
-        var n = this.showTrialsForSubject()-1;
-        // TODO in the player the sever has to find and insert the subject index.
-        var numberArray = this.uploadedTrialOrder()[n];
+        var uploadedTrialOrder = this.uploadedTrialOrder();
+        var subjectWrappedIdx = subjectIdx % uploadedTrialOrder.length;
+        var numberArray = this.uploadedTrialOrder()[subjectWrappedIdx];
         var outArray = [];
         for (var t = 0; t<numberArray.length; t++){
             var trial = sortedArray[numberArray[t]];
@@ -1111,8 +1108,15 @@ ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials, subjCounterGlob
 
         else if (this.trialRandomization()=="uploadTrialsSequence") {
             var mergedTrials  = [].concat.apply([], allTrials);
-            var sortedArray = this.sortTrialBasedOnUniqueId(mergedTrials);gi
-            var outArray = this.getTrialsBasedOnInputArray(sortedArray);
+            var sortedArray = this.sortTrialBasedOnUniqueId(mergedTrials);
+            var subjectIdx = 0;
+            if (this.subjectCounterType()=="global") {
+                subjectIdx = subjCounterGlobal - 1;
+            }
+            else if (this.subjectCounterType()=="group") {
+                subjectIdx = subjCounterPerGroup - 1;
+            }
+            var outArray = this.getTrialsBasedOnInputArray(sortedArray, subjectIdx);
         }
         else if (this.trialRandomization()=="adaptive") {
             var mergedTrials  = [].concat.apply([], allTrials);
