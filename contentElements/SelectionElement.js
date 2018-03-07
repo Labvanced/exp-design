@@ -20,39 +20,16 @@ var SelectionElement = function(expData) {
 
 
     ///// not serialized
-    this.countryData= ko.observableArray([]);  // general country list
-    this.languageData= ko.observableArray([]); // general language list
-
     this.selected = ko.observable(false);
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
 
-
-    $.ajax({
-        url: "/api/1/countries",
-        type: 'GET',
-        async: true
-    }).done(function (result) {
-       // ko.mapping.fromJS(result, {}, self.countryData);
-        self.countryData(result);
-    });
-
-    $.ajax({
-        url: "/api/1/languages",
-        type: 'GET',
-        async: true
-    }).done(function (result) {
-       // ko.mapping.fromJS(result, {}, self.languageData);
-        self.languageData(result);
-    });
-
-
     this.predefinedData = ko.computed(function() {
         if (self.selectedPredefinedOption()=='countryList'){
-            return self.countryData();
+            return globalCountryData();
         }
         else if (self.selectedPredefinedOption()=='languageList'){
-            return self.languageData();
+            return globalLanguageData();
         }
     });
 };

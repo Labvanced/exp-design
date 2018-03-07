@@ -1,4 +1,7 @@
 
+globalCountryData = null;
+globalLanguageData = null;
+
 var createExpDesignComponents = (function() {
     var expDesignComponentsLoaded = false;
 
@@ -94,6 +97,10 @@ var createExpDesignComponents = (function() {
                     createCompFcn: createProgressBarComponents
                 },
                 {
+                    filepath: "/html_views/FileUploadElement.html?FILE_VERSION_PLACEHOLDER",
+                    createCompFcn: createFileUploadElementComponents
+                },
+                {
                     filepath: "/html_views/AudioRecordingElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createAudioRecordingComponents
                 }
@@ -111,7 +118,28 @@ var createExpDesignComponents = (function() {
                         if (numRemainingItems==0) {
                             console.log('finished loading all knockout ExpDesign components and templates.');
                             expDesignComponentsLoaded = true;
-                            callback();
+
+                            // now load languages and countries:
+                            globalCountryData = ko.observableArray([]);
+                            globalLanguageData = ko.observableArray([]);
+                            $.ajax({
+                                url: "/api/1/countries",
+                                type: 'GET',
+                                async: true
+                            }).done(function (result) {
+                                globalCountryData(result);
+
+                                $.ajax({
+                                    url: "/api/1/languages",
+                                    type: 'GET',
+                                    async: true
+                                }).done(function (result) {
+                                    globalLanguageData(result);
+                                    callback();
+                                });
+
+                            });
+
                         }
                     });
                 })(i);

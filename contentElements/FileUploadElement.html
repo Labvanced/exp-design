@@ -1,0 +1,92 @@
+<template id='fileupload-editview-template'>
+    <div class="panel-body" style="height: 100%; margin-top: -10px">
+        <div class="taskeditor-header">Selection</div>
+
+        <!-- ko if: (dataModel.parent.parent instanceof PageData)  -->
+        <div>
+            <span>Shuffle position on page:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.parent.includeInPageShuffle,click:function(){return true},clickBubble: false">
+        </div>
+        <!-- /ko -->
+
+        <div>
+            <label style="cursor: pointer">Show Question Header: <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false"></label>
+        </div>
+
+        <div>
+            <label style="cursor: pointer">Required:<input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false"></label>
+
+        </div>
+        <hr>
+
+
+
+
+        <label>
+            Linked Variable:
+            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
+        </label>
+
+    </div>
+</template>
+
+
+
+
+<template id='fileupload-preview-template'>
+    <!-- ko if: (dataModel.enableTitle())  -->
+    <div data-bind="component: {name : 'editable-text-element-preview', params : dataModel.questionText}"></div>
+    <br>
+    <!-- /ko -->
+    <div>
+
+        <input type="file" class="playerFileUploadInput" accept="*/*" style="display: none;" />
+
+        <div class="navigationWrapper" data-bind="foreach: dataModel.buttonEntries">
+                <div class="navi-button" data-bind="click: chooseFile, style:{ backgroundColor: $parent.dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){$parent.dataModel.enableHighlight($element)}, mouseout: function(data,event){$parent.dataModel.disableHighlight($element)}}">
+                    <img class="editobject-icon" width="25" height="25" src="/resources/icons/upload.svg"/>
+                    <span data-bind="wysiwyg: $data.buttonText, valueUpdate: afterkeydown"></span>
+                </div>
+        </div>
+
+        <div class="navigationWrapper">
+            <span class="navi-button" data-bind="">
+                Choose File
+            </span>
+        </div>
+
+        <!-- ko if: dataModel.isRequired() -->
+        <span class="required-question-icon"  data-bind="tooltip:'.requiredInfoEditor'">
+            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+        </span>
+        <!-- /ko -->
+    </div>
+    <br>
+</template>
+
+
+
+
+<template id='fileupload-playerview-template'>
+    <!-- ko if: (dataModel.enableTitle())  -->
+    <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
+    <br>
+    <!-- /ko -->
+    <div>
+
+        <input type="file" class="playerFileUploadInput" accept="*/*" style="display: none;" />
+        <span class="navi-button" style="height: 35px; width: 200px;" data-bind="click: chooseFile">
+            <img class="editobject-icon" width="25" height="25" src="/resources/icons/upload.svg"/> Choose File
+        </span>
+
+        <!-- ko if: dataModel.triedToSubmit() -->
+        <!-- ko ifnot: dataModel.dataIsValid() -->
+        <span class="required-question-icon"  data-bind="tooltip:'.requiredInfo'">
+            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+        </span>
+        <!-- /ko -->
+        <!-- /ko -->
+    </div>
+    <br>
+
+</template>
