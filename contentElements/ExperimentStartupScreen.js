@@ -398,6 +398,7 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
     };
     playerAjaxPost('/startFirstPlayerSession',
         {
+            expSessionNr: player.expSessionNr,
             expId: player.expId,
             subject_code: player.subject_code,
             token: player.token,
