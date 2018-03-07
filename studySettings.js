@@ -29,8 +29,37 @@ var StudySettings = function (expData) {
     this.minRes = ko.observable(false);
     this.minWidth = ko.observable(800);
     this.minHeight = ko.observable(600);
+
+    // number entered before checking the validity (min/max). gets updated after check.
+    this.numPartEntered = ko.observable(expData.numPartOfJointExp());
+
+    // change these values to refactor the min/max number of participants
+    this.minNumPartOfJointExp = ko.observable(2);
+    this.maxNumPartOfJointExp = ko.observable(10);
 };
 StudySettings.prototype.timezones = ["-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0","+1","+2","+3","+4","+5","+6","+7","+8","+9","+10","+11","+12"];
+
+// function to check the validity of the input number of participants. (min and max attr. not sufficient)
+StudySettings.prototype.checkNumPartEntered = function(){
+    var checkedValue = null;
+
+    // entered number too small
+    if(this.numPartEntered() < this.minNumPartOfJointExp()){
+        checkedValue = this.minNumPartOfJointExp();
+
+    // entered number too large
+    } else if(this.numPartEntered() > this.maxNumPartOfJointExp()){
+        checkedValue = this.maxNumPartOfJointExp();
+
+    // entered number valid
+    } else{
+        checkedValue = this.numPartEntered();
+    }
+
+    // update actual numPartOfJointExp in ExpData and the entered number for the view.
+    this.expData.numPartOfJointExp(checkedValue);
+    this.numPartEntered(checkedValue);
+};
 
 
 StudySettings.prototype.setPointers = function(entitiesArr) {

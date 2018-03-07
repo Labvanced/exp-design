@@ -3694,6 +3694,202 @@ ActionRecordQuestionaireResponse.prototype.toJS = function() {
         variableId: this.variableId()
     };
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////  ActionDistributeVariable  //////////////////////////////////////////
+
+/**
+ * This action distributes variables to other players within a joint experiment.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
+var ActionDistributeVariable = function(event) {
+    var self = this;
+
+    this.event = event;
+
+    // serialized
+    this.variable = ko.observable(null);
+    this.operand = ko.observable(new OperandVariable(event));
+    this.playersToDistributeToMode = ko.observable("All");
+    this.isCustomSelection = ko.computed(function(){
+        return self.playersToDistributeToMode() == "Custom";
+    });
+    this.playersToDistributeTo = this.initPlayersToDistributeTo();
+    this.blockUntilDone = ko.observable(false);
+    this.isInitialized = false;
+
+};
+
+ActionDistributeVariable.prototype.type = "ActionDistributeVariable";
+ActionDistributeVariable.prototype.label = "Distribute Variable";
+
+/**
+ * If an array is passed to this function, it is assumed to contain only playerIds of players who are selected (for fromJS)
+ * @param playerArray
+ */
+ActionDistributeVariable.prototype.initPlayersToDistributeTo = function(playerArray) {
+
+    var observableArray = ko.observableArray(null);
+
+    for(var i=0; i<this.event.parent.expData.numPartOfJointExp(); i++){
+        var isSelected;
+        if(!playerArray || playerArray.includes(i)){
+            isSelected = true;
+        } else{
+            isSelected = false;
+        }
+        observableArray.push({
+            playerId: (i+1),
+            isSelected: ko.observable(isSelected)
+        });
+    }
+    return observableArray;
+};
+
+ActionDistributeVariable.prototype.isValid = function(){
+    return true;
+};
+
+ActionDistributeVariable.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'dist variable');
+};
+
+// like ActionSetVariable
+ActionDistributeVariable.prototype.fromJS = function(data) {
+    this.variable(data.variable);
+    this.operand(null);
+    this.playersToDistributeTo(null);
+    this.playersToDistributeToMode(null);
+    this.blockUntilDone(null);
+
+    if(data.operand){
+        var operand = new OperandVariable(this.event);
+        operand.fromJS(data.operand);
+        this.operand(operand);
+    }
+
+    if(data.playersToDistributeTo){
+        this.playersToDistributeTo = this.initPlayersToDistributeTo(data.playersToDistributeTo);
+    }
+
+    if(data.playersToDistributeToMode){
+        this.playersToDistributeToMode(data.playersToDistributeToMode);
+    }
+
+    if(data.hasOwnProperty('blockUntilDone')) { // because of boolean value
+        this.blockUntilDone(data.blockUntilDone);
+    }
+
+    return this;
+};
+
+// like ActionSetVariable
+ActionDistributeVariable.prototype.toJS = function(data) {
+    var varId = null;
+    var operand = null;
+    var playersToDistributeTo = null;
+    var playersToDistributeToMode = null;
+    var blockUntilDone = false;
+
+    if (this.variable()) {
+        varId = this.variable().id();
+    }
+
+    if (this.operand()){
+        operand = this.operand().toJS();
+    }
+
+    if (this.playersToDistributeTo()){
+        var playersToDistributeToArray = [];
+        // jQuery mapping?
+        for(var i=0; i<this.playersToDistributeTo().length;i++){
+            if(this.playersToDistributeTo()[i].isSelected()){
+                playersToDistributeToArray.push(i);
+            }
+        }
+        playersToDistributeTo = playersToDistributeToArray;
+    }
+
+    if(this.playersToDistributeToMode()){
+        playersToDistributeToMode = this.playersToDistributeToMode();
+    }
+
+    if(this.hasOwnProperty('blockUntilDone')) { // because of boolean value
+        blockUntilDone = this.blockUntilDone();
+    }
+
+    return {
+        variable: varId,
+        operand: operand,
+        playersToDistributeTo: playersToDistributeTo,
+        playersToDistributeToMode: playersToDistributeToMode,
+        blockUntilDone: blockUntilDone,
+        type: this.type
+    };
+};
+
+ActionDistributeVariable.prototype.setPointers = function(entitiesArr){
+    var varToSet = entitiesArr.byId[this.variable()];
+    if (varToSet){
+        this.variable(varToSet);
+    }
+    this.operand().setPointers(entitiesArr);
+};
+
+ActionRecord.prototype.reAddEntities = function(entitiesArr) {
+    // add operand:
+    if (this.operand() && this.operand().reAddEntities){
+        this.operand().reAddEntities(entitiesArr);
+    }
+
+    // add variable:
+    if (this.variable()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
+    }
+};
+
+ActionDistributeVariable.prototype.run = function(triggerParams) {
+    var self = this;
+
+    var operandValueToSend = null;
+    if(self.operand){
+        operandValueToSend = self.operand().getValue();
+    }
+
+    // jQuery mapping?
+    var playersToDistributeToArray = [];
+    for(var i=0; i<self.playersToDistributeTo().length;i++){
+        if(self.playersToDistributeToMode()=="All" || self.playersToDistributeTo()[i].isSelected()){
+            playersToDistributeToArray.push(self.playersToDistributeTo()[i].playerId);
+        }
+    }
+
+    //console.log("try to distribute variable '" + self.variable().name() + "'");
+
+    player.socket.emit('distribute variable',
+        {
+            variable:  {name: self.variable().name(), id: self.variable().id()},
+            operandValue: operandValueToSend,
+            playersToDistributeTo: playersToDistributeToArray,
+            blockUntilDone: self.blockUntilDone()
+        }
+    );
+};
+
+ActionDistributeVariable.prototype.destroyOnPlayerFrame = function() {
+};
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
