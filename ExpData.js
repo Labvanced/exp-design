@@ -258,7 +258,7 @@ ExpData.prototype.staticTranslations = {
         answerPlaceholder: "Teilnehmer Antwort",
         endExpMsgTest:  "Die Test-Aufnahme dieses Taks ist beendet. Um das ganze Experiment zu testen, oder um Daten aufzunehmen, starten Sie die Studie unter 'Run' in der Navigationsleite.",
         participationAgreement1: "Ich stimme zu, dass alle persönlichen Daten, die ich hier zur Verfügung stelle, und alle meine Antworten aufgezeichnet werden und zu Forschungszwecken pseudonymisiert verwendet werden dürfen. Zudem stimme ich den",
-        participationAgreement2: "der Scicovery GmbH bzgl Datenaufnahme, Datenspeicherung, und Datenverwaltung von Teilnehmerdaten zu."
+        participationAgreement2: "der Scicovery GmbH bzgl Datenaufnahme, Datenspeicherung, und Datenverwaltung von Teilnehmerdaten zu.",
         multiUserExpLobby: "Experiment mit mehreren Teilnehmern",
         participantsInLobby: "Teilnehmer in der Lobby:",
         readyToStart: "Bereit zum Starten?",
@@ -270,7 +270,6 @@ ExpData.prototype.staticTranslations = {
         yourCrowdsourcingID: "Ihre Worker / Crowdsourcing Id (*):"
         }
 
-    }
 };
 
 
