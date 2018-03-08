@@ -38,6 +38,7 @@ var PublishingData = function(experiment) {
     // crowdsourcing
     this.crowdsourcingStatus = ko.observable('inactive');
     this.measuredAverageTime =  ko.observable(null);
+    this.completionLink = ko.observable('');
 
 
 
@@ -309,6 +310,11 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('measuredAverageTime')) {
         this.measuredAverageTime(data.measuredAverageTime);
     }
+    if (data.hasOwnProperty('completionLink')) {
+        this.completionLink(data.completionLink);
+    }
+
+
 
 
 
@@ -375,6 +381,7 @@ PublishingData.prototype.toJS = function() {
         // crowdsourcing
         crowdsourcingStatus: this.crowdsourcingStatus(),
         measuredAverageTime:this.measuredAverageTime,
+        completionLink:this.completionLink(),
 
         // initial subject survey
         surveyItemGender:this.surveyItemGender(),

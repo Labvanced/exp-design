@@ -135,7 +135,8 @@ ExpData.prototype.fixedVarNames = [
     'varTimeMeasureSpecMax',
     'varCrowdsourcingCode',
     'varGazeX',
-    'varGazeY'
+    'varGazeY',
+    'varCrowdsourcingSubjId'
 ];
 
 ExpData.prototype.staticTranslations = {
@@ -189,7 +190,8 @@ ExpData.prototype.staticTranslations = {
         answerPlaceholder: "Participant Answer...",
         endExpMsgTest:  "The test recording of this tak is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel.",
         participationAgreement1: " I agree that all the personal data, which I provide here and all my responses will be recorded, and can be used for research purposes in a pseudonymised way. I also agree to the",
-        participationAgreement2: "of the Scicovery GmbH for recording, storing, and handling, participant data."
+        participationAgreement2: "of the Scicovery GmbH for recording, storing, and handling, participant data.",
+        yourCrowdsourcingID: "Your worker / crowdsourcing ID (*):"
 },
     German: {
         library: "Experimente",
@@ -241,7 +243,8 @@ ExpData.prototype.staticTranslations = {
         answerPlaceholder: "Teilnehmer Antwort",
         endExpMsgTest:  "Die Test-Aufnahme dieses Taks ist beendet. Um das ganze Experiment zu testen, oder um Daten aufzunehmen, starten Sie die Studie unter 'Run' in der Navigationsleite.",
         participationAgreement1: "Ich stimme zu, dass alle persönlichen Daten, die ich hier zur Verfügung stelle, und alle meine Antworten aufgezeichnet werden und zu Forschungszwecken pseudonymisiert verwendet werden dürfen. Zudem stimme ich den",
-        participationAgreement2: "der Scicovery GmbH bzgl Datenaufnahme, Datenspeicherung, und Datenverwaltung von Teilnehmerdaten zu."
+        participationAgreement2: "der Scicovery GmbH bzgl Datenaufnahme, Datenspeicherung, und Datenverwaltung von Teilnehmerdaten zu.",
+        yourCrowdsourcingID: "Ihre Worker / Crowdsourcing Id (*):"
     }
 };
 
@@ -363,6 +366,10 @@ ExpData.prototype.createVars = function() {
     if (!this.varGazeY()) {
         this.varGazeY((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeY'));
     }
+    if (!this.varCrowdsourcingSubjId()) {
+        this.varCrowdsourcingSubjId((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Crowdsourcing_SubjId'));
+    }
+
 };
 
 

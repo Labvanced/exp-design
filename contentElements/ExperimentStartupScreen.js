@@ -1,6 +1,7 @@
 var ExperimentStartupScreen = function(experiment) {
     var self = this;
 
+
     this.expData = experiment.exp_data;
 
     this.imageType = ko.observable(experiment.publishing_data.imageType());
@@ -15,6 +16,7 @@ var ExperimentStartupScreen = function(experiment) {
     this.selectedCountry = ko.observable(null);
     this.selectedLanguage = ko.observable(null);
     this.selectedEmail = ko.observable(null);
+    this.selectedCSId= ko.observable(null);
 
     this.agreeToTermsAndConditions = ko.observable(false);
 
@@ -366,7 +368,7 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
         return;
     }
 
-    if (this.requiredGender() =='hidden' && this.requiredAge() =='hidden' && this.requiredCountry() =='hidden' && this.requiredLanguage() =='hidden' && this.requiredEmail() =='hidden'){
+    if (this.requiredGender() =='hidden' && this.requiredAge() =='hidden' && this.requiredCountry() =='hidden' && this.requiredLanguage() =='hidden' && this.requiredEmail() =='hidden' && !player.isCrowdsourcingSession()){
         this.sendDataAndContinue();
     }
     else{
@@ -385,6 +387,9 @@ ExperimentStartupScreen.prototype.checkSurveyData = function () {
 };
 
 ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
+
+    // temp save worker id
+    this.expData.varCrowdsourcingSubjId().value().value(this.selectedCSId());
 
     var self = this;
     var survey_data = {

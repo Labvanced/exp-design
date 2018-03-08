@@ -55,6 +55,14 @@
                                     <p class="pt-studydescription text-center" data-bind="text: expData.staticStrings().initialSurvey"></p>
                                     <div class="">
                                         <form data-bind="submit: checkSurveyData">
+
+                                            <div  class="ssp-question" data-bind="visible:player.isCrowdsourcingSession">
+                                                <label>
+                                                    <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourCrowdsourcingID"></span></span>
+                                                    <input class="ssp-input-long" type="text" data-bind="value: selectedCSId">
+                                                </label>
+                                            </div>
+
                                             <div class="ssp-question" data-bind="visible:requiredGender() !='hidden'">
                                                 <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourGender"></span><span data-bind="visible: requiredGender() =='required'"> (*)</span>:</span>
                                                 <label class="mg-r-10 ssp-radio"><input type="radio" name="genderReq" value="male" data-bind="checked: selectedGender"><span data-bind="text: expData.staticStrings().yourGenderMale"></span></label>
@@ -100,6 +108,8 @@
                                                     <input class="ssp-input-long" type="email" data-bind="value: selectedEmail">
                                                 </label>
                                             </div>
+
+
 
                                             <div class="alert alert-warning" data-bind="visible: (surveySubmitted() && errorString()!='')" >
                                                 <span data-bind="text: errorString"></span>

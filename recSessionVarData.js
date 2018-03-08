@@ -16,6 +16,7 @@ var RecSessionVarData = function(recSession) {
     this.crowdsourcingCode = ko.observable(null);
     this.debugData = ko.observable(null);
     this.serverResponseTimes = ko.observable(null);
+    this.crowdsourcinSubjId = ko.observable(null);
 
     // dynamically added:
     this.timeDelayMeanTrimed = ko.observable("not measured");
@@ -64,6 +65,9 @@ RecSessionVarData.prototype.fromJS = function(data) {
     }
     if (data.hasOwnProperty('serverResponseTimes')){
         this.serverResponseTimes(JSON.stringify(data.serverResponseTimes));
+    }
+    if (data.hasOwnProperty('crowdsourcinSubjId')){
+        this.crowdsourcinSubjId(JSON.stringify(data.crowdsourcinSubjId));
     }
 
     return this;
