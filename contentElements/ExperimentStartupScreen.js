@@ -31,6 +31,8 @@ var ExperimentStartupScreen = function(experiment) {
     this.wizardStep = ko.observable("selectStudyLanguage");
     this.selectedStudyLanguage = ko.observable(this.expData.translatedLanguages()[0]);
 
+    this.jointExpLobbyModel = ko.observable(new JointExpLobby(self.expData));
+
     this.timeToNextSession = ko.observable("");
 
     this.imgSource = ko.computed( function() {
@@ -336,23 +338,23 @@ ExperimentStartupScreen.prototype.languageSelected = function () {
 ExperimentStartupScreen.prototype.jumpToSurvey = function () {
 
     if (player.runOnlyTaskId) {
-        // directly skip to loading screen (no need to initialize recording session on server):
+        // directly skip to joint exp lobby:
         player.setSubjectGroupNr(1, 1);
         player.preloadAllContent();
-        this.jumpToLoadingScreen();
+        this.jumpToJointExpLobby();
         return;
     }
 
     if (player.runOnlyGroupNr && player.runOnlySessionNr) {
-        // still need to send data (initialize recording session on server) before loading screen
+        // directly skip to joint exp lobby:
         player.setSubjectGroupNr(player.runOnlyGroupNr, player.runOnlySessionNr);
         player.preloadAllContent();
-        this.sendDataAndContinue();
+        this.jumpToJointExpLobby();
         return;
     }
 
     if (player.runOnlyGroupNr) {
-        // still need to send data (initialize recording session on server) before loading screen
+        // still need to send data (initialize recording session on server) before jump to joint exp lobby:
         player.runOnlySessionNr = "1";
         player.setSubjectGroupNr(player.runOnlyGroupNr, player.runOnlySessionNr);
         player.preloadAllContent();
@@ -364,7 +366,7 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
         // directly skip to loading screen (recording session already initialized on server:
         player.setSubjectGroupNr(player.groupNrAssignedByServer, player.sessionNrAssignedByServer);
         player.preloadAllContent();
-        this.jumpToLoadingScreen();
+        this.jumpToJointExpLobby();
         return;
     }
 
@@ -401,6 +403,7 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
     };
     playerAjaxPost('/startFirstPlayerSession',
         {
+            expSessionNr: player.expSessionNr,
             expId: player.expId,
             subject_code: player.subject_code,
             token: player.token,
@@ -422,9 +425,25 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
             player.selectedEmail = self.selectedEmail();
             player.setSubjectGroupNr(data.groupNr, data.sessionNr);
             player.preloadAllContent();
-            self.jumpToLoadingScreen();
+            self.jumpToJointExpLobby();
         }
     );
+};
+
+ExperimentStartupScreen.prototype.jumpToJointExpLobby = function() {
+    var self = this;
+    if (this.expData.isJointExp()) {
+        this.jointExpLobbyModel().initSocketAndListeners();
+        this.wizardStep("jointExpLobby");
+        this.jointExpLobbyModel().gotMatchedFromServer.subscribe(function(isMatched) {
+            if (isMatched) {
+                self.jumpToLoadingScreen();
+            }
+        });
+    }
+    else {
+        this.jumpToLoadingScreen();
+    }
 };
 
 ExperimentStartupScreen.prototype.jumpToLoadingScreen = function() {

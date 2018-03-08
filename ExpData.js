@@ -18,6 +18,10 @@ var ExpData = function (parentExperiment) {
     this.availableSessions = ko.observableArray([]);
     this.availableGroups = ko.observableArray([]);
 
+    this.isJointExp = ko.observable(false);    // needs to be placed before initialize studySettings!
+    this.numPartOfJointExp = ko.observable(2); // needs to be placed before initialize studySettings!
+    this.jointOptionModified = ko.observable(false);
+
     //serialized
     this.studySettings = new StudySettings(this.expData);
 
@@ -98,6 +102,7 @@ ExpData.prototype.oldFixedVarNames = [
     'varTaskIndex',
     'varTrialId',
     'varTrialIndex',
+    'varRoleId',
     'varCondition',
     'varBrowserSpecEMPTY',
     'varSystemSpecEMPTY',
@@ -125,6 +130,7 @@ ExpData.prototype.fixedVarNames = [
     'varTaskNr',
     'varTrialId',
     'varTrialNr',
+    'varRoleId',
     'varConditionId',
     'varBrowserSpec',
     'varSystemSpec',
@@ -191,8 +197,17 @@ ExpData.prototype.staticTranslations = {
         endExpMsgTest:  "The test recording of this tak is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel.",
         participationAgreement1: " I agree that all the personal data, which I provide here and all my responses will be recorded, and can be used for research purposes in a pseudonymised way. I also agree to the",
         participationAgreement2: "of the Scicovery GmbH for recording, storing, and handling, participant data.",
+        multiUserExpLobby: "Multiple Participant Experiment",
+        participantsInLobby: "Participants in lobby:",
+        readyToStart: "Ready to start?",
+        waitingForOtherParticipants: "Waiting for other participants...",
+        experimentStartsShortly: "Your experiment will start shortly...",
+        successfullyMatched_1: "Successfully matched. Press ",
+        successfullyMatched_2: " to proceed to experiment!",
+        continueJointExpLobby: "continue",
         yourCrowdsourcingID: "Your worker / crowdsourcing ID (*):"
-},
+
+    },
     German: {
         library: "Experimente",
         langSelect: "Diese Studie ist in mehreren Sprachen verfügbar.",
@@ -243,8 +258,18 @@ ExpData.prototype.staticTranslations = {
         answerPlaceholder: "Teilnehmer Antwort",
         endExpMsgTest:  "Die Test-Aufnahme dieses Taks ist beendet. Um das ganze Experiment zu testen, oder um Daten aufzunehmen, starten Sie die Studie unter 'Run' in der Navigationsleite.",
         participationAgreement1: "Ich stimme zu, dass alle persönlichen Daten, die ich hier zur Verfügung stelle, und alle meine Antworten aufgezeichnet werden und zu Forschungszwecken pseudonymisiert verwendet werden dürfen. Zudem stimme ich den",
-        participationAgreement2: "der Scicovery GmbH bzgl Datenaufnahme, Datenspeicherung, und Datenverwaltung von Teilnehmerdaten zu.",
+        participationAgreement2: "der Scicovery GmbH bzgl Datenaufnahme, Datenspeicherung, und Datenverwaltung von Teilnehmerdaten zu."
+        multiUserExpLobby: "Experiment mit mehreren Teilnehmern",
+        participantsInLobby: "Teilnehmer in der Lobby:",
+        readyToStart: "Bereit zum Starten?",
+        waitingForOtherParticipants: "Warte auf andere Teilnehmer...",
+        experimentStartsShortly: "Das Experiment startet in Kürze...",
+        successfullyMatched_1: "Sie wurden erfolgreich einem Experiment zugeteilt. Drücken Sie",
+        successfullyMatched_2: "um zu dem Experiment zu gelangen!",
+        continueJointExpLobby: "Weiter,",
         yourCrowdsourcingID: "Ihre Worker / Crowdsourcing Id (*):"
+        }
+
     }
 };
 
@@ -356,6 +381,9 @@ ExpData.prototype.createVars = function() {
     }
     if (!this.varBrowserVersionSpec()) {
         this.varBrowserVersionSpec((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'BrowserVersion_Spec'));
+    }
+    if (!this.varRoleId()){
+        this.varRoleId((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Role_Id'));
     }
     if (!this.varCrowdsourcingCode()) {
         this.varCrowdsourcingCode((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'nominal', 'Crowdsourcing_Code'));
@@ -734,6 +762,18 @@ ExpData.prototype.fromJS = function(data) {
         this.dateLastModified(data.dateLastModified);
     }
 
+    if(data.hasOwnProperty('isJointExp')) {
+        this.isJointExp(data.isJointExp);
+    }
+
+    if(data.hasOwnProperty('numPartOfJointExp')) {
+        this.numPartOfJointExp(data.numPartOfJointExp);
+    }
+
+    if(data.hasOwnProperty('jointOptionModified')){
+        this.jointOptionModified(data.jointOptionModified);
+    }
+
     if (data.hasOwnProperty('entities')) {
         this.entities(jQuery.map(data.entities, function (entityJson) {
             return entityFactory(entityJson, self);
@@ -816,6 +856,9 @@ ExpData.prototype.toJS = function() {
 
     var data = {
         dateLastModified: this.dateLastModified(),
+        isJointExp: this.isJointExp(),
+        numPartOfJointExp: this.numPartOfJointExp(),
+        jointOptionModified: this.jointOptionModified(),
         entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
         availableTasks: jQuery.map( this.availableTasks(), function( task ) { return task.id(); }),
         availableBlocks: jQuery.map( this.availableBlocks(), function( block ) { return block.id(); }),

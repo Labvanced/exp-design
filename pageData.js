@@ -24,6 +24,10 @@ var PageData = function(expData) {
     this.events = ko.observableArray([]).extend({sortById: null});
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
 
+    // consider using additional ko.computeds to make sure that syncFrame can only be activated when exp. is joint exp.
+    this.syncFrame = ko.observable(true);
+
+
     this.hideMouse = ko.observable(false);
 
     // serialized (specific for pageData):
@@ -63,7 +67,7 @@ var PageData = function(expData) {
     });
 };
 
-PageData.prototype.modifiableProp = ["name","offset","offsetEnabled","hideMouse"];
+PageData.prototype.modifiableProp = ["name","offset","offsetEnabled","hideMouse", "syncFrame"];
 
 
 
@@ -402,6 +406,9 @@ PageData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("hideMouse")) {
         this.hideMouse(data.hideMouse);
     }
+    if (data.hasOwnProperty("syncFrame")) {
+        this.syncFrame(data.syncFrame);
+    }
 
     return this;
 };
@@ -419,6 +426,7 @@ PageData.prototype.toJS = function() {
         offsetEnabled: this.offsetEnabled(),
         bgColor: this.bgColor(),
         hideMouse: this.hideMouse(),
+        syncFrame: this.syncFrame(),
         events: jQuery.map( this.events(), function( event ) {
             return event.toJS();
         } ),

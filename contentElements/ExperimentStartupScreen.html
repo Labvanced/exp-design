@@ -124,7 +124,30 @@
                                     </div>
                                 </div>
 
-                                <!-- 3. error shown if sessionNotReady -->
+                                <!-- 3. lobby for joint experiments -->
+                                <div id="JointExpLobby" style="border-style: solid; border-width: 1px;" data-bind="visible: wizardStep()=='jointExpLobby'">
+                                    <h3 class="text-center" data-bind="text: expData.staticStrings().multiUserExpLobby"></h3>
+
+                                    <div style="text-align: center; margin-top: 20px; font-size: 100%;" data-bind="visible: !jointExpLobbyModel().gotMatchedFromServer()"><span data-bind="text: expData.staticStrings().participantsInLobby"></span> <span style="font-weight: bold" data-bind="text: jointExpLobbyModel().currentNrOfParticipants()"></span></div> <br>
+
+                                    <div name="participantReady" style="text-align: center; margin-top: 10px;" data-bind="visible: !jointExpLobbyModel().gotMatchedFromServer()">
+                                        <span style="text-align: center; margin-left: 20px; font-style: italic;" data-bind="visible: jointExpLobbyModel().waiting(), text: expData.staticStrings().waitingForOtherParticipants"></span>
+
+                                        <div style="text-align: center"><label class="checkbox-inline" data-bind="visible: !jointExpLobbyModel().waiting()"><input type="checkbox" id="readyToStart" data-bind="checked: jointExpLobbyModel().readyToStart, click: jointExpLobbyModel().emitReadiness"> <span data-bind="text: expData.staticStrings().readyToStart"></span></label></div> <br>
+                                        <h5 class="text-center" style="margin-left: 20px; font-style: italic;" data-bind="visible: jointExpLobbyModel().readyToStart(), text: expData.staticStrings().experimentStartsShortly"></h5>
+                                    </div>
+
+                                    <div name="Matched" style="text-align: center; font-style: italic;" data-bind="visible: jointExpLobbyModel().gotMatchedFromServer()">
+                                        <span style="margin-left: 20px; font-style: italic;" data-bind="text: expData.staticStrings().successfullyMatched_1"></span>
+                                        <b data-bind="text: expData.staticStrings().continueJointExpLobby"></b>
+                                        <span data-bind="text: expData.staticStrings().successfullyMatched_2"></span><br>
+
+                                        <button class="btn-regular btn-lab-lightblue mg-20" style="margin-top: 20px; margin-bottom: 20px;" data-bind="click: jumpToLoadingScreen, text: expData.staticStrings().continue"></button>
+                                    </div>
+
+                                </div>
+
+                                <!-- 4. error shown if sessionNotReady -->
                                 <div id="sessionNotReady" data-bind="visible: wizardStep()=='sessionNotReady'">
                                     <div>
                                         <span data-bind="text: expData.staticStrings().errorSessionNotReady"></span>
@@ -135,7 +158,7 @@
                                     <br>
                                 </div>
 
-                                <!-- 4. error shown if sessionOver -->
+                                <!-- 5. error shown if sessionOver -->
                                 <div id="sessionOver" data-bind="visible: wizardStep()=='sessionOver'">
                                     <div>
                                         <span data-bind="text: expData.staticStrings().errorSessionOver"></span>
@@ -143,7 +166,7 @@
                                     <br>
                                 </div>
 
-                                <!-- 5. Loading -->
+                                <!-- 6. Loading -->
                                 <div class="row text-center" data-bind="visible: wizardStep()=='loading'">
                                     <div class="study-loader"></div>
                                     <p class="text-bold lightblue"><span data-bind="text: preloadingProgressRounded"></span>%</p>
@@ -154,7 +177,7 @@
                                     <p class="text-regular" data-bind="text: expData.staticStrings().loading3"></p>
                                 </div>
 
-                                <!-- 6 Ready to start -->
+                                <!-- 7 Ready to start -->
                                 <div class="row text-center" data-bind="visible: wizardStep()=='readyToStart'">
                                     <p class="text-medium" data-bind="text: expData.staticStrings().loadingComplete"></p>
                                     <p class="text-medium" data-bind="text: expData.staticStrings().canStart"></p>

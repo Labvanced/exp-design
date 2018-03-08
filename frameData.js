@@ -22,6 +22,9 @@ var FrameData = function(expData) {
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
     this.hideMouse = ko.observable(false);
 
+    // consider using additional ko.computeds to make sure that syncFrame can only be activated when exp. is joint exp.
+    this.syncFrame = ko.observable(true);
+
     // serialized (specific for frameData):
     this.frameWidth = ko.observable(800).extend({ rateLimit: { timeout: 50, method: "notifyWhenChangesStop" } });
     this.frameHeight = ko.observable(450).extend({ rateLimit: { timeout: 50, method: "notifyWhenChangesStop" } });
@@ -38,8 +41,7 @@ var FrameData = function(expData) {
     this.playerFrame = null; // pointer to the playerFrame if running in player.
 };
 
-FrameData.prototype.modifiableProp = ["name","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset","hideMouse"];
-
+FrameData.prototype.modifiableProp = ["name","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset","hideMouse", "syncFrame"];
 
 FrameData.prototype.deleteChildEntity = function(entity) {
     var self = this;
@@ -329,6 +331,9 @@ FrameData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("hideMouse")) {
         this.hideMouse(data.hideMouse);
     }
+    if (data.hasOwnProperty("syncFrame")) {
+        this.syncFrame(data.syncFrame);
+    }
     this.events(jQuery.map( data.events, function( eventData ) {
         return (new Event(self)).fromJS(eventData);
     } ));
@@ -354,6 +359,7 @@ FrameData.prototype.toJS = function() {
         zoomMode: this.zoomMode(),
         emotionEnabled: this.emotionEnabled(),
         hideMouse: this.hideMouse(),
+        syncFrame: this.syncFrame(),
         emotionFeedbackEnabled: this.emotionFeedbackEnabled(),
         emotionOffset: this.emotionOffset(),
         events: jQuery.map( this.events(), function( event ) {
