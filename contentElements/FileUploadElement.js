@@ -60,10 +60,49 @@ FileUploadElement.prototype.enableHighlight = function(elem) {
     $(elem).css({
         'backgroundColor': self.bgColorHover(),
         'cursor': 'pointer'
-
     });
 };
 
+FileUploadElement.prototype.initColorPicker = function() {
+
+    var self = this;
+    $("#bgColorPickerDefault").spectrum({
+        color: self.bgColorDefault(),
+        preferredFormat: "hex",
+        showInput: true,
+        change: function (color) {
+            var colorStr = color.toHexString();
+            self.bgColorDefault(colorStr);
+
+        }
+    });
+    if (this.bg1Subsciption) {
+        this.bg1Subsciption.dispose();
+    }
+    this.bg1Subsciption = this.bgColorDefault.subscribe(function(val){
+        $("#bgColorPickerDefault").spectrum("set", val);
+    });
+
+
+    $("#bgColorPickerHover").spectrum({
+        color: self.bgColorHover(),
+        preferredFormat: "hex",
+        showInput: true,
+        change: function (color) {
+            var colorStr = color.toHexString();
+            self.bgColorHover(colorStr);
+
+        }
+    });
+
+    if (this.bg2Subsciption) {
+        this.bg2Subsciption.dispose();
+    }
+    this.bg2Subsciption = this.bgColorHover.subscribe(function(val){
+        $("#bgColorPickerHover").spectrum("set", val);
+    });
+
+};
 
 FileUploadElement.prototype.disableHighlight = function(elem) {
     var self= this;
@@ -138,7 +177,9 @@ FileUploadElement.prototype.toJS = function() {
         questionText: this.questionText().toJS(),
         variable: variableId,
         isRequired:this.isRequired(),
-        enableTitle:this.enableTitle()
+        bgColorDefault: this.bgColorDefault(),
+        bgColorHover: this.bgColorHover(),
+        enableTitle: this.enableTitle()
     };
 };
 
@@ -159,6 +200,10 @@ FileUploadElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('enableTitle')){
         this.enableTitle(data.enableTitle);
     }
+    if (data.hasOwnProperty('bgColorDefault')) {
+        this.bgColorDefault(data.bgColorDefault);
+        this.bgColorHover(data.bgColorHover);
+    }
 };
 
 
@@ -169,6 +214,7 @@ function createFileUploadElementComponents() {
                 var viewModel = function(dataModel){
                     var self = this;
                     this.dataModel = dataModel;
+                    this.dataModel.initColorPicker();
                     this.currentEntry = ko.observable('');
                     this.focus = function () {
                         this.dataModel.ckInstance.focus()
