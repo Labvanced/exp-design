@@ -214,7 +214,7 @@ GlobalVarRef = function (entity, parentNamedEntity, isWritten, isRead, refLabel)
 
 GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, isRead, refLabel) {
     // only add back references in editor for variables view:
-    if (window.uc!==undefined && (uc instanceof Client)) {
+    if (window.uc!==undefined && (uc instanceof Client) && entity) {
         var obj = new GlobalVarRef(entity, parentNamedEntity, isWritten, isRead, refLabel);
         this.backRefs.push(obj);
         this.calcUnused();

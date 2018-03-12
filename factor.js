@@ -64,7 +64,16 @@ Factor.prototype.init = function(name) {
     this.updateLevels();
 
     this.randomizationConverter();
+
+    this.setVariableBackRef();
 };
+
+
+Factor.prototype.setVariableBackRef = function() {
+
+    this.globalVar().addBackRef(this, this.parent, true, true, 'Factor');
+};
+
 
 Factor.prototype.updateLevels = function() {
     this.globalVar().levels([]);
@@ -82,6 +91,15 @@ Factor.prototype.addLevel = function() {
 
 Factor.prototype.removeLevel = function(lvlIdx) {
     this.factorGroup.removeLevelFromFactor(this,lvlIdx);
+
+    // remove lvl form other task with same factor
+    var self = this;
+    var refs =  this.globalVar().backRefs();
+    refs.forEach(function(ref){
+      if (ref.refLabel == 'Factor' && ref.entity.factorGroup !==self.factorGroup) {
+         ref.entity.factorGroup.removeLevelFromFactor(ref.entity,lvlIdx);
+      }
+    });
 };
 
 Factor.prototype._addLevel = function() {
@@ -117,6 +135,8 @@ Factor.prototype.setPointers = function(entitiesArr) {
         balancedInFactors.push(obj);
     });
     this.balancedInFactors(balancedInFactors);
+
+    this.setVariableBackRef();
 
     this.randomizationConverter();
 };

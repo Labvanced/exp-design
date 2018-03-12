@@ -616,6 +616,28 @@ ExpData.prototype.setPointers = function() {
 };
 
 
+ExpData.prototype.getAllFactorsVars = function() {
+    var Gvs = [];
+    var self = this;
+    Object.keys(this.allVariables).forEach(function(key,index){
+        var elem = self.allVariables[key];
+        if (elem instanceof Array){
+            elem.forEach(function(subElem){
+                if (subElem.isFactor() && Gvs.indexOf(subElem)==-1){
+                    Gvs.push(subElem);
+                }
+            })
+        }
+        else{
+            if (elem.isFactor() && Gvs.indexOf(elem)==-1){
+                Gvs.push(elem);
+            }
+
+        }
+    });
+    return Gvs;
+};
+
 ExpData.prototype.addVarToHashList = function(variable) {
     if (variable.name()){
         if (!(this.allVariables.hasOwnProperty(variable.name().toLowerCase()))){

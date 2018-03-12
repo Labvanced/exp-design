@@ -359,6 +359,8 @@ FactorGroup.prototype.removeFactor = function(factor) {
 
     var idx = this.factors().indexOf(factor);
 
+    factor.globalVar().removeBackRef(factor);
+
     function deepRemove(arrMultiDim,subIndex,depth) {
         var t;
         if (depth == idx) {

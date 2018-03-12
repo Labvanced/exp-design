@@ -46,6 +46,7 @@ RequirementOR.prototype.checkIfTrue = function(parameters) {
 RequirementOR.prototype.setPointers = function(entitiesArr) {
     jQuery.each( this.childRequirements(), function( index, elem ) {
         elem.setPointers(entitiesArr);
+        elem.setParent(self);
     } );
 };
 
@@ -146,8 +147,10 @@ RequirementAND.prototype.checkIfTrue = function(parameters) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 RequirementAND.prototype.setPointers = function(entitiesArr) {
+    var self = this;
     jQuery.each( this.childRequirements(), function( index, elem ) {
         elem.setPointers(entitiesArr);
+        elem.setParent(self);
     } );
 };
 
