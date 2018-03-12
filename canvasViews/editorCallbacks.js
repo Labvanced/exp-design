@@ -2,6 +2,7 @@
 var EditorCallbacks = function(frameElementView,frameView,editorOrPlayer, resize,drag,select) {
 
 
+    // TODO: dispose callbacks in palyer
     this.editorOrPlayer = editorOrPlayer;
     this.resize = resize;
     this.drag = drag;
@@ -219,4 +220,8 @@ EditorCallbacks.prototype.addResize = function() {
             }
     });
 
+};
+
+EditorCallbacks.prototype.dispose = function() {
+        //TODO add dispose
 };

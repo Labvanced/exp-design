@@ -21,7 +21,7 @@ var FrameView = function(divContainer,parent,type) {
     this.subElemSelected = false;
 
     this.scale = ko.observable(1);
-    this.scale.subscribe(function(scale){
+    this.scaleSubscription = this.scale.subscribe(function(scale){
         if (self.type== "editorView") {
             $(self.divContainer).css({
                 "width": self.frameData.frameWidth() * scale + 4,
@@ -97,6 +97,7 @@ FrameView.prototype.dispose = function() {
     for (var i= 0, len=viewElements.length; i<len; i++) {
         viewElements[i].dispose();
     }
+    this.scaleSubscription.dispose();
 };
 
 FrameView.prototype.setDataModel = function(frameData) {
@@ -286,10 +287,13 @@ FrameView.prototype.addElem = function(elementData,index) {
     var elemView = new FrameElementView(elementData, this);
 
     if (this.type == "editorView") {
-        var callbacks = new EditorCallbacks(elemView, this,'editor',true,true,true);
+        new EditorCallbacks(elemView, this,'editor',true,true,true);
     }
     else if (this.type == "playerView") {
-        var callbacks = new EditorCallbacks(elemView, this,'player',elementData.canBeResized(),elementData.canBeDragged(),elementData.canBeSelected());
+        if ( elementData.canBeResized() || elementData.canBeDragged() || elementData.canBeSelected()){
+            new EditorCallbacks(elemView, this,'player',elementData.canBeResized(),elementData.canBeDragged(),elementData.canBeSelected());
+        }
+
     }
     this.viewElements.splice(index, 0, elemView);
 
