@@ -70,6 +70,10 @@ ImageElement.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
+ImageElement.prototype.dispose = function() {
+
+};
+
 
 ImageElement.prototype.fromJS = function(data) {
     var self = this;

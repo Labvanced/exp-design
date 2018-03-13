@@ -39,6 +39,13 @@ var PageElement = function(expData) {
 
 };
 
+PageElement.prototype.dispose = function() {
+    if (this.content()){
+        this.content().dispose();
+    }
+};
+
+
 PageElement.prototype.addContent = function(element){
     this.content(element);
     element.parent = this;

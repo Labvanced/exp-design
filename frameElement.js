@@ -49,6 +49,12 @@ var FrameElement= function(expData) {
     this.modifier = ko.observable(new Modifier(this.expData, this));
 };
 
+FrameElement.prototype.dispose = function() {
+    if (this.content()){
+        this.content().dispose();
+    }
+};
+
 FrameElement.prototype.addContent = function(element){
     this.content(element);
     if (element.initWidth) {

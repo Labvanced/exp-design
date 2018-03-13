@@ -23,6 +23,10 @@ InvisibleElement.prototype.init = function(entitiesArr) {
 
 };
 
+InvisibleElement.prototype.dispose = function() {
+
+};
+
 InvisibleElement.prototype.toJS = function() {
     return {
         type: this.type

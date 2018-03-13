@@ -22,6 +22,12 @@ var Sequence = function (expData) {
 
 };
 
+Sequence.prototype.dispose = function() {
+    this.elements().forEach(function (elem){
+        elem.dispose();
+    });
+};
+
 /**
  * Select a specific or multiple trial types.
  *

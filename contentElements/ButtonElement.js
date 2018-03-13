@@ -65,6 +65,10 @@ ButtonElement.prototype.enableHighlight = function(elem) {
     });
 };
 
+ButtonElement.prototype.dispose = function() {
+
+};
+
 
 ButtonElement.prototype.disableHighlight = function(elem) {
     var self= this;

@@ -99,11 +99,14 @@ EditableTextElement.prototype.addRef = function(globalVarId){
     }
 };
 
+
 EditableTextElement.prototype.removeRefs = function () {
     for(var id in this.globalVarRefs){
         if(this.globalVarRefs.hasOwnProperty(id)){
             var entity = this.expData.entities.byId[id];
-            entity.removeBackRef(this.globalVarRefs[id]);
+            if (entity){
+                entity.removeBackRef(this);
+            }
         }
     }
 };
@@ -112,12 +115,12 @@ EditableTextElement.prototype.removeRefbyId = function (varId) {
 
     if(this.globalVarRefs.hasOwnProperty(varId)){
         var entity = this.expData.entities.byId[varId];
-        entity.removeBackRef(this.globalVarRefs[varId]);
+        if (entity) {
+            entity.removeBackRef(this);
+        }
     }
 
 };
-
-
 
 
 

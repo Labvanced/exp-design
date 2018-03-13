@@ -43,6 +43,14 @@ var FrameData = function(expData) {
 
 FrameData.prototype.modifiableProp = ["name","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset","hideMouse", "syncFrame"];
 
+
+
+FrameData.prototype.dispose = function() {
+    this.elements().forEach(function (elem){
+        elem.dispose();
+    });
+};
+
 FrameData.prototype.deleteChildEntity = function(entity) {
     var self = this;
     var obsArr;

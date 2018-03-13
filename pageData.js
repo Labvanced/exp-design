@@ -69,7 +69,11 @@ var PageData = function(expData) {
 
 PageData.prototype.modifiableProp = ["name","offset","offsetEnabled","hideMouse", "syncFrame"];
 
-
+PageData.prototype.dispose = function() {
+    this.elements().forEach(function (elem){
+        elem.dispose();
+    });
+};
 
 PageData.prototype.reshuffleEntries = function() {
 
