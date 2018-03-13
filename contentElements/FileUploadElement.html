@@ -42,8 +42,8 @@
     <div>
 
         <input type="file" class="playerFileUploadInput" accept="*/*" style="display: none;" />
-        <div class="navi-button" data-bind="style:{ backgroundColor: $parent.dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){$parent.dataModel.enableHighlight($element)}, mouseout: function(data,event){$parent.dataModel.disableHighlight($element)}}">
-            <span data-bind="wysiwyg: $data.buttonText, valueUpdate: afterkeydown"></span>
+        <div class="navi-button" data-bind="style:{ backgroundColor: dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){dataModel.enableHighlight($element)}, mouseout: function(data,event){dataModel.disableHighlight($element)}}">
+            <span data-bind="component: {name : 'editable-text-element-preview', params : dataModel.buttonText}"></span>
         </div>
 
         <!-- ko if: dataModel.isRequired() -->
@@ -66,8 +66,8 @@
     <div>
 
         <input type="file" class="playerFileUploadInput" accept="*/*" style="display: none;" />
-        <span class="navi-button" style="height: 35px; width: 200px;" data-bind="click: chooseFile, style:{ backgroundColor: $parent.dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){$parent.dataModel.enableHighlight($element)}, mouseout: function(data,event){$parent.dataModel.disableHighlight($element)}}">
-            <span data-bind="text: $data.buttonText"></span>
+        <span class="navi-button" data-bind="click: chooseFile, style:{ backgroundColor: dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){dataModel.enableHighlight($element)}, mouseout: function(data,event){dataModel.disableHighlight($element)}}">
+            <span data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.buttonText}"></span>
         </span>
 
         <!-- ko if: dataModel.triedToSubmit() -->

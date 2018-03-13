@@ -7,6 +7,7 @@ var FileUploadElement = function(expData) {
     //serialized
     this.type = "FileUploadElement";
     this.questionText = ko.observable(null); // EditableTextElement
+    this.buttonText = ko.observable(null);
 
     this.bgColorDefault = ko.observable('#99cc66');
     this.bgColorHover = ko.observable('#99de50');
@@ -31,6 +32,7 @@ FileUploadElement.prototype.numVarNamesRequired = 1;
 
 FileUploadElement.prototype.dispose = function() {
     this.questionText().dispose();
+    this.buttonText().dispose();
     this.variable().removeBackRef(this);
 };
 
@@ -38,6 +40,9 @@ FileUploadElement.prototype.init = function(variableName) {
 
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
+
+    this.buttonText(new EditableTextElement(this.expData, this, '<p><span style="text-align: center;">Upload File</span></p>'));
+    this.buttonText().init();
 
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType('file');
@@ -119,6 +124,7 @@ FileUploadElement.prototype.disableHighlight = function(elem) {
  */
 FileUploadElement.prototype.getAllModifiers = function(modifiersArr) {
     this.questionText().getAllModifiers(modifiersArr);
+    this.buttonText().getAllModifiers(modifiersArr);
 };
 
 FileUploadElement.prototype.setPointers = function(entitiesArr) {
@@ -128,6 +134,7 @@ FileUploadElement.prototype.setPointers = function(entitiesArr) {
         this.setVariableBackRef();
     }
     this.questionText().setPointers(entitiesArr);
+    this.buttonText().setPointers(entitiesArr);
 };
 
 FileUploadElement.prototype.reAddEntities = function(entitiesArr) {
@@ -135,15 +142,18 @@ FileUploadElement.prototype.reAddEntities = function(entitiesArr) {
         entitiesArr.push(this.variable());
     }
     this.questionText().reAddEntities(entitiesArr);
+    this.buttonText().reAddEntities(entitiesArr);
 };
 
 FileUploadElement.prototype.selectTrialType = function(selectionSpec) {
     this.questionText().selectTrialType(selectionSpec);
+    this.buttonText().selectTrialType(selectionSpec);
 };
 
 FileUploadElement.prototype.getTextRefs = function(textArr, label){
     var questlabel = label + '.Question';
     this.questionText().getTextRefs(textArr, questlabel);
+    this.buttonText().getTextRefs(textArr, questlabel);
     return textArr;
 };
 
@@ -180,7 +190,8 @@ FileUploadElement.prototype.toJS = function() {
         isRequired:this.isRequired(),
         bgColorDefault: this.bgColorDefault(),
         bgColorHover: this.bgColorHover(),
-        enableTitle: this.enableTitle()
+        enableTitle: this.enableTitle(),
+        buttonText: this.buttonText().toJS()
     };
 };
 
@@ -193,6 +204,13 @@ FileUploadElement.prototype.fromJS = function(data) {
     }
     else{
         this.questionText(new EditableTextElement(this.expData, this, data.questionText));
+    }
+    if(data.buttonText.hasOwnProperty('rawText')) {
+        this.buttonText(new EditableTextElement(this.expData, this, ''));
+        this.buttonText().fromJS(data.buttonText);
+    }
+    else{
+        this.buttonText(new EditableTextElement(this.expData, this, data.buttonText));
     }
     this.variable(data.variable);
     if (data.hasOwnProperty('isRequired')) {
