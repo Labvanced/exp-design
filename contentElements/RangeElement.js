@@ -25,6 +25,7 @@ RangeElement.prototype.dataType =      [ ];
 RangeElement.prototype.modifiableProp = [ ];
 RangeElement.prototype.initWidth = 500;
 RangeElement.prototype.initHeight = 100;
+RangeElement.prototype.numVarNamesRequired = 1;
 
 RangeElement.prototype.init = function(variableName) {
 

@@ -22,6 +22,7 @@ DisplayTextElement.prototype.dataType =      [ ];
 DisplayTextElement.prototype.modifiableProp = [ ];
 DisplayTextElement.prototype.initWidth = 500;
 DisplayTextElement.prototype.initHeight = 80;
+DisplayTextElement.prototype.numVarNamesRequired = 0;
 
 
 DisplayTextElement.prototype.init = function() {

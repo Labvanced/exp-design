@@ -53,6 +53,7 @@ AudioRecordingElement.prototype.label = "AudioRecording";
 AudioRecordingElement.prototype.iconPath = "/resources/icons/microphone.svg";
 AudioRecordingElement.prototype.dataType =      [ "string", "string"];
 AudioRecordingElement.prototype.modifiableProp = ["file_id","file_orig_name"];
+AudioRecordingElement.prototype.numVarNamesRequired = 1;
 
 
 AudioRecordingElement.prototype.init = function(variableName) {

@@ -30,6 +30,7 @@ MultiLineInputElement.prototype.dataType =      [ ];
 MultiLineInputElement.prototype.modifiableProp = [ ];
 MultiLineInputElement.prototype.initWidth = 500;
 MultiLineInputElement.prototype.initHeight = 100;
+MultiLineInputElement.prototype.numVarNamesRequired = 1;
 
 
 

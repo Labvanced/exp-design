@@ -32,6 +32,7 @@ InputElement.prototype.modifiableProp = [ ];
 InputElement.prototype.typeOptions = ["number","text","date","time","color"];
 InputElement.prototype.initWidth = 300;
 InputElement.prototype.initHeight = 100;
+InputElement.prototype.numVarNamesRequired = 1;
 InputElement.prototype.dataTypePerInputType = {
     "number": 'numeric',
     "text": 'string',

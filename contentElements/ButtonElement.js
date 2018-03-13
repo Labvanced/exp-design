@@ -27,6 +27,7 @@ ButtonElement.prototype.label = "Button";
 ButtonElement.prototype.iconPath = "/resources/icons/tools/tool_button.svg";
 ButtonElement.prototype.modifiableProp = [];
 ButtonElement.prototype.dataType =      [];
+ButtonElement.prototype.numVarNamesRequired = 0;
 
 ButtonElement.prototype.initWidth = 120;
 ButtonElement.prototype.initHeight = 40;

@@ -36,6 +36,7 @@ NaviElement.prototype.dataType =      [];
 
 NaviElement.prototype.initWidth = 400;
 NaviElement.prototype.initHeight = 50;
+NaviElement.prototype.numVarNamesRequired = 0;
 
 NaviElement.prototype.init = function() {
 

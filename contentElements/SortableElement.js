@@ -33,6 +33,7 @@ SortableElement.prototype.dataType =      [ ];
 SortableElement.prototype.modifiableProp = [ ];
 SortableElement.prototype.initWidth = 400;
 SortableElement.prototype.initHeight = 150;
+SortableElement.prototype.numVarNamesRequired = 1;
 
 SortableElement.prototype.init = function(variableName) {
 

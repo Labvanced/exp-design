@@ -44,6 +44,7 @@ MultipleChoiceElement.prototype.dataType =      [ ];
 MultipleChoiceElement.prototype.modifiableProp = [ ];
 MultipleChoiceElement.prototype.initWidth = 180;
 MultipleChoiceElement.prototype.initHeight = 120;
+MultipleChoiceElement.prototype.numVarNamesRequired = 1;
 
 
 

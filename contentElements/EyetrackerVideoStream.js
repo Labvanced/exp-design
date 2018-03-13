@@ -17,6 +17,7 @@ EyetrackerVideoStream.prototype.dataType =      [ ];
 EyetrackerVideoStream.prototype.modifiableProp = [ ];
 EyetrackerVideoStream.prototype.initWidth = 280;
 EyetrackerVideoStream.prototype.initHeight = 240;
+EyetrackerVideoStream.prototype.numVarNamesRequired = 0;
 
 
 EyetrackerVideoStream.prototype.init = function() {

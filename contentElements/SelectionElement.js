@@ -40,6 +40,7 @@ SelectionElement.prototype.dataType =      [ ];
 SelectionElement.prototype.modifiableProp = [ ];
 SelectionElement.prototype.initWidth = 300;
 SelectionElement.prototype.initHeight = 100;
+SelectionElement.prototype.numVarNamesRequired = 1;
 
 
 SelectionElement.prototype.addEntry = function(newName) {

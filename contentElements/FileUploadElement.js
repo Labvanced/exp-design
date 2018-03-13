@@ -27,6 +27,7 @@ FileUploadElement.prototype.dataType =      [ ];
 FileUploadElement.prototype.modifiableProp = [ ];
 FileUploadElement.prototype.initWidth = 300;
 FileUploadElement.prototype.initHeight = 100;
+FileUploadElement.prototype.numVarNamesRequired = 1;
 
 FileUploadElement.prototype.dispose = function() {
     this.questionText().dispose();

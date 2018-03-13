@@ -47,6 +47,7 @@ AudioElement.prototype.label = "Audio";
 AudioElement.prototype.iconPath = "/resources/icons/tools/tool_sound.svg";
 AudioElement.prototype.dataType =      [ "string", "string"];
 AudioElement.prototype.modifiableProp = ["file_id","file_orig_name"];
+AudioElement.prototype.numVarNamesRequired = 0;
 
 AudioElement.prototype.switchPlayState = function() {
     this.currentlyPlaying(!this.currentlyPlaying());
