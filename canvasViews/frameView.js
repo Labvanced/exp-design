@@ -98,6 +98,11 @@ FrameView.prototype.dispose = function() {
         viewElements[i].dispose();
     }
     this.scaleSubscription.dispose();
+
+
+    // remove complete div
+    ko.cleanNode(this.divContainer);
+    this.divContainer.remove();
 };
 
 FrameView.prototype.setDataModel = function(frameData) {
@@ -287,11 +292,13 @@ FrameView.prototype.addElem = function(elementData,index) {
     var elemView = new FrameElementView(elementData, this);
 
     if (this.type == "editorView") {
-        new EditorCallbacks(elemView, this,'editor',true,true,true);
+       var cbs =  new EditorCallbacks(elemView, this,'editor',true,true,true);
+        elemView.editorCallbacks = cbs;
     }
     else if (this.type == "playerView") {
         if ( elementData.canBeResized() || elementData.canBeDragged() || elementData.canBeSelected()){
-            new EditorCallbacks(elemView, this,'player',elementData.canBeResized(),elementData.canBeDragged(),elementData.canBeSelected());
+            var cbs = new EditorCallbacks(elemView, this,'player',elementData.canBeResized(),elementData.canBeDragged(),elementData.canBeSelected());
+            elemView.editorCallbacks = cbs;
         }
 
     }
