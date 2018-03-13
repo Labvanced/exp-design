@@ -2,7 +2,7 @@
 var EditorCallbacks = function(frameElementView,frameView,editorOrPlayer, resize,drag,select) {
 
 
-    // TODO: dispose callbacks in palyer
+    var self = this;
     this.editorOrPlayer = editorOrPlayer;
     this.resize = resize;
     this.drag = drag;
@@ -12,11 +12,24 @@ var EditorCallbacks = function(frameElementView,frameView,editorOrPlayer, resize
     this.dataModel = this.frameElementView.dataModel;
     this.frameView = frameView;
 
+    this.handles  = null;
+    this.isSelectedSubscription = null;
+    this.keepAspectRatioSubscription = null;
+
+    this.clickEventListener = function() {
+        self.frameView.parent.selectElement(self.dataModel);
+        if (self.editorOrPlayer == 'player') {
+            self.frameView.subElemSelected = true;
+            setTimeout(function () {
+                self.frameView.subElemSelected = false;
+            },100)
+        }
+    };
+
    this.addHandles();
+   this.addCallbacks();
 
-    this.addCallbacks();
-
-    this.frameElementView.callbacks = this;
+   this.frameElementView.callbacks = this;
 };
 
 EditorCallbacks.prototype.addHandles = function() {
@@ -86,15 +99,7 @@ EditorCallbacks.prototype.addCallbacks = function() {
     var self2 = this;
 
     if (this.select){
-        $(this.div).click(function() {
-            self2.frameView.parent.selectElement(self2.dataModel);
-            if (self2.editorOrPlayer == 'player') {
-                self2.frameView.subElemSelected = true;
-                setTimeout(function () {
-                    self2.frameView.subElemSelected = false;
-                },100)
-            }
-        });
+        this.div.addEventListener('click', this.clickEventListener, false);
     }
 
     if (this.drag){
@@ -136,13 +141,19 @@ EditorCallbacks.prototype.addCallbacks = function() {
     if (this.resize){
         // Make resizable:
         this.addResize();
-        this.dataModel.keepAspectRatio.subscribe(function(newVal) {
+        if (this.keepAspectRatioSubscription) {
+            this.keepAspectRatioSubscription.dispose();
+        }
+        this.keepAspectRatioSubscription = this.dataModel.keepAspectRatio.subscribe(function(newVal) {
             self2.addResize();
             self2.frameView.parent.selectElement(self2.dataModel);
         });
 
         // It is only draggable or resizable when it is selected:
-        this.frameElementView.isSelected.subscribe(function(newVal){
+        if (this.isSelectedSubscription) {
+            this.isSelectedSubscription.dispose();
+        }
+        this.isSelectedSubscription = this.frameElementView.isSelected.subscribe(function(newVal){
             if (newVal) {
                 $(self2.div).resizable("enable");
                 $(self2.div).draggable( "option", "distance", 0 );
@@ -157,8 +168,6 @@ EditorCallbacks.prototype.addCallbacks = function() {
                 $(self2.handles).css({
                     "display": "none"
                 });
-
-
             }
         });
         if (self2.editorOrPlayer == 'editor'){
@@ -222,6 +231,25 @@ EditorCallbacks.prototype.addResize = function() {
 
 };
 
+
 EditorCallbacks.prototype.dispose = function() {
-        //TODO add dispose
+    if (this.keepAspectRatioSubscription) {
+        this.keepAspectRatioSubscription.dispose();
+    }
+    if (this.isSelectedSubscription) {
+        this.isSelectedSubscription.dispose();
+    }
+    this.div.removeEventListener('resize', this.resizeEventListener , false);
+    this.resizeEventListener = null;
+
+    if ($(this.div).resizable( "instance" )) {
+        $(this.div).resizable( "destroy" );
+    }
+
+    if ($(this.div).draggable( "instance" )) {
+        $(this.div).draggable( "destroy" );
+    }
+    $(this.handles).remove();
+    ko.cleanNode(this.handles);
+
 };
