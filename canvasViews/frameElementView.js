@@ -5,6 +5,8 @@ var FrameElementView = function(dataModel, parentView) {
     this.parentView = parentView;
 
     this.disposables = [];
+    this.editorCallbacks = null;
+    this.divContentInside = null;
 
     // default values
     this.id = dataModel.id();
@@ -500,4 +502,12 @@ FrameElementView.prototype.dispose = function() {
     ko.utils.arrayForEach(this.disposables, function (disposable) {
         disposable.dispose();
     });
+
+
+    if (this.parentView.type == "playerView"){
+        if (this.editorCallbacks){
+            this.editorCallbacks.dispose();
+        }
+    }
+    delete this.parentView.viewElements.byId[this.dataModel.id()];
 };
