@@ -245,7 +245,7 @@ GlobalVar.prototype.removeBackRef = function(entity) {
     }
 
     // check if variable is now completely without backRefs, then remove from entity list (update)
-    if (player==='undefined') {
+    if (window.uc!==undefined) {
         if (backRefs.length == 0) {
             this.expData.deleteGlobalVar(this);
         }

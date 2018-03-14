@@ -12,6 +12,7 @@ var DisplayTextElement = function(expData) {
     this.variablesInText = ko.observableArray();
     this.selected = ko.observable(false);
     this.editText = ko.observable(false);
+    this.varIdSubscription = null;
     /////
 };
 
@@ -27,7 +28,7 @@ DisplayTextElement.prototype.init = function() {
     var self = this;
     this.text(new EditableTextElement(this.expData, this, '<p><span style="font-size:24px;">You can display your custom text here.</span></p>'));
     this.text().init();
-    this.text().globalVarIds.subscribe(function(val) {
+    this.varIdSubscription = this.text().globalVars.subscribe(function(val) {
         self.recalcTextVariables();
     });
 };
@@ -44,7 +45,10 @@ DisplayTextElement.prototype.setPointers = function(entitiesArr) {
     this.text().setPointers(entitiesArr);
     this.recalcTextVariables();
     var self = this;
-    this.text().globalVarIds.subscribe(function(val) {
+    if (this.varIdSubscription){
+        this.varIdSubscription.dispose();
+    }
+    this.varIdSubscription = this.text().globalVars.subscribe(function(val) {
         self.recalcTextVariables();
     });
 };
@@ -52,9 +56,9 @@ DisplayTextElement.prototype.setPointers = function(entitiesArr) {
 DisplayTextElement.prototype.recalcTextVariables = function() {
     var variables = [];
     if (this.text()){
-        var textVarIds = this.text().globalVarIds();
-        for (var i= 0; i<textVarIds.length; i++){
-            variables.push(ko.observable(this.expData.entities.byId[textVarIds[i]]));
+        var textVars = this.text().globalVars();
+        for (var i= 0; i<textVars.length; i++){
+            variables.push(ko.observable(textVars[i]));
         }
     }
     this.variablesInText(variables);
@@ -70,7 +74,7 @@ DisplayTextElement.prototype.selectTrialType = function(selectionSpec) {
 };
 
 DisplayTextElement.prototype.dispose = function () {
-    this.text().removeRefs();
+    this.varIdSubscription.dispose();
     this.text().dispose();
 };
 

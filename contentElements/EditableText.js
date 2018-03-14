@@ -7,8 +7,8 @@ var EditableTextElement = function(expData, parent, text) {
     //serialized
     this.type = "EditableTextElement";
     this.rawText = ko.observable(text);// for example: '<span>Your score: <variable varid="239da92acb23"></span>'
-    this.globalVars = [];
-    this.globalVarIds = ko.observableArray([]);
+    this.globalVars = ko.observableArray([]);
+   // this.globalVarIds = ko.observableArray([]);
 
     // not serialized
     this.selected = ko.observable(false);
@@ -78,20 +78,24 @@ EditableTextElement.prototype.setText = function (text) {
 };
 
 EditableTextElement.prototype.addVar = function (globalVarId) {
-    this.globalVars.push(globalVarId);
-    this.globalVarIds.push(globalVarId);
+    var entity = this.expData.entities.byId[globalVarId];
+    if(entity) {
+        this.globalVars.push(globalVarId);
+        this.setVariableBackRef(globalVarId);
+    }
+   // this.globalVarIds.push(globalVarId);
 };
 
 EditableTextElement.prototype.removeVar = function (varId) {
     var index =this.globalVars.indexOf(varId);
     if(index>=0){
         this.globalVars.splice(index,1);
-        this.globalVarIds.splice(index,1);
+        this.removeRefbyId(varId);
+       // this.globalVarIds.splice(index,1);
     }
-
 };
 
-EditableTextElement.prototype.addRef = function(globalVarId){
+EditableTextElement.prototype.setVariableBackRef = function(globalVarId){
     var entity = this.expData.entities.byId[globalVarId];
     if(entity) {
         var ref = entity.addBackRef(this, this.parent.parent, false, true, 'withinText');
@@ -100,7 +104,7 @@ EditableTextElement.prototype.addRef = function(globalVarId){
 };
 
 
-EditableTextElement.prototype.removeRefs = function () {
+EditableTextElement.prototype.removeBackRefs = function () {
     for(var id in this.globalVarRefs){
         if(this.globalVarRefs.hasOwnProperty(id)){
             var entity = this.expData.entities.byId[id];
@@ -109,6 +113,7 @@ EditableTextElement.prototype.removeRefs = function () {
             }
         }
     }
+    this.globalVarRefs = {};
 };
 
 EditableTextElement.prototype.removeRefbyId = function (varId) {
@@ -118,6 +123,7 @@ EditableTextElement.prototype.removeRefbyId = function (varId) {
         if (entity) {
             entity.removeBackRef(this);
         }
+        delete this.globalVarRefs[varId];
     }
 
 };
@@ -125,9 +131,22 @@ EditableTextElement.prototype.removeRefbyId = function (varId) {
 
 
 EditableTextElement.prototype.setPointers = function(entitiesArr) {
-    for(var k=0; k<this.globalVars.length; k++){
-        this.addRef(this.globalVars[k]);
-    }
+    // convert ids to actual pointers:
+    var self = this;
+    this.globalVars(jQuery.map( this.globalVars(), function( id ) {
+        if (!(id instanceof GlobalVar )){
+            var globalVar = entitiesArr.byId[id];
+            if (globalVar) {
+                self.setVariableBackRef(id);
+                return globalVar;
+            }
+        }
+        else{
+            self.setVariableBackRef(id.id());
+        }
+
+    } ));
+
     this.modifier().setPointers(entitiesArr);
 };
 
@@ -163,8 +182,8 @@ EditableTextElement.prototype.toJS = function() {
         type: this.type,
         rawText: this.rawText(),
         modifier: this.modifier().toJS(),
-        globalVars: this.globalVars,
-        globalVarIds: this.globalVarIds()
+        globalVars: this.globalVars()
+
     };
 };
 
@@ -173,11 +192,10 @@ EditableTextElement.prototype.fromJS = function(data) {
     this.rawText(data.rawText);
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
-    this.globalVars = data.globalVars;
-
-    if (data.hasOwnProperty('globalVarIds')){
-        this.globalVarIds(data.globalVarIds);
+    if (data.hasOwnProperty('globalVars')){
+        this.globalVars(data.globalVars);
     }
+
 
 };
 
@@ -186,7 +204,8 @@ EditableTextElement.prototype.dispose = function () {
         this.expData.translations.splice(this.rawText(),1);
         this.rawText('');
     }
-    this.removeRefs();
+    this.removeBackRefs();
+    this.globalVars([]);
 };
 
 function createEditableTextComponents() {
@@ -228,9 +247,9 @@ function createEditableTextComponents() {
                             }
 
                             // remove variable references
-                            var nrVars = self.dataModel.globalVarIds().length;
+                            var nrVars = self.dataModel.globalVars().length;
                             for(var i=0; i<nrVars; i++){
-                                var id = self.dataModel.globalVarIds()[i];
+                                var id = self.dataModel.globalVars()[i].id();
                                  var index = ids.indexOf(id);
                                  if (index<0){
                                      self.dataModel.removeVar(id);
@@ -243,7 +262,7 @@ function createEditableTextComponents() {
                             for(var i=0; i<ids.length; i++){
                                 if(!(ids[i] in self.dataModel.globalVarRefs)) {
                                     self.dataModel.addVar(ids[i]);
-                                    self.dataModel.addRef(ids[i]);
+                                    self.dataModel.setVariableBackRef(ids[i]);
                                 }
                             }
                             if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
