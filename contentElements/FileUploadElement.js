@@ -19,7 +19,8 @@ var FileUploadElement = function(expData) {
     ///// not serialized
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
-    this.fileUploaded = ko.observable(null);
+    this.fileUploaded = ko.observable(false);
+    this.selectedFile = ko.observable(null);
 };
 
 FileUploadElement.prototype.label = "File Upload";
@@ -29,6 +30,8 @@ FileUploadElement.prototype.modifiableProp = [ ];
 FileUploadElement.prototype.initWidth = 300;
 FileUploadElement.prototype.initHeight = 100;
 FileUploadElement.prototype.numVarNamesRequired = 1;
+FileUploadElement.prototype.actionTypes = ["StartUpload","ClearFile"];
+FileUploadElement.prototype.triggerTypes = ["FileSelected","UploadComplete"];
 
 FileUploadElement.prototype.dispose = function() {
     this.questionText().dispose();
@@ -125,6 +128,26 @@ FileUploadElement.prototype.disableHighlight = function(elem) {
 FileUploadElement.prototype.getAllModifiers = function(modifiersArr) {
     this.questionText().getAllModifiers(modifiersArr);
     this.buttonText().getAllModifiers(modifiersArr);
+};
+
+FileUploadElement.prototype.getActionTypes = function() {
+    return FileUploadElement.prototype.actionTypes;
+};
+
+FileUploadElement.prototype.executeAction = function(actionType) {
+    var self = this;
+    if (actionType=="StartUpload") {
+        console.log("StartUpload");
+        function callbackWhenFinished() {
+            console.log("upload finished");
+            self.fileUploaded(true);
+        }
+        player.playerFileUploader.addToAjaxUploadQueue(this.selectedFile(), this.variable(), callbackWhenFinished);
+    }
+    else if (actionType=="ClearFile") {
+        console.log("ClearFile");
+        this.selectedFile(null);
+    }
 };
 
 FileUploadElement.prototype.setPointers = function(entitiesArr) {
@@ -272,28 +295,8 @@ function createFileUploadElementComponents() {
                 var viewModel = function(dataModel){
                     var self = this;
                     this.dataModel = dataModel;
-
                     this.focus = function () {
                         this.dataModel.ckInstance.focus()
-                    };
-
-                    this.chooseFile = function() {
-                        var fileUploadElem = $(componentInfo.element).find('.playerFileUploadInput')[0];
-                        fileUploadElem.click();
-                    };
-
-                    this.fileSelected = function(file) {
-                        var fileReader = new FileReader();
-                        fileReader.onloadend = function (e) {
-                            var arrayBuffer = e.target.result;
-                            var fileType = $('#file-type').val();
-                            blobUtil.arrayBufferToBlob(arrayBuffer, fileType).then(function (blob) {
-                                console.log('here is a blob', blob);
-                                console.log('its size is', blob.size);
-                                console.log('its type is', blob.type);
-                            }).catch(console.log.bind(console));
-                        };
-                        fileReader.readAsArrayBuffer(file);
                     };
                 };
 
@@ -309,6 +312,7 @@ function createFileUploadElementComponents() {
             createViewModel: function(dataModel, componentInfo){
 
                 var viewModel = function(dataModel){
+                    var self = this;
                     this.dataModel = dataModel;
 
                     this.focus = function () {
@@ -318,7 +322,11 @@ function createFileUploadElementComponents() {
                     this.chooseFile = function() {
                         var fileUploadElem = $(componentInfo.element).find('.playerFileUploadInput')[0];
                         fileUploadElem.click();
-                    }
+                    };
+
+                    this.fileSelected = function(file) {
+                        self.dataModel.selectedFile(file);
+                    };
                 };
 
                 return new viewModel(dataModel);

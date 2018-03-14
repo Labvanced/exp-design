@@ -3366,6 +3366,107 @@ ActionControlAV.prototype.toJS = function() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+/////////////////////////////////////////////////  ActionControlAV/  //////////////////////////////////////////////
+
+/**
+ * This action allows to start or stop the playback of audio or video elements.
+ *
+ * @param {Event} event - the parent event
+ * @constructor
+ */
+var ActionControlElement = function(event) {
+    this.event = event;
+
+    // serialized
+    this.target = ko.observable(null);
+    this.actionType = ko.observable(null);
+
+};
+
+
+ActionControlElement.prototype.type = "ActionControlElement";
+ActionControlElement.prototype.label = "Control Element";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionControlElement.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It starts or stops
+ * playback of audio or video files in the player.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionControlElement.prototype.run = function(triggerParams) {
+    if (this.target()) {
+        var viewElem = player.currentFrame.frameView.viewElements.byId[this.target().id()];
+        if (viewElem) {
+            viewElem.dataModel.executeAction(this.actionType());
+        }
+    }
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionControlElement.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionControlElement.prototype.setPointers = function(entitiesArr) {
+    this.target(entitiesArr.byId[this.target()]);
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionControlElement.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionControlElement}
+ */
+ActionControlElement.prototype.fromJS = function(data) {
+    this.target(data.target);
+    this.actionType(data.actionType);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionControlElement.prototype.toJS = function() {
+    var targetId = null;
+    if (this.target()) {
+        targetId = this.target().id();
+    }
+    return {
+        type: this.type,
+        target: targetId,
+        actionType: this.actionType()
+    };
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 
@@ -3477,7 +3578,7 @@ ActionControlTimer.prototype.reAddEntities = function(entitiesArr) {
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {ActionControlAV}
+ * @returns {ActionControlTimer}
  */
 ActionControlTimer.prototype.fromJS = function(data) {
     this.timerVar(data.timerVar);
