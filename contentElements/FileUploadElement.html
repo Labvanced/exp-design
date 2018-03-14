@@ -65,7 +65,7 @@
     <!-- /ko -->
     <div>
 
-        <input type="file" class="playerFileUploadInput" accept="*/*" style="display: none;" />
+        <input type="file" data-bind="event: { change: function() { fileSelected($element.files[0]) } }" class="playerFileUploadInput" accept="*/*" style="display: none;" />
         <span class="navi-button" data-bind="click: chooseFile, style:{ backgroundColor: dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){dataModel.enableHighlight($element)}, mouseout: function(data,event){dataModel.disableHighlight($element)}}">
             <span data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.buttonText}"></span>
         </span>

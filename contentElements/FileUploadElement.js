@@ -41,7 +41,7 @@ FileUploadElement.prototype.init = function(variableName) {
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
 
-    this.buttonText(new EditableTextElement(this.expData, this, '<p><span style="text-align: center;">Upload File</span></p>'));
+    this.buttonText(new EditableTextElement(this.expData, this, '<p><span style="text-align: center;">Choose File</span></p>'));
     this.buttonText().init();
 
     var globalVar = new GlobalVar(this.expData);
@@ -270,6 +270,7 @@ function createFileUploadElementComponents() {
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
+                    var self = this;
                     this.dataModel = dataModel;
 
                     this.focus = function () {
@@ -279,7 +280,21 @@ function createFileUploadElementComponents() {
                     this.chooseFile = function() {
                         var fileUploadElem = $(componentInfo.element).find('.playerFileUploadInput')[0];
                         fileUploadElem.click();
-                    }
+                    };
+
+                    this.fileSelected = function(file) {
+                        var fileReader = new FileReader();
+                        fileReader.onloadend = function (e) {
+                            var arrayBuffer = e.target.result;
+                            var fileType = $('#file-type').val();
+                            blobUtil.arrayBufferToBlob(arrayBuffer, fileType).then(function (blob) {
+                                console.log('here is a blob', blob);
+                                console.log('its size is', blob.size);
+                                console.log('its type is', blob.type);
+                            }).catch(console.log.bind(console));
+                        };
+                        fileReader.readAsArrayBuffer(file);
+                    };
                 };
 
                 return new viewModel(dataModel);
