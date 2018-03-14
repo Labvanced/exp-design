@@ -493,16 +493,14 @@ FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function() {
  * dispose ko component and remove dom div...
  */
 FrameElementView.prototype.dispose = function() {
-    var componentDiv = $(this.divContentInside)[0];
-    if (componentDiv) {
-        ko.cleanNode(componentDiv);
-    }
+    ko.cleanNode($(this.divContent)[0]);
+
     $(this.div).remove();
 
     ko.utils.arrayForEach(this.disposables, function (disposable) {
         disposable.dispose();
     });
-
+    this.disposables = [];
 
     if (this.parentView.type == "playerView"){
         if (this.editorCallbacks){
