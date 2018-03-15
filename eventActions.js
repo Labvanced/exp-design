@@ -3841,7 +3841,7 @@ ActionDistributeVariable.prototype.setPointers = function(entitiesArr){
     this.operand().setPointers(entitiesArr);
 };
 
-ActionRecord.prototype.reAddEntities = function(entitiesArr) {
+ActionDistributeVariable.prototype.reAddEntities = function(entitiesArr) {
     // add operand:
     if (this.operand() && this.operand().reAddEntities){
         this.operand().reAddEntities(entitiesArr);
