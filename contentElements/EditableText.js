@@ -196,171 +196,144 @@ EditableTextElement.prototype.dispose = function () {
 };
 
 function createEditableTextComponents() {
+
+    var EditableTextElementPreviewViewModel = function(dataModel){
+        var self = this;
+        this.dataModel = dataModel;
+        this.expData = dataModel.expData;
+
+        //regex to parse variable id
+        var regex = /<vars.*?globvarid="([^"]*)">.*?<\/vars>/g;
+
+
+        this.text = ko.pureComputed({
+
+            read: function () {
+                if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
+                    var rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()]();
+                    if (rawText==null) {
+                        rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[0]();
+                    }
+                    return rawText;
+                }
+                else{
+                    return self.dataModel.modifier().selectedTrialView.rawText();
+                }
+            },
+
+            write: function (value) {
+                var match;
+                var ids = [];
+                //parse varids
+                while(match = regex.exec(value)){
+                    if(match[1] !== "undefined"){
+                        ids.push(match[1]);
+                    }
+                }
+
+                var difference = self.dataModel.globalVarIds().filter(function(n) {
+                    return ids.indexOf(n) === -1;
+                });
+                // remove variable references
+                difference.forEach(function (elem) {
+                    self.dataModel.removeVar(elem);
+                });
+
+                // add variable references
+                for(var i=0; i<ids.length; i++){
+                    if(!(ids[i] in self.dataModel.globalVarRefs)) {
+                        self.dataModel.addVar(ids[i]);
+                    }
+                }
+                if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
+                    self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()](value);
+                }
+                else{
+                    self.dataModel.modifier().selectedTrialView.rawText(value);
+                }
+            },
+            owner: self
+        });
+
+
+        //function to replace globalvar in rawText
+        var replaceId = function (_match, id){
+            if(id=='undefined') {
+                return id;
+            }
+            var entity = self.expData.entities.byId[id];
+            if(!entity){
+                return id;
+            }
+            else{
+                return entity.startValue().toString();
+            }
+        };
+
+        this.previewText = ko.computed(function() {
+            return self.text().replace(regex, function(match, id){return replaceId(match, id);});
+        });
+
+    };
+
+    EditableTextElementPreviewViewModel.prototype.dispose = function() {
+        this.previewText.dispose();
+    };
+
     ko.components.register('editable-text-element-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                var viewModel = function(dataModel){
-                    var self = this;
-                    this.dataModel = dataModel;
-                    this.expData = dataModel.expData;
-
-                    //regex to parse variable id
-                    var regex = /<vars.*?globvarid="([^"]*)">.*?<\/vars>/g;
-
-
-                    this.text = ko.pureComputed({
-
-                        read: function () {
-                            if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
-                                var rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()]();
-                                if (rawText==null) {
-                                    rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[0]();
-                                }
-                                return rawText;
-                            }
-                            else{
-                                return self.dataModel.modifier().selectedTrialView.rawText();
-                            }
-                        },
-
-                        write: function (value) {
-                            var match;
-                            var ids = [];
-                            //parse varids
-                            while(match = regex.exec(value)){
-                                if(match[1] !== "undefined"){
-                                    ids.push(match[1]);
-                                }
-                            }
-
-                            var difference = self.dataModel.globalVarIds().filter(function(n) {
-                                return ids.indexOf(n) === -1;
-                            });
-                            // remove variable references
-                            difference.forEach(function (elem) {
-                              self.dataModel.removeVar(elem);
-                            });
-
-                            // add variable references
-                            for(var i=0; i<ids.length; i++){
-                                if(!(ids[i] in self.dataModel.globalVarRefs)) {
-                                    self.dataModel.addVar(ids[i]);
-                                }
-                            }
-                            if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
-                                self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()](value);
-                            }
-                            else{
-                                self.dataModel.modifier().selectedTrialView.rawText(value);
-                            }
-                        },
-                        owner: self
-                    });
-
-
-                    //function to replace globalvar in rawText
-                    var replaceId = function (_match, id){
-                        if(id=='undefined') {
-                            return id;
-                        }
-                        var entity = self.expData.entities.byId[id];
-                        if(!entity){
-                            return id;
-                        }
-                        else{
-                            if (entity.startValue() instanceof GlobalVarValueDatetime){
-                                if (entity.startValue().value()){
-                                    return entity.startValue().value().toISOString().substring(0,10);
-                                }
-                                else{
-                                    return ''
-                                }
-
-                            }
-                            else if(entity.startValue() instanceof GlobalVarValueTime || entity.startValue() instanceof GlobalVarValueCategorical){
-                                return entity.startValue().value().toString();
-                            }
-                            else{
-                                return entity.startValue().toString();
-                            }
-                        }
-                    };
-
-                    this.previewText = ko.computed(function() {
-                        return self.text().replace(regex, function(match, id){return replaceId(match, id);});
-                    });
-
-
-                };
-                return new viewModel(dataModel);
+                return new EditableTextElementPreviewViewModel(dataModel);
             }
         },
         template: {element: 'editable-text-element-preview-template'}
     });
 
+    var EditableTextElementPlayerViewModel = function(dataModel){
+        var self = this;
+        this.dataModel = dataModel;
+        this.expData = dataModel.expData;
+
+        //regex to parse variable id
+        var regex = /<vars.*?globvarid="([^"]*)">.*?<\/vars>/g;
+
+        //function to replace globalvar in rawText
+        var replaceId = function (_match, id){
+            if(id=='undefined') {
+                return id;
+            }
+            var entity = self.expData.entities.byId[id];
+            if(!entity){
+                return id;
+            }
+            else {
+                return entity.value().toString();
+            }
+        };
+
+        this.playerText = ko.computed(function() {
+            if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
+                var rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()]();
+                if (rawText==null) {
+                    rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[0]();
+                }
+                return rawText.replace(regex, function(match, id){return replaceId(match, id);});
+            }
+            else{
+                return self.dataModel.modifier().selectedTrialView.rawText().replace(regex, function(match, id){return replaceId(match, id);});
+            }
+
+        });
+    };
+
+    EditableTextElementPlayerViewModel.prototype.dispose = function() {
+        this.playerText.dispose();
+    };
 
     ko.components.register('editable-text-element-playerview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                var viewModel = function(dataModel){
-                    var self = this;
-                    this.dataModel = dataModel;
-                    this.expData = dataModel.expData;
-
-                    //regex to parse variable id
-                    var regex = /<vars.*?globvarid="([^"]*)">.*?<\/vars>/g;
-
-                    //function to replace globalvar in rawText
-                    var replaceId = function (_match, id){
-                        if(id=='undefined') {
-                            return id;
-                        }
-                        var entity = self.expData.entities.byId[id];
-                        if(!entity){
-                            return id;
-                        }
-                        else {
-                            if (entity.value() instanceof GlobalVarValueDatetime){
-                                if (entity.value().value()!= null){
-                                    return entity.value().value().toISOString().substring(0,10);
-                                }
-                                else{
-                                    return null
-                                }
-
-                            }
-                            else if(entity.value() instanceof GlobalVarValueTime || entity.value() instanceof GlobalVarValueCategorical){
-                                if (entity.value().value()!= null){
-                                    return entity.value().value().toString();
-                                }
-                                else{
-                                    return null
-                                }
-
-                            }
-                            else{
-                                return entity.value().toString();
-                            }
-
-
-                        }
-                    };
-
-                    this.playerText = ko.computed(function() {
-                        if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
-                            var rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()]();
-                            if (rawText==null) {
-                                rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[0]();
-                            }
-                            return rawText.replace(regex, function(match, id){return replaceId(match, id);});
-                        }
-                        else{
-                            return self.dataModel.modifier().selectedTrialView.rawText().replace(regex, function(match, id){return replaceId(match, id);});
-                        }
-
-                    });
-                };
-                return new viewModel(dataModel);
+                return new EditableTextElementPlayerViewModel(dataModel);
             }
         },
         template: {element: 'editable-text-element-playerview-template'}

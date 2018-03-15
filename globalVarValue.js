@@ -184,7 +184,6 @@ GlobalVarValueBoolean.prototype.toJS = function() {
  * return string representation of value
  * @returns {object}
  */
-
 GlobalVarValueBoolean.prototype.toString = function () {
     if(this.value() !== null){
         return this.value().toString();
@@ -251,6 +250,17 @@ GlobalVarValueCategorical.prototype.toJS = function() {
 };
 
 
+/**
+ * return string representation of value
+ * @returns {object}
+ */
+GlobalVarValueCategorical.prototype.toString = function () {
+    if(this.value() !== null){
+        return this.value().toString();
+    }else{
+        return null;
+    }
+};
 
 
 
@@ -310,6 +320,18 @@ GlobalVarValueTime.prototype.toJS = function() {
     return this.value();
 };
 
+
+/**
+ * return string representation of value
+ * @returns {object}
+ */
+GlobalVarValueTime.prototype.toString = function () {
+    if(this.value() !== null){
+        return this.value().toString();
+    }else{
+        return null;
+    }
+};
 
 
 
@@ -376,6 +398,18 @@ GlobalVarValueDatetime.prototype.toJS = function() {
         return null;
     }
 
+};
+
+/**
+ * return string representation of value
+ * @returns {object}
+ */
+GlobalVarValueDatetime.prototype.toString = function () {
+    if(this.value() !== null){
+        return this.value().toISOString();
+    }else{
+        return null;
+    }
 };
 
 ////////////////////  GlobalVarValueTimer  ///////////////////////////////////
@@ -791,6 +825,18 @@ GlobalVarValueStructure.prototype.toJS = function() {
 };
 
 
+/**
+ * return string representation of value
+ * @returns {object}
+ */
+GlobalVarValueStructure.prototype.toString = function () {
+    if(this.value() !== null){
+        return this.value().toString();
+    }else{
+        return null;
+    }
+};
+
 ////////////////////  GlobalVarValueUndefined  ///////////////////////////////////
 
 GlobalVarValueUndefined = function(parentVar) {
@@ -825,4 +871,16 @@ GlobalVarValueUndefined.prototype.fromJS = function(data) {
  */
 GlobalVarValueUndefined.prototype.toJS = function() {
     return this.value();
+};
+
+/**
+ * return string representation of value
+ * @returns {object}
+ */
+GlobalVarValueUndefined.prototype.toString = function () {
+    if(this.value() !== null){
+        return this.value().toString();
+    }else{
+        return null;
+    }
 };
