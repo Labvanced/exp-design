@@ -16,7 +16,7 @@ PageElementViewModel.prototype.dispose = function() {
     console.log("disposing page element view model");
 
     // remove div
-    $(this.div).remove();
+  //  $(this.div).remove();
 
     // remove the link from the parentViewModel.viewElements to this view instance:
     delete this.parentViewModel.viewElements.byId[this.dataModel.id()];

@@ -101,7 +101,7 @@ FrameView.prototype.dispose = function() {
 
 
     // remove complete div
-    this.divContainer[0].remove();
+   // this.divContainer[0].remove();
 };
 
 FrameView.prototype.setDataModel = function(frameData) {
