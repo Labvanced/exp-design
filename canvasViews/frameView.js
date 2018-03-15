@@ -101,7 +101,6 @@ FrameView.prototype.dispose = function() {
 
 
     // remove complete div
-    ko.cleanNode(this.divContainer[0]);
     this.divContainer[0].remove();
 };
 

@@ -66,6 +66,10 @@ AudioElement.prototype.jumpToByTime = function(time) {
     }
 };
 
+AudioElement.prototype.dispose = function() {
+
+};
+
 /**
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.

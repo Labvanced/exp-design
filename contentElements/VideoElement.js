@@ -49,6 +49,11 @@ VideoElement.prototype.switchPlayState = function() {
     this.currentlyPlaying(!this.currentlyPlaying());
 };
 
+
+VideoElement.prototype.dispose = function() {
+    console.log("disposing VideoEditViewModel");
+};
+
 VideoElement.prototype.jumpToByFraction = function(fraction) {
     console.log("jump to fraction "+fraction);
     for (var i =0; i<this.subscribersForJumpEvents.length; i++) {

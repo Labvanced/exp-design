@@ -494,7 +494,6 @@ FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function() {
  */
 FrameElementView.prototype.dispose = function() {
     ko.cleanNode($(this.divContent)[0]);
-
     $(this.div).remove();
 
     ko.utils.arrayForEach(this.disposables, function (disposable) {

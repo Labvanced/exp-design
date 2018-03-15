@@ -250,6 +250,5 @@ EditorCallbacks.prototype.dispose = function() {
         $(this.div).draggable( "destroy" );
     }
     $(this.handles).remove();
-    ko.cleanNode(this.handles);
 
 };

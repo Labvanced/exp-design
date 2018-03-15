@@ -16,7 +16,6 @@ PageElementViewModel.prototype.dispose = function() {
     console.log("disposing page element view model");
 
     // remove div
-    ko.cleanNode($(this.div)[0]);
     $(this.div).remove();
 
     // remove the link from the parentViewModel.viewElements to this view instance:

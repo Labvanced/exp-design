@@ -56,14 +56,15 @@ PageView.prototype.init = function(size) {
 PageView.prototype.dispose = function() {
     var self = this;
 
+    // remove complete div
+    ko.cleanNode( $(this.divContainer)[0]);
+    $(this.divContainer)[0].remove();
+
+
     // remove all view elements and related things
     Object.keys(this.viewElements.byId).forEach(function(key,index) {
         self.viewElements.byId[key].dispose();
     });
-
-    // remove complete div
-    ko.cleanNode(this.divContainer);
-    this.divContainer.remove();
 
 };
 
