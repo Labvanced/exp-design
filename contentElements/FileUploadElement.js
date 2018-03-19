@@ -14,7 +14,7 @@ var FileUploadElement = function(expData) {
 
     this.variable = ko.observable(null);
     this.isRequired = ko.observable(false);
-    this.enableTitle= ko.observable(true);
+    this.enableTitle = ko.observable(true);
 
     ///// not serialized
     this.triedToSubmit = ko.observable(false);
@@ -52,6 +52,7 @@ FileUploadElement.prototype.init = function(variableName) {
     globalVar.scope('trial');
     globalVar.scale('nominal');
     globalVar.name(variableName);
+    globalVar.resetAtTrialStart(true);
     globalVar.resetStartValue();
     this.variable(globalVar);
 
@@ -137,12 +138,38 @@ FileUploadElement.prototype.getActionTypes = function() {
 FileUploadElement.prototype.executeAction = function(actionType) {
     var self = this;
     if (actionType=="StartUpload") {
-        console.log("StartUpload");
-        function callbackWhenFinished() {
-            console.log("upload finished");
-            self.fileUploaded(true);
+        var file = this.selectedFile();
+        if (file) {
+            console.log("StartUpload");
+            var blockNr = player.currentBlockIdx + 1;
+            var taskNr = player.currentTaskIdx + 1;
+            var trialNr = player.trialIter;
+            var elemName = this.parent.name();
+
+            if (file.size > 10000000) {
+                console.log("file too large. cannot upload");
+                return;
+            }
+
+            var newFileName = "blockNr_" + blockNr + "_taskNr_" + taskNr + "_trialNr_" + trialNr + "_" + elemName;
+
+            function callbackWhenFinished(file_guid, file_name) {
+                console.log("upload finished");
+                self.fileUploaded(true);
+                if (self.variable()) {
+                    if (self.variable().value() instanceof GlobalVarValueFile) {
+                        self.variable().value().setValue({
+                            name: file_name,
+                            guid: file_guid
+                        });
+                    }
+                    else {
+                        self.variable().value().setValue(newFileName);
+                    }
+                }
+            }
         }
-        player.playerFileUploader.addToAjaxUploadQueue(this.selectedFile(), this.variable(), callbackWhenFinished);
+        player.playerFileUploader.addToAjaxUploadQueue(this.selectedFile(), newFileName, this.variable(), callbackWhenFinished);
     }
     else if (actionType=="ClearFile") {
         console.log("ClearFile");
