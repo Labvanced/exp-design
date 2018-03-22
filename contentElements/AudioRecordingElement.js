@@ -17,27 +17,11 @@ var AudioRecordingElement= function(expData) {
     this.variable = ko.observable(null); // for filename
     // value = expSubjName+SessionName+BlockName+TaskName+TrialNr+variableName.mp3
 
-
-
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
-
-    this.shortName = ko.computed(function() {
-        if (self.file_orig_name()){
-            return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
-        }
-        else return '';
-
-    });
-
     this.audioSource = ko.computed( function() {
-        if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
-            return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
-        }
-        else {
-            return false;
-        }
+        return false;
     }, this);
 
     this.subscribersForJumpEvents = [];

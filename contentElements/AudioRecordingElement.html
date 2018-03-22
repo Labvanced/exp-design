@@ -2,16 +2,8 @@
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Audio Recording</div>
 
-        <label class="property-description" for="imgFile3">Storage Folder: </label>
-        <span style="width: 180px;">
-            <span id="imgFile3" class="taskeditor-input" style="display: inline-flex;margin-top: 8px; overflow: hidden" data-bind="{text: dataModel.modifier().selectedTrialView.file_orig_name, css: { 'modified-prop': !( dataModel.file_orig_name()=== dataModel.modifier().selectedTrialView.file_orig_name()) }}" ></span>
-            <span class="file-button"  data-bind="click: function() { uc.currentEditorView.mediaEditor.openFolderManager()}" style="cursor: pointer">
-                <img  src="/resources/icons/openFile.svg" style="width: 20px;"/>
-            </span>
-        </span>
-
         <div style="font-size: 12px; margin-left: 25px">
-            Files will be stored as <b>mp3 files.</b>
+            Files will be stored in an audio format depending on the browser of the participant.</b>
         </div>
     </div>
 </template>
