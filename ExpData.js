@@ -142,7 +142,8 @@ ExpData.prototype.fixedVarNames = [
     'varCrowdsourcingCode',
     'varGazeX',
     'varGazeY',
-    'varCrowdsourcingSubjId'
+    'varCrowdsourcingSubjId',
+    'varTimeMeasureSpecStd'
 ];
 
 ExpData.prototype.staticTranslations = {
@@ -396,6 +397,10 @@ ExpData.prototype.createVars = function() {
     if (!this.varCrowdsourcingSubjId()) {
         this.varCrowdsourcingSubjId((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Crowdsourcing_SubjId'));
     }
+    if (!this.varTimeMeasureSpecStd()) {
+        this.varTimeMeasureSpecStd((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Std'));
+    }
+
 
 };
 
