@@ -2,13 +2,6 @@
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Selection</div>
 
-        <!-- ko if: (dataModel.parent.parent instanceof PageData)  -->
-        <div>
-            <span>Shuffle position on page:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.parent.includeInPageShuffle,click:function(){return true},clickBubble: false">
-        </div>
-        <!-- /ko -->
-
         <div>
             <label style="cursor: pointer">Show Question Header: <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false"></label>
         </div>

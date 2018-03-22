@@ -7,12 +7,6 @@
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.reshuffleElements,click:function(){return true},clickBubble: false">
         </div>
 
-        <!-- ko if: (dataModel.parent.parent instanceof PageData)  -->
-        <div>
-            <span>Shuffle position on page:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.parent.includeInPageShuffle,click:function(){return true},clickBubble: false">
-        </div>
-        <!-- /ko -->
         <div>
             <span>Show Question Header:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">

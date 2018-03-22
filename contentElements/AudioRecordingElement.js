@@ -1,81 +1,125 @@
 
-var AudioRecordingElement= function(expData) {
-
+var AudioRecordingElement = function(expData) {
     var self = this;
     this.expData = expData;
     this.parent = null;
 
+    //serialized
     this.type = "AudioRecordingElement";
+    this.questionText = ko.observable(null); // EditableTextElement
+    this.buttonText = ko.observable(null);
 
-    this.file_id = ko.observable(null);
-    this.file_orig_name = ko.observable(null);
-    this.showMediaControls = ko.observable(true);
+    this.bgColorDefault = ko.observable('#99cc66');
+    this.bgColorHover = ko.observable('#99de50');
 
-    this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
-    this.currentTimePercentage = ko.observable(0);
-
-    this.variable = ko.observable(null); // for filename
-    // value = expSubjName+SessionName+BlockName+TaskName+TrialNr+variableName.mp3
-
-    // modifier:
-    this.modifier = ko.observable(new Modifier(this.expData, this));
-
-    this.audioSource = ko.computed( function() {
-        return false;
-    }, this);
-
-    this.subscribersForJumpEvents = [];
+    this.variable = ko.observable(null);
+    this.isRequired = ko.observable(false);
+    this.enableTitle = ko.observable(true);
 
     ///// not serialized
-    this.selected = ko.observable(false);
-    this.recordingBlob = null;
-    /////
+    this.triedToSubmit = ko.observable(false);
+    this.dataIsValid = ko.observable(false);
+    this.fileUploaded = ko.observable(false);
+    this.selectedFile = ko.observable(null);
 };
 
-
-AudioRecordingElement.prototype.label = "AudioRecording";
-AudioRecordingElement.prototype.iconPath = "/resources/icons/microphone.svg";
-AudioRecordingElement.prototype.dataType =      [ "string", "string"];
-AudioRecordingElement.prototype.modifiableProp = ["file_id","file_orig_name"];
+AudioRecordingElement.prototype.label = "File Upload";
+AudioRecordingElement.prototype.iconPath = "/resources/icons/openFile.svg";
+AudioRecordingElement.prototype.dataType =      [ ];
+AudioRecordingElement.prototype.modifiableProp = [ ];
+AudioRecordingElement.prototype.initWidth = 300;
+AudioRecordingElement.prototype.initHeight = 100;
 AudioRecordingElement.prototype.numVarNamesRequired = 1;
+AudioRecordingElement.prototype.actionTypes = ["StartUpload","ClearFile"];
+AudioRecordingElement.prototype.triggerTypes = ["FileSelected","UploadComplete"];
 
+AudioRecordingElement.prototype.dispose = function() {
+    this.questionText().dispose();
+    this.buttonText().dispose();
+    this.variable().removeBackRef(this);
+};
 
 AudioRecordingElement.prototype.init = function(variableName) {
 
+    this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
+    this.questionText().init();
+
+    this.buttonText(new EditableTextElement(this.expData, this, '<p><span style="text-align: center;">Choose File</span></p>'));
+    this.buttonText().init();
+
     var globalVar = new GlobalVar(this.expData);
-    globalVar.dataType("string");
+    globalVar.dataType('file');
     globalVar.scope('trial');
-    globalVar.scale(GlobalVar.scales[1]);
+    globalVar.scale('nominal');
     globalVar.name(variableName);
+    globalVar.resetAtTrialStart(true);
     globalVar.resetStartValue();
     this.variable(globalVar);
 
     var frameOrPageElement = this.parent;
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
-
 };
 
 AudioRecordingElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'Audio-Recording');
+    this.variable().addBackRef(this, this.parent, true, true, 'File Upload');
 };
 
-AudioRecordingElement.prototype.switchPlayState = function() {
-    this.currentlyPlaying(!this.currentlyPlaying());
+AudioRecordingElement.prototype.enableHighlight = function(elem) {
+    var self= this;
+    $(elem).css({
+        'backgroundColor': self.bgColorHover(),
+        'cursor': 'pointer'
+    });
 };
 
-AudioRecordingElement.prototype.jumpToByFraction = function(fraction) {
-    console.log("jump to fraction "+fraction);
-    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
-        this.subscribersForJumpEvents[i]({jumpToFraction: fraction});
+AudioRecordingElement.prototype.initColorPicker = function() {
+
+    var self = this;
+    $("#bgColorPickerDefault").spectrum({
+        color: self.bgColorDefault(),
+        preferredFormat: "hex",
+        showInput: true,
+        change: function (color) {
+            var colorStr = color.toHexString();
+            self.bgColorDefault(colorStr);
+
+        }
+    });
+    if (this.bg1Subsciption) {
+        this.bg1Subsciption.dispose();
     }
+    this.bg1Subsciption = this.bgColorDefault.subscribe(function(val){
+        $("#bgColorPickerDefault").spectrum("set", val);
+    });
+
+
+    $("#bgColorPickerHover").spectrum({
+        color: self.bgColorHover(),
+        preferredFormat: "hex",
+        showInput: true,
+        change: function (color) {
+            var colorStr = color.toHexString();
+            self.bgColorHover(colorStr);
+
+        }
+    });
+
+    if (this.bg2Subsciption) {
+        this.bg2Subsciption.dispose();
+    }
+    this.bg2Subsciption = this.bgColorHover.subscribe(function(val){
+        $("#bgColorPickerHover").spectrum("set", val);
+    });
+
 };
 
-AudioRecordingElement.prototype.jumpToByTime = function(time) {
-    console.log("jump to time "+time);
-    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
-        this.subscribersForJumpEvents[i]({jumpToTime: time});
-    }
+AudioRecordingElement.prototype.disableHighlight = function(elem) {
+    var self= this;
+    $(elem).css({
+        'backgroundColor': self.bgColorDefault(),
+        'cursor': 'default'
+    });
 };
 
 /**
@@ -83,193 +127,241 @@ AudioRecordingElement.prototype.jumpToByTime = function(time) {
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 AudioRecordingElement.prototype.getAllModifiers = function(modifiersArr) {
-    modifiersArr.push(this.modifier());
+    this.questionText().getAllModifiers(modifiersArr);
+    this.buttonText().getAllModifiers(modifiersArr);
+};
+
+AudioRecordingElement.prototype.getActionTypes = function() {
+    return AudioRecordingElement.prototype.actionTypes;
+};
+
+AudioRecordingElement.prototype.executeAction = function(actionType) {
+    var self = this;
+    if (actionType=="StartUpload") {
+        var file = this.selectedFile();
+        if (file) {
+            console.log("StartUpload");
+            var blockNr = player.currentBlockIdx + 1;
+            var taskNr = player.currentTaskIdx + 1;
+            var trialNr = player.trialIter;
+            var elemName = this.parent.name();
+
+            if (file.size > 10000000) {
+                console.log("file too large. cannot upload");
+                return;
+            }
+
+            var newFileName = "blockNr_" + blockNr + "_taskNr_" + taskNr + "_trialNr_" + trialNr + "_" + elemName;
+
+            function callbackWhenFinished(file_guid, file_name) {
+                console.log("upload finished");
+                self.fileUploaded(true);
+                if (self.variable()) {
+                    if (self.variable().value() instanceof GlobalVarValueFile) {
+                        self.variable().value().setValue({
+                            name: file_name,
+                            guid: file_guid
+                        });
+                    }
+                    else {
+                        self.variable().value().setValue(newFileName);
+                    }
+                }
+            }
+        }
+        player.playerFileUploader.addToAjaxUploadQueue(this.selectedFile(), newFileName, this.variable(), callbackWhenFinished);
+    }
+    else if (actionType=="ClearFile") {
+        console.log("ClearFile");
+        this.selectedFile(null);
+    }
 };
 
 AudioRecordingElement.prototype.setPointers = function(entitiesArr) {
+    var self = this;
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
         this.setVariableBackRef();
     }
-    this.modifier().setPointers(entitiesArr);
+    this.questionText().setPointers(entitiesArr);
+    this.buttonText().setPointers(entitiesArr);
 };
 
 AudioRecordingElement.prototype.reAddEntities = function(entitiesArr) {
     if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
         entitiesArr.push(this.variable());
     }
-    this.modifier().reAddEntities(entitiesArr);
-};
-
-AudioRecordingElement.prototype.dispose = function () {
-    this.variable().removeBackRef(this);
+    this.questionText().reAddEntities(entitiesArr);
+    this.buttonText().reAddEntities(entitiesArr);
 };
 
 AudioRecordingElement.prototype.selectTrialType = function(selectionSpec) {
-    this.modifier().selectTrialType(selectionSpec);
+    this.questionText().selectTrialType(selectionSpec);
+    this.buttonText().selectTrialType(selectionSpec);
 };
 
-AudioRecordingElement.prototype.fromJS = function(data) {
-    var self = this;
-    this.type = data.type;
-    this.dataType = data.dataType;
-    this.file_id(data.file_id);
-    this.file_orig_name(data.file_orig_name);
-    if (data.hasOwnProperty('showMediaControls')) {
-        this.showMediaControls(data.showMediaControls);
+AudioRecordingElement.prototype.getTextRefs = function(textArr, label){
+    var questlabel = label + '.Question';
+    this.questionText().getTextRefs(textArr, questlabel);
+    this.buttonText().getTextRefs(textArr, questlabel);
+    return textArr;
+};
+
+
+AudioRecordingElement.prototype.isInputValid = function() {
+    this.triedToSubmit(true);
+    if (this.isRequired()==false){
+        this.dataIsValid(true);
+        return true
     }
-    this.modifier(new Modifier(this.expData, this));
-    this.modifier().fromJS(data.modifier);
-    this.variable(data.variable);
-
-    return this;
+    else{
+        if (this.fileUploaded()){
+            this.dataIsValid(true);
+            return true;
+        }
+        else{
+            this.dataIsValid(false);
+            return false;
+        }
+    }
 };
+
 
 AudioRecordingElement.prototype.toJS = function() {
     var variableId = null;
     if (this.variable()) {
         variableId = this.variable().id();
     }
+
     return {
         type: this.type,
-        dataType: this.dataType,
-        file_id: this.file_id(),
-        file_orig_name: this.file_orig_name(),
-        showMediaControls: this.showMediaControls(),
-        modifier: this.modifier().toJS(),
-        variable:variableId
+        questionText: this.questionText().toJS(),
+        variable: variableId,
+        isRequired:this.isRequired(),
+        bgColorDefault: this.bgColorDefault(),
+        bgColorHover: this.bgColorHover(),
+        enableTitle: this.enableTitle(),
+        buttonText: this.buttonText().toJS()
     };
 };
 
+AudioRecordingElement.prototype.fromJS = function(data) {
+    var self = this;
+    this.type=data.type;
+    if(data.questionText.hasOwnProperty('rawText')) {
+        this.questionText(new EditableTextElement(this.expData, this, ''));
+        this.questionText().fromJS(data.questionText);
+    }
+    else{
+        this.questionText(new EditableTextElement(this.expData, this, data.questionText));
+    }
+    if(data.buttonText.hasOwnProperty('rawText')) {
+        this.buttonText(new EditableTextElement(this.expData, this, ''));
+        this.buttonText().fromJS(data.buttonText);
+    }
+    else{
+        this.buttonText(new EditableTextElement(this.expData, this, data.buttonText));
+    }
+    this.variable(data.variable);
+    if (data.hasOwnProperty('isRequired')) {
+        this.isRequired(data.isRequired);
+    }
+    if(data.hasOwnProperty('enableTitle')){
+        this.enableTitle(data.enableTitle);
+    }
+    if (data.hasOwnProperty('bgColorDefault')) {
+        this.bgColorDefault(data.bgColorDefault);
+        this.bgColorHover(data.bgColorHover);
+    }
+};
 
 
 function createAudioRecordingComponents() {
-
-    var AudioRecordingEditViewModel = function(dataModel, componentInfo){
-        var self = this;
-
-        this.element = componentInfo.element;
-        this.dataModel = dataModel;
-    };
-    ko.components.register('audioRecording-editview', {
+    ko.components.register('audiorecording-editview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
-                return new AudioRecordingEditViewModel(dataModel, componentInfo);
+                var viewModel = function(dataModel){
+                    var self = this;
+                    this.dataModel = dataModel;
+                    this.dataModel.initColorPicker();
+                    this.currentEntry = ko.observable('');
+                    this.focus = function () {
+                        this.dataModel.ckInstance.focus()
+                    };
+
+                    this.relinkCallback = function() {
+                        var frameData = self.dataModel.parent.parent;
+                        var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
+                            frameData.addVariableToLocalWorkspace(newVariable);
+                            self.dataModel.variable(newVariable);
+                            self.dataModel.setVariableBackRef(newVariable);
+                        }, frameData);
+                        variableDialog.show();
+                    };
+                };
+
+                viewModel.prototype.addEntry = function() {
+                    this.dataModel.addEntry(this.currentEntry());
+                    this.currentEntry('');
+                };
+                viewModel.prototype.removeEntry = function(idx) {
+                    this.dataModel.removeEntry(idx);
+                };
+
+                return new viewModel(dataModel);
             }
+
         },
-        template: {element: 'audioRecording-editview-template'}
+        template: {element: 'audiorecording-editview-template'}
     });
 
 
-    var AudioRecordingPreviewAndPlayerViewModel = function(dataModel, componentInfo){
-        var self = this;
-        this.element = componentInfo.element;
-        this.dataModel = dataModel;
-
-        var myPreloadedAudioSource = $(this.element).find('.preloadedSource')[0];
-        if (myPreloadedAudioSource) {
-            this.updateAudioSource = function () {
-                // check if we have it preloaded:
-                var audioElem;
-                var htmlObjectUrl;
-                if (typeof player !== 'undefined') {
-                    var file_id = self.dataModel.modifier().selectedTrialView.file_id();
-                    htmlObjectUrl = player.playerPreloader.preloadedObjectUrlsById[file_id];
-                    audioElem = player.playerPreloader.queue.getResult(file_id);
-                }
-
-                if (audioElem instanceof HTMLAudioElement && htmlObjectUrl) {
-                    myPreloadedAudioSource.src = htmlObjectUrl;
-                }
-                else {
-                    myPreloadedAudioSource.src = self.dataModel.audioSource();
-                }
-                $(this.element).find('audio')[0].load();
-            };
-            this.updateAudioSource();
-            self.dataModel.modifier().selectedTrialView.file_id.subscribe(function() {
-                self.updateAudioSource();
-            });
-        }
-
-        // only add playback functionality if not in sequence view:
-        if ($(this.element).parents('#sequenceView').length == 0) {
-
-            var myAudio = $(this.element).find('audio')[0];
-            var seekBar = $(this.element).find('.seek-bar')[0];
-
-            seekBar.addEventListener("change", function () {
-                dataModel.jumpToByFraction(seekBar.value / 100);
-            });
-
-            this.dataModel.currentlyPlaying.subscribe(function (value) {
-                if (value) {
-                    myAudio.play();
-                }
-                else {
-                    myAudio.pause();
-                }
-            });
-
-            // add subscriber to be notified when the audio should jump to specific time:
-            this.listenForJumpTo = function (evtParam) {
-                if (evtParam.jumpToFraction) {
-                    var time = myAudio.duration * evtParam.jumpToFraction;
-                    console.log("setting audio time to " + time);
-                    myAudio.currentTime = 5;
-                }
-            };
-            this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
-
-            // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
-            this.timeUpdateListener = function () {
-                if (!isNaN(myAudio.duration)) {
-                    var percentage = Math.floor(100 * myAudio.currentTime / myAudio.duration);
-                    self.dataModel.currentTimePercentage(percentage);
-                }
-            };
-            // Update the seek bar as the audio plays
-            myAudio.addEventListener("timeupdate", this.timeUpdateListener);
-
-            this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
-                seekBar.value = percentage;
-            });
-        }
-
-        this.dataModel.audioSource.subscribe(function() {
-            var myAudio = $(self.element).find('audio')[0];
-            myAudio.load();
-        });
-    };
-    AudioRecordingPreviewAndPlayerViewModel.prototype.dispose = function() {
-        console.log("disposing AudioRecordingPreviewAndPlayerViewModel");
-        // remove subscriber to be notified when the audio should jump to specific time:
-        var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
-        if (index > -1) {
-            this.dataModel.subscribersForJumpEvents.splice(index, 1);
-        }
-        if (this.subscriberTimePercentage) {
-            this.subscriberTimePercentage.dispose();
-        }
-        var myAudio = $(this.element).find('audio')[0];
-        myAudio.removeEventListener("timeupdate", this.timeUpdateListener);
-    };
-
-    ko.components.register('audioRecording-preview',{
+    ko.components.register('audiorecording-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                return new AudioRecordingPreviewAndPlayerViewModel(dataModel, componentInfo);
+                var viewModel = function(dataModel){
+                    var self = this;
+                    this.dataModel = dataModel;
+                    this.focus = function () {
+                        this.dataModel.ckInstance.focus()
+                    };
+                };
+
+                return new viewModel(dataModel);
             }
         },
-        template: { element: 'audioRecording-preview-template' }
+        template: { element: 'audiorecording-preview-template' }
     });
 
-    ko.components.register('audioRecording-playerview',{
+
+    ko.components.register('audiorecording-playerview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                return new AudioRecordingPreviewAndPlayerViewModel(dataModel, componentInfo);
+
+                var viewModel = function(dataModel){
+                    var self = this;
+                    this.dataModel = dataModel;
+
+                    this.focus = function () {
+                        this.dataModel.ckInstance.focus()
+                    };
+
+                    this.chooseFile = function() {
+                        var fileUploadElem = $(componentInfo.element).find('.playerFileUploadInput')[0];
+                        fileUploadElem.click();
+                    };
+
+                    this.fileSelected = function(file) {
+                        self.dataModel.selectedFile(file);
+                    };
+                };
+
+                return new viewModel(dataModel);
             }
         },
-        template: {element: 'audioRecording-playerview-template'}
+        template: {element: 'audiorecording-playerview-template'}
     });
 }
+
+
+
