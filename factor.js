@@ -21,6 +21,17 @@ var Factor = function(expData, factorGroup) {
 
     // or maybe better: either 'allFactorialInteractions' or 'redrawRandomPerTrial' or 'balancedBetweenSubjects'
 
+
+    if (this.factorTypeSubscription){
+       this.factorTypeSubscription.dispose();
+    }
+    this.factorTypeSubscription = this.factorType.subscribe(function() {
+        if (self.factorGroup){
+            self.factorGroup.conditionGroups(self.factorGroup.getFixedFactorConditions());
+        }
+
+    });
+
     // not serialized:
     this.nrLevels =  ko.observable(1);
     this.editName = ko.observable(false);

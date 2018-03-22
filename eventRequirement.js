@@ -243,6 +243,14 @@ RequirementVariableHasValue.prototype.checkIfTrue = function(parameters) {
     var operandLeftValue = this.operandLeft().getValue(parameters);
     var operandRightValue = this.operandRight().getValue(parameters);
 
+    if ($.isNumeric(operandLeftValue)){
+        operandLeftValue= parseFloat(operandLeftValue);
+    }
+    if ($.isNumeric(operandRightValue)){
+        operandRightValue = parseFloat(operandRightValue);
+    }
+
+
     switch(this.comparisonType()) {
         case "==":
             return (operandLeftValue == operandRightValue);
@@ -389,6 +397,13 @@ OperandVariable.prototype.getValue = function(parameters) {
             }
             if (right.hasOwnProperty('parentVar')){
                 right = right.toJS();
+            }
+
+            if ($.isNumeric(right)){
+                right= parseFloat(right);
+            }
+            if ($.isNumeric(left)){
+                left = parseFloat(left);
             }
 
             if (value.op=="+") {

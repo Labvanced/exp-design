@@ -1691,7 +1691,7 @@ ActionDelayedActions.prototype.run = function(triggerParams) {
         var delayInMs = parseInt(this.variable().getValue(triggerParams));
     }
     else{
-        var delayInMs =  this.delayInMs();
+        var delayInMs =   parseInt(this.delayInMs());
     }
 
     var timeoutFcn = setTimeout(function() {

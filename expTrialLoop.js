@@ -48,6 +48,7 @@ var ExpTrialLoop = function (expData) {
     this.randomizationConstraint = ko.observable("none");
     this.minIntervalBetweenRep = ko.observable(0).extend({ numeric: 0 });
     this.maxIntervalSameCondition = ko.observable(3).extend({ numeric: 3 });
+    this.randomTrialSelection = ko.observable("minimumWithZero");
 
     this.allTrialsToAllSubjects = ko.observable(true);
     this.numberTrialsToShow = ko.observable(null);
@@ -104,6 +105,7 @@ var ExpTrialLoop = function (expData) {
         return array;
 
     }, this);
+
 
 
 };
@@ -250,7 +252,8 @@ ExpTrialLoop.prototype.getCondGroupsOneTrialGroup = function (factorGroup) {
             nameOfFactorGroup: factorGroup.name(),
             nrOfVariations:totalVariations,
             minNrOfTrials: minVar,
-            maxNrOfTrials: maxVar
+            maxNrOfTrials: maxVar,
+            nrOfSubConditions: condArray.length
         };
         fixedFactorConds.push(obj);
     }
@@ -346,7 +349,7 @@ ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupId
         var options = [];
         for (var i=0; i <nrExistingTrials; i++) {
             // TODO replace with hash table
-            if (excludedTrialsPerCondGroup[condGroup].indexOf(i)<0){
+            if (excludedTrialsPerCondGroup[condGroup].indexOf(i)<0){ //  TODO this check can be removed to allow for trial draw with replacement
                 options.push(i);
             }
         }
@@ -416,9 +419,15 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
 
 
     for (var i=0; i < ffConds.length; i++) {
-        for (var k=0; k < fixedFactorConds[i].minNrOfTrials; k++) {
-           var temp =  allConds[ffConds[i][0]].slice(0);
-           factorLevels.push(temp)
+        if (this.randomTrialSelection()=="minimumWithZero"){
+            var NrTrialCount = fixedFactorConds[i].minNrOfTrials;
+        }
+        else if (this.randomTrialSelection()=="minimumWithoutZero"){
+            var NrTrialCount = fixedFactorConds[i].minNrOfTrials;
+        }
+        for (var k=0; k < NrTrialCount; k++) {
+            var temp =  allConds[ffConds[i][0]].slice(0);
+            factorLevels.push(temp)
         }
     }
 
@@ -474,7 +483,14 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
 
                 for (var k = 0; k < fixedFactorConds.length; k++) {
 
-                    endOfConditionIndex += fixedFactorConds[k].minNrOfTrials;
+                    if (this.randomTrialSelection()=="minimumWithZero"){
+                        var NrTrialCount = fixedFactorConds[k].minNrOfTrials;
+                    }
+                    else if (this.randomTrialSelection()=="minimumWithoutZero"){ //TODO
+                        var NrTrialCount = fixedFactorConds[k].minNrOfTrials;
+                    }
+
+                    endOfConditionIndex += NrTrialCount;
 
                     if (endOfConditionIndex > startOfConditionIndex) {
                         var nrTrials = endOfConditionIndex - startOfConditionIndex;
@@ -500,7 +516,7 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
         }
     }
 
-   var arr=  this.getResolutionOrder(factors,factorNames);
+   var arr =  this.getResolutionOrder(factors,factorNames);
    var resolutionOrder= arr[0];
    var factorDependencies= arr[1];
 
@@ -889,6 +905,37 @@ ExpTrialLoop.prototype.checkConstraint = function(currentArray,ffConds) {
 };
 
 
+
+ExpTrialLoop.prototype.getTrialById = function(uniqueId) {
+
+
+    for (var i = 0; i<this.factorGroups().length; i++){
+        var facGroup = this.factorGroups()[i];
+        for (var k = 0; k<facGroup.conditionsLinear().length; k++){
+            var trials = facGroup.conditionsLinear()[k].trials();
+            for (var l = 0; l<trials.length; l++){
+                trial = trials[l];
+                if (trial.uniqueId() == parseInt(uniqueId)){
+                    return trial;
+                }
+            }
+        }
+    }
+
+    for (var i = 0; i<numberArray.length; i++){
+        var trial = sortedArray[numberArray[t]];
+        if (trial){
+            outArray.push(trial)
+        }
+        else{
+            console.log("bad input sequence, trial number not specified.")
+        }
+
+    }
+
+};
+
+
 ExpTrialLoop.prototype.getTrialsBasedOnInputArray = function(sortedArray, subjectIdx) {
 
     try {
@@ -911,7 +958,7 @@ ExpTrialLoop.prototype.getTrialsBasedOnInputArray = function(sortedArray, subjec
     }
     catch(err){
         console.log(err.message);
-        return sortedArray;
+        return [];
     }
 
 
@@ -921,38 +968,44 @@ ExpTrialLoop.prototype.sortTrialBasedOnInputArray = function(sortedArray) {
 
     var trialOrder = this.fixedTrialOrder();
 
-    try {
-        var StringArray = trialOrder.split(',');
-        var numberArray = [];
-        for (var i = 0; i<StringArray.length; i++){
-            var value = parseInt(StringArray[i]);
-            if (isNaN(value)){
-                console.log("bad input sequence, trial id is not a number.")
-            }
-            else{
-                numberArray.push(value-1);
-            }
-
-        }
-        var outArray = [];
-
-        for (var t = 0; t<numberArray.length; t++){
-            var trial = sortedArray[numberArray[t]];
-            if (trial){
-                outArray.push(trial)
-            }
-            else{
-                console.log("bad input sequence, trial number not specified.")
-            }
-
-        }
-
-        return outArray;
+    if  (this.fixedTrialOrder().length==0){
+        return [];
     }
-    catch(err){
-        console.log(err.message);
-        return sortedArray;
+    else{
+        try {
+            var StringArray = trialOrder.split(',');
+            var numberArray = [];
+            for (var i = 0; i<StringArray.length; i++){
+                var value = parseInt(StringArray[i]);
+                if (isNaN(value)){
+                    console.log("bad input sequence, trial id is not a number.")
+                }
+                else{
+                    numberArray.push(value-1);
+                }
+
+            }
+            var outArray = [];
+
+            for (var t = 0; t<numberArray.length; t++){
+                var trial = sortedArray[numberArray[t]];
+                if (trial){
+                    outArray.push(trial)
+                }
+                else{
+                    console.log("bad input sequence, trial number not specified.")
+                }
+
+            }
+
+            return outArray;
+        }
+        catch(err){
+            console.log(err.message);
+            return sortedArray;
+        }
     }
+
 
 
 };
@@ -963,10 +1016,10 @@ ExpTrialLoop.prototype.sortTrialBasedOnUniqueId = function(trials) {
     var sortedArray = [];
     var idArray = [];
 
-    for (t = 0; t<trials.length; t++){
+    for (var t = 0; t<trials.length; t++){
         idArray.push(trials[t].uniqueId());
     }
-    for (t = 0; t<idArray.length; t++){
+    for (var t = 0; t<idArray.length; t++){
         var idx = idArray.indexOf(Math.min.apply(null, idArray));
         idArray.splice(idx,1,Infinity);
         sortedArray.push(trials[idx]);
@@ -1121,7 +1174,8 @@ ExpTrialLoop.prototype.getRandomizedTrials = function(allTrials, subjCounterGlob
         else if (this.trialRandomization()=="adaptive") {
             var mergedTrials  = [].concat.apply([], allTrials);
             var outArray = this.sortTrialBasedOnUniqueId(mergedTrials);
-            // TODO change first  trial ID to custom start
+            var trial = this.getTrialById(this.customStartTrial());
+            outArray.splice(0,0,trial);
         }
     }
 
@@ -1405,6 +1459,10 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('customStartTrial')){
         this.customStartTrial(data.customStartTrial);
     }
+    if (data.hasOwnProperty('randomTrialSelection')){
+        this.randomTrialSelection(data.randomTrialSelection);
+    }
+
 
 
 
@@ -1452,6 +1510,7 @@ ExpTrialLoop.prototype.toJS = function() {
         randomizationConstraint: this.randomizationConstraint(),
         subjectCounterType:this.subjectCounterType(),
         uploadedTrialOrder:this.uploadedTrialOrder(),
+        randomTrialSelection:this.randomTrialSelection(),
 
         trialLoopActivated:this.trialLoopActivated(),
         customStartTrial:this.customStartTrial(),

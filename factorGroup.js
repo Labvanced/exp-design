@@ -39,12 +39,28 @@ var FactorGroup= function(expData,expTrialLoop) {
       }
     }, this);
 
+    this.hasRandomFactor = ko.computed(function() {
+        var out = false;
+        for (var i = 0; i<self.factors().length; i++){
+            if (self.factors()[i] instanceof Factor){
+                if (self.factors()[i].factorType()=="random"){
+                    out = true;
+                }
+            }
+
+        }
+        return out;
+
+    }, this);
+
 
 
     this.conditionsLinear = ko.computed(function() {
         var linearArray = [];
         var conditions = self.conditions();
         var trialStartIdx = 1;
+
+
 
         function deepDive(arr, numNewLevels){
 
@@ -74,6 +90,9 @@ var FactorGroup= function(expData,expTrialLoop) {
         return linearArray;
 
     }, this);
+
+    // not serialized
+    this.conditionGroups = ko.observable(this.getFixedFactorConditions());
 
 };
 
@@ -229,6 +248,7 @@ FactorGroup.prototype.addFactorToCondition = function(factor) {
     }
 
     this.conditions(conditionArray);
+    this.conditionGroups(this.getFixedFactorConditions());
 };
 
 /**
@@ -287,6 +307,7 @@ FactorGroup.prototype.addLevelToCondition = function() {
     var conditionArray = this.conditions();
     addLevels(conditionArray, factors);
     this.conditions(conditionArray);
+    this.conditionGroups(this.getFixedFactorConditions());
 
 };
 
@@ -332,6 +353,7 @@ FactorGroup.prototype.removeLevelFromFactor = function(factor, lvlIdx) {
 
     // Now really remove the level from the categorical variable:
     factors[facIdx].globalVar().removeLevel(lvlIdx);
+    this.conditionGroups(this.getFixedFactorConditions());
 };
 
 /**
@@ -348,7 +370,7 @@ FactorGroup.prototype.addFactor = function(factor) {
     for (var i = 0; i<this.factors().length; i++){
         this.factors()[i].addFactorDependency(factor);
     }
-
+    this.conditionGroups(this.getFixedFactorConditions());
 };
 
 /**
@@ -403,6 +425,7 @@ FactorGroup.prototype.removeFactor = function(factor) {
     }
 
     this.factors.splice(idx,1);
+    this.conditionGroups(this.getFixedFactorConditions());
 };
 
 /**
@@ -459,6 +482,7 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
 
     deepDive(condMultiDim, factors, levels, 0);
     this.conditions(condMultiDim);
+    this.conditionGroups(this.getFixedFactorConditions());
 };
 
 /**

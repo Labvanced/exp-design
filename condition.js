@@ -11,6 +11,7 @@ var Condition = function(factorGroup) {
 
     // serialized
     this.trials = ko.observableArray([]);
+    this.relativePercentage = ko.observable(100);
 
     // not serialized
     this.factorLevels = ko.observableArray([]); // level_obj1, level_ob2
@@ -23,6 +24,42 @@ var Condition = function(factorGroup) {
             trialVariations[i].trialIdx(newTrialStartIdx+i);
         }
     });
+
+    this.isSubCondition = ko.computed(function() {
+        return self.factorGroup.hasRandomFactor();
+    }, this);
+
+
+    this.conditionGroup = ko.computed(function() {
+        var groups =  self.factorGroup.conditionGroups();
+        var found = false;
+        var idx = 0;
+        var out = 1;
+
+        while (!found && idx < groups.length){
+            var currentGroup = groups[idx];
+            if (currentGroup.indexOf(self.conditionIdx()-1)>=0){
+                found = true;
+                out = idx+1;
+            }
+            idx++;
+        }
+        return out;
+    }, this);
+
+    this.conditionGroupArray = ko.computed(function() {
+        var arr =   self.factorGroup.conditionGroups()[self.conditionGroup()-1];
+        var conds = [];
+        if (arr){
+            for (var i = 0; i< arr.length; i++){
+                if (self.factorGroup.conditionsLinear()[arr[i]] !== self){
+                    conds.push(self.factorGroup.conditionsLinear()[arr[i]])
+                }
+            }
+        }
+
+        return conds;
+    }, this);
 
 };
 
@@ -72,22 +109,33 @@ Condition.prototype.setPointers = function(entitiesArr) {
  * @param {number} numTrialVariations - The new total number of trials in this condition.
  */
 Condition.prototype.setNumTrials = function (numTrialVariations) {
-    var trialVariations = this.trials();
-    var currentLength = trialVariations.length;
-    var lengthToBe = numTrialVariations;
-    var diff, i;
-    if (currentLength > lengthToBe) {
-        diff = currentLength - lengthToBe;
-        for (i = 0; i < diff; i++) {
-            this.removeTrialVariation();
+    if (this.trials().length != parseInt(numTrialVariations)){
+        var trialVariations = this.trials();
+        var currentLength = trialVariations.length;
+        var lengthToBe = parseInt(numTrialVariations);
+        var diff, i;
+        if (currentLength > lengthToBe) {
+            diff = currentLength - lengthToBe;
+            for (i = 0; i < diff; i++) {
+                this.removeTrialVariation();
+            }
+            this.trials(trialVariations);
         }
-        this.trials(trialVariations);
-    }
-    else if (currentLength < lengthToBe) {
-        diff = lengthToBe - currentLength;
-        for (i = 0; i < diff; i++) {
-            this.addTrial();
+        else if (currentLength < lengthToBe) {
+            diff = lengthToBe - currentLength;
+            for (i = 0; i < diff; i++) {
+                this.addTrial();
+            }
         }
+
+        // now apply the same amount of trials to all other sub-conditions in the same condition group
+        /**
+        this.conditionGroupArray().forEach(function (condition) {
+            if (condition.trials().length != parseInt(numTrialVariations)){
+                condition.setNumTrials(numTrialVariations);
+            }
+        })
+         **/
     }
 };
 
@@ -124,6 +172,9 @@ Condition.prototype.fromJS = function(data) {
         trialVariation.nr(index);
         return trialVariation;
     }));
+    if (data.hasOwnProperty('relativePercentage')){
+        this.relativePercentage(data.relativePercentage);
+    }
 
     return this;
 };
@@ -134,7 +185,8 @@ Condition.prototype.fromJS = function(data) {
  */
 Condition.prototype.toJS = function() {
     return {
-        trials: jQuery.map( this.trials(), function(trial ) { return trial.toJS(); })
+        trials: jQuery.map( this.trials(), function(trial ) { return trial.toJS(); }),
+        relativePercentage: this.relativePercentage()
     };
 };
 
