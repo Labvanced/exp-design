@@ -47,6 +47,7 @@ var Condition = function(factorGroup) {
         return out;
     }, this);
 
+    /** instance reference to other condition in the same condition group
     this.conditionGroupArray = ko.computed(function() {
         var arr =   self.factorGroup.conditionGroups()[self.conditionGroup()-1];
         var conds = [];
@@ -60,6 +61,7 @@ var Condition = function(factorGroup) {
 
         return conds;
     }, this);
+     **/
 
 };
 
@@ -109,10 +111,12 @@ Condition.prototype.setPointers = function(entitiesArr) {
  * @param {number} numTrialVariations - The new total number of trials in this condition.
  */
 Condition.prototype.setNumTrials = function (numTrialVariations) {
-    if (this.trials().length != parseInt(numTrialVariations)){
-        var trialVariations = this.trials();
-        var currentLength = trialVariations.length;
-        var lengthToBe = parseInt(numTrialVariations);
+    var lengthToBe = parseInt(numTrialVariations);
+    var trialVariations = this.trials();
+    var currentLength = trialVariations.length;
+
+    if (currentLength != lengthToBe){
+
         var diff, i;
         if (currentLength > lengthToBe) {
             diff = currentLength - lengthToBe;
