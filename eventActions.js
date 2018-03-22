@@ -3720,7 +3720,7 @@ var ActionDistributeVariable = function(event) {
         return self.playersToDistributeToMode() == "Custom";
     });
     this.playersToDistributeTo = this.initPlayersToDistributeTo();
-    this.blockUntilDone = ko.observable(false);
+    this.blockVarUntilDone = ko.observable(true);
     this.isInitialized = false;
 
 };
@@ -3765,7 +3765,7 @@ ActionDistributeVariable.prototype.fromJS = function(data) {
     this.operand(null);
     this.playersToDistributeTo(null);
     this.playersToDistributeToMode(null);
-    this.blockUntilDone(null);
+    this.blockVarUntilDone(null);
 
     if(data.operand){
         var operand = new OperandVariable(this.event);
@@ -3781,8 +3781,8 @@ ActionDistributeVariable.prototype.fromJS = function(data) {
         this.playersToDistributeToMode(data.playersToDistributeToMode);
     }
 
-    if(data.hasOwnProperty('blockUntilDone')) { // because of boolean value
-        this.blockUntilDone(data.blockUntilDone);
+    if(data.hasOwnProperty('blockVarUntilDone')) { // because of boolean value
+        this.blockVarUntilDone(data.blockVarUntilDone);
     }
 
     return this;
@@ -3794,7 +3794,7 @@ ActionDistributeVariable.prototype.toJS = function(data) {
     var operand = null;
     var playersToDistributeTo = null;
     var playersToDistributeToMode = null;
-    var blockUntilDone = false;
+    var blockVarUntilDone = false;
 
     if (this.variable()) {
         varId = this.variable().id();
@@ -3819,8 +3819,8 @@ ActionDistributeVariable.prototype.toJS = function(data) {
         playersToDistributeToMode = this.playersToDistributeToMode();
     }
 
-    if(this.hasOwnProperty('blockUntilDone')) { // because of boolean value
-        blockUntilDone = this.blockUntilDone();
+    if(this.hasOwnProperty('blockVarUntilDone')) { // because of boolean value
+        blockVarUntilDone = this.blockVarUntilDone();
     }
 
     return {
@@ -3828,7 +3828,7 @@ ActionDistributeVariable.prototype.toJS = function(data) {
         operand: operand,
         playersToDistributeTo: playersToDistributeTo,
         playersToDistributeToMode: playersToDistributeToMode,
-        blockUntilDone: blockUntilDone,
+        blockVarUntilDone: blockVarUntilDone,
         type: this.type
     };
 };
@@ -3878,7 +3878,7 @@ ActionDistributeVariable.prototype.run = function(triggerParams) {
             variable:  {name: self.variable().name(), id: self.variable().id()},
             operandValue: operandValueToSend,
             playersToDistributeTo: playersToDistributeToArray,
-            blockUntilDone: self.blockUntilDone()
+            blockVarUntilDone: self.blockVarUntilDone()
         }
     );
 };

@@ -261,7 +261,7 @@ ExpData.prototype.staticTranslations = {
         participationAgreement2: "der Scicovery GmbH bzgl Datenaufnahme, Datenspeicherung, und Datenverwaltung von Teilnehmerdaten zu.",
         multiUserExpLobby: "Experiment mit mehreren Teilnehmern",
         participantsInLobby: "Teilnehmer in der Lobby:",
-        readyToStart: "Bereit zum Starten?",
+        readyToStart: "Bereit zum Start?",
         waitingForOtherParticipants: "Warte auf andere Teilnehmer...",
         experimentStartsShortly: "Das Experiment startet in Kürze...",
         successfullyMatched_1: "Sie wurden erfolgreich einem Experiment zugeteilt. Drücken Sie",
