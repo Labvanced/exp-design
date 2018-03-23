@@ -7,14 +7,14 @@ var AudioRecordingElement = function(expData) {
     //serialized
     this.type = "AudioRecordingElement";
     this.questionText = ko.observable(null); // EditableTextElement
-
     this.showMediaControls = ko.observable(true);
-
     this.variable = ko.observable(null);
     this.isRequired = ko.observable(false);
     this.enableTitle = ko.observable(true);
 
     ///// not serialized
+    this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
+    this.currentTimePercentage = ko.observable(0);
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
     this.fileUploaded = ko.observable(false);
@@ -22,6 +22,7 @@ var AudioRecordingElement = function(expData) {
     this.mediaRecorder = null;
     this.audioElem = null;
     this.audioRecElem = null;
+    this.subscribersForJumpEvents = [];
 };
 
 AudioRecordingElement.prototype.label = "Audio Recording";
@@ -33,6 +34,24 @@ AudioRecordingElement.prototype.initHeight = 100;
 AudioRecordingElement.prototype.numVarNamesRequired = 1;
 AudioRecordingElement.prototype.actionTypes = ["StartRecording","StopRecording","StartUpload","ClearRecording"];
 AudioRecordingElement.prototype.triggerTypes = ["AudioRecordingFinished","UploadComplete"];
+
+AudioRecordingElement.prototype.switchPlayState = function() {
+    this.currentlyPlaying(!this.currentlyPlaying());
+};
+
+AudioRecordingElement.prototype.jumpToByFraction = function(fraction) {
+    console.log("jump to fraction "+fraction);
+    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({jumpToFraction: fraction});
+    }
+};
+
+AudioRecordingElement.prototype.jumpToByTime = function(time) {
+    console.log("jump to time "+time);
+    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({jumpToTime: time});
+    }
+};
 
 AudioRecordingElement.prototype.dispose = function() {
     this.questionText().dispose();
@@ -130,13 +149,14 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
 
             self.audioRecElem = mergeProps(self.audioRecElem, {
                 controls: true,
-                muted: true
+                muted: true,
+                src: URL.createObjectURL(stream)
             });
-            try {
-                self.audioRecElem.srcObject = stream;
-            } catch (error) {
-                self.audioRecElem.src = URL.createObjectURL(stream);
-            }
+            //try {
+            //    self.audioRecElem.srcObject = stream;
+            //} catch (error) {
+            //    self.audioRecElem.src = URL.createObjectURL(stream);
+            //}
             self.audioRecElem.play();
 
             var audiosContainer = document.getElementById('audios-container');
@@ -144,20 +164,28 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
 
             self.mediaRecorder = new MediaStreamRecorder(stream);
             self.mediaRecorder.stream = stream;
+            self.mediaRecorder.audioChannels = 1;
             self.mediaRecorder.ondataavailable = function (blob) {
                 console.log("data available");
-                try {
-                    self.audioElem.srcObject = blob;
-                } catch (error) {
-                    self.audioElem.src = URL.createObjectURL(blob);
-                }
+                //try {
+                //    self.audioElem.srcObject = blob;
+                //} catch (error) {
+                    //self.audioElem.src = URL.createObjectURL(blob);
+                //}
+
+
+                var a = document.createElement('a');
+                a.target = '_blank';
+                a.innerHTML = 'Open Recorded Audio N';
+                a.href = URL.createObjectURL(blob);
+                audiosContainer.appendChild(a);
 
                 console.log("mediaRecorder.mimeType = "+self.mediaRecorder.mimeType);
 
-                self.recordedAudio(blob);
+                //self.recordedAudio(blob);
                 //document.write('<a href="' + blobURL + '">' + blobURL + '</a>');
             };
-            self.mediaRecorder.start(3000);
+            self.mediaRecorder.start(5000);
         }
 
         function onMediaError(e) {
@@ -169,13 +197,23 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
     else if (actionType=="StopRecording") {
         console.log("StopRecording");
         self.mediaRecorder.stop();
-        self.audioRecElem.src = "";
-        self.audioRecElem.srcObject = null;
-        var audiosContainer = document.getElementById('audios-container');
+        self.mediaRecorder.stream.stop();
+
+        ConcatenateBlobs(self.mediaRecorder.blobs, self.mediaRecorder.blobs[0].type, function(concatenatedBlob) {
+            var a = document.createElement('a');
+            a.target = '_blank';
+            a.innerHTML = 'Final Audio';
+            a.href = URL.createObjectURL(concatenatedBlob);
+            audiosContainer.appendChild(a);
+        });
+
+        //self.audioRecElem.src = "";
+        //self.audioRecElem.srcObject = null;
+        //var audiosContainer = document.getElementById('audios-container');
         // remove all children of audiosContainer:
-        while (audiosContainer.firstChild) {
-            audiosContainer.removeChild(audiosContainer.firstChild);
-        }
+        //while (audiosContainer.firstChild) {
+        //    audiosContainer.removeChild(audiosContainer.firstChild);
+        //}
     }
     else if (actionType=="ClearRecording") {
         console.log("ClearRecording");
@@ -305,18 +343,96 @@ function createAudioRecordingComponents() {
     });
 
 
+
+    var AudioRecordingPreviewAndPlayerViewModel = function(dataModel, componentInfo){
+        var self = this;
+        this.element = componentInfo.element;
+        this.dataModel = dataModel;
+
+        // only add playback functionality if not in sequence view:
+        if ($(this.element).parents('#sequenceView').length == 0) {
+
+            var myAudio = $(this.element).find('audio')[0];
+            var seekBar = $(this.element).find('.seek-bar')[0];
+
+            seekBar.addEventListener("change", function () {
+                dataModel.jumpToByFraction(seekBar.value / 100);
+            });
+
+            this.dataModel.currentlyPlaying.subscribe(function (value) {
+                if (value) {
+                    myAudio.play();
+                }
+                else {
+                    myAudio.pause();
+                }
+            });
+
+            // add subscriber to be notified when the audio should jump to specific time:
+            this.listenForJumpTo = function (evtParam) {
+                if (evtParam.jumpToFraction) {
+                    var time = myAudio.duration * evtParam.jumpToFraction;
+                    console.log("setting audio time to " + time);
+                    myAudio.currentTime = 5;
+                }
+            };
+            this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
+
+            // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
+            this.timeUpdateListener = function () {
+                if (!isNaN(myAudio.duration)) {
+                    var percentage = Math.floor(100 * myAudio.currentTime / myAudio.duration);
+                    self.dataModel.currentTimePercentage(percentage);
+                }
+            };
+            // Update the seek bar as the audio plays
+            myAudio.addEventListener("timeupdate", this.timeUpdateListener);
+
+            this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
+                seekBar.value = percentage;
+            });
+        }
+
+        this.recordedAudioSubscriber = this.dataModel.recordedAudio.subscribe(function(blob) {
+            var myAudioSrc = $(self.element).find('.recordedAudioPlaybackSource')[0];
+            //try {
+            //    myAudioSrc.srcObject = blob;
+            //} catch (error) {
+                myAudioSrc.src = URL.createObjectURL(blob);
+            //}
+            myAudio = $(myAudioSrc).parent()[0];
+            myAudio.load();
+        });
+
+        this.focus = function () {
+            this.dataModel.ckInstance.focus()
+        };
+    };
+    AudioRecordingPreviewAndPlayerViewModel.prototype.afterRenderInit = function(elem) {
+        this.dataModel.audioElem = elem;
+    };
+    AudioRecordingPreviewAndPlayerViewModel.prototype.dispose = function() {
+        console.log("disposing AudioRecordingPreviewAndPlayerViewModel");
+        // remove subscriber to be notified when the audio should jump to specific time:
+        var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
+        if (index > -1) {
+            this.dataModel.subscribersForJumpEvents.splice(index, 1);
+        }
+        if (this.subscriberTimePercentage) {
+            this.subscriberTimePercentage.dispose();
+        }
+        if (this.recordedAudioSubscriber) {
+            this.recordedAudioSubscriber.dispose();
+        }
+        var myAudio = $(this.element).find('audio')[0];
+
+        myAudio.removeEventListener("timeupdate", this.timeUpdateListener);
+    };
+    
     ko.components.register('audiorecording-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-                var viewModel = function(dataModel){
-                    var self = this;
-                    this.dataModel = dataModel;
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus()
-                    };
-                };
-
-                return new viewModel(dataModel);
+                return new AudioRecordingPreviewAndPlayerViewModel(dataModel, componentInfo);
             }
         },
         template: { element: 'audiorecording-preview-template' }
@@ -326,21 +442,7 @@ function createAudioRecordingComponents() {
     ko.components.register('audiorecording-playerview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
-
-                var viewModel = function(dataModel){
-                    var self = this;
-                    this.dataModel = dataModel;
-
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus()
-                    };
-                };
-
-                viewModel.prototype.afterRenderInit = function(elem) {
-                    this.dataModel.audioElem = elem;
-                };
-
-                return new viewModel(dataModel);
+                return new AudioRecordingPreviewAndPlayerViewModel(dataModel, componentInfo);
             }
         },
         template: {element: 'audiorecording-playerview-template'}

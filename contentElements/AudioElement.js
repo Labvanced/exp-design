@@ -11,9 +11,6 @@ var AudioElement= function(expData) {
     this.file_orig_name = ko.observable(null);
     this.showMediaControls = ko.observable(true);
 
-    this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
-    this.currentTimePercentage = ko.observable(0);
-
     this.shortName = ko.computed(function() {
         if (self.file_orig_name()){
             return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
@@ -38,6 +35,8 @@ var AudioElement= function(expData) {
     this.subscribersForJumpEvents = [];
 
     ///// not serialized
+    this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
+    this.currentTimePercentage = ko.observable(0);
     this.selected = ko.observable(false);
     /////
 };

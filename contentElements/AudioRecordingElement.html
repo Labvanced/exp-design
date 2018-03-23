@@ -46,11 +46,11 @@
             Your browser does not support HTML5 audio.
         </audio>
 
-        <!--span data-bind="if: dataModel.showMediaControls" class="media-controls">
+        <span data-bind="if: dataModel.showMediaControls" class="media-controls">
             <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
             <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
             <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
-        </span-->
+        </span>
 
     </div>
     <br>
@@ -77,15 +77,15 @@
         <div id="audios-container"></div>
 
         <audio preload="auto">
-            <source data-bind="attr: {src: dataModel.recordedAudio()}">
+            <source class="recordedAudioPlaybackSource">
             Your browser does not support HTML5 audio.
         </audio>
 
-        <!--span data-bind="if: dataModel.showMediaControls" class="media-controls">
+        <span data-bind="if: dataModel.showMediaControls" class="media-controls">
             <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
             <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
             <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
-        </span-->
+        </span>
 
         <span data-bind="template: { afterRender: function(callbackTarget, callbackArgs) { callbackArgs.afterRenderInit($element); } }"></span>
 
