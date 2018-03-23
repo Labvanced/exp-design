@@ -50,7 +50,7 @@ var ExpTrialLoop = function (expData) {
     this.maxIntervalSameCondition = ko.observable(3).extend({ numeric: 3 });
 
     this.randomTrialSelection = ko.observable("untilMinimum");
-    this.determineNrTrials = ko.observable("minimumWithZero");
+    this.determineNrTrials = ko.observable("minimumWithoutZero");
     this.trialSelectionBalance = ko.observable("balancedPerCondGroup");
 
     this.allTrialsToAllSubjects = ko.observable(true);
@@ -390,7 +390,13 @@ ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupId
             var nrExistingTrials =  condition.trials().length;
         }
         else if (this.randomTrialSelection()=="untilMinimum") {
-            var nrExistingTrials =  obj.fixedFactorConds[condGroup].minNrOfTrials;
+            if (this.determineNrTrials()=="minimumWithZero" ){
+                var nrExistingTrials =  obj.fixedFactorConds[condGroup].minNrOfTrials;
+            }
+            else if(this.determineNrTrials()=="minimumWithoutZero"){
+                var nrExistingTrials =  obj.fixedFactorConds[condGroup].minNrOfTrialsWithoutZero;
+            }
+
         }
 
         var options = [];
@@ -546,8 +552,8 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
                     if (this.determineNrTrials()=="minimumWithZero"){
                         var NrTrialCount = fixedFactorConds[k].minNrOfTrials;
                     }
-                    else if (this.determineNrTrials()=="minimumWithoutZero"){ //TODO
-                        var NrTrialCount = fixedFactorConds[k].minNrOfTrials;
+                    else if (this.determineNrTrials()=="minimumWithoutZero"){
+                        var NrTrialCount = fixedFactorConds[k].minNrOfTrialsWithoutZero;
                     }
 
                     endOfConditionIndex += NrTrialCount;
