@@ -1,6 +1,6 @@
 <template id='audiorecording-editview-template'>
     <div class="panel-body" style="height: 100%; margin-top: -10px">
-        <div class="taskeditor-header">Selection</div>
+        <div class="taskeditor-header">Audio Recording</div>
 
         <div>
             <label style="cursor: pointer">Show Question Header: <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false"></label>
@@ -8,7 +8,6 @@
 
         <div>
             <label style="cursor: pointer">Required:<input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false"></label>
-
         </div>
         <hr>
 
@@ -16,10 +15,12 @@
             Linked Variable:
             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['file'], relinkCallback: relinkCallback } }"></span>
         </label>
-
         <br>
-        <span>Default Color: </span><input id="bgColorPickerDefault">
-        <span>Hover Color: </span><input id="bgColorPickerHover">
+
+        <span class="property-description">
+            Show Media Controls:
+            <input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showMediaControls">
+        </span>
 
     </div>
 </template>
@@ -34,16 +35,23 @@
     <!-- /ko -->
     <div>
 
-        <input type="file" class="playerFileUploadInput" accept="*/*" style="display: none;" />
-        <div class="upload-button" data-bind="style:{ backgroundColor: dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){dataModel.enableHighlight($element)}, mouseout: function(data,event){dataModel.disableHighlight($element)}}">
-            <span data-bind="component: {name : 'editable-text-element-preview', params : dataModel.buttonText}"></span>
-        </div>
-
         <!-- ko if: dataModel.isRequired() -->
         <span class="required-question-icon"  data-bind="tooltip:'.requiredInfoEditor'">
             <img width="20" height="20" src="/resources/icons/exmark.svg"/>
         </span>
         <!-- /ko -->
+
+        <audio preload="auto">
+            <source data-bind="attr: {src: dataModel.recordedAudio()}">
+            Your browser does not support HTML5 audio.
+        </audio>
+
+        <!--span data-bind="if: dataModel.showMediaControls" class="media-controls">
+            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+            <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+        </span-->
+
     </div>
     <br>
 </template>
@@ -58,11 +66,6 @@
     <!-- /ko -->
     <div>
 
-        <input type="file" data-bind="event: { change: function() { fileSelected($element.files[0]) } }" class="playerFileUploadInput" accept="*/*" style="display: none;" />
-        <div class="upload-button" data-bind="click: chooseFile, style:{ backgroundColor: dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){dataModel.enableHighlight($element)}, mouseout: function(data,event){dataModel.disableHighlight($element)}}">
-            <span data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.buttonText}"></span>
-        </div>
-
         <!-- ko if: dataModel.triedToSubmit() -->
         <!-- ko ifnot: dataModel.dataIsValid() -->
         <span class="required-question-icon"  data-bind="tooltip:'.requiredInfo'">
@@ -70,6 +73,22 @@
         </span>
         <!-- /ko -->
         <!-- /ko -->
+
+        <div id="audios-container"></div>
+
+        <audio preload="auto">
+            <source data-bind="attr: {src: dataModel.recordedAudio()}">
+            Your browser does not support HTML5 audio.
+        </audio>
+
+        <!--span data-bind="if: dataModel.showMediaControls" class="media-controls">
+            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+            <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+        </span-->
+
+        <span data-bind="template: { afterRender: function(callbackTarget, callbackArgs) { callbackArgs.afterRenderInit($element); } }"></span>
+
     </div>
     <br>
 

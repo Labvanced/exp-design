@@ -7,10 +7,8 @@ var AudioRecordingElement = function(expData) {
     //serialized
     this.type = "AudioRecordingElement";
     this.questionText = ko.observable(null); // EditableTextElement
-    this.buttonText = ko.observable(null);
 
-    this.bgColorDefault = ko.observable('#99cc66');
-    this.bgColorHover = ko.observable('#99de50');
+    this.showMediaControls = ko.observable(true);
 
     this.variable = ko.observable(null);
     this.isRequired = ko.observable(false);
@@ -20,22 +18,24 @@ var AudioRecordingElement = function(expData) {
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
     this.fileUploaded = ko.observable(false);
-    this.selectedFile = ko.observable(null);
+    this.recordedAudio = ko.observable(null);
+    this.mediaRecorder = null;
+    this.audioElem = null;
+    this.audioRecElem = null;
 };
 
-AudioRecordingElement.prototype.label = "File Upload";
-AudioRecordingElement.prototype.iconPath = "/resources/icons/openFile.svg";
+AudioRecordingElement.prototype.label = "Audio Recording";
+AudioRecordingElement.prototype.iconPath = "/resources/icons/tools/tool_audio.svg";
 AudioRecordingElement.prototype.dataType =      [ ];
 AudioRecordingElement.prototype.modifiableProp = [ ];
 AudioRecordingElement.prototype.initWidth = 300;
 AudioRecordingElement.prototype.initHeight = 100;
 AudioRecordingElement.prototype.numVarNamesRequired = 1;
-AudioRecordingElement.prototype.actionTypes = ["StartUpload","ClearFile"];
-AudioRecordingElement.prototype.triggerTypes = ["FileSelected","UploadComplete"];
+AudioRecordingElement.prototype.actionTypes = ["StartRecording","StopRecording","StartUpload","ClearRecording"];
+AudioRecordingElement.prototype.triggerTypes = ["AudioRecordingFinished","UploadComplete"];
 
 AudioRecordingElement.prototype.dispose = function() {
     this.questionText().dispose();
-    this.buttonText().dispose();
     this.variable().removeBackRef(this);
 };
 
@@ -43,9 +43,6 @@ AudioRecordingElement.prototype.init = function(variableName) {
 
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
-
-    this.buttonText(new EditableTextElement(this.expData, this, '<p><span style="text-align: center;">Choose File</span></p>'));
-    this.buttonText().init();
 
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType('file');
@@ -62,64 +59,7 @@ AudioRecordingElement.prototype.init = function(variableName) {
 };
 
 AudioRecordingElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'File Upload');
-};
-
-AudioRecordingElement.prototype.enableHighlight = function(elem) {
-    var self= this;
-    $(elem).css({
-        'backgroundColor': self.bgColorHover(),
-        'cursor': 'pointer'
-    });
-};
-
-AudioRecordingElement.prototype.initColorPicker = function() {
-
-    var self = this;
-    $("#bgColorPickerDefault").spectrum({
-        color: self.bgColorDefault(),
-        preferredFormat: "hex",
-        showInput: true,
-        change: function (color) {
-            var colorStr = color.toHexString();
-            self.bgColorDefault(colorStr);
-
-        }
-    });
-    if (this.bg1Subsciption) {
-        this.bg1Subsciption.dispose();
-    }
-    this.bg1Subsciption = this.bgColorDefault.subscribe(function(val){
-        $("#bgColorPickerDefault").spectrum("set", val);
-    });
-
-
-    $("#bgColorPickerHover").spectrum({
-        color: self.bgColorHover(),
-        preferredFormat: "hex",
-        showInput: true,
-        change: function (color) {
-            var colorStr = color.toHexString();
-            self.bgColorHover(colorStr);
-
-        }
-    });
-
-    if (this.bg2Subsciption) {
-        this.bg2Subsciption.dispose();
-    }
-    this.bg2Subsciption = this.bgColorHover.subscribe(function(val){
-        $("#bgColorPickerHover").spectrum("set", val);
-    });
-
-};
-
-AudioRecordingElement.prototype.disableHighlight = function(elem) {
-    var self= this;
-    $(elem).css({
-        'backgroundColor': self.bgColorDefault(),
-        'cursor': 'default'
-    });
+    this.variable().addBackRef(this, this.parent, true, true, 'Audio Recording');
 };
 
 /**
@@ -128,7 +68,6 @@ AudioRecordingElement.prototype.disableHighlight = function(elem) {
  */
 AudioRecordingElement.prototype.getAllModifiers = function(modifiersArr) {
     this.questionText().getAllModifiers(modifiersArr);
-    this.buttonText().getAllModifiers(modifiersArr);
 };
 
 AudioRecordingElement.prototype.getActionTypes = function() {
@@ -138,7 +77,7 @@ AudioRecordingElement.prototype.getActionTypes = function() {
 AudioRecordingElement.prototype.executeAction = function(actionType) {
     var self = this;
     if (actionType=="StartUpload") {
-        var file = this.selectedFile();
+        var file = this.recordedAudio();
         if (file) {
             console.log("StartUpload");
             var blockNr = player.currentBlockIdx + 1;
@@ -151,7 +90,8 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
                 return;
             }
 
-            var newFileName = "blockNr_" + blockNr + "_taskNr_" + taskNr + "_trialNr_" + trialNr + "_" + elemName;
+            var extension = "webm";
+            var newFileName = "blockNr_" + blockNr + "_taskNr_" + taskNr + "_trialNr_" + trialNr + "_" + elemName + "." + extension;
 
             function callbackWhenFinished(file_guid, file_name) {
                 console.log("upload finished");
@@ -164,16 +104,82 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
                         });
                     }
                     else {
-                        self.variable().value().setValue(newFileName);
+                        self.variable().value().setValue(file_name);
                     }
                 }
             }
+
+            //var fileOfBlob = new File([this.recordedAudio()], newFileName+'.webm');
+            player.playerFileUploader.addToAjaxUploadQueue(this.recordedAudio(), newFileName, this.variable(), callbackWhenFinished);
         }
-        player.playerFileUploader.addToAjaxUploadQueue(this.selectedFile(), newFileName, this.variable(), callbackWhenFinished);
+
     }
-    else if (actionType=="ClearFile") {
-        console.log("ClearFile");
-        this.selectedFile(null);
+    else if (actionType=="StartRecording") {
+        console.log("StartRecording");
+
+        function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
+            navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
+        }
+
+        var mediaConstraints = {
+            audio: true
+        };
+
+        function onMediaSuccess(stream) {
+            self.audioRecElem = document.createElement('audio');
+
+            self.audioRecElem = mergeProps(self.audioRecElem, {
+                controls: true,
+                muted: true
+            });
+            try {
+                self.audioRecElem.srcObject = stream;
+            } catch (error) {
+                self.audioRecElem.src = URL.createObjectURL(stream);
+            }
+            self.audioRecElem.play();
+
+            var audiosContainer = document.getElementById('audios-container');
+            audiosContainer.appendChild(self.audioRecElem);
+
+            self.mediaRecorder = new MediaStreamRecorder(stream);
+            self.mediaRecorder.stream = stream;
+            self.mediaRecorder.ondataavailable = function (blob) {
+                console.log("data available");
+                try {
+                    self.audioElem.srcObject = blob;
+                } catch (error) {
+                    self.audioElem.src = URL.createObjectURL(blob);
+                }
+
+                console.log("mediaRecorder.mimeType = "+self.mediaRecorder.mimeType);
+
+                self.recordedAudio(blob);
+                //document.write('<a href="' + blobURL + '">' + blobURL + '</a>');
+            };
+            self.mediaRecorder.start(3000);
+        }
+
+        function onMediaError(e) {
+            console.error('media error', e);
+        }
+
+        captureUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+    }
+    else if (actionType=="StopRecording") {
+        console.log("StopRecording");
+        self.mediaRecorder.stop();
+        self.audioRecElem.src = "";
+        self.audioRecElem.srcObject = null;
+        var audiosContainer = document.getElementById('audios-container');
+        // remove all children of audiosContainer:
+        while (audiosContainer.firstChild) {
+            audiosContainer.removeChild(audiosContainer.firstChild);
+        }
+    }
+    else if (actionType=="ClearRecording") {
+        console.log("ClearRecording");
+        this.recordedAudio(null);
     }
 };
 
@@ -184,7 +190,6 @@ AudioRecordingElement.prototype.setPointers = function(entitiesArr) {
         this.setVariableBackRef();
     }
     this.questionText().setPointers(entitiesArr);
-    this.buttonText().setPointers(entitiesArr);
 };
 
 AudioRecordingElement.prototype.reAddEntities = function(entitiesArr) {
@@ -192,18 +197,15 @@ AudioRecordingElement.prototype.reAddEntities = function(entitiesArr) {
         entitiesArr.push(this.variable());
     }
     this.questionText().reAddEntities(entitiesArr);
-    this.buttonText().reAddEntities(entitiesArr);
 };
 
 AudioRecordingElement.prototype.selectTrialType = function(selectionSpec) {
     this.questionText().selectTrialType(selectionSpec);
-    this.buttonText().selectTrialType(selectionSpec);
 };
 
 AudioRecordingElement.prototype.getTextRefs = function(textArr, label){
     var questlabel = label + '.Question';
     this.questionText().getTextRefs(textArr, questlabel);
-    this.buttonText().getTextRefs(textArr, questlabel);
     return textArr;
 };
 
@@ -238,16 +240,15 @@ AudioRecordingElement.prototype.toJS = function() {
         questionText: this.questionText().toJS(),
         variable: variableId,
         isRequired:this.isRequired(),
-        bgColorDefault: this.bgColorDefault(),
-        bgColorHover: this.bgColorHover(),
-        enableTitle: this.enableTitle(),
-        buttonText: this.buttonText().toJS()
+        showMediaControls: this.showMediaControls(),
+        enableTitle: this.enableTitle()
     };
 };
 
 AudioRecordingElement.prototype.fromJS = function(data) {
     var self = this;
     this.type=data.type;
+    this.showMediaControls(data.showMediaControls);
     if(data.questionText.hasOwnProperty('rawText')) {
         this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);
@@ -255,23 +256,12 @@ AudioRecordingElement.prototype.fromJS = function(data) {
     else{
         this.questionText(new EditableTextElement(this.expData, this, data.questionText));
     }
-    if(data.buttonText.hasOwnProperty('rawText')) {
-        this.buttonText(new EditableTextElement(this.expData, this, ''));
-        this.buttonText().fromJS(data.buttonText);
-    }
-    else{
-        this.buttonText(new EditableTextElement(this.expData, this, data.buttonText));
-    }
     this.variable(data.variable);
     if (data.hasOwnProperty('isRequired')) {
         this.isRequired(data.isRequired);
     }
     if(data.hasOwnProperty('enableTitle')){
         this.enableTitle(data.enableTitle);
-    }
-    if (data.hasOwnProperty('bgColorDefault')) {
-        this.bgColorDefault(data.bgColorDefault);
-        this.bgColorHover(data.bgColorHover);
     }
 };
 
@@ -283,7 +273,6 @@ function createAudioRecordingComponents() {
                 var viewModel = function(dataModel){
                     var self = this;
                     this.dataModel = dataModel;
-                    this.dataModel.initColorPicker();
                     this.currentEntry = ko.observable('');
                     this.focus = function () {
                         this.dataModel.ckInstance.focus()
@@ -345,15 +334,10 @@ function createAudioRecordingComponents() {
                     this.focus = function () {
                         this.dataModel.ckInstance.focus()
                     };
+                };
 
-                    this.chooseFile = function() {
-                        var fileUploadElem = $(componentInfo.element).find('.playerFileUploadInput')[0];
-                        fileUploadElem.click();
-                    };
-
-                    this.fileSelected = function(file) {
-                        self.dataModel.selectedFile(file);
-                    };
+                viewModel.prototype.afterRenderInit = function(elem) {
+                    this.dataModel.audioElem = elem;
                 };
 
                 return new viewModel(dataModel);

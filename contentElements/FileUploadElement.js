@@ -151,7 +151,12 @@ FileUploadElement.prototype.executeAction = function(actionType) {
                 return;
             }
 
-            var newFileName = "blockNr_" + blockNr + "_taskNr_" + taskNr + "_trialNr_" + trialNr + "_" + elemName;
+            function getFileExtension(fname) {
+                return fname.slice((fname.lastIndexOf(".") - 1 >>> 0) + 2);
+            }
+
+            var extension = getFileExtension(this.selectedFile().filename);
+            var newFileName = "blockNr_" + blockNr + "_taskNr_" + taskNr + "_trialNr_" + trialNr + "_" + elemName + "." + extension;
 
             function callbackWhenFinished(file_guid, file_name) {
                 console.log("upload finished");
@@ -164,7 +169,7 @@ FileUploadElement.prototype.executeAction = function(actionType) {
                         });
                     }
                     else {
-                        self.variable().value().setValue(newFileName);
+                        self.variable().value().setValue(file_name);
                     }
                 }
             }
