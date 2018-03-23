@@ -21,8 +21,11 @@ var AudioRecordingElement = function(expData) {
     this.recordedAudio = ko.observable(null);
     this.mediaRecorder = null;
     this.audioElem = null;
+    this.audioElemSource = null;
     this.audioRecElem = null;
     this.subscribersForJumpEvents = [];
+
+    this.recorder = null;
 };
 
 AudioRecordingElement.prototype.label = "Audio Recording";
@@ -136,6 +139,31 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
     else if (actionType=="StartRecording") {
         console.log("StartRecording");
 
+        // Request permissions to record audio
+        navigator.mediaDevices.getUserMedia({audio: true}).then(function (stream) {
+            self.recorder = new MediaRecorder(stream);
+
+            // Set record to <audio> when recording will be finished
+            self.recorder.addEventListener('dataavailable', function (e) {
+
+                console.log("data available");
+
+                var blob = e.data;
+                try {
+                    self.audioElemSource.srcObject = blob;
+                }
+                catch (error) {
+                    self.audioElemSource.src = URL.createObjectURL(blob);
+                }
+
+                self.recordedAudio(blob);
+            });
+
+            // Start recording
+            self.recorder.start()
+        });
+
+/*
         function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
             navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
         }
@@ -193,9 +221,20 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
         }
 
         captureUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+        */
     }
     else if (actionType=="StopRecording") {
         console.log("StopRecording");
+
+        // Stop recording
+        self.recorder.stop();
+        // Remove “recording” icon from browser tab
+        self.recorder.stream.getTracks().forEach(function (i) {
+                i.stop();
+            }
+        );
+
+        /*
         self.mediaRecorder.stop();
         self.mediaRecorder.stream.stop();
 
@@ -214,6 +253,7 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
         //while (audiosContainer.firstChild) {
         //    audiosContainer.removeChild(audiosContainer.firstChild);
         //}
+        */
     }
     else if (actionType=="ClearRecording") {
         console.log("ClearRecording");
@@ -373,7 +413,7 @@ function createAudioRecordingComponents() {
                 if (evtParam.jumpToFraction) {
                     var time = myAudio.duration * evtParam.jumpToFraction;
                     console.log("setting audio time to " + time);
-                    myAudio.currentTime = 5;
+                    myAudio.currentTime = time;
                 }
             };
             this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
@@ -394,14 +434,12 @@ function createAudioRecordingComponents() {
         }
 
         this.recordedAudioSubscriber = this.dataModel.recordedAudio.subscribe(function(blob) {
-            var myAudioSrc = $(self.element).find('.recordedAudioPlaybackSource')[0];
-            //try {
-            //    myAudioSrc.srcObject = blob;
-            //} catch (error) {
-                myAudioSrc.src = URL.createObjectURL(blob);
-            //}
-            myAudio = $(myAudioSrc).parent()[0];
-            myAudio.load();
+            try {
+                self.dataModel.audioElemSource.srcObject = blob;
+            } catch (error) {
+                self.dataModel.audioElemSource.src = URL.createObjectURL(blob);
+            }
+            self.dataModel.audioElem.load();
         });
 
         this.focus = function () {
@@ -409,7 +447,8 @@ function createAudioRecordingComponents() {
         };
     };
     AudioRecordingPreviewAndPlayerViewModel.prototype.afterRenderInit = function(elem) {
-        this.dataModel.audioElem = elem;
+        this.dataModel.audioElem = $(elem).find(".recordedAudioPlaybackElem")[0];
+        this.dataModel.audioElemSource = $(elem).find(".recordedAudioPlaybackSource")[0];
     };
     AudioRecordingPreviewAndPlayerViewModel.prototype.dispose = function() {
         console.log("disposing AudioRecordingPreviewAndPlayerViewModel");

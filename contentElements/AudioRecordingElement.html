@@ -64,7 +64,7 @@
     <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
     <br>
     <!-- /ko -->
-    <div>
+    <div data-bind="template: { afterRender: function(callbackTarget, callbackArgs) { callbackArgs.afterRenderInit($element); } }">
 
         <!-- ko if: dataModel.triedToSubmit() -->
         <!-- ko ifnot: dataModel.dataIsValid() -->
@@ -76,7 +76,7 @@
 
         <div id="audios-container"></div>
 
-        <audio preload="auto">
+        <audio preload="auto" class="recordedAudioPlaybackElem">
             <source class="recordedAudioPlaybackSource">
             Your browser does not support HTML5 audio.
         </audio>
@@ -86,8 +86,6 @@
             <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
             <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
         </span>
-
-        <span data-bind="template: { afterRender: function(callbackTarget, callbackArgs) { callbackArgs.afterRenderInit($element); } }"></span>
 
     </div>
     <br>

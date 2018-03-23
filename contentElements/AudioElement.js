@@ -205,7 +205,7 @@ function createAudioComponents() {
                 if (evtParam.jumpToFraction) {
                     var time = myAudio.duration * evtParam.jumpToFraction;
                     console.log("setting audio time to " + time);
-                    myAudio.currentTime = 5;
+                    myAudio.currentTime = time;
                 }
             };
             this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
