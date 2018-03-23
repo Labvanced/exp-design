@@ -48,7 +48,10 @@ var ExpTrialLoop = function (expData) {
     this.randomizationConstraint = ko.observable("none");
     this.minIntervalBetweenRep = ko.observable(0).extend({ numeric: 0 });
     this.maxIntervalSameCondition = ko.observable(3).extend({ numeric: 3 });
-    this.randomTrialSelection = ko.observable("minimumWithZero");
+
+    this.randomTrialSelection = ko.observable("untilMinimum");
+    this.determineNrTrials = ko.observable("minimumWithZero");
+    this.trialSelectionBalance = ko.observable("balancedPerCondGroup");
 
     this.allTrialsToAllSubjects = ko.observable(true);
     this.numberTrialsToShow = ko.observable(null);
@@ -199,6 +202,7 @@ ExpTrialLoop.prototype.getCondGroups = function () {
     var fixedFactorConds =  [];
     var totalNrTrialsMin = 0;
     var totalNrTrialsMax = 0;
+    var totalNrTrialsMinWithoutZero = 0;
 
     for (var i = 0; i < factorGroups.length; i++) {
         var obj = this.getCondGroupsOneTrialGroup(factorGroups[i]);
@@ -207,13 +211,15 @@ ExpTrialLoop.prototype.getCondGroups = function () {
         }
         totalNrTrialsMin += obj.totalNrTrialsMin;
         totalNrTrialsMax += obj.totalNrTrialsMax;
+        totalNrTrialsMinWithoutZero += obj.totalNrTrialsMinWithoutZero;
 
     }
 
     var obj2 = {
         fixedFactorConds: fixedFactorConds,
         totalNrTrialsMax: totalNrTrialsMax,
-        totalNrTrialsMin: totalNrTrialsMin
+        totalNrTrialsMin: totalNrTrialsMin,
+        totalNrTrialsMinWithoutZero: totalNrTrialsMinWithoutZero
 
     };
     return obj2;
@@ -230,6 +236,7 @@ ExpTrialLoop.prototype.getCondGroupsOneTrialGroup = function (factorGroup) {
     var count = 0;
     var totalNrTrialsMin = 0;
     var totalNrTrialsMax = 0;
+    var totalNrTrialsMinWithoutZero = 0;
 
     for (var k = 0; k < arrOfOneFacGroup.length; k++) {
         count++;
@@ -242,10 +249,22 @@ ExpTrialLoop.prototype.getCondGroupsOneTrialGroup = function (factorGroup) {
             varArray.push(conditions[condArray[j]].trials().length);
         }
 
+        function withoutZero(value) {
+            return value > 0;
+        }
+        var arrWithoutZero = varArray.filter(withoutZero);
+        if (arrWithoutZero.length==0){
+            var minVarWithoutZero = 0;
+        }
+        else{
+            var minVarWithoutZero = Math.min.apply(null, arrWithoutZero);
+        }
+
         var minVar = Math.min.apply(null, varArray);
         var maxVar = Math.max.apply(null, varArray);
         totalNrTrialsMin += minVar;
         totalNrTrialsMax += maxVar;
+        totalNrTrialsMinWithoutZero +=minVarWithoutZero;
 
         var obj = {
             nrOfCondition: count,
@@ -253,6 +272,7 @@ ExpTrialLoop.prototype.getCondGroupsOneTrialGroup = function (factorGroup) {
             nrOfVariations:totalVariations,
             minNrOfTrials: minVar,
             maxNrOfTrials: maxVar,
+            minNrOfTrialsWithoutZero: minVarWithoutZero,
             nrOfSubConditions: condArray.length
         };
         fixedFactorConds.push(obj);
@@ -262,7 +282,8 @@ ExpTrialLoop.prototype.getCondGroupsOneTrialGroup = function (factorGroup) {
     var obj2 = {
         fixedFactorConds: fixedFactorConds,
         totalNrTrialsMax: totalNrTrialsMax,
-        totalNrTrialsMin: totalNrTrialsMin
+        totalNrTrialsMin: totalNrTrialsMin,
+        totalNrTrialsMinWithoutZero: totalNrTrialsMinWithoutZero
 
     };
     return obj2;
@@ -332,6 +353,25 @@ ExpTrialLoop.prototype.doTrialRandomization = function(subjCounterGlobal, subjCo
 
 ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupIdx) {
 
+    // sort condition according to amount of trials, so that condition with less trials are chosen first, which allows for balancing
+    var sortArr = [];
+    for (var condIdx =0; condIdx < conditions.length; condIdx++) {
+        sortArr.push(conditions[condIdx].trials().length);
+    }
+
+    var indices = new Array(sortArr.length);
+    for (var i = 0; i < sortArr.length; ++i){
+        indices[i] = i;
+    }
+    indices.sort(function (a, b) { return sortArr[a] < sortArr[b] ? -1 : sortArr[a] > sortArr[b] ? 1 : 0; });
+
+    var newCondArr = [];
+    for (var condIdx =0; condIdx < sortArr.length; condIdx++) {
+        newCondArr.push(conditions[indices[condIdx]]);
+    }
+    //////////////////////////////////////////////////////////////
+
+
     var ffConds = this.factorGroups()[facGroupIdx].getFixedFactorConditions();
 
     var excludedTrialsPerCondGroup = [];
@@ -340,22 +380,36 @@ ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupId
     }
 
     var Trials = [];
-    for (var trialIndex=0; trialIndex < conditions.length; trialIndex++) {
-        var condition = conditions[trialIndex];
+    for (var trialIndex=0; trialIndex < newCondArr.length; trialIndex++) {
+        var condition = newCondArr[trialIndex];
 
         var condGroup = this.getCondGroup(condition.conditionIdx()-1,ffConds);
-        var nrExistingTrials =  condition.trials().length;
+        var obj = this.getCondGroupsOneTrialGroup(condition.factorGroup);
+
+        if (this.randomTrialSelection()=="allDefined"){
+            var nrExistingTrials =  condition.trials().length;
+        }
+        else if (this.randomTrialSelection()=="untilMinimum") {
+            var nrExistingTrials =  obj.fixedFactorConds[condGroup].minNrOfTrials;
+        }
 
         var options = [];
         for (var i=0; i <nrExistingTrials; i++) {
-            // TODO replace with hash table
-            if (excludedTrialsPerCondGroup[condGroup].indexOf(i)<0){ //  TODO this check can be removed to allow for trial draw with replacement
+            if (this.trialSelectionBalance()=="balancedPerCondGroup"){
+                if (excludedTrialsPerCondGroup[condGroup].indexOf(i)<0){
+                    options.push(i);
+                }
+            }
+            else if (this.trialSelectionBalance()=="unbalancedPerCondGroup") {
                 options.push(i);
             }
         }
 
          if (options.length<1){
-             console.log("WARNING, too less trials for repeating condition");
+             console.log("WARNING,uneven amount of trials within condition group is forcing to choose trials unbalanced...");
+             for (var i=0; i <condition.trials().length; i++) {
+                 options.push(i);
+             }
          }
         var randValue = Math.floor(Math.random()*options.length);
         var trialRandIdx = options[randValue];
@@ -368,13 +422,19 @@ ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupId
     // sanity check
     var trialRepIdx = [];
     for (var trialIndex=0; trialIndex < Trials.length; trialIndex++) {
-        trialRepIdx.push(Trials[trialIndex].uniqueId());
+        if (Trials[trialIndex]){
+            trialRepIdx.push(Trials[trialIndex].uniqueId());
+        }
+        else{
+            throw "trial is defined"
+        }
+
     }
     var checkSortArray = trialRepIdx.slice().sort();
     var results = [];
     for (var i = 0; i < checkSortArray.length - 1; i++) {
         if (checkSortArray[i + 1] == checkSortArray[i]) {
-            console.log("error double trial entry");
+            console.log("Warning, double trial entry");
 
         }
     }
@@ -419,11 +479,11 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
 
 
     for (var i=0; i < ffConds.length; i++) {
-        if (this.randomTrialSelection()=="minimumWithZero"){
+        if (this.determineNrTrials()=="minimumWithZero"){
             var NrTrialCount = fixedFactorConds[i].minNrOfTrials;
         }
-        else if (this.randomTrialSelection()=="minimumWithoutZero"){
-            var NrTrialCount = fixedFactorConds[i].minNrOfTrials;
+        else if (this.determineNrTrials()=="minimumWithoutZero"){
+            var NrTrialCount = fixedFactorConds[i].minNrOfTrialsWithoutZero;
         }
         for (var k=0; k < NrTrialCount; k++) {
             var temp =  allConds[ffConds[i][0]].slice(0);
@@ -483,10 +543,10 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
 
                 for (var k = 0; k < fixedFactorConds.length; k++) {
 
-                    if (this.randomTrialSelection()=="minimumWithZero"){
+                    if (this.determineNrTrials()=="minimumWithZero"){
                         var NrTrialCount = fixedFactorConds[k].minNrOfTrials;
                     }
-                    else if (this.randomTrialSelection()=="minimumWithoutZero"){ //TODO
+                    else if (this.determineNrTrials()=="minimumWithoutZero"){ //TODO
                         var NrTrialCount = fixedFactorConds[k].minNrOfTrials;
                     }
 
@@ -812,10 +872,40 @@ ExpTrialLoop.prototype.getConditionFromFactorLevels = function(factorIndicies,fa
         }
     }
 
-  return presentedConditions
 
+    if (this.determineNrTrials() =="minimumWithoutZero"){
+        var self = this;
+        var replacedConditionsPerCondGroup = {};
+        var newConditions = presentedConditions.map(function (condition) {
+            if (condition.isDeactivated()){
+                var condGroup = condition.conditionGroup();
+                if (!(replacedConditionsPerCondGroup.hasOwnProperty(condGroup))) {
+                    replacedConditionsPerCondGroup[condGroup] = [];
+                }
+                var replacedCondition = self.getReplacementCondition(condition,replacedConditionsPerCondGroup[condGroup]);
+                return replacedCondition;
+            }
+            else{
+                return condition
+            }
+        });
+
+        return newConditions
+    }
+    else{
+        return presentedConditions
+    }
 };
 
+
+ExpTrialLoop.prototype.getReplacementCondition = function(condition,condArray) {
+    var partnerConds = condition.validPartnerConditions();
+    var currentL =  condArray.length;
+    var partnerL = partnerConds.length;
+    var currentPos = (currentL % partnerL+1)-1 ;
+    condArray.push(partnerConds[currentPos]);
+    return partnerConds[currentPos];
+}
 
 
 
@@ -1462,12 +1552,12 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('randomTrialSelection')){
         this.randomTrialSelection(data.randomTrialSelection);
     }
-
-
-
-
-
-
+    if (data.hasOwnProperty('determineNrTrials')){
+        this.determineNrTrials(data.determineNrTrials);
+    }
+    if (data.hasOwnProperty('trialSelectionBalance')){
+        this.trialSelectionBalance(data.trialSelectionBalance);
+    }
 
 
     this.webcamEnabled(data.webcamEnabled);
@@ -1511,10 +1601,11 @@ ExpTrialLoop.prototype.toJS = function() {
         subjectCounterType:this.subjectCounterType(),
         uploadedTrialOrder:this.uploadedTrialOrder(),
         randomTrialSelection:this.randomTrialSelection(),
+        determineNrTrials:this.determineNrTrials(),
 
         trialLoopActivated:this.trialLoopActivated(),
         customStartTrial:this.customStartTrial(),
-
+        trialSelectionBalance:this.trialSelectionBalance(),
 
         zoomMode: this.zoomMode(),
         visualDegreeToUnit: this.visualDegreeToUnit(),

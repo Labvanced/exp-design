@@ -25,6 +25,17 @@ var Condition = function(factorGroup) {
         }
     });
 
+
+
+    this.isDeactivated= ko.computed(function() {
+        if (self.trials().length>0){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }, this);
+
     this.isSubCondition = ko.computed(function() {
         return self.factorGroup.hasRandomFactor();
     }, this);
@@ -47,21 +58,21 @@ var Condition = function(factorGroup) {
         return out;
     }, this);
 
-    /** instance reference to other condition in the same condition group
-    this.conditionGroupArray = ko.computed(function() {
+    /** instance reference to other condition in the same condition group **/
+
+    this.validPartnerConditions = ko.computed(function() {
         var arr =   self.factorGroup.conditionGroups()[self.conditionGroup()-1];
         var conds = [];
         if (arr){
             for (var i = 0; i< arr.length; i++){
-                if (self.factorGroup.conditionsLinear()[arr[i]] !== self){
+                if (self.factorGroup.conditionsLinear()[arr[i]] !== self && self.factorGroup.conditionsLinear()[arr[i]].isDeactivated()==false){
                     conds.push(self.factorGroup.conditionsLinear()[arr[i]])
                 }
             }
         }
-
         return conds;
     }, this);
-     **/
+
 
 };
 
