@@ -182,20 +182,28 @@
                                     <p class="text-medium" data-bind="text: expData.staticStrings().loadingComplete"></p>
                                     <p class="text-medium" data-bind="text: expData.staticStrings().canStart"></p>
                                     <p class="text-regular" data-bind="text: expData.staticStrings().keepFullscreen"></p>
-                                    <!-- ko ifnot: (  player.isTestrun) -->
-                                    <label style="cursor: pointer">
-                                        <input type="checkbox" data-bind="checked: agreeToTermsAndConditions">
-                                        <span data-bind="text: expData.staticStrings().participationAgreement1"></span>
-                                        <a href="/agb.html" target="_blank" ><span class="text-semibold blue-link" >Terms and Conditions</span></a>
-                                        <span data-bind="text: expData.staticStrings().participationAgreement2"></span>
-                                    </label>
-                                    <!-- ko if: (agreeToTermsAndConditions) -->
-                                        <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: expData.staticStrings().start"></button>
+
+                                    <!-- ko ifnot: (player.isTestrun ) -->
+                                        <!-- ko if: (player.experiment.exp_data.studySettings.participantConsent) -->
+                                            <label style="cursor: pointer">
+                                                <input type="checkbox" data-bind="checked: agreeToTermsAndConditions">
+                                                <span data-bind="text: expData.staticStrings().participationAgreement1"></span>
+                                                <a href="/agb.html" target="_blank" ><span class="text-semibold blue-link" >Terms and Conditions</span></a>
+                                                <span data-bind="text: expData.staticStrings().participationAgreement2"></span>
+                                            </label>
+                                            <!-- ko if: (agreeToTermsAndConditions) -->
+                                            <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: expData.staticStrings().start"></button>
+                                            <!-- /ko -->
+                                            <!-- ko ifnot: (agreeToTermsAndConditions) -->
+                                            <button class="btn-regular btn-lab-gray mg-20" disabled data-bind="text: expData.staticStrings().start"></button>
+                                            <!-- /ko -->
+                                        <!-- /ko -->
+
+                                        <!-- ko ifnot: (player.experiment.exp_data.studySettings.participantConsent) -->
+                                            <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: expData.staticStrings().start"></button>
+                                        <!-- /ko -->
                                     <!-- /ko -->
-                                    <!-- ko ifnot: (agreeToTermsAndConditions) -->
-                                    <button class="btn-regular btn-lab-gray mg-20" disabled data-bind="text: expData.staticStrings().start"></button>
-                                    <!-- /ko -->
-                                    <!-- /ko -->
+
                                     <!-- ko if:(player.isTestrun) -->
                                         <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: expData.staticStrings().start"></button>
                                     <!-- /ko -->
