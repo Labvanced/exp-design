@@ -475,7 +475,13 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
                 // only prevent default for F keys:
                 ev.preventDefault();
             }
-            self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
+            if (anyAllowed>=0){
+                self.event.triggerActions([ev.key.toUpperCase(),playerFrame.getFrameTime()]);
+            }
+            else{
+                self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
+            }
+
             ev.preventDefault();
             return false;
         }
