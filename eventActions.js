@@ -3991,6 +3991,224 @@ ActionDistributeVariable.prototype.destroyOnPlayerFrame = function() {
 
 
 
+
+
+
+
+////////////////////////////////////////  ActionMathAndStats ///////////////////////////////////////////////////
+
+var ActionMathAndStats = function(event) {
+    this.event = event;
+
+    // serialized
+    this.inVarArr = ko.observable(null);
+    this.InsertOption = ko.observable("fixed");
+    this.indexFixedVal = ko.observable(1);
+    this.inVarIndex = ko.observable(null);
+    this.insertVarList = ko.observableArray([]);
+    this.nrOfDeletions = ko.observable(0);
+};
+
+ActionMathAndStats.prototype.type = "ActionMathAndStats";
+ActionMathAndStats.prototype.label = "Math & Statistics";
+
+ActionMathAndStats.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionMathAndStats.prototype.setInVarArrBackRef = function(){
+    this.inVarArr().addBackRef(this, this.event, false, true, 'math & statistics');
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionMathAndStats.prototype.setInVarIndexBackRef = function(){
+    this.inVarIndex().addBackRef(this, this.event, false, true, 'math & statistics');
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+
+ActionMathAndStats.prototype.setOutVarBackRefForOne = function(newVar){
+
+    newVar.addBackRef(this, this.event, true, false, 'math & statistics');
+};
+
+ActionMathAndStats.prototype.setOutVarBackRef = function(){
+    var list = this.insertVarList();
+    for (var i = 0; i<list.length; i++){
+        list[i].addBackRef(this, this.event, true, false, 'math & statistics');
+    }
+};
+
+ActionMathAndStats.prototype.removeInArrVariable = function(){
+    this.inVarArr(null);
+};
+
+ActionMathAndStats.prototype.removeInVariable = function(){
+    this.inVarIndex(null);
+};
+
+ActionMathAndStats.prototype.removeOutVariable = function(){
+    this.insertVarList([]);
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionMathAndStats.prototype.run = function(triggerParams) {
+    if (this.InsertOption()=='fixed') {
+        var index = parseInt(this.indexFixedVal())-1;
+    }
+    else if (this.InsertOption()=='end'){
+        var index = this.inVarArr().value().value().length;
+    }
+    else {
+        var index = parseInt(this.inVarIndex().value().value())-1;
+    }
+
+    var valueList = [];
+    for (var i = 0; i<this.insertVarList().length;i++){
+        valueList.push(this.insertVarList()[i].value());
+    }
+
+    if (this.inVarArr()) {
+        this.inVarArr().value().value().splice(index-1,parseInt(this.nrOfDeletions()));
+        for (var i = 0; i<valueList.length; i++){
+            this.inVarArr().value().value().splice(index,0,valueList[i]);
+        }
+
+    }
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionMathAndStats.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
+    var inVarArr = entitiesArr.byId[this.inVarArr()];
+    if (inVarArr){
+        this.inVarArr(inVarArr);
+        this.setInVarArrBackRef();
+    }
+    var inVarIndex = entitiesArr.byId[this.inVarIndex()];
+    if (inVarIndex){
+        this.inVarIndex(inVarIndex);
+        this.setInVarIndexBackRef();
+    }
+
+
+    var list = this.insertVarList();
+    var newList = []
+    for (var i = 0; i<list.length; i++){
+        newList.push(entitiesArr.byId[list[i]]);
+    }
+    this.insertVarList(newList);
+    this.setOutVarBackRef();
+
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionMathAndStats.prototype.reAddEntities = function(entitiesArr) {
+    if (this.inVarArr()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.inVarArr().id())) {
+            entitiesArr.push(this.inVarArr());
+        }
+    }
+    if (this.inVarIndex()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.inVarIndex().id())) {
+            entitiesArr.push(this.inVarIndex());
+        }
+    }
+    var list = this.insertVarList();
+    for (var i = 0; i<list.length; i++){
+        if (!entitiesArr.byId.hasOwnProperty(list[i].id())) {
+            entitiesArr.push(list[i]);
+        }
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionModifyArray}
+ */
+ActionMathAndStats.prototype.fromJS = function(data) {
+    this.inVarArr(data.inVarArr);
+    this.inVarIndex(data.inVarIndex);
+    this.insertVarList(data.insertVarList);
+    this.nrOfDeletions(data.nrOfDeletions);
+    this.InsertOption(data.InsertOption);
+    this.indexFixedVal(data.indexFixedVal);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionMathAndStats.prototype.toJS = function() {
+    var inVarArr = null;
+    if (this.inVarArr()) {
+        if (typeof this.inVarArr().id == 'function') {
+            inVarArr = this.inVarArr().id();
+        }
+    }
+    var inVarIndex = null;
+    if (this.inVarIndex()) {
+        if (typeof this.inVarIndex().id == 'function') {
+            inVarIndex = this.inVarIndex().id();
+        }
+    }
+    var insertVarList = null;
+    if (this.insertVarList()) {
+        var list = this.insertVarList();
+        var insertVarList = [];
+        for (var i = 0; i<list.length; i++){
+            insertVarList.push(list[i].id());
+        }
+
+    }
+    return {
+        type: this.type,
+        inVarArr: inVarArr,
+        inVarIndex: inVarIndex,
+        insertVarList: insertVarList,
+        nrOfDeletions:this.nrOfDeletions(),
+        InsertOption:this.InsertOption(),
+        indexFixedVal:this.indexFixedVal()
+
+    };
+};
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
