@@ -1034,26 +1034,32 @@ ExpTrialLoop.prototype.getTrialById = function(uniqueId) {
 
 ExpTrialLoop.prototype.getTrialsBasedOnInputArray = function(sortedArray, subjectIdx) {
 
-    try {
-        var uploadedTrialOrder = this.uploadedTrialOrder();
-        var subjectWrappedIdx = subjectIdx % uploadedTrialOrder.length;
-        var numberArray = this.uploadedTrialOrder()[subjectWrappedIdx];
-        var outArray = [];
-        for (var t = 0; t<numberArray.length; t++){
-            var trial = sortedArray[numberArray[t]];
-            if (trial){
-                outArray.push(trial)
-            }
-            else{
-                console.log("bad input sequence, trial number not specified.")
+    if (subjectIdx && sortedArray){
+        try {
+            var uploadedTrialOrder = this.uploadedTrialOrder();
+            var subjectWrappedIdx = subjectIdx % uploadedTrialOrder.length;
+            var numberArray = this.uploadedTrialOrder()[subjectWrappedIdx];
+            var outArray = [];
+            for (var t = 0; t<numberArray.length; t++){
+                var trial = sortedArray[numberArray[t]];
+                if (trial){
+                    outArray.push(trial)
+                }
+                else{
+                    console.log("bad input sequence, trial number not specified.")
+                }
+
             }
 
+            return outArray;
+        }
+        catch(err){
+            console.log(err.message);
+            return [];
         }
 
-        return outArray;
     }
-    catch(err){
-        console.log(err.message);
+    else{
         return [];
     }
 
