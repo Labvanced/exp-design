@@ -844,10 +844,10 @@ ExpTrialLoop.prototype.getConditionFromFactorLevels = function(factorIndicies,fa
 
         var concatStr= '';
         for (var facIndex = 0; facIndex <facLevels.length; facIndex++) {
-            if (facIndex <(facLevels.length-1)){
+            if (facIndex <(facLevels.length-1) &&  facLevels[facIndex]){
                 concatStr += facLevels[facIndex].name() +',';
             }
-            else{
+            else if (facLevels[facIndex]){
                 concatStr += facLevels[facIndex].name();
             }
 
