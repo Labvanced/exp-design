@@ -118,7 +118,10 @@ FactorGroup.prototype.getFixedFactorConditions = function() {
         var levels = conditions[i].factorLevels();
         for (var k = 0; k < levels.length; k++) {
             if (type[k] == "fixed") {
-                factorLevels[i].push(levels[k].name());
+                if (levels[k]){
+                    factorLevels[i].push(levels[k].name());
+                }
+
             }
         }
     }
@@ -175,7 +178,9 @@ FactorGroup.prototype.getFixedFactorLevels = function() {
         var levels = conditions[i].factorLevels();
         for (var k = 0; k < levels.length; k++) {
             if (type[k] == "fixed") {
-                factorLevels[i].push(levels[k].name());
+                if (levels[k]) {
+                    factorLevels[i].push(levels[k].name());
+                }
             }
         }
     }
