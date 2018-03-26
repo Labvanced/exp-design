@@ -824,8 +824,8 @@ GlobalVarValueArray.prototype.getValueAt = function(idx) {
 GlobalVarValueArray.prototype.getValues = function() {
     var out = [];
     this.value().forEach(function(elem){
-        out.push(elem.value());
-    })
+        out.push(elem.toJS());
+    });
     return out;
 };
 
