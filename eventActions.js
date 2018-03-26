@@ -3998,19 +3998,84 @@ ActionDistributeVariable.prototype.destroyOnPlayerFrame = function() {
 ////////////////////////////////////////  ActionMathAndStats ///////////////////////////////////////////////////
 
 var ActionMathAndStats = function(event) {
+    var self = this;
     this.event = event;
 
     // serialized
-    this.inVarArr = ko.observable(null);
-    this.InsertOption = ko.observable("fixed");
-    this.indexFixedVal = ko.observable(1);
-    this.inVarIndex = ko.observable(null);
-    this.insertVarList = ko.observableArray([]);
-    this.nrOfDeletions = ko.observable(0);
+    this.inVar = ko.observable(null);
+    this.outVar = ko.observable(null);
+
+
+    // new
+    this.exampleResult = ko.observable(0);
+    this.staticInput = [2,3,14,7,9,15,56,82,4,38,37,78,94,51,36,89,35,57,62,34,28,13,41,1,35,9];
+
+    this.operationType= ko.observable('Vector Operations');
+    this.functionType = ko.observable('sum');
+    this.outputType = ko.observable('skalar');
+
+
+    // computed
+    this.currentFunctions = ko.computed(function(){
+        if (self.operationType()== "Vector Operations"){
+            return self.functionsPeroperationType["Vector Operations"];
+        }
+        else if(self.operationType()== "Linear Algebra"){
+            return self.functionsPeroperationType["Linear Algebra"];
+        }
+        else if(self.operationType()== "Statistical Tests"){
+            return self.functionsPeroperationType["Statistical Tests"];
+        }
+    });
+
+
+
 };
 
 ActionMathAndStats.prototype.type = "ActionMathAndStats";
 ActionMathAndStats.prototype.label = "Math & Statistics";
+ActionMathAndStats.prototype.operationTypes = ["Vector Operations", "Linear Algebra", "Statistical Tests"];
+ActionMathAndStats.prototype.functionsPeroperationType = {
+    "Vector Operations": ['sum','sumsqrd','sumsqerr','sumrow','product','min','max','mean','meansqerr','geomean','median','cumsum','cumprod','diff','rank','mode','range','variance','pooledvariance','deviation','stdev','meandev','meddev','skewness','kurtosis','coeffvar','quartiles','quantiles','percentile','percentileOfScore','histogram','covariance','corrcoeff','spearmancoeff'],
+    "Linear Algebra":[],
+    "Statistical Tests": []
+};
+ActionMathAndStats.prototype.vectorParams = {
+    'variance' : {
+        type: ['categorical'],
+        options: [['population variance', 'sample variance']]
+    },
+    'quantiles': {
+        type: ['array'],
+        options: [['normalized']]
+    },
+    'percentile': {
+        type: ['scalar'],
+        options: [['normalized']]
+    },
+    'percentileOfScore': {
+        type: ['scalar','categorical'],
+        options: [['normalized'],['less or equal', 'less']]
+    },
+    'histogram': {
+        type: ['scalar'],
+        options: [['0maxN']] // 0 to length of array
+    },
+    'covariance': {
+        type: ['array'],
+        options: ['arraySameLength']
+    },
+    'corrcoeff': {
+        type: ['array'],
+        options: ['arraySameLength']
+    },
+    'spearmancoeff': {
+        type: ['array'],
+        options: ['arraySameLength']
+    }
+};
+
+
 
 ActionMathAndStats.prototype.isValid = function(){
     return true;
@@ -4020,45 +4085,26 @@ ActionMathAndStats.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionMathAndStats.prototype.setInVarArrBackRef = function(){
-    this.inVarArr().addBackRef(this, this.event, false, true, 'math & statistics');
+ActionMathAndStats.prototype.setInVarBackRef = function(){
+    this.inVar().addBackRef(this, this.event, false, true, 'math & statistics');
 };
 
 /**
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionMathAndStats.prototype.setInVarIndexBackRef = function(){
-    this.inVarIndex().addBackRef(this, this.event, false, true, 'math & statistics');
-};
-
-/**
- * This function is used to associate a global variable with this action, so that the variable knows where it is used.
- * @param {GlobalVar} variable - the variable which is recorded.
- */
-
-ActionMathAndStats.prototype.setOutVarBackRefForOne = function(newVar){
-
-    newVar.addBackRef(this, this.event, true, false, 'math & statistics');
-};
-
 ActionMathAndStats.prototype.setOutVarBackRef = function(){
-    var list = this.insertVarList();
-    for (var i = 0; i<list.length; i++){
-        list[i].addBackRef(this, this.event, true, false, 'math & statistics');
-    }
+    this.outVar().addBackRef(this, this.event, false, true, 'math & statistics');
 };
 
-ActionMathAndStats.prototype.removeInArrVariable = function(){
-    this.inVarArr(null);
-};
+
 
 ActionMathAndStats.prototype.removeInVariable = function(){
-    this.inVarIndex(null);
+    this.inVar(null);
 };
 
 ActionMathAndStats.prototype.removeOutVariable = function(){
-    this.insertVarList([]);
+    this.outVar(null);
 };
 
 /**
@@ -4068,27 +4114,11 @@ ActionMathAndStats.prototype.removeOutVariable = function(){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionMathAndStats.prototype.run = function(triggerParams) {
-    if (this.InsertOption()=='fixed') {
-        var index = parseInt(this.indexFixedVal())-1;
-    }
-    else if (this.InsertOption()=='end'){
-        var index = this.inVarArr().value().value().length;
-    }
-    else {
-        var index = parseInt(this.inVarIndex().value().value())-1;
-    }
-
-    var valueList = [];
-    for (var i = 0; i<this.insertVarList().length;i++){
-        valueList.push(this.insertVarList()[i].value());
-    }
-
-    if (this.inVarArr()) {
-        this.inVarArr().value().value().splice(index-1,parseInt(this.nrOfDeletions()));
-        for (var i = 0; i<valueList.length; i++){
-            this.inVarArr().value().value().splice(index,0,valueList[i]);
-        }
-
+    var self = this;
+    var callFun = jStat[this.functionType()];
+    if ($.isFunction(callFun)){
+        var getVal = self.inVar().value().getValues();
+        self.outVar().value().setValue(jStat[this.functionType()](getVal));
     }
 };
 
@@ -4097,6 +4127,7 @@ ActionMathAndStats.prototype.run = function(triggerParams) {
  * @param playerFrame
  */
 ActionMathAndStats.prototype.destroyOnPlayerFrame = function(playerFrame) {
+
 };
 
 /**
@@ -4107,26 +4138,16 @@ ActionMathAndStats.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
-    var inVarArr = entitiesArr.byId[this.inVarArr()];
-    if (inVarArr){
-        this.inVarArr(inVarArr);
-        this.setInVarArrBackRef();
+    var inVar = entitiesArr.byId[this.inVar()];
+    if (inVar){
+        this.inVar(inVar);
+        this.setInVarBackRef();
     }
-    var inVarIndex = entitiesArr.byId[this.inVarIndex()];
-    if (inVarIndex){
-        this.inVarIndex(inVarIndex);
-        this.setInVarIndexBackRef();
+    var outVar = entitiesArr.byId[this.outVar()];
+    if (outVar){
+        this.outVar(outVar);
+        this.setOutVarBackRef();
     }
-
-
-    var list = this.insertVarList();
-    var newList = []
-    for (var i = 0; i<list.length; i++){
-        newList.push(entitiesArr.byId[list[i]]);
-    }
-    this.insertVarList(newList);
-    this.setOutVarBackRef();
-
 };
 
 /**
@@ -4135,20 +4156,14 @@ ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionMathAndStats.prototype.reAddEntities = function(entitiesArr) {
-    if (this.inVarArr()) {
-        if (!entitiesArr.byId.hasOwnProperty(this.inVarArr().id())) {
-            entitiesArr.push(this.inVarArr());
+    if (this.inVar()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.inVar().id())) {
+            entitiesArr.push(this.inVar());
         }
     }
-    if (this.inVarIndex()) {
-        if (!entitiesArr.byId.hasOwnProperty(this.inVarIndex().id())) {
-            entitiesArr.push(this.inVarIndex());
-        }
-    }
-    var list = this.insertVarList();
-    for (var i = 0; i<list.length; i++){
-        if (!entitiesArr.byId.hasOwnProperty(list[i].id())) {
-            entitiesArr.push(list[i]);
+    if (this.outVar()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.outVar().id())) {
+            entitiesArr.push(this.outVar());
         }
     }
 };
@@ -4159,12 +4174,11 @@ ActionMathAndStats.prototype.reAddEntities = function(entitiesArr) {
  * @returns {ActionModifyArray}
  */
 ActionMathAndStats.prototype.fromJS = function(data) {
-    this.inVarArr(data.inVarArr);
-    this.inVarIndex(data.inVarIndex);
-    this.insertVarList(data.insertVarList);
-    this.nrOfDeletions(data.nrOfDeletions);
-    this.InsertOption(data.InsertOption);
-    this.indexFixedVal(data.indexFixedVal);
+    this.inVar(data.inVar);
+    this.outVar(data.outVar);
+    this.operationType(data.operationType);
+    this.functionType(data.functionType);
+    this.outputType(data.outputType);
     return this;
 };
 
@@ -4173,36 +4187,26 @@ ActionMathAndStats.prototype.fromJS = function(data) {
  * @returns {object}
  */
 ActionMathAndStats.prototype.toJS = function() {
-    var inVarArr = null;
-    if (this.inVarArr()) {
-        if (typeof this.inVarArr().id == 'function') {
-            inVarArr = this.inVarArr().id();
+    var inVar = null;
+    if (this.inVar()) {
+        if (typeof this.inVar().id == 'function') {
+            inVar = this.inVar().id();
         }
     }
-    var inVarIndex = null;
-    if (this.inVarIndex()) {
-        if (typeof this.inVarIndex().id == 'function') {
-            inVarIndex = this.inVarIndex().id();
+    var outVar = null;
+    if (this.outVar()) {
+        if (typeof this.outVar().id == 'function') {
+            outVar = this.outVar().id();
         }
     }
-    var insertVarList = null;
-    if (this.insertVarList()) {
-        var list = this.insertVarList();
-        var insertVarList = [];
-        for (var i = 0; i<list.length; i++){
-            insertVarList.push(list[i].id());
-        }
 
-    }
     return {
         type: this.type,
-        inVarArr: inVarArr,
-        inVarIndex: inVarIndex,
-        insertVarList: insertVarList,
-        nrOfDeletions:this.nrOfDeletions(),
-        InsertOption:this.InsertOption(),
-        indexFixedVal:this.indexFixedVal()
-
+        operationType: this.operationType(),
+        functionType: this.functionType(),
+        outputType: this.outputType(),
+        inVar: inVar,
+        outVar: outVar
     };
 };
 
