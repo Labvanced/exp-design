@@ -36,44 +36,58 @@ var Condition = function(factorGroup) {
         }
     }, this);
 
-    this.isSubCondition = ko.computed(function() {
-        return self.factorGroup.hasRandomFactor();
+
+    this.conditionGroup = ko.observable(null);
+    /**
+         this.conditionGroup = ko.computed(function() {
+        return self.getCondGroup();
     }, this);
-
-
-    this.conditionGroup = ko.computed(function() {
-        var groups =  self.factorGroup.conditionGroups();
-        var found = false;
-        var idx = 0;
-        var out = 1;
-
-        while (!found && idx < groups.length){
-            var currentGroup = groups[idx];
-            if (currentGroup.indexOf(self.conditionIdx()-1)>=0){
-                found = true;
-                out = idx+1;
-            }
-            idx++;
-        }
-        return out;
-    }, this);
+     **/
 
     /** instance reference to other condition in the same condition group **/
 
-    this.validPartnerConditions = ko.computed(function() {
-        var arr =   self.factorGroup.conditionGroups()[self.conditionGroup()-1];
-        var conds = [];
-        if (arr){
-            for (var i = 0; i< arr.length; i++){
-                if (self.factorGroup.conditionsLinear()[arr[i]] !== self && self.factorGroup.conditionsLinear()[arr[i]].isDeactivated()==false){
-                    conds.push(self.factorGroup.conditionsLinear()[arr[i]])
+};
+
+
+Condition.prototype.getPartnerConditions = function(condGroups) {
+    var arr =   condGroups[this.getCondGroup(condGroups)-1];
+    var conds = [];
+    if (arr){
+        for (var i = 0; i< arr.length; i++){
+            if (this.factorGroup.conditionsLinear()[arr[i]]){
+                if (this.factorGroup.conditionsLinear()[arr[i]] !== this && this.factorGroup.conditionsLinear()[arr[i]].isDeactivated()==false){
+                    conds.push(this.factorGroup.conditionsLinear()[arr[i]])
                 }
             }
+            else{
+                console.log("Warning: condition is not there")
+            }
+
         }
-        return conds;
-    }, this);
+    }
+    return conds;
+};
 
 
+Condition.prototype.setCondGroup = function(condGroups) {
+    this.conditionGroup(this.getCondGroup(condGroups));
+};
+
+Condition.prototype.getCondGroup = function(condGroups) {
+    var groups =  condGroups;
+    var found = false;
+    var idx = 0;
+    var out = 1;
+
+    while (!found && idx < groups.length){
+        var currentGroup = groups[idx];
+        if (currentGroup.indexOf(this.conditionIdx()-1)>=0){
+            found = true;
+            out = idx+1;
+        }
+        idx++;
+    }
+    return out;
 };
 
 

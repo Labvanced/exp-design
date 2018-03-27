@@ -22,15 +22,6 @@ var Factor = function(expData, factorGroup) {
     // or maybe better: either 'allFactorialInteractions' or 'redrawRandomPerTrial' or 'balancedBetweenSubjects'
 
 
-    if (this.factorTypeSubscription){
-       this.factorTypeSubscription.dispose();
-    }
-    this.factorTypeSubscription = this.factorType.subscribe(function() {
-        if (self.factorGroup){
-            self.factorGroup.conditionGroups(self.factorGroup.getFixedFactorConditions());
-        }
-
-    });
 
     // not serialized:
     this.nrLevels =  ko.observable(1);
@@ -56,6 +47,7 @@ Factor.prototype.removeFactorDependency = function(index) {
 
 
 Factor.prototype.init = function(name) {
+    var self = this;
 
     for (var i = 0; i<this.factorGroup.factors().length; i++){
         var fac = this.factorGroup.factors()[i];
@@ -77,6 +69,10 @@ Factor.prototype.init = function(name) {
     this.randomizationConverter();
 
     this.setVariableBackRef();
+
+    this.factorType.subscribe(function(val) {
+        self.factorGroup.updateCondGroups()
+    });
 };
 
 
@@ -97,7 +93,9 @@ Factor.prototype.addLevel = function() {
     this._addLevel();
     if (this.factorGroup) {
         this.factorGroup.addLevelToCondition();
+        this.factorGroup.updateCondGroups();
     }
+
 };
 
 Factor.prototype.removeLevel = function(lvlIdx) {
@@ -111,6 +109,7 @@ Factor.prototype.removeLevel = function(lvlIdx) {
          ref.entity.factorGroup.removeLevelFromFactor(ref.entity,lvlIdx);
       }
     });
+    this.factorGroup.updateCondGroups();
 };
 
 Factor.prototype._addLevel = function() {
