@@ -85,11 +85,18 @@ var FactorGroup= function(expData,expTrialLoop) {
             deepDive(conditions, conditions.length);
         }
 
+
         return linearArray;
 
     }, this);
 
-    this.updateCondGroups()
+    this.updateCondGroups();
+
+
+    this.conditionsLinear.subscribe(function(newVal) {
+        self.updateCondGroups();
+    });
+
 
 };
 

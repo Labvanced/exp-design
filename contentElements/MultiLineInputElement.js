@@ -73,7 +73,7 @@ MultiLineInputElement.prototype.setVariableBackRef = function() {
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 MultiLineInputElement.prototype.getAllModifiers = function(modifiersArr) {
-    this.questionText.getAllModifiers(modifiersArr);
+    this.questionText().getAllModifiers(modifiersArr);
 };
 
 MultiLineInputElement.prototype.setPointers = function(entitiesArr) {
