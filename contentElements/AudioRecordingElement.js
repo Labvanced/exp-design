@@ -148,12 +148,12 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
                 console.log("data available");
 
                 var blob = e.data;
-                try {
+                /*try {
                     self.audioElemSource.srcObject = blob;
                 }
-                catch (error) {
+                catch (error) {*/
                     self.audioElemSource.src = URL.createObjectURL(blob);
-                }
+                //}
 
                 self.recordedAudio(blob);
             });
@@ -226,7 +226,9 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
         console.log("StopRecording");
 
         // Stop recording
-        self.recorder.stop();
+        if (self.recorder) {
+            self.recorder.stop();
+        }
         // Remove “recording” icon from browser tab
         /*self.recorder.stream.getTracks().forEach(function (i) {
                 i.stop();
