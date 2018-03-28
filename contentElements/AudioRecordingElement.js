@@ -19,10 +19,6 @@ var AudioRecordingElement = function(expData) {
     this.dataIsValid = ko.observable(false);
     this.fileUploaded = ko.observable(false);
     this.recordedAudio = ko.observable(null);
-    this.mediaRecorder = null;
-    this.audioElem = null;
-    this.audioElemSource = null;
-    this.audioRecElem = null;
     this.subscribersForJumpEvents = [];
 
     this.recorder = null;
@@ -144,17 +140,8 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
 
             // Set record to <audio> when recording will be finished
             self.recorder.addEventListener('dataavailable', function (e) {
-
                 console.log("data available");
-
                 var blob = e.data;
-                /*try {
-                    self.audioElemSource.srcObject = blob;
-                }
-                catch (error) {*/
-                    self.audioElemSource.src = URL.createObjectURL(blob);
-                //}
-
                 self.recordedAudio(blob);
             });
 
@@ -162,72 +149,15 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
             self.recorder.start()
         }
 
-/*
-        function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
-            navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
-        }
-
-        var mediaConstraints = {
-            audio: true
-        };
-
-        function onMediaSuccess(stream) {
-            self.audioRecElem = document.createElement('audio');
-
-            self.audioRecElem = mergeProps(self.audioRecElem, {
-                controls: true,
-                muted: true,
-                src: URL.createObjectURL(stream)
-            });
-            //try {
-            //    self.audioRecElem.srcObject = stream;
-            //} catch (error) {
-            //    self.audioRecElem.src = URL.createObjectURL(stream);
-            //}
-            self.audioRecElem.play();
-
-            var audiosContainer = document.getElementById('audios-container');
-            audiosContainer.appendChild(self.audioRecElem);
-
-            self.mediaRecorder = new MediaStreamRecorder(stream);
-            self.mediaRecorder.stream = stream;
-            self.mediaRecorder.audioChannels = 1;
-            self.mediaRecorder.ondataavailable = function (blob) {
-                console.log("data available");
-                //try {
-                //    self.audioElem.srcObject = blob;
-                //} catch (error) {
-                    //self.audioElem.src = URL.createObjectURL(blob);
-                //}
-
-
-                var a = document.createElement('a');
-                a.target = '_blank';
-                a.innerHTML = 'Open Recorded Audio N';
-                a.href = URL.createObjectURL(blob);
-                audiosContainer.appendChild(a);
-
-                console.log("mediaRecorder.mimeType = "+self.mediaRecorder.mimeType);
-
-                //self.recordedAudio(blob);
-                //document.write('<a href="' + blobURL + '">' + blobURL + '</a>');
-            };
-            self.mediaRecorder.start(5000);
-        }
-
-        function onMediaError(e) {
-            console.error('media error', e);
-        }
-
-        captureUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
-        */
     }
     else if (actionType=="StopRecording") {
         console.log("StopRecording");
 
         // Stop recording
         if (self.recorder) {
-            self.recorder.stop();
+            if (self.recorder.state == "recording") {
+                self.recorder.stop();
+            }
         }
         // Remove “recording” icon from browser tab
         /*self.recorder.stream.getTracks().forEach(function (i) {
@@ -235,26 +165,6 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
             }
         );*/
 
-        /*
-        self.mediaRecorder.stop();
-        self.mediaRecorder.stream.stop();
-
-        ConcatenateBlobs(self.mediaRecorder.blobs, self.mediaRecorder.blobs[0].type, function(concatenatedBlob) {
-            var a = document.createElement('a');
-            a.target = '_blank';
-            a.innerHTML = 'Final Audio';
-            a.href = URL.createObjectURL(concatenatedBlob);
-            audiosContainer.appendChild(a);
-        });
-
-        //self.audioRecElem.src = "";
-        //self.audioRecElem.srcObject = null;
-        //var audiosContainer = document.getElementById('audios-container');
-        // remove all children of audiosContainer:
-        //while (audiosContainer.firstChild) {
-        //    audiosContainer.removeChild(audiosContainer.firstChild);
-        //}
-        */
     }
     else if (actionType=="ClearRecording") {
         console.log("ClearRecording");
@@ -390,6 +300,8 @@ function createAudioRecordingComponents() {
         this.element = componentInfo.element;
         this.dataModel = dataModel;
 
+        this.myAudioElem = null; // will be set in the afterRender function...
+
         // only add playback functionality if not in sequence view:
         if ($(this.element).parents('#sequenceView').length == 0) {
 
@@ -402,32 +314,31 @@ function createAudioRecordingComponents() {
 
             this.dataModel.currentlyPlaying.subscribe(function (value) {
                 if (value) {
-                    myAudio.play();
+                    self.myAudioElem.play();
                 }
                 else {
-                    myAudio.pause();
+                    self.myAudioElem.pause();
                 }
             });
 
             // add subscriber to be notified when the audio should jump to specific time:
             this.listenForJumpTo = function (evtParam) {
                 if (evtParam.jumpToFraction) {
-                    var time = myAudio.duration * evtParam.jumpToFraction;
+                    var time = self.myAudioElem.duration * evtParam.jumpToFraction;
                     console.log("setting audio time to " + time);
-                    myAudio.currentTime = time;
+                    self.myAudioElem.currentTime = time;
                 }
             };
             this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
 
             // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
             this.timeUpdateListener = function () {
-                if (!isNaN(myAudio.duration)) {
-                    var percentage = Math.floor(100 * myAudio.currentTime / myAudio.duration);
+                if (!isNaN(self.myAudioElem.duration)) {
+                    var percentage = Math.floor(100 * self.myAudioElem.currentTime / self.myAudioElem.duration);
                     self.dataModel.currentTimePercentage(percentage);
                 }
             };
-            // Update the seek bar as the audio plays
-            myAudio.addEventListener("timeupdate", this.timeUpdateListener);
+
 
             this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
                 seekBar.value = percentage;
@@ -436,11 +347,11 @@ function createAudioRecordingComponents() {
 
         this.recordedAudioSubscriber = this.dataModel.recordedAudio.subscribe(function(blob) {
             try {
-                self.dataModel.audioElemSource.srcObject = blob;
+                self.myAudioElem.srcObject = blob;
             } catch (error) {
-                self.dataModel.audioElemSource.src = URL.createObjectURL(blob);
+                self.myAudioElem.src = URL.createObjectURL(blob);
             }
-            self.dataModel.audioElem.load();
+            self.myAudioElem.load();
         });
 
         this.focus = function () {
@@ -448,8 +359,10 @@ function createAudioRecordingComponents() {
         };
     };
     AudioRecordingPreviewAndPlayerViewModel.prototype.afterRenderInit = function(elem) {
-        this.dataModel.audioElem = $(elem).find(".recordedAudioPlaybackElem")[0];
-        this.dataModel.audioElemSource = $(elem).find(".recordedAudioPlaybackSource")[0];
+        this.myAudioElem = $(elem).find(".recordedAudioPlaybackElem")[0];
+
+        // Update the seek bar as the audio plays
+        this.myAudioElem.addEventListener("timeupdate", this.timeUpdateListener);
     };
     AudioRecordingPreviewAndPlayerViewModel.prototype.dispose = function() {
         console.log("disposing AudioRecordingPreviewAndPlayerViewModel");
