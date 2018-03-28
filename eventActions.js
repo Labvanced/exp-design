@@ -6,7 +6,7 @@
 
 /**
  * This action can record values (i.e. elementTag or reactiontime) into variables and sends them to the server.
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionRecord = function(event) {
@@ -223,7 +223,7 @@ ActionRecord.prototype.toJS = function() {
 
 /**
  * This action changes properties of a contentElement.
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionSetElementProp = function(event) {
@@ -1411,7 +1411,7 @@ ActionLoadFileIds.prototype.toJS = function() {
 /**
  * This action jumps to another frame or next trial.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionJumpTo = function(event) {
@@ -1629,7 +1629,7 @@ ActionJumpTo.prototype.toJS = function() {
 /**
  * This action jumps to another frame or next trial.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionDelayedActions = function(event) {
@@ -1827,7 +1827,7 @@ ActionDelayedActions.prototype.toJS = function() {
 /**
  * This action jumps to another frame or next trial.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionStartRepeatedActions = function(event) {
@@ -2084,7 +2084,7 @@ ActionStartRepeatedActions.prototype.toJS = function() {
 
 /**
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 
@@ -2291,7 +2291,7 @@ ActionConditional.prototype.toJS = function() {
 /**
  * This action jumps to another frame or next trial.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionIfCondition = function(event) {
@@ -2450,7 +2450,7 @@ ActionIfCondition.prototype.toJS = function() {
 /**
  * This action allows to change the value of a variable.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 
@@ -2585,7 +2585,7 @@ ActionSetVariable.prototype.toJS = function() {
 /**
  * This action allows to change the value of a variable.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionModifyVariable = function(event) {
@@ -2833,7 +2833,7 @@ ActionModifyVariable.prototype.toJS = function() {
 /**
  * This action sets the value of a variable to a random number drawn from a specified distribution.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionDrawRandomNumber = function(event) {
@@ -3117,7 +3117,7 @@ ActionDrawRandomNumber.prototype.toJS = function() {
 /**
  * This action allows to clear WG's data.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionControlWebGazer = function(event) {
@@ -3255,7 +3255,7 @@ ActionControlWebGazer.prototype.toJS = function() {
 /**
  * This action allows to start or stop the playback of audio or video elements.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionControlAV = function(event) {
@@ -3371,7 +3371,7 @@ ActionControlAV.prototype.toJS = function() {
 /**
  * This action allows to start or stop the playback of audio or video elements.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionControlElement = function(event) {
@@ -3475,7 +3475,7 @@ ActionControlElement.prototype.toJS = function() {
 /**
  * This action allows to start or stop the playback of audio or video elements.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionControlTimer = function(event) {
@@ -3614,7 +3614,7 @@ ActionControlTimer.prototype.toJS = function() {
 /**
  * This action end the session, sends end session time and leaves the fullscreen.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionEndSession = function(event) {
@@ -3711,7 +3711,7 @@ ActionEndSession.prototype.toJS = function() {
 /**
  * This action records the response from a questionaire element.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionRecordQuestionaireResponse = function(event) {
@@ -3805,7 +3805,7 @@ ActionRecordQuestionaireResponse.prototype.toJS = function() {
 /**
  * This action distributes variables to other players within a joint experiment.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionDistributeVariable = function(event) {
@@ -3996,7 +3996,7 @@ ActionDistributeVariable.prototype.destroyOnPlayerFrame = function() {
 /**
  * Factory method that creates a new action based on the given action type.
  *
- * @param {Event} event - the parent event of the new action.
+ * @param {ExpEvent} event - the parent event of the new action.
  * @param {string} type - the type of the Action (i.e. "ActionRecordQuestionaireResponse")
  * @returns {Action}
  */

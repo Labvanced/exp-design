@@ -339,7 +339,7 @@ FrameView.prototype.setSelectedElement = function(elem) {
     }
 
     if (elem) {
-        if (elem.type == "Event") {
+        if (elem.type == "ExpEvent") {
             // element is an event
             // change currently selected element:
             this.frameData.currSelectedElement(elem);

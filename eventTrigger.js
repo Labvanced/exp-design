@@ -6,7 +6,7 @@
 /**
  * This Trigger handles mouse interactions with stimulus elements.
  *
- * @param {Event} event - the parent event where this requirements is used.
+ * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
 var TriggerMouse = function(event) {
@@ -229,7 +229,7 @@ TriggerMouse.prototype.toJS = function() {
 /**
  * This Trigger handles mouse interactions with stimulus elements.
  *
- * @param {Event} event - the parent event where this requirements is used.
+ * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
 var TriggerButtonClick = function(event) {
@@ -377,7 +377,7 @@ TriggerButtonClick.prototype.toJS = function() {
 /**
  * This Trigger handles keyboard interactions of the participant with the experiment.
  *
- * @param {Event} event - the parent event where this requirements is used.
+ * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
 var TriggerKeyboard = function(event) {
@@ -579,7 +579,7 @@ TriggerKeyboard.prototype.toJS = function() {
 /**
  * This Trigger is executed when the frame starts.
  *
- * @param {Event} event - the parent event where this requirements is used.
+ * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
 var TriggerOnFrameStart = function(event) {
@@ -681,7 +681,7 @@ TriggerOnFrameStart.prototype.toJS = function() {
 /**
  * This Trigger is executed when the frame ends.
  *
- * @param {Event} event - the parent event where this requirements is used.
+ * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
 var TriggerOnFrameEnd = function(event) {
@@ -783,7 +783,7 @@ TriggerOnFrameEnd.prototype.toJS = function() {
 /**
  * This Trigger is executed when a timer reaches a specific value.
  *
- * @param {Event} event - the parent event where this requirements is used.
+ * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
 var TriggerTimerReached = function(event) {
@@ -919,7 +919,7 @@ TriggerTimerReached.prototype.toJS = function() {
 /**
  * This Trigger is executed when the value of a specific variable is changed.
  *
- * @param {Event} event - the parent event where this requirements is used.
+ * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
 var TriggerVariableValueChanged = function(event) {
@@ -1191,7 +1191,7 @@ TriggerAudioVideoEvent.prototype.toJS = function() {
 /**
  * Factory method that creates a new trigger based on the given trigger type.
  *
- * @param {Event} event - the parent event of the new action.
+ * @param {ExpEvent} event - the parent event of the new action.
  * @param {string} type - the type of the Trigger (i.e. "TriggerVariableValueChanged")
  * @returns {Trigger}
  */
