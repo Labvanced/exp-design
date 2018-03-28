@@ -4160,7 +4160,7 @@ ActionMathAndStats.prototype.run = function(triggerParams) {
 
             });
             if (inputData.length>0){
-                var outcome =  data.operation.apply([null,inputData]);
+                var outcome =  data.operation.apply(null, inputData);
                 var globalVarOutput = self.outputs()[0].value();
                 globalVarOutput.value().setValue(outcome); // ToDo  change outcome to more variables in the future
 
@@ -4898,7 +4898,7 @@ ActionMathAndStats.prototype.arrayOperations = [
         name: 'product',
         inputs: [
             {
-                name: inputArray,
+                name: "inputArray",
                 dataFormats: ["array"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
@@ -4909,7 +4909,7 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: outputArray,
+                name: "outputArray",
                 dataFormats: ["array"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
