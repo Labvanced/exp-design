@@ -14,6 +14,7 @@ var AudioRecordingElement = function(expData) {
 
     ///// not serialized
     this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
+    this.currentlyRecording = ko.observable(false);
     this.currentTimePercentage = ko.observable(0);
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
@@ -21,7 +22,10 @@ var AudioRecordingElement = function(expData) {
     this.recordedAudio = ko.observable(null);
     this.subscribersForJumpEvents = [];
 
+    this.use_mp3_recorder = true;
     this.recorder = null;
+    this.mp3Recorder = null;
+
 };
 
 AudioRecordingElement.prototype.label = "Audio Recording";
@@ -31,7 +35,7 @@ AudioRecordingElement.prototype.modifiableProp = [ ];
 AudioRecordingElement.prototype.initWidth = 300;
 AudioRecordingElement.prototype.initHeight = 100;
 AudioRecordingElement.prototype.numVarNamesRequired = 1;
-AudioRecordingElement.prototype.actionTypes = ["StartRecording","StopRecording","StartUpload","ClearRecording"];
+AudioRecordingElement.prototype.actionTypes = ["StartRecording","StopRecording","StartUpload","ClearRecording","StartPlayback","StopPlayback"];
 AudioRecordingElement.prototype.triggerTypes = ["AudioRecordingFinished","UploadComplete"];
 
 AudioRecordingElement.prototype.switchPlayState = function() {
@@ -136,17 +140,31 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
         console.log("StartRecording");
 
         if (player.microphone_stream) {
-            self.recorder = new MediaRecorder(player.microphone_stream);
 
-            // Set record to <audio> when recording will be finished
-            self.recorder.addEventListener('dataavailable', function (e) {
-                console.log("data available");
-                var blob = e.data;
-                self.recordedAudio(blob);
-            });
+            if (!this.currentlyRecording() && !this.currentlyPlaying()) {
+                this.currentlyRecording(true);
+                if (this.use_mp3_recorder) {
+                    this.mp3Recorder = new MP3Recorder({
+                        bitRate: 128
+                    });
+                    this.mp3Recorder.beginRecording(player.microphone_stream);
+                }
+                else {
+                    self.recorder = new MediaRecorder(player.microphone_stream);
 
-            // Start recording
-            self.recorder.start()
+                    // Set record to <audio> when recording will be finished
+                    self.recorder.addEventListener('dataavailable', function (e) {
+                        console.log("data available");
+                        var blob = e.data;
+                        self.recordedAudio(blob);
+                    });
+
+                    // Start recording
+                    self.recorder.start()
+                }
+
+            }
+
         }
 
     }
@@ -154,21 +172,46 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
         console.log("StopRecording");
 
         // Stop recording
-        if (self.recorder) {
-            if (self.recorder.state == "recording") {
-                self.recorder.stop();
+        if (this.currentlyRecording()) {
+            this.currentlyRecording(false);
+            if (this.use_mp3_recorder) {
+                this.mp3Recorder.stop();
+                this.mp3Recorder.getMp3Blob(function (blob) {
+                    console.log("got mp3 blob");
+                    self.recordedAudio(blob);
+                }, function (e) {
+                    alert('We could not retrieve your message');
+                    console.log(e);
+                });
+            }
+            else {
+                if (self.recorder) {
+                    if (self.recorder.state == "recording") {
+                        self.recorder.stop();
+                    }
+                }
             }
         }
-        // Remove “recording” icon from browser tab
-        /*self.recorder.stream.getTracks().forEach(function (i) {
-                i.stop();
-            }
-        );*/
 
     }
     else if (actionType=="ClearRecording") {
         console.log("ClearRecording");
+        if (this.currentlyPlaying()) {
+            this.currentlyPlaying(false);
+        }
         this.recordedAudio(null);
+    }
+    else if (actionType=="StartPlayback") {
+        console.log("StartPlayback");
+        if (!this.currentlyRecording() && !this.currentlyPlaying()) {
+            this.currentlyPlaying(true);
+        }
+    }
+    else if (actionType=="StopPlayback") {
+        console.log("StopPlayback");
+        if (this.currentlyPlaying()) {
+            this.currentlyPlaying(false);
+        }
     }
 };
 
@@ -304,14 +347,6 @@ function createAudioRecordingComponents() {
 
         // only add playback functionality if not in sequence view:
         if ($(this.element).parents('#sequenceView').length == 0) {
-
-            var myAudio = $(this.element).find('audio')[0];
-            var seekBar = $(this.element).find('.seek-bar')[0];
-
-            seekBar.addEventListener("change", function () {
-                dataModel.jumpToByFraction(seekBar.value / 100);
-            });
-
             this.dataModel.currentlyPlaying.subscribe(function (value) {
                 if (value) {
                     self.myAudioElem.play();
@@ -339,9 +374,14 @@ function createAudioRecordingComponents() {
                 }
             };
 
+            // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
+            this.onPlaybackEnded = function () {
+                self.dataModel.currentlyPlaying(false);
+                self.dataModel.currentTimePercentage(0);
+            };
 
             this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
-                seekBar.value = percentage;
+                self.seekBar.value = percentage;
             });
         }
 
@@ -359,10 +399,18 @@ function createAudioRecordingComponents() {
         };
     };
     AudioRecordingPreviewAndPlayerViewModel.prototype.afterRenderInit = function(elem) {
+        var self = this;
+
         this.myAudioElem = $(elem).find(".recordedAudioPlaybackElem")[0];
+        this.seekBar = $(elem).find('.seek-bar')[0];
+
+        this.seekBar.addEventListener("change", function () {
+            self.dataModel.jumpToByFraction(self.seekBar.value / 100);
+        });
 
         // Update the seek bar as the audio plays
         this.myAudioElem.addEventListener("timeupdate", this.timeUpdateListener);
+        this.myAudioElem.addEventListener("ended", this.onPlaybackEnded);
     };
     AudioRecordingPreviewAndPlayerViewModel.prototype.dispose = function() {
         console.log("disposing AudioRecordingPreviewAndPlayerViewModel");
@@ -380,6 +428,7 @@ function createAudioRecordingComponents() {
         var myAudio = $(this.element).find('audio')[0];
 
         myAudio.removeEventListener("timeupdate", this.timeUpdateListener);
+        myAudio.removeEventListener("ended", this.onPlaybackEnded);
     };
     
     ko.components.register('audiorecording-preview',{
@@ -404,3 +453,84 @@ function createAudioRecordingComponents() {
 
 
 
+/**
+ * Created by intelWorx on 27/10/2015.
+ */
+(function (exports) {
+
+    var MP3Recorder = function (config) {
+
+        var recorder = this;
+
+        var context = new AudioContext();
+
+        config = config || {};
+        var realTimeWorker = new Worker('/assets/js/worker-realtime.js');
+
+        // Initializes LAME so that we can record.
+        this.initialize = function () {
+            config.sampleRate = context.sampleRate;
+            realTimeWorker.postMessage({cmd: 'init', config: config});
+        };
+
+
+        // This function finalizes LAME output and saves the MP3 data to a file.
+        var microphone, processor;
+        // Function that handles getting audio out of the browser's media API.
+        this.beginRecording = function(stream) {
+            // Set up Web Audio API to process data from the media stream (microphone).
+            microphone = context.createMediaStreamSource(stream);
+            // Settings a bufferSize of 0 instructs the browser to choose the best bufferSize
+            processor = context.createScriptProcessor(0, 1, 1);
+            // Add all buffers from LAME into an array.
+            processor.onaudioprocess = function (event) {
+                // Send microphone data to LAME for MP3 encoding while recording.
+                var array = event.inputBuffer.getChannelData(0);
+                //console.log('Buffer Received', array);
+                realTimeWorker.postMessage({cmd: 'encode', buf: array})
+            };
+            // Begin retrieving microphone data.
+            microphone.connect(processor);
+            processor.connect(context.destination);
+            // Return a function which will stop recording and return all MP3 data.
+        };
+
+        this.stop = function () {
+            if (processor && microphone) {
+                // Clean up the Web Audio API resources.
+                microphone.disconnect();
+                processor.disconnect();
+                processor.onaudioprocess = null;
+                // Return the buffers array. Note that there may be more buffers pending here.
+            }
+        };
+
+        var mp3ReceiveSuccess, currentErrorCallback;
+        this.getMp3Blob = function (onSuccess, onError) {
+            currentErrorCallback = onError;
+            mp3ReceiveSuccess = onSuccess;
+            realTimeWorker.postMessage({cmd: 'finish'});
+        };
+
+        realTimeWorker.onmessage = function (e) {
+            switch (e.data.cmd) {
+                case 'end':
+                    if (mp3ReceiveSuccess) {
+                        mp3ReceiveSuccess(new Blob(e.data.buf, {type: 'audio/mp3'}));
+                    }
+                    console.log('MP3 data size', e.data.buf.length);
+                    break;
+                case 'error':
+                    if (currentErrorCallback) {
+                        currentErrorCallback(e.data.error);
+                    }
+                    break;
+                default :
+                    console.log('I just received a message I know not how to handle.', e.data);
+            }
+        };
+        this.initialize();
+    };
+
+    exports.MP3Recorder = MP3Recorder;
+})(window);

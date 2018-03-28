@@ -82,8 +82,13 @@
         </audio>
 
         <span data-bind="if: dataModel.showMediaControls" class="media-controls">
-            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
-            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+
+            <span data-bind="if: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StopRecording');}"><img width="16" height="16" src="/resources/icons/player/stop-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StartRecording');}"><img width="16" height="16" src="/resources/icons/player/rec-button.svg"/></button></span>
+
+            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StopPlayback');}"><img width="16" height="16" src="/resources/icons/player/stop-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StartPlayback');}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+
             <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
         </span>
 
