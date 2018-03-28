@@ -40,7 +40,7 @@ NaviElement.prototype.numVarNamesRequired = 0;
 
 NaviElement.prototype.init = function() {
 
-    var event = new Event(this.parent.parent);
+    var event = new ExpEvent(this.parent.parent);
     event.trigger(new TriggerButtonClick(event));
     event.trigger().target(this.parent);
     event.trigger().buttonIdx(0);
@@ -50,7 +50,7 @@ NaviElement.prototype.init = function() {
     event.name("Go Backward");
     this.parent.parent.events.push(event);
 
-    var event2 = new Event(this.parent.parent);
+    var event2 = new ExpEvent(this.parent.parent);
     event2.trigger(new TriggerButtonClick(event2));
     event2.trigger().target(this.parent);
     event2.trigger().buttonIdx(1);

@@ -42,9 +42,9 @@ if (!window.MediaRecorder) {
 
         var recorder = this;
         this.encoder.addEventListener('message', function (e) {
-            var event = new Event('dataavailable');
-            event.data = new Blob([e.data], {type: recorder.mimeType});
-            recorder.em.dispatchEvent(event);
+            var event2 = new Event('dataavailable');
+            event2.data = new Blob([e.data], {type: recorder.mimeType});
+            recorder.em.dispatchEvent(event2);
             if (recorder.state === 'inactive') {
                 recorder.em.dispatchEvent(new Event('stop'))
             }

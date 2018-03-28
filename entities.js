@@ -120,7 +120,12 @@ function entityFactory(entityJson, expData) {
             entity.fromJS(entityJson);
             break;
         case 'Event':
-            entity = new Event(expData);
+            // WARNING: This needs to stay here for backwards compatibility to old experiments!
+            entity = new ExpEvent(expData);
+            entity.fromJS(entityJson);
+            break;
+        case 'ExpEvent':
+            entity = new ExpEvent(expData);
             entity.fromJS(entityJson);
             break;
         case 'Factor':
