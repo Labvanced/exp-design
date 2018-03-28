@@ -4002,477 +4002,83 @@ var ActionMathAndStats = function(event) {
     this.event = event;
 
     // serialized
-    this.inVar = ko.observable(null);
-    this.outVar = ko.observable(null);
-    this.input = ko.observableArray(null);
-    this.output = ko.observableArray(null);
-    this.operationType= ko.observable('Array Operations');
+    this.operationType = ko.observable('Array Operations');
+    this.inputs = ko.observableArray([]);
+    this.outputs = ko.observableArray([]);
+    this.functionType = ko.observable(this.arrayOperations[8].key); // sum as start value
+
+
     // computed
     this.currentFunctions = ko.computed(function(){
         if (self.operationType()== "Array Operations"){
-            return self.arrayOerations;
+            return self.arrayOperations;
         }
         else if(self.operationType()== "Linear Algebra"){
-            self.algebraOerations;
+            return self.algebraOerations;
         }
         else if(self.operationType()== "Statistical Tests"){
-            self.statisticalOerations;
+            return self.statisticalOerations;
         }
     });
 
-    this.functionType = ko.observable(this.arrayOerations[8]);
+    // not serialized
+    this.backRefsIn = {};
+    this.backRefsOut ={};
 
-
-
-    this.functionType.subscribe(function(newVal) {
-        if (newVal.inputs){
-            var input = [];
-            newVal.inputs.forEach(function (entry) {
-                if (entry.relationGlobalVar=="mustBeVariable"){
-                    entry.value = ko.observable(null);
-                    input.push(entry);
-
-                }
-            });
-            self.input(input);
-
-            var output = [];
-            newVal.outputs.forEach(function (entry) {
-                if (entry.relationGlobalVar=="mustBeVariable"){
-                    entry.value = ko.observable(null);
-                    output.push(entry);
-
-                }
-            });
-            self.output(output);
-        }
-
-    },this);
+    this.resetValues();
+    this.testOutcome = ko.observable(null);
 
 };
 
-ActionMathAndStats.prototype.type = "ActionMathAndStats";
-ActionMathAndStats.prototype.label = "Math & Statistics";
-ActionMathAndStats.prototype.operationTypes = ["Array Operations", "Linear Algebra", "Statistical Tests"];
-ActionMathAndStats.prototype.statisticalOerations = {};
-ActionMathAndStats.prototype.algebraOerations = {};
-ActionMathAndStats.prototype.arrayOerations = [
+ActionMathAndStats.prototype.resetValues = function(){
+    var self = this;
 
-    // with parameters
-    {   key: "variance",
-        name: 'variance',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true},
-            {name: "varianceSelection", dataFormats: ["scalar"], dataTypes:["string"], selectionValues:['population variance', 'sample variance'], relationGlobalVar:"cannotBeGlobalVar", required: false}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["scalar","array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.variance"
-    },
+    // remove old variable references
+    this.inputs().forEach(function (entry,idx) {
+        if ($.isFunction(entry.value)){
+            if (entry.value()==GlobalVar){
+                self.removeInVariable(idx);
+            }
+        }
+    });
 
-    {   key: 'quantiles',
-        name: 'quantiles',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable",required: true},
-            {name: "quantileSeparation", dataFormats: ["scalar"], dataTypes:["numeric"],  minimumValue:0,maximumValue:1,relationGlobalVar:"canBeGlobalVar",required: false}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable",required: true}
-        ],
-        operation: "jStat.quantiles"
-    },
+    this.outputs().forEach(function (entry,idx) {
+        if ($.isFunction(entry.value)){
+            if (entry.value()==GlobalVar){
+                self.removeOutVariable(idx);
+            }
+        }
+    });
 
-    {   key: "percentile",
-        name: 'percentile',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true},
-            {name: "percentileScore", dataFormats: ["scalar"], dataTypes:["numeric"],  minimumValue:0,maximumValue:1,relationGlobalVar:"canBeGlobalVar",required: false}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.percentile"
-    },
-
-   {    key: "percentileOfScore",
-       name: 'percentileOfScore',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true},
-            {name: "percentileComparison", dataFormats: ["scalar"], dataTypes:["string"], selectionValues:['less or equal', 'less'], relationGlobalVar:"cannotBeGlobalVar", required: false},
-            {name: "percentileScore", dataFormats: ["scalar"], dataTypes:["numeric"],  minimumValue:0,maximumValue:1,relationGlobalVar:"canBeGlobalVar",required: false}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.percentileOfScore"
-    },
-
-    {    key: "histogram",
-        name: 'histogram',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true},
-            {name: "percentileScore", dataFormats: ["scalar"], dataTypes:["numeric"],  minimumValue:0,maximumValue:"infinite",relationGlobalVar:"canBeGlobalVar",required: false}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.histogram"
-    },
-
-    {     key: "covariance",
-        name: 'covariance',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true},
-            {name: "inputArray2", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.covariance"
-    },
-
-   {     key: "corrcoeff",
-       name: 'corrcoeff',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true},
-            {name: "inputArray2", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.corrcoeff"
-    },
-
-    {    key: "spearmancoeff",
-        name: 'spearmancoeff',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true},
-            {name: "inputArray2", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.spearmancoeff"
-    },
-    //////////////////////////////////////
-    // without parameters
+    // reset values
+    var idx = this.getIndexById(this.functionType());
+    if (idx!== null){
+        var data = this.currentFunctions()[idx];
+        var inp = [];
+        data.inputs.forEach(function (entry) {
+            inp.push(entry);
+            if (!($.isFunction(entry.value))){
+                entry.value = ko.observable(entry.value);
+            }
+        });
+        this.inputs(inp);
 
 
-
-   {   key: "sum",
-       name: 'sum',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.sum"
-    },
-
-   {     key: "sumsqrd",
-       name: 'sumsqrd',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.sumsqrd"
-    },
-
-   {     key: "sumsqerr",
-       name: 'sumsqerr',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.sumsqerr"
-    },
-
-    {    key: "sumrow",
-        name: 'sumrow',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.sumrow"
-    },
-
-   {   key: "product",
-       name: 'product',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.product"
-    },
-
-    {    key: "min",
-        name: 'min',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.min"
-    },
-
-   {   key: "min",
-       name: 'min',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.min"
-    },
-
-   {    key: "max",
-       name: 'max',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.max"
-    },
-
-    {    key: "mean",
-        name: 'mean',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.mean"
-    },
-
-    {   key: "meansqerr",
-        name: 'meansqerr',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.meansqerr"
-    },
-
-    {   key: "geomean",
-        name: 'geomean',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.geomean"
-    },
-
-    {   key: "median",
-        name: 'median',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.median"
-    },
-
-    {    key: "cumsum",
-        name: 'cumsum',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.cumsum"
-
-    },
-
-    {    key: "cumprod",
-        name: 'cumprod',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.cumprod"
-    },
-
-    {    key: "diff",
-        name: 'diff',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.diff"
-    },
-
-    {    key: "rank",
-        name: 'rank',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.rank"
-    },
-
-    {   key: "mode",
-        name: 'mode',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.mode"
-    },
-
-    {    key: "range",
-        name: 'range',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.range"
-    },
-
-    {     key: "pooledvariance",
-        name: 'pooledvariance',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.pooledvariance"
-    },
-
-    {     key: "deviation",
-        name: 'deviation',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.deviation"
-
-    },
-
-    {     key: "stdev",
-        name: 'stdev',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.stdev"
-    },
-
-    {     key: "pooledstdev",
-        name: 'pooledstdev',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.pooledstdev"
-    },
-
-    {     key: "meandev",
-        name: 'meandev',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.meandev"
-    },
-
-   {     key: "meddev",
-       name: 'meddev',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.meddev"
-    },
-
-    {     key: "skewness",
-        name: 'skewness',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.skewness"
-    },
-
-    {     key: "kurtosis",
-        name: 'kurtosis',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.kurtosis"
-    },
-
-   {     key: "coeffvar",
-       name: 'coeffvar',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.coeffvar"
-    },
-
-    {     key: "quartiles",
-        name: 'quartiles',
-        inputs:[
-            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        outputs:[
-            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true}
-        ],
-        operation: "jStat.quartiles"
+        var out = [];
+        data.outputs.forEach(function (entry) {
+            out.push(entry);
+            if (!($.isFunction(entry.value))){
+                entry.value = ko.observable(entry.value);
+            }
+        });
+        this.outputs(out);
     }
-];
+    else{
+        this.inputs([]);
+        this.outputs([]);
+    }
 
-
-
+};
 
 ActionMathAndStats.prototype.isValid = function(){
     return true;
@@ -4482,26 +4088,38 @@ ActionMathAndStats.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionMathAndStats.prototype.setInVarBackRef = function(){
-    this.inVar().addBackRef(this, this.event, false, true, 'math & statistics');
+ActionMathAndStats.prototype.setInVarBackRef = function(idx){
+    if (this.inputs()[idx].value() instanceof GlobalVar){
+        this.backRefsIn[idx] =this.inputs()[idx].value().addBackRef(this, this.event, false, true, 'math & statistics');
+    }
+
 };
 
 /**
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionMathAndStats.prototype.setOutVarBackRef = function(){
-    this.outVar().addBackRef(this, this.event, false, true, 'math & statistics');
+ActionMathAndStats.prototype.setOutVarBackRef = function(idx){
+    if (this.outputs()[idx].value() instanceof GlobalVar){
+        this.backRefsOut[idx] = this.outputs()[idx].value().addBackRef(this, this.event, false, true, 'math & statistics');
+    }
 };
 
 
 
-ActionMathAndStats.prototype.removeInVariable = function(){
-    this.inVar(null);
+
+ActionMathAndStats.prototype.removeInVariable = function(idx){
+    if (this.inputs()[idx].value() instanceof GlobalVar && this.backRefsIn[idx]){
+        this.inputs()[idx].value().removeBackRef(this.backRefsIn[idx]);
+        delete this.backRefsIn[idx]
+    }
 };
 
-ActionMathAndStats.prototype.removeOutVariable = function(){
-    this.outVar(null);
+ActionMathAndStats.prototype.removeOutVariable = function(idx){
+    if (this.outputs()[idx].value() instanceof GlobalVar && this.backRefsOut[idx]){
+        this.outputs()[idx].value().removeBackRef(this.backRefsOut[idx]);
+        delete this.backRefsOut[idx]
+    }
 };
 
 /**
@@ -4512,11 +4130,72 @@ ActionMathAndStats.prototype.removeOutVariable = function(){
  */
 ActionMathAndStats.prototype.run = function(triggerParams) {
     var self = this;
-    var callFun = this.functionType().operation;
-    if ($.isFunction(callFun)){
-        var getVal = self.inVar().value().getValues();
-        self.outVar().value().setValue(jStat[this.functionType()](getVal));
+    var idx = this.getIndexById(this.functionType());
+    if (idx!== null){
+        var data = this.currentFunctions()[idx];
+        if ($.isFunction(eval(data.operation))){
+            var inputData = [];
+            this.inputs().forEach(function (input) {
+                if($.isFunction(input.value)){
+                   var inp =  input.value();
+                }
+                else{
+                    var inp =  input.value();
+                }
+                if (inp instanceof GlobalVar){
+                   var inp =  inp.value().getValues();
+                }
+                if ($.isNumeric(inp)){
+                    inp = parseFloat(inp);
+                }
+                if (inp != null){
+                    inputData.push(inp);
+                }
+
+            });
+            if (inputData.length>0){
+                var func = eval(data.operation);
+                var outcome = null;
+                if (func.length==1){
+                    outcome = func(inputData[0]);
+                }
+                else if (func.length==2){
+                    outcome = func(inputData[0],inputData[1]);
+                }
+                else if (func.length==3){
+                    outcome = func(inputData[0],inputData[1],inputData[2]);
+                }
+                else if (func.length==4){
+                    outcome = func(inputData[0],inputData[1],inputData[2],inputData[3]);
+                }
+                else if (func.length==5){
+                    outcome = func(inputData[0],inputData[1],inputData[2],inputData[3],inputData[4]);
+                }
+                else if (func.length==6){
+                    outcome = func(inputData[0],inputData[1],inputData[2],inputData[3],inputData[4],inputData[5]);
+                }
+                else if (func.length==7){
+                    outcome = func(inputData[0],inputData[1],inputData[2],inputData[3],inputData[4],inputData[5],inputData[6]);
+                }
+                else if (func.length==8){
+                    outcome = func(inputData[0],inputData[1],inputData[2],inputData[3],inputData[4],inputData[5],inputData[6],inputData[7]);
+                }
+                else if (func.length==9){
+                    outcome = func(inputData[0],inputData[1],inputData[2],inputData[3],inputData[4],inputData[5],inputData[6],inputData[7],inputData[8]);
+                }
+                else if (func.length==10){
+                    outcome = func(inputData[0],inputData[1],inputData[2],inputData[3],inputData[4],inputData[5],inputData[6],inputData[7],inputData[8],inputData[9]);
+                }
+                self.outputs()[0].value().value().setValue(outcome); // ToDo  change outcome more more variables in the future
+                self.testOutcome(self.outputs()[0].value().value().getValues())
+            }
+            else{
+                console.log("Warning: No input data specified for Math & Stats Action")
+            }
+
+        }
     }
+
 };
 
 /**
@@ -4535,16 +4214,38 @@ ActionMathAndStats.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
-    var inVar = entitiesArr.byId[this.inVar()];
-    if (inVar){
-        this.inVar(inVar);
-        this.setInVarBackRef();
-    }
-    var outVar = entitiesArr.byId[this.outVar()];
-    if (outVar){
-        this.outVar(outVar);
-        this.setOutVarBackRef();
-    }
+
+    var self = this;
+    this.inputs().forEach(function (entry,idx) {
+        if (!($.isFunction(entry.value))){
+            if (entry.relationGlobalVar == "mustBeVariable"){
+                entry.value = ko.observable(entitiesArr.byId[entry.value]);
+                if (entry.value() instanceof GlobalVar){
+                    self.setInVarBackRef(idx);
+                }
+            }
+            else{
+                entry.value = ko.observable(entry.value);
+            }
+        }
+    });
+
+
+    this.outputs().forEach(function (entry,idx) {
+        if (!($.isFunction(entry.value))){
+            if (entry.relationGlobalVar == "mustBeVariable"){
+                entry.value = ko.observable(entitiesArr.byId[entry.value]);
+                if (entry.value() instanceof GlobalVar){
+                    self.setOutVarBackRef(idx);
+                }
+            }
+            else{
+                entry.value = ko.observable(entry.value);
+            }
+        }
+    });
+
+    // Set back Refs
 };
 
 /**
@@ -4553,17 +4254,80 @@ ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionMathAndStats.prototype.reAddEntities = function(entitiesArr) {
-    if (this.inVar()) {
-        if (!entitiesArr.byId.hasOwnProperty(this.inVar().id())) {
-            entitiesArr.push(this.inVar());
+
+    this.inputs().forEach(function (entry) {
+        if ($.isFunction(entry.value)){
+            if (entry.relationGlobalVar == "mustBeVariable" && entry.value() instanceof GlobalVar ){
+                if (!entitiesArr.byId.hasOwnProperty(entry.value().id())) {
+                    entitiesArr.push(entry.value());
+                }
+            }
         }
-    }
-    if (this.outVar()) {
-        if (!entitiesArr.byId.hasOwnProperty(this.outVar().id())) {
-            entitiesArr.push(this.outVar());
+
+    });
+
+    this.outputs().forEach(function (entry) {
+        if ($.isFunction(entry.value)){
+            if (entry.relationGlobalVar == "mustBeVariable" && entry.value() instanceof GlobalVar){
+                if (!entitiesArr.byId.hasOwnProperty(entry.value().id())) {
+                    entitiesArr.push(entry.value());
+                }
+            }
         }
-    }
+
+    });
+
 };
+
+ActionMathAndStats.prototype.getIndexByName = function(name,inputOrOutput) {
+    if (inputOrOutput =="input"){
+        var vals = this.inputs();
+    }
+    else if(inputOrOutput =="output"){
+        var vals = this.outputs();
+    }
+    var i = 0;
+    var found = false;
+    while (found == false && i<vals.length){
+        var val = vals[i];
+        if (val.name == name){
+            var found = true;
+        }
+        else{
+            i++;
+        }
+    }
+    return i;
+};
+
+
+ActionMathAndStats.prototype.getIndexById = function(name) {
+    if (name){
+        var i = 0;
+        var found = false;
+        var data = this.currentFunctions();
+        while (found == false && i<data.length){
+            var val = data[i];
+            if (val.name == name){
+                var found = true;
+            }
+            else{
+                i++;
+            }
+        }
+        if (found == true){
+            return i;
+        }
+        else{
+            return null
+        }
+
+    }
+    else{
+        return null
+    }
+
+}
 
 /**
  * load from a json object to deserialize the states.
@@ -4571,11 +4335,11 @@ ActionMathAndStats.prototype.reAddEntities = function(entitiesArr) {
  * @returns {ActionModifyArray}
  */
 ActionMathAndStats.prototype.fromJS = function(data) {
-    this.inVar(data.inVar);
-    this.outVar(data.outVar);
+    this.inputs(data.inputs);
+    this.outputs(data.outputs);
     this.operationType(data.operationType);
     this.functionType(data.functionType);
-    this.outputType(data.outputType);
+
     return this;
 };
 
@@ -4584,28 +4348,491 @@ ActionMathAndStats.prototype.fromJS = function(data) {
  * @returns {object}
  */
 ActionMathAndStats.prototype.toJS = function() {
-    var inVar = null;
-    if (this.inVar()) {
-        if (typeof this.inVar().id == 'function') {
-            inVar = this.inVar().id();
+    var inputs = [];
+    this.inputs().forEach(function (entry) {
+        var saveEntry = JSON.parse(JSON.stringify(entry));
+        if (entry.value){
+            if ($.isFunction(entry.value)){
+                if (entry.value() instanceof GlobalVar){
+                    saveEntry.value = entry.value().id();
+                }
+                else{
+                    saveEntry.value = entry.value();
+                }
+            }
+            else{
+                saveEntry.value = entry.value;
+            }
         }
-    }
-    var outVar = null;
-    if (this.outVar()) {
-        if (typeof this.outVar().id == 'function') {
-            outVar = this.outVar().id();
+        else{
+            saveEntry.value = null;
         }
-    }
+
+        inputs.push(saveEntry);
+    });
+
+    var outputs = [];
+    this.outputs().forEach(function (entry) {
+        var saveEntry = JSON.parse(JSON.stringify(entry));
+        if (entry.value){
+            if ($.isFunction(entry.value)){
+                if (entry.value() instanceof GlobalVar){
+                    saveEntry.value = entry.value().id();
+                }
+                else{
+                    saveEntry.value = entry.value();
+                }
+            }
+            else{
+                saveEntry.value = entry.value;
+            }
+        }
+        else{
+            saveEntry.value = null;
+        }
+        outputs.push(saveEntry);
+    });
 
     return {
         type: this.type,
         operationType: this.operationType(),
         functionType: this.functionType(),
-        outputType: this.outputType(),
-        inVar: inVar,
-        outVar: outVar
+        inputs:inputs,
+        outputs:outputs
     };
 };
+
+
+
+ActionMathAndStats.prototype.type = "ActionMathAndStats";
+ActionMathAndStats.prototype.label = "Math & Statistics";
+ActionMathAndStats.prototype.operationTypes = ["Array Operations", "Linear Algebra", "Statistical Tests"];
+ActionMathAndStats.prototype.statisticalOerations = [
+
+];
+ActionMathAndStats.prototype.algebraOerations = [
+
+];
+ActionMathAndStats.prototype.arrayOperations = [
+
+    // with parameters
+    {   key: "variance",
+        name: 'variance',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"},
+            {name: "varianceSelection", dataFormats: ["scalar"], dataTypes:["boolean"], booleanText:'Use Sample Variance', formType:"boolean",relationGlobalVar:"cannotBeGlobalVar", required: false,value:false}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["scalar","array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true,value:null,formType:"array"}
+        ],
+        operation: "jStat.variance"
+    },
+
+    {     key: "stdev",
+        name: 'stdev',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"},
+            {name: "stdSelection", dataFormats: ["scalar"], dataTypes:["boolean"], booleanText:"Use Sample Standard Deviation", formType:"boolean",relationGlobalVar:"cannotBeGlobalVar", required: false,value:false}
+
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.stdev"
+    },
+
+
+    {   key: 'quantiles',
+        name: 'quantiles',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable",required: true, value:null,formType:"array"},
+            {name: "quantileSeparation", dataFormats: ["array"], dataTypes:["numeric"], formType:"array", relationGlobalVar:"mustBeVariable",required: true, value:null}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable",required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.quantiles"
+    },
+
+    {   key: "percentile",
+        name: 'percentile',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"},
+            {name: "percentileScore", dataFormats: ["scalar"], dataTypes:["numeric"],  minimumValue:0,maximumValue:1,relationGlobalVar:"canBeGlobalVar",required: true, value:0.5,formType:"numericInput"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.percentile"
+    },
+
+   {    key: "percentileOfScore",
+       name: 'percentileOfScore',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"},
+            {name: "percentileComparison", dataFormats: ["scalar"], dataTypes:["string"], selectionValues:['less or equal', 'less'],formType:"categorical", relationGlobalVar:"cannotBeGlobalVar", required: false, value:'less or equal'},
+            {name: "percentileScore", dataFormats: ["scalar"], dataTypes:["numeric"],  minimumValue:0,maximumValue:1,relationGlobalVar:"canBeGlobalVar",required: false, value:0.5,formType:"numericInput"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.percentileOfScore"
+    },
+
+    {    key: "histogram",
+        name: 'histogram',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"},
+            {name: "numberOfBins", dataFormats: ["scalar"], dataTypes:["numeric"],  minimumValue:0,maximumValue:Infinity,relationGlobalVar:"canBeGlobalVar",required: false, value:5,formType:"numericInput"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.histogram"
+    },
+
+    {     key: "covariance",
+        name: 'covariance',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"},
+            {name: "inputArray2", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.covariance"
+    },
+
+   {     key: "corrcoeff",
+       name: 'corrcoeff',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"},
+            {name: "inputArray2", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.corrcoeff"
+    },
+
+    {    key: "spearmancoeff",
+        name: 'spearmancoeff',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"},
+            {name: "inputArray2", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.spearmancoeff"
+    },
+    //////////////////////////////////////
+    // without parameters
+
+
+
+   {   key: "sum",
+       name: 'sum',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.sum"
+    },
+
+   {     key: "sumsqrd",
+       name: 'sumsqrd',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.sumsqrd"
+    },
+
+   {     key: "sumsqerr",
+       name: 'sumsqerr',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.sumsqerr"
+    },
+
+    {    key: "sumrow",
+        name: 'sumrow',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.sumrow"
+    },
+
+   {   key: "product",
+       name: 'product',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.product"
+    },
+
+    {    key: "min",
+        name: 'min',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.min"
+    },
+
+   {   key: "min",
+       name: 'min',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.min"
+    },
+
+   {    key: "max",
+       name: 'max',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.max"
+    },
+
+    {    key: "mean",
+        name: 'mean',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.mean"
+    },
+
+    {   key: "meansqerr",
+        name: 'meansqerr',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.meansqerr"
+    },
+
+    {   key: "geomean",
+        name: 'geomean',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.geomean"
+    },
+
+    {   key: "median",
+        name: 'median',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.median"
+    },
+
+    {    key: "cumsum",
+        name: 'cumsum',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.cumsum"
+
+    },
+
+    {    key: "cumprod",
+        name: 'cumprod',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.cumprod"
+    },
+
+    {    key: "diff",
+        name: 'diff',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.diff"
+    },
+
+    {    key: "rank",
+        name: 'rank',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.rank"
+    },
+
+    {   key: "mode",
+        name: 'mode',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.mode"
+    },
+
+    {    key: "range",
+        name: 'range',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.range"
+    },
+
+    {     key: "pooledvariance",
+        name: 'pooledvariance',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.pooledvariance"
+    },
+
+    {     key: "deviation",
+        name: 'deviation',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.deviation"
+
+    },
+
+    {     key: "pooledstdev",
+        name: 'pooledstdev',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.pooledstdev"
+    },
+
+    {     key: "meandev",
+        name: 'meandev',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.meandev"
+    },
+
+   {     key: "meddev",
+       name: 'meddev',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.meddev"
+    },
+
+    {     key: "skewness",
+        name: 'skewness',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.skewness"
+    },
+
+    {     key: "kurtosis",
+        name: 'kurtosis',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.kurtosis"
+    },
+
+   {     key: "coeffvar",
+       name: 'coeffvar',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.coeffvar"
+    },
+
+    {     key: "quartiles",
+        name: 'quartiles',
+        inputs:[
+            {name: "inputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        outputs:[
+            {name: "outputArray", dataFormats: ["array"], dataTypes:["numeric"],relationGlobalVar:"mustBeVariable", required: true, value:null,formType:"array"}
+        ],
+        operation: "jStat.quartiles"
+    }
+];
+
+
+
 
 
 
