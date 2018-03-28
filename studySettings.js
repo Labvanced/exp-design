@@ -30,6 +30,9 @@ var StudySettings = function (expData) {
     this.minWidth = ko.observable(800);
     this.minHeight = ko.observable(600);
 
+    // special device requirements:
+    this.isAudioRecEnabled = ko.observable(false);
+
     // number entered before checking the validity (min/max). gets updated after check.
     this.numPartEntered = ko.observable(expData.numPartOfJointExp());
 
@@ -138,6 +141,9 @@ StudySettings.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("minHeight")){
         this.minHeight(data.minHeight);
     }
+    if(data.hasOwnProperty('isAudioRecEnabled')) {
+        this.isAudioRecEnabled(data.isAudioRecEnabled);
+    }
     if (data.hasOwnProperty("participantConsent")){
         this.participantConsent(data.participantConsent);
     }
@@ -170,6 +176,7 @@ StudySettings.prototype.toJS = function() {
         minRes:this.minRes(),
         minWidth:this.minWidth(),
         minHeight:this.minHeight(),
+        isAudioRecEnabled: this.isAudioRecEnabled(),
         participantConsent:this.participantConsent()
     };
     return data;

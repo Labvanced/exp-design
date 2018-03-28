@@ -139,9 +139,8 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
     else if (actionType=="StartRecording") {
         console.log("StartRecording");
 
-        // Request permissions to record audio
-        navigator.mediaDevices.getUserMedia({audio: true}).then(function (stream) {
-            self.recorder = new MediaRecorder(stream);
+        if (player.microphone_stream) {
+            self.recorder = new MediaRecorder(player.microphone_stream);
 
             // Set record to <audio> when recording will be finished
             self.recorder.addEventListener('dataavailable', function (e) {
@@ -161,7 +160,7 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
 
             // Start recording
             self.recorder.start()
-        });
+        }
 
 /*
         function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
@@ -229,10 +228,10 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
         // Stop recording
         self.recorder.stop();
         // Remove “recording” icon from browser tab
-        self.recorder.stream.getTracks().forEach(function (i) {
+        /*self.recorder.stream.getTracks().forEach(function (i) {
                 i.stop();
             }
-        );
+        );*/
 
         /*
         self.mediaRecorder.stop();
