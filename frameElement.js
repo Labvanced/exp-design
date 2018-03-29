@@ -102,6 +102,12 @@ FrameElement.prototype.getActionTypes = function() {
     }
 };
 
+FrameElement.prototype.getTriggerTypes = function() {
+    if (this.content().getTriggerTypes) {
+        return this.content().getTriggerTypes();
+    }
+};
+
 FrameElement.prototype.executeAction = function(actionType) {
     if (this.content().executeAction) {
         this.content().executeAction(actionType)

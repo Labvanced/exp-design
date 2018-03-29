@@ -96,6 +96,10 @@ AudioRecordingElement.prototype.getActionTypes = function() {
     return AudioRecordingElement.prototype.actionTypes;
 };
 
+AudioRecordingElement.prototype.getTriggerTypes = function() {
+    return AudioRecordingElement.prototype.triggerTypes;
+};
+
 AudioRecordingElement.prototype.executeAction = function(actionType) {
     var self = this;
     if (actionType=="StartUpload") {
@@ -129,6 +133,7 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
                         self.variable().value().setValue(file_name);
                     }
                 }
+                $(self.parent).trigger("UploadComplete");
             }
 
             //var fileOfBlob = new File([this.recordedAudio()], newFileName+'.webm');
@@ -179,6 +184,7 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
                 this.mp3Recorder.getMp3Blob(function (blob) {
                     console.log("got mp3 blob");
                     self.recordedAudio(blob);
+                    $(self.parent).trigger("AudioRecordingFinished");
                 }, function (e) {
                     alert('We could not retrieve your message');
                     console.log(e);
@@ -188,6 +194,7 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
                 if (self.recorder) {
                     if (self.recorder.state == "recording") {
                         self.recorder.stop();
+                        $(self.parent).trigger("AudioRecordingFinished");
                     }
                 }
             }
