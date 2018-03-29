@@ -4005,19 +4005,19 @@ var ActionMathAndStats = function(event) {
     this.operationType = ko.observable('Array Operations');
     this.inputs = ko.observableArray([]);
     this.outputs = ko.observableArray([]);
-    this.functionType = ko.observable(ActionMathAndStats.prototype.arrayOperations[8].key); // sum as start value
+    this.functionType = ko.observable(ActionMathAndStats.prototype.arrayOperations[9].key); // sum as start value
 
 
     // computed
     this.currentFunctions = ko.computed(function(){
         if (self.operationType()== "Array Operations"){
-            return self.arrayOperations;
+            return ActionMathAndStats.prototype.arrayOperations;
         }
         else if(self.operationType()== "Linear Algebra"){
-            return self.algebraOerations;
+            return ActionMathAndStats.prototype.algebraOerations;
         }
         else if(self.operationType()== "Statistical Tests"){
-            return self.statisticalOerations;
+            return ActionMathAndStats.prototype.statisticalOerations;
         }
     });
 
@@ -4132,50 +4132,48 @@ ActionMathAndStats.prototype.run = function(triggerParams) {
     var self = this;
     var idx = this.getIndexById(this.functionType());
     if (idx!== null){
-        var data = this.currentFunctions()[idx];
-        if ($.isFunction(eval(data.operation))){
-            var inputData = [];
-            this.inputs().forEach(function (input) {
-                if($.isFunction(input.value)){
-                   var inp =  input.value();
-                }
-                else{
-                    var inp =  input.value;
-                }
-                if (inp instanceof GlobalVar){
-                    if (inp.value() instanceof GlobalVarValueArray){
-                        var inp =  inp.value().getValues();
-                    }
-                    else{
-                        var inp =  inp.value().toJS();
-                    }
-
-                }
-                if ($.isNumeric(inp)){
-                    inp = parseFloat(inp);
-                }
-                if (inp != null){
-                    inputData.push(inp);
-                }
-
-            });
-            if (inputData.length>0){
-                var outcome =  data.operation.apply(null, inputData);
-                var globalVarOutput = self.outputs()[0].value();
-                globalVarOutput.value().setValue(outcome); // ToDo  change outcome to more variables in the future
-
-                if (globalVarOutput.value() instanceof GlobalVarValueArray){
-                    self.testOutcome(globalVarOutput.value().getValues())
-                }
-                else{
-                    self.testOutcome(globalVarOutput.value().toJS())
-                }
+        var inputData = [];
+        this.inputs().forEach(function (input) {
+            if($.isFunction(input.value)){
+               var inp =  input.value();
             }
             else{
-                console.log("Warning: No input data specified for Math & Stats Action")
+                var inp =  input.value;
             }
+            if (inp instanceof GlobalVar){
+                if (inp.value() instanceof GlobalVarValueArray){
+                    var inp =  inp.value().getValues();
+                }
+                else{
+                    var inp =  inp.value().toJS();
+                }
 
+            }
+            if ($.isNumeric(inp)){
+                inp = parseFloat(inp);
+            }
+            if (inp != null){
+                inputData.push(inp);
+            }
+        });
+        var data = this.currentFunctions()[idx];
+        if (inputData.length>0 && $.isFunction(data.operation)){
+            var globalVarOutput = self.outputs()[0].value();// ToDo  change outcome to more variables in the future
+            var outcome =  data.operation.apply(null, inputData);
+            globalVarOutput.value().setValue(outcome);
+
+            if (globalVarOutput.value() instanceof GlobalVarValueArray){
+                self.testOutcome(globalVarOutput.value().getValues())
+            }
+            else{
+                self.testOutcome(globalVarOutput.value().toJS())
+            }
         }
+        else{
+            console.log("Warning: No input data specified for Math & Stats Action")
+        }
+
+
     }
 
 };
@@ -4309,7 +4307,7 @@ ActionMathAndStats.prototype.getIndexById = function(name) {
         return null
     }
 
-}
+};
 
 /**
  * load from a json object to deserialize the states.
@@ -4416,21 +4414,20 @@ ActionMathAndStats.prototype.arrayOperations = [
                 dataFormats: ["scalar"],
                 dataTypes: ["boolean"],
                 booleanText: 'Use Sample Variance',
-                formType: "boolean",
                 relationGlobalVar: "cannotBeGlobalVar",
                 required: false,
-                value: false
+                value: false,
+                formType: "boolean"
             }
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["scalar", "array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4457,22 +4454,21 @@ ActionMathAndStats.prototype.arrayOperations = [
                 dataFormats: ["scalar"],
                 dataTypes: ["boolean"],
                 booleanText: "Use Sample Standard Deviation",
-                formType: "boolean",
                 relationGlobalVar: "cannotBeGlobalVar",
                 required: false,
-                value: false
+                value: false,
+                formType: "boolean"
             }
 
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4495,13 +4491,13 @@ ActionMathAndStats.prototype.arrayOperations = [
                 formType: "array"
             },
             {
-                name: "quantileSeparation",
+                name: "inputArray2",
                 dataFormats: ["array"],
                 dataTypes: ["numeric"],
-                formType: "array",
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null
+                value: null,
+                formType: "array"
             }
         ],
         outputs: [
@@ -4511,8 +4507,7 @@ ActionMathAndStats.prototype.arrayOperations = [
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4547,13 +4542,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4575,16 +4569,6 @@ ActionMathAndStats.prototype.arrayOperations = [
                 formType: "array"
             },
             {
-                name: "percentileComparison",
-                dataFormats: ["scalar"],
-                dataTypes: ["string"],
-                selectionValues: ['less or equal', 'less'],
-                formType: "categorical",
-                relationGlobalVar: "cannotBeGlobalVar",
-                required: false,
-                value: 'less or equal'
-            },
-            {
                 name: "percentileScore",
                 dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
@@ -4594,17 +4578,26 @@ ActionMathAndStats.prototype.arrayOperations = [
                 required: false,
                 value: 0.5,
                 formType: "numericInput"
+            },
+            {
+                name: "percentileComparison",
+                dataFormats: ["scalar"],
+                dataTypes: ["string"],
+                selectionValues: ['less or equal', 'less'],
+                relationGlobalVar: "cannotBeGlobalVar",
+                required: false,
+                value: 'less or equal',
+                formType: "categorical"
             }
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4644,8 +4637,7 @@ ActionMathAndStats.prototype.arrayOperations = [
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4678,13 +4670,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4717,13 +4708,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4756,13 +4746,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4789,13 +4778,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4819,13 +4807,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4849,13 +4836,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4879,13 +4865,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4909,13 +4894,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4939,13 +4923,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -4953,35 +4936,6 @@ ActionMathAndStats.prototype.arrayOperations = [
         }
     },
 
-    {
-        key: "min",
-        name: 'min',
-        inputs: [
-            {
-                name: "inputArray",
-                dataFormats: ["array"],
-                dataTypes: ["numeric"],
-                relationGlobalVar: "mustBeVariable",
-                required: true,
-                value: null,
-                formType: "array"
-            }
-        ],
-        outputs: [
-            {
-                name: "outputArray",
-                dataFormats: ["array"],
-                dataTypes: ["numeric"],
-                relationGlobalVar: "mustBeVariable",
-                required: true,
-                value: null,
-                formType: "array"
-            }
-        ],
-        operation: function () {
-            return jStat.min.apply(null, arguments);
-        }
-    },
 
     {
         key: "max",
@@ -4999,13 +4953,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5029,13 +4982,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5059,13 +5011,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5089,13 +5040,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5119,13 +5069,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5154,8 +5103,7 @@ ActionMathAndStats.prototype.arrayOperations = [
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5185,8 +5133,7 @@ ActionMathAndStats.prototype.arrayOperations = [
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5215,8 +5162,7 @@ ActionMathAndStats.prototype.arrayOperations = [
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5245,8 +5191,7 @@ ActionMathAndStats.prototype.arrayOperations = [
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5270,13 +5215,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar","array"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5300,13 +5244,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5330,13 +5273,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5365,8 +5307,7 @@ ActionMathAndStats.prototype.arrayOperations = [
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5391,13 +5332,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5421,13 +5361,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5451,13 +5390,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5481,13 +5419,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5511,13 +5448,12 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             }
         ],
         operation: function () {
@@ -5541,13 +5477,13 @@ ActionMathAndStats.prototype.arrayOperations = [
         ],
         outputs: [
             {
-                name: "outputArray",
-                dataFormats: ["array"],
+                name: "output",
+                dataFormats: ["scalar"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
+
             }
         ],
         operation: function () {
@@ -5576,8 +5512,8 @@ ActionMathAndStats.prototype.arrayOperations = [
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
+
             }
         ],
         operation: function () {
