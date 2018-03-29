@@ -3130,7 +3130,7 @@ var ActionControlWebGazer = function(event) {
 
 
 ActionControlWebGazer.prototype.type = "ActionControlWebGazer";
-ActionControlWebGazer.prototype.label = "Eyetracker Controlflow";
+ActionControlWebGazer.prototype.label = "Control Eyetracking";
 ActionControlWebGazer.prototype.actionTypes = ["start","pause","end","clear"];
 
 
@@ -3385,7 +3385,7 @@ var ActionControlElement = function(event) {
 
 
 ActionControlElement.prototype.type = "ActionControlElement";
-ActionControlElement.prototype.label = "Control Element";
+ActionControlElement.prototype.label = "Control Recording Element";
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -4036,7 +4036,7 @@ ActionMathAndStats.prototype.resetValues = function(){
     // remove old variable references
     this.inputs().forEach(function (entry,idx) {
         if ($.isFunction(entry.value)){
-            if (entry.value()==GlobalVar){
+            if (entry.value() instanceof GlobalVar){
                 self.removeInVariable(idx);
             }
         }
@@ -4044,7 +4044,7 @@ ActionMathAndStats.prototype.resetValues = function(){
 
     this.outputs().forEach(function (entry,idx) {
         if ($.isFunction(entry.value)){
-            if (entry.value()==GlobalVar){
+            if (entry.value()instanceof GlobalVar){
                 self.removeOutVariable(idx);
             }
         }

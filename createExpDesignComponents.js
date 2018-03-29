@@ -1,6 +1,6 @@
 
-globalCountryData = null;
-globalLanguageData = null;
+var globalCountryData =  ko.observableArray([]);
+var globalLanguageData = ko.observableArray([]);
 
 var createExpDesignComponents = (function() {
     var expDesignComponentsLoaded = false;
@@ -120,8 +120,8 @@ var createExpDesignComponents = (function() {
                             expDesignComponentsLoaded = true;
 
                             // now load languages and countries:
-                            globalCountryData = ko.observableArray([]);
-                            globalLanguageData = ko.observableArray([]);
+                          //  globalCountryData = ko.observableArray([]);
+                          //  globalLanguageData = ko.observableArray([]);
                             $.ajax({
                                 url: "/api/1/countries",
                                 type: 'GET',
