@@ -392,11 +392,16 @@ OperandVariable.prototype.getValue = function(parameters) {
             var right = value.right.getValue();
 
             // convert to value if these are GlobalVarValueInstances:
-            if (left.hasOwnProperty('parentVar')){
-                left = left.toJS();
-            }
-            if (right.hasOwnProperty('parentVar')){
-                right = right.toJS();
+             if (left!=null){
+                 if (left.hasOwnProperty('parentVar')){
+                     left = left.toJS();
+                 }
+             }
+            if (right!=null){
+                if (right.hasOwnProperty('parentVar')){
+                    right = right.toJS();
+                }
+
             }
 
             if ($.isNumeric(right)){
@@ -416,7 +421,13 @@ OperandVariable.prototype.getValue = function(parameters) {
                 return left * right;
             }
             else if (value.op=="/") {
-                return left / right;
+                if (right ==0){  // in oder to avoid NaN
+                    return right;
+                }
+                else{
+                    return left / right;
+                }
+
             }
             else if (value.op=="%") {
                 return left % right;

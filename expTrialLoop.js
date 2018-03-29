@@ -884,7 +884,8 @@ ExpTrialLoop.prototype.getConditionFromFactorLevels = function(factorIndicies,fa
         var replacedConditionsPerCondGroup = {};
         var newConditions = presentedConditions.map(function (condition) {
             if (condition.isDeactivated()){
-                var condGroup = condition.getCondGroup();
+                var condGroups = condition.factorGroup.getFixedFactorConditions();
+                var condGroup = condition.getCondGroup(condGroups);
                 if (!(replacedConditionsPerCondGroup.hasOwnProperty(condGroup))) {
                     replacedConditionsPerCondGroup[condGroup] = [];
                 }
