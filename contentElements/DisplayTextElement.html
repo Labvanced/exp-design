@@ -17,7 +17,7 @@
                         <div data-bind="text: $index()+1"></div>
                     </td>
                     <td>
-                        <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: $rawData, allowedDatatypes: ['numeric','string','datetime'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
+                        <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: $rawData, allowedDatatypes: ['string','numeric','boolean','categorical','datetime','time','timer'],  allowedFormats: ['scalar','array'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
                     </td>
                 </tr>
                 </tbody>

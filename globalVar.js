@@ -107,10 +107,11 @@ GlobalVar.iconPerDataType = {
     'boolean': "/resources/icons/variables/boolean.svg",
     'categorical': "/resources/icons/variables/categorical.svg",
     'datetime': "/resources/icons/variables/datetime.svg",
-    'time': "/resources/icons/variables/datetime.svg",
-    'timer': "/resources/icons/variables/timer.svg",
+    'time': "/resources/icons/variables/timer.svg",
+    'timer': "/resources/icons/variables/stopwatch.svg",
     'file': "/resources/icons/variables/structure.svg",
     'structure': "/resources/icons/variables/structure.svg"
+
 };
 GlobalVar.iconArrayPerDataType = {
     'undefined': "/resources/icons/variables/array/structure.svg",
@@ -119,8 +120,8 @@ GlobalVar.iconArrayPerDataType = {
     'boolean': "/resources/icons/variables/array/boolean.svg",
     'categorical': "/resources/icons/variables/array/categorical.svg",
     'datetime': "/resources/icons/variables/array/datetime.svg",
-    'time': "/resources/icons/variables/array/datetime.svg",
-    'timer': "/resources/icons/variables/array/timer.svg",
+    'time': "/resources/icons/variables/array/timer.svg",
+    'timer': "/resources/icons/variables/array/stopwatch.svg",
     'file': "/resources/icons/variables/array/structure.svg",
     'structure': "/resources/icons/variables/array/structure.svg"
 };
