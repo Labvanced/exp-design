@@ -3385,7 +3385,7 @@ var ActionControlElement = function(event) {
 
 
 ActionControlElement.prototype.type = "ActionControlElement";
-ActionControlElement.prototype.label = "Control Element";
+ActionControlElement.prototype.label = "Control Content Element";
 
 /**
  * returns true if all settings are valid (used in the editor).

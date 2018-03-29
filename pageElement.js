@@ -80,6 +80,12 @@ PageElement.prototype.getActionTypes = function() {
     }
 };
 
+PageElement.prototype.getTriggerTypes = function() {
+    if (this.content().getTriggerTypes) {
+        return this.content().getTriggerTypes();
+    }
+};
+
 PageElement.prototype.executeAction = function(actionType) {
     if (this.content().executeAction) {
         this.content().executeAction(actionType)

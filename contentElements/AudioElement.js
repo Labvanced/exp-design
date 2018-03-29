@@ -47,9 +47,26 @@ AudioElement.prototype.iconPath = "/resources/icons/tools/tool_sound.svg";
 AudioElement.prototype.dataType =      [ "string", "string"];
 AudioElement.prototype.modifiableProp = ["file_id","file_orig_name"];
 AudioElement.prototype.numVarNamesRequired = 0;
+AudioElement.prototype.actionTypes = ["StartPlayback","StopPlayback"];
+AudioElement.prototype.triggerTypes = ["PlaybackStarted","PlaybackStopped"];
 
 AudioElement.prototype.switchPlayState = function() {
     this.currentlyPlaying(!this.currentlyPlaying());
+};
+
+AudioElement.prototype.executeAction = function(actionType) {
+    if (actionType=="StartPlayback") {
+        console.log("StartPlayback");
+        if (!this.currentlyPlaying()) {
+            this.currentlyPlaying(true);
+        }
+    }
+    else if (actionType=="StopPlayback") {
+        console.log("StopPlayback");
+        if (this.currentlyPlaying()) {
+            this.currentlyPlaying(false);
+        }
+    }
 };
 
 AudioElement.prototype.jumpToByFraction = function(fraction) {

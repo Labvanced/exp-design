@@ -1060,6 +1060,80 @@ TriggerVariableValueChanged.prototype.toJS = function() {
 ///////////////////////////
 
 
+var TriggerOnContentElement = function(event) {
+    this.event = event;
+
+    // serialized
+    this.target = ko.observable(null);
+    this.triggerType = ko.observable(null);
+
+    // not serialized:
+    this.cb = null;
+};
+
+TriggerOnContentElement.prototype.type = "TriggerOnContentElement";
+TriggerOnContentElement.prototype.label = "Content Element Triggers";
+
+TriggerOnContentElement.prototype.getParameterSpec = function() {
+    return [
+    ];
+};
+
+TriggerOnContentElement.prototype.isValid = function() {
+    if (this.event.trigger() && !(this.target()===null)){
+        return true;
+    }
+    else{
+        return false;
+    }
+};
+
+TriggerOnContentElement.prototype.setupOnPlayerFrame = function(playerFrame) {
+    var self = this;
+    this.cb = function () {
+        self.event.triggerActions([]);
+    };
+    $(this.target()).on(this.triggerType(), this.cb);
+};
+
+
+TriggerOnContentElement.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    $(this.target()).off(this.triggerType(), this.cb);
+    this.cb = null;
+};
+
+
+TriggerOnContentElement.prototype.setPointers = function(entitiesArr) {
+    this.target(entitiesArr.byId[this.target()]);
+};
+
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerOnContentElement.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+TriggerOnContentElement.prototype.fromJS = function(data) {
+    this.target(data.target);
+    this.triggerType(data.triggerType);
+    return this;
+};
+
+TriggerOnContentElement.prototype.toJS = function() {
+    var targetId = null;
+    if (this.target()) {
+        targetId = this.target().id();
+    }
+    return {
+        type: this.type,
+        target: targetId,
+        triggerType: this.triggerType()
+    };
+};
 
 ////////////////////////
 
