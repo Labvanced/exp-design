@@ -4165,8 +4165,9 @@ ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
         var inputs_orig = self.inputs();
         function_spec.inputs.forEach(function (entry, idx) {
             var inputObs = inputs_orig[idx];
-            if (inputObs().hasOwnProperty("globalVarId")) {
-                inputObs(entitiesArr.byId[inputObs().globalVarId]);
+            var inputVal = inputObs();
+            if (inputVal && inputVal.hasOwnProperty("globalVarId")) {
+                inputObs(entitiesArr.byId[inputVal.globalVarId]);
             }
         });
         this.inputs().forEach(function (entry, idx) {
@@ -4178,8 +4179,9 @@ ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
         var out_original = self.outputs();
         function_spec.outputs.forEach(function (entry, idx) {
             var outputObs = out_original[idx];
-            if (outputObs().hasOwnProperty("globalVarId")) {
-                outputObs(entitiesArr.byId[outputObs().globalVarId]);
+            var outputVal = outputObs();
+            if (outputVal && outputVal.hasOwnProperty("globalVarId")) {
+                outputObs(entitiesArr.byId[outputVal.globalVarId]);
             }
         });
         this.outputs().forEach(function (entry, idx) {

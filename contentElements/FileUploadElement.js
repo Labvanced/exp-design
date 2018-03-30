@@ -24,7 +24,7 @@ var FileUploadElement = function(expData) {
 };
 
 FileUploadElement.prototype.label = "File Upload";
-FileUploadElement.prototype.iconPath = "/resources/icons/openFile.svg";
+FileUploadElement.prototype.iconPath = "/resources/icons/upload.svg";
 FileUploadElement.prototype.dataType =      [ ];
 FileUploadElement.prototype.modifiableProp = [ ];
 FileUploadElement.prototype.initWidth = 300;
