@@ -1,0 +1,76 @@
+<template id='fileupload-editview-template'>
+    <div class="panel-body" style="height: 100%; margin-top: -10px">
+        <div class="taskeditor-header">File Upload</div>
+
+        <div>
+            <label style="cursor: pointer">Show Question Header: <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false"></label>
+        </div>
+
+        <div>
+            <label style="cursor: pointer">Required:<input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false"></label>
+
+        </div>
+        <hr>
+
+        <label>
+            Linked Variable:
+            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['file'], relinkCallback: relinkCallback } }"></span>
+        </label>
+
+        <br>
+        <span>Default Color: </span><input id="bgColorPickerDefault">
+        <span>Hover Color: </span><input id="bgColorPickerHover">
+
+    </div>
+</template>
+
+
+
+
+<template id='fileupload-preview-template'>
+    <!-- ko if: (dataModel.enableTitle())  -->
+    <div data-bind="component: {name : 'editable-text-element-preview', params : dataModel.questionText}"></div>
+    <br>
+    <!-- /ko -->
+    <div>
+
+        <input type="file" class="playerFileUploadInput" accept="*/*" style="display: none;" />
+        <div style="cursor: pointer;" class="upload-button" data-bind="style:{ backgroundColor: dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){dataModel.enableHighlight($element)}, mouseout: function(data,event){dataModel.disableHighlight($element)}}">
+            <span data-bind="component: {name : 'editable-text-element-preview', params : dataModel.buttonText}"></span>
+        </div>
+
+        <!-- ko if: dataModel.isRequired() -->
+        <span class="required-question-icon"  data-bind="tooltip:'.requiredInfoEditor'">
+            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+        </span>
+        <!-- /ko -->
+    </div>
+    <br>
+</template>
+
+
+
+
+<template id='fileupload-playerview-template'>
+    <!-- ko if: (dataModel.enableTitle())  -->
+    <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
+    <br>
+    <!-- /ko -->
+    <div>
+
+        <input type="file" data-bind="event: { change: function() { fileSelected($element.files[0]) } }" class="playerFileUploadInput" accept="*/*" style="display: none;" />
+        <div style="cursor: pointer;" class="upload-button" data-bind="click: chooseFile, style:{ backgroundColor: dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){dataModel.enableHighlight($element)}, mouseout: function(data,event){dataModel.disableHighlight($element)}}">
+            <span data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.buttonText}"></span>
+        </div>
+
+        <!-- ko if: dataModel.triedToSubmit() -->
+        <!-- ko ifnot: dataModel.dataIsValid() -->
+        <span class="required-question-icon"  data-bind="tooltip:'.requiredInfo'">
+            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+        </span>
+        <!-- /ko -->
+        <!-- /ko -->
+    </div>
+    <br>
+
+</template>

@@ -1,0 +1,104 @@
+<template id='audiorecording-editview-template'>
+    <div class="panel-body" style="height: 100%; margin-top: -10px">
+        <div class="taskeditor-header">Audio Recording</div>
+
+        <div>
+            <label style="cursor: pointer">Show Question Header: <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false"></label>
+        </div>
+
+        <div>
+            <label style="cursor: pointer">Required:<input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false"></label>
+        </div>
+        <hr>
+
+        <label>
+            Linked Variable:
+            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['file'], relinkCallback: relinkCallback } }"></span>
+        </label>
+        <br>
+
+        <span class="property-description">
+            Show Media Controls:
+            <input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showMediaControls">
+        </span>
+
+    </div>
+</template>
+
+
+
+
+<template id='audiorecording-preview-template'>
+    <!-- ko if: (dataModel.enableTitle())  -->
+    <div data-bind="component: {name : 'editable-text-element-preview', params : dataModel.questionText}"></div>
+    <br>
+    <!-- /ko -->
+    <div>
+
+        <!-- ko if: dataModel.isRequired() -->
+        <span class="required-question-icon"  data-bind="tooltip:'.requiredInfoEditor'">
+            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+        </span>
+        <!-- /ko -->
+
+        <audio preload="auto">
+            <source data-bind="attr: {src: dataModel.recordedAudio()}">
+            Your browser does not support HTML5 audio.
+        </audio>
+
+        <span data-bind="if: dataModel.showMediaControls" class="media-controls">
+
+            <span data-bind="if: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StopRecording');}"><img width="16" height="16" src="/resources/icons/player/stop-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StartRecording');}"><img width="16" height="16" src="/resources/icons/player/rec-button.svg"/></button></span>
+
+            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StopPlayback');}"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/player/stop-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StartPlayback');}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+
+            <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+
+        </span>
+
+    </div>
+    <br>
+</template>
+
+
+
+
+<template id='audiorecording-playerview-template'>
+    <!-- ko if: (dataModel.enableTitle())  -->
+    <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
+    <br>
+    <!-- /ko -->
+    <div data-bind="template: { afterRender: function(callbackTarget, callbackArgs) { callbackArgs.afterRenderInit($element); } }">
+
+        <!-- ko if: dataModel.triedToSubmit() -->
+        <!-- ko ifnot: dataModel.dataIsValid() -->
+        <span class="required-question-icon"  data-bind="tooltip:'.requiredInfo'">
+            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+        </span>
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <div id="audios-container"></div>
+
+        <audio preload="auto" class="recordedAudioPlaybackElem">
+            <source class="recordedAudioPlaybackSource">
+            Your browser does not support HTML5 audio.
+        </audio>
+
+        <span data-bind="if: dataModel.showMediaControls" class="media-controls">
+
+            <span data-bind="if: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StopRecording');}"><img width="16" height="16" src="/resources/icons/player/stop-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StartRecording');}"><img width="16" height="16" src="/resources/icons/player/rec-button.svg"/></button></span>
+
+            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StopPlayback');}"><img width="16" height="16" src="/resources/icons/player/stop-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StartPlayback');}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
+
+            <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+        </span>
+
+    </div>
+    <br>
+
+</template>
