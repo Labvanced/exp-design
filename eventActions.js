@@ -3269,7 +3269,7 @@ var ActionControlAV = function(event) {
 
 
 ActionControlAV.prototype.type = "ActionControlAV";
-ActionControlAV.prototype.label = "Play Audio or Video";
+ActionControlAV.prototype.label = "Control Audio/Video Obj";
 ActionControlAV.prototype.actionTypes = ["start","pause","end"];
 
 
