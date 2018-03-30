@@ -504,7 +504,7 @@ var ActionSetProp = function(event) {
 };
 
 ActionSetProp.prototype.type = "ActionSetProp";
-ActionSetProp.prototype.label = "Set Obj Property";
+ActionSetProp.prototype.label = "Set Object Property";
 
 ActionSetProp.prototype.isValid = function(){
     return true;
@@ -3269,7 +3269,7 @@ var ActionControlAV = function(event) {
 
 
 ActionControlAV.prototype.type = "ActionControlAV";
-ActionControlAV.prototype.label = "Control Audio or Video";
+ActionControlAV.prototype.label = "Play Audio or Video";
 ActionControlAV.prototype.actionTypes = ["start","pause","end"];
 
 
@@ -3385,7 +3385,7 @@ var ActionControlElement = function(event) {
 
 
 ActionControlElement.prototype.type = "ActionControlElement";
-ActionControlElement.prototype.label = "Control Recording Element";
+ActionControlElement.prototype.label = "Control Upload/Recording Obj";
 
 /**
  * returns true if all settings are valid (used in the editor).
