@@ -6,7 +6,7 @@
 
 /**
  * This action can record values (i.e. elementTag or reactiontime) into variables and sends them to the server.
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionRecord = function(event) {
@@ -223,7 +223,7 @@ ActionRecord.prototype.toJS = function() {
 
 /**
  * This action changes properties of a contentElement.
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionSetElementProp = function(event) {
@@ -504,7 +504,7 @@ var ActionSetProp = function(event) {
 };
 
 ActionSetProp.prototype.type = "ActionSetProp";
-ActionSetProp.prototype.label = "Set Obj Property";
+ActionSetProp.prototype.label = "Set Object Property";
 
 ActionSetProp.prototype.isValid = function(){
     return true;
@@ -1411,7 +1411,7 @@ ActionLoadFileIds.prototype.toJS = function() {
 /**
  * This action jumps to another frame or next trial.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionJumpTo = function(event) {
@@ -1629,7 +1629,7 @@ ActionJumpTo.prototype.toJS = function() {
 /**
  * This action jumps to another frame or next trial.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionDelayedActions = function(event) {
@@ -1827,7 +1827,7 @@ ActionDelayedActions.prototype.toJS = function() {
 /**
  * This action jumps to another frame or next trial.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionStartRepeatedActions = function(event) {
@@ -2084,7 +2084,7 @@ ActionStartRepeatedActions.prototype.toJS = function() {
 
 /**
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 
@@ -2291,7 +2291,7 @@ ActionConditional.prototype.toJS = function() {
 /**
  * This action jumps to another frame or next trial.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionIfCondition = function(event) {
@@ -2450,7 +2450,7 @@ ActionIfCondition.prototype.toJS = function() {
 /**
  * This action allows to change the value of a variable.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 
@@ -2585,7 +2585,7 @@ ActionSetVariable.prototype.toJS = function() {
 /**
  * This action allows to change the value of a variable.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionModifyVariable = function(event) {
@@ -2833,7 +2833,7 @@ ActionModifyVariable.prototype.toJS = function() {
 /**
  * This action sets the value of a variable to a random number drawn from a specified distribution.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionDrawRandomNumber = function(event) {
@@ -3117,7 +3117,7 @@ ActionDrawRandomNumber.prototype.toJS = function() {
 /**
  * This action allows to clear WG's data.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionControlWebGazer = function(event) {
@@ -3130,7 +3130,7 @@ var ActionControlWebGazer = function(event) {
 
 
 ActionControlWebGazer.prototype.type = "ActionControlWebGazer";
-ActionControlWebGazer.prototype.label = "Eyetracker Controlflow";
+ActionControlWebGazer.prototype.label = "Control Eyetracking";
 ActionControlWebGazer.prototype.actionTypes = ["start","pause","end","clear"];
 
 
@@ -3255,7 +3255,7 @@ ActionControlWebGazer.prototype.toJS = function() {
 /**
  * This action allows to start or stop the playback of audio or video elements.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionControlAV = function(event) {
@@ -3269,7 +3269,7 @@ var ActionControlAV = function(event) {
 
 
 ActionControlAV.prototype.type = "ActionControlAV";
-ActionControlAV.prototype.label = "Control Audio or Video";
+ActionControlAV.prototype.label = "Control Audio/Video Obj";
 ActionControlAV.prototype.actionTypes = ["start","pause","end"];
 
 
@@ -3366,6 +3366,107 @@ ActionControlAV.prototype.toJS = function() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+/////////////////////////////////////////////////  ActionControlAV/  //////////////////////////////////////////////
+
+/**
+ * This action allows to start or stop the playback of audio or video elements.
+ *
+ * @param {ExpEvent} event - the parent event
+ * @constructor
+ */
+var ActionControlElement = function(event) {
+    this.event = event;
+
+    // serialized
+    this.target = ko.observable(null);
+    this.actionType = ko.observable(null);
+
+};
+
+
+ActionControlElement.prototype.type = "ActionControlElement";
+ActionControlElement.prototype.label = "Control Upload/Recording Obj";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionControlElement.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It starts or stops
+ * playback of audio or video files in the player.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionControlElement.prototype.run = function(triggerParams) {
+    if (this.target()) {
+        var viewElem = player.currentFrame.frameView.viewElements.byId[this.target().id()];
+        if (viewElem) {
+            viewElem.dataModel.executeAction(this.actionType());
+        }
+    }
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionControlElement.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionControlElement.prototype.setPointers = function(entitiesArr) {
+    this.target(entitiesArr.byId[this.target()]);
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionControlElement.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionControlElement}
+ */
+ActionControlElement.prototype.fromJS = function(data) {
+    this.target(data.target);
+    this.actionType(data.actionType);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionControlElement.prototype.toJS = function() {
+    var targetId = null;
+    if (this.target()) {
+        targetId = this.target().id();
+    }
+    return {
+        type: this.type,
+        target: targetId,
+        actionType: this.actionType()
+    };
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 
@@ -3374,7 +3475,7 @@ ActionControlAV.prototype.toJS = function() {
 /**
  * This action allows to start or stop the playback of audio or video elements.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionControlTimer = function(event) {
@@ -3477,7 +3578,7 @@ ActionControlTimer.prototype.reAddEntities = function(entitiesArr) {
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {ActionControlAV}
+ * @returns {ActionControlTimer}
  */
 ActionControlTimer.prototype.fromJS = function(data) {
     this.timerVar(data.timerVar);
@@ -3513,7 +3614,7 @@ ActionControlTimer.prototype.toJS = function() {
 /**
  * This action end the session, sends end session time and leaves the fullscreen.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionEndSession = function(event) {
@@ -3610,7 +3711,7 @@ ActionEndSession.prototype.toJS = function() {
 /**
  * This action records the response from a questionaire element.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionRecordQuestionaireResponse = function(event) {
@@ -3704,7 +3805,7 @@ ActionRecordQuestionaireResponse.prototype.toJS = function() {
 /**
  * This action distributes variables to other players within a joint experiment.
  *
- * @param {Event} event - the parent event
+ * @param {ExpEvent} event - the parent event
  * @constructor
  */
 var ActionDistributeVariable = function(event) {
@@ -3890,12 +3991,1549 @@ ActionDistributeVariable.prototype.destroyOnPlayerFrame = function() {
 
 
 
+
+
+
+
+////////////////////////////////////////  ActionMathAndStats ///////////////////////////////////////////////////
+
+var ActionMathAndStats = function(event) {
+    var self = this;
+    this.event = event;
+
+    // serialized
+    this.operationType = ko.observable('Array Operations');
+    this.inputs = ko.observableArray([]);
+    this.outputs = ko.observableArray([]);
+    this.functionType = ko.observable(ActionMathAndStats.prototype.arrayOperations[9].key); // sum as start value
+
+
+    // computed
+    this.currentFunctions = ko.computed(function(){
+        if (self.operationType()== "Array Operations"){
+            return ActionMathAndStats.prototype.arrayOperations;
+        }
+        else if(self.operationType()== "Linear Algebra"){
+            return ActionMathAndStats.prototype.algebraOerations;
+        }
+        else if(self.operationType()== "Statistical Tests"){
+            return ActionMathAndStats.prototype.statisticalOerations;
+        }
+    });
+
+    // not serialized
+    this.backRefsIn = {};
+    this.backRefsOut ={};
+
+    this.resetValues();
+    this.testOutcome = ko.observable(null);
+
+};
+
+ActionMathAndStats.prototype.resetValues = function(){
+    var self = this;
+
+    // remove old variable references
+    this.inputs().forEach(function (entry,idx) {
+        if ($.isFunction(entry.value)){
+            if (entry.value() instanceof GlobalVar){
+                self.removeInVariable(idx);
+            }
+        }
+    });
+
+    this.outputs().forEach(function (entry,idx) {
+        if ($.isFunction(entry.value)){
+            if (entry.value()instanceof GlobalVar){
+                self.removeOutVariable(idx);
+            }
+        }
+    });
+
+    // reset values
+    var idx = this.getIndexById(this.functionType());
+    if (idx!== null){
+        var data = this.currentFunctions()[idx];
+        var inp = [];
+        data.inputs.forEach(function (entry) {
+            inp.push(entry);
+            if (!($.isFunction(entry.value))){
+                entry.value = ko.observable(entry.value);
+            }
+        });
+        this.inputs(inp);
+
+
+        var out = [];
+        data.outputs.forEach(function (entry) {
+            out.push(entry);
+            if (!($.isFunction(entry.value))){
+                entry.value = ko.observable(entry.value);
+            }
+        });
+        this.outputs(out);
+    }
+    else{
+        this.inputs([]);
+        this.outputs([]);
+    }
+
+};
+
+ActionMathAndStats.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionMathAndStats.prototype.setInVarBackRef = function(idx){
+    if (this.inputs()[idx].value() instanceof GlobalVar){
+        this.backRefsIn[idx] =this.inputs()[idx].value().addBackRef(this, this.event, false, true, 'math & statistics');
+    }
+
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionMathAndStats.prototype.setOutVarBackRef = function(idx){
+    if (this.outputs()[idx].value() instanceof GlobalVar){
+        this.backRefsOut[idx] = this.outputs()[idx].value().addBackRef(this, this.event, false, true, 'math & statistics');
+    }
+};
+
+
+
+
+ActionMathAndStats.prototype.removeInVariable = function(idx){
+    if (this.inputs()[idx].value() instanceof GlobalVar && this.backRefsIn[idx]){
+        this.inputs()[idx].value().removeBackRef(this.backRefsIn[idx]);
+        delete this.backRefsIn[idx]
+    }
+};
+
+ActionMathAndStats.prototype.removeOutVariable = function(idx){
+    if (this.outputs()[idx].value() instanceof GlobalVar && this.backRefsOut[idx]){
+        this.outputs()[idx].value().removeBackRef(this.backRefsOut[idx]);
+        delete this.backRefsOut[idx]
+    }
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionMathAndStats.prototype.run = function(triggerParams) {
+    var self = this;
+    var idx = this.getIndexById(this.functionType());
+    if (idx!== null){
+        var inputData = [];
+        this.inputs().forEach(function (input) {
+            if($.isFunction(input.value)){
+               var inp =  input.value();
+            }
+            else{
+                var inp =  input.value;
+            }
+            if (inp instanceof GlobalVar){
+                if (inp.value() instanceof GlobalVarValueArray){
+                    var inp =  inp.value().getValues();
+                }
+                else{
+                    var inp =  inp.value().toJS();
+                }
+
+            }
+            if ($.isNumeric(inp)){
+                inp = parseFloat(inp);
+            }
+            if (inp != null){
+                inputData.push(inp);
+            }
+        });
+        var data = this.currentFunctions()[idx];
+        if (inputData.length>0 && $.isFunction(data.operation)){
+            var globalVarOutput = self.outputs()[0].value();// ToDo  change outcome to more variables in the future
+            var outcome =  data.operation.apply(null, inputData);
+            globalVarOutput.value().setValue(outcome);
+
+            if (globalVarOutput.value() instanceof GlobalVarValueArray){
+                self.testOutcome(globalVarOutput.value().getValues())
+            }
+            else{
+                self.testOutcome(globalVarOutput.value().toJS())
+            }
+        }
+        else{
+            console.log("Warning: No input data specified for Math & Stats Action")
+        }
+
+
+    }
+
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionMathAndStats.prototype.destroyOnPlayerFrame = function(playerFrame) {
+
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
+
+    var self = this;
+    this.inputs().forEach(function (entry,idx) {
+        if (!($.isFunction(entry.value))){
+            if (entry.relationGlobalVar == "mustBeVariable"){
+                entry.value = ko.observable(entitiesArr.byId[entry.value]);
+                if (entry.value() instanceof GlobalVar){
+                    self.setInVarBackRef(idx);
+                }
+            }
+            else{
+                entry.value = ko.observable(entry.value);
+            }
+        }
+    });
+
+
+    this.outputs().forEach(function (entry,idx) {
+        if (!($.isFunction(entry.value))){
+            if (entry.relationGlobalVar == "mustBeVariable"){
+                entry.value = ko.observable(entitiesArr.byId[entry.value]);
+                if (entry.value() instanceof GlobalVar){
+                    self.setOutVarBackRef(idx);
+                }
+            }
+            else{
+                entry.value = ko.observable(entry.value);
+            }
+        }
+    });
+
+    // Set back Refs
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionMathAndStats.prototype.reAddEntities = function(entitiesArr) {
+
+    this.inputs().forEach(function (entry) {
+        if ($.isFunction(entry.value)){
+            if (entry.relationGlobalVar == "mustBeVariable" && entry.value() instanceof GlobalVar ){
+                if (!entitiesArr.byId.hasOwnProperty(entry.value().id())) {
+                    entitiesArr.push(entry.value());
+                }
+            }
+        }
+
+    });
+
+    this.outputs().forEach(function (entry) {
+        if ($.isFunction(entry.value)){
+            if (entry.relationGlobalVar == "mustBeVariable" && entry.value() instanceof GlobalVar){
+                if (!entitiesArr.byId.hasOwnProperty(entry.value().id())) {
+                    entitiesArr.push(entry.value());
+                }
+            }
+        }
+
+    });
+
+};
+
+ActionMathAndStats.prototype.getIndexByName = function(name,inputOrOutput) {
+    if (inputOrOutput =="input"){
+        var vals = this.inputs();
+    }
+    else if(inputOrOutput =="output"){
+        var vals = this.outputs();
+    }
+    var i = 0;
+    var found = false;
+    while (found == false && i<vals.length){
+        var val = vals[i];
+        if (val.name == name){
+            var found = true;
+        }
+        else{
+            i++;
+        }
+    }
+    return i;
+};
+
+
+ActionMathAndStats.prototype.getIndexById = function(name) {
+    if (name){
+        var i = 0;
+        var found = false;
+        var data = this.currentFunctions();
+        while (found == false && i<data.length){
+            var val = data[i];
+            if (val.name == name){
+                var found = true;
+            }
+            else{
+                i++;
+            }
+        }
+        if (found == true){
+            return i;
+        }
+        else{
+            return null
+        }
+
+    }
+    else{
+        return null
+    }
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionModifyArray}
+ */
+ActionMathAndStats.prototype.fromJS = function(data) {
+    this.inputs(data.inputs);
+    this.outputs(data.outputs);
+    this.operationType(data.operationType);
+    this.functionType(data.functionType);
+
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionMathAndStats.prototype.toJS = function() {
+    var inputs = [];
+    this.inputs().forEach(function (entry) {
+        var saveEntry = JSON.parse(JSON.stringify(entry));
+        if (entry.value){
+            if ($.isFunction(entry.value)){
+                if (entry.value() instanceof GlobalVar){
+                    saveEntry.value = entry.value().id();
+                }
+                else{
+                    saveEntry.value = entry.value();
+                }
+            }
+            else{
+                saveEntry.value = entry.value;
+            }
+        }
+        else{
+            saveEntry.value = null;
+        }
+
+        inputs.push(saveEntry);
+    });
+
+    var outputs = [];
+    this.outputs().forEach(function (entry) {
+        var saveEntry = JSON.parse(JSON.stringify(entry));
+        if (entry.value){
+            if ($.isFunction(entry.value)){
+                if (entry.value() instanceof GlobalVar){
+                    saveEntry.value = entry.value().id();
+                }
+                else{
+                    saveEntry.value = entry.value();
+                }
+            }
+            else{
+                saveEntry.value = entry.value;
+            }
+        }
+        else{
+            saveEntry.value = null;
+        }
+        outputs.push(saveEntry);
+    });
+
+    return {
+        type: this.type,
+        operationType: this.operationType(),
+        functionType: this.functionType(),
+        inputs:inputs,
+        outputs:outputs
+    };
+};
+
+
+
+ActionMathAndStats.prototype.type = "ActionMathAndStats";
+ActionMathAndStats.prototype.label = "Math & Statistics";
+ActionMathAndStats.prototype.operationTypes = ["Array Operations", "Linear Algebra", "Statistical Tests"];
+ActionMathAndStats.prototype.statisticalOerations = [
+
+];
+ActionMathAndStats.prototype.algebraOerations = [
+
+];
+ActionMathAndStats.prototype.arrayOperations = [
+
+    // with parameters
+    {
+        key: "variance",
+        name: 'variance',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            },
+            {
+                name: "varianceSelection",
+                dataFormats: ["scalar"],
+                dataTypes: ["boolean"],
+                booleanText: 'Use Sample Variance',
+                relationGlobalVar: "cannotBeGlobalVar",
+                required: false,
+                value: false,
+                formType: "boolean"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.variance.apply(null, arguments)
+        }
+
+    },
+
+    {
+        key: "stdev",
+        name: 'stdev',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            },
+            {
+                name: "stdSelection",
+                dataFormats: ["scalar"],
+                dataTypes: ["boolean"],
+                booleanText: "Use Sample Standard Deviation",
+                relationGlobalVar: "cannotBeGlobalVar",
+                required: false,
+                value: false,
+                formType: "boolean"
+            }
+
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.stdev.apply(null, arguments)
+        }
+    },
+
+
+    {
+        key: 'quantiles',
+        name: 'quantiles',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            },
+            {
+                name: "inputArray2",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "outputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.quantiles.apply(null, arguments)
+        }
+    },
+
+    {
+        key: "percentile",
+        name: 'percentile',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            },
+            {
+                name: "percentileScore",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                minimumValue: 0,
+                maximumValue: 1,
+                relationGlobalVar: "canBeGlobalVar",
+                required: true,
+                value: 0.5,
+                formType: "numericInput"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.percentile.apply(null, arguments)
+        }
+    },
+
+    {
+        key: "percentileOfScore",
+        name: 'percentileOfScore',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            },
+            {
+                name: "percentileScore",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                minimumValue: 0,
+                maximumValue: 1,
+                relationGlobalVar: "canBeGlobalVar",
+                required: false,
+                value: 0.5,
+                formType: "numericInput"
+            },
+            {
+                name: "percentileComparison",
+                dataFormats: ["scalar"],
+                dataTypes: ["string"],
+                selectionValues: ['less or equal', 'less'],
+                relationGlobalVar: "cannotBeGlobalVar",
+                required: false,
+                value: 'less or equal',
+                formType: "categorical"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.percentileOfScore.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "histogram",
+        name: 'histogram',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            },
+            {
+                name: "numberOfBins",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                minimumValue: 0,
+                maximumValue: Infinity,
+                relationGlobalVar: "canBeGlobalVar",
+                required: false,
+                value: 5,
+                formType: "numericInput"
+            }
+        ],
+        outputs: [
+            {
+                name: "outputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.histogram.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "covariance",
+        name: 'covariance',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            },
+            {
+                name: "inputArray2",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.covariance.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "corrcoeff",
+        name: 'corrcoeff',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            },
+            {
+                name: "inputArray2",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.corrcoeff.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "spearmancoeff",
+        name: 'spearmancoeff',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            },
+            {
+                name: "inputArray2",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.spearmancoeff.apply(null, arguments);
+        }
+    },
+    //////////////////////////////////////
+    // without parameters
+
+
+    {
+        key: "sum",
+        name: 'sum',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.sum.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "sumsqrd",
+        name: 'sumsqrd',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.sumsqrd.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "sumsqerr",
+        name: 'sumsqerr',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.sumsqerr.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "sumrow",
+        name: 'sumrow',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.sumrow.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "product",
+        name: 'product',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.product.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "min",
+        name: 'min',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.min.apply(null, arguments);
+        }
+    },
+
+
+    {
+        key: "max",
+        name: 'max',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.max.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "mean",
+        name: 'mean',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.mean.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "meansqerr",
+        name: 'meansqerr',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.meansqerr.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "geomean",
+        name: 'geomean',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.geomean.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "median",
+        name: 'median',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.median.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "cumsum",
+        name: 'cumsum',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "outputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.cumsum.apply(null, arguments);
+        }
+
+    },
+
+    {
+        key: "cumprod",
+        name: 'cumprod',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "outputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.cumprod.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "diff",
+        name: 'diff',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "outputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.diff.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "rank",
+        name: 'rank',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "outputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.rank.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "mode",
+        name: 'mode',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar","array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.mode.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "range",
+        name: 'range',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.range.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "pooledvariance",
+        name: 'pooledvariance',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.pooledvariance.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "deviation",
+        name: 'deviation',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "outputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.deviation.apply(null, arguments);
+        }
+
+    },
+
+    {
+        key: "pooledstdev",
+        name: 'pooledstdev',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.pooledstdev.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "meandev",
+        name: 'meandev',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.meandev.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "meddev",
+        name: 'meddev',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.meddev.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "skewness",
+        name: 'skewness',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.skewness.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "kurtosis",
+        name: 'kurtosis',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            return jStat.kurtosis.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "coeffvar",
+        name: 'coeffvar',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+
+            }
+        ],
+        operation: function () {
+            return jStat.coeffvar.apply(null, arguments);
+        }
+    },
+
+    {
+        key: "quartiles",
+        name: 'quartiles',
+        inputs: [
+            {
+                name: "inputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+                formType: "array"
+            }
+        ],
+        outputs: [
+            {
+                name: "outputArray",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+
+            }
+        ],
+        operation: function () {
+            return jStat.quartiles.apply(null, arguments);
+        }
+    }
+];
+
+
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Factory method that creates a new action based on the given action type.
  *
- * @param {Event} event - the parent event of the new action.
+ * @param {ExpEvent} event - the parent event of the new action.
  * @param {string} type - the type of the Action (i.e. "ActionRecordQuestionaireResponse")
  * @returns {Action}
  */

@@ -7,12 +7,12 @@
  * @param {FrameData | PageData} parent - the frame or page where this event is defined.
  * @constructor
  */
-var Event= function(parent) {
+var ExpEvent = function(parent) {
     this.parent = parent;
 
     var self = this;
     // serialized
-    this.type = "Event";
+    this.type = "ExpEvent";
     this.trigger = ko.observable(null);
     this.actions = ko.observableArray([]);
     this.name =  ko.observable(null);
@@ -32,20 +32,20 @@ var Event= function(parent) {
  * @param {number} index
  */
 // TODO: unused
-Event.prototype.deleteAction = function(index) {
+ExpEvent.prototype.deleteAction = function(index) {
     this.actions.splice(index, 1);
 };
 
 
-Event.prototype.moveActionDown = function(index,parent) {
+ExpEvent.prototype.moveActionDown = function(index, parent) {
     this.moveAction(index,"Down",parent.parent);
 };
 
-Event.prototype.moveActionUp = function(index,parent) {
+ExpEvent.prototype.moveActionUp = function(index, parent) {
     this.moveAction(index,"Up",parent.parent);
 };
 
-Event.prototype.moveAction = function(index,UpOrDown,subElement) {
+ExpEvent.prototype.moveAction = function(index, UpOrDown, subElement) {
     //var elem = this.dataModel.elements()[index];
     if (subElement != undefined){
          var actions = subElement.subActions.slice();
@@ -81,7 +81,7 @@ Event.prototype.moveAction = function(index,UpOrDown,subElement) {
  * the event is triggered via this function.
  * @param parameters
  */
-Event.prototype.triggerActions = function(parameters) {
+ExpEvent.prototype.triggerActions = function(parameters) {
     var actions = this.actions();
     for (var i=0; i<actions.length; i++) {
         actions[i].run(parameters);
@@ -91,7 +91,7 @@ Event.prototype.triggerActions = function(parameters) {
 /**
  * recursively fill arr with all nested sub actions
  */
-Event.prototype.getAllActions = function(arr) {
+ExpEvent.prototype.getAllActions = function(arr) {
     var actions = this.actions();
     for (var i=0; i<actions.length; i++) {
         arr.push(actions[i]);
@@ -106,7 +106,7 @@ Event.prototype.getAllActions = function(arr) {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-Event.prototype.setupOnPlayerFrame = function(playerFrame) {
+ExpEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
     this.trigger().setupOnPlayerFrame(playerFrame);
     var actions = this.actions();
     for (var i = 0; i < actions.length; i++){
@@ -124,7 +124,7 @@ Event.prototype.setupOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-Event.prototype.setPointers = function(entitiesArr) {
+ExpEvent.prototype.setPointers = function(entitiesArr) {
     this.trigger().setPointers(entitiesArr);
 
     var actions = this.actions();
@@ -161,7 +161,7 @@ Event.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-Event.prototype.reAddEntities = function(entitiesArr) {
+ExpEvent.prototype.reAddEntities = function(entitiesArr) {
     if (this.trigger() && this.trigger().reAddEntities) {
         this.trigger().reAddEntities(entitiesArr);
     }
@@ -175,9 +175,9 @@ Event.prototype.reAddEntities = function(entitiesArr) {
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
- * @returns {Event}
+ * @returns {ExpEvent}
  */
-Event.prototype.fromJS = function(data) {
+ExpEvent.prototype.fromJS = function(data) {
     var self = this;
 
     //this.id(data.id);
@@ -208,7 +208,7 @@ Event.prototype.fromJS = function(data) {
     return this;
 };
 
-Event.prototype.requirementConverter = function(data) {
+ExpEvent.prototype.requirementConverter = function(data) {
     var requirement = requirementFactory(this, data.requirement.type);
     requirement.fromJS(data.requirement);
 
@@ -227,7 +227,7 @@ Event.prototype.requirementConverter = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-Event.prototype.toJS = function() {
+ExpEvent.prototype.toJS = function() {
     var actions = this.actions();
     var actionData = [];
     for (var i=0; i<actions.length; i++) {
@@ -248,7 +248,7 @@ Event.prototype.toJS = function() {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-Event.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ExpEvent.prototype.destroyOnPlayerFrame = function(playerFrame) {
     this.trigger().destroyOnPlayerFrame(playerFrame);
     var actions = this.actions();
     for (var i = 0; i < actions.length; i++){

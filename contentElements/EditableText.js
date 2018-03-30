@@ -24,6 +24,7 @@ EditableTextElement.prototype.label = "EditableText";
 EditableTextElement.prototype.iconPath = "/resources/icons/tools/tool_text.svg";
 EditableTextElement.prototype.modifiableProp = ["rawText"];
 EditableTextElement.prototype.dataType =  ["string"];
+EditableTextElement.prototype.numVarNamesRequired = 0;
 
 
 EditableTextElement.prototype.reLinkVar = function(oldVar,newVar) {

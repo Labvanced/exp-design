@@ -74,6 +74,12 @@ ko.components.register('contentElementPreview', {
             else if (contentElement instanceof ProgressBarElement) {
                 elem = $("<div data-bind='component: {name : \"progress-bar-preview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof FileUploadElement) {
+                elem = $("<div data-bind='component: {name : \"fileupload-preview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof AudioRecordingElement) {
+                elem = $("<div data-bind='component: {name : \"audiorecording-preview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
             return viewModel;
         }
@@ -158,6 +164,12 @@ ko.components.register('contentElementPlayerview', {
             else if (contentElement instanceof ProgressBarElement) {
                 elem = $("<div data-bind='component: {name : \"progress-bar-playerview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof FileUploadElement) {
+                elem = $("<div data-bind='component: {name : \"fileupload-playerview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof AudioRecordingElement) {
+                elem = $("<div data-bind='component: {name : \"audiorecording-playerview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
 
             return viewModel;
@@ -241,6 +253,12 @@ ko.components.register('contentElementEditview', {
             }
             else if (contentElement instanceof ProgressBarElement) {
                 elem = $("<div data-bind='component: {name : \"progress-bar-editview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof FileUploadElement) {
+                elem = $("<div data-bind='component: {name : \"fileupload-editview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof AudioRecordingElement) {
+                elem = $("<div data-bind='component: {name : \"audiorecording-editview\", params : $data.contentElement}'></div>");
             }
             $(divElem).append(elem);
 

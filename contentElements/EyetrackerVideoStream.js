@@ -12,11 +12,12 @@ var EyetrackerVideoStream = function(expData) {
 };
 
 EyetrackerVideoStream.prototype.label = "EyetrackerVideoStream";
-EyetrackerVideoStream.prototype.iconPath = "/resources/icons/tools/tool_text.svg";
+EyetrackerVideoStream.prototype.iconPath = "/resources/features/technology.svg";
 EyetrackerVideoStream.prototype.dataType =      [ ];
 EyetrackerVideoStream.prototype.modifiableProp = [ ];
 EyetrackerVideoStream.prototype.initWidth = 280;
 EyetrackerVideoStream.prototype.initHeight = 240;
+EyetrackerVideoStream.prototype.numVarNamesRequired = 0;
 
 
 EyetrackerVideoStream.prototype.init = function() {

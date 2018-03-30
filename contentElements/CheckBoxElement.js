@@ -30,6 +30,7 @@ CheckBoxElement.prototype.dataType =      [ ];
 CheckBoxElement.prototype.modifiableProp = [ ];
 CheckBoxElement.prototype.initWidth = 180;
 CheckBoxElement.prototype.initHeight = 90;
+CheckBoxElement.prototype.numVarNamesRequired = 1;
 
 CheckBoxElement.prototype.init = function(variableName) {
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));

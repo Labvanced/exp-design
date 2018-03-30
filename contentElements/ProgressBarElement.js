@@ -22,6 +22,7 @@ ProgressBarElement.prototype.modifiableProp = ["progressValue"];
 ProgressBarElement.prototype.dataType =      [ "numeric"];
 ProgressBarElement.prototype.initWidth = 500;
 ProgressBarElement.prototype.initHeight = 40;
+ProgressBarElement.prototype.numVarNamesRequired = 0;
 
 
 ProgressBarElement.prototype.init = function() {

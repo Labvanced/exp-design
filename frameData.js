@@ -54,7 +54,7 @@ FrameData.prototype.dispose = function() {
 FrameData.prototype.deleteChildEntity = function(entity) {
     var self = this;
     var obsArr;
-    if (entity instanceof Event) {
+    if (entity instanceof ExpEvent) {
         obsArr = this.events;
     }
     else if (entity instanceof GlobalVar) {
@@ -81,7 +81,7 @@ FrameData.prototype.deleteChildEntity = function(entity) {
 
 FrameData.prototype.copyChildEntity = function(entity) {
     var obsArr;
-    if (entity instanceof Event) {
+    if (entity instanceof ExpEvent) {
         obsArr = this.events;
     }
     else if (entity instanceof GlobalVar) {
@@ -93,7 +93,7 @@ FrameData.prototype.copyChildEntity = function(entity) {
     var index = obsArr.indexOf(entity);
     var entityCopy = entityFactory(entity.toJS(), this.expData);
 
-    if (!(entityCopy instanceof Event)) {
+    if (!(entityCopy instanceof ExpEvent)) {
         entityCopy.id(guid());
     }
 
@@ -343,7 +343,7 @@ FrameData.prototype.fromJS = function(data) {
         this.syncFrame(data.syncFrame);
     }
     this.events(jQuery.map( data.events, function( eventData ) {
-        return (new Event(self)).fromJS(eventData);
+        return (new ExpEvent(self)).fromJS(eventData);
     } ));
     this.elements(data.elements);
     this.localWorkspaceVars(data.localWorkspaceVars);

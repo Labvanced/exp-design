@@ -6,7 +6,7 @@
 /**
  * This class stores several subrequirements and combines them with a logical OR operation.
  *
- * @param {Event} event - the parent event where this requirements is used.
+ * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
 var RequirementOR = function(event) {
@@ -109,7 +109,7 @@ RequirementOR.prototype.toJS = function() {
 /**
  * This class stores several subrequirements and combines them with a logical AND operation.
  *
- * @param {Event} event - the parent event where this requirements is used.
+ * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
 var RequirementAND = function(event) {
@@ -215,7 +215,7 @@ RequirementAND.prototype.toJS = function() {
 /**
  * This class is a requirement that checks a boolean expression.
  *
- * @param {Event} event - the parent event where this requirements is used.
+ * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
 var RequirementVariableHasValue = function(event) {
@@ -349,7 +349,7 @@ RequirementVariableHasValue.prototype.toJS = function() {
  * This class represents an operand that can be used in logical or boolean expressions. The operand could be either a
  * globalVar, but also object properties or trigger parameters or constants.
  *
- * @param {Event} event - the parent event where this requirements is used.
+ * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
 var OperandVariable = function(event) {
@@ -392,11 +392,16 @@ OperandVariable.prototype.getValue = function(parameters) {
             var right = value.right.getValue();
 
             // convert to value if these are GlobalVarValueInstances:
-            if (left.hasOwnProperty('parentVar')){
-                left = left.toJS();
-            }
-            if (right.hasOwnProperty('parentVar')){
-                right = right.toJS();
+             if (left!=null){
+                 if (left.hasOwnProperty('parentVar')){
+                     left = left.toJS();
+                 }
+             }
+            if (right!=null){
+                if (right.hasOwnProperty('parentVar')){
+                    right = right.toJS();
+                }
+
             }
 
             if ($.isNumeric(right)){
@@ -416,7 +421,13 @@ OperandVariable.prototype.getValue = function(parameters) {
                 return left * right;
             }
             else if (value.op=="/") {
-                return left / right;
+                if (right ==0){  // in oder to avoid NaN
+                    return right;
+                }
+                else{
+                    return left / right;
+                }
+
             }
             else if (value.op=="%") {
                 return left % right;
@@ -624,7 +635,7 @@ OperandVariable.prototype.toJS = function() {
 /**
  * This class represents a specific property of a specific stimulus element. It can be used as an operand variable.
  *
- * @param {Event} event - the parent event where this is used.
+ * @param {ExpEvent} event - the parent event where this is used.
  * @constructor
  */
 var RefToObjectProperty = function(event) {
@@ -727,7 +738,7 @@ RefToObjectProperty.prototype.toJS = function() {
 /**
  * Factory method that creates a new requirement based on the given requirement type.
  *
- * @param {Event} event - the parent event of the new action.
+ * @param {ExpEvent} event - the parent event of the new action.
  * @param {string} type - the type of the Requirement (i.e. "RequirementOR")
  * @returns {Requirement}
  */

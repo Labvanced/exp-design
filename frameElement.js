@@ -96,6 +96,24 @@ FrameElement.prototype.getAllModifiers = function(modifiersArr) {
     }
 };
 
+FrameElement.prototype.getActionTypes = function() {
+    if (this.content().getActionTypes) {
+        return this.content().getActionTypes();
+    }
+};
+
+FrameElement.prototype.getTriggerTypes = function() {
+    if (this.content().getTriggerTypes) {
+        return this.content().getTriggerTypes();
+    }
+};
+
+FrameElement.prototype.executeAction = function(actionType) {
+    if (this.content().executeAction) {
+        this.content().executeAction(actionType)
+    }
+};
+
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use

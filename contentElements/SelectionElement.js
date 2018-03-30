@@ -20,41 +20,36 @@ var SelectionElement = function(expData) {
 
 
     ///// not serialized
-    this.countryData= ko.observableArray([]);  // general country list
-    this.languageData= ko.observableArray([]); // general language list
-
     this.selected = ko.observable(false);
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
 
 
-    $.ajax({
-        url: "/api/1/countries",
-        type: 'GET',
-        async: true
-    }).done(function (result) {
-       // ko.mapping.fromJS(result, {}, self.countryData);
-        self.countryData(result);
-    });
 
-    $.ajax({
-        url: "/api/1/languages",
-        type: 'GET',
-        async: true
-    }).done(function (result) {
-       // ko.mapping.fromJS(result, {}, self.languageData);
-        self.languageData(result);
-    });
+
 
 
     this.predefinedData = ko.computed(function() {
         if (self.selectedPredefinedOption()=='countryList'){
-            return self.countryData();
+            if ($.isFunction(globalCountryData)){
+                return globalCountryData();
+            }
+            else{
+                return []
+            }
+
         }
         else if (self.selectedPredefinedOption()=='languageList'){
-            return self.languageData();
+            if ($.isFunction(globalLanguageData)){
+                return globalLanguageData();
+            }
+            else{
+                return []
+            }
+
         }
     });
+
 };
 
 SelectionElement.prototype.label = "Selection";
@@ -63,6 +58,7 @@ SelectionElement.prototype.dataType =      [ ];
 SelectionElement.prototype.modifiableProp = [ ];
 SelectionElement.prototype.initWidth = 300;
 SelectionElement.prototype.initHeight = 100;
+SelectionElement.prototype.numVarNamesRequired = 1;
 
 
 SelectionElement.prototype.addEntry = function(newName) {

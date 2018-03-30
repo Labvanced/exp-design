@@ -333,13 +333,13 @@ FrameView.prototype.setSelectedElement = function(elem) {
     // change selection state of previously selected canvas element:
     var prevSelectedElem = this.frameData.currSelectedElement();
     if (prevSelectedElem){
-         if (!(prevSelectedElem instanceof Event || prevSelectedElem instanceof GlobalVar )){
+         if (!(prevSelectedElem instanceof ExpEvent || prevSelectedElem instanceof GlobalVar )){
              this.viewElements.byId[prevSelectedElem.id()].isSelected(false);
          }
     }
 
     if (elem) {
-        if (elem.type == "Event") {
+        if (elem.type == "ExpEvent") {
             // element is an event
             // change currently selected element:
             this.frameData.currSelectedElement(elem);

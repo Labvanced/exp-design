@@ -49,6 +49,7 @@ ImageElement.prototype.dataType =      [ "string", "string", "boolean", "string"
 ImageElement.prototype.modifiableProp = ["file_id","file_orig_name", "stretchImageToFitBoundingBox","stimulusInformation" ];
 ImageElement.prototype.initWidth = 300;
 ImageElement.prototype.initHeight = 200;
+ImageElement.prototype.numVarNamesRequired = 0;
 
 /**
  * This function is used recursively to retrieve an array with all modifiers.

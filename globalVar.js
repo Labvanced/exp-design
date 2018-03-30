@@ -68,7 +68,7 @@ var GlobalVar = function (expData) {
 
 // enum definitions:
 GlobalVar.scales = ['nominal', 'ordinal', 'interval', 'ratio','undefined'];
-GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'time','timer', 'structure','undefined'];
+GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'time','timer', 'file', 'structure','undefined'];
 GlobalVar.scopes = ['subject','session','task','trial','undefined'];
 GlobalVar.dataFormats = ['scalar','array'];
 GlobalVar.depOrIndepVar = [true, false];
@@ -86,13 +86,14 @@ GlobalVar.allowedScalePerDataType = {
     'datetime': ['ordinal', 'interval', 'ratio','undefined'],
     'time': ['ordinal', 'interval', 'ratio','undefined'],
     'timer': ['interval', 'ratio','undefined'],
+    'file': ['nominal', 'undefined'],
     'structure': ['undefined']
 };
 
 // now create the inverted mapping:
 GlobalVar.allowedDataTypePerScale = {
-    'undefined': ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime','time', 'timer','structure'],
-    'nominal': ['string', 'boolean', 'categorical'],
+    'undefined': ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime','time', 'timer','file', 'structure'],
+    'nominal': ['string', 'boolean', 'categorical', 'file'],
     'ordinal': ['string', 'numeric', 'datetime','time'],
     'interval': ['numeric', 'datetime','time', 'timer'],
     'ratio': ['numeric', 'datetime', 'time','timer']
@@ -106,9 +107,11 @@ GlobalVar.iconPerDataType = {
     'boolean': "/resources/icons/variables/boolean.svg",
     'categorical': "/resources/icons/variables/categorical.svg",
     'datetime': "/resources/icons/variables/datetime.svg",
-    'time': "/resources/icons/variables/datetime.svg",
-    'timer': "/resources/icons/variables/timer.svg",
+    'time': "/resources/icons/variables/timer.svg",
+    'timer': "/resources/icons/variables/stopwatch.svg",
+    'file': "/resources/icons/variables/structure.svg",
     'structure': "/resources/icons/variables/structure.svg"
+
 };
 GlobalVar.iconArrayPerDataType = {
     'undefined': "/resources/icons/variables/array/structure.svg",
@@ -117,8 +120,9 @@ GlobalVar.iconArrayPerDataType = {
     'boolean': "/resources/icons/variables/array/boolean.svg",
     'categorical': "/resources/icons/variables/array/categorical.svg",
     'datetime': "/resources/icons/variables/array/datetime.svg",
-    'time': "/resources/icons/variables/array/datetime.svg",
-    'timer': "/resources/icons/variables/array/timer.svg",
+    'time': "/resources/icons/variables/array/timer.svg",
+    'timer': "/resources/icons/variables/array/stopwatch.svg",
+    'file': "/resources/icons/variables/array/structure.svg",
     'structure': "/resources/icons/variables/array/structure.svg"
 };
 
@@ -175,6 +179,8 @@ GlobalVar.prototype.createScalarValueFromDataType = function() {
             return new GlobalVarValueString(this);
         case 'numeric':
             return new GlobalVarValueNumeric(this);
+        case 'file':
+            return new GlobalVarValueFile(this);
         case 'boolean':
             return new GlobalVarValueBoolean(this);
         case 'categorical':

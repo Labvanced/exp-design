@@ -11,9 +11,6 @@ var AudioElement= function(expData) {
     this.file_orig_name = ko.observable(null);
     this.showMediaControls = ko.observable(true);
 
-    this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
-    this.currentTimePercentage = ko.observable(0);
-
     this.shortName = ko.computed(function() {
         if (self.file_orig_name()){
             return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
@@ -38,6 +35,8 @@ var AudioElement= function(expData) {
     this.subscribersForJumpEvents = [];
 
     ///// not serialized
+    this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
+    this.currentTimePercentage = ko.observable(0);
     this.selected = ko.observable(false);
     /////
 };
@@ -47,9 +46,27 @@ AudioElement.prototype.label = "Audio";
 AudioElement.prototype.iconPath = "/resources/icons/tools/tool_sound.svg";
 AudioElement.prototype.dataType =      [ "string", "string"];
 AudioElement.prototype.modifiableProp = ["file_id","file_orig_name"];
+AudioElement.prototype.numVarNamesRequired = 0;
+AudioElement.prototype.actionTypes = ["StartPlayback","StopPlayback"];
+AudioElement.prototype.triggerTypes = ["PlaybackStarted","PlaybackStopped"];
 
 AudioElement.prototype.switchPlayState = function() {
     this.currentlyPlaying(!this.currentlyPlaying());
+};
+
+AudioElement.prototype.executeAction = function(actionType) {
+    if (actionType=="StartPlayback") {
+        console.log("StartPlayback");
+        if (!this.currentlyPlaying()) {
+            this.currentlyPlaying(true);
+        }
+    }
+    else if (actionType=="StopPlayback") {
+        console.log("StopPlayback");
+        if (this.currentlyPlaying()) {
+            this.currentlyPlaying(false);
+        }
+    }
 };
 
 AudioElement.prototype.jumpToByFraction = function(fraction) {
@@ -205,7 +222,7 @@ function createAudioComponents() {
                 if (evtParam.jumpToFraction) {
                     var time = myAudio.duration * evtParam.jumpToFraction;
                     console.log("setting audio time to " + time);
-                    myAudio.currentTime = 5;
+                    myAudio.currentTime = time;
                 }
             };
             this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);

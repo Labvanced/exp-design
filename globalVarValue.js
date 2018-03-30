@@ -131,6 +131,101 @@ GlobalVarValueNumeric.prototype.toString = function () {
     }
 };
 
+////////////////////  GlobalVarValueFile ///////////////////////////////////
+
+GlobalVarValueFile = function(parentVar) {
+    var self = this;
+    this.parentVar = parentVar;
+    this.value = ko.observable({
+        name: ko.observable(null),
+        guid: ko.observable(null)
+    });
+
+    this.value.subscribe(function() {
+        self.parentVar.notifyValueChanged();
+    });
+};
+
+GlobalVarValueFile.prototype.setName = function(name) {
+    this.value().name(name);
+    this.parentVar.notifyValueChanged();
+};
+
+GlobalVarValueFile.prototype.setGuid = function(guid) {
+    this.value().guid(guid);
+    this.parentVar.notifyValueChanged();
+};
+
+GlobalVarValueFile.prototype.setNameAndGuid = function(name,guid) {
+    this.value({
+        name: ko.observable(name),
+        guid: ko.observable(guid)
+    });
+};
+
+GlobalVarValueFile.prototype.convert = function(data) {
+    var newValue = {
+        name: ko.observable(null),
+        guid: ko.observable(null)
+    };
+
+    if (data === null) {
+        return newValue;
+    }
+    if (data.hasOwnProperty("name")) {
+        newValue.name(data.name)
+    }
+    if (data.hasOwnProperty("guid")) {
+        newValue.guid(data.guid)
+    }
+    return newValue;
+};
+
+/**
+ * modify the value either by a supplying a globalVarValue instance or a javascript string or number
+ * @param data
+ */
+GlobalVarValueFile.prototype.setValue = function(data) {
+    if (typeof data.parentVar == "GlobalVar"){
+        data = data.toJS();
+    }
+    // convert other data types to file:
+    this.value(this.convert(data));
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {GlobalVar}
+ */
+GlobalVarValueFile.prototype.fromJS = function(data) {
+    this.value(this.convert(data));
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+GlobalVarValueFile.prototype.toJS = function() {
+    return {
+        name: this.value().name(),
+        guid: this.value().guid()
+    };
+};
+
+/**
+ * return string representation of value
+ * @returns {object}
+ */
+
+GlobalVarValueFile.prototype.toString = function () {
+    if(this.value() !== null){
+        return this.value().toString();
+    }else{
+        return null;
+    }
+};
+
 ////////////////////  GlobalVarValueBoolean  ///////////////////////////////////
 
 GlobalVarValueBoolean = function(parentVar) {
@@ -391,7 +486,7 @@ GlobalVarValueDatetime.prototype.toJS = function() {
             return this.value().toISOString().substring(0,10)
         }
         else {
-            return null;
+            return this.value();
         }
     }
     else{
@@ -406,7 +501,7 @@ GlobalVarValueDatetime.prototype.toJS = function() {
  */
 GlobalVarValueDatetime.prototype.toString = function () {
     if(this.value() !== null){
-        return this.value().toISOString();
+        return this.value().toISOString().substring(0,10);
     }else{
         return null;
     }
@@ -725,6 +820,15 @@ GlobalVarValueArray.prototype.convert = function(data) {
 GlobalVarValueArray.prototype.getValueAt = function(idx) {
     return this.value()[idx];
 };
+
+GlobalVarValueArray.prototype.getValues = function() {
+    var out = [];
+    this.value().forEach(function(elem){
+        out.push(elem.toJS());
+    });
+    return out;
+};
+
 
 GlobalVarValueArray.prototype.setValueAt = function(idx,val) {
     this.value()[idx].value(val);
