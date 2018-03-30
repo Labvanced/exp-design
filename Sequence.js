@@ -16,6 +16,7 @@ var Sequence = function (expData) {
     this.id = ko.observable(guid());
     this.type = "Sequence";
     this.name = ko.observable("Sequence");
+    this.workspaceVars = ko.observableArray([]).extend({sortById: null});
 
     // sub-Structures (serialized below)
     this.elements = ko.observableArray().extend({sortById: null});
@@ -184,7 +185,45 @@ Sequence.prototype.setPointers = function(entitiesArr) {
         elem.parent = self;
         return elem;
     } ));
+
+
+    // convert ids to actual pointers:
+    this.workspaceVars(jQuery.map( this.workspaceVars(), function( id ) {
+        return entitiesArr.byId[id];
+    } ));
+
+
+    this.addAllRemainingFactorToWorkspace()
+
 };
+
+Sequence.prototype.addVariableToWorkspace = function(variable) {
+    var isExisting = this.workspaceVars.byId[variable.id()];
+    if (!isExisting) {
+        this.workspaceVars.push(variable);
+    }
+};
+
+Sequence.prototype.removeVariableFromWorkspace = function(variable) {
+    var isExisting = this.workspaceVars.byId[variable.id()];
+    if (isExisting) {
+        var idx = this.workspaceVars.indexOf(variable);
+        this.workspaceVars().splice(idx,1);
+    }
+
+};
+
+Sequence.prototype.addAllRemainingFactorToWorkspace = function(variable) {
+    var self = this;
+    this.factorGroup.factors().forEach(function (factor) {
+        var variable = factor.globalVar();
+        var isExisting = self.workspaceVars.byId[variable.id()];
+        if (!isExisting) {
+            self.workspaceVars.push(variable);
+        }
+    })
+};
+
 
 /**
  * Recursively adds all child objects that have a unique id to the global list of entities.
@@ -204,6 +243,14 @@ Sequence.prototype.reAddEntities = function(entitiesArr) {
         if (elem.reAddEntities)
             elem.reAddEntities(entitiesArr);
     } );
+
+    // add the direct child nodes:
+    jQuery.each( this.workspaceVars(), function( index, elem ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
+            entitiesArr.push(elem);
+        }
+    } );
 };
 
 /**
@@ -215,6 +262,9 @@ Sequence.prototype.fromJS = function(data) {
     this.id(data.id);
     this.name(data.name);
     this.elements(data.elements);
+    if (data.hasOwnProperty("workspaceVars")) {
+        this.workspaceVars(data.workspaceVars);
+    }
     return this;
 };
 
@@ -227,6 +277,7 @@ Sequence.prototype.toJS = function() {
         id: this.id(),
         type: this.type,
         name: this.name(),
-        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
+        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } ),
+        workspaceVars: jQuery.map( this.workspaceVars(), function( variable ) { return variable.id(); } )
     };
 };

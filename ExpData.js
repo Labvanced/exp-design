@@ -411,7 +411,7 @@ ExpData.prototype.createVars = function() {
 
 
 ExpData.prototype.isSystemVar = function(globalVar) {
-    if (this.vars().indexOf(globalVar)>=0 || globalVar.isFactor()){
+    if (this.vars().indexOf(globalVar)>=0){
         return true;
     }
     else{

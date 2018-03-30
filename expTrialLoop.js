@@ -161,10 +161,11 @@ ExpTrialLoop.prototype.addFactorGroup = function(pageOrFrame,withFactor) {
 
     // new factor
     if(withFactor){
-        newFactor = new Factor(this.expData, factorGroup);
+        var newFactor = new Factor(this.expData, factorGroup);
         newFactor.init("factor1_tg"+nr_in_task+"_task"+nr_in_exp);
         newFactor.updateLevels();
         factorGroup.addFactor(newFactor);
+        subsequence.addVariableToWorkspace(newFactor.globalVar());
     }
 
     this.factorGroups.push(factorGroup);
