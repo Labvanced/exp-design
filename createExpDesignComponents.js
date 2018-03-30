@@ -1,6 +1,6 @@
 
-var globalCountryData =  ko.observableArray([]);
-var globalLanguageData = ko.observableArray([]);
+globalCountryData =  ko.observableArray([]);
+globalLanguageData = ko.observableArray([]);
 
 var createExpDesignComponents = (function() {
     var expDesignComponentsLoaded = false;
