@@ -54,6 +54,14 @@ AudioElement.prototype.switchPlayState = function() {
     this.currentlyPlaying(!this.currentlyPlaying());
 };
 
+AudioElement.prototype.getActionTypes = function() {
+    return AudioElement.prototype.actionTypes;
+};
+
+AudioElement.prototype.getTriggerTypes = function() {
+    return AudioElement.prototype.triggerTypes;
+};
+
 AudioElement.prototype.executeAction = function(actionType) {
     if (actionType=="StartPlayback") {
         console.log("StartPlayback");
@@ -211,9 +219,11 @@ function createAudioComponents() {
             this.dataModel.currentlyPlaying.subscribe(function (value) {
                 if (value) {
                     myAudio.play();
+                    $(self.dataModel.parent).trigger("PlaybackStarted");
                 }
                 else {
                     myAudio.pause();
+                    $(self.dataModel.parent).trigger("PlaybackStopped");
                 }
             });
 
