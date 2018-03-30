@@ -17,10 +17,10 @@
         </label>
         <br>
 
-        <span class="property-description">
-            Show Media Controls:
-            <input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showMediaControls">
-        </span>
+        <span class="property-description"><label><input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showRecordingButton">Show Recording Button</label></span><br>
+        <span class="property-description"><label><input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showPlayButton">Show Play Button</label></span><br>
+        <span class="property-description"><label><input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showUploadButton">Show Upload Button</label></span><br>
+        <span class="property-description"><label><input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showSeekbar">Show Seekbar</label></span>
 
     </div>
 </template>
@@ -46,16 +46,20 @@
             Your browser does not support HTML5 audio.
         </audio>
 
-        <span data-bind="if: dataModel.showMediaControls" class="media-controls">
-
-            <span data-bind="if: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StopRecording');}"><img width="16" height="16" src="/resources/icons/player/stop-button.svg"/></button></span>
-            <span data-bind="ifnot: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StartRecording');}"><img width="16" height="16" src="/resources/icons/player/rec-button.svg"/></button></span>
-
-            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StopPlayback');}"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/player/stop-button.svg"/></button></span>
-            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StartPlayback');}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
-
+        <span data-bind="if: dataModel.showRecordingButton" class="media-controls">
+            <span data-bind="if: dataModel.currentlyRecording"><button type="button"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/player/stop-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyRecording"><button type="button"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/player/rec-button.svg"/></button></span>
+        </span>
+        <span data-bind="if: dataModel.showPlayButton" class="media-controls">
+            <span data-bind="if: dataModel.currentlyPlaying"><button type="button"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/player/stop-button.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/player/play-button.svg"/></button></span>
+        </span>
+        <span data-bind="if: dataModel.showUploadButton" class="media-controls">
+            <span data-bind="if: dataModel.recordedAudio"><button type="button" data-bind="click: function() {dataModel.executeAction('StartUpload');}"><img width="16" height="16" src="/resources/icons/upload.svg"/></button></span>
+            <span data-bind="ifnot: dataModel.recordedAudio"><button type="button" data-bind="" style="cursor: not-allowed;" disabled><img width="16" height="16" src="/resources/icons/upload.svg"/></button></span>
+        </span>
+        <span data-bind="if: dataModel.showSeekbar" class="media-controls">
             <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
-
         </span>
 
     </div>
@@ -87,14 +91,19 @@
             Your browser does not support HTML5 audio.
         </audio>
 
-        <span data-bind="if: dataModel.showMediaControls" class="media-controls">
-
-            <span data-bind="if: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StopRecording');}"><img width="16" height="16" src="/resources/icons/player/stop-button.svg"/></button></span>
-            <span data-bind="ifnot: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StartRecording');}"><img width="16" height="16" src="/resources/icons/player/rec-button.svg"/></button></span>
-
-            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StopPlayback');}"><img width="16" height="16" src="/resources/icons/player/stop-button.svg"/></button></span>
-            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StartPlayback');}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
-
+        <span data-bind="if: dataModel.showRecordingButton" class="media-controls">
+            <span title="StopRecording" data-bind="if: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StopRecording');}"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/player/stop-button.svg"/></button></span>
+            <span title="StartRecording" data-bind="ifnot: dataModel.currentlyRecording"><button type="button" data-bind="click: function() {dataModel.executeAction('StartRecording');}"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/player/rec-button.svg"/></button></span>
+        </span>
+        <span data-bind="if: dataModel.showPlayButton" class="media-controls">
+            <span title="StopPlayback" data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StopPlayback');}"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/player/stop-button.svg"/></button></span>
+            <span title="StartPlayback" data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.executeAction('StartPlayback');}"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/player/play-button.svg"/></button></span>
+        </span>
+        <span data-bind="if: dataModel.showUploadButton" class="media-controls">
+            <span title="Upload" data-bind="if: dataModel.recordedAudio"><button type="button" data-bind="click: function() {dataModel.executeAction('StartUpload');}"><img width="16" height="16" src="/resources/icons/upload.svg"/></button></span>
+            <span title="Upload" data-bind="ifnot: dataModel.recordedAudio"><button type="button" data-bind="" style="cursor: not-allowed;" disabled><img width="16" height="16" src="/resources/icons/upload.svg"/></button></span>
+        </span>
+        <span data-bind="if: dataModel.showSeekbar" class="media-controls">
             <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
         </span>
 
