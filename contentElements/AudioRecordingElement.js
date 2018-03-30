@@ -29,7 +29,7 @@ var AudioRecordingElement = function(expData) {
 };
 
 AudioRecordingElement.prototype.label = "Audio Recording";
-AudioRecordingElement.prototype.iconPath = "/resources/icons/tools/tool_audio.svg";
+AudioRecordingElement.prototype.iconPath = "/resources/icons/microphone.svg";
 AudioRecordingElement.prototype.dataType =      [ ];
 AudioRecordingElement.prototype.modifiableProp = [ ];
 AudioRecordingElement.prototype.initWidth = 300;
