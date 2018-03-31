@@ -41,6 +41,10 @@ GlobalVarValueString.prototype.setValue = function(data) {
     this.value(this.convert(data));
 };
 
+GlobalVarValueString.prototype.getValue = function() {
+    return this.toJS();
+};
+
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
@@ -99,6 +103,10 @@ GlobalVarValueNumeric.prototype.setValue = function(data) {
     }
     // convert other data types to numeric:
     this.value(this.convert(data));
+};
+
+GlobalVarValueNumeric.prototype.getValue = function() {
+    return this.toJS();
 };
 
 /**
@@ -193,6 +201,10 @@ GlobalVarValueFile.prototype.setValue = function(data) {
     this.value(this.convert(data));
 };
 
+GlobalVarValueFile.prototype.getValue = function() {
+    return this.toJS();
+};
+
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
@@ -256,6 +268,10 @@ GlobalVarValueBoolean.prototype.setValue = function(data) {
         data = data.toJS();
     }
     this.value(this.convert(data));
+};
+
+GlobalVarValueBoolean.prototype.getValue = function() {
+    return this.toJS();
 };
 
 /**
@@ -325,6 +341,10 @@ GlobalVarValueCategorical.prototype.setValue = function(data) {
     else {
         this.value(data);
     }
+};
+
+GlobalVarValueCategorical.prototype.getValue = function() {
+    return this.toJS();
 };
 
 /**
@@ -398,6 +418,10 @@ GlobalVarValueTime.prototype.setValue = function(data) {
     this.value(this.convert(data));
 };
 
+GlobalVarValueTime.prototype.getValue = function() {
+    return this.toJS();
+};
+
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
@@ -465,6 +489,11 @@ GlobalVarValueDatetime.prototype.setValue = function(data) {
     }
     this.value(this.convert(data));
 };
+
+GlobalVarValueDatetime.prototype.getValue = function() {
+    return this.toJS();
+};
+
 
 /**
  * load from a json object to deserialize the states.
@@ -822,11 +851,7 @@ GlobalVarValueArray.prototype.getValueAt = function(idx) {
 };
 
 GlobalVarValueArray.prototype.getValues = function() {
-    var out = [];
-    this.value().forEach(function(elem){
-        out.push(elem.toJS());
-    });
-    return out;
+    return this.getValue();
 };
 
 
@@ -854,6 +879,10 @@ GlobalVarValueArray.prototype.setValue = function(data) {
         data = data.toJS();
     }
     this.value(this.convert(data));
+};
+
+GlobalVarValueArray.prototype.getValue = function() {
+    return this.toJS();
 };
 
 /**
@@ -911,6 +940,10 @@ GlobalVarValueStructure.prototype.setValue = function(data) {
 
 };
 
+GlobalVarValueStructure.prototype.getValue = function() {
+    return this.toJS();
+};
+
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.
@@ -958,6 +991,10 @@ GlobalVarValueUndefined = function(parentVar) {
  */
 GlobalVarValueUndefined.prototype.setValue = function(data) {
     this.value(data);
+};
+
+GlobalVarValueUndefined.prototype.getValue = function() {
+    return this.toJS();
 };
 
 /**

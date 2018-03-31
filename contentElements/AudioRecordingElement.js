@@ -7,7 +7,10 @@ var AudioRecordingElement = function(expData) {
     //serialized
     this.type = "AudioRecordingElement";
     this.questionText = ko.observable(null); // EditableTextElement
-    this.showMediaControls = ko.observable(true);
+    this.showRecordingButton = ko.observable(true);
+    this.showPlayButton = ko.observable(true);
+    this.showUploadButton = ko.observable(true);
+    this.showSeekbar = ko.observable(true);
     this.variable = ko.observable(null);
     this.isRequired = ko.observable(false);
     this.enableTitle = ko.observable(true);
@@ -279,7 +282,10 @@ AudioRecordingElement.prototype.toJS = function() {
         questionText: this.questionText().toJS(),
         variable: variableId,
         isRequired:this.isRequired(),
-        showMediaControls: this.showMediaControls(),
+        showRecordingButton: this.showRecordingButton(),
+        showPlayButton: this.showPlayButton(),
+        showUploadButton: this.showUploadButton(),
+        showSeekbar: this.showSeekbar(),
         enableTitle: this.enableTitle()
     };
 };
@@ -287,7 +293,12 @@ AudioRecordingElement.prototype.toJS = function() {
 AudioRecordingElement.prototype.fromJS = function(data) {
     var self = this;
     this.type=data.type;
-    this.showMediaControls(data.showMediaControls);
+
+    this.showRecordingButton(data.showRecordingButton);
+    this.showPlayButton(data.showPlayButton);
+    this.showUploadButton(data.showUploadButton);
+    this.showSeekbar(data.showSeekbar);
+
     if(data.questionText.hasOwnProperty('rawText')) {
         this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);

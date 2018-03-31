@@ -167,6 +167,10 @@ GlobalVar.prototype.initValue = function() {
     this.resetValueToStartValue();
 };
 
+GlobalVar.prototype.getValueAsJS = function() {
+    return this.value().getValue();
+};
+
 GlobalVar.prototype.resetValueToStartValue = function() {
     this.value().fromJS(this.startValue().toJS());
 };
