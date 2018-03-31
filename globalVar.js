@@ -143,6 +143,10 @@ GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
     return this;
 };
 
+GlobalVar.prototype.setDescription= function(description) {
+    this.description(description);
+};
+
 GlobalVar.prototype.changeDataType = function(dataType) {
     this.dataType(dataType);
 

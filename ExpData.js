@@ -143,7 +143,40 @@ ExpData.prototype.fixedVarNames = [
     'varGazeX',
     'varGazeY',
     'varCrowdsourcingSubjId',
-    'varTimeMeasureSpecStd'
+    'varTimeMeasureSpecStd',
+    'varSubjectNrPerSubjGroup'
+];
+
+
+ExpData.prototype.varDescriptions = [
+    {'varSubjectCode':' The variable "Subject_Code" is a unique string for each subject and session across all experiments running on Labvanced. So this can be used to uniquely identify each participant session.'},
+    {'varSubjectNr':'The variable "Subject_Nr" is a global counter of participants in each study. So this can be used to do custom between subject stimuli randomization and to infer the overall n number of participants.'},
+    {'varGroupName':'The variable "Group_Name" holds the value of the "subject group name" for each participant. This can be used to infer to which subject group each participant was assigned to.'},
+    {'varSessionTimeStamp':'The variable "Session_Start_Time" records the start time on the participant session in UNIX time.'},
+    {'varSessionTimeStampEnd':'The variable "Session_End_Time" records the end time on the participant session in UNIX time.'},
+    {'varSessionName':'The variable "Session_Name" holds the value of the "session name" for each participant. This can be used to infer to which session was performed by the participant.'},
+    {'varSessionNr':'The variable "Session_Nr" holds the value of the "session nr" for each participant. This can be used to infer to whether the participant performed the first, second, third,(and so on) session.'},
+    {'varBlockName':''},
+    {'varBlockNr':'The variable "Bock_Nr" holds the value of the "block nr" for each participant. This can be used to infer the current'},
+    {'varTaskName':''},
+    {'varTaskNr':''},
+    {'varTrialId':''},
+    {'varTrialNr':''},
+    {'varRoleId':''},
+    {'varConditionId':''},
+    {'varBrowserSpec':''},
+    {'varSystemSpec':''},
+    {'varAgentSpec':''},
+    {'varTimeMeasureSpecMean':''},
+    {'varFullscreenSpec':''},
+    {'varBrowserVersionSpec':''},
+    {'varTimeMeasureSpecMax':''},
+    {'varCrowdsourcingCode':''},
+    {'varGazeX':''},
+    {'varGazeY':''},
+    {'varCrowdsourcingSubjId':''},
+    {'varTimeMeasureSpecStd':''},
+    {'varSubjectNrPerSubjGroup':''}
 ];
 
 ExpData.prototype.staticTranslations = {
@@ -399,6 +432,10 @@ ExpData.prototype.createVars = function() {
     }
     if (!this.varTimeMeasureSpecStd()) {
         this.varTimeMeasureSpecStd((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Std'));
+    }
+
+    if (!this.varSubjectNrPerSubjGroup()) {
+        this.varSubjectNrPerSubjGroup((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'ordinal', 'Subject_Nr_Per_Group'));
     }
 
 
