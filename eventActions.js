@@ -3817,9 +3817,6 @@ var ActionDistributeVariable = function(event) {
     this.variable = ko.observable(null);
     this.operand = ko.observable(new OperandVariable(event));
     this.playersToDistributeToMode = ko.observable("All");
-    this.isCustomSelection = ko.computed(function(){
-        return self.playersToDistributeToMode() == "Custom";
-    });
     this.playersToDistributeTo = this.initPlayersToDistributeTo();
     this.blockVarUntilDone = ko.observable(true);
     this.isInitialized = false;

@@ -113,7 +113,10 @@ ExpData.prototype.oldFixedVarNames = [
     'varTimeMeasureSpecMaxEMPTY',
     'varCrowdsourcingCodeEMPTY',
     'varGazeXEMPTY',
-    'varGazeYEMPTY'
+    'varGazeYEMPTY',
+    'varCrowdsourcingSubjIdEMPTY',
+    'varTimeMeasureSpecStdEMPTY',
+    'varSubjectNrPerSubjGroupEMPTY'
 ];
 
 ExpData.prototype.fixedVarNames = [
@@ -138,7 +141,7 @@ ExpData.prototype.fixedVarNames = [
     'varTimeMeasureSpecMean',
     'varFullscreenSpec',
     'varBrowserVersionSpec',
-    'varTimeMeasureSpecMax',
+   // 'varTimeMeasureSpecMax',
     'varCrowdsourcingCode',
     'varGazeX',
     'varGazeY',
@@ -149,34 +152,34 @@ ExpData.prototype.fixedVarNames = [
 
 
 ExpData.prototype.varDescriptions = [
-    {'varSubjectCode':' The variable "Subject_Code" is a unique string for each subject and session across all experiments running on Labvanced. So this can be used to uniquely identify each participant session.'},
-    {'varSubjectNr':'The variable "Subject_Nr" is a global counter of participants in each study. So this can be used to do custom between subject stimuli randomization and to infer the overall n number of participants.'},
+    {'varSubjectCode':' The variable "Subject_Code" is a unique string for each subject and session across all experiments running on Labvanced. This can be used to uniquely identify each participant session.'},
+    {'varSubjectNr':'The variable "Subject_Nr" is a global counter of participants in each study. This can be used to do custom between subject stimuli randomization and to infer the overall number of participants.'},
     {'varGroupName':'The variable "Group_Name" holds the value of the "subject group name" for each participant. This can be used to infer to which subject group each participant was assigned to.'},
     {'varSessionTimeStamp':'The variable "Session_Start_Time" records the start time on the participant session in UNIX time.'},
     {'varSessionTimeStampEnd':'The variable "Session_End_Time" records the end time on the participant session in UNIX time.'},
-    {'varSessionName':'The variable "Session_Name" holds the value of the "session name" for each participant. This can be used to infer to which session was performed by the participant.'},
-    {'varSessionNr':'The variable "Session_Nr" holds the value of the "session nr" for each participant. This can be used to infer to whether the participant performed the first, second, third,(and so on) session.'},
-    {'varBlockName':''},
-    {'varBlockNr':'The variable "Bock_Nr" holds the value of the "block nr" for each participant. This can be used to infer the current'},
-    {'varTaskName':''},
-    {'varTaskNr':''},
-    {'varTrialId':''},
-    {'varTrialNr':''},
-    {'varRoleId':''},
-    {'varConditionId':''},
-    {'varBrowserSpec':''},
-    {'varSystemSpec':''},
-    {'varAgentSpec':''},
-    {'varTimeMeasureSpecMean':''},
-    {'varFullscreenSpec':''},
-    {'varBrowserVersionSpec':''},
-    {'varTimeMeasureSpecMax':''},
-    {'varCrowdsourcingCode':''},
-    {'varGazeX':''},
-    {'varGazeY':''},
-    {'varCrowdsourcingSubjId':''},
-    {'varTimeMeasureSpecStd':''},
-    {'varSubjectNrPerSubjGroup':''}
+    {'varSessionName':'The variable "Session_Name" holds the value of the "session name" for the current session. This can be used to infer which session is currently performed by the participant.'},
+    {'varSessionNr':'The variable "Session_Nr" holds the current value of the "session nr" for the current session. This can be used to infer whether the participant currently performs the first, second, third,(and so on) session.'},
+    {'varBlockName':'The variable "Block_Name" holds the current value of the "block name" for the current session. This can be used to infer which block is currently performed by the participant.'},
+    {'varBlockNr':'The variable "Bock_Nr" holds the current value of the "block nr" for the current session. This can be used to infer whether the participant currently performs the first, second, third,(and so on) block in this session.'},
+    {'varTaskName':'The variable "Task_Name" holds the current value of the "task name" for the current block. This can be used to infer which task is currently performed by the participant.'},
+    {'varTaskNr':'The variable "Task_Nr" holds the current value of the "task nr" the current block. This can be used to infer whether the participant currently performs the first, second, third,(and so on) task in this block.'},
+    {'varTrialId':'The variable "Trial_Id" holds the current value of the "trial id" for the current task. This can be used to infer which Trial is currently performed by the participant.'},
+    {'varTrialNr':'The variable "Trial_Nr" holds the current value of the "trial nr" for the current task. This can be used to infer whether the participant currently performs the first, second, third,(and so on) trial in this task.'},
+    {'varRoleId':'The variable "Role_ID" is used for multi user / participant studies to refer uniquely to one of the participants of the study. This can be used to present different tasks and roles to different participants within the same experiment.'},
+    {'varConditionId':'The variable "Condition_Id" holds the current value of the "condition id" for the current task. This can be used to infer which cCondition is currently performed by the participant.'},
+    {'varBrowserSpec':'The variable "Browser_Spec" holds the value of the browser used by the participant to perform the task. This can be used to later analyze possible differences between browsers. Allowing / forbidding certain browsers works via the study settings.'},
+    {'varSystemSpec':'The variable "System_Spec" holds the value of the operating system used by the participant to perform the task. This can be used to later analyze possible differences between operating systems. Allowing / forbidding certain operating systems works via the study settings.'},
+    {'varAgentSpec':'The variable "Agent_Spec" holds the complete String of the UserAgent-Browser-specification. this can be used to get some detailed information about the participants system specifications.'},
+    {'varTimeMeasureSpecMean':'The variable "TimeMeasureSpecMean" provides an estimate of how precise (fast) reaction times can be measured by the participant computer/device. The provided value is a mean offset in milliseconds and can be used to infer how precisely stimuli were shown on the screen.'},
+    {'varFullscreenSpec':'The variable "Kept_Fullscreen", is a boolean value which is true as long as the participant keeps the experiment running in fullscreen mode. This can be used to pause/quit the experiment when a participant leaves the fullscreen mode.'},
+    {'varBrowserVersionSpec':'The variable "Browser_Version" holds the value of the browser version used by the participant to perform the task.  This can be used to later analyze possible differences between browser versions.'},
+   // {'varTimeMeasureSpecMax':''},
+    {'varCrowdsourcingCode':'The variable "Crowdsourcing_Code" holds the value of the unique crowdsourcing string, typically shown to the subjects at end of the experiment to complete the crowdsourcing session and claim their payment.'},
+    {'varGazeX':'The variable "GazeX" is used for webcam based Eyetracking Stduies. The value holds the current estimated value of the Gaze/Eye Position in X coordinates. This value can be used for calibration, and also as a "fixation trigger".'},
+    {'varGazeY':'The variable "GazeY" is used for webcam based Eyetracking Stduies. The value holds the current estimamted value of the Gaze/Eye Position in Y coordinates. This value can be used for calibration, and also as a "fixation trigger".'},
+    {'varCrowdsourcingSubjId':'The variable "Crowdsourcing_SubjId" holds the value of the unique identication code for each crowdsourcing participant. This can be used to later on create a reference between crowdsourcing data on Labvanced and the external crowdsourcing service.'},
+    {'varTimeMeasureSpecStd':'The variable "TimeMeasureSpecStd" provides an estimate of how reliable/consistent reaction time measurement is throughout the experiment. The provided value is a standard deviation of several reaction time measurements and can be used to infer how comparable reaction time measurements are across trials and conditions.'},
+    {'varSubjectNrPerSubjGroup':'The variable "SubjectNrPerSubjGroup" is a counter per subject group in each study. This can be used to do custom between subject stimuli randomization and to infer the overall number of participants within each subject group.'}
 ];
 
 ExpData.prototype.staticTranslations = {
@@ -433,11 +436,9 @@ ExpData.prototype.createVars = function() {
     if (!this.varTimeMeasureSpecStd()) {
         this.varTimeMeasureSpecStd((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Std'));
     }
-
     if (!this.varSubjectNrPerSubjGroup()) {
         this.varSubjectNrPerSubjGroup((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'ordinal', 'Subject_Nr_Per_Group'));
     }
-
 
 };
 
@@ -880,6 +881,7 @@ ExpData.prototype.fromJS = function(data) {
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varName = ExpData.prototype.fixedVarNames[i];
+       // varTimeMeasureSpecMax
         if (varName === undefined) {
             var oldVarName = ExpData.prototype.oldFixedVarNames[i];
             this[varName](data[oldVarName]);
