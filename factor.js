@@ -68,6 +68,23 @@ Factor.prototype.init = function(name) {
 
     this.randomizationConverter();
 
+
+    // add factor var to local workspace vars in all frames of this sequence
+    var name = this.factorGroup.name();
+    var found = false;
+    var i = 0;
+    var sequences = this.factorGroup.expTrialLoop.subSequencePerFactorGroup();
+    while (!found && i<sequences.length){
+        if (sequences[i].factorGroup.name() == name){
+            found = true;
+        }
+        else{
+            i++
+        }
+    }
+    if (found){
+       sequences[i].addVariableToWorkspace(globalVar);
+    }
     this.setVariableBackRef();
 
     this.factorType.subscribe(function(val) {
@@ -75,10 +92,14 @@ Factor.prototype.init = function(name) {
     });
 };
 
+Factor.prototype.removeBackRef = function() {
+    this.globalVar().removeBackRef(this);
+};
+
 
 Factor.prototype.setVariableBackRef = function() {
 
-    this.globalVar().addBackRef(this, this.parent, true, true, 'Factor');
+    this.globalVar().addBackRef(this, this.factorGroup, true, true, 'Factor');
 };
 
 

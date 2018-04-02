@@ -16,21 +16,27 @@ var FileUploadElement = function(expData) {
     this.isRequired = ko.observable(false);
     this.enableTitle = ko.observable(true);
 
+    this.showSelectedFilename = ko.observable(true);
+    this.showBrowseButton = ko.observable(true);
+    this.showUploadButton = ko.observable(true);
+
     ///// not serialized
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
     this.fileUploaded = ko.observable(false);
     this.selectedFile = ko.observable(null);
+    this.selectedFilename = ko.observable("... no file selected ...");
+    this.fileUploadElem = null;
 };
 
 FileUploadElement.prototype.label = "File Upload";
-FileUploadElement.prototype.iconPath = "/resources/icons/openFile.svg";
+FileUploadElement.prototype.iconPath = "/resources/icons/upload.svg";
 FileUploadElement.prototype.dataType =      [ ];
 FileUploadElement.prototype.modifiableProp = [ ];
 FileUploadElement.prototype.initWidth = 300;
 FileUploadElement.prototype.initHeight = 100;
 FileUploadElement.prototype.numVarNamesRequired = 1;
-FileUploadElement.prototype.actionTypes = ["StartUpload","ClearFile"];
+FileUploadElement.prototype.actionTypes = ["StartUpload","ClearFile","ChooseFile"];
 FileUploadElement.prototype.triggerTypes = ["FileSelected","UploadComplete"];
 
 FileUploadElement.prototype.dispose = function() {
@@ -135,6 +141,10 @@ FileUploadElement.prototype.getActionTypes = function() {
     return FileUploadElement.prototype.actionTypes;
 };
 
+FileUploadElement.prototype.getTriggerTypes = function() {
+    return FileUploadElement.prototype.triggerTypes;
+};
+
 FileUploadElement.prototype.executeAction = function(actionType) {
     var self = this;
     if (actionType=="StartUpload") {
@@ -155,7 +165,7 @@ FileUploadElement.prototype.executeAction = function(actionType) {
                 return fname.slice((fname.lastIndexOf(".") - 1 >>> 0) + 2);
             }
 
-            var extension = getFileExtension(this.selectedFile().filename);
+            var extension = getFileExtension(this.selectedFile().name);
             var newFileName = "blockNr_" + blockNr + "_taskNr_" + taskNr + "_trialNr_" + trialNr + "_" + elemName + "." + extension;
 
             function callbackWhenFinished(file_guid, file_name) {
@@ -172,6 +182,7 @@ FileUploadElement.prototype.executeAction = function(actionType) {
                         self.variable().value().setValue(file_name);
                     }
                 }
+                $(self.parent).trigger("UploadComplete");
             }
         }
         player.playerFileUploader.addToAjaxUploadQueue(this.selectedFile(), newFileName, this.variable(), callbackWhenFinished);
@@ -179,6 +190,12 @@ FileUploadElement.prototype.executeAction = function(actionType) {
     else if (actionType=="ClearFile") {
         console.log("ClearFile");
         this.selectedFile(null);
+    }
+    else if (actionType=="ChooseFile") {
+        console.log("ChooseFile");
+        if (this.fileUploadElem) {
+            this.fileUploadElem.click()
+        }
     }
 };
 
@@ -246,6 +263,9 @@ FileUploadElement.prototype.toJS = function() {
         bgColorDefault: this.bgColorDefault(),
         bgColorHover: this.bgColorHover(),
         enableTitle: this.enableTitle(),
+        showSelectedFilename: this.showSelectedFilename(),
+        showBrowseButton: this.showBrowseButton(),
+        showUploadButton: this.showUploadButton(),
         buttonText: this.buttonText().toJS()
     };
 };
@@ -267,6 +287,9 @@ FileUploadElement.prototype.fromJS = function(data) {
     else{
         this.buttonText(new EditableTextElement(this.expData, this, data.buttonText));
     }
+    this.showSelectedFilename(data.showSelectedFilename);
+    this.showBrowseButton(data.showBrowseButton);
+    this.showUploadButton(data.showUploadButton);
     this.variable(data.variable);
     if (data.hasOwnProperty('isRequired')) {
         this.isRequired(data.isRequired);
@@ -351,14 +374,16 @@ function createFileUploadElementComponents() {
                         this.dataModel.ckInstance.focus()
                     };
 
-                    this.chooseFile = function() {
-                        var fileUploadElem = $(componentInfo.element).find('.playerFileUploadInput')[0];
-                        fileUploadElem.click();
-                    };
-
                     this.fileSelected = function(file) {
                         self.dataModel.selectedFile(file);
+                        self.dataModel.selectedFilename(file.name);
+                        $(self.dataModel.parent).trigger("FileSelected");
                     };
+
+                };
+
+                viewModel.prototype.afterRenderInit = function(elem) {
+                    this.dataModel.fileUploadElem = $(elem).find('.playerFileUploadInput')[0];
                 };
 
                 return new viewModel(dataModel);

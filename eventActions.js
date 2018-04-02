@@ -3992,9 +3992,6 @@ ActionDistributeVariable.prototype.destroyOnPlayerFrame = function() {
 
 
 
-
-
-
 ////////////////////////////////////////  ActionMathAndStats ///////////////////////////////////////////////////
 
 var ActionMathAndStats = function(event) {
@@ -4005,8 +4002,7 @@ var ActionMathAndStats = function(event) {
     this.operationType = ko.observable('Array Operations');
     this.inputs = ko.observableArray([]);
     this.outputs = ko.observableArray([]);
-    this.functionType = ko.observable(ActionMathAndStats.prototype.arrayOperations[9].key); // sum as start value
-
+    this.functionKey = ko.observable(ActionMathAndStats.prototype.arrayOperations[9].key); // sum as start value
 
     // computed
     this.currentFunctions = ko.computed(function(){
@@ -4035,41 +4031,29 @@ ActionMathAndStats.prototype.resetValues = function(){
 
     // remove old variable references
     this.inputs().forEach(function (entry,idx) {
-        if ($.isFunction(entry.value)){
-            if (entry.value() instanceof GlobalVar){
-                self.removeInVariable(idx);
-            }
+        if (entry() instanceof GlobalVar){
+            self.removeInVariable(idx);
         }
     });
 
     this.outputs().forEach(function (entry,idx) {
-        if ($.isFunction(entry.value)){
-            if (entry.value()instanceof GlobalVar){
-                self.removeOutVariable(idx);
-            }
+        if (entry() instanceof GlobalVar){
+            self.removeOutVariable(idx);
         }
     });
 
     // reset values
-    var idx = this.getIndexById(this.functionType());
-    if (idx!== null){
-        var data = this.currentFunctions()[idx];
+    var function_spec = this.getFcnSpec();
+    if (function_spec){
         var inp = [];
-        data.inputs.forEach(function (entry) {
-            inp.push(entry);
-            if (!($.isFunction(entry.value))){
-                entry.value = ko.observable(entry.value);
-            }
+        function_spec.inputs.forEach(function (entry) {
+            inp.push(ko.observable(entry.value));
         });
         this.inputs(inp);
 
-
         var out = [];
-        data.outputs.forEach(function (entry) {
-            out.push(entry);
-            if (!($.isFunction(entry.value))){
-                entry.value = ko.observable(entry.value);
-            }
+        function_spec.outputs.forEach(function (entry) {
+            out.push(ko.observable(entry.value));
         });
         this.outputs(out);
     }
@@ -4089,10 +4073,9 @@ ActionMathAndStats.prototype.isValid = function(){
  * @param {GlobalVar} variable - the variable which is recorded.
  */
 ActionMathAndStats.prototype.setInVarBackRef = function(idx){
-    if (this.inputs()[idx].value() instanceof GlobalVar){
-        this.backRefsIn[idx] =this.inputs()[idx].value().addBackRef(this, this.event, false, true, 'math & statistics');
+    if (this.inputs()[idx] instanceof GlobalVar){
+        this.backRefsIn[idx] = this.inputs()[idx].addBackRef(this, this.event, false, true, 'math & statistics');
     }
-
 };
 
 /**
@@ -4100,24 +4083,21 @@ ActionMathAndStats.prototype.setInVarBackRef = function(idx){
  * @param {GlobalVar} variable - the variable which is recorded.
  */
 ActionMathAndStats.prototype.setOutVarBackRef = function(idx){
-    if (this.outputs()[idx].value() instanceof GlobalVar){
-        this.backRefsOut[idx] = this.outputs()[idx].value().addBackRef(this, this.event, false, true, 'math & statistics');
+    if (this.outputs()[idx] instanceof GlobalVar){
+        this.backRefsOut[idx] = this.outputs()[idx].addBackRef(this, this.event, true, false, 'math & statistics');
     }
 };
 
-
-
-
 ActionMathAndStats.prototype.removeInVariable = function(idx){
-    if (this.inputs()[idx].value() instanceof GlobalVar && this.backRefsIn[idx]){
-        this.inputs()[idx].value().removeBackRef(this.backRefsIn[idx]);
+    if (this.inputs()[idx] instanceof GlobalVar && this.backRefsIn[idx]){
+        this.inputs()[idx].removeBackRef(this.backRefsIn[idx]);
         delete this.backRefsIn[idx]
     }
 };
 
 ActionMathAndStats.prototype.removeOutVariable = function(idx){
-    if (this.outputs()[idx].value() instanceof GlobalVar && this.backRefsOut[idx]){
-        this.outputs()[idx].value().removeBackRef(this.backRefsOut[idx]);
+    if (this.outputs()[idx] instanceof GlobalVar && this.backRefsOut[idx]){
+        this.outputs()[idx].removeBackRef(this.backRefsOut[idx]);
         delete this.backRefsOut[idx]
     }
 };
@@ -4130,50 +4110,28 @@ ActionMathAndStats.prototype.removeOutVariable = function(idx){
  */
 ActionMathAndStats.prototype.run = function(triggerParams) {
     var self = this;
-    var idx = this.getIndexById(this.functionType());
-    if (idx!== null){
+    var func_spec = this.getFcnSpec();
+    if (func_spec){
         var inputData = [];
         this.inputs().forEach(function (input) {
-            if($.isFunction(input.value)){
-               var inp =  input.value();
-            }
-            else{
-                var inp =  input.value;
-            }
+            var inp = input();
             if (inp instanceof GlobalVar){
-                if (inp.value() instanceof GlobalVarValueArray){
-                    var inp =  inp.value().getValues();
-                }
-                else{
-                    var inp =  inp.value().toJS();
-                }
-
+                inp = inp.getValueAsJS();
             }
             if ($.isNumeric(inp)){
                 inp = parseFloat(inp);
             }
-            if (inp != null){
-                inputData.push(inp);
-            }
+            inputData.push(inp);
         });
-        var data = this.currentFunctions()[idx];
-        if (inputData.length>0 && $.isFunction(data.operation)){
-            var globalVarOutput = self.outputs()[0].value();// ToDo  change outcome to more variables in the future
-            var outcome =  data.operation.apply(null, inputData);
-            globalVarOutput.value().setValue(outcome);
-
-            if (globalVarOutput.value() instanceof GlobalVarValueArray){
-                self.testOutcome(globalVarOutput.value().getValues())
-            }
-            else{
-                self.testOutcome(globalVarOutput.value().toJS())
-            }
+        if (inputData.length>0){
+            var globalVarOutput = self.outputs()[0]();// ToDo  change outcome to more variables in the future
+            var outcome =  func_spec.operation.apply(null, inputData);
+            globalVarOutput.setValue(outcome);
+            self.testOutcome(globalVarOutput.getValueAsJS());
         }
         else{
             console.log("Warning: No input data specified for Math & Stats Action")
         }
-
-
     }
 
 };
@@ -4186,6 +4144,10 @@ ActionMathAndStats.prototype.destroyOnPlayerFrame = function(playerFrame) {
 
 };
 
+ActionMathAndStats.prototype.getFcnSpec = function() {
+    return ActionMathAndStats.prototype.allOperationsByKey[this.functionKey()];
+};
+
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
@@ -4196,36 +4158,42 @@ ActionMathAndStats.prototype.destroyOnPlayerFrame = function(playerFrame) {
 ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
 
     var self = this;
-    this.inputs().forEach(function (entry,idx) {
-        if (!($.isFunction(entry.value))){
-            if (entry.relationGlobalVar == "mustBeVariable"){
-                entry.value = ko.observable(entitiesArr.byId[entry.value]);
-                if (entry.value() instanceof GlobalVar){
-                    self.setInVarBackRef(idx);
-                }
-            }
-            else{
-                entry.value = ko.observable(entry.value);
-            }
-        }
-    });
 
-
-    this.outputs().forEach(function (entry,idx) {
-        if (!($.isFunction(entry.value))){
-            if (entry.relationGlobalVar == "mustBeVariable"){
-                entry.value = ko.observable(entitiesArr.byId[entry.value]);
-                if (entry.value() instanceof GlobalVar){
-                    self.setOutVarBackRef(idx);
-                }
+    // reset values
+    var function_spec = this.getFcnSpec();
+    if (function_spec){
+        var inputs_orig = self.inputs();
+        function_spec.inputs.forEach(function (entry, idx) {
+            var inputObs = inputs_orig[idx];
+            var inputVal = inputObs();
+            if (inputVal && inputVal.hasOwnProperty("globalVarId")) {
+                inputObs(entitiesArr.byId[inputVal.globalVarId]);
             }
-            else{
-                entry.value = ko.observable(entry.value);
+        });
+        this.inputs().forEach(function (entry, idx) {
+            if (entry instanceof GlobalVar){
+                self.setInVarBackRef(idx);
             }
-        }
-    });
+        });
 
-    // Set back Refs
+        var out_original = self.outputs();
+        function_spec.outputs.forEach(function (entry, idx) {
+            var outputObs = out_original[idx];
+            var outputVal = outputObs();
+            if (outputVal && outputVal.hasOwnProperty("globalVarId")) {
+                outputObs(entitiesArr.byId[outputVal.globalVarId]);
+            }
+        });
+        this.outputs().forEach(function (entry, idx) {
+            if (entry instanceof GlobalVar){
+                self.setOutVarBackRef(idx);
+            }
+        });
+    }
+    else{
+        this.inputs([]);
+        this.outputs([]);
+    }
 };
 
 /**
@@ -4236,76 +4204,20 @@ ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
 ActionMathAndStats.prototype.reAddEntities = function(entitiesArr) {
 
     this.inputs().forEach(function (entry) {
-        if ($.isFunction(entry.value)){
-            if (entry.relationGlobalVar == "mustBeVariable" && entry.value() instanceof GlobalVar ){
-                if (!entitiesArr.byId.hasOwnProperty(entry.value().id())) {
-                    entitiesArr.push(entry.value());
-                }
+        if (entry instanceof GlobalVar) {
+            if (!entitiesArr.byId.hasOwnProperty(entry.id())) {
+                entitiesArr.push(entry);
             }
         }
-
     });
 
     this.outputs().forEach(function (entry) {
-        if ($.isFunction(entry.value)){
-            if (entry.relationGlobalVar == "mustBeVariable" && entry.value() instanceof GlobalVar){
-                if (!entitiesArr.byId.hasOwnProperty(entry.value().id())) {
-                    entitiesArr.push(entry.value());
-                }
+        if (entry instanceof GlobalVar) {
+            if (!entitiesArr.byId.hasOwnProperty(entry.id())) {
+                entitiesArr.push(entry);
             }
         }
-
     });
-
-};
-
-ActionMathAndStats.prototype.getIndexByName = function(name,inputOrOutput) {
-    if (inputOrOutput =="input"){
-        var vals = this.inputs();
-    }
-    else if(inputOrOutput =="output"){
-        var vals = this.outputs();
-    }
-    var i = 0;
-    var found = false;
-    while (found == false && i<vals.length){
-        var val = vals[i];
-        if (val.name == name){
-            var found = true;
-        }
-        else{
-            i++;
-        }
-    }
-    return i;
-};
-
-
-ActionMathAndStats.prototype.getIndexById = function(name) {
-    if (name){
-        var i = 0;
-        var found = false;
-        var data = this.currentFunctions();
-        while (found == false && i<data.length){
-            var val = data[i];
-            if (val.name == name){
-                var found = true;
-            }
-            else{
-                i++;
-            }
-        }
-        if (found == true){
-            return i;
-        }
-        else{
-            return null
-        }
-
-    }
-    else{
-        return null
-    }
 
 };
 
@@ -4315,10 +4227,14 @@ ActionMathAndStats.prototype.getIndexById = function(name) {
  * @returns {ActionModifyArray}
  */
 ActionMathAndStats.prototype.fromJS = function(data) {
-    this.inputs(data.inputs);
-    this.outputs(data.outputs);
+    this.inputs(jQuery.map( data.inputs, function( val ) {
+        return ko.observable(val);
+    }));
+    this.outputs(jQuery.map( data.outputs, function( val ) {
+        return ko.observable(val);
+    }));
     this.operationType(data.operationType);
-    this.functionType(data.functionType);
+    this.functionKey(data.functionKey);
 
     return this;
 };
@@ -4330,55 +4246,34 @@ ActionMathAndStats.prototype.fromJS = function(data) {
 ActionMathAndStats.prototype.toJS = function() {
     var inputs = [];
     this.inputs().forEach(function (entry) {
-        var saveEntry = JSON.parse(JSON.stringify(entry));
-        if (entry.value){
-            if ($.isFunction(entry.value)){
-                if (entry.value() instanceof GlobalVar){
-                    saveEntry.value = entry.value().id();
-                }
-                else{
-                    saveEntry.value = entry.value();
-                }
-            }
-            else{
-                saveEntry.value = entry.value;
-            }
+        if (entry() instanceof GlobalVar) {
+            inputs.push({
+                globalVarId: entry().id()
+            });
         }
-        else{
-            saveEntry.value = null;
+        else {
+            inputs.push(entry());
         }
-
-        inputs.push(saveEntry);
     });
 
     var outputs = [];
     this.outputs().forEach(function (entry) {
-        var saveEntry = JSON.parse(JSON.stringify(entry));
-        if (entry.value){
-            if ($.isFunction(entry.value)){
-                if (entry.value() instanceof GlobalVar){
-                    saveEntry.value = entry.value().id();
-                }
-                else{
-                    saveEntry.value = entry.value();
-                }
-            }
-            else{
-                saveEntry.value = entry.value;
-            }
+        if (entry() instanceof GlobalVar) {
+            outputs.push({
+                globalVarId: entry().id()
+            });
         }
-        else{
-            saveEntry.value = null;
+        else {
+            outputs.push(entry());
         }
-        outputs.push(saveEntry);
     });
 
     return {
         type: this.type,
         operationType: this.operationType(),
-        functionType: this.functionType(),
-        inputs:inputs,
-        outputs:outputs
+        functionKey: this.functionKey(),
+        inputs: inputs,
+        outputs: outputs
     };
 };
 
@@ -4387,12 +4282,16 @@ ActionMathAndStats.prototype.toJS = function() {
 ActionMathAndStats.prototype.type = "ActionMathAndStats";
 ActionMathAndStats.prototype.label = "Math & Statistics";
 ActionMathAndStats.prototype.operationTypes = ["Array Operations", "Linear Algebra", "Statistical Tests"];
+
+
 ActionMathAndStats.prototype.statisticalOerations = [
 
 ];
 ActionMathAndStats.prototype.algebraOerations = [
 
 ];
+
+
 ActionMathAndStats.prototype.arrayOperations = [
 
     // with parameters
@@ -5523,8 +5422,15 @@ ActionMathAndStats.prototype.arrayOperations = [
 ];
 
 
+ActionMathAndStats.prototype.allOperations = ActionMathAndStats.prototype.statisticalOerations.concat(
+    ActionMathAndStats.prototype.algebraOerations,
+    ActionMathAndStats.prototype.arrayOperations);
 
-
+ActionMathAndStats.prototype.allOperationsByKey = {};
+for (var i=0; i<ActionMathAndStats.prototype.allOperations.length; i++) {
+    var op = ActionMathAndStats.prototype.allOperations[i]
+    ActionMathAndStats.prototype.allOperationsByKey[op.key] = op;
+}
 
 
 

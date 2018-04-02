@@ -48,7 +48,7 @@ ExpEvent.prototype.moveActionUp = function(index, parent) {
 ExpEvent.prototype.moveAction = function(index, UpOrDown, subElement) {
     //var elem = this.dataModel.elements()[index];
     if (subElement != undefined){
-         var actions = subElement.subActions.slice();
+        var actions = subElement.subActions.slice();
         if (UpOrDown=="Up"  && index < actions.length-1){
             var elem = actions.splice(index, 1)[0];
             actions.splice(index+1, 0, elem);

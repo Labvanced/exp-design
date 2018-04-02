@@ -24,32 +24,14 @@ var SelectionElement = function(expData) {
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
 
-
-
-
-
-
     this.predefinedData = ko.computed(function() {
         if (self.selectedPredefinedOption()=='countryList'){
-            if ($.isFunction(globalCountryData)){
-                return globalCountryData();
-            }
-            else{
-                return []
-            }
-
+            return globalCountryData();
         }
         else if (self.selectedPredefinedOption()=='languageList'){
-            if ($.isFunction(globalLanguageData)){
-                return globalLanguageData();
-            }
-            else{
-                return []
-            }
-
+            return globalLanguageData();
         }
     });
-
 };
 
 SelectionElement.prototype.label = "Selection";
