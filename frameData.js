@@ -152,7 +152,7 @@ FrameData.prototype.getTextRefs = function(textArrOuter, label){
  */
 FrameData.prototype.addVariableToLocalWorkspace = function(variable) {
     var isExisting = this.localWorkspaceVars.byId[variable.id()];
-    if (!isExisting) {
+    if (!isExisting && !variable.isFactor()) {
         this.localWorkspaceVars.push(variable);
         variable.addBackRef(this, this, false, false, 'workspace variable');
     }
