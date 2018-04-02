@@ -3,14 +3,24 @@
         <div class="taskeditor-header">Progress Bar</div>
 
         <div>
-            Progress: <input type="number" min="0" max="100" data-bind="textInput: dataModel().progressValue">%<br>
+            <div>
+                <span>Progress Type:</span>
+                <label><span style="margin-left: 5px">Use Fixed:</span><input name="progressType" type="radio" value="fixed" data-bind="checked: dataModel().progressType"></label>
+                <label><span style="margin-left: 10px">Use Variable:</span><input name="progressType" type="radio" value="variable" data-bind="checked: dataModel().progressType"></label>
+            </div>
+            <!-- ko if: dataModel().progressType()=="fixed" -->
+                Progress: <input type="number" min="0" max="100" data-bind="textInput: dataModel().progressValue">%<br>
+            <!-- /ko -->
 
-            <!-- ko if: dataModel().variable()==null -->
-            Bind to  Variable: <span data-bind="click: selectVar" class="btn" style="margin-left: 10px; padding: 1px 3px; border: 1px solid darkgray;" role="button">select Var</span>
+            <!-- ko if: dataModel().progressType()=="variable" -->
+            <label>
+                Linked Variable:
+                <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel().variable, allowedDatatypes: ['numeric'], relinkCallback: relinkCallback } }"></span>
+            </label>
+
             <!-- /ko -->
-            <!-- ko ifnot: dataModel().variable()==null -->
-            Bind to  Variable: <span data-bind="text:dataModel().variable().name"></span> <span data-bind="click: selectVar" class="btn" style="margin-left: 10px; padding: 1px 3px; border: 1px solid darkgray;" role="button">Change</span>
-            <!-- /ko -->
+
+
 
         </div>
     </div>
@@ -19,13 +29,13 @@
 <template id="progress-bar-preview-template">
 
     <div class="myProgress">
-        <div class="myBar" id="progressBarPrev"><span data-bind="text: dataModel().progressValue()+'%'"></span></div>
+        <div class="myBar" id="progressBarPrev"><span data-bind="text: progress()+'%'"></span></div>
     </div>
 
 </template>
 
 <template id="progress-bar-playerview-template">
     <div class="myProgress">
-        <div class="myBar" id="progressBarPlayer"><span data-bind="text: dataModel().progressValue()+'%'"></span></div>
+        <div class="myBar" id="progressBarPlayer"><span data-bind="text: progress()+'%'"></span></div>
     </div>
 </template>
