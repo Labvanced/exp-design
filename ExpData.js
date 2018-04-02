@@ -91,6 +91,7 @@ var ExpData = function (parentExperiment) {
 ExpData.prototype.oldFixedVarNames = [
     'varSubjectId',
     'varSubjectIndex',
+    'varSubjectNrPerSubjGroupEMPTY',
     'varGroupId',
     'varSessionTimeStamp',
     'varSessionTimeStampEnd',
@@ -102,23 +103,28 @@ ExpData.prototype.oldFixedVarNames = [
     'varTaskIndex',
     'varTrialId',
     'varTrialIndex',
-    'varRoleId',
     'varCondition',
+
     'varBrowserSpecEMPTY',
     'varSystemSpecEMPTY',
     'varAgentSpecEMPTY',
-    'varTimeMeasureSpecMeanEMPTY',
-    'varFullscreenSpecEMPTY',
     'varBrowserVersionSpecEMPTY',
-    'varTimeMeasureSpecMaxEMPTY',
+    'varFullscreenSpecEMPTY',
+    'varTimeMeasureSpecMeanEMPTY',
+    'varTimeMeasureSpecStdEMPTY',
+
     'varCrowdsourcingCodeEMPTY',
+    'varCrowdsourcingSubjIdEMPTY',
     'varGazeXEMPTY',
-    'varGazeYEMPTY'
+    'varGazeYEMPTY',
+    'varRoleIdEMPTY'
+    // 'varTimeMeasureSpecMaxEMPTY',
 ];
 
 ExpData.prototype.fixedVarNames = [
     'varSubjectCode',
     'varSubjectNr',
+    'varSubjectNrPerSubjGroup',
     'varGroupName',
     'varSessionTimeStamp',
     'varSessionTimeStampEnd',
@@ -130,54 +136,57 @@ ExpData.prototype.fixedVarNames = [
     'varTaskNr',
     'varTrialId',
     'varTrialNr',
-    'varRoleId',
     'varConditionId',
+
     'varBrowserSpec',
     'varSystemSpec',
     'varAgentSpec',
-    'varTimeMeasureSpecMean',
-    'varFullscreenSpec',
     'varBrowserVersionSpec',
-    'varTimeMeasureSpecMax',
+    'varFullscreenSpec',
+    'varTimeMeasureSpecMean',
+    'varTimeMeasureSpecStd',
+
     'varCrowdsourcingCode',
+    'varCrowdsourcingSubjId',
     'varGazeX',
     'varGazeY',
-    'varCrowdsourcingSubjId',
-    'varTimeMeasureSpecStd',
-    'varSubjectNrPerSubjGroup'
+    'varRoleId'
+    // 'varTimeMeasureSpecMax',
+
 ];
 
 
-ExpData.prototype.varDescriptions = [
-    {'varSubjectCode':' The variable "Subject_Code" is a unique string for each subject and session across all experiments running on Labvanced. So this can be used to uniquely identify each participant session.'},
-    {'varSubjectNr':'The variable "Subject_Nr" is a global counter of participants in each study. So this can be used to do custom between subject stimuli randomization and to infer the overall n number of participants.'},
-    {'varGroupName':'The variable "Group_Name" holds the value of the "subject group name" for each participant. This can be used to infer to which subject group each participant was assigned to.'},
-    {'varSessionTimeStamp':'The variable "Session_Start_Time" records the start time on the participant session in UNIX time.'},
-    {'varSessionTimeStampEnd':'The variable "Session_End_Time" records the end time on the participant session in UNIX time.'},
-    {'varSessionName':'The variable "Session_Name" holds the value of the "session name" for each participant. This can be used to infer to which session was performed by the participant.'},
-    {'varSessionNr':'The variable "Session_Nr" holds the value of the "session nr" for each participant. This can be used to infer to whether the participant performed the first, second, third,(and so on) session.'},
-    {'varBlockName':''},
-    {'varBlockNr':'The variable "Bock_Nr" holds the value of the "block nr" for each participant. This can be used to infer the current'},
-    {'varTaskName':''},
-    {'varTaskNr':''},
-    {'varTrialId':''},
-    {'varTrialNr':''},
-    {'varRoleId':''},
-    {'varConditionId':''},
-    {'varBrowserSpec':''},
-    {'varSystemSpec':''},
-    {'varAgentSpec':''},
-    {'varTimeMeasureSpecMean':''},
-    {'varFullscreenSpec':''},
-    {'varBrowserVersionSpec':''},
-    {'varTimeMeasureSpecMax':''},
-    {'varCrowdsourcingCode':''},
-    {'varGazeX':''},
-    {'varGazeY':''},
-    {'varCrowdsourcingSubjId':''},
-    {'varTimeMeasureSpecStd':''},
-    {'varSubjectNrPerSubjGroup':''}
-];
+ExpData.prototype.varDescriptions = {
+    'varSubjectCode':'The variable "Subject_Code" is a unique string for each subject / session across all experiments running on Labvanced. This can be used to uniquely identify each participant or session.',
+    'varSubjectNr':'The variable "Subject_Nr" is a global counter of participants in a study. This can be used to do custom between subject randomization and to infer the overall number of participants in a study.',
+    'varSubjectNrPerSubjGroup':'The variable "Subject_Nr_Per_Group" is a counter per subject group in a study. This can be used to do custom between subject randomization and to infer the current number of participants within each subject group.',
+    'varGroupName':'The variable "Group_Name" holds the value of the "subject group name" for each participant. This can be used to infer to which subject group each participant is assigned to.',
+    'varSessionTimeStamp':'The variable "Session_Start_Time" records the start time of the current participant session in UNIX time.',
+    'varSessionTimeStampEnd':'The variable "Session_End_Time" records the end time of the current participant session in UNIX time.',
+    'varSessionName':'The variable "Session_Name" holds the value of the "session name" for the current session. This can be used to infer which session is currently performed by the participant.',
+    'varSessionNr':'The variable "Session_Nr" holds the current value of the "session nr" for the current session. This can be used to infer whether the participant currently performs the first, second, third,(and so on) session.',
+    'varBlockName':'The variable "Block_Name" holds the current value of the "block name" for the current session. This can be used to infer which block is currently performed by the participant.',
+    'varBlockNr':'The variable "Bock_Nr" holds the current value of the "block nr" for the current session. This can be used to infer whether the participant currently performs the first, second, third,(and so on) block in this session.',
+    'varTaskName':'The variable "Task_Name" holds the current value of the "task name" for the current block. This can be used to infer which task is currently performed by the participant.',
+    'varTaskNr':'The variable "Task_Nr" holds the current value of the "task nr" for the current block. This can be used to infer whether the participant currently performs the first, second, third,(and so on) task in this block.',
+    'varTrialId':'The variable "Trial_Id" holds the current value of the "trial id" for the current task. This can be used to infer which Trial is currently performed by the participant.',
+    'varTrialNr':'The variable "Trial_Nr" holds the current value of the "trial nr" for the current task. This can be used to infer whether the participant currently performs the first, second, third,(and so on) trial in this task.',
+    'varRoleId':'The variable "Role_ID" is used for multi user/multi participant studies to refer uniquely to one of the participants of the study. This can be used to present different frames and roles to different participants within the same task/experiment.',
+    'varConditionId':'The variable "Condition_Id" holds the current value of the "condition id" for the current trial. This can be used to infer which condition is currently performed by the participant.',
+    'varBrowserSpec':'The variable "Browser_Spec" holds the value of the browser used by the participant to perform the experiment. This can be used to later analyze possible differences between browsers. Allowing/forbidding certain browsers can be done via the study settings.',
+    'varSystemSpec':'The variable "System_Spec" holds the value of the operating system/device used by the participant to perform the experiment. This can be used to later analyze possible differences between operating systems/devices. Allowing/forbidding certain operating systems/devices can be done via the study settings.',
+    'varAgentSpec':'The variable "Agent_Spec" holds the complete String of the "User-Agent-Browser-Specification". This can be used to get some more detailed information about the participants system specifications.',
+    'varTimeMeasureSpecMean':'The variable "TimeMeasure_Mean" provides an estimate of how precise (fast) reaction times can be measured by the participants computer/device. The provided value is a mean offset of several reaction time measurements in milliseconds. It can be used to infer how precisely stimuli were shown on the screen.',
+    'varTimeMeasureSpecStd':'The variable "TimeMeasure_Std" provides an estimate of how reliable/consistent reaction time measurement is throughout the experiment. The provided value is a standard deviation of several reaction time measurements in milliseconds. It can be used to infer how comparable reaction time measurements are across trials and conditions.',
+    'varFullscreenSpec':'The variable "Always_Fullscreen", is a boolean value, which is true as long as the participant keeps the experiment running in fullscreen mode. This can be used to pause/quit the experiment when a participant leaves the fullscreen mode.',
+    'varBrowserVersionSpec':'The variable "BrowserVersion_Spec" holds the value of the browser version used by the participant to perform the experiment. This can be used to later analyze possible differences between browser versions.',
+    'varCrowdsourcingCode':'The variable "Crowdsourcing_Code" holds the value of the unique "crowdsourcing code", typically shown to the subject at end of the experiment to complete the crowdsourcing session and claim the payment.',
+    'varCrowdsourcingSubjId':'The variable "Crowdsourcing_SubjId" holds the value of the unique "identification code" for each crowdsourcing participant. This can be used to later on create a reference between crowdsourcing data on Labvanced and the external crowdsourcing service (e.g Mechanical Turk).',
+    'varGazeX':'The variable "GazeX" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in X coordinates. This value can be used for calibration and as a "fixation trigger".',
+    'varGazeY':'The variable "GazeY" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in Y coordinates. This value can be used for calibration and as a "fixation trigger".'
+       // {'varTimeMeasureSpecMax':''},
+};
+
 
 ExpData.prototype.staticTranslations = {
     English: {
@@ -349,95 +358,124 @@ ExpData.prototype.initVars = function() {
 /**
  * creates all predefined (fixed) variables
  */
+
+
 ExpData.prototype.createVars = function() {
     if (!this.varSubjectCode()) {
         this.varSubjectCode((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Subject_Code'));
+        this.varSubjectCode().setDescription(ExpData.prototype.varDescriptions["varSubjectCode"]);
     }
     if (!this.varSubjectNr()) {
         this.varSubjectNr((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'ordinal', 'Subject_Nr'));
+        this.varSubjectNr().setDescription(ExpData.prototype.varDescriptions["varSubjectNr"]);
+    }
+    if (!this.varSubjectNrPerSubjGroup()) {
+        this.varSubjectNrPerSubjGroup((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'ordinal', 'Subject_Nr_Per_Group'));
+        this.varSubjectNrPerSubjGroup().setDescription(ExpData.prototype.varDescriptions["varSubjectNrPerSubjGroup"]);
     }
     if (!this.varGroupName()) {
         this.varGroupName((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group_Name'));
+        this.varGroupName().setDescription(ExpData.prototype.varDescriptions["varGroupName"]);
     }
     if (!this.varSessionTimeStamp()) {
         this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'session', 'interval', 'Session_Start_Time'));
+        this.varSessionTimeStamp().setDescription(ExpData.prototype.varDescriptions["varSessionTimeStamp"]);
     }
     if (!this.varSessionTimeStampEnd()) {
         this.varSessionTimeStampEnd((new GlobalVar(this.expData)).initProperties('datetime', 'session', 'interval', 'Session_End_Time'));
+        this.varSessionTimeStampEnd().setDescription(ExpData.prototype.varDescriptions["varSessionTimeStampEnd"]);
     }
     if (!this.varSessionName()) {
         this.varSessionName((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Session_Name'));
+        this.varSessionName().setDescription(ExpData.prototype.varDescriptions["varSessionName"]);
     }
     if (!this.varSessionNr()) {
         this.varSessionNr((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Session_Nr'));
+        this.varSessionNr().setDescription(ExpData.prototype.varDescriptions["varSessionNr"]);
     }
     if (!this.varBlockName()) {
         this.varBlockName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Block_Name'));
+        this.varBlockName().setDescription(ExpData.prototype.varDescriptions["varBlockName"]);
     }
     if (!this.varBlockNr()) {
         this.varBlockNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'ordinal', 'Block_Nr'));
+        this.varBlockNr().setDescription(ExpData.prototype.varDescriptions["varBlockNr"]);
     }
     if (!this.varTaskName()) {
         this.varTaskName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Task_Name'));
+        this.varTaskName().setDescription(ExpData.prototype.varDescriptions["varTaskName"]);
     }
     if (!this.varTaskNr()) {
         this.varTaskNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'ordinal', 'Task_Nr'));
+        this.varTaskNr().setDescription(ExpData.prototype.varDescriptions["varTaskNr"]);
     }
     if (!this.varTrialId()) {
         this.varTrialId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'ordinal', 'Trial_Id'));
+        this.varTrialId().setDescription(ExpData.prototype.varDescriptions["varTrialId"]);
     }
     if (!this.varTrialNr()) {
         this.varTrialNr((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'ordinal', 'Trial_Nr'));
+        this.varTrialNr().setDescription(ExpData.prototype.varDescriptions["varTrialNr"]);
     }
     if (!this.varConditionId()) {
-        this.varConditionId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'nominal', 'Condition_Id'));
+        this.varConditionId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'ordinal', 'Condition_Id'));
+        this.varConditionId().setDescription(ExpData.prototype.varDescriptions["varConditionId"]);
     }
     if (!this.varBrowserSpec()) {
         this.varBrowserSpec((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Browser_Spec'));
+        this.varBrowserSpec().setDescription(ExpData.prototype.varDescriptions["varBrowserSpec"]);
     }
     if (!this.varSystemSpec()) {
         this.varSystemSpec((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'System_Spec'));
+        this.varSystemSpec().setDescription(ExpData.prototype.varDescriptions["varSystemSpec"]);
     }
     if (!this.varAgentSpec()) {
         this.varAgentSpec((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Agent_Spec'));
+        this.varAgentSpec().setDescription(ExpData.prototype.varDescriptions["varAgentSpec"]);
     }
-    if (!this.varTimeMeasureSpecMean()) {
-        this.varTimeMeasureSpecMean((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Mean'));
-    }
-    if (!this.varTimeMeasureSpecMax()) {
-        this.varTimeMeasureSpecMax((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Max'));
+    if (!this.varBrowserVersionSpec()) {
+        this.varBrowserVersionSpec((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'BrowserVersion_Spec'));
+        this.varBrowserVersionSpec().setDescription(ExpData.prototype.varDescriptions["varBrowserVersionSpec"]);
     }
     if (!this.varFullscreenSpec()) {
         this.varFullscreenSpec((new GlobalVar(this.expData)).initProperties('boolean', 'session', 'nominal', 'Always_Fullscreen'));
         this.varFullscreenSpec().resetStartValue();
         this.varFullscreenSpec().startValue().value(true);
+        this.varFullscreenSpec().setDescription(ExpData.prototype.varDescriptions["varFullscreenSpec"]);
     }
-    if (!this.varBrowserVersionSpec()) {
-        this.varBrowserVersionSpec((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'BrowserVersion_Spec'));
-    }
-    if (!this.varRoleId()){
-        this.varRoleId((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Role_Id'));
-    }
-    if (!this.varCrowdsourcingCode()) {
-        this.varCrowdsourcingCode((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'nominal', 'Crowdsourcing_Code'));
-    }
-    if (!this.varGazeX()) {
-        this.varGazeX((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeX'));
-    }
-    if (!this.varGazeY()) {
-        this.varGazeY((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeY'));
-    }
-    if (!this.varCrowdsourcingSubjId()) {
-        this.varCrowdsourcingSubjId((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Crowdsourcing_SubjId'));
+    if (!this.varTimeMeasureSpecMean()) {
+        this.varTimeMeasureSpecMean((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Mean'));
+        this.varTimeMeasureSpecMean().setDescription(ExpData.prototype.varDescriptions["varTimeMeasureSpecMean"]);
     }
     if (!this.varTimeMeasureSpecStd()) {
         this.varTimeMeasureSpecStd((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Std'));
+        this.varTimeMeasureSpecStd().setDescription(ExpData.prototype.varDescriptions["varTimeMeasureSpecStd"]);
     }
-
-    if (!this.varSubjectNrPerSubjGroup()) {
-        this.varSubjectNrPerSubjGroup((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'ordinal', 'Subject_Nr_Per_Group'));
+    if (!this.varCrowdsourcingCode()) {
+        this.varCrowdsourcingCode((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Crowdsourcing_Code'));
+        this.varCrowdsourcingCode().setDescription(ExpData.prototype.varDescriptions["varCrowdsourcingCode"]);
     }
+    if (!this.varCrowdsourcingSubjId()) {
+        this.varCrowdsourcingSubjId((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Crowdsourcing_SubjId'));
+        this.varCrowdsourcingSubjId().setDescription(ExpData.prototype.varDescriptions["varCrowdsourcingSubjId"]);
+    }
+    if (!this.varGazeX()) {
+        this.varGazeX((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeX'));
+        this.varGazeX().setDescription(ExpData.prototype.varDescriptions["varGazeX"]);
+    }
+    if (!this.varGazeY()) {
+        this.varGazeY((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeY'));
+        this.varGazeY().setDescription(ExpData.prototype.varDescriptions["varGazeY"]);
+    }
+    if (!this.varRoleId()){
+        this.varRoleId((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Role_Id'));
+        this.varRoleId().setDescription(ExpData.prototype.varDescriptions["varRoleId"]);
+    }
+    //  if (!this.varTimeMeasureSpecMax()) {
+    //      this.varTimeMeasureSpecMax((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Max'));
+    //  }
 
+    this.reAddEntities();
 
 };
 
@@ -591,8 +629,10 @@ ExpData.prototype.setPointers = function() {
     var missingVar = false;
     for (i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varId = this[ExpData.prototype.fixedVarNames[i]]();
+        var description = ExpData.prototype.varDescriptions[ExpData.prototype.fixedVarNames[i]];
         if (varId) {
             var varInstance = this.entities.byId[varId];
+            varInstance.setDescription(description)
             this[ExpData.prototype.fixedVarNames[i]](varInstance);
         }
         else {
@@ -810,6 +850,9 @@ ExpData.prototype.reAddEntities = function() {
                 entitiesArr.push(varInstance);
             }
         }
+        else{
+            var problem  =1;
+        }
     }
 };
 
@@ -880,6 +923,7 @@ ExpData.prototype.fromJS = function(data) {
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
         var varName = ExpData.prototype.fixedVarNames[i];
+       // varTimeMeasureSpecMax
         if (varName === undefined) {
             var oldVarName = ExpData.prototype.oldFixedVarNames[i];
             this[varName](data[oldVarName]);

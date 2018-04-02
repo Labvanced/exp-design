@@ -226,7 +226,7 @@ PageData.prototype.getTextRefs = function(textArrOuter, label){
  */
 PageData.prototype.addVariableToLocalWorkspace = function(variable) {
     var isExisting = this.localWorkspaceVars.byId[variable.id()];
-    if (!isExisting) {
+    if (!isExisting && !variable.isFactor()) {
         this.localWorkspaceVars.push(variable);
         variable.addBackRef(this, this, false, false, 'workspace variable');
     }
