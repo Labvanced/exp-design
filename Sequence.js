@@ -193,11 +193,15 @@ Sequence.prototype.setPointers = function(entitiesArr) {
     } ));
 
     // converter to add all old existing factors to workspace only in editor
-   if(window.uc!==undefined){
-       this.addAllRemainingFactorToWorkspace();
-   }
+   //if(window.uc!==undefined){
+   //    this.addAllRemainingFactorToWorkspace();
+   //}
 
 
+};
+
+Sequence.prototype.onFinishedLoading = function() {
+    this.addAllRemainingFactorToWorkspace();
 };
 
 Sequence.prototype.addVariableToWorkspace = function(variable) {
@@ -216,15 +220,18 @@ Sequence.prototype.removeVariableFromWorkspace = function(variable) {
 
 };
 
-Sequence.prototype.addAllRemainingFactorToWorkspace = function(variable) {
+Sequence.prototype.addAllRemainingFactorToWorkspace = function() {
     var self = this;
-    this.factorGroup.factors().forEach(function (factor) {
-        var variable = factor.globalVar();
-        var isExisting = self.workspaceVars.byId[variable.id()];
-        if (!isExisting) {
-            self.workspaceVars.push(variable);
-        }
-    })
+    if (this.factorGroup){
+        this.factorGroup.factors().forEach(function (factor) {
+            var variable = factor.globalVar();
+            var isExisting = self.workspaceVars.byId[variable.id()];
+            if (!isExisting) {
+                self.workspaceVars.push(variable);
+            }
+        })
+    }
+
 };
 
 

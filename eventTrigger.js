@@ -61,33 +61,33 @@ TriggerMouse.prototype.getParameterSpec = function() {
  * @param target
  */
 TriggerMouse.prototype.triggerOnTarget = function(playerFrame, target, ev) {
-   if (target.modifier().selectedTrialView.isActive()){
-       var stimulusInformation = null;
-       if (target.content().hasOwnProperty("stimulusInformation")){
-           stimulusInformation =  target.content().modifier().selectedTrialView.stimulusInformation();
-       }
+    if (target.modifier().selectedTrialView.isActive()){
+        var stimulusInformation = null;
+        if (target.content().hasOwnProperty("stimulusInformation")){
+            stimulusInformation =  target.content().modifier().selectedTrialView.stimulusInformation();
+        }
 
-       var mouseX = ev.clientX;
-       var mouseY = ev.clientY;
+        var mouseX = ev.clientX;
+        var mouseY = ev.clientY;
 
-       // convert to frame coordinates if this is not a page:
-       var playerFrame = player.currentFrame;
-       if(playerFrame.frameData instanceof FrameData) {
-           var scale = playerFrame.frameView.scale();
-           var offX = (window.innerWidth - playerFrame.frameData.frameWidth() * scale) / 2;
-           var offY = (window.innerHeight - playerFrame.frameData.frameHeight() * scale) / 2;
-           mouseX = (mouseX - offX) / scale;
-           mouseY = (mouseY - offY) / scale;
-       }
+        // convert to frame coordinates if this is not a page:
+        //var playerFrame = player.currentFrame;
+        if(playerFrame.frameData instanceof FrameData) {
+            var scale = playerFrame.frameView.scale();
+            var offX = (window.innerWidth - playerFrame.frameData.frameWidth() * scale) / 2;
+            var offY = (window.innerHeight - playerFrame.frameData.frameHeight() * scale) / 2;
+            mouseX = (mouseX - offX) / scale;
+            mouseY = (mouseY - offY) / scale;
+        }
 
-       this.event.triggerActions([
-           target.name(),
-           playerFrame.getFrameTime(),
-           stimulusInformation,
-           mouseX,
-           mouseY
-       ]);
-   }
+        this.event.triggerActions([
+            target.name(),
+            playerFrame.getFrameTime(),
+            stimulusInformation,
+            mouseX,
+            mouseY
+        ]);
+    }
 };
 
 /**
@@ -217,6 +217,171 @@ TriggerMouse.prototype.toJS = function() {
         type: this.type,
         buttonType: this.buttonType(),
         interactionType: this.interactionType(),
+        targets: jQuery.map( this.targets(), function( element ) { return element.id(); } )
+    };
+};
+
+////////////////////////
+
+
+////////////////////////
+
+/**
+ * This Trigger handles mouse interactions with stimulus elements.
+ *
+ * @param {ExpEvent} event - the parent event where this requirements is used.
+ * @constructor
+ */
+var TriggerEyetracking = function(event) {
+    this.event = event;
+
+    // serialized
+    this.limitToTargets = ko.observable(false);
+    this.targets = ko.observableArray([]);
+
+    // not serialized:
+    this.eventHandleForCleanUp = null;
+
+};
+
+TriggerEyetracking.prototype.type = "TriggerEyetracking";
+TriggerEyetracking.prototype.label = "Eyetracking Trigger";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+TriggerEyetracking.prototype.isValid = function() {
+    if (this.event.trigger()){
+        return true;
+    }
+    else{
+        return false;
+    }
+};
+
+/**
+ * Returns the parameters that this trigger will pass on to the requirements and actions.
+ *
+ * @returns {string[]}
+ */
+TriggerEyetracking.prototype.getParameterSpec = function() {
+    return [
+        'Coordinate X',
+        'Coordinate Y',
+        'Time From Frame Onset',
+        'Stimulus Name',
+        'Stimulus Info'
+    ];
+};
+
+/**
+ * this function is called in the player when the frame starts. It sets up the corresponding click handlers.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+TriggerEyetracking.prototype.setupOnPlayerFrame = function(playerFrame) {
+    var self = this;
+
+    this.eventHandleForCleanUp = function(coordX, coordY) {
+        if (self.limitToTargets()) {
+            var allTargets = self.targets();
+            for (var i = 0; i<allTargets.length;i++){
+                var target = allTargets[i];
+                if (target.modifier().selectedTrialView.isActive()){
+
+                    var elemX = target.modifier().selectedTrialView.editorX();
+                    var elemY = target.modifier().selectedTrialView.editorY();
+
+                    var elemWidth = target.modifier().selectedTrialView.editorWidth();
+                    var elemHeight = target.modifier().selectedTrialView.editorHeight();
+
+                    if (elemX < coordX && elemX+elemWidth > coordX && elemY < coordY && elemY+elemHeight > coordY) {
+                        var stimulusInformation = null;
+                        if (target.content().hasOwnProperty("stimulusInformation")) {
+                            stimulusInformation = target.content().modifier().selectedTrialView.stimulusInformation();
+                        }
+                        self.event.triggerActions([
+                            coordX,
+                            coordY,
+                            playerFrame.getFrameTime(),
+                            target.name(),
+                            stimulusInformation
+                        ]);
+                    }
+                }
+            }
+        }
+        else {
+            self.event.triggerActions([
+                coordX,
+                coordY,
+                playerFrame.getFrameTime(),
+                null,
+                null
+            ]);
+        }
+    };
+
+    playerFrame.onEyetrackingCoords.push(this.eventHandleForCleanUp);
+
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+TriggerEyetracking.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    if (this.eventHandleForCleanUp) {
+        var index = playerFrame.onEyetrackingCoords.indexOf(this.eventHandleForCleanUp);
+        if (index > -1) {
+            playerFrame.onEyetrackingCoords.splice(index, 1);
+        }
+        this.eventHandleForCleanUp = null;
+    }
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerEyetracking.prototype.setPointers = function(entitiesArr) {
+    this.targets(jQuery.map( this.targets(), function( id ) {
+        return entitiesArr.byId[id];
+    } ));
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerEyetracking.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {TriggerEyetracking}
+ */
+TriggerEyetracking.prototype.fromJS = function(data) {
+    this.limitToTargets(data.limitToTargets);
+    this.targets(data.targets);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+TriggerEyetracking.prototype.toJS = function() {
+    return {
+        type: this.type,
+        limitToTargets: this.limitToTargets(),
         targets: jQuery.map( this.targets(), function( element ) { return element.id(); } )
     };
 };
