@@ -362,7 +362,11 @@ var OperandVariable = function(event) {
 
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
-OperandVariable.prototype.operandTypes = ['undefined', "arithmetic", "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean","abs","round0decimal","round1decimal","round2decimals","round3decimals","floor","ceil"];
+
+OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean"];
+OperandVariable.prototype.unaryOperandTypes = ["abs","round0decimal","round1decimal","round2decimals","round3decimals","floor","ceil","sqrt"];
+OperandVariable.prototype.binaryOperandTypes = ["arithmetic"];
+OperandVariable.prototype.operandTypes = OperandVariable.prototype.nullaryOperandTypes.concat(OperandVariable.prototype.unaryOperandTypes, OperandVariable.prototype.binaryOperandTypes);
 OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
 
 /**
@@ -488,6 +492,9 @@ OperandVariable.prototype.getValue = function(parameters) {
 
         case "abs":
             return Math.abs(value.left.getValue());
+
+        case "sqrt":
+            return Math.sqrt(value.left.getValue());
     }
 };
 
@@ -528,7 +535,7 @@ OperandVariable.prototype.setPointers = function(entitiesArr) {
         this.operandValueOrObject().left.setPointers(entitiesArr);
         this.operandValueOrObject().right.setPointers(entitiesArr);
     }
-    if (this.operandType() == "round0decimal" || this.operandType() == "round1decimal" || this.operandType() == "round2decimals"  || this.operandType() == "round3decimals" || this.operandType() == "ceil" || this.operandType() == "floor" || this.operandType() == "abs") {
+    if (OperandVariable.prototype.unaryOperandTypes.indexOf(this.operandType()) > -1) {
         this.operandValueOrObject().left.setPointers(entitiesArr);
     }
 };
@@ -550,9 +557,8 @@ OperandVariable.prototype.reAddEntities = function(entitiesArr) {
         this.operandValueOrObject().left.reAddEntities(entitiesArr);
         this.operandValueOrObject().right.reAddEntities(entitiesArr);
     }
-    if (this.operandType() == "round0decimal" || this.operandType() == "round1decimal" || this.operandType() == "round2decimals"  || this.operandType() == "round3decimals" || this.operandType() == "ceil" || this.operandType() == "floor" || this.operandType() == "abs"){
+    if (OperandVariable.prototype.unaryOperandTypes.indexOf(this.operandType()) > -1) {
         this.operandValueOrObject().left.reAddEntities(entitiesArr);
-
     }
 };
 
@@ -579,7 +585,7 @@ OperandVariable.prototype.fromJS = function(data) {
             op: data.operandValueOrObject.op
         });
     }
-    else if (data.operandType == "round0decimal" || data.operandType == "round1decimal" || data.operandType== "round2decimals"  || data.operandType == "round3decimals" || data.operandType == "ceil" || data.operandType == "floor" || data.operandType == "abs") {
+    else if (OperandVariable.prototype.unaryOperandTypes.indexOf(this.operandType()) > -1) {
         var left = new OperandVariable(this.event);
         left.fromJS(data.operandValueOrObject.left);
         this.operandValueOrObject({
@@ -587,7 +593,6 @@ OperandVariable.prototype.fromJS = function(data) {
             op: data.operandValueOrObject.op
         });
     }
-
     else {
         this.operandValueOrObject(data.operandValueOrObject);
     }
@@ -621,7 +626,7 @@ OperandVariable.prototype.toJS = function() {
             op: data.operandValueOrObject.op
         };
     }
-    if (data.operandType == "round0decimal" || data.operandType == "round1decimal" || data.operandType== "round2decimals"  || data.operandType == "round3decimals" || data.operandType == "ceil" || data.operandType == "floor" || data.operandType == "abs") {
+    if (OperandVariable.prototype.unaryOperandTypes.indexOf(this.operandType()) > -1) {
         data.operandValueOrObject = {
             left: data.operandValueOrObject.left.toJS(),
             op: data.operandValueOrObject.op
