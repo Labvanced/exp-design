@@ -216,15 +216,18 @@ Sequence.prototype.removeVariableFromWorkspace = function(variable) {
 
 };
 
-Sequence.prototype.addAllRemainingFactorToWorkspace = function(variable) {
+Sequence.prototype.addAllRemainingFactorToWorkspace = function() {
     var self = this;
-    this.factorGroup.factors().forEach(function (factor) {
-        var variable = factor.globalVar();
-        var isExisting = self.workspaceVars.byId[variable.id()];
-        if (!isExisting) {
-            self.workspaceVars.push(variable);
-        }
-    })
+    if (this.factorGroup){
+        this.factorGroup.factors().forEach(function (factor) {
+            var variable = factor.globalVar();
+            var isExisting = self.workspaceVars.byId[variable.id()];
+            if (!isExisting) {
+                self.workspaceVars.push(variable);
+            }
+        })
+    }
+
 };
 
 
