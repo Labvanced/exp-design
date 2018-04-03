@@ -193,11 +193,15 @@ Sequence.prototype.setPointers = function(entitiesArr) {
     } ));
 
     // converter to add all old existing factors to workspace only in editor
-   if(window.uc!==undefined){
-       this.addAllRemainingFactorToWorkspace();
-   }
+   //if(window.uc!==undefined){
+   //    this.addAllRemainingFactorToWorkspace();
+   //}
 
 
+};
+
+Sequence.prototype.onFinishedLoading = function() {
+    this.addAllRemainingFactorToWorkspace();
 };
 
 Sequence.prototype.addVariableToWorkspace = function(variable) {
