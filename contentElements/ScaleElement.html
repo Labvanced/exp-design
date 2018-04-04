@@ -86,8 +86,8 @@
                 <span class="scale-left-text notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : rowText}, style:{width:100-$parent.dataModel.leftRightRatio()+'%'}" ></span>
                 <span class="scale-right-side" data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-1+'%'}"><!-- removing white space
                 --><label class="scale-right-entry scalebutton" data-bind="style:{width:$parent.parent.calculateWidth()}">
-                        <input class="scalebutton-element" type="radio" data-bind="attr: {value:$index()+1}, checked: $parent.variable().startValue().value">
-                        <div class="scalebutton-img"></div>
+                        <input class="scalebutton-element" type="radio" data-bind="attr: {value:$index()+1}, checked: $parent.variable().startValue().value,enable: $parent.parent.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
+                        <div class="scalebutton-img" data-bind="style: { 'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
                     </label><!-- removing white space
                 --></span>
 
@@ -126,8 +126,8 @@
 
                 <span class="scale-right-side" data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-1+'%'}"><!-- removing white space
                 --><label class="scale-right-entry scalebutton" data-bind="style:{width:$parent.parent.calculateWidth()}">
-                        <input class="scalebutton-element" type="radio" data-bind="attr: {value:$index()+1}, checked: $parent.variable().value().value">
-                        <div class="scalebutton-img"></div>
+                        <input class="scalebutton-element" type="radio" data-bind="attr: {value:$index()+1}, checked: $parent.variable().value().value, enable: $parent.parent.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
+                        <div class="scalebutton-img" data-bind="style: { 'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
                     </label><!-- removing white space
                 --></span>
 

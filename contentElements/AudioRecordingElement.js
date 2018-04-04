@@ -422,9 +422,12 @@ function createAudioRecordingComponents() {
         this.myAudioElem = $(elem).find(".recordedAudioPlaybackElem")[0];
         this.seekBar = $(elem).find('.seek-bar')[0];
 
-        this.seekBar.addEventListener("change", function () {
-            self.dataModel.jumpToByFraction(self.seekBar.value / 100);
-        });
+        if (this.seekBar){
+            this.seekBar.addEventListener("change", function () {
+                self.dataModel.jumpToByFraction(self.seekBar.value / 100);
+            });
+
+        }
 
         // Update the seek bar as the audio plays
         this.myAudioElem.addEventListener("timeupdate", this.timeUpdateListener);

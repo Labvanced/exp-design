@@ -75,7 +75,7 @@
     <!-- /ko -->
 
     <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
-        <ul class="sortableElement sortableOuter" id="sortableElementPrev">
+        <ul class="sortableElement sortableOuter" id="sortableElementPrev" >
             <!-- ko foreach: dataModel.elements -->
             <li style="margin: 15px;
                 padding: 10px 5px;
@@ -100,7 +100,7 @@
     <!-- /ko -->
 
     <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
-        <ul class="sortableElement sortableOuter" id="sortableElementPlayer">
+        <ul class="sortableElement sortableOuter" id="sortableElementPlayer" data-bind="style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
             <!-- ko foreach: dataModel.elements -->
             <li style="margin: 15px;
                 padding: 10px 5px;
@@ -109,8 +109,10 @@
                 background-color: #fff;
                 border-radius: 5px;
                 border: 1px solid lightgray;
-                cursor: pointer"class="sortableInner ui-state-default">
-                <div style="display: inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : sortableText}"></div>
+                cursor: pointer"
+                class="sortableInner ui-state-default"
+                data-bind="style:{'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
+                <div style="display: inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : sortableText, style:{'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}}"></div>
             </li>
             <!-- /ko -->
         </ul>

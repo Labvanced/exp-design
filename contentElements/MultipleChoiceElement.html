@@ -88,11 +88,11 @@
     </div>
 
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
-        <div class="radiobutton-wrapper"  style="display: block; cursor: pointer">
+        <div class="radiobutton-wrapper"  style="display: block" data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
             <!-- LABEL NEEDS TO BE INSIDE DIV IN EDITOR VIEW, OTHERWISE IT COLLIDES WITH CKEDITOR!!! -->
             <label class="radiobutton-left">
-                <input class="radiobutton-element" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue().value, click:function(){return true}, clickBubble: false">
-                <div class="radiobutton-img"></div>
+                <input class="radiobutton-element" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue().value, click:function(){return true}, clickBubble: false, enable: $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
+                <div class="radiobutton-img" data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
             </label>
             <div class="radiobutton-text notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
         </div>
@@ -122,10 +122,10 @@
     </div>
 
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
-        <label class="radiobutton-wrapper" style="display: block; cursor: pointer">
+        <label class="radiobutton-wrapper" style="display: block" data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
             <div class="radiobutton-left">
-                <input class="radiobutton-element" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false">
-                <div class="radiobutton-img"></div>
+                <input class="radiobutton-element" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false, enable: $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive, style:{ 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+                <div class="radiobutton-img" data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
             </div>
             <div class="radiobutton-text" data-bind="component: {name : 'editable-text-element-playerview', params : multChoiceText}"></div>
         </label>

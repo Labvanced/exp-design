@@ -440,8 +440,25 @@ function createSortableElementComponents() {
                     this.sortableElement = $('#sortableElementPlayer');
                     var varNewId  = guid();
                     this.sortableElement.attr("id",varNewId);
+                    this.tempId = varNewId;
+
+
+                    if (this.enableSortingSubscription2){
+                        this.enableSortingSubscription2.dispose();
+                    }
+                    this.enableSortingSubscription2 = this.dataModel.parent.modifier().selectedTrialView.isActive.subscribe(function(val){
+                        self.sortableElement = $('#'+self.tempId);
+                        if (val){
+                            self.sortableElement.sortable("enable");
+                        }
+                        else{
+                            self.sortableElement.sortable("disable");
+                        }
+                    });
+
 
                     this.sortableElement.sortable({
+                        disabled: !self.dataModel.parent.modifier().selectedTrialView.isActive(),
                         start: function( event, ui ) {
                             self.startPosition(ui.item.index());
                         },

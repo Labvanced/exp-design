@@ -72,11 +72,11 @@
     <!-- /ko -->
     <div>
         <!-- ko if: (dataModel.listType()=='predefined')  -->
-            <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.predefinedData, optionsText: 'name', optionsValue: 'name', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().startValue().value"></select>
+            <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.predefinedData, optionsText: 'name', optionsValue: 'name', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().startValue().value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></select>
         <!-- /ko -->
 
         <!-- ko if: (dataModel.listType()=='selfCreation')  -->
-            <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().startValue().value"></select>
+            <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().startValue().value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></select>
         <!-- /ko -->
 
 
@@ -99,11 +99,11 @@
     <!-- /ko -->
     <div>
         <!-- ko if: (dataModel.listType()=='predefined')  -->
-            <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.predefinedData, optionsText: 'name', optionsValue: 'name', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().value().value"></select>
+            <select class="notDraggable" style="width: 85%" data-bind="options: dataModel.predefinedData, optionsText: 'name', optionsValue: 'name', optionsCaption:dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().value().value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></select>
         <!-- /ko -->
 
         <!-- ko if: (dataModel.listType()=='selfCreation')  -->
-            <select class="notDraggable" style="display:inline-block; width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().value().value"></select>
+            <select class="notDraggable" style="display:inline-block; width: 85%" data-bind="options: dataModel.elements, optionsText: 'selectionText', optionsValue: 'selectionValue', optionsCaption: dataModel.expData.staticStrings().chooseSelection, value: dataModel.variable().value().value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></select>
         <!-- /ko -->
 
         <!-- ko if: dataModel.triedToSubmit() -->

@@ -24,7 +24,7 @@ RangeElement.prototype.iconPath = "/resources/icons/tools/tool_slider.svg";
 RangeElement.prototype.dataType =      [ ];
 RangeElement.prototype.modifiableProp = [ ];
 RangeElement.prototype.initWidth = 500;
-RangeElement.prototype.initHeight = 100;
+RangeElement.prototype.initHeight = 200;
 RangeElement.prototype.numVarNamesRequired = 1;
 
 RangeElement.prototype.init = function(variableName) {

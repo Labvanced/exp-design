@@ -35,7 +35,7 @@
         <div style="display: inline-block; width: 100%; height: 100%">
             <div class="notDraggable" style="display: inline-block;padding: 0px; text-align:right; width: 24%" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.startLabel}"></div>
 
-            <div style="display: inline-block;padding: 0px; width: 50%;"><input style="border: none" data-highlight="true" type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, value: dataModel.variable().startValue().value,  valueUpdate: 'input'"></div>
+            <div style="display: inline-block;padding: 0px; width: 50%;"><input style="border: none" data-highlight="true" type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, value: dataModel.variable().startValue().value,  valueUpdate: 'input', click: function(){return true}, clickBubble: false,enable: dataModel.parent.modifier().selectedTrialView.isActive, style:{cursor: dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
 
             <div class="notDraggable" style="display: inline-block;padding: 0px; width: 24%" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.endLabel}"></div>
         </div>
@@ -56,7 +56,7 @@
 
         <div style="display: inline-block; width: 100%; height: 100%">
             <div style="display: inline-block;padding: 0px; text-align:right; width: 24%" data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.startLabel}"></div>
-            <div style="display: inline-block;padding: 0px; width: 50%;"><input style="border: none" data-highlight="true" type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, value: dataModel.variable().value().value, valueUpdate: 'input', click: function(){return true}, clickBubble: false"></div>
+            <div style="display: inline-block;padding: 0px; width: 50%;"><input style="border: none" data-highlight="true" type="range" data-bind="attr: {min: minChoice, max: maxChoice, step: 1}, value: dataModel.variable().value().value, valueUpdate: 'input', click: function(){return true}, clickBubble: false,enable: dataModel.parent.modifier().selectedTrialView.isActive, style:{cursor: dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
             <div style="display: inline-block;padding: 0px; width: 24%" data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.endLabel}"></div>
         </div>
 

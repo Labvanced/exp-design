@@ -47,22 +47,22 @@
     <!-- /ko -->
     <div>
         <!-- ko if: (dataModel.inputType()=='number')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="number" data-bind="value: value, attr:{min: dataModel.minValue, max:dataModel.maxValue}"></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="number" data-bind="value: value, attr:{min: dataModel.minValue, max:dataModel.maxValue}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='text')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="text" data-bind="text: value,attr:{maxlength: dataModel.maxNrChars}"></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="text" data-bind="text: value,attr:{maxlength: dataModel.maxNrChars}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='date')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="date" data-bind="value: value" ></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="date" data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}" ></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='week')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="week" data-bind="value: value"></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="week" data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='time')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="time" data-bind="value: value"></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="time" data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='color')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="color" data-bind="value: value"></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="color" data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
         <!-- /ko -->
         <!-- ko if: dataModel.isRequired() -->
         <span class="required-question-icon" data-bind=" tooltip:'.requiredInfoEditor'">
@@ -82,22 +82,22 @@
     <!-- /ko -->
     <div>
         <!-- ko if: (dataModel.inputType()=='number')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="number" data-bind="value: value, attr:{min: dataModel.minValue, max:dataModel.maxValue}"></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="number" data-bind="value: value, attr:{min: dataModel.minValue, max:dataModel.maxValue}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='text')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="text" data-bind="value: value,attr:{maxlength: dataModel.maxNrChars}"></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="text" data-bind="value: value,attr:{maxlength: dataModel.maxNrChars}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='date')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="date" data-bind="value: value"></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="date" data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='week')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="week" data-bind="value: value"></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="week" data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='time')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="time" data-bind="value: value"></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="time" data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='color')  -->
-        <div class="input-elem-div"><input class="input-elem-inner form-control" type="color" data-bind="value: value"></div>
+        <div class="input-elem-div"><input class="input-elem-inner form-control" type="color" data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}"></div>
         <!-- /ko -->
         <!-- ko if: dataModel.triedToSubmit() -->
         <!-- ko ifnot: dataModel.dataIsValid() -->
