@@ -76,6 +76,14 @@ StudySettings.prototype.reAddEntities = function(entitiesArr) {
 };
 
 
+StudySettings.prototype.enableAudioRec = function() {
+    if (!this.isAudioRecEnabled()) {
+        this.isAudioRecEnabled(true);
+    }
+    this.allowInternetExplorer(false);
+};
+
+
 
 
 StudySettings.prototype.fromJS = function(data) {

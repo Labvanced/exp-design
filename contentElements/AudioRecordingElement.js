@@ -88,12 +88,12 @@ AudioRecordingElement.prototype.init = function(variableName) {
 AudioRecordingElement.prototype.enableAudioRecDialog = function() {
      var self = this;
      if (!(this.expData.studySettings.isAudioRecEnabled())){
-         $('<div />').html('You have just added an Audio-Recording-Element, but audio recordings are still disabled in the overall experiment settings. Do you want to enable audio recordings now in the experiment settings?').dialog({
+         $('<div />').html('You have just added an Audio-Recording-Element, but audio recordings are still disabled in the overall experiment settings. Please note, that this will limit browser support of your experiment to Chrome, Firefox, MS Edge, and Safari. Do you want to enable audio recordings now in the experiment settings?').dialog({
              modal: true,
              buttons: [
                  {text: "Enable Audio",
                      click: function() {
-                         self.expData.studySettings.isAudioRecEnabled(true);
+                         self.expData.studySettings.enableAudioRec();
                          $(this).dialog( "close" );
                      }},
                  {text: "Keep Disabled",
