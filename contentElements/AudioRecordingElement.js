@@ -81,6 +81,28 @@ AudioRecordingElement.prototype.init = function(variableName) {
     var frameOrPageElement = this.parent;
     frameOrPageElement.parent.addVariableToLocalWorkspace(globalVar);
     this.setVariableBackRef();
+
+    this.enableAudioRecDialog();
+};
+
+AudioRecordingElement.prototype.enableAudioRecDialog = function() {
+     var self = this;
+     if (!(this.expData.studySettings.isAudioRecEnabled())){
+         $('<div />').html('You have just added an Audio-Recording-Element, but audio recordings are still disabled in the overall experiment settings. Do you want to enable audio recordings now in the experiment settings?').dialog({
+             modal: true,
+             buttons: [
+                 {text: "Enable Audio",
+                     click: function() {
+                         self.expData.studySettings.isAudioRecEnabled(true);
+                         $(this).dialog( "close" );
+                     }},
+                 {text: "Keep Disabled",
+                     click: function() {
+                         $( this ).dialog( "close" );
+                     }}
+             ]
+         });
+     }
 };
 
 AudioRecordingElement.prototype.setVariableBackRef = function() {
