@@ -176,6 +176,15 @@ ExpTrialLoop.prototype.addFactorGroup = function(pageOrFrame,withFactor) {
 };
 
 
+ExpTrialLoop.prototype.addSequenceToDataModel = function(subsequence) {
+    this.factorGroups.push(subsequence.factorGroup);
+    this.subSequencePerFactorGroup.push(subsequence);
+    this.subSequence(subsequence);
+    this.expData.notifyChanged();
+
+};
+
+
 ExpTrialLoop.prototype.removeFactorGroup = function(facGroupIdx) {
 
     this.factorGroups.splice(facGroupIdx,1);

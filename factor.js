@@ -12,6 +12,7 @@ var Factor = function(expData, factorGroup) {
     this.factorGroup = factorGroup;
 
     // serialized
+    this.type = "Factor";
     this.id = ko.observable(guid());
     this.globalVar = ko.observable(null);
     this.factorType =  ko.observable('fixed');// either 'fixed' or 'random'
@@ -116,6 +117,11 @@ Factor.prototype.addLevel = function() {
         this.factorGroup.addLevelToCondition();
         this.factorGroup.updateCondGroups();
     }
+    if (this.factorGroup.expTrialLoop.subSequencePerFactorGroup().length>1){
+        this.factorGroup.expTrialLoop.subSequencePerFactorGroup().forEach(function (sequence) {
+            sequence.factorGroup.updateCondGroups();
+        })
+    }
 
 };
 
@@ -205,6 +211,9 @@ Factor.prototype.fromJS = function(data) {
     }
     if (data.hasOwnProperty("balancedInFactors")) {
         this.balancedInFactors(data.balancedInFactors);
+    }
+    if (data.hasOwnProperty('type')) {
+        this.type = data.type;
     }
     this.globalVar(data.globalVar);
 
@@ -296,7 +305,7 @@ Factor.prototype.toJS = function() {
 
 
     return {
-        type: "Factor",
+        type: this.type,
         id: this.id(),
         factorType: this.factorType(),
         randomizationType:this.randomizationType(),

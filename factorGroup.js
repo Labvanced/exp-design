@@ -13,7 +13,9 @@ var FactorGroup= function(expData,expTrialLoop) {
     this.expData = expData;
     this.expTrialLoop = expTrialLoop;
 
+
     // serialized
+    this.type = "FactorGroup";
     this.name = ko.observable("trial_group");
     this.factors = ko.observableArray([]);
     this.conditions = ko.observableArray([]); // multidimensional array
@@ -335,6 +337,25 @@ FactorGroup.prototype.addLevelToCondition = function() {
 
 };
 
+FactorGroup.prototype.getSequence = function() {
+    // returns the sequence of this factor group
+   var sequences = this.expTrialLoop.subSequencePerFactorGroup();
+   var i = 0;
+   var found = false;
+   var out = null;
+   while (!found && i < sequences.length){
+      if (this === sequences[i].factorGroup){
+          found = true;
+          out = sequences[i];
+      }
+      else{
+          i++;
+      }
+   }
+    return out;
+};
+
+
 
 
 /**
@@ -538,6 +559,9 @@ FactorGroup.prototype.fromJS = function(data) {
     var self = this;
     this.name(data.name);
     this.factors(data.factors);
+    if (data.hasOwnProperty('type')) {
+        this.type = data.type;
+    }
 
     function deepLoadConditions(condMultiDimData){
         if (condMultiDimData.constructor === Array) {
@@ -580,6 +604,7 @@ FactorGroup.prototype.toJS = function() {
     }
 
     return {
+        type: this.type,
         name: this.name(),
         factors: jQuery.map( this.factors(), function( factor ) {
             return factor.id();

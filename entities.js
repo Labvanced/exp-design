@@ -1,4 +1,4 @@
-function entityFactory(entityJson, expData) {
+function entityFactory(entityJson, expData,params) {
 
     var entity;
 
@@ -129,7 +129,16 @@ function entityFactory(entityJson, expData) {
             entity.fromJS(entityJson);
             break;
         case 'Factor':
-            entity = new Factor(expData,null);
+            if (params){
+                entity = new Factor(expData,params[0]);
+            }
+            else{
+                entity = new Factor(expData);
+            }
+            entity.fromJS(entityJson);
+            break;
+        case 'FactorGroup':
+            entity = new FactorGroup(expData,params[0]);
             entity.fromJS(entityJson);
             break;
         case 'SessionTimeSettings':
