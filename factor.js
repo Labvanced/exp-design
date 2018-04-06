@@ -212,9 +212,6 @@ Factor.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("balancedInFactors")) {
         this.balancedInFactors(data.balancedInFactors);
     }
-    if (data.hasOwnProperty('type')) {
-        this.type = data.type;
-    }
     this.globalVar(data.globalVar);
 
     return this;
