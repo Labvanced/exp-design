@@ -261,6 +261,10 @@ Sequence.prototype.reAddEntities = function(entitiesArr) {
             entitiesArr.push(elem);
         }
     } );
+
+
+    this.factorGroup.reAddEntities(entitiesArr);
+
 };
 
 /**
