@@ -632,7 +632,9 @@ ExpData.prototype.setPointers = function() {
         var description = ExpData.prototype.varDescriptions[ExpData.prototype.fixedVarNames[i]];
         if (varId) {
             var varInstance = this.entities.byId[varId];
-            varInstance.setDescription(description)
+            varInstance.setDescription(description);
+            varInstance.hasGlobalScope(true);
+            varInstance.addToGlobalScope();
             this[ExpData.prototype.fixedVarNames[i]](varInstance);
         }
         else {

@@ -228,7 +228,7 @@ PageData.prototype.addVariableToLocalWorkspace = function(variable) {
     var isExisting = this.localWorkspaceVars.byId[variable.id()];
     if (!isExisting && !variable.isFactor()) {
         this.localWorkspaceVars.push(variable);
-        variable.addBackRef(this, this, false, false, 'workspace variable');
+        variable.addBackRef(this, this, false, false, 'local workspace');
     }
 };
 
@@ -297,7 +297,7 @@ PageData.prototype.setPointers = function(entitiesArr) {
     jQuery.each( this.localWorkspaceVars(), function( id ) {
         var localVar = entitiesArr.byId[id];
         if (localVar) {
-            localVar.addBackRef(self, self, false, false, 'workspace variable');
+            localVar.addBackRef(self, self, false, false, 'local workspace');
             localWorkspaceVars.push(localVar);
         }
     } );

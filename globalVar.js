@@ -268,13 +268,13 @@ GlobalVar.prototype.removeBackRef = function(entity) {
 
 GlobalVar.prototype.calcUnused = function() {
     if (this.backRefs().length>0){
-        if (this.backRefs().length==1 && this.backRefs()[0].refLabel=="workspace variable"){
+        if (this.backRefs().length==1 && this.backRefs()[0].refLabel=="local workspace "){
             this.unused(true);
         }
         else{
             var unused = true;
             this.backRefs().forEach(function(backRef){
-                if (backRef.refLabel!="workspace variable"){
+                if (backRef.refLabel!="local workspace"){
                     unused = false;
                 }
             });
@@ -357,8 +357,9 @@ GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
 
 GlobalVar.prototype.addToGlobalScope = function() {
     if (this.hasGlobalScope()){
-        this.addBackRef(this.expData, this.expData.parentExperiment, true, true, 'Global Scope');
+        this.addBackRef(this.expData, this.expData.parentExperiment, true, true, 'global workspace');
     }
+
 };
 
 
