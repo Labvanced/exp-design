@@ -39,9 +39,6 @@ var GlobalVar = function (expData) {
     this.isScaleEditable = true; // this is set to false for variables that are created by our platform
     this.isDataTypeEditable = true; // this is set to false for variables that are created by our platform
 
-
-    this.hasGlobalScope = ko.observable(false); // this is set to true for variables that are created by our platform
-
     // not serialized:
     this.editName =  ko.observable(false);
     this.subLevelEdit = ko.observable(false);
@@ -355,13 +352,6 @@ GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
     }
 };
 
-GlobalVar.prototype.addToGlobalScope = function() {
-    if (this.hasGlobalScope()){
-        this.addBackRef(this.expData, this.expData.parentExperiment, true, true, 'global workspace');
-    }
-
-};
-
 
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
@@ -420,13 +410,6 @@ GlobalVar.prototype.fromJS = function(data) {
         this.description(data.description);
     }
 
-    if (data.hasOwnProperty('hasGlobalScope')) {
-        this.hasGlobalScope(data.hasGlobalScope);
-    }
-
-
-
-
     this.levels(jQuery.map( data.levels, function( lvlData, index ) {
         var lvl = new Level(self);
         lvl.levelIdx = index;
@@ -461,7 +444,6 @@ GlobalVar.prototype.toJS = function() {
         startValue: startValue,
         isRecorded:this.isRecorded(),
         recType: this.recType(),
-        hasGlobalScope:this.hasGlobalScope(),
 
         type: this.type,
         levels: jQuery.map( this.levels(), function( lvl ) { return lvl.toJS(); } )

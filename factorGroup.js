@@ -406,6 +406,7 @@ FactorGroup.prototype.removeLevelFromFactor = function(factor, lvlIdx) {
 FactorGroup.prototype.addFactor = function(factor) {
 
     this.expData.entities.push(factor.globalVar());
+    this.expData.entities.push(factor);
 
     this.factors.push(factor);
     this.addFactorToCondition(factor);
@@ -482,8 +483,8 @@ FactorGroup.prototype.removeFactor = function(factor) {
 FactorGroup.prototype.setPointers = function (entitiesArr) {
     var self = this;
 
-    this.factors(jQuery.map(this.factors(), function (factorIds) {
-        var factor = entitiesArr.byId[factorIds];
+    this.factors(jQuery.map(this.factors(), function (factorId) {
+        var factor = entitiesArr.byId[factorId];
         factor.factorGroup = self;
         return factor;
     }));

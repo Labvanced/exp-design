@@ -9,6 +9,23 @@
  */
 ko.extenders.sortById = function(target, option) {
     target.byId = {};
+
+    /**
+     * insert only pushes to the list if this entity does not exist yet.
+     * @param entity
+     */
+    target.insertIfNotExist = function(entity) {
+        if (option && option.hasOwnProperty("id_field")) {
+            var id = entity[option.id_field];
+        }
+        else {
+            var id = entity.id;
+        }
+        if (!target.byId.hasOwnProperty(id)) {
+            target.push(entity);
+        }
+    };
+
     target.subscribe(function(changes) {
         var id;
         for (var i= 0, len=changes.length; i<len; i++) {
@@ -28,6 +45,9 @@ ko.extenders.sortById = function(target, option) {
                 id = id();
             }
             if (status == 'added'){
+                if (target.byId.hasOwnProperty(id)) {
+                    console.warn("id was already in list and appears now twice in observableArray (extended with sortByID).")
+                }
                 target.byId[id] = entity;
             }
             else if (status == 'deleted'){

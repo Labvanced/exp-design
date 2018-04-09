@@ -245,9 +245,7 @@ Sequence.prototype.reAddEntities = function(entitiesArr) {
 
     // add the direct child nodes:
     jQuery.each( this.elements(), function( index, elem ) {
-        // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.id()))
-            entitiesArr.push(elem);
+        entitiesArr.insertIfNotExist(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
@@ -256,12 +254,8 @@ Sequence.prototype.reAddEntities = function(entitiesArr) {
 
     // add the direct child nodes:
     jQuery.each( this.workspaceVars(), function( index, elem ) {
-        // check if they are not already in the list:
-        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
-            entitiesArr.push(elem);
-        }
+        entitiesArr.insertIfNotExist(elem);
     } );
-
 
     this.factorGroup.reAddEntities(entitiesArr);
 

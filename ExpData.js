@@ -17,6 +17,7 @@ var ExpData = function (parentExperiment) {
     this.availableBlocks = ko.observableArray([]);
     this.availableSessions = ko.observableArray([]);
     this.availableGroups = ko.observableArray([]);
+    this.availableVars = ko.observableArray([]).extend({sortById: null});
 
     this.isJointExp = ko.observable(false);    // needs to be placed before initialize studySettings!
     this.numPartOfJointExp = ko.observable(2); // needs to be placed before initialize studySettings!
@@ -521,7 +522,14 @@ ExpData.prototype.notifyChanged = function() {
  */
 ExpData.prototype.addGroup = function(group) {
     this.availableGroups.push(group);
+    this.addEntity(group);
     this.notifyChanged();
+};
+
+ExpData.prototype.addEntity = function(entity) {
+    if (!this.entities.byId.hasOwnProperty(entity.id())) {
+        this.entities.push(entity);
+    }
 };
 
 ExpData.prototype.rebuildEntities = function() {
@@ -558,6 +566,7 @@ ExpData.prototype.addNewBlock_Refactored = function() {
     var name= "block_"+(this.availableBlocks().length+1);
     block.name(name);
     this.availableBlocks.push(block);
+    this.addEntity(block);
     this.notifyChanged();
 };
 
@@ -568,6 +577,7 @@ ExpData.prototype.addNewSession = function() {
     var name= "session_"+(this.availableSessions().length+1);
     session.name(name);
     this.availableSessions.push(session);
+    this.addEntity(session);
     this.notifyChanged();
 };
 
@@ -625,6 +635,14 @@ ExpData.prototype.setPointers = function() {
     }
     this.availableGroups(availableGroups);
 
+    // relink availableVars:
+    var availableVarIds = this.availableVars();
+    var availableVars = [];
+    for (i=0; i<availableVarIds.length; i++) {
+        availableVars.push(this.entities.byId[availableVarIds[i]]);
+    }
+    this.availableVars(availableVars);
+
     // relink variables
     var missingVar = false;
     for (i=0; i < ExpData.prototype.fixedVarNames.length; i++){
@@ -633,8 +651,6 @@ ExpData.prototype.setPointers = function() {
         if (varId) {
             var varInstance = this.entities.byId[varId];
             varInstance.setDescription(description);
-            varInstance.hasGlobalScope(true);
-            varInstance.addToGlobalScope();
             this[ExpData.prototype.fixedVarNames[i]](varInstance);
         }
         else {
@@ -663,6 +679,9 @@ ExpData.prototype.setPointers = function() {
     var allEntities = this.entities();
     for (var i=0; i<allEntities.length; i++){
         if (allEntities[i].type == "GlobalVar") {
+
+            this.availableVars.insertIfNotExist(allEntities[i]);
+
             if (allEntities[i].name()){
                 if (!(this.allVariables.hasOwnProperty(allEntities[i].name().toLowerCase()))){
                     this.allVariables[allEntities[i].name().toLowerCase()] = allEntities[i];
@@ -687,6 +706,7 @@ ExpData.prototype.setPointers = function() {
             if (change.value instanceof GlobalVar){
                 if (change.status =="added"){
                     self.addVarToHashList(change.value);
+                    self.availableVars.insertIfNotExist(change.value);
                 }
                 else if (change.status =="deleted"){
                     self.deleteVarFromHashList(change.value,null);
@@ -807,21 +827,7 @@ ExpData.prototype.varNameValidExisting = function(varName) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ExpData.prototype.reAddEntities = function() {
-    var entitiesCopy = this.entities.slice();
-    this.entities([]);
     var entitiesArr = this.entities;
-
-     // put all variables with globalScope (but no other reference) into entities Array
-    jQuery.each( entitiesCopy, function( index, entity ) {
-        // check if they are not already in the list:
-        if (entity instanceof GlobalVar) {
-            if (entity.hasGlobalScope() && !entitiesArr.byId.hasOwnProperty(entity.id())){
-                entitiesArr.push(entity);
-            }
-        }
-    } );
-    var entitiesCopy = null;
-
 
     jQuery.each( this.availableTasks(), function( index, task ) {
         // check if they are not already in the list:
@@ -857,6 +863,15 @@ ExpData.prototype.reAddEntities = function() {
 
         // recursively make sure that all deep tree nodes are in the entities list:
         group.reAddEntities(entitiesArr);
+    } );
+
+    jQuery.each( this.availableVars(), function( index, globVar ) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(globVar.id()))
+            entitiesArr.push(globVar);
+
+        // recursively make sure that all deep tree nodes are in the entities list:
+        globVar.reAddEntities(entitiesArr);
     } );
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
@@ -909,6 +924,9 @@ ExpData.prototype.fromJS = function(data) {
     this.availableBlocks(data.availableBlocks);
     this.availableSessions(data.availableSessions);
     this.availableGroups(data.availableGroups);
+    if (data.hasOwnProperty("availableVars")) {
+        this.availableVars(data.availableVars);
+    }
 
     if(data.hasOwnProperty('translations')){
         this.translations(jQuery.map(data.translations, function (entryData) {
@@ -956,11 +974,6 @@ ExpData.prototype.fromJS = function(data) {
 ExpData.prototype.toJS = function() {
     var i;
 
-    // TODO: @Caspar: Remove this rebuildEntities and TEST if all elements and Events can still be saved and later loaded again:
-    // TODO: @Holger:: I removed all other places where rebuildEntities was used. However this cannot be removed, otherwise many errors occur. In fact this is the only place where rebuild entities is still executed.
-    // TODO: @Holger: Also this was in here for a ver long time, and it has nothing to do with my recent commit about variable names etc. I suggest keep it here or change it later.
-    this.rebuildEntities();
-
     var sessionsPerGroup = [];
     var groups = this.availableGroups();
     for (i=0; i<groups.length; i++){
@@ -984,6 +997,7 @@ ExpData.prototype.toJS = function() {
         availableBlocks: jQuery.map( this.availableBlocks(), function( block ) { return block.id(); }),
         availableSessions: jQuery.map( this.availableSessions(), function( session ) { return session.id(); }),
         availableGroups: jQuery.map( this.availableGroups(), function( group ) { return group.id(); }),
+        availableVars: jQuery.map( this.availableVars(), function( globVar ) { return globVar.id(); }),
         numGroups: this.availableGroups().length,
         sessionsPerGroup: sessionsPerGroup,
         translations: jQuery.map( this.translations(), function( entry ) {
