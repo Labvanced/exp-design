@@ -109,6 +109,14 @@ var ExpTrialLoop = function (expData) {
 
     }, this);
 
+    this.shortName = ko.computed(function() {
+        if (self.name()){
+            return (self.name().length > 40 ? self.name().substring(0, 39) + '...' : self.name());
+        }
+        else return '';
+
+    });
+
 
 
 };

@@ -225,8 +225,9 @@ CheckBoxEntry.prototype.init = function(varName) {
 
     var globalVar = new GlobalVar(this.parent.expData);
     globalVar.dataType(GlobalVar.dataTypes[2]);
+    globalVar.scale(GlobalVar.scales[0]);
     globalVar.scope('trial');
-    globalVar.scale(GlobalVar.scales[1]);
+
     // var name = this.parent.parent.name() +'_'+ this.parent.elements().length;
     globalVar.name(varName);
     globalVar.resetStartValue();
