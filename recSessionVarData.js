@@ -19,6 +19,13 @@ var RecSessionVarData = function(recSession) {
     this.crowdsourcinSubjId = ko.observable(null);
     this.timeDelayStd = ko.observable(null);
 
+    this.subjCounterGlobal = ko.observable(null);
+    this.subjCounterPerGroup = ko.observable(null);
+
+    this.roleId = ko.observable(null);
+
+
+
     // dynamically added:
     this.timeDelayMeanTrimed = ko.observable("not measured");
 };
@@ -73,7 +80,15 @@ RecSessionVarData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('timeDelayStd')){
         var shortend = Math.round(parseFloat(data.timeDelayStd) * 10) / 10;
         this.timeDelayStd(shortend+" ms");
-
+    }
+    if (data.hasOwnProperty('subjCounterGlobal')){
+        this.subjCounterGlobal(data.subjCounterGlobal);
+    }
+    if (data.hasOwnProperty('subjCounterPerGroup')){
+        this.subjCounterPerGroup(data.subjCounterPerGroup);
+    }
+    if (data.hasOwnProperty('roleId')){
+        this.roleId(data.roleId);
     }
 
 

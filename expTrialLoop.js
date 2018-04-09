@@ -548,32 +548,35 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
 
     // randomization for between Subject balanced factors
     var out = this.getFactorLevelArray(factorGroup);
-    var table = this.getAllFactorCrossing(out[0]);
     var indicies = out[1];
-    if (!(window.uc===undefined)) {
-        // editor
-        var subjCount = 0;
-        if (table.length>0){
-            var levels = table[subjCount].split(",");
+    if (indicies.length>0){
+        var table = this.getAllFactorCrossing(out[0]);
+        if (!(window.uc===undefined)) {
+            // editor
+            var subjCount = 0;
+            if (table.length>0){
+                var levels = table[subjCount].split(",");
+            }
+            else{
+                var levels = [];
+            }
+
         }
         else{
-            var levels = [];
+            // player
+            var subjCount = (player.subjCounterPerGroup-1) % table.length;
+            var levels = table[subjCount].split(",");
         }
+        for (var i=0; i < levels.length; i++) {
+            factorNames.push(indicies[i]);
+            var fixValue = levels[i];
+            for (var trialIdx =0; trialIdx < factorLevels.length; trialIdx++) {
+                factorLevels[trialIdx].push(fixValue);
+            }
 
-    }
-    else{
-        // player
-        var subjCount = (player.subjCounterPerGroup-1) % table.length;
-        var levels = table[subjCount].split(",");
-    }
-    for (var i=0; i < levels.length; i++) {
-        factorNames.push(indicies[i]);
-        var fixValue = levels[i];
-        for (var trialIdx =0; trialIdx < factorLevels.length; trialIdx++) {
-            factorLevels[trialIdx].push(fixValue);
         }
-
     }
+
 
 
 
