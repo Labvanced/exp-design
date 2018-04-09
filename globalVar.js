@@ -39,16 +39,15 @@ var GlobalVar = function (expData) {
     this.isScaleEditable = true; // this is set to false for variables that are created by our platform
     this.isDataTypeEditable = true; // this is set to false for variables that are created by our platform
 
+
+    this.hasGlobalScope = ko.observable(false); // this is set to true for variables that are created by our platform
+
     // not serialized:
     this.editName =  ko.observable(false);
     this.subLevelEdit = ko.observable(false);
     this.value = ko.observable(null);
     this.backRefs = ko.observableArray([]).extend({sortById: null});
     this.recValue = null; // takes care of buffering
-
-
-    // TODO: @Caspar: This computable needs to be removed. Otherwise the computables of ALL variables will always re-execute whenever there is some change!
-
 
 
     this.shortName = ko.computed(function() {
@@ -356,6 +355,13 @@ GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
     }
 };
 
+GlobalVar.prototype.addToGlobalScope = function() {
+    if (this.hasGlobalScope()){
+        this.addBackRef(this.expData, this.expData.parentExperiment, true, true, 'Global Scope');
+    }
+};
+
+
 /**
  * This function initializes all internal state variables to point to other instances in the same experiment. Usually
  * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
@@ -364,8 +370,12 @@ GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 GlobalVar.prototype.setPointers = function(entitiesArr) {
+    if (this.hasGlobalScope()){
+        this.addToGlobalScope();
+    }
     this.calcUnused()
 };
+
 
 /**
  * load from a json object to deserialize the states.
@@ -412,6 +422,11 @@ GlobalVar.prototype.fromJS = function(data) {
         this.description(data.description);
     }
 
+    if (data.hasOwnProperty('hasGlobalScope')) {
+        this.hasGlobalScope(data.hasGlobalScope);
+    }
+
+
 
 
     this.levels(jQuery.map( data.levels, function( lvlData, index ) {
@@ -448,6 +463,7 @@ GlobalVar.prototype.toJS = function() {
         startValue: startValue,
         isRecorded:this.isRecorded(),
         recType: this.recType(),
+        hasGlobalScope:this.hasGlobalScope(),
 
         type: this.type,
         levels: jQuery.map( this.levels(), function( lvl ) { return lvl.toJS(); } )

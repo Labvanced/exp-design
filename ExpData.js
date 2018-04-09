@@ -526,7 +526,7 @@ ExpData.prototype.addGroup = function(group) {
 
 ExpData.prototype.rebuildEntities = function() {
     // first empty the entities list:
-    this.entities([]);
+
     this.reAddEntities();
 };
 
@@ -805,7 +805,21 @@ ExpData.prototype.varNameValidExisting = function(varName) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ExpData.prototype.reAddEntities = function() {
+    var entitiesCopy = this.entities.slice();
+    this.entities([]);
     var entitiesArr = this.entities;
+
+     // put all variables with globalScope (but no other reference) into entities Array
+    jQuery.each( entitiesCopy, function( index, entity ) {
+        // check if they are not already in the list:
+        if (entity instanceof GlobalVar) {
+            if (entity.hasGlobalScope() && !entitiesArr.byId.hasOwnProperty(entity.id())){
+                entitiesArr.push(entity);
+            }
+        }
+    } );
+    var entitiesCopy = null;
+
 
     jQuery.each( this.availableTasks(), function( index, task ) {
         // check if they are not already in the list:
@@ -849,9 +863,6 @@ ExpData.prototype.reAddEntities = function() {
             if (!entitiesArr.byId.hasOwnProperty(varInstance.id())) {
                 entitiesArr.push(varInstance);
             }
-        }
-        else{
-            var problem  =1;
         }
     }
 };
