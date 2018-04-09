@@ -371,9 +371,6 @@ GlobalVar.prototype.addToGlobalScope = function() {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 GlobalVar.prototype.setPointers = function(entitiesArr) {
-    if (this.hasGlobalScope()){
-        this.addToGlobalScope();
-    }
     this.calcUnused()
 };
 
