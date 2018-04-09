@@ -475,6 +475,44 @@ ExpTrialLoop.prototype.getCondGroup = function(conditionIdx,ffConds) {
     return ffGroup
 };
 
+ExpTrialLoop.prototype.getFactorLevelArray= function(factorGroup) {
+    var factors = factorGroup.factors();
+    var levelArray = [];
+    var index = 0;
+    var indicies = [];
+    for (var facIdx=0; facIdx < factors.length; facIdx++) {
+        var factor = factors[facIdx];
+        if (factor.factorType()=='random' && factor.randomizationType()=='balancedBetweenSubj') {
+            levelArray.push([]);
+            indicies.push(facIdx);
+            for (var lvlIdx=0; lvlIdx < factor.globalVar().levels().length; lvlIdx++) {
+                levelArray[index].push(factor.globalVar().levels()[lvlIdx].name());
+            }
+            index++
+        }
+
+    }
+   return [levelArray,indicies];
+
+};
+
+ExpTrialLoop.prototype.getAllFactorCrossing= function(arr) {
+    if(arr.length == 0){
+        return [];
+    }
+    else if (arr.length == 1) {
+        return arr[0];
+    } else {
+        var result = [];
+        var allCasesOfRest = this.getAllFactorCrossing(arr.slice(1));  // recur with the rest of array
+        for (var i = 0; i < allCasesOfRest.length; i++) {
+            for (var j = 0; j < arr[0].length; j++) {
+                result.push(arr[0][j] +',' +allCasesOfRest[i]);
+            }
+        }
+        return result;
+    }
+};
 
 ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
 
@@ -507,6 +545,39 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
         }
     }
 
+
+    // randomization for between Subject balanced factors
+    var out = this.getFactorLevelArray(factorGroup);
+    var table = this.getAllFactorCrossing(out[0]);
+    var indicies = out[1];
+    if (!(window.uc===undefined)) {
+        // editor
+        var subjCount = 0;
+        if (table.length>0){
+            var levels = table[subjCount].split(",");
+        }
+        else{
+            var levels = [];
+        }
+
+    }
+    else{
+        // player
+        var subjCount = (player.subjCounterPerGroup-1) % table.length;
+        var levels = table[subjCount].split(",");
+    }
+    for (var i=0; i < levels.length; i++) {
+        factorNames.push(indicies[i]);
+        var fixValue = levels[i];
+        for (var trialIdx =0; trialIdx < factorLevels.length; trialIdx++) {
+            factorLevels[trialIdx].push(fixValue);
+        }
+
+    }
+
+
+
+    // randomization for unbalanced and balanced within task
     for (var facIdx=0; facIdx < factors.length; facIdx++) {
         factor = factors[facIdx];
         if (factor.factorType()=='random') {
@@ -521,6 +592,13 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
                 factorNames.push(facIdx);
                 for (var trialIdx =0; trialIdx < factorLevels.length; trialIdx++) {
                     var randValue = Math.floor(Math.random()*nrLevels);
+                    factorLevels[trialIdx].push(levels[randValue].name());
+                }
+            }
+            else if (factor.randomizationType()=='unbalancedBetweenSubj'){
+                factorNames.push(facIdx);
+                var randValue = Math.floor(Math.random()*factor.globalVar().levels().length);
+                for (var trialIdx =0; trialIdx < factorLevels.length; trialIdx++) {
                     factorLevels[trialIdx].push(levels[randValue].name());
                 }
             }
@@ -551,44 +629,6 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
                 }
 
             }
-
-            else if(factor.randomizationType()=='balancedConditions') {
-                factorNames.push(facIdx);
-                var startOfConditionIndex = 0;
-                var endOfConditionIndex = 0;
-
-                for (var k = 0; k < fixedFactorConds.length; k++) {
-
-                    if (this.determineNrTrials()=="minimumWithZero"){
-                        var NrTrialCount = fixedFactorConds[k].minNrOfTrials;
-                    }
-                    else if (this.determineNrTrials()=="minimumWithoutZero"){
-                        var NrTrialCount = fixedFactorConds[k].minNrOfTrialsWithoutZero;
-                    }
-
-                    endOfConditionIndex += NrTrialCount;
-
-                    if (endOfConditionIndex > startOfConditionIndex) {
-                        var nrTrials = endOfConditionIndex - startOfConditionIndex;
-
-                        var repsPerLvl = Math.floor(nrTrials / nrLevels);
-                        var remainder = nrTrials % nrLevels;
-
-                        var counter = startOfConditionIndex;
-                        for (var repetition = 0; repetition < repsPerLvl; repetition++) {
-                            for (var l = 0; l < levels.length; l++) {
-                                factorLevels[counter].push(levels[l].name());
-                                counter++;
-                            }
-                        }
-                        for (var l = 0; l < remainder; l++) {
-                            factorLevels[counter].push(levels[l].name());
-                            counter++;
-                        }
-                        startOfConditionIndex = endOfConditionIndex;
-                    }
-                }
-            }
         }
     }
 
@@ -596,57 +636,9 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
    var resolutionOrder= arr[0];
    var factorDependencies= arr[1];
 
-
     for (var facIndx=0; facIndx < resolutionOrder.length; facIndx++) {
         var factor = resolutionOrder[facIndx];
         var dependencies = factorDependencies[facIndx];
-
-        /**
-        if (factor.factorType()=='random' && factor.randomizationType()=='balancedInFactor') {
-
-            var facName = factor.globalVar().name();
-            var levels = factor.globalVar().levels();
-            var facIdx = factors.indexOf(factor);
-            var nrLevels = levels.length;
-            var balanceInFactor = null;
-
-            if (factor.balancedInFactor()){
-                var idx = globalVarNames.indexOf(factor.balancedInFactor().globalVar().name());
-                if (idx >=0 ){
-                    factorNames.push(facIdx);
-                    balanceInFactor = factors[idx];
-                    var lvls = [];
-                    var countLvl = [];
-
-                    for (var lvl =0; lvl < balanceInFactor.globalVar().levels().length; lvl++) {
-                        lvls.push(balanceInFactor.globalVar().levels()[lvl].name());
-                        countLvl.push(0);
-                    }
-
-                    var indexInFacLevel=  factorNames.indexOf(idx);
-
-                    var factorLevelsToBalance = [];
-                    for (var trial=0; trial < factorLevels.length; trial++) {
-                        var facValu = factorLevels[trial][indexInFacLevel];
-                        var inder = lvls.indexOf(facValu);
-                        var value = levels[countLvl[inder]].name();
-                        factorLevels[trial].push(value);
-                        countLvl[inder]++;
-                        if(countLvl[inder]>levels.length-1){
-                            countLvl[inder] = 0;
-                        }
-
-                    }
-
-                }
-                else{
-                    console.log("error: the factor which should be used for balancing is does not exist, or is identical to the balancing factor.")
-                }
-
-            }
-        }
-         **/
-
 
         if (factor.factorType()=='random' && factor.randomizationType()=='balancedInFactors') {
 
