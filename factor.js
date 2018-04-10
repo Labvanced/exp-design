@@ -47,7 +47,7 @@ Factor.prototype.removeFactorDependency = function(index) {
 };
 
 
-Factor.prototype.init = function(name) {
+Factor.prototype.init = function(name,globVar) {
     var self = this;
 
     for (var i = 0; i<this.factorGroup.factors().length; i++){
@@ -60,11 +60,20 @@ Factor.prototype.init = function(name) {
         this.balancedInFactors.push(obj);
     }
 
-    var globalVar = (new GlobalVar(this.expData)).initProperties('categorical', 'trial', 'nominal', name);
-    globalVar.isFactor(true);
-    globalVar.isInteracting(true);
+    if (globVar){
+        var globalVar = globVar;
+    }
+    else{
+        var globalVar = (new GlobalVar(this.expData)).initProperties('categorical', 'trial', 'nominal', name);
+        globalVar.isFactor(true);
+        globalVar.isInteracting(true);
+    }
+
     this.globalVar(globalVar);
-    this.expData.entities.push(globalVar);
+    if(!(globVar)){
+        this.expData.entities.push(globalVar);
+    }
+
     this.updateLevels();
 
     this.randomizationConverter();
