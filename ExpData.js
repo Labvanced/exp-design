@@ -528,12 +528,9 @@ ExpData.prototype.addGroup = function(group) {
 
 ExpData.prototype.addEntity = function(entity) {
     this.entities.insertIfNotExist(entity);
-};
-
-ExpData.prototype.rebuildEntities = function() {
-    // first empty the entities list:
-
-    this.reAddEntities();
+    if (entity.hasOwnProperty("reAddEntities")) {
+        entity.reAddEntities(this.entities);
+    }
 };
 
 ExpData.prototype.addNewSubjGroup = function() {
@@ -552,12 +549,12 @@ ExpData.prototype.addTask = function(taskName,pageOrFrame,withFactor) {
     expTrialLoop.initNewInstance(pageOrFrame,withFactor);
     expTrialLoop.isInitialized(true);
     this.availableTasks.push(expTrialLoop);
-    this.reAddEntities();
+    this.addEntity(expTrialLoop);
     this.notifyChanged();
 };
 
 
-ExpData.prototype.addNewBlock_Refactored = function() {
+ExpData.prototype.addNewBlock = function() {
     
     // add fixed instances of block into sequence
     var block = new ExpBlock(this);
@@ -910,7 +907,9 @@ ExpData.prototype.fromJS = function(data) {
         this.entities([]);
         jQuery.each(data.entities, function (idx, entityJson) {
             var entity = entityFactory(entityJson, self);
-            self.entities.insertIfNotExist(entity);
+            if (entity) {
+                self.entities.insertIfNotExist(entity);
+            }
         })
     }
     
