@@ -176,7 +176,7 @@ AudioRecordingElement.prototype.executeAction = function(actionType) {
                 if (this.use_mp3_recorder) {
                     this.mp3Recorder = new MP3Recorder({
                         bitRate: 128
-                    });
+                    }, player.audioContext);
                     this.mp3Recorder.beginRecording(player.microphone_stream);
                 }
                 else {
@@ -495,19 +495,22 @@ function createAudioRecordingComponents() {
 }
 
 
-
-/**
- * Created by intelWorx on 27/10/2015.
- */
 (function (exports) {
 
-    var MP3Recorder = function (config) {
+    var MP3Recorder = function (config, audioContext) {
 
         var recorder = this;
 
-        var context = new AudioContext();
-
         config = config || {};
+
+        var context;
+        if (audioContext) {
+            context = audioContext;
+        }
+        else {
+            context = new AudioContext();
+        }
+
         var realTimeWorker = new Worker('/assets/js/worker-realtime.js');
 
         // Initializes LAME so that we can record.
