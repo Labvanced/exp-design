@@ -33,6 +33,7 @@ var SubjectGroup = function (expData) {
 SubjectGroup.prototype.addSession = function(session) {
     var sessionTimeSettings  = new SessionTimeData(this.expData);
     this.sessionTimeData.push(sessionTimeSettings);
+    this.reAddEntities(this.expData.entities);
 
     return this.sessions.push(session);
 };
@@ -76,20 +77,9 @@ SubjectGroup.prototype.setPointers = function(entitiesArr) {
         return entitiesArr.byId[id];
     } ));
 
-    // converter broken for session-time data
-    if (this.sessionTimeData().length ==0){
-        var self = this;
-        var newTimeDta = [];
-        this.sessions().forEach(function(session){
-            newTimeDta.push(new SessionTimeData(self.expData));
-        });
-        this.sessionTimeData(newTimeDta);
-    }
-
-
-    jQuery.each( this.sessionTimeData(), function( idx, timeData ) {
-        timeData.setPointers(entitiesArr);
-    } );
+    this.sessionTimeData(jQuery.map( this.sessionTimeData(), function( id ) {
+        return entitiesArr.byId[id];
+    } ));
 };
 
 /**
@@ -126,13 +116,10 @@ SubjectGroup.prototype.reAddEntities = function(entitiesArr) {
  * @returns {SubjectGroup}
  */
 SubjectGroup.prototype.fromJS = function(data) {
-    var self = this;
     this.id(data.id);
     this.name(data.name);
     this.sessions(data.sessions);
-    this.sessionTimeData(jQuery.map( data.sessionTimeData, function( timeData ) {
-        return (new SessionTimeData(self.expData)).fromJS(timeData);
-    } ));
+    this.sessionTimeData(data.sessionTimeData);
 
     this.genderRequirement(data.genderRequirement);
     this.ageRequirement(data.ageRequirement);
@@ -202,9 +189,7 @@ SubjectGroup.prototype.toJS = function() {
         enabledCountry: this.enabledCountry(),
         enabledLanguage: this.enabledLanguage(),
         sessions: jQuery.map( this.sessions(), function( elem ) { return elem.id(); } ),
-        sessionTimeData: jQuery.map( this.sessionTimeData(), function( elem ) {
-            return elem.toJS();
-        } )
+        sessionTimeData: jQuery.map( this.sessionTimeData(), function( elem ) { return elem.id(); } )
     };
 };
 
