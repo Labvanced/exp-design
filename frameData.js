@@ -18,7 +18,7 @@ var FrameData = function(expData) {
     this.offsetEnabled = ko.observable(false);
     this.bgColor = ko.observable("#ffffff"); // hex color as string, i.e. "#ffffff"
     this.elements = ko.observableArray([]).extend({sortById: null});
-    this.events = ko.observableArray([]).extend({sortById: null});
+    this.events = ko.observableArray([]);
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
     this.hideMouse = ko.observable(false);
 

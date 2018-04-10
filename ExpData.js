@@ -909,9 +909,11 @@ ExpData.prototype.fromJS = function(data) {
     }
 
     if (data.hasOwnProperty('entities')) {
-        this.entities(jQuery.map(data.entities, function (entityJson) {
-            return entityFactory(entityJson, self);
-        }));
+        this.entities([]);
+        jQuery.each(data.entities, function (idx, entityJson) {
+            var entity = entityFactory(entityJson, self);
+            self.entities.insertIfNotExist(entity);
+        })
     }
     
     if (data.studySettings) {
