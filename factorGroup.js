@@ -39,6 +39,26 @@ var FactorGroup= function(expData,expTrialLoop) {
       }
     }, this);
 
+
+    this.hasOnlyOneFixedFactor = ko.computed(function() {
+        var nrFixed = 0;
+        for (var i = 0; i<self.factors().length; i++){
+            if (self.factors()[i] instanceof Factor){
+                if (self.factors()[i].factorType()=="fixed"){
+                    nrFixed++;
+                }
+            }
+
+        }
+
+        if (nrFixed==1){
+            return true
+        }
+        else{
+            return false
+        }
+    }, this);
+
     this.hasRandomFactor = ko.computed(function() {
         var out = false;
         for (var i = 0; i<self.factors().length; i++){
