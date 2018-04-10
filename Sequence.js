@@ -146,7 +146,7 @@ Sequence.prototype.selectNextElement = function() {
 
 Sequence.prototype.addNewSubElement = function(elem) {
     this.elements.push(elem);
-    this.expData.entities.push(elem);
+    this.expData.entities.insertIfNotExist(elem);
     elem.parent = this;
     if (this.parent.selectionSpec()) {
         elem.selectTrialType(this.parent.selectionSpec());

@@ -527,9 +527,7 @@ ExpData.prototype.addGroup = function(group) {
 };
 
 ExpData.prototype.addEntity = function(entity) {
-    if (!this.entities.byId.hasOwnProperty(entity.id())) {
-        this.entities.push(entity);
-    }
+    this.entities.insertIfNotExist(entity);
 };
 
 ExpData.prototype.rebuildEntities = function() {

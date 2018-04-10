@@ -64,7 +64,7 @@ Factor.prototype.init = function(name) {
     globalVar.isFactor(true);
     globalVar.isInteracting(true);
     this.globalVar(globalVar);
-    this.expData.entities.push(globalVar);
+    this.expData.entities.insertIfNotExist(globalVar);
     this.updateLevels();
 
     this.randomizationConverter();
