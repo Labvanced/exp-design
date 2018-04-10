@@ -145,6 +145,7 @@ Sequence.prototype.selectNextElement = function() {
 };
 
 Sequence.prototype.addNewSubElement = function(elem) {
+    elem.parent = this;
     this.elements.push(elem);
     this.expData.entities.insertIfNotExist(elem);
     elem.parent = this;
@@ -224,11 +225,7 @@ Sequence.prototype.addAllRemainingFactorToWorkspace = function() {
     var self = this;
     if (this.factorGroup){
         this.factorGroup.factors().forEach(function (factor) {
-            var variable = factor.globalVar();
-            var isExisting = self.workspaceVars.byId[variable.id()];
-            if (!isExisting) {
-                self.workspaceVars.push(variable);
-            }
+            self.workspaceVars.insertIfNotExist(factor.globalVar());
         })
     }
 
