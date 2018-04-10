@@ -1050,7 +1050,7 @@ ExpTrialLoop.prototype.getTrialById = function(uniqueId) {
 
 ExpTrialLoop.prototype.getTrialsBasedOnInputArray = function(sortedArray, subjectIdx) {
 
-    if (subjectIdx && sortedArray){
+    if (subjectIdx>=0 && sortedArray.length>0){
         try {
             var uploadedTrialOrder = this.uploadedTrialOrder();
             var subjectWrappedIdx = subjectIdx % uploadedTrialOrder.length;
