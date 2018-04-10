@@ -871,7 +871,7 @@ ExpData.prototype.reAddEntities = function() {
             entitiesArr.push(globVar);
 
         // recursively make sure that all deep tree nodes are in the entities list:
-        globVar.reAddEntities(entitiesArr);
+      //  globVar.reAddEntities(entitiesArr);
     } );
 
     for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
