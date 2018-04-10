@@ -589,20 +589,14 @@ GlobalVarValueTimer.states = ['pause','up','down'];
 
 GlobalVarValueTimer.prototype.setValue = function(timeInMs) {
     if (timeInMs === null){
-        this.value(this.convert(data));
+        timeInMs = 0;
     }
-    else{
-        timeInMs = parseInt(timeInMs);
-        this.timerValueAtStart = timeInMs;
-        this.value(timeInMs);
-        this.startTimeInUTC = Date.now();
-        this.updateInterval();
-        this.updateTimeout();
-    }
-
-
-
-
+    timeInMs = parseInt(timeInMs);
+    this.timerValueAtStart = timeInMs;
+    this.value(timeInMs);
+    this.startTimeInUTC = Date.now();
+    this.updateInterval();
+    this.updateTimeout();
 };
 
 GlobalVarValueTimer.prototype.getValue = function(currentTime) {
