@@ -98,11 +98,17 @@ GlobalVarValueNumeric.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueNumeric.prototype.setValue = function(data) {
-    if (typeof data.parentVar == "GlobalVar"){
-        data = data.toJS();
+    if (data === null){
+        this.value(this.convert(data));
     }
-    // convert other data types to numeric:
-    this.value(this.convert(data));
+    else{
+        if (typeof data.parentVar == "GlobalVar"){
+            data = data.toJS();
+        }
+        // convert other data types to numeric:
+        this.value(this.convert(data));
+    }
+
 };
 
 GlobalVarValueNumeric.prototype.getValue = function() {
@@ -329,18 +335,27 @@ GlobalVarValueCategorical.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueCategorical.prototype.setValue = function(data) {
-    if (typeof data.parentVar == "GlobalVar"){
-        data = data.toJS();
+    if (data === null){
+        this.value(this.convert(data));
     }
-    // convert other data types to string:
-    data = this.convert(data);
+    else{
+        if (typeof data.parentVar == "GlobalVar"){
+            data = data.toJS();
+        }
+        // convert other data types to string:
+        data = this.convert(data);
 
-    if (this.parentVar.levels().indexOf(data) == -1){
-        this.value(null);
+        if (this.parentVar.levels().indexOf(data) == -1){
+            this.value(null);
+        }
+        else {
+            this.value(data);
+        }
     }
-    else {
-        this.value(data);
-    }
+
+
+
+
 };
 
 GlobalVarValueCategorical.prototype.getValue = function() {
@@ -412,10 +427,16 @@ GlobalVarValueTime.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueTime.prototype.setValue = function(data) {
-    if (typeof data.parentVar == "GlobalVar"){
-        data = data.toJS();
+    if (data === null){
+        this.value(this.convert(data));
     }
-    this.value(this.convert(data));
+    else{
+        if (typeof data.parentVar == "GlobalVar"){
+            data = data.toJS();
+        }
+        this.value(this.convert(data));
+    }
+
 };
 
 GlobalVarValueTime.prototype.getValue = function() {
@@ -481,13 +502,19 @@ GlobalVarValueDatetime.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueDatetime.prototype.setValue = function(data) {
-    if (typeof data.parentVar == "GlobalVar"){
-        data = data.toJS();
+    if (data === null){
+        this.value(this.convert(data));
     }
-    if (data.hasOwnProperty("value")){
-        data = null;
+    else{
+        if (typeof data.parentVar == "GlobalVar"){
+            data = data.toJS();
+        }
+        if (data.hasOwnProperty("value")){
+            data = null;
+        }
+        this.value(this.convert(data));
     }
-    this.value(this.convert(data));
+
 };
 
 GlobalVarValueDatetime.prototype.getValue = function() {
@@ -561,12 +588,21 @@ GlobalVarValueTimer = function(parentVar) {
 GlobalVarValueTimer.states = ['pause','up','down'];
 
 GlobalVarValueTimer.prototype.setValue = function(timeInMs) {
-    timeInMs = parseInt(timeInMs);
-    this.timerValueAtStart = timeInMs;
-    this.value(timeInMs);
-    this.startTimeInUTC = Date.now();
-    this.updateInterval();
-    this.updateTimeout();
+    if (timeInMs === null){
+        this.value(this.convert(data));
+    }
+    else{
+        timeInMs = parseInt(timeInMs);
+        this.timerValueAtStart = timeInMs;
+        this.value(timeInMs);
+        this.startTimeInUTC = Date.now();
+        this.updateInterval();
+        this.updateTimeout();
+    }
+
+
+
+
 };
 
 GlobalVarValueTimer.prototype.getValue = function(currentTime) {
@@ -899,8 +935,10 @@ GlobalVarValueArray.prototype.fromJS = function(data) {
  * @returns {object}
  */
 GlobalVarValueArray.prototype.toJS = function() {
-    var arrValuesJS = jQuery.map(this.value(), function(scalar) {
-        return scalar.toJS();
+    var self = this;
+    var arrValuesJS = [];
+    this.value().forEach(function (scalar) {
+        arrValuesJS.push(scalar.toJS());
     });
     return arrValuesJS;
 };
