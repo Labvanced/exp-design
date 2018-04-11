@@ -32,7 +32,7 @@ var QuestionnaireEditorData = function(expData) {
 
 QuestionnaireEditorData.prototype.addNewSubElement = function(elem) {
     this.elements.push(elem);
-    this.expData.entities.push(elem);
+    this.expData.entities.insertIfNotExist(elem);
     elem.parent = this;
 };
 

@@ -71,9 +71,8 @@ Factor.prototype.init = function(name,globVar) {
 
     this.globalVar(globalVar);
     if(!(globVar)){
-        this.expData.entities.push(globalVar);
+        this.expData.entities.insertIfNotExist(globalVar);
     }
-
     this.updateLevels();
 
     this.randomizationConverter();

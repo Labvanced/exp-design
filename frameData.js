@@ -18,7 +18,7 @@ var FrameData = function(expData) {
     this.offsetEnabled = ko.observable(false);
     this.bgColor = ko.observable("#ffffff"); // hex color as string, i.e. "#ffffff"
     this.elements = ko.observableArray([]).extend({sortById: null});
-    this.events = ko.observableArray([]).extend({sortById: null});
+    this.events = ko.observableArray([]);
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
     this.hideMouse = ko.observable(false);
 
@@ -103,7 +103,7 @@ FrameData.prototype.copyChildEntity = function(entity) {
             var varEntity = entityCopy.content().variable();
             if (varEntity){
                 var variableCopy =  this.copyVariable(varEntity);
-                this.expData.entities.push(variableCopy);
+                this.expData.entities.insertIfNotExist(variableCopy);
                 entityCopy.content().variable(variableCopy.id());
                 this.addVariableToLocalWorkspace(variableCopy)
             }
@@ -115,7 +115,7 @@ FrameData.prototype.copyChildEntity = function(entity) {
                 if (subElements[i].hasOwnProperty("variable")){
                     var varEntity = subElements[i].variable();
                     var variableCopy =  this.copyVariable(varEntity);
-                    this.expData.entities.push(variableCopy);
+                    this.expData.entities.insertIfNotExist(variableCopy);
                     subElements[i].variable(variableCopy.id());
                     this.localWorkspaceVars.splice(index+1, 0, variableCopy);
 
@@ -184,7 +184,7 @@ FrameData.prototype.copyVariable = function(varEntity) {
  */
 FrameData.prototype.addNewSubElement = function(elem) {
     this.elements.push(elem);
-    this.expData.entities.push(elem);
+    this.expData.entities.insertIfNotExist(elem);
     elem.parent = this;
 };
 

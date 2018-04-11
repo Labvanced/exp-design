@@ -33,9 +33,9 @@ var SubjectGroup = function (expData) {
 SubjectGroup.prototype.addSession = function(session) {
     var sessionTimeSettings  = new SessionTimeData(this.expData);
     this.sessionTimeData.push(sessionTimeSettings);
-    this.reAddEntities(this.expData.entities);
-
-    return this.sessions.push(session);
+    this.sessions.push(session);
+    this.expData.addEntity(sessionTimeSettings);
+    return;
 };
 
 SubjectGroup.prototype.rename = function(idx,flag,data,event) {

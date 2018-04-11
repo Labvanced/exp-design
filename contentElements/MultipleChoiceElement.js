@@ -143,7 +143,7 @@ MultipleChoiceElement.prototype.addSubscriptions = function() {
                 newElem.variable().dataType("string");
                 newElem.variable().resetStartValue();
                 newElem.enableTitle(false);
-                self.expData.entities.push(self.variable());
+                self.expData.entities.insertIfNotExist(self.variable());
                 self.subInputElement(newElem);
                 self.expData.notifyChanged();
                 //self.addEntry()

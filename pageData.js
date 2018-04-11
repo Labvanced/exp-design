@@ -163,7 +163,7 @@ PageData.prototype.copyChildEntity = function(entity) {
         var varEntity = entityCopy.content().variable();
         if (varEntity){
             var variableCopy =  this.copyVariable(varEntity);
-            this.expData.entities.push(variableCopy);
+            this.expData.entities.insertIfNotExist(variableCopy);
             entityCopy.content().variable(variableCopy.id());
             this.localWorkspaceVars.splice(index+1, 0, variableCopy);
         }
@@ -174,7 +174,7 @@ PageData.prototype.copyChildEntity = function(entity) {
             if (subElements[i].hasOwnProperty("variable")){
                 var varEntity = subElements[i].variable();
                 var variableCopy =  this.copyVariable(varEntity);
-                this.expData.entities.push(variableCopy);
+                this.expData.entities.insertIfNotExist(variableCopy);
                 subElements[i].variable(variableCopy.id());
                 this.addVariableToLocalWorkspace(variableCopy)
 
@@ -238,7 +238,7 @@ PageData.prototype.addVariableToLocalWorkspace = function(variable) {
  */
 PageData.prototype.addNewSubElement = function (elem) {
     this.elements.push(elem);
-    this.expData.entities.push(elem);
+    this.expData.entities.insertIfNotExist(elem);
     elem.parent = this;
 };
 

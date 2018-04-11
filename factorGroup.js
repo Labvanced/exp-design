@@ -425,8 +425,8 @@ FactorGroup.prototype.removeLevelFromFactor = function(factor, lvlIdx) {
  */
 FactorGroup.prototype.addFactor = function(factor) {
 
-    this.expData.entities.push(factor.globalVar());
-    this.expData.entities.push(factor);
+    this.expData.entities.insertIfNotExist(factor.globalVar());
+    this.expData.entities.insertIfNotExist(factor);
 
     this.factors.push(factor);
     this.addFactorToCondition(factor);
