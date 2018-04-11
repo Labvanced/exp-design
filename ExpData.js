@@ -634,7 +634,10 @@ ExpData.prototype.setPointers = function() {
     var availableVarIds = this.availableVars();
     var availableVars = [];
     for (i=0; i<availableVarIds.length; i++) {
-        availableVars.push(this.entities.byId[availableVarIds[i]]);
+        var variable = this.entities.byId[availableVarIds[i]];
+        if (variable) {
+            availableVars.push(variable);
+        }
     }
     this.availableVars(availableVars);
 

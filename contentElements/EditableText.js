@@ -27,6 +27,8 @@ EditableTextElement.prototype.numVarNamesRequired = 0;
 
 
 EditableTextElement.prototype.reLinkVar = function(oldVar,newVar) {
+
+
     var oldVarId = oldVar.id();
     var newVarId = newVar.id();
     var oldVarName = oldVar.name();
@@ -151,10 +153,11 @@ EditableTextElement.prototype.selectTrialType = function(selectionSpec) {
 };
 
 EditableTextElement.prototype.getTextRefs = function(textArr, label){
-    if(this.modifier().ndimModifierTrialTypes.length ==0){
-        textArr.push([label, this.rawText, this]);
-    }
-    else{
+
+    // always push text of default trial type:
+    textArr.push([label, this.rawText, this]);
+
+    if(this.modifier().ndimModifierTrialTypes.length > 0){
         var flattend = this.modifier().getFlattendArray();
         for(var k=0; k<flattend.length; k++){
             if(flattend[k].modifiedProp.rawText) {
@@ -166,6 +169,33 @@ EditableTextElement.prototype.getTextRefs = function(textArr, label){
         }
     }
     return textArr;
+};
+
+EditableTextElement.prototype.getAllRawTexts = function() {
+    var arrTextObs = this.getTextRefs([],"");
+    var allRawTextsExists = {};
+    var allRawTextsObs = [];
+    for(var k=0; k<arrTextObs.length; k++){
+        var rawTextInModifierObs = arrTextObs[k][1];
+        if(typeof rawTextInModifierObs() == 'number'){
+            var allLanguages = this.expData.translations()[rawTextInModifierObs()].languages();
+            for(var i=0; i<allLanguages.length; i++){
+                var rawTextInTranslationObs = allLanguages[i];
+                if (!allRawTextsExists[rawTextInTranslationObs._id]) {
+                    allRawTextsObs.push(rawTextInTranslationObs);
+                    allRawTextsExists[rawTextInTranslationObs._id] = true;
+                }
+            }
+        }
+        else{
+            if (!allRawTextsExists[rawTextInModifierObs._id]) {
+                allRawTextsObs.push(rawTextInModifierObs);
+                allRawTextsExists[rawTextInModifierObs._id] = true;
+            }
+        }
+
+    }
+    return allRawTextsObs;
 };
 
 EditableTextElement.prototype.toJS = function() {
@@ -245,10 +275,36 @@ function createEditableTextComponents() {
                 var difference = self.dataModel.globalVarIds().filter(function(n) {
                     return ids.indexOf(n) === -1;
                 });
-                // remove variable references
-                difference.forEach(function (elem) {
-                    self.dataModel.removeVar(elem);
-                });
+
+                if (difference.length > 0) {
+
+                    // WARNING: can only remove reference if it is also not present in any modifier or any translation!!!
+                    // Therefore need to collect all variable ids used in any rawText:
+                    var allRawTextObs = self.dataModel.getAllRawTexts();
+                    var globVarIds_inAllRawTexts = [];
+                    var globVarIds_inAllRawTexts_exists = {};
+                    for(var k=0; k<allRawTextObs.length; k++){
+
+                        while(match = regex.exec(allRawTextObs[k]())){
+                            var glob_var_id = match[1];
+                            if(glob_var_id !== "undefined"){
+                                if (!globVarIds_inAllRawTexts_exists[glob_var_id]) {
+                                    globVarIds_inAllRawTexts_exists[glob_var_id] = true;
+                                    globVarIds_inAllRawTexts.push(glob_var_id);
+                                }
+                            }
+                        }
+                    }
+
+                    var real_difference = self.dataModel.globalVarIds().filter(function(n) {
+                        return globVarIds_inAllRawTexts.indexOf(n) === -1;
+                    });
+
+                    // remove variable references
+                    real_difference.forEach(function (elem) {
+                        self.dataModel.removeVar(elem);
+                    });
+                }
 
                 // add variable references
                 for(var i=0; i<ids.length; i++){
