@@ -7,7 +7,6 @@ var EditableTextElement = function(expData, parent, text) {
     //serialized
     this.type = "EditableTextElement";
     this.rawText = ko.observable(text);// for example: '<span>Your score: <variable varid="239da92acb23"></span>'
-    this.globalVars = [];
     this.globalVarIds = ko.observableArray([]);
 
     // not serialized
@@ -79,15 +78,13 @@ EditableTextElement.prototype.setText = function (text) {
 };
 
 EditableTextElement.prototype.addVar = function (globalVarId) {
-    this.globalVars.push(globalVarId);
     this.globalVarIds.push(globalVarId);
     this.setVariableBackRef(globalVarId);
 };
 
 EditableTextElement.prototype.removeVar = function (varId) {
-    var index =this.globalVars.indexOf(varId);
+    var index =this.globalVarIds().indexOf(varId);
     if(index>=0){
-        this.globalVars.splice(index,1);
         this.globalVarIds.splice(index,1);
     }
     this.removeRefbyId(varId);
@@ -112,7 +109,6 @@ EditableTextElement.prototype.removeBackRefs = function () {
             }
         }
     }
-    this.globalVars = [];
     this.globalVarIds([]);
     this.globalVarRefs = {};
 };
@@ -132,13 +128,20 @@ EditableTextElement.prototype.removeRefbyId = function (varId) {
 
 
 EditableTextElement.prototype.setPointers = function(entitiesArr) {
-    for(var k=0; k<this.globalVars.length; k++){
-        this.setVariableBackRef(this.globalVars[k]);
+    var globalVarIds = this.globalVarIds();
+    for(var k=0; k<globalVarIds.length; k++){
+        this.setVariableBackRef(globalVarIds[k]);
     }
     this.modifier().setPointers(entitiesArr);
 };
 
 EditableTextElement.prototype.reAddEntities = function(entitiesArr) {
+    var linked_entities = this.expData.entities;
+    var globalVarIds = this.globalVarIds();
+    for(var k=0; k<globalVarIds.length; k++){
+        var globVar = linked_entities.byId[globalVarIds[k]];
+        entitiesArr.insertIfNotExist(globVar)
+    }
     this.modifier().reAddEntities(entitiesArr);
 };
 
@@ -170,7 +173,6 @@ EditableTextElement.prototype.toJS = function() {
         type: this.type,
         rawText: this.rawText(),
         modifier: this.modifier().toJS(),
-        globalVars: this.globalVars,
         globalVarIds: this.globalVarIds()
     };
 };
@@ -180,11 +182,19 @@ EditableTextElement.prototype.fromJS = function(data) {
     this.rawText(data.rawText);
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
-    this.globalVars = data.globalVars;
 
-    if (data.hasOwnProperty('globalVarIds')){
-        this.globalVarIds(data.globalVarIds);
+    // convert and fix double ids in dataModel by merging data.globalVars and data.globalVarIds:
+    var allGlobalVarIds = [];
+    if (data.hasOwnProperty('globalVars')){
+        allGlobalVarIds = data.globalVars;
     }
+    if (data.hasOwnProperty('globalVarIds')){
+        // join arrays:
+        allGlobalVarIds = allGlobalVarIds.concat(data.globalVarIds);
+    }
+    // now remove duplicate ids:
+    allGlobalVarIds = allGlobalVarIds.filter(function (item, pos) {return allGlobalVarIds.indexOf(item) == pos});
+    this.globalVarIds(allGlobalVarIds);
 
 };
 
