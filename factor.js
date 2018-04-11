@@ -165,17 +165,13 @@ Factor.prototype._addLevel = function() {
  */
 Factor.prototype.setPointers = function(entitiesArr) {
     var self = this;
-    if (entitiesArr.byId[this.globalVar()]){
-        this.globalVar(entitiesArr.byId[this.globalVar()]);
+    var globalVar = entitiesArr.byId[this.globalVar()];
+    if (globalVar){
+        this.globalVar(globalVar);
     }
-    else {
-        this.globalVar(null);
-    }
-    if (entitiesArr.byId[this.balancedInFactor()]){
-        this.balancedInFactor(entitiesArr.byId[this.balancedInFactor()]);
-    }
-    else {
-        this.balancedInFactor(null);
+    var balancedInFactor = entitiesArr.byId[this.balancedInFactor()];
+    if (balancedInFactor){
+        this.balancedInFactor(balancedInFactor);
     }
 
     var balancedInFactors = [];
