@@ -61,19 +61,18 @@ Factor.prototype.init = function(name,globVar) {
     }
 
     if (globVar){
-        var globalVar = globVar;
+        this.globalVar(globVar);
     }
     else{
         var globalVar = (new GlobalVar(this.expData)).initProperties('categorical', 'trial', 'nominal', name);
         globalVar.isFactor(true);
         globalVar.isInteracting(true);
+        this.globalVar(globalVar);
+        this.expData.entities.insertIfNotExist(globalVar);
+        this.updateLevels();
     }
 
-    this.globalVar(globalVar);
-    if(!(globVar)){
-        this.expData.entities.insertIfNotExist(globalVar);
-    }
-    this.updateLevels();
+
 
     this.randomizationConverter();
 
@@ -92,7 +91,7 @@ Factor.prototype.init = function(name,globVar) {
         }
     }
     if (found){
-       sequences[i].addVariableToWorkspace(globalVar);
+       sequences[i].addVariableToWorkspace(this.globalVar());
     }
     this.setVariableBackRef();
 
@@ -114,6 +113,7 @@ Factor.prototype.setVariableBackRef = function() {
 
 Factor.prototype.updateLevels = function() {
     this.globalVar().levels([]);
+   // var nrLevel = this.globalVar().levels().length >0 ? this.globalVar().levels().length : 1;
     for(var i = 0;i<this.nrLevels();i++){
         this._addLevel();
     }
@@ -127,6 +127,7 @@ Factor.prototype.addLevel = function() {
     }
     if (this.factorGroup.expTrialLoop.subSequencePerFactorGroup().length>1){
         this.factorGroup.expTrialLoop.subSequencePerFactorGroup().forEach(function (sequence) {
+            sequence.factorGroup.addLevelToCondition();
             sequence.factorGroup.updateCondGroups();
         })
     }
@@ -135,6 +136,8 @@ Factor.prototype.addLevel = function() {
 
 Factor.prototype.removeLevel = function(lvlIdx) {
     this.factorGroup.removeLevelFromFactor(this,lvlIdx);
+    this.globalVar().removeLevel(lvlIdx);
+    this.factorGroup.updateCondGroups();
 
     // remove lvl form other task with same factor
     var self = this;
@@ -142,9 +145,10 @@ Factor.prototype.removeLevel = function(lvlIdx) {
     refs.forEach(function(ref){
       if (ref.refLabel == 'Factor' && ref.entity.factorGroup !==self.factorGroup) {
          ref.entity.factorGroup.removeLevelFromFactor(ref.entity,lvlIdx);
+         ref.entity.factorGroup.updateCondGroups();
       }
     });
-    this.factorGroup.updateCondGroups();
+
 };
 
 Factor.prototype._addLevel = function() {

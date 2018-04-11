@@ -416,7 +416,7 @@ FactorGroup.prototype.removeLevelFromFactor = function(factor, lvlIdx) {
 
 
     // Now really remove the level from the categorical variable:
-    factors[facIdx].globalVar().removeLevel(lvlIdx);
+   // factors[facIdx].globalVar().removeLevel(lvlIdx);
 };
 
 /**
