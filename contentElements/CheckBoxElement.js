@@ -241,7 +241,9 @@ CheckBoxEntry.prototype.init = function(varName) {
 
 
 CheckBoxEntry.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent.parent, true, true, 'checkbox');
+    if (this.variable()) {
+        this.variable().addBackRef(this, this.parent.parent, true, true, 'checkbox');
+    }
 };
 
 /**
@@ -259,8 +261,10 @@ CheckBoxEntry.prototype.setPointers = function(entitiesArr) {
 };
 
 CheckBoxEntry.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
+    if (this.variable()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
     }
     this.checkBoxText().reAddEntities(entitiesArr);
 };

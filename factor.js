@@ -106,8 +106,9 @@ Factor.prototype.removeBackRef = function() {
 
 
 Factor.prototype.setVariableBackRef = function() {
-
-    this.globalVar().addBackRef(this, this.factorGroup, true, true, 'Factor');
+    if (this.globalVar()) {
+        this.globalVar().addBackRef(this, this.factorGroup, true, true, 'Factor');
+    }
 };
 
 
@@ -166,6 +167,9 @@ Factor.prototype.setPointers = function(entitiesArr) {
     var self = this;
     if (entitiesArr.byId[this.globalVar()]){
         this.globalVar(entitiesArr.byId[this.globalVar()]);
+    }
+    else {
+        this.globalVar(null);
     }
     if (entitiesArr.byId[this.balancedInFactor()]){
         this.balancedInFactor(entitiesArr.byId[this.balancedInFactor()]);
@@ -310,8 +314,10 @@ Factor.prototype.toJS = function() {
         balancedInFactors.push(obj);
     }
 
-
-
+    var globalVarId = null;
+    if (this.globalVar()) {
+        globalVarId = this.globalVar().id();
+    }
 
     return {
         type: this.type,
@@ -320,7 +326,7 @@ Factor.prototype.toJS = function() {
         randomizationType:this.randomizationType(),
         balancedInFactor: balancedInFactorId,
         balancedInFactors: balancedInFactors,
-        globalVar: this.globalVar().id()
+        globalVar: globalVarId
     };
 };
 
