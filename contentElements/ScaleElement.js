@@ -173,7 +173,7 @@ ScaleElement.prototype.setPointers = function(entitiesArr) {
 
     if (this.converting) {
         // if we need to convert from old scale element format, we create the first entry here.
-        this.addEntry();
+        this.addEntry(this.parent.name());
         this.converting = false;
     }
 
