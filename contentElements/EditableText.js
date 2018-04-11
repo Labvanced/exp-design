@@ -142,7 +142,9 @@ EditableTextElement.prototype.reAddEntities = function(entitiesArr) {
     var globalVarIds = this.globalVarIds();
     for(var k=0; k<globalVarIds.length; k++){
         var globVar = linked_entities.byId[globalVarIds[k]];
-        entitiesArr.insertIfNotExist(globVar)
+        if (globVar) {
+            entitiesArr.insertIfNotExist(globVar)
+        }
     }
     this.modifier().reAddEntities(entitiesArr);
 };
