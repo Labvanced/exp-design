@@ -388,10 +388,16 @@ FactorGroup.prototype.removeLevelFromFactor = function(factor, lvlIdx) {
     var factorGroupIdx = this.expTrialLoop.factorGroups().indexOf( this );
     var subSequence = this.expTrialLoop.subSequencePerFactorGroup()[factorGroupIdx];
     var allModifiers = [];
-    subSequence.getAllModifiers(allModifiers);
-    for (var i=0; i<allModifiers.length; i++) {
-        allModifiers[i].removeLevelFromFactor(factor, lvlIdx);
+    if (subSequence){
+        subSequence.getAllModifiers(allModifiers);
+        for (var i=0; i<allModifiers.length; i++) {
+            allModifiers[i].removeLevelFromFactor(factor, lvlIdx);
+        }
     }
+    else{
+        console.log("error: sequence of factor group not found.")
+    }
+
 
     // Update conditions table:
     function removeLevels(lvlIdx,requiredDepth,currentDepth,arr) {
