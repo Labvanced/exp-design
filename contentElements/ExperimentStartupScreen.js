@@ -520,9 +520,10 @@ ExperimentStartupScreen.prototype.startExp = function() {
 
         // TODO: this check is not working yet:
         var fullscreenEnabled = document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled || document.msFullscreenEnabled;
-        if (fullscreenEnabled){
-            player.startExperiment();
+        if (fullscreenEnabled){ // this is false on Safari on iOS!!!!
+
         }
+        player.startExperiment();
     },5000);
 
 };
