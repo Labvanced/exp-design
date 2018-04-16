@@ -124,7 +124,6 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
     this.questionText().setPointers(entitiesArr);
     if ( this.subInputElement()){
         this.subInputElement().setPointers(entitiesArr);
-        this.subInputElement().setVariableBackRef();
     }
 
     this.addSubscriptions();
@@ -149,8 +148,9 @@ MultipleChoiceElement.prototype.addSubscriptions = function() {
                 newElem.variable().dataType("string");
                 newElem.variable().resetStartValue();
                 newElem.enableTitle(false);
-                self.expData.entities.insertIfNotExist(self.variable());
+                self.expData.entities.insertIfNotExist(newElem.variable());
                 self.subInputElement(newElem);
+                self.reAddEntities(self.expData.entities);
                 self.expData.notifyChanged();
                 //self.addEntry()
             };
@@ -319,7 +319,7 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
         if (data.subInputElement){
             var elem =  new InputElement(self.expData);
             elem.fromJS(data.subInputElement);
-            this.subInputElement = ko.observable(elem);
+            this.subInputElement(elem);
         }
     }
     if(data.hasOwnProperty('reshuffleElements')){
