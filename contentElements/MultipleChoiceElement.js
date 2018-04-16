@@ -81,7 +81,10 @@ MultipleChoiceElement.prototype.removeEntry = function() {
 };
 
 MultipleChoiceElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'multipleChoice');
+    if (this.variable()){
+        this.variable().addBackRef(this, this.parent, true, true, 'multipleChoice');
+    }
+
 };
 
 
@@ -111,10 +114,13 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.setPointers(entitiesArr);
     } );
-    if (this.variable().dataType() == "categorical") {
-        // convert to string type:
-        this.variable().changeDataType("string");
+
+    if (this.variable()){
+        if (this.variable().dataType() == "categorical") {
+            this.variable().changeDataType("string");
+        }
     }
+
     this.questionText().setPointers(entitiesArr);
     if ( this.subInputElement()){
         this.subInputElement().setPointers(entitiesArr);
