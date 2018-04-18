@@ -41,6 +41,30 @@ var StudySettings = function (expData) {
     this.maxNumPartOfJointExp = ko.observable(10);
 
     this.participantConsent = ko.observable(true);
+
+    var self = this;
+    this.deviceRunType = ko.computed(function () {
+        var someMobileAllowed = false;
+        var someDesktopAllowed = false;
+
+            if (self.allowAndroidMobile() || self.allowAndroidTablet() || self.allowIPhone() || self.allowIPad() ){
+                someMobileAllowed = true;
+            }
+            if ( self.allowMac() || self.allowPCWindows() || self.allowPCLinux() || self.allowOtherOS() ){
+                someDesktopAllowed = true;
+            }
+            if (someMobileAllowed &&someDesktopAllowed ){
+                return "desktopAndMobile";
+            }
+            else if (someDesktopAllowed ){
+                return "desktop";
+            }
+            else if (someMobileAllowed){
+                return "mobile";
+            }
+
+
+    }, this);
 };
 StudySettings.prototype.timezones = ["-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0","+1","+2","+3","+4","+5","+6","+7","+8","+9","+10","+11","+12"];
 
