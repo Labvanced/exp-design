@@ -124,6 +124,7 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
     this.questionText().setPointers(entitiesArr);
     if ( this.subInputElement()){
         this.subInputElement().setPointers(entitiesArr);
+        this.subInputElement().parent = self.parent;
     }
 
     this.addSubscriptions();
