@@ -19,6 +19,7 @@ var ExpTrialLoop = function (expData) {
    
     this.id = ko.observable(guid());
     this.displayInitialCountdown = ko.observable(true);
+    this.syncTaskStart = ko.observable(true);
 
     this.zoomMode = ko.observable('fullscreen'); // fullscreen or visualDegree or pixel or millimeter
     this.visualDegreeToUnit = ko.observable(20);
@@ -1506,6 +1507,9 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('displayInitialCountdown')) {
         this.displayInitialCountdown(data.displayInitialCountdown);
     }
+    if(data.hasOwnProperty('syncTaskStart')){
+        this.syncTaskStart(data.syncTaskStart);
+    }
 
     this.type =  data.type;
 
@@ -1608,6 +1612,7 @@ ExpTrialLoop.prototype.toJS = function() {
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
         displayInitialCountdown: this.displayInitialCountdown(),
+        syncTaskStart: this.syncTaskStart(),
         type: this.type,
         factorGroups: jQuery.map( this.factorGroups(), function( factorGroup ) { return factorGroup.toJS(); }),
         subSequencePerFactorGroup: jQuery.map( this.subSequencePerFactorGroup(), function( subSequence ) { return subSequence.id(); }),
