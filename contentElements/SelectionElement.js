@@ -109,7 +109,7 @@ SelectionElement.prototype.setPointers = function(entitiesArr) {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.setPointers(entitiesArr);
     } );
-    if (this.variable().dataType() == "categorical") {
+    if (this.variable() && this.variable().dataType() == "categorical") {
         // convert to string type:
         jQuery.each( this.variable().levels(), function( index, elem ) {
             var entry = new SelectionEntry(this);
