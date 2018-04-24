@@ -66,8 +66,9 @@ ProgressBarElement.prototype.bindToVariable = function(variable) {
 };
 
 ProgressBarElement.prototype.setVariableBackRef = function() {
-
-    this.variable().addBackRef(this, this.parent, true, true, 'Progress Bar');
+    if (this.variable()) {
+        this.variable().addBackRef(this, this.parent, true, true, 'Progress Bar');
+    }
 };
 
 /**

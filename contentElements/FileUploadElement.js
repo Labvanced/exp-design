@@ -68,7 +68,9 @@ FileUploadElement.prototype.init = function(variableName) {
 };
 
 FileUploadElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'File Upload');
+    if (this.variable()) {
+        this.variable().addBackRef(this, this.parent, true, true, 'File Upload');
+    }
 };
 
 FileUploadElement.prototype.enableHighlight = function(elem) {

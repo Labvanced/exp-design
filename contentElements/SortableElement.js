@@ -63,7 +63,9 @@ SortableElement.prototype.init = function(variableName) {
 };
 
 SortableElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent,true, true, 'sortableArray');
+    if (this.variable()) {
+        this.variable().addBackRef(this, this.parent, true, true, 'sortableArray');
+    }
 };
 
 

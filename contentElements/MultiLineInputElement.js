@@ -66,7 +66,9 @@ MultiLineInputElement.prototype.init = function(variableName) {
 };
 
 MultiLineInputElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'longTextInput');
+    if (this.variable()) {
+        this.variable().addBackRef(this, this.parent, true, true, 'longTextInput');
+    }
 };
 
 /**

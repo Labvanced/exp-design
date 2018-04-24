@@ -58,7 +58,9 @@ LikertElement.prototype.init = function(variableName) {
 };
 
 LikertElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'Likert');
+    if (this.variable()) {
+        this.variable().addBackRef(this, this.parent, true, true, 'Likert');
+    }
 };
 
 

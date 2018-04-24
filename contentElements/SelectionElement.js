@@ -84,7 +84,9 @@ SelectionElement.prototype.init = function(variableName) {
 };
 
 SelectionElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'Selection');
+    if (this.variable()) {
+        this.variable().addBackRef(this, this.parent, true, true, 'Selection');
+    }
 };
 
 /**

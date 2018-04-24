@@ -106,7 +106,9 @@ AudioRecordingElement.prototype.enableAudioRecDialog = function() {
 };
 
 AudioRecordingElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'Audio Recording');
+    if (this.variable()) {
+        this.variable().addBackRef(this, this.parent, true, true, 'Audio Recording');
+    }
 };
 
 /**

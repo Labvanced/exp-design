@@ -60,7 +60,9 @@ InputElement.prototype.init = function(variableName) {
 };
 
 InputElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'Input');
+    if (this.variable()) {
+        this.variable().addBackRef(this, this.parent, true, true, 'Input');
+    }
 };
 
 /**
