@@ -166,28 +166,33 @@ Factor.prototype._addLevel = function() {
 Factor.prototype.setPointers = function(entitiesArr) {
     var self = this;
     var globalVar = entitiesArr.byId[this.globalVar()];
-    if (globalVar){
+    if (globalVar instanceof GlobalVar){
         this.globalVar(globalVar);
+        var balancedInFactor = entitiesArr.byId[this.balancedInFactor()];
+        if (balancedInFactor){
+            this.balancedInFactor(balancedInFactor);
+        }
+
+        var balancedInFactors = [];
+        jQuery.each( this.balancedInFactors(), function( index, elem ) {
+            var obj = {
+                name:  elem.name,
+                id:  elem.id,
+                hasDependency:  ko.observable(elem.hasDependency)
+            };
+            balancedInFactors.push(obj);
+        });
+        this.balancedInFactors(balancedInFactors);
+
+        this.setVariableBackRef();
+
+        this.randomizationConverter();
     }
-    var balancedInFactor = entitiesArr.byId[this.balancedInFactor()];
-    if (balancedInFactor){
-        this.balancedInFactor(balancedInFactor);
+    else{ // this should not happen, variable of factor no longer exits!
+        this.factorGroup.removeFactor(this);
+        this.expData.notifyChanged();
     }
 
-    var balancedInFactors = [];
-    jQuery.each( this.balancedInFactors(), function( index, elem ) {
-        var obj = {
-            name:  elem.name,
-            id:  elem.id,
-            hasDependency:  ko.observable(elem.hasDependency)
-        };
-        balancedInFactors.push(obj);
-    });
-    this.balancedInFactors(balancedInFactors);
-
-    this.setVariableBackRef();
-
-    this.randomizationConverter();
 };
 
 /**
