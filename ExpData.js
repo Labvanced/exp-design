@@ -496,12 +496,15 @@ ExpData.prototype.isSystemVar = function(globalVar) {
 };
 
 
-
-ExpData.prototype.deleteGlobalVar = function(globalVar) {
-    var idx = this.entities().indexOf(globalVar);
+ExpData.prototype.deleteEntity = function(entity) {
+    var idx = this.entities().indexOf(entity);
     if (idx>=0){
         this.entities.splice(idx,1);
     }
+};
+
+ExpData.prototype.deleteGlobalVar = function(globalVar) {
+    this.deleteEntity(globalVar);
 };
 
 ExpData.prototype.addTranslation = function(translationEntry){

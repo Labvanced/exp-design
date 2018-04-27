@@ -189,8 +189,10 @@ Factor.prototype.setPointers = function(entitiesArr) {
         this.randomizationConverter();
     }
     else{ // this should not happen, variable of factor no longer exits!
-        this.factorGroup.removeFactor(this);
-        this.expData.notifyChanged();
+        if (this.factorGroup) {
+            this.factorGroup.removeFactor(this);
+            this.expData.notifyChanged();
+        }
     }
 
 };
