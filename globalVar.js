@@ -256,7 +256,7 @@ GlobalVar.prototype.removeBackRef = function(entity) {
 
     // check if variable is now completely without backRefs, then remove from entity list (update)
     if (window.uc!==undefined) {
-        if (backRefs.length == 0 && !this.isFactor() && !this.expData.isSystemVar(this)) {
+        if (backRefs.length == 0 && !this.expData.isSystemVar(this)) {
             this.expData.deleteGlobalVar(this);
         }
     }
@@ -265,7 +265,7 @@ GlobalVar.prototype.removeBackRef = function(entity) {
 
 GlobalVar.prototype.calcUnused = function() {
     if (this.backRefs().length>0){
-        if (this.backRefs().length==1 && this.backRefs()[0].refLabel=="local workspace "){
+        if (this.backRefs().length==1 && this.backRefs()[0].refLabel=="local workspace"){
             this.unused(true);
         }
         else{
