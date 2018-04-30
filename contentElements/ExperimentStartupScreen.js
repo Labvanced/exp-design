@@ -160,15 +160,43 @@ var ExperimentStartupScreen = function(experiment) {
     this.resolutionAllowed = ko.observable(null);
     this.browserAllowed = ko.observable(null);
     this.osAllowed = ko.observable(null);
-    this.detectBrowserAndSystemSpecs()
-
-
+    this.detectBrowserAndSystemSpecs();
 };
 
 
 
+
+
+
+
 ExperimentStartupScreen.prototype.sendFriendInvite = function() {
-    var test = 1;
+
+    var emailData = {
+        InputName: this.participantName(),
+        InputEmail: this.friendsEmail(),
+        LinkToStudy: 'https://www.labvanced.com/player.html?id='+this.expData.parentExperiment.exp_id()
+    };
+
+    var self = this;
+
+    $.ajax({
+        url: '/inviteFriendForMultiUser',
+        type: 'post',
+        data : emailData,
+        success: function(data){
+            self.participantName("");
+            self.friendsEmail("");
+            $('#confirmInvite').html("Invite Send");
+
+            setTimeout(
+                function(){
+                    $('#confirmInvite').html("")
+                },15000);
+
+        }
+    });
+
+
 };
 
 ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
@@ -442,6 +470,8 @@ ExperimentStartupScreen.prototype.jumpToJointExpLobby = function() {
     var self = this;
     if (this.expData.isJointExp()) {
         this.jointExpLobbyModel().initSocketAndListeners();
+
+
         this.wizardStep("jointExpLobby");
         this.jointExpLobbyModel().gotMatchedFromServer.subscribe(function(isMatched) {
             if (isMatched) {
