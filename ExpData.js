@@ -251,7 +251,11 @@ ExpData.prototype.staticTranslations = {
         continueJointExpLobby: "continue",
         yourCrowdsourcingID: "Your worker / crowdsourcing ID (*):",
         AdLibraryEndOfStudy: "Take part in more exiting behavioral experiments:",
-        AdRegisterEndOfStudy: "OR register and build your own study for free:"
+        AdRegisterEndOfStudy: "OR register and build your own study for free:",
+        inviteFriendMultiUser1: "Need anohter player? Invite a friend!",
+        inviteFriendMultiUser2: "Your Name:",
+        inviteFriendMultiUser3: "Your Friends' Email:",
+        inviteFriendMultiUser4: "Invite"
 
     },
     German: {
@@ -315,8 +319,13 @@ ExpData.prototype.staticTranslations = {
         continueJointExpLobby: "Weiter,",
         yourCrowdsourcingID: "Ihre Worker / Crowdsourcing Id (*):",
         AdLibraryEndOfStudy: "Nehmen Sie an weiteren spannenden Online Verhaltensstudien teil:",
-        AdRegisterEndOfStudy: "Oder registrieren Sie sich und erstellen komplett gratis Ihre eigene Studie:"
-        }
+        AdRegisterEndOfStudy: "Oder registrieren Sie sich und erstellen komplett gratis Ihre eigene Studie:",
+        inviteFriendMultiUser1: "Brauchen Sie einen Mitspieler? Landen Sie doch einen Freund ein!",
+        inviteFriendMultiUser2: "Ihr Name:",
+        inviteFriendMultiUser3: "Die Email Adresse Ihres Freundes:",
+        inviteFriendMultiUser4: "Einladen"
+
+    }
 
 };
 

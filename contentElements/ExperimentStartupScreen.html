@@ -130,6 +130,23 @@
 
                                 <div name="participantReady" style="text-align: center; margin-top: 10px;" data-bind="visible: !jointExpLobbyModel().gotMatchedFromServer()">
                                     <span style="text-align: center; margin-left: 20px; font-style: italic;" data-bind="visible: jointExpLobbyModel().waiting(), text: expData.staticStrings().waitingForOtherParticipants"></span>
+                                    <!-- ko if: (jointExpLobbyModel().waiting()) -->
+                                    <br>
+                                    <div style="margin-top: 10px; font-weight: bold" data-bind="text: expData.staticStrings().inviteFriendMultiUser1"></div>
+                                    <div style="text-align: left; margin-top: 10px">
+                                        <div >
+                                            <span style="margin-left: 100px;" data-bind="text: expData.staticStrings().inviteFriendMultiUser2"></span>
+                                            <input placeholder="Name" type="text" width="150px" data-bind="value: participantName">
+                                        </div>
+                                        <div style="margin-top:-10px; padding-top: 0">
+                                            <span style="margin-left: 50px;" data-bind="text: expData.staticStrings().inviteFriendMultiUser3"></span>
+                                            <input placeholder="Email" type="text" width="150px" data-bind="value: friendsEmail">
+                                           <button class="btn-regular btn-lab-lightblue mg-20" data-bind="text: expData.staticStrings().inviteFriendMultiUser4, click: function(data,event) {sendFriendInvite()}"></button>
+                                        </div>
+
+                                    </div>
+                                    <!-- /ko -->
+
 
                                     <div style="text-align: center"><label class="checkbox-inline" data-bind="visible: !jointExpLobbyModel().waiting()"><input type="checkbox" id="readyToStart" data-bind="checked: jointExpLobbyModel().readyToStart, click: jointExpLobbyModel().emitReadiness"> <span data-bind="text: expData.staticStrings().readyToStart"></span></label></div> <br>
                                     <h5 class="text-center" style="margin-left: 20px; font-style: italic;" data-bind="visible: jointExpLobbyModel().readyToStart(), text: expData.staticStrings().experimentStartsShortly"></h5>

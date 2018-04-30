@@ -34,6 +34,8 @@ var ExperimentStartupScreen = function(experiment) {
     this.jointExpLobbyModel = ko.observable(new JointExpLobby(self.expData));
 
     this.timeToNextSession = ko.observable("");
+    this.participantName = ko.observable("");
+    this.friendsEmail = ko.observable("");
 
     this.imgSource = ko.computed( function() {
         return "/files/" + experiment.publishing_data.img_file_id() + "/" + experiment.publishing_data.img_file_orig_name();
@@ -161,6 +163,12 @@ var ExperimentStartupScreen = function(experiment) {
     this.detectBrowserAndSystemSpecs()
 
 
+};
+
+
+
+ExperimentStartupScreen.prototype.sendFriendInvite = function() {
+    var test = 1;
 };
 
 ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
