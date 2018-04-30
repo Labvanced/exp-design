@@ -249,7 +249,9 @@ ExpData.prototype.staticTranslations = {
         successfullyMatched_1: "Successfully matched. Press ",
         successfullyMatched_2: " to proceed to experiment!",
         continueJointExpLobby: "continue",
-        yourCrowdsourcingID: "Your worker / crowdsourcing ID (*):"
+        yourCrowdsourcingID: "Your worker / crowdsourcing ID (*):",
+        AdLibraryEndOfStudy: "Take part in more exiting behavioral experiments:",
+        AdRegisterEndOfStudy: "OR register and build your own study for free:"
 
     },
     German: {
@@ -311,7 +313,9 @@ ExpData.prototype.staticTranslations = {
         successfullyMatched_1: "Sie wurden erfolgreich einem Experiment zugeteilt. Drücken Sie",
         successfullyMatched_2: "um zu dem Experiment zu gelangen!",
         continueJointExpLobby: "Weiter,",
-        yourCrowdsourcingID: "Ihre Worker / Crowdsourcing Id (*):"
+        yourCrowdsourcingID: "Ihre Worker / Crowdsourcing Id (*):",
+        AdLibraryEndOfStudy: "Nehmen Sie an weiteren spannenden Online Verhaltensstudien teil:",
+        AdRegisterEndOfStudy: "Oder registrieren Sie sich und erstellen komplett gratis Ihre eigene Studie:"
         }
 
 };
