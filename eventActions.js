@@ -1255,6 +1255,118 @@ ActionModifyArray.prototype.toJS = function() {
 
 
 
+////////////////////////////////////////  ActionShuffleArray ///////////////////////////////////////////////////
+
+var ActionShuffleArray = function(event) {
+    this.event = event;
+    // serialized
+    this.inVarArr = ko.observable(null);
+};
+
+ActionShuffleArray.prototype.type = "ActionShuffleArray";
+ActionShuffleArray.prototype.label = "Shuffle Array Entries";
+
+ActionShuffleArray.prototype.isValid = function(){
+    return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionShuffleArray.prototype.setInVarArrBackRef = function(){
+    this.inVarArr().addBackRef(this, this.event, false, true, 'shuffle array');
+};
+
+
+ActionShuffleArray.prototype.removeInArrVariable = function(){
+    this.inVarArr(null);
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionShuffleArray.prototype.run = function(triggerParams) {
+
+    if (this.inVarArr()) {
+        this.inVarArr().value().setValue(this.event.parent.parent.factorGroup.expTrialLoop.reshuffle(this.inVarArr().value().value()));
+    }
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionShuffleArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionShuffleArray.prototype.setPointers = function(entitiesArr) {
+    var inVarArr = entitiesArr.byId[this.inVarArr()];
+    if (inVarArr){
+        this.inVarArr(inVarArr);
+        this.setInVarArrBackRef();
+    }
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionShuffleArray.prototype.reAddEntities = function(entitiesArr) {
+    if (this.inVarArr()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.inVarArr().id())) {
+            entitiesArr.push(this.inVarArr());
+        }
+    }
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionModifyArray}
+ */
+ActionShuffleArray.prototype.fromJS = function(data) {
+    this.inVarArr(data.inVarArr);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionShuffleArray.prototype.toJS = function() {
+    var inVarArr = null;
+    if (this.inVarArr()) {
+        if (typeof this.inVarArr().id == 'function') {
+            inVarArr = this.inVarArr().id();
+        }
+    }
+
+    return {
+        type: this.type,
+        inVarArr: inVarArr
+
+    };
+};
+
+
+
+
+
+
+
 ////////////////////////////////////////  ActionLoadFileIds ///////////////////////////////////////////////////
 
 var ActionLoadFileIds = function(event) {

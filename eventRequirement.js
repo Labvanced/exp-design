@@ -441,6 +441,8 @@ OperandVariable.prototype.getValue = function(parameters) {
             return value.getValue();
         case "objProperty":
             return this.operandValueOrObject().getValue();
+        case "unixTimestamp":
+            return new Date().getTime();
         case "frameTime":
             var playerFrame = this.event.parent.playerFrame;
             return playerFrame.getFrameTime();
