@@ -1101,7 +1101,10 @@ TriggerVariableValueChanged.prototype.type = "TriggerVariableValueChanged";
 TriggerVariableValueChanged.prototype.label = "Variable Value Changed Trigger";
 
 TriggerVariableValueChanged.prototype.setVariableBackRef = function(variable){
-    variable.addBackRef(this, this.event, false, true, 'Trigger On Variable Change');
+    var self = this;
+    variable.addBackRef(this, this.event, false, true, 'Trigger On Variable Change', function(globalVar)  {
+        self.removeVariable(globalVar);
+    });
 };
 
 

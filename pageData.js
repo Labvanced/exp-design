@@ -228,8 +228,15 @@ PageData.prototype.addVariableToLocalWorkspace = function(variable) {
     var isExisting = this.localWorkspaceVars.byId[variable.id()];
     if (!isExisting && !variable.isFactor()) {
         this.localWorkspaceVars.push(variable);
-        variable.addBackRef(this, this, false, false, 'local workspace');
+        this.setVarBackRef(variable);
     }
+};
+
+PageData.prototype.setVarBackRef = function(variable) {
+    var self = this;
+    variable.addBackRef(this, this, false, false, 'local workspace', function(globalVar) {
+        self.deleteChildEntity(globalVar);
+    });
 };
 
 /**
@@ -293,15 +300,14 @@ PageData.prototype.setPointers = function(entitiesArr) {
         }
     } ));
 
-    var localWorkspaceVars = [];
-    jQuery.each( this.localWorkspaceVars(), function( id ) {
+    // convert ids to actual pointers:
+    this.localWorkspaceVars(jQuery.map( this.localWorkspaceVars(), function( id ) {
         var localVar = entitiesArr.byId[id];
         if (localVar) {
-            localVar.addBackRef(self, self, false, false, 'local workspace');
-            localWorkspaceVars.push(localVar);
+            self.setVarBackRef(localVar);
         }
-    } );
-    this.localWorkspaceVars(localWorkspaceVars);
+        return localVar;
+    } ));
 
     jQuery.each( this.events(), function( idx, event ) {
         event.setPointers(entitiesArr);

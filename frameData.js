@@ -154,11 +154,16 @@ FrameData.prototype.addVariableToLocalWorkspace = function(variable) {
     var isExisting = this.localWorkspaceVars.byId[variable.id()];
     if (!isExisting && !variable.isFactor()) {
         this.localWorkspaceVars.push(variable);
-        variable.addBackRef(this, this, false, false, 'local workspace');
+        this.setVarBackRef(variable);
     }
 };
 
-
+FrameData.prototype.setVarBackRef = function(variable) {
+    var self = this;
+    variable.addBackRef(this, this, false, false, 'local workspace', function(globalVar) {
+        self.deleteChildEntity(globalVar);
+    });
+};
 
 FrameData.prototype.copyVariable = function(varEntity) {
 
@@ -243,7 +248,7 @@ FrameData.prototype.setPointers = function(entitiesArr) {
     this.localWorkspaceVars(jQuery.map( this.localWorkspaceVars(), function( id ) {
         var localVar = entitiesArr.byId[id];
         if (localVar) {
-            localVar.addBackRef(self, self, false, false, 'local workspace');
+            self.setVarBackRef(localVar);
         }
         return localVar;
     } ));

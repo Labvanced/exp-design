@@ -2589,14 +2589,15 @@ ActionSetVariable.prototype.isValid = function(){
  * @param {GlobalVar} variable - the variable which is recorded.
  */
 ActionSetVariable.prototype.setVariableBackRef = function(variable){
-    variable.addBackRef(this, this.event, true, false, 'set variable');
+    var self = this;
+    variable.addBackRef(this, this.event, true, false, 'set variable', function(globalVar) {
+        self.removeVariable();
+    });
 };
-
 
 ActionSetVariable.prototype.removeVariable = function(){
     this.variable(null);
 };
-
 
 /**
  * This function is called when the parent event was triggered and the requirements are true. It sets a specific

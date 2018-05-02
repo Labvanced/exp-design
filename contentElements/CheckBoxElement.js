@@ -211,6 +211,9 @@ var CheckBoxEntry= function(checkBoxParent) {
     this.parent = checkBoxParent;
     this.checkBoxText = ko.observable(null); // needs to be an EditableTextElement
     this.variable=ko.observable(null);
+
+    // not serialized:
+    this.backRef = null;
 };
 
 
@@ -241,8 +244,20 @@ CheckBoxEntry.prototype.init = function(varName) {
 
 
 CheckBoxEntry.prototype.setVariableBackRef = function() {
+    var self = this;
     if (this.variable()) {
-        this.variable().addBackRef(this, this.parent.parent, true, true, 'checkbox');
+        this.backRef = this.variable().addBackRef(this, this.parent.parent, true, true, 'checkbox', function(globalVar) {
+            self.removeVariable();
+        });
+    }
+};
+
+CheckBoxEntry.prototype.removeVariable = function() {
+    if (this.variable()) {
+        if (this.backRef) {
+            this.variable().removeBackRef(this.backRef)
+        }
+        this.variable(null);
     }
 };
 
@@ -292,8 +307,14 @@ CheckBoxEntry.prototype.fromJS = function(data) {
 };
 
 CheckBoxEntry.prototype.toJS = function() {
+    if (this.variable()) {
+        var varid = this.variable().id();
+    }
+    else {
+        var varid = null;
+    }
     return {
-        variable:  this.variable().id(),
+        variable:  varid,
         checkBoxText:  this.checkBoxText().toJS()
     };
 };

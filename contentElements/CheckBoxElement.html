@@ -71,7 +71,7 @@
     <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <div class="checkbox-wrapper"  style="display: block;" data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
             <!-- LABEL NEEDS TO BE INSIDE DIV IN EDITOR VIEW, OTHERWISE IT COLLIDES WITH CKEDITOR!!! -->
-            <label class="checkbox-left" data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+            <label class="checkbox-left" data-bind="if: variable(), style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
                 <input class="checkbox-element-hidden" type="checkbox" data-bind="checked: variable().startValue().value,click:function(){return true},clickBubble: false,enable: $parent.dataModel.parent.modifier().selectedTrialView.isActive,style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
                 <div class="checkbox-img" data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
             </label>
@@ -98,7 +98,7 @@
 
     <div data-bind="foreach: dataModel.elements, style: {marginTop: margin, marginBottom: margin}">
         <label class="checkbox-wrapper"  style="display: block" data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
-            <div class="checkbox-left"  data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+            <div class="checkbox-left"  data-bind="if: variable(), style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
                 <input class="checkbox-element-hidden" type="checkbox" required data-bind="checked: variable().value().value,click:function(){return true}, clickBubble: false, enable: $parent.dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
                 <div class="checkbox-img"  data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
             </div>

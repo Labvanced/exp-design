@@ -517,7 +517,10 @@ ExpData.prototype.deleteEntity = function(entity) {
 };
 
 ExpData.prototype.deleteGlobalVar = function(globalVar) {
-    this.deleteEntity(globalVar);
+    // allow deletion only if all back refs were removed:
+    if (globalVar.backRefs().length == 0) {
+        this.deleteEntity(globalVar);
+    }
 };
 
 ExpData.prototype.addTranslation = function(translationEntry){

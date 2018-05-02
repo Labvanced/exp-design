@@ -214,18 +214,22 @@ GlobalVar.prototype.createValueFromDataType = function() {
     }
 };
 
-GlobalVarRef = function (entity, parentNamedEntity, isWritten, isRead, refLabel) {
+GlobalVarRef = function (entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback) {
     this.entity =  entity;
     this.parentNamedEntity =  parentNamedEntity;
     this.isWritten =  isWritten;
     this.isRead = isRead;
     this.refLabel = refLabel;
+    this.onDeleteCallback = onDeleteCallback;
 };
 
-GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, isRead, refLabel) {
+GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback) {
+    if (!onDeleteCallback) {
+        onDeleteCallback = null;
+    }
     // only add back references in editor for variables view:
     if (window.uc!==undefined && (uc instanceof Client) && entity) {
-        var obj = new GlobalVarRef(entity, parentNamedEntity, isWritten, isRead, refLabel);
+        var obj = new GlobalVarRef(entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback);
         this.backRefs.push(obj);
         this.calcUnused();
         return obj;
@@ -236,12 +240,10 @@ GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, 
 GlobalVar.prototype.removeBackRef = function(entity) {
     var backRefs = this.backRefs();
     if(entity instanceof GlobalVarRef){
-        for (var k = 0; k < backRefs.length; k++) {
-            if (backRefs[k] == entity) {
-                this.backRefs.splice(k, 1);
-                this.calcUnused();
-                break;
-            }
+        var idx = backRefs.indexOf(entity);
+        if (idx >= 0) {
+            this.backRefs.splice(idx, 1);
+            this.calcUnused();
         }
     }
     else {
