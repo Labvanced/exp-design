@@ -243,16 +243,22 @@ Factor.prototype.resetFactorDependencies = function() {
     this.balancedInFactors([]);
     for (var i = 0; i<this.factorGroup.factors().length; i++){
         var fac = this.factorGroup.factors()[i];
-        var globalV= fac.globalVar();
-        if (!(fac.globalVar().hasOwnProperty("name"))){
-            globalV = this.expData.entities.byId[globalV];
+        if (fac instanceof Factor){
+            var globalV= fac.globalVar();
+            if (!(globalV instanceof GlobalVar)){
+                globalV = this.expData.entities.byId[globalV];
+            }
+            if (globalV instanceof GlobalVar){
+                var obj ={
+                    name:globalV.name(),
+                    id:fac.id(),
+                    hasDependency:  ko.observable(false)
+                };
+                this.balancedInFactors.push(obj);
+            }
+
         }
-        var obj ={
-            name:globalV.name(),
-            id:fac.id(),
-            hasDependency:  ko.observable(false)
-        };
-        this.balancedInFactors.push(obj);
+
     }
 };
 
