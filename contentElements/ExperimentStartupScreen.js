@@ -92,12 +92,6 @@ var ExperimentStartupScreen = function(experiment) {
         self.expData.updateLanguage();
     });
 
-    var numLang = this.expData.translatedLanguages().length;
-    if (numLang < 2) {
-        // directly skip to survey if only one language is defined:
-        this.jumpToSurvey();
-    }
-
     this.allowedBrowsers = ko.computed( function() {
           var settings =  self.expData.studySettings;
           var list = [];
@@ -161,6 +155,13 @@ var ExperimentStartupScreen = function(experiment) {
     this.browserAllowed = ko.observable(null);
     this.osAllowed = ko.observable(null);
     this.detectBrowserAndSystemSpecs();
+
+    var numLang = this.expData.translatedLanguages().length;
+    if (numLang < 2) {
+        // directly skip to survey if only one language is defined:
+        this.jumpToSurvey();
+    }
+
 };
 
 

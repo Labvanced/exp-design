@@ -31,7 +31,7 @@
                             <h5 class="pt-studyname pointer"><span data-bind="text: exp_name()"></span></h5>
 
                             <!-- 1. Select study langauge-->
-                            <div class="row ssp-questionaire" data-bind="visible: wizardStep()=='selectStudyLanguage'">
+                            <div class="row ssp-questionaire" data-bind="if: wizardStep()=='selectStudyLanguage'">
                                 <p class="pt-studydescription text-center" data-bind="text: expData.staticStrings().langSelect"></p>
                                 <form data-bind="submit: languageSelected">
                                     <div class="text-center">
@@ -49,7 +49,7 @@
                             </div>
 
                             <!-- 2. Subject Survey-->
-                            <div class="row ssp-questionaire" data-bind="visible: wizardStep()=='initialSurvey'">
+                            <div class="row ssp-questionaire" data-bind="if: wizardStep()=='initialSurvey'">
                                 <p class="pt-studydescription text-center" data-bind="text: expData.staticStrings().initialSurvey"></p>
                                 <div class="">
                                     <form data-bind="submit: checkSurveyData">
@@ -123,7 +123,7 @@
                             </div>
 
                             <!-- 3. lobby for joint experiments -->
-                            <div id="JointExpLobby" style="border-style: solid; border-width: 1px;" data-bind="visible: wizardStep()=='jointExpLobby'">
+                            <div id="JointExpLobby" style="border-style: solid; border-width: 1px;" data-bind="if: wizardStep()=='jointExpLobby'">
                                 <h3 class="text-center" data-bind="text: expData.staticStrings().multiUserExpLobby"></h3>
 
                                 <div style="text-align: center; margin-top: 20px; font-size: 100%;" data-bind="visible: !jointExpLobbyModel().gotMatchedFromServer()"><span data-bind="text: expData.staticStrings().participantsInLobby"></span> <span style="font-weight: bold" data-bind="text: jointExpLobbyModel().currentNrOfParticipants()"></span></div> <br>
@@ -164,7 +164,7 @@
                             </div>
 
                             <!-- 4. error shown if sessionNotReady -->
-                            <div id="sessionNotReady" data-bind="visible: wizardStep()=='sessionNotReady'">
+                            <div id="sessionNotReady" data-bind="if: wizardStep()=='sessionNotReady'">
                                 <div>
                                     <span data-bind="text: expData.staticStrings().errorSessionNotReady"></span>
                                     <br>
@@ -175,7 +175,7 @@
                             </div>
 
                             <!-- 5. error shown if sessionOver -->
-                            <div id="sessionOver" data-bind="visible: wizardStep()=='sessionOver'">
+                            <div id="sessionOver" data-bind="if: wizardStep()=='sessionOver'">
                                 <div>
                                     <span data-bind="text: expData.staticStrings().errorSessionOver"></span>
                                 </div>
@@ -183,7 +183,7 @@
                             </div>
 
                             <!-- 6. Loading -->
-                            <div class="row text-center" data-bind="visible: wizardStep()=='loading'">
+                            <div class="row text-center" data-bind="if: wizardStep()=='loading'">
                                 <div class="study-loader"></div>
                                 <p class="text-bold lightblue"><span data-bind="text: preloadingProgressRounded"></span>%</p>
                                 <div id="progressbar" style="width: 100%">
@@ -194,7 +194,7 @@
                             </div>
 
                             <!-- 7 Ready to start -->
-                            <div class="row text-center" data-bind="visible: wizardStep()=='readyToStart'">
+                            <div class="row text-center" data-bind="if: wizardStep()=='readyToStart'">
                                 <p class="text-medium" data-bind="text: expData.staticStrings().loadingComplete"></p>
                                 <p class="text-medium" data-bind="text: expData.staticStrings().canStart"></p>
                                 <p class="text-regular" data-bind="text: expData.staticStrings().keepFullscreen"></p>
