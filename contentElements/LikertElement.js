@@ -59,7 +59,10 @@ LikertElement.prototype.init = function(variableName) {
 
 LikertElement.prototype.setVariableBackRef = function() {
     if (this.variable()) {
-        this.variable().addBackRef(this, this.parent, true, true, 'Likert');
+        if (this.variable() instanceof GlobalVar){
+            this.variable().addBackRef(this, this.parent, true, true, 'Likert');
+        }
+
     }
 };
 
@@ -102,9 +105,12 @@ LikertElement.prototype.setPointers = function(entitiesArr) {
 };
 
 LikertElement.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
+    if (this.variable() instanceof GlobalVar){
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
     }
+
     this.questionText().reAddEntities(entitiesArr);
     this.startLabel().reAddEntities(entitiesArr);
     this.endLabel().reAddEntities(entitiesArr);
@@ -120,7 +126,10 @@ LikertElement.prototype.dispose = function () {
   this.questionText().dispose();
   this.startLabel().dispose();
   this.endLabel().dispose();
-  this.variable().removeBackRef(this);
+    if (this.variable() instanceof GlobalVar){
+        this.variable().removeBackRef(this);
+    }
+
 };
 
 LikertElement.prototype.getTextRefs = function(textArr, label){
@@ -140,14 +149,20 @@ LikertElement.prototype.isInputValid = function() {
         return true
     }
     else{
-        if (this.variable().value().value() == this.variable().startValue().value()){
-            this.dataIsValid(false);
-            return false;
+        if (this.variable() instanceof GlobalVar){
+            if (this.variable().value().value() == this.variable().startValue().value()){
+                this.dataIsValid(false);
+                return false;
+            }
+            else{
+                this.dataIsValid(true);
+                return true
+            }
         }
         else{
-            this.dataIsValid(true);
             return true
         }
+
     }
 };
 
@@ -155,7 +170,7 @@ LikertElement.prototype.isInputValid = function() {
 
 LikertElement.prototype.toJS = function() {
     var variableId = null;
-    if (this.variable()) {
+    if (this.variable() &&  this.variable() instanceof GlobalVar) {
         variableId = this.variable().id();
     }
 

@@ -65,12 +65,6 @@ MultiLineInputElement.prototype.init = function(variableName) {
 
 };
 
-MultiLineInputElement.prototype.setVariableBackRef = function() {
-    if (this.variable()) {
-        this.variable().addBackRef(this, this.parent, true, true, 'longTextInput');
-    }
-};
-
 /**
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
@@ -92,9 +86,12 @@ MultiLineInputElement.prototype.setPointers = function(entitiesArr) {
 };
 
 MultiLineInputElement.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
+    if (this.variable() instanceof GlobalVar){
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
     }
+
     this.questionText().reAddEntities(entitiesArr);
 };
 
@@ -103,12 +100,18 @@ MultiLineInputElement.prototype.selectTrialType = function(selectionSpec) {
 };
 
 MultiLineInputElement.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent, true, true, 'multiLineInput');
+   if(this.variable() instanceof GlobalVar){
+       this.variable().addBackRef(this, this.parent, true, true, 'multiLineInput');
+   }
+
 };
 
 MultiLineInputElement.prototype.dispose = function () {
     this.questionText().dispose();
-    this.variable().removeBackRef(this);
+    if(this.variable() instanceof GlobalVar){
+        this.variable().removeBackRef(this);
+    }
+
 };
 
 MultiLineInputElement.prototype.getTextRefs = function(textArr, label){
@@ -124,21 +127,27 @@ MultiLineInputElement.prototype.isInputValid = function() {
         return true
     }
     else{
-        if (this.variable().value().value()==null || this.variable().value().value()=='' ||this.variable().value().value() == this.variable().startValue().value()){
-            this.dataIsValid(false);
-            return false;
+        if(this.variable() instanceof GlobalVar){
+            if (this.variable().value().value()==null || this.variable().value().value()=='' ||this.variable().value().value() == this.variable().startValue().value()){
+                this.dataIsValid(false);
+                return false;
+            }
+            else{
+                this.dataIsValid(true);
+                return true
+            }
         }
         else{
-            this.dataIsValid(true);
             return true
         }
+
     }
 };
 
 
 MultiLineInputElement.prototype.toJS = function() {
     var variableId = null;
-    if (this.variable()) {
+    if (this.variable() && this.variable() instanceof GlobalVar) {
         variableId = this.variable().id();
     }
 
