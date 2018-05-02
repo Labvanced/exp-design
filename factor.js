@@ -175,12 +175,15 @@ Factor.prototype.setPointers = function(entitiesArr) {
 
         var balancedInFactors = [];
         jQuery.each( this.balancedInFactors(), function( index, elem ) {
-            var obj = {
-                name:  elem.name,
-                id:  elem.id,
-                hasDependency:  ko.observable(elem.hasDependency)
-            };
-            balancedInFactors.push(obj);
+            if (entitiesArr.byId[elem.id] instanceof Factor){
+                var obj = {
+                    name:  elem.name,
+                    id:  elem.id,
+                    hasDependency:  ko.observable(elem.hasDependency)
+                };
+                balancedInFactors.push(obj);
+            }
+
         });
         this.balancedInFactors(balancedInFactors);
 
@@ -309,12 +312,14 @@ Factor.prototype.toJS = function() {
 
     var balancedInFactors = [];
     for (var i=0; i < this.balancedInFactors().length; i++){
-        var obj = {
-            name:  this.balancedInFactors()[i].name,
-            id:  this.balancedInFactors()[i].id,
-            hasDependency:  this.balancedInFactors()[i].hasDependency()
-        };
-        balancedInFactors.push(obj);
+        if (this.expData.entities.byId[this.balancedInFactors()[i].id] instanceof Factor){
+            var obj = {
+                name:  this.balancedInFactors()[i].name,
+                id:  this.balancedInFactors()[i].id,
+                hasDependency:  this.balancedInFactors()[i].hasDependency()
+            };
+            balancedInFactors.push(obj);
+        }
     }
 
     var globalVarId = null;
