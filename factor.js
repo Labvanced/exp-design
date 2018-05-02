@@ -241,25 +241,28 @@ Factor.prototype.fromJS = function(data) {
 
 Factor.prototype.resetFactorDependencies = function() {
     this.balancedInFactors([]);
-    for (var i = 0; i<this.factorGroup.factors().length; i++){
-        var fac = this.factorGroup.factors()[i];
-        if (fac instanceof Factor){
-            var globalV= fac.globalVar();
-            if (!(globalV instanceof GlobalVar)){
-                globalV = this.expData.entities.byId[globalV];
-            }
-            if (globalV instanceof GlobalVar){
-                var obj ={
-                    name:globalV.name(),
-                    id:fac.id(),
-                    hasDependency:  ko.observable(false)
-                };
-                this.balancedInFactors.push(obj);
+    if (this.factorGroup){
+        for (var i = 0; i<this.factorGroup.factors().length; i++){
+            var fac = this.factorGroup.factors()[i];
+            if (fac instanceof Factor){
+                var globalV= fac.globalVar();
+                if (!(globalV instanceof GlobalVar)){
+                    globalV = this.expData.entities.byId[globalV];
+                }
+                if (globalV instanceof GlobalVar){
+                    var obj ={
+                        name:globalV.name(),
+                        id:fac.id(),
+                        hasDependency:  ko.observable(false)
+                    };
+                    this.balancedInFactors.push(obj);
+                }
+
             }
 
         }
-
     }
+
 };
 
 Factor.prototype.randomizationConverter = function() {
@@ -319,17 +322,24 @@ Factor.prototype.toJS = function() {
     var balancedInFactors = [];
     for (var i=0; i < this.balancedInFactors().length; i++){
         if (this.expData.entities.byId[this.balancedInFactors()[i].id] instanceof Factor){
+            var dep = null;
+             if (typeof this.balancedInFactors()[i].hasDependency === 'function'){
+                 dep = this.balancedInFactors()[i].hasDependency()
+             }
+             else{
+                 dep = this.balancedInFactors()[i].hasDependency;
+             }
             var obj = {
                 name:  this.balancedInFactors()[i].name,
                 id:  this.balancedInFactors()[i].id,
-                hasDependency:  this.balancedInFactors()[i].hasDependency()
+                hasDependency:  dep
             };
             balancedInFactors.push(obj);
         }
     }
 
     var globalVarId = null;
-    if (this.globalVar()) {
+    if (this.globalVar() instanceof GlobalVar) {
         globalVarId = this.globalVar().id();
     }
 
