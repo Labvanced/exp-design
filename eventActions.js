@@ -1049,6 +1049,7 @@ var ActionModifyArray = function(event) {
     this.indexFixedVal = ko.observable(1);
     this.inVarIndex = ko.observable(null);
     this.insertVarList = ko.observableArray([]);
+    this.insertVarLinkedOrNew = ko.observableArray([]);
     this.nrOfDeletions = ko.observable(0);
 };
 
@@ -1123,7 +1124,17 @@ ActionModifyArray.prototype.run = function(triggerParams) {
 
     var valueList = [];
     for (var i = 0; i<this.insertVarList().length;i++){
-        valueList.push(this.insertVarList()[i].value());
+        // if value is linked put the variable inside
+        if (this.insertVarLinkedOrNew()[i]()){
+            valueList.push(this.insertVarList()[i].value());
+        }
+        // if if should not be linked add a new variable inside
+        else{
+            var newVar = new GlobalVar(this.insertVarList()[i].expData).fromJS(this.insertVarList()[i].toJS());
+            newVar.value().value(this.insertVarList()[i].value().toJS());
+            valueList.push(newVar.value());
+        }
+
     }
 
     if (this.inVarArr()) {
@@ -1170,6 +1181,23 @@ ActionModifyArray.prototype.setPointers = function(entitiesArr) {
     this.insertVarList(newList);
     this.setOutVarBackRef();
 
+    var insertVarLinkedOrNew = [];
+    for (var i = 0; i<this.insertVarLinkedOrNew().length; i++){
+        insertVarLinkedOrNew.push(ko.observable(this.insertVarLinkedOrNew()[i]));
+    }
+    this.insertVarLinkedOrNew(insertVarLinkedOrNew);
+
+    this.optionConverter();
+
+};
+
+ActionModifyArray.prototype.optionConverter = function() {
+   if (this.insertVarLinkedOrNew().length==0) {
+      var l =  this.insertVarList().length;
+      for (var i = 0;i <l; i++){
+          this.insertVarLinkedOrNew.push(ko.observable(true));
+      }
+   }
 };
 
 /**
@@ -1208,7 +1236,13 @@ ActionModifyArray.prototype.fromJS = function(data) {
     this.nrOfDeletions(data.nrOfDeletions);
     this.InsertOption(data.InsertOption);
     this.indexFixedVal(data.indexFixedVal);
+
+    if (data.hasOwnProperty("insertVarLinkedOrNew")) {
+        this.insertVarLinkedOrNew(data.insertVarLinkedOrNew);
+    }
+
     return this;
+
 };
 
 /**
@@ -1235,8 +1269,13 @@ ActionModifyArray.prototype.toJS = function() {
         for (var i = 0; i<list.length; i++){
             insertVarList.push(list[i].id());
         }
-
     }
+
+    var insertVarLinkedOrNew = [];
+    for (var i = 0; i<this.insertVarLinkedOrNew().length; i++){
+        insertVarLinkedOrNew.push(this.insertVarLinkedOrNew()[i]());
+    }
+
     return {
         type: this.type,
         inVarArr: inVarArr,
@@ -1244,7 +1283,8 @@ ActionModifyArray.prototype.toJS = function() {
         insertVarList: insertVarList,
         nrOfDeletions:this.nrOfDeletions(),
         InsertOption:this.InsertOption(),
-        indexFixedVal:this.indexFixedVal()
+        indexFixedVal:this.indexFixedVal(),
+        insertVarLinkedOrNew:insertVarLinkedOrNew
 
     };
 };
