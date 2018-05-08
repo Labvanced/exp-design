@@ -1,6 +1,7 @@
 
 var FrameElementView = function(dataModel, parentView) {
 
+    var self = this;
     this.dataModel = dataModel;
     this.parentView = parentView;
 
@@ -23,10 +24,33 @@ var FrameElementView = function(dataModel, parentView) {
     });
 
     this.divContent = document.createElement('div');
+    this.border = ko.computed(function() {
+        var border = self.dataModel.borderSize() + "px solid "+  self.dataModel.borderColor();
+        $(self.divContent).css({
+            "border":  border
+        });
+    },this);
+    this.overflowX = ko.computed(function() {
+        var overflowX = self.dataModel.overflowX();
+        $(self.divContent).css({
+            "overflow-x":  overflowX
+        });
+    },this);
+
+    this.overflowY = ko.computed(function() {
+        var overflowY =  self.dataModel.overflowY();
+        $(self.divContent).css({
+            "overflow-Y":  overflowY
+        });
+    },this);
+
     $(this.divContent).css({
         "position": "absolute",
-        "overflow": "hidden",
-        "opacity": this.selectedTrialView.visibility()
+        "overflow-x": this.overflowX(),
+        "overflow-y ":this.overflowY(),
+        "opacity": this.selectedTrialView.visibility(),
+        "border":  this.border()
+
     });
     $(this.div).append(this.divContent);
 

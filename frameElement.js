@@ -27,6 +27,11 @@ var FrameElement= function(expData) {
     this.canBeSelected = ko.observable(false);
     this.canBeDragged= ko.observable(false);
     this.canBeResized= ko.observable(false);
+    this.borderSize = ko.observable(0);
+    this.borderColor = ko.observable("black");
+    this.overflowX = ko.observable("hidden");
+    this.overflowY = ko.observable("hidden");
+
 
     this.id = ko.observable(guid());
     this.type = "FrameElement";
@@ -44,6 +49,7 @@ var FrameElement= function(expData) {
 
     // not serialized
     this.activeOptions = ko.observableArray([false,true]);
+    this.scrollOptions = ko.observableArray(["hidden","visible","auto"]);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -202,6 +208,19 @@ FrameElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('canBeResized')) {
         this.canBeResized(data.canBeResized);
     }
+    if(data.hasOwnProperty('borderSize')) {
+        this.borderSize(data.borderSize);
+    }
+    if(data.hasOwnProperty('borderColor')) {
+        this.borderColor(data.borderColor);
+    }
+
+    if(data.hasOwnProperty('overflowX')) {
+        this.overflowX(data.overflowX);
+    }
+    if(data.hasOwnProperty('overflowY')) {
+        this.overflowY(data.overflowY);
+    }
 
     this.isActive(data.isActive);
     this.keepAspectRatio(data.keepAspectRatio);
@@ -258,6 +277,10 @@ FrameElement.prototype.toJS = function() {
         content: contentData,
         canBeSelected:this.canBeSelected(),
         canBeDragged:this.canBeDragged(),
-        canBeResized:this.canBeResized()
+        canBeResized:this.canBeResized(),
+        borderSize:this.borderSize(),
+        borderColor:this.borderColor(),
+        overflowX:this.overflowX(),
+        overflowY :this.overflowY()
     };
 };
