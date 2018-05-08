@@ -741,6 +741,131 @@ TriggerKeyboard.prototype.toJS = function() {
 ////////////////////////
 
 
+
+
+
+
+
+////////////////////////
+
+
+/**
+ * This Trigger handles keyboard interactions of the participant with the experiment.
+ *
+ * @param {ExpEvent} event - the parent event where this requirements is used.
+ * @constructor
+ */
+var TriggerEnterOnInput = function(event) {
+    var self = this;
+    this.event = event;
+    // serialized
+    this.targets = ko.observableArray([]);
+};
+
+TriggerEnterOnInput.prototype.type = "TriggerEnterOnInput";
+TriggerEnterOnInput.prototype.label = "Enter On Input";
+
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+TriggerEnterOnInput.prototype.isValid = function() {
+    if (this.event.trigger()&& this.targets().length>0){
+        return true;
+    }
+    else{
+        return false;
+    }
+};
+
+
+
+TriggerEnterOnInput.prototype.trigger = function(ev) {
+    this.event.triggerActions([ev.key.toUpperCase(),player.currentFrame.getFrameTime()]);
+};
+
+TriggerEnterOnInput.prototype.getParameterSpec = function() {
+    return [
+        'Id of Key'
+    ];
+};
+
+/**
+ * this function is called in the player when the frame starts. It sets up the corresponding keyboard handlers.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+TriggerEnterOnInput.prototype.setupOnPlayerFrame = function(playerFrame) {
+    var returnKeyCode = 13;
+    var self = this;
+    this.targets().forEach(function (target) {
+        target.content().executeByKeyCode.push(returnKeyCode);
+        target.content().triggerRefernce = self;
+    })
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+TriggerEnterOnInput.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    this.targets().forEach(function (target) {
+        target.content().executeByKeyCode([]);
+        target.content().triggerRefernce = null;
+    });
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerEnterOnInput.prototype.setPointers = function(entitiesArr) {
+    this.targets(jQuery.map( this.targets(), function( id ) {
+        return entitiesArr.byId[id];
+    } ));
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerEnterOnInput.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {TriggerMouse}
+ */
+TriggerEnterOnInput.prototype.fromJS = function(data) {
+    this.targets(data.targets);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+TriggerEnterOnInput.prototype.toJS = function() {
+    return {
+        type: this.type,
+        targets: jQuery.map( this.targets(), function( element ) { return element.id(); } )
+    };
+};
+
+////////////////////////
+
+
+
+
+
+
 /**
  * This Trigger is executed when the frame starts.
  *

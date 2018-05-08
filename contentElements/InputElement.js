@@ -17,10 +17,13 @@ var InputElement = function(expData) {
 
     this.maxNrChars = ko.observable(null);
 
+    this.executeByKeyCode = ko.observableArray([]);
+
     ///// not serialized
     this.selected = ko.observable(false);
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
+    this.triggerRefernce =null;
     /////
 };
 
@@ -103,6 +106,11 @@ InputElement.prototype.getTextRefs = function(textArr, label){
     return textArr;
 };
 
+InputElement.prototype.onKeyPress = function(event) {
+    if (this.executeByKeyCode().indexOf(event.keyCode)>=0) {
+        this.triggerRefernce.trigger(event);
+    }
+};
 
 InputElement.prototype.isInputValid = function() {
     this.triedToSubmit(true);
@@ -137,7 +145,8 @@ InputElement.prototype.toJS = function() {
         enableTitle:this.enableTitle(),
         minValue:this.minValue(),
         maxValue:this.maxValue(),
-        maxNrChars:this.maxNrChars()
+        maxNrChars:this.maxNrChars(),
+        executeByKeyCode:this.executeByKeyCode()
 
     };
 };
@@ -171,6 +180,10 @@ InputElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('maxNrChars')){
         this.maxNrChars(data.maxNrChars);
     }
+    if(data.hasOwnProperty('executeByKeyCode')){
+        this.executeByKeyCode(data.executeByKeyCode);
+    }
+
 
 
 };

@@ -13,14 +13,13 @@ var MultiLineInputElement = function(expData) {
     this.customWidth = ko.observable(100);
 
     this.outerHeight = ko.observable(50);
+    this.executeByKeyCode = ko.observableArray([]);
 
     ///// not serialized
     this.selected = ko.observable(false);
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
-
-
-
+    this.triggerRefernce =null;
 
 };
 
@@ -145,6 +144,13 @@ MultiLineInputElement.prototype.isInputValid = function() {
 };
 
 
+MultiLineInputElement.prototype.onKeyPress = function(event) {
+    if (this.executeByKeyCode().indexOf(event.keyCode)>=0) {
+        this.triggerRefernce.trigger(event);
+    }
+};
+
+
 MultiLineInputElement.prototype.toJS = function() {
     var variableId = null;
     if (this.variable() && this.variable() instanceof GlobalVar) {
@@ -159,7 +165,8 @@ MultiLineInputElement.prototype.toJS = function() {
         enableTitle:this.enableTitle(),
         customHeight:this.customHeight(),
         customWidth:this.customWidth(),
-        outerHeight:this.outerHeight()
+        outerHeight:this.outerHeight(),
+        executeByKeyCode:this.executeByKeyCode()
 
     };
 };
@@ -191,6 +198,10 @@ MultiLineInputElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('outerHeight')){
         this.outerHeight(data.outerHeight);
     }
+    if(data.hasOwnProperty('executeByKeyCode')){
+        this.executeByKeyCode(data.executeByKeyCode);
+    }
+
 
 
 };
