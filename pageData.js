@@ -189,6 +189,8 @@ PageData.prototype.copyChildEntity = function(entity) {
     entityCopy.parent = this;
     entityCopy.setPointers(this.expData.entities);
     obsArr.splice(index+1, 0, entityCopy);
+    this.expData.entities.insertIfNotExist(entityCopy);
+    this.expData.parentExperiment.save();
 };
 
 PageData.prototype.copyVariable = function(varEntity) {
