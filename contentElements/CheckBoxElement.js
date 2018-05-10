@@ -162,6 +162,8 @@ CheckBoxElement.prototype.getTextRefs = function(textArr, label){
 
 CheckBoxElement.prototype.toJS = function() {
 
+    this.reAddEntities(this.expData.entities); // TODO  @ Holger Workaround becuase otherwise additional vars are not saved!!!!
+
     return {
         type: this.type,
         questionText: this.questionText().toJS(),

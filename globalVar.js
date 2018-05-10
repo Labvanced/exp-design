@@ -150,12 +150,6 @@ GlobalVar.prototype.changeDataType = function(dataType) {
     var oldStartValue = this.startValue();
     var oldValue = this.value();
     this.resetStartValue();
-    if (oldStartValue.value()!=null){
-        this.startValue().setValue(oldStartValue);
-    }
-    if (oldValue.value()!=null) {
-        this.value().setValue(oldValue);
-    }
 };
 
 GlobalVar.prototype.initValue = function() {

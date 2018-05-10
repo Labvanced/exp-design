@@ -1013,7 +1013,6 @@ ExpData.prototype.toJS = function() {
         isJointExp: this.isJointExp(),
         numPartOfJointExp: this.numPartOfJointExp(),
         jointOptionModified: this.jointOptionModified(),
-        entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); }),
         availableTasks: jQuery.map( this.availableTasks(), function( task ) { return task.id(); }),
         availableBlocks: jQuery.map( this.availableBlocks(), function( block ) { return block.id(); }),
         availableSessions: jQuery.map( this.availableSessions(), function( session ) { return session.id(); }),
@@ -1031,7 +1030,8 @@ ExpData.prototype.toJS = function() {
         }),
         translatedLanguages: this.translatedLanguages(),
         languageTransferOption: this.languageTransferOption(),
-        studySettings:studySettings
+        studySettings:studySettings,
+        entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); })
     };
 
     // add all variable ids:
