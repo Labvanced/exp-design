@@ -11,7 +11,7 @@ var EyetrackerVideoStream = function(expData) {
     /////
 };
 
-EyetrackerVideoStream.prototype.label = "EyetrackerVideoStream";
+EyetrackerVideoStream.prototype.label = "Eyetracking Calibration Screen";
 EyetrackerVideoStream.prototype.iconPath = "/resources/features/technology.svg";
 EyetrackerVideoStream.prototype.dataType =      [ ];
 EyetrackerVideoStream.prototype.modifiableProp = [ ];
