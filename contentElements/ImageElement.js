@@ -11,6 +11,8 @@ var ImageElement= function(expData) {
     this.file_id = ko.observable(null);
     this.file_orig_name = ko.observable(null);
 
+
+
     this.stimulusInformation  = ko.observable(null);
     
     this.shortName = ko.computed(function() {
@@ -27,7 +29,10 @@ var ImageElement= function(expData) {
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
     // not serialized
+    this.file = ko.observable(null);
+
     this.imgSource = ko.computed( function() {
+
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
             return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
@@ -45,8 +50,8 @@ var ImageElement= function(expData) {
 
 ImageElement.prototype.label = "Image";
 ImageElement.prototype.iconPath = "/resources/icons/tools/tool_image.svg";
-ImageElement.prototype.dataType =      [ "string", "string", "boolean", "string"];
-ImageElement.prototype.modifiableProp = ["file_id","file_orig_name", "stretchImageToFitBoundingBox","stimulusInformation" ];
+ImageElement.prototype.dataType =      [ "string", "string", "file", "boolean", "string"];
+ImageElement.prototype.modifiableProp = ["file_id","file_orig_name","file", "stretchImageToFitBoundingBox","stimulusInformation" ];
 ImageElement.prototype.initWidth = 300;
 ImageElement.prototype.initHeight = 200;
 ImageElement.prototype.numVarNamesRequired = 0;

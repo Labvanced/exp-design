@@ -681,16 +681,23 @@ RefToObjectProperty.prototype.getValue = function() {
  */
 RefToObjectProperty.prototype.setValue = function(newVal) {
 
-    var propertyPath = this.property().split(".");
     var target = this.target();
-
-    for (var k=0; k < propertyPath.length-1; k++) {
-        target = target[propertyPath[k]];
-        if (ko.isObservable(target)) {
-            target = target();
-        }
+    if  (this.property() == "content.file"){
+        target.content().modifier().selectedTrialView["file_id"](newVal.id());
+        target.content().modifier().selectedTrialView["file_orig_name"](newVal.name());
     }
-    target.modifier().selectedTrialView[propertyPath[propertyPath.length-1]](newVal);
+    else{
+        var propertyPath = this.property().split(".");
+        for (var k=0; k < propertyPath.length-1; k++) {
+            target = target[propertyPath[k]];
+            if (ko.isObservable(target)) {
+                target = target();
+            }
+        }
+        target.modifier().selectedTrialView[propertyPath[propertyPath.length-1]](newVal);
+    }
+
+
 
 };
 

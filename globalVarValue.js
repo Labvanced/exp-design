@@ -152,7 +152,8 @@ GlobalVarValueFile = function(parentVar) {
     this.parentVar = parentVar;
     this.value = ko.observable({
         name: ko.observable(null),
-        guid: ko.observable(null)
+        guid: ko.observable(null),
+        id: ko.observable(null)
     });
 
     this.value.subscribe(function() {
@@ -170,29 +171,40 @@ GlobalVarValueFile.prototype.setGuid = function(guid) {
     this.parentVar.notifyValueChanged();
 };
 
-GlobalVarValueFile.prototype.setNameAndGuid = function(name,guid) {
+GlobalVarValueFile.prototype.setNameAndGuidAndId = function(name,guid,id) {
     this.value({
         name: ko.observable(name),
-        guid: ko.observable(guid)
+        guid: ko.observable(guid),
+        id: ko.observable(id)
     });
 };
 
 GlobalVarValueFile.prototype.convert = function(data) {
-    var newValue = {
-        name: ko.observable(null),
-        guid: ko.observable(null)
-    };
+     if (data instanceof GlobalVarValueFile){
+         return data.value()
+     }
+     else{
+         var newValue = {
+             name: ko.observable(null),
+             guid: ko.observable(null),
+             id: ko.observable(null)
+         };
 
-    if (data === null) {
-        return newValue;
-    }
-    if (data.hasOwnProperty("name")) {
-        newValue.name(data.name)
-    }
-    if (data.hasOwnProperty("guid")) {
-        newValue.guid(data.guid)
-    }
-    return newValue;
+         if (data === null) {
+             return newValue;
+         }
+         if (data.hasOwnProperty("name")) {
+             newValue.name(data.name)
+         }
+         if (data.hasOwnProperty("guid")) {
+             newValue.guid(data.guid)
+         }
+         if (data.hasOwnProperty("id")) {
+             newValue.id(data.id)
+         }
+         return newValue;
+     }
+
 };
 
 /**
@@ -227,7 +239,8 @@ GlobalVarValueFile.prototype.fromJS = function(data) {
 GlobalVarValueFile.prototype.toJS = function() {
     return {
         name: this.value().name(),
-        guid: this.value().guid()
+        guid: this.value().guid(),
+        id: this.value().id()
     };
 };
 
