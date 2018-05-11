@@ -570,7 +570,7 @@ GlobalVarValueDatetime.prototype.toJS = function() {
  */
 GlobalVarValueDatetime.prototype.toString = function () {
     if(this.value() !== null){
-        return this.value().toISOString().substring(0,10);
+        return this.value().toString().substring(0,10);
     }else{
         return null;
     }
