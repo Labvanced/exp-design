@@ -50,7 +50,7 @@ var GlobalVar = function (expData) {
 
     this.shortName = ko.computed(function() {
         if (self.name()){
-            return (self.name().length > 23 ? self.name().substring(0, 22) + '...' : self.name());
+            return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
         }
         else return '';
 
@@ -258,6 +258,10 @@ GlobalVar.prototype.removeBackRef = function(entity) {
         }
     }*/
 
+};
+
+GlobalVar.prototype.isSystemVar = function() {
+  return this.expData.isSystemVar(this);
 };
 
 GlobalVar.prototype.calcUnused = function() {
