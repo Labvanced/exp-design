@@ -232,6 +232,7 @@ CheckBoxEntry.prototype.init = function(varName) {
     globalVar.dataType(GlobalVar.dataTypes[2]);
     globalVar.scale(GlobalVar.scales[0]);
     globalVar.scope('trial');
+    globalVar.isObjectVar(true);
 
     // var name = this.parent.parent.name() +'_'+ this.parent.elements().length;
     globalVar.name(varName);

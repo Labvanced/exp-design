@@ -22,6 +22,7 @@ var GlobalVar = function (expData) {
     this.description = ko.observable('');
 
     this.isFactor =  ko.observable(false);
+    this.isObjectVar =  ko.observable(false);
     this.isInteracting = ko.observable(false); // TODO: remove
     this.levels = ko.observableArray([]);
 
@@ -388,6 +389,10 @@ GlobalVar.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('recType')) {
         this.recType(data.recType);
     }
+    if (data.hasOwnProperty('isObjectVar')) {
+        this.isObjectVar(data.isObjectVar);
+    }
+
     if (data.hasOwnProperty('startValue')) {
         var startValue = this.createValueFromDataType();
         if (startValue) {
@@ -434,6 +439,7 @@ GlobalVar.prototype.toJS = function() {
         isFactor: this.isFactor(),
         isInteracting: this.isInteracting(),
         description:this.description(),
+        isObjectVar: this.isObjectVar(),
 
         resetAtTrialStart: this.resetAtTrialStart(),
         recordAtTrialEnd: this.recordAtTrialEnd(),

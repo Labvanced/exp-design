@@ -333,7 +333,9 @@ ScaleEntry.prototype.init = function(varName) {
     globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[1]);
     globalVar.name(varName);
+    globalVar.isObjectVar(true);
     globalVar.resetStartValue();
+
     this.variable(globalVar);
 
     var frameOrPageElement = this.parent.parent;

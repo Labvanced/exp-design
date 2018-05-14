@@ -75,6 +75,7 @@ AudioRecordingElement.prototype.init = function(variableName) {
     globalVar.scale('nominal');
     globalVar.name(variableName);
     globalVar.resetAtTrialStart(true);
+    globalVar.isObjectVar(true);
     globalVar.resetStartValue();
     this.variable(globalVar);
 

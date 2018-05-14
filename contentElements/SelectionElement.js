@@ -74,6 +74,7 @@ SelectionElement.prototype.init = function(variableName) {
     globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[0]);
     globalVar.name(variableName);
+    globalVar.isObjectVar(true);
     globalVar.resetStartValue();
     this.variable(globalVar);
 

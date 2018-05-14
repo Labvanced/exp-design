@@ -53,6 +53,7 @@ MultiLineInputElement.prototype.init = function(variableName) {
     globalVar.scope('trial');
     globalVar.scale(GlobalVar.scales[1]);
     globalVar.name(variableName);
+    globalVar.isObjectVar(true);
     globalVar.resetStartValue();
     this.variable(globalVar);
 

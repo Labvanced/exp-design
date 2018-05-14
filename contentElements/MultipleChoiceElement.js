@@ -58,6 +58,7 @@ MultipleChoiceElement.prototype.init = function(variableName) {
     globalVar.scale(GlobalVar.scales[0]);
     globalVar.name(variableName);
     globalVar.resetStartValue();
+    globalVar.isObjectVar(true);
     this.variable(globalVar);
 
     var frameOrPageElement = this.parent;
