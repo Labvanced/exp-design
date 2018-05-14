@@ -187,8 +187,6 @@ Factor.prototype.setPointers = function(entitiesArr) {
         });
         this.balancedInFactors(balancedInFactors);
 
-        this.setVariableBackRef();
-
         this.randomizationConverter();
     }
     else{ // this should not happen, variable of factor no longer exits!
@@ -198,6 +196,13 @@ Factor.prototype.setPointers = function(entitiesArr) {
         }
     }
 
+};
+
+/**
+ * this function is automatically called after all setPointers have been executed.
+ */
+Factor.prototype.onFinishedLoading = function() {
+    this.setVariableBackRef();
 };
 
 /**
