@@ -254,3 +254,33 @@ ko.bindingHandlers.singleClick= {
         });
     }
 };
+
+
+// Convert Javascript date to Pg YYYY-MM-DD HH:MI:SS-08
+function pgFormatDate(date) {
+    function zeroPad(d) {
+        return ("0" + d).slice(-2);
+    }
+    var timeZoneRemainingMinutes;
+    var timeZoneOffsetInHours = date.getTimezoneOffset() / 60;
+    var dayString = [date.getUTCFullYear(), zeroPad(date.getMonth() + 1), zeroPad(date.getDate())].join("-");
+    var timeString = [zeroPad(date.getHours()), zeroPad(date.getMinutes()), zeroPad(date.getSeconds())].join(":");
+    if (timeZoneOffsetInHours>0) {
+        // WARNING: according to javascript spec's, the timezone has inverted sign, so we invert + to - and - to +
+        timeZoneRemainingMinutes = timeZoneOffsetInHours % 1;
+        timeZoneOffsetInHours = "-"+zeroPad(Math.floor(timeZoneOffsetInHours));
+    }
+    else if (timeZoneOffsetInHours<0) {
+        timeZoneOffsetInHours = -timeZoneOffsetInHours;
+        timeZoneRemainingMinutes = timeZoneOffsetInHours % 1;
+        timeZoneOffsetInHours = "+"+zeroPad(Math.floor(timeZoneOffsetInHours));
+    }
+    else {
+        timeZoneRemainingMinutes = 0;
+        timeZoneOffsetInHours = "+00";
+    }
+    if (timeZoneRemainingMinutes != 0) {
+        timeZoneOffsetInHours = timeZoneOffsetInHours + ":" + zeroPad(Math.floor(timeZoneRemainingMinutes*60));
+    }
+    return dayString+" "+timeString+timeZoneOffsetInHours;
+}

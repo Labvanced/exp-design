@@ -61,6 +61,7 @@ var PublishingData = function(experiment) {
     this.ratingValues =  ko.observableArray([]);
     this.raterUserIds=  ko.observableArray([]);
     this.publicationDate =  ko.observable(null);
+    this.templatePublicationDate =  ko.observable(null);
 
     this.displayBackToLib = ko.observable(true);
 
@@ -324,6 +325,7 @@ PublishingData.prototype.fromJS = function(data) {
     this.ratingValues(data.ratingValues);
     this.raterUserIds(data.raterUserIds);
     this.publicationDate(data.publicationDate);
+    this.templatePublicationDate(data.templatePublicationDate);
 
     if (data.hasOwnProperty('displayBackToLib')) {
         this.displayBackToLib(data.displayBackToLib);
@@ -395,6 +397,7 @@ PublishingData.prototype.toJS = function() {
         ratingValues:  this.ratingValues(),
         raterUserIds:  this.raterUserIds(),
         publicationDate: this.publicationDate(),
+        templatePublicationDate: this.templatePublicationDate(),
 
         displayBackToLib: this.displayBackToLib()
 
