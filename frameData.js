@@ -40,31 +40,6 @@ var FrameData = function(expData) {
     // not serialized
     this.label = "FrameData";
     this.playerFrame = null; // pointer to the playerFrame if running in player.
-
-    this.hasObjectVar = ko.computed(function() {
-        var hasObjectVar = false;
-        self.localWorkspaceVars().forEach(function (vari) {
-            if (vari instanceof GlobalVar){
-                if (vari.isObjectVar()){
-                    hasObjectVar = true;
-                }
-            }
-
-        });
-        return hasObjectVar;
-    });
-
-    this.hasCustomVar = ko.computed(function() {
-        var hasCustomVar = false;
-        self.localWorkspaceVars().forEach(function (vari) {
-            if (vari instanceof GlobalVar){
-                if (!(vari.isObjectVar()) && !vari.unused()){
-                    hasCustomVar = true;
-                }
-            }
-        });
-        return hasCustomVar;
-    });
 };
 
 FrameData.prototype.modifiableProp = ["name","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset","hideMouse", "syncFrame"];

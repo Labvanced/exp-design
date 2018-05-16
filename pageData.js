@@ -40,26 +40,6 @@ var PageData = function(expData) {
     this.label = "PageData";
     this.playerFrame = null; // pointer to the playerFrame if running in player.
 
-    this.hasObjectVar = ko.computed(function() {
-        var hasObjectVar = false;
-        self.localWorkspaceVars().forEach(function (vari) {
-            if (vari.isObjectVar()){
-                hasObjectVar = true;
-            }
-        });
-        return hasObjectVar;
-    });
-
-    this.hasCustomVar = ko.computed(function() {
-        var hasCustomVar = false;
-        self.localWorkspaceVars().forEach(function (vari) {
-            if (!(vari.isObjectVar()) && !vari.unused()){
-                hasCustomVar = true;
-            }
-        });
-        return hasCustomVar;
-    });
-
     this.needsToBeShuffled = ko.computed(function() {
      if (self.elements().length<2){
          return false
