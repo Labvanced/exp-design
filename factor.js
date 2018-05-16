@@ -106,8 +106,16 @@ Factor.prototype.removeBackRef = function() {
 
 
 Factor.prototype.setVariableBackRef = function() {
+    var self = this;
     if (this.globalVar()) {
-        this.globalVar().addBackRef(this, this.factorGroup, true, true, 'Factor');
+        this.globalVar().addBackRef(this, this.factorGroup, true, true, 'Factor', function(globalVar)  {
+            // check if this factor is still beeing used:
+            var still_in_use = true;
+            if (!still_in_use) {
+                // TODO: remove factor from entities.
+                self.removeBackRef();
+            }
+        });
     }
 };
 

@@ -494,10 +494,36 @@ ExpData.prototype.createVars = function() {
 };
 
 
+ExpData.prototype.checkForUnusedTasks = function() {
+
+    var availableTasks = this.availableTasks();
+    var taskByIds = {};
+    $.each(availableTasks, function(index, task) {
+        taskByIds[task.id()] = task;
+    });
+
+    var unused_task_found = false;
+    var entities = this.entities();
+    $.each(entities, function(index, entity) {
+        if (entity instanceof ExpTrialLoop) {
+            if (!taskByIds[entity.id()]) {
+                console.log("unused task "+entity.name());
+                unused_task_found = true;
+            }
+        }
+    });
+
+    if (unused_task_found) {
+        this.deleteUnusedEntities();
+    }
+
+};
 
 
-
-
+ExpData.prototype.deleteUnusedEntities = function() {
+    this.entities([]);
+    this.reAddEntities();
+};
 
 ExpData.prototype.isSystemVar = function(globalVar) {
     if (this.vars().indexOf(globalVar)>=0){
@@ -733,6 +759,8 @@ ExpData.prototype.setPointers = function() {
 
         });
     }, null, "arrayChange");
+
+    this.checkForUnusedTasks();
 
 };
 
