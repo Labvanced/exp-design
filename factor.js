@@ -107,7 +107,7 @@ Factor.prototype.removeBackRef = function() {
 
 Factor.prototype.setVariableBackRef = function() {
     var self = this;
-    if (this.globalVar()) {
+    if (this.globalVar() instanceof GlobalVar) {
         this.globalVar().addBackRef(this, this.factorGroup, true, true, 'Factor', function(globalVar)  {
             // check if this factor is still beeing used:
             var still_in_use = true;
@@ -219,15 +219,18 @@ Factor.prototype.onFinishedLoading = function() {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 Factor.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.globalVar().id()))
-        entitiesArr.push(this.globalVar());
+    if (this.globalVar() instanceof GlobalVar){
+        if (!entitiesArr.byId.hasOwnProperty(this.globalVar().id()))
+            entitiesArr.push(this.globalVar());
 
-    if (this.randomizationType()=='balancedInFactor') {
-        if (this.balancedInFactor()) {
-            if (!entitiesArr.byId.hasOwnProperty(this.balancedInFactor().id()))
-                entitiesArr.push(this.balancedInFactor());
+        if (this.randomizationType()=='balancedInFactor') {
+            if (this.balancedInFactor()) {
+                if (!entitiesArr.byId.hasOwnProperty(this.balancedInFactor().id()))
+                    entitiesArr.push(this.balancedInFactor());
+            }
         }
     }
+
 };
 
 /**
