@@ -7,6 +7,8 @@ var PublishingData = function(experiment) {
     // others
     this.dateLastModified = ko.observable(""); // deprecated
     this.sharingDesign = ko.observable('none'); // 'none', 'public'
+    this.openAccess = ko.observable(false);
+
 
     // description  //
     this.exp_name = ko.observable("");
@@ -314,6 +316,9 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('completionLink')) {
         this.completionLink(data.completionLink);
     }
+    if (data.hasOwnProperty('openAccess')) {
+        this.openAccess(data.openAccess);
+    }
 
 
 
@@ -356,6 +361,7 @@ PublishingData.prototype.toJS = function() {
     return {
 
         sharingDesign:this.sharingDesign(),
+        openAccess:this.openAccess(),
 
         // description //
         exp_name: this.exp_name(),
