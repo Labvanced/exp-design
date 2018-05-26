@@ -23,7 +23,7 @@ var PageData = function(expData) {
     this.elements = ko.observableArray([]).extend({sortById: null});
     this.events = ko.observableArray([]).extend({sortById: null});
     this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
-    this.nrOfFrackMousemove = ko.observable(0);
+    this.nrOfTrackMousemove = ko.observable(0);
 
     // consider using additional ko.computeds to make sure that syncFrame can only be activated when exp. is joint exp.
     this.syncFrame = ko.observable(true);
@@ -421,8 +421,8 @@ PageData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("syncFrame")) {
         this.syncFrame(data.syncFrame);
     }
-    if (data.hasOwnProperty("nrOfFrackMousemove")) {
-        this.nrOfFrackMousemove(data.nrOfFrackMousemove);
+    if (data.hasOwnProperty("nrOfTrackMousemove")) {
+        this.nrOfTrackMousemove(data.nrOfTrackMousemove);
     }
 
 
@@ -449,7 +449,7 @@ PageData.prototype.toJS = function() {
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } ),
         localWorkspaceVars: jQuery.map( this.localWorkspaceVars(), function( variable ) { return variable.id(); } ),
         maxWidth: parseInt(this.maxWidth()),
-        nrOfFrackMousemove:this.nrOfFrackMousemove()
+        nrOfTrackMousemove:this.nrOfTrackMousemove()
 
     };
 };
