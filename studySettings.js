@@ -90,6 +90,30 @@ StudySettings.prototype.checkNumPartEntered = function(){
     this.numPartEntered(checkedValue);
 };
 
+StudySettings.prototype.setParamsOnCreation = function(addSettingDialog) {
+    this.timeZoneOffset(addSettingDialog.timeZoneOffset());
+    this.bgColor(addSettingDialog.bgColor());
+    this.allowChrome(addSettingDialog.allowChrome());
+    this.allowFirefox(addSettingDialog.allowFirefox());
+    this.allowInternetExplorer(addSettingDialog.allowInternetExplorer());
+    this.allowEdge(addSettingDialog.allowEdge());
+    this.allowSafari(addSettingDialog.allowSafari());
+    this.allowOpera(addSettingDialog.allowOpera());
+    this.allowOtherBrowser(addSettingDialog.allowOtherBrowser());
+    this.allowAndroidMobile(addSettingDialog.allowAndroidMobile());
+    this.allowAndroidTablet(addSettingDialog.allowAndroidTablet());
+    this.allowIPhone(addSettingDialog.allowIPhone());
+    this.allowIPad(addSettingDialog.allowIPad());
+    this.allowMac(addSettingDialog.allowMac());
+    this.allowPCWindows(addSettingDialog.allowPCWindows());
+    this.allowPCLinux(addSettingDialog.allowPCLinux());
+    this.allowOtherOS(addSettingDialog.allowOtherOS());
+
+    if(addSettingDialog.isMultiUser()) {
+        this.expData.isJointExp(true);
+    }
+
+};
 
 StudySettings.prototype.setPointers = function(entitiesArr) {
 

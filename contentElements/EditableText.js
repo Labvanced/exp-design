@@ -231,11 +231,13 @@ EditableTextElement.prototype.fromJS = function(data) {
 };
 
 EditableTextElement.prototype.dispose = function () {
-    if(typeof this.rawText() === 'number'){
-        this.expData.translations.splice(this.rawText(),1);
-        this.rawText('');
+    if (typeof uc !== 'undefined') {
+        if(typeof this.rawText() === 'number'){
+            this.expData.translations.splice(this.rawText(),1);
+            this.rawText('');
+        }
+        this.removeBackRefs();
     }
-    this.removeBackRefs();
 };
 
 function createEditableTextComponents() {
@@ -382,11 +384,13 @@ function createEditableTextComponents() {
 
         this.playerText = ko.computed(function() {
             if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
-                var rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()]();
-                if (rawText==null) {
-                    rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[0]();
+                if (self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()]){
+                    var rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()]();
+                    if (rawText==null) {
+                        rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[0]();
+                    }
+                    return rawText.replace(regex, function(match, id){return replaceId(match, id);});
                 }
-                return rawText.replace(regex, function(match, id){return replaceId(match, id);});
             }
             else{
                 return self.dataModel.modifier().selectedTrialView.rawText().replace(regex, function(match, id){return replaceId(match, id);});
