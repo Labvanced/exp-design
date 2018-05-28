@@ -65,7 +65,7 @@
         <span class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.startLabel}"></span>
         <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
             <div style="display: inline-block; margin-left: inherit; margin-right: inherit" data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
-                <!-- ko if: $root.showNums() -->
+                <!-- ko if: $root.showNums -->
                  <span style="display:block; margin-left: 5px;  margin-right: 5px" data-bind="text: $data"></span>
                 <!-- /ko -->
                 <!-- removing white space
