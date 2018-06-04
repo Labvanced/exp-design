@@ -41,7 +41,7 @@ var PublishingData = function(experiment) {
     this.crowdsourcingStatus = ko.observable('inactive');
     this.measuredAverageTime =  ko.observable(null);
     this.completionLink = ko.observable('');
-
+    this.customParticipationRequirement = ko.observable('');
 
 
     // initial subject survey info
@@ -319,6 +319,10 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('openAccess')) {
         this.openAccess(data.openAccess);
     }
+    if (data.hasOwnProperty('customParticipationRequirement')) {
+        this.customParticipationRequirement(data.customParticipationRequirement);
+    }
+
 
 
 
@@ -405,7 +409,8 @@ PublishingData.prototype.toJS = function() {
         publicationDate: this.publicationDate(),
         templatePublicationDate: this.templatePublicationDate(),
 
-        displayBackToLib: this.displayBackToLib()
+        displayBackToLib: this.displayBackToLib(),
+        customParticipationRequirement:this.customParticipationRequirement()
 
 
     };
