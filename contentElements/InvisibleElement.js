@@ -34,6 +34,10 @@ InvisibleElement.prototype.toJS = function() {
     };
 };
 
+InvisibleElement.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
 InvisibleElement.prototype.fromJS = function(data) {
     this.type=data.type;
 };
