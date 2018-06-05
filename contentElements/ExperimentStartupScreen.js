@@ -159,7 +159,7 @@ var ExperimentStartupScreen = function(experiment) {
     var numLang = this.expData.translatedLanguages().length;
     if (numLang < 2) {
         // directly skip to survey if only one language is defined:
-        this.jumpToSurvey();
+        this.jumpToAskSubjData();
     }
 
 };
@@ -369,7 +369,34 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
 
 
 ExperimentStartupScreen.prototype.languageSelected = function () {
-    this.jumpToSurvey();
+    this.jumpToAskSubjData();
+};
+
+ExperimentStartupScreen.prototype.jumpToAskSubjData = function () {
+    var self = this;
+
+    if (player.askSubjData) {
+        // player was started by the experimenter, so we ask for subject code, group, session:
+        var initialSubjectDialog = new InitialSubjectDialog(player.experiment.exp_data);
+        if (player.runOnlyGroupNr) {
+            initialSubjectDialog.selectedSubjectGroup(player.runOnlyGroupNr);
+        }
+        if (player.runOnlySessionNr) {
+            initialSubjectDialog.selectedSessionNr(player.runOnlySessionNr);
+        }
+        initialSubjectDialog.subjectCode(player.subject_code);
+        initialSubjectDialog.start(function() {
+            player.subject_code = initialSubjectDialog.subjectCode();
+            var groupNr = initialSubjectDialog.selectedGroupNr();
+            var sessionNr = initialSubjectDialog.selectedSessionNr();
+            player.setSubjectGroupNr(groupNr, sessionNr);
+            self.jumpToSurvey();
+        });
+    }
+    else {
+        this.jumpToSurvey();
+    }
+
 };
 
 ExperimentStartupScreen.prototype.jumpToSurvey = function () {
