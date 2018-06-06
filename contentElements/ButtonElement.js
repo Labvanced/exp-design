@@ -35,7 +35,8 @@ ButtonElement.prototype.initHeight = 40;
 
 ButtonElement.prototype.addButton = function() {
     var button = new ButtonEntry(this);
-    button.buttonText('<div style="text-align: center;">Button</div>');
+    button.init();
+   // button.buttonText('<div style="text-align: center;">Button</div>');
     this.buttonEntries.push(button);
 };
 
@@ -45,15 +46,24 @@ ButtonElement.prototype.deleteButton = function() {
     this.buttonEntries.splice(0,1);
 };
 
+ButtonElement.prototype.init = function() {
+
+};
 /**
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 ButtonElement.prototype.getAllModifiers = function(modifiersArr) {
+    jQuery.each( this.buttonEntries(), function( index, elem ) {
+        elem.getAllModifiers(modifiersArr);
+    } );
     modifiersArr.push(this.modifier());
 };
 
 ButtonElement.prototype.setPointers = function(entitiesArr) {
+    for (var i=0; i<this.buttonEntries().length; i++) {
+        this.buttonEntries()[i].setPointers(entitiesArr);
+    }
     this.modifier().setPointers(entitiesArr);
 };
 
@@ -67,7 +77,9 @@ ButtonElement.prototype.enableHighlight = function(elem) {
 };
 
 ButtonElement.prototype.dispose = function() {
-
+    jQuery.each( this.buttonEntries(), function( index, elem ) {
+        elem.dispose();
+    } );
 };
 
 
@@ -122,6 +134,9 @@ ButtonElement.prototype.initColorPicker = function() {
 };
 
 ButtonElement.prototype.reAddEntities = function(entitiesArr) {
+    jQuery.each( this.buttonEntries(), function( index, elem ) {
+        elem.reAddEntities(entitiesArr);
+    } );
     this.modifier().reAddEntities(entitiesArr);
 };
 
@@ -152,7 +167,10 @@ ButtonElement.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('buttonText')) {
         // converting from old format:
         var entry = new ButtonEntry(this);
-        entry.buttonText(data.buttonText);
+        entry.init();
+        entry.buttonText(new EditableTextElement(this.expData, this, ''));
+        entry.buttonText().rawText(data.buttonText);
+        entry.buttonText().fromJS(entry.buttonText().toJS());
         buttonEntries.push(entry);
     }
     else {
@@ -161,6 +179,7 @@ ButtonElement.prototype.fromJS = function(data) {
             buttonEntry.fromJS(data.buttonEntries[i]);
             buttonEntries.push(buttonEntry);
         }
+
     }
     this.buttonEntries(buttonEntries);
     if (data.hasOwnProperty('bgColorDefault')) {
@@ -180,11 +199,24 @@ ButtonElement.prototype.fromJS = function(data) {
 
 var ButtonEntry= function(parent, initText) {
     this.parent = parent;
-    this.buttonText = ko.observable( initText );
+    this.buttonText = ko.observable(null);
 };
 
 ButtonEntry.prototype.modifiableProp = ["buttonText"];
 ButtonEntry.prototype.dataType =[ "string"];
+
+ButtonEntry.prototype.init = function() {
+    this.buttonText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">Button</span></p>'));
+    this.buttonText().init();
+};
+
+ButtonEntry.prototype.getAllModifiers = function(modifiersArr) {
+    this.buttonText().getAllModifiers(modifiersArr);
+};
+
+ButtonEntry.prototype.dispose = function () {
+    this.buttonText().dispose();
+};
 
 ButtonEntry.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
@@ -198,19 +230,28 @@ ButtonEntry.prototype.getAllModifiers = function(modifiersArr) {
 };
 
 ButtonEntry.prototype.setPointers = function(entitiesArr) {
+    this.buttonText().setPointers(entitiesArr);
 };
 
 ButtonEntry.prototype.reAddEntities = function(entitiesArr) {
+    this.buttonText().reAddEntities(entitiesArr);
 };
 
 ButtonEntry.prototype.fromJS = function(data) {
-    this.buttonText(data.buttonText);
+    if(data.buttonText.hasOwnProperty('rawText')){
+        this.buttonText(new EditableTextElement(this.parent.expData, this.parent, ''));
+        this.buttonText().fromJS(data.buttonText);
+    }
+    else{
+        this.buttonText(new EditableTextElement(this.parent.expData, this.parent, data.buttonText));
+    }
+
     return this;
 };
 
 ButtonEntry.prototype.toJS = function() {
     return {
-        buttonText:  this.buttonText()
+        buttonText:  this.buttonText().toJS()
     };
 };
 
