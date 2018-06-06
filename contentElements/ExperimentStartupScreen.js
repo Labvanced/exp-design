@@ -419,7 +419,7 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
         // directly skip to joint exp lobby:
         player.setSubjectGroupNr(player.runOnlyGroupNr, player.runOnlySessionNr);
         player.preloadAllContent();
-        this.jumpToJointExpLobby();
+        this.sendDataAndContinue();
         return;
     }
 
