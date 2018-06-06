@@ -389,6 +389,12 @@ ExperimentStartupScreen.prototype.jumpToAskSubjData = function () {
             player.subject_code = initialSubjectDialog.subjectCode();
             var groupNr = initialSubjectDialog.selectedGroupNr();
             var sessionNr = initialSubjectDialog.selectedSessionNr();
+            if (!groupNr) {
+                groupNr = 1;
+            }
+            if (!sessionNr) {
+                sessionNr = 1;
+            }
             player.setSubjectGroupNr(groupNr, sessionNr);
             self.jumpToSurvey();
         });
