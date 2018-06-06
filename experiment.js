@@ -33,6 +33,9 @@ var Experiment = function () {
     this.exp_server_data = ko.observable(null);
     this.exp_run_data = ko.observable(new ExpRunData());
 
+    // copy of study settings:
+    this.study_settings = ko.observable(null);
+
     // local temporary member variables:
     this.hasLocalChanges = false;
     this.changesInTransit = false;
@@ -497,6 +500,10 @@ Experiment.prototype.fromJS = function(data) {
 
     if (data.hasOwnProperty("exp_server_data")){
         this.exp_server_data(data.exp_server_data);
+    }
+
+    if (data.hasOwnProperty("study_settings")){
+        this.study_settings(data.study_settings);
     }
 
     if (data.hasOwnProperty("rec_session_data")) {
