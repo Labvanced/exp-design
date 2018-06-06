@@ -198,11 +198,13 @@ Modifier.prototype.addProp = function(propName) {
                 var indices = [];
                 for (var t=0; t<factors.length; t++){
                     var factorIdx = factorsSelected.indexOf(factors[t]);
-                    if (factorIdx == -1){
+                    if (factorIdx == -1) {
                         // this factor is not in factor group anymore, so remove dependency...
                         this.removeFactorDependency(factors[t])
                     }
-                    indices.push(levelsSelected[factorIdx]);
+                    else {
+                        indices.push(levelsSelected[factorIdx]);
+                    }
                 }
 
                 // find matching modifierTrialType with the given levels of the selected factors:
