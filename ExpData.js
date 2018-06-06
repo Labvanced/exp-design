@@ -761,6 +761,10 @@ ExpData.prototype.setPointers = function() {
     }, null, "arrayChange");
 
     this.checkForUnusedTasks();
+    // bugFix for event which are in entity list with undefined entry // TODO @ holger you might check this
+    if (this.entities.byId["undefined"] != undefined){
+       delete this.entities.byId["undefined"];
+    }
 
 };
 
