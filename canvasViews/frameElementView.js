@@ -25,7 +25,7 @@ var FrameElementView = function(dataModel, parentView) {
 
     this.divContent = document.createElement('div');
     this.border = ko.computed(function() {
-        var border = self.dataModel.borderSize() + "px solid "+  self.dataModel.borderColor();
+        var border = self.dataModel.modifier().selectedTrialView.borderSize() + "px solid "+  self.dataModel.borderColor();
         $(self.divContent).css({
             "border":  border
         });
