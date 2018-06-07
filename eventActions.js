@@ -3307,6 +3307,7 @@ ActionControlWebGazer.prototype.run = function(triggerParams) {
     if (this.actionType() == 'start') {
         if (!player.eyetrackerLoaded) {
             player.eyetrackerLoaded = true;
+            webgazer.trailTime=-Infinity;
             webgazer.setRegression('ridge') /* currently must set regression and tracker   use ridge or weightedRidge*/
                 .setTracker('clmtrackr')
                 .setGazeListener(function(data, clock) {
@@ -3316,6 +3317,7 @@ ActionControlWebGazer.prototype.run = function(triggerParams) {
                 })
                 .begin();
             //.showPredictionPoints(true); /* shows a square every 100 milliseconds where current prediction is */
+            webgazer.trailTime=-Infinity;
         }
     }
     else if (this.actionType() == 'end') {
