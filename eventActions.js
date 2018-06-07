@@ -3307,7 +3307,7 @@ ActionControlWebGazer.prototype.run = function(triggerParams) {
     if (this.actionType() == 'start') {
         if (!player.eyetrackerLoaded) {
             player.eyetrackerLoaded = true;
-            webgazer.setRegression('weightedRidge') /* currently must set regression and tracker */
+            webgazer.setRegression('ridge') /* currently must set regression and tracker   use ridge or weightedRidge*/
                 .setTracker('clmtrackr')
                 .setGazeListener(function(data, clock) {
                     if (data) {
