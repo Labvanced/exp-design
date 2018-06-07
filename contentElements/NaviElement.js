@@ -10,10 +10,12 @@ var NaviElement = function(expData) {
     this.bgColorHover = ko.observable('#99de50');
 
     var button1 = new ButtonEntry(this);
-    button1.buttonText('<div style="text-align: center;">Back</div>');
+    button1.init();
+    button1.buttonText().rawText('<p style="text-align: center"><span style="font-size:16px;">Back</span></p>');
 
     var button2 = new ButtonEntry(this);
-    button2.buttonText('<div style="text-align: center;">Next</div>');
+    button2.init();
+    button2.buttonText().rawText('<p style="text-align: center"><span style="font-size:16px;">Next</span></p>');
 
     this.buttonEntries = ko.observableArray([button1, button2]);
 
@@ -64,7 +66,8 @@ NaviElement.prototype.init = function() {
 
 NaviElement.prototype.addButton = function() {
     var button = new ButtonEntry(this);
-    button.buttonText('<div style="text-align: center;">Button</div>');
+    button.init();
+
     this.buttonEntries.push(button);
 };
 
@@ -205,28 +208,34 @@ NaviElement.prototype.toJS = function() {
 };
 
 NaviElement.prototype.fromJS = function(data) {
-    this.type=data.type;
-    this.id(data.id);
 
     var buttonEntries = [];
     if (data.hasOwnProperty('buttonText1')) {
         // converting from old format:
         var entry = new ButtonEntry(this);
-        entry.buttonText(data.buttonText1);
+        entry.init();
+        entry.buttonText(new EditableTextElement(this.expData, this, ''));
+        entry.buttonText().rawText(data.buttonText1);
+        entry.buttonText().fromJS(entry.buttonText().toJS());
         buttonEntries.push(entry);
 
         var entry2 = new ButtonEntry(this);
-        entry2.buttonText(data.buttonText2);
+        entry2.init();
+        entry2.buttonText(new EditableTextElement(this.expData, this, ''));
+        entry2.buttonText().rawText(data.buttonText2);
+        entry2.buttonText().fromJS(entry2.buttonText().toJS());
         buttonEntries.push(entry2);
     }
     else {
         for (var i=0; i<data.buttonEntries.length; i++) {
             var buttonEntry = new ButtonEntry(this);
+            buttonEntry.init();
             buttonEntry.fromJS(data.buttonEntries[i]);
             buttonEntries.push(buttonEntry);
         }
     }
     this.buttonEntries(buttonEntries);
+
     if (data.hasOwnProperty('bgColorDefault')) {
         this.bgColorDefault(data.bgColorDefault);
         this.bgColorHover(data.bgColorHover);
