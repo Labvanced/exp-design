@@ -188,12 +188,6 @@ Modifier.prototype.addProp = function(propName) {
                 var factorsSelected = selectedTrialType.allFactors;
                 var levelsSelected = selectedTrialType.allLevelIdx;
 
-                if (factors.length == 0){
-                    var val = this.objToModify[propName]();
-                    //console.log("reading parent val="+val+ " because no dependencies yet.")
-                    return val;
-                }
-
                 // construct indices:
                 var indices = [];
                 for (var t=0; t<factors.length; t++){
@@ -205,6 +199,12 @@ Modifier.prototype.addProp = function(propName) {
                     else {
                         indices.push(levelsSelected[factorIdx]);
                     }
+                }
+
+                if (factors.length == 0){
+                    var val = this.objToModify[propName]();
+                    //console.log("reading parent val="+val+ " because no dependencies yet.")
+                    return val;
                 }
 
                 // find matching modifierTrialType with the given levels of the selected factors:
@@ -237,19 +237,25 @@ Modifier.prototype.addProp = function(propName) {
                 var levelsSelected = selectedTrialType.allLevelIdx;
                 var selectedTrialIdx = selectedTrialType.trialNr;
 
-                if (factors.length == 0){
-                    var val = this.objToModify[propName]();
-                    return val;
-                }
-
                 // construct indices:
                 var indices = [];
                 for (var t=0; t<factors.length; t++){
                     var factorIdx = factorsSelected.indexOf(factors[t]);
-                    indices.push(levelsSelected[factorIdx]);
+                    if (factorIdx == -1) {
+                        // this factor is not in factor group anymore, so remove dependency...
+                        this.removeFactorDependency(factors[t])
+                    }
+                    else {
+                        indices.push(levelsSelected[factorIdx]);
+                    }
                 }
                 if (this.dependsOnTrialVariations()){
                     indices.push(selectedTrialIdx);
+                }
+
+                if (factors.length == 0){
+                    var val = this.objToModify[propName]();
+                    return val;
                 }
 
                 // find matching modifierTrialType with the given levels of the selected factors:
