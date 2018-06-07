@@ -3310,6 +3310,7 @@ ActionControlWebGazer.prototype.run = function(triggerParams) {
             function ridgeNoMouseReg() {
                 tmp = new webgazer.reg.RidgeReg();
                 tmp.trailTime = -Infinity;
+                tmp.trailDataWindow = 0;
                 return tmp;
             }
             webgazer.addRegressionModule("ridgeNoMouse", ridgeNoMouseReg);
