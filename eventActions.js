@@ -3307,17 +3307,13 @@ ActionControlWebGazer.prototype.run = function(triggerParams) {
     if (this.actionType() == 'start') {
         if (!player.eyetrackerLoaded) {
             player.eyetrackerLoaded = true;
-
-            function weightedRidgeNoMouseReg() {
-                tmp = new webgazer.reg.WeightedRidgeReg();
+            function ridgeNoMouseReg() {
+                tmp = new webgazer.reg.RidgeReg();
                 tmp.trailTime = -Infinity;
                 return tmp;
             }
-
-            webgazer.addRegressionModule("weightedRidgeNoMouse", weightedRidgeNoMouseReg);
-
-            webgazer.trailTime=-Infinity;
-            webgazer.setRegression('weightedRidgeNoMouse') /* currently must set regression and tracker   use ridge or weightedRidge*/
+            webgazer.addRegressionModule("ridgeNoMouse", ridgeNoMouseReg);
+            webgazer.setRegression('ridgeNoMouse') /* currently must set regression and tracker   use ridge or weightedRidge*/
                 .setTracker('clmtrackr')
                 .setGazeListener(function(data, clock) {
                     if (data) {
@@ -3326,7 +3322,6 @@ ActionControlWebGazer.prototype.run = function(triggerParams) {
                 })
                 .begin();
             //.showPredictionPoints(true); /* shows a square every 100 milliseconds where current prediction is */
-            webgazer.trailTime=-Infinity;
         }
     }
     else if (this.actionType() == 'end') {
