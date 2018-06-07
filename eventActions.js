@@ -3307,8 +3307,17 @@ ActionControlWebGazer.prototype.run = function(triggerParams) {
     if (this.actionType() == 'start') {
         if (!player.eyetrackerLoaded) {
             player.eyetrackerLoaded = true;
+
+            function weightedRidgeNoMouseReg() {
+                tmp = new webgazer.reg.WeightedRidgeReg();
+                tmp.trailTime = -Infinity;
+                return tmp;
+            }
+
+            webgazer.addRegressionModule("weightedRidgeNoMouse", weightedRidgeNoMouseReg);
+
             webgazer.trailTime=-Infinity;
-            webgazer.setRegression('ridge') /* currently must set regression and tracker   use ridge or weightedRidge*/
+            webgazer.setRegression('weightedRidgeNoMouse') /* currently must set regression and tracker   use ridge or weightedRidge*/
                 .setTracker('clmtrackr')
                 .setGazeListener(function(data, clock) {
                     if (data) {
