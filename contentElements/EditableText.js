@@ -337,7 +337,13 @@ function createEditableTextComponents() {
                 return id;
             }
             else{
-                return entity.startValue().toString();
+                if (entity.startValue().toString() == ""){ // insert text in empty string to prevent unclickable text elements
+                    return 'text'
+                }
+                else{
+                    return entity.startValue().toString();
+                }
+
             }
         };
 

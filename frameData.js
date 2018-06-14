@@ -128,11 +128,13 @@ FrameData.prototype.copyChildEntity = function(entity) {
     // for content elements which have pre-defined sub-variables
 
 
-    entityCopy.name(entityCopy.name() + "_copy");
+    entityCopy.name(entityCopy.name() + "_copy_"+guid().substring(0,4));
     entityCopy.parent = this;
     entityCopy.setPointers(this.expData.entities);
     obsArr.splice(index+1, 0, entityCopy);
-    this.expData.entities.insertIfNotExist(entityCopy);
+    if (!(entityCopy instanceof ExpEvent)) {
+        this.expData.entities.insertIfNotExist(entityCopy);
+    }
     this.expData.parentExperiment.save();
 };
 
