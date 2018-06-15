@@ -118,7 +118,8 @@ ExpData.prototype.oldFixedVarNames = [
     'varCrowdsourcingSubjIdEMPTY',
     'varGazeXEMPTY',
     'varGazeYEMPTY',
-    'varRoleIdEMPTY'
+    'varRoleIdEMPTY',
+    'varDisplayedLanguageEMPTY'
     // 'varTimeMeasureSpecMaxEMPTY',
 ];
 
@@ -151,7 +152,9 @@ ExpData.prototype.fixedVarNames = [
     'varCrowdsourcingSubjId',
     'varGazeX',
     'varGazeY',
-    'varRoleId'
+    'varRoleId',
+    'varDisplayedLanguage'
+
     // 'varTimeMeasureSpecMax',
 
 ];
@@ -184,8 +187,10 @@ ExpData.prototype.varDescriptions = {
     'varCrowdsourcingCode':'The variable "Crowdsourcing_Code" holds the value of the unique "crowdsourcing code", typically shown to the subject at end of the experiment to complete the crowdsourcing session and claim the payment.',
     'varCrowdsourcingSubjId':'The variable "Crowdsourcing_SubjId" holds the value of the unique "identification code" for each crowdsourcing participant. This can be used to later on create a reference between crowdsourcing data on Labvanced and the external crowdsourcing service (e.g Mechanical Turk).',
     'varGazeX':'The variable "GazeX" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in X coordinates. This value can be used for calibration and as a "fixation trigger".',
-    'varGazeY':'The variable "GazeY" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in Y coordinates. This value can be used for calibration and as a "fixation trigger".'
-       // {'varTimeMeasureSpecMax':''},
+    'varGazeY':'The variable "GazeY" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in Y coordinates. This value can be used for calibration and as a "fixation trigger".',
+    'varDisplayedLanguage':' The variable Displayed Language hold the value of the initial language, only if there were 2 or more languages to select from. This value can be used to show different content, i.e. texts for different languages.'
+
+    // {'varTimeMeasureSpecMax':''},
 };
 
 
@@ -485,6 +490,11 @@ ExpData.prototype.createVars = function() {
         this.varRoleId((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Role_Id'));
         this.varRoleId().setDescription(ExpData.prototype.varDescriptions["varRoleId"]);
     }
+    if (!this.varDisplayedLanguage()){
+        this.varDisplayedLanguage((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Displayed_Language'));
+        this.varDisplayedLanguage().setDescription(ExpData.prototype.varDescriptions["varDisplayedLanguage"]);
+    }
+
     //  if (!this.varTimeMeasureSpecMax()) {
     //      this.varTimeMeasureSpecMax((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Max'));
     //  }

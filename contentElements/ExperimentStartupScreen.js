@@ -89,6 +89,7 @@ var ExperimentStartupScreen = function(experiment) {
     this.selectedStudyLanguage.subscribe(function(newLang) {
         var langIdx = self.expData.translatedLanguages().indexOf(newLang);
         self.expData.currentLanguage(langIdx);
+        self.expData.varDisplayedLanguage().setValue(newLang);
         self.expData.updateLanguage();
     });
 
