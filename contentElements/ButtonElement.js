@@ -13,7 +13,7 @@ var ButtonElement = function(expData) {
 
 
     this.buttonEntries = ko.observableArray([]);
-    this.addButton();
+
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -40,6 +40,14 @@ ButtonElement.prototype.addButton = function() {
     this.buttonEntries.push(button);
 };
 
+ButtonElement.prototype.getTextRefs = function(textArr, label){
+    jQuery.each( this.buttonEntries(), function( index, elem ) {
+        var ind = index + 1;
+        elem.getTextRefs(textArr, label + '.Entry' + ind);
+    } );
+    return textArr;
+};
+
 
 ButtonElement.prototype.deleteButton = function() {
     var self = this;
@@ -47,7 +55,7 @@ ButtonElement.prototype.deleteButton = function() {
 };
 
 ButtonElement.prototype.init = function() {
-
+    this.addButton();
 };
 /**
  * This function is used recursively to retrieve an array with all modifiers.
@@ -221,6 +229,11 @@ ButtonEntry.prototype.dispose = function () {
 ButtonEntry.prototype.selectTrialType = function(selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
+
+ButtonEntry.prototype.getTextRefs = function(textArr, label){
+    this.buttonText().getTextRefs(textArr, label);
+};
+
 
 /**
  * This function is used recursively to retrieve an array with all modifiers.

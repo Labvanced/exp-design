@@ -238,7 +238,7 @@ ExpData.prototype.staticTranslations = {
         goToLib: "Go to experiment library",
         chooseSelection: "Please Choose...",
         answerPlaceholder: "Participant Answer...",
-        endExpMsgTest:  "The test recording of this tak is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel.",
+        endExpMsgTest:  "The test recording of this task is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel.",
         participationAgreement1: " I agree that all the personal data, which I provide here and all my responses will be recorded, and can be used for research purposes in a pseudonymised way. I also agree to the",
         participationAgreement2: "of the Scicovery GmbH for recording, storing, and handling, participant data.",
         multiUserExpLobby: "Multiple Participant Experiment",
@@ -252,7 +252,7 @@ ExpData.prototype.staticTranslations = {
         yourCrowdsourcingID: "Your worker / crowdsourcing ID (*):",
         AdLibraryEndOfStudy: "Take part in more exiting behavioral experiments:",
         AdRegisterEndOfStudy: "OR register and build your own study for free:",
-        inviteFriendMultiUser1: "Need anohter player? Invite a friend!",
+        inviteFriendMultiUser1: "Need another player? Invite a friend!",
         inviteFriendMultiUser2: "Your Name:",
         inviteFriendMultiUser3: "Your Friends' Email:",
         inviteFriendMultiUser4: "Invite"
