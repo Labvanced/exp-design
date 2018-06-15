@@ -188,7 +188,7 @@ ExpData.prototype.varDescriptions = {
     'varCrowdsourcingSubjId':'The variable "Crowdsourcing_SubjId" holds the value of the unique "identification code" for each crowdsourcing participant. This can be used to later on create a reference between crowdsourcing data on Labvanced and the external crowdsourcing service (e.g Mechanical Turk).',
     'varGazeX':'The variable "GazeX" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in X coordinates. This value can be used for calibration and as a "fixation trigger".',
     'varGazeY':'The variable "GazeY" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in Y coordinates. This value can be used for calibration and as a "fixation trigger".',
-    'varDisplayedLanguage':' The variable Displayed Language hold the value of the initial language, only if there were 2 or more languages to select from. This value can be used to show different content, i.e. texts for different languages.'
+    'varDisplayedLanguage':'The variable "Displayed Language" holds the value of the selected display language, only if there were 2 or more languages to select from. This value can be used to show different content, i.e. texts for different language settings.'
 
     // {'varTimeMeasureSpecMax':''},
 };
