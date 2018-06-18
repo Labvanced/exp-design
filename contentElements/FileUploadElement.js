@@ -42,7 +42,9 @@ FileUploadElement.prototype.triggerTypes = ["FileSelected","UploadComplete"];
 FileUploadElement.prototype.dispose = function() {
     this.questionText().dispose();
     this.buttonText().dispose();
-    this.variable().removeBackRef(this);
+    if (this.variable() instanceof GlobalVar) {
+        this.variable().removeBackRef(this);
+    }
 };
 
 FileUploadElement.prototype.init = function(variableName) {
@@ -214,8 +216,10 @@ FileUploadElement.prototype.setPointers = function(entitiesArr) {
 };
 
 FileUploadElement.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
+    if (this.variable() instanceof GlobalVar) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
     }
     this.questionText().reAddEntities(entitiesArr);
     this.buttonText().reAddEntities(entitiesArr);

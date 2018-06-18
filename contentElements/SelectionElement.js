@@ -57,7 +57,10 @@ SelectionElement.prototype.removeEntry = function(idx) {
 
 SelectionElement.prototype.dispose = function() {
     this.questionText().dispose();
-    this.variable().removeBackRef(this);
+    if (this.variable() instanceof GlobalVar) {
+        this.variable().removeBackRef(this);
+    }
+
     jQuery.each( this.elements(), function( index, elem ) {
         elem.dispose();
     } );
@@ -124,9 +127,12 @@ SelectionElement.prototype.setPointers = function(entitiesArr) {
 };
 
 SelectionElement.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
+    if (this.variable() instanceof GlobalVar) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
     }
+
     this.questionText().reAddEntities(entitiesArr);
 };
 

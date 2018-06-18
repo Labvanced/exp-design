@@ -132,9 +132,12 @@ SortableElement.prototype.reAddEntities = function(entitiesArr) {
     jQuery.each( this.elements(), function( index, elem ) {
         elem.reAddEntities(entitiesArr);
     } );
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
+    if (this.variable() instanceof GlobalVar) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
     }
+
     this.questionText().reAddEntities(entitiesArr);
 };
 
@@ -151,7 +154,10 @@ SortableElement.prototype.dispose = function () {
         elem.dispose();
     } );
 
-    this.variable().removeBackRef(this);
+    if (this.variable() instanceof GlobalVar) {
+        this.variable().removeBackRef(this);
+    }
+
 };
 
 SortableElement.prototype.getTextRefs = function(textArr, label){
@@ -240,7 +246,7 @@ SortableEntry.prototype.init = function(entryName) {
 };
 
 SortableEntry.prototype.setVariableBackRef = function() {
-    this.variable().addBackRef(this, this.parent.parent, true, true, 'sortable');
+    this.parent.variable().addBackRef(this, this.parent.parent, true, true, 'sortable');
 };
 
 

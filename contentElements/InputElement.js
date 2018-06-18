@@ -86,9 +86,12 @@ InputElement.prototype.setPointers = function(entitiesArr) {
 };
 
 InputElement.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
+    if (this.variable() instanceof GlobalVar) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
     }
+
     this.questionText().reAddEntities(entitiesArr);
 };
 
@@ -98,7 +101,10 @@ InputElement.prototype.selectTrialType = function(selectionSpec) {
 
 InputElement.prototype.dispose = function () {
     this.questionText().dispose();
-    this.variable().removeBackRef(this);
+    if (this.variable() instanceof GlobalVar) {
+        this.variable().removeBackRef(this);
+    }
+
 };
 
 InputElement.prototype.getTextRefs = function(textArr, label){

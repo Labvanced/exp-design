@@ -82,9 +82,12 @@ RangeElement.prototype.setPointers = function(entitiesArr) {
 };
 
 RangeElement.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
+    if (this.variable() instanceof GlobalVar) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
     }
+
     this.questionText().reAddEntities(entitiesArr);
     this.startLabel().reAddEntities(entitiesArr);
     this.endLabel().reAddEntities(entitiesArr);
@@ -100,7 +103,11 @@ RangeElement.prototype.dispose = function () {
     this.questionText().dispose();
     this.startLabel().dispose();
     this.endLabel().dispose();
-    this.variable().removeBackRef(this);
+
+    if (this.variable() instanceof GlobalVar) {
+        this.variable().removeBackRef(this);
+    }
+
 };
 
 RangeElement.prototype.getTextRefs = function(textArr, label){

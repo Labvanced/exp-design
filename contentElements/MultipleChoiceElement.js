@@ -187,9 +187,12 @@ MultipleChoiceElement.prototype.addSubscriptions = function() {
 };
 
 MultipleChoiceElement.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
+    if (this.variable() instanceof GlobalVar) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
     }
+
     jQuery.each( this.elements(), function( index, elem ) {
         elem.reAddEntities(entitiesArr);
     } );
@@ -217,7 +220,10 @@ MultipleChoiceElement.prototype.dispose = function () {
         elem.dispose();
     } );
 
-    this.variable().removeBackRef(this);
+    if (this.variable() instanceof GlobalVar) {
+        this.variable().removeBackRef(this);
+    }
+
 };
 
 MultipleChoiceElement.prototype.getTextRefs = function(textArr, label){

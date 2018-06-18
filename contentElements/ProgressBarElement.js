@@ -32,7 +32,7 @@ ProgressBarElement.prototype.init = function() {
 };
 
 ProgressBarElement.prototype.dispose = function() {
-    if (this.variable()){
+    if (this.variable() instanceof GlobalVar) {
         this.variable().removeBackRef(this);
     }
 
@@ -89,7 +89,7 @@ ProgressBarElement.prototype.setPointers = function(entitiesArr) {
 };
 
 ProgressBarElement.prototype.reAddEntities = function(entitiesArr) {
-    if (this.variable()){
+    if (this.variable() instanceof GlobalVar) {
         if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
             entitiesArr.push(this.variable());
         }

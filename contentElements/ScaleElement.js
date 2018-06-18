@@ -358,15 +358,20 @@ ScaleEntry.prototype.getAllModifiers = function(modifiersArr) {
 };
 
 ScaleEntry.prototype.setPointers = function(entitiesArr) {
-    this.variable(entitiesArr.byId[this.variable()]);
-    this.setVariableBackRef();
+    if (this.variable()) {
+        this.variable(entitiesArr.byId[this.variable()]);
+        this.setVariableBackRef();
+    }
     this.rowText().setPointers(entitiesArr);
 };
 
 ScaleEntry.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
+    if (this.variable() instanceof GlobalVar){
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
     }
+
 };
 
 
@@ -391,7 +396,10 @@ ScaleEntry.prototype.isInputValid = function() {
 
 ScaleEntry.prototype.dispose = function () {
     this.rowText().dispose();
-    this.variable().removeBackRef(this);
+    if (this.variable() instanceof GlobalVar){
+        this.variable().removeBackRef(this);
+    }
+
 };
 
 ScaleEntry.prototype.getTextRefs = function(textArr, label){

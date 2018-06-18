@@ -273,13 +273,15 @@ CheckBoxEntry.prototype.getAllModifiers = function(modifiersArr) {
 };
 
 CheckBoxEntry.prototype.setPointers = function(entitiesArr) {
-    this.variable(entitiesArr.byId[this.variable()]);
-    this.setVariableBackRef();
+    if (this.variable()) {
+        this.variable(entitiesArr.byId[this.variable()]);
+        this.setVariableBackRef();
+    }
     this.checkBoxText().setPointers(entitiesArr);
 };
 
 CheckBoxEntry.prototype.reAddEntities = function(entitiesArr) {
-    if (this.variable()) {
+    if (this.variable() instanceof GlobalVar) {
         if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
             entitiesArr.push(this.variable());
         }
@@ -288,8 +290,10 @@ CheckBoxEntry.prototype.reAddEntities = function(entitiesArr) {
 };
 
 CheckBoxEntry.prototype.dispose = function () {
-  this.checkBoxText().dispose();
-  this.variable().removeBackRef(this);
+    this.checkBoxText().dispose();
+    if (this.variable() instanceof GlobalVar){
+        this.variable().removeBackRef(this);
+    }
 };
 
 CheckBoxEntry.prototype.getTextRefs = function(textArr, label){
