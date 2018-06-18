@@ -344,7 +344,7 @@ ScaleEntry.prototype.init = function(varName) {
 };
 
 ScaleEntry.prototype.setVariableBackRef = function() {
-    if (this.variable()) {
+    if (this.variable() instanceof GlobalVar){
         this.variable().addBackRef(this, this.parent.parent, true, true, 'scale');
     }
 };

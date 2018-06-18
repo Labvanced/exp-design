@@ -88,7 +88,7 @@ SelectionElement.prototype.init = function(variableName) {
 };
 
 SelectionElement.prototype.setVariableBackRef = function() {
-    if (this.variable()) {
+    if (this.variable() instanceof GlobalVar){
         this.variable().addBackRef(this, this.parent, true, true, 'Selection');
     }
 };

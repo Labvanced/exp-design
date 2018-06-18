@@ -56,7 +56,7 @@ RangeElement.prototype.init = function(variableName) {
 
 
 RangeElement.prototype.setVariableBackRef = function() {
-    if (this.variable()) {
+    if (this.variable() instanceof GlobalVar){
         this.variable().addBackRef(this, this.parent, true, true, 'Range');
     }
 };

@@ -61,7 +61,10 @@ AudioRecordingElement.prototype.jumpToByTime = function(time) {
 
 AudioRecordingElement.prototype.dispose = function() {
     this.questionText().dispose();
-    this.variable().removeBackRef(this);
+    if (this.variable() instanceof GlobalVar) {
+        this.variable().removeBackRef(this);
+    }
+
 };
 
 AudioRecordingElement.prototype.init = function(variableName) {
@@ -107,7 +110,7 @@ AudioRecordingElement.prototype.enableAudioRecDialog = function() {
 };
 
 AudioRecordingElement.prototype.setVariableBackRef = function() {
-    if (this.variable()) {
+    if (this.variable() instanceof GlobalVar) {
         this.variable().addBackRef(this, this.parent, true, true, 'Audio Recording');
     }
 };
@@ -260,9 +263,12 @@ AudioRecordingElement.prototype.setPointers = function(entitiesArr) {
 };
 
 AudioRecordingElement.prototype.reAddEntities = function(entitiesArr) {
-    if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
-        entitiesArr.push(this.variable());
+    if (this.variable() instanceof GlobalVar) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
     }
+
     this.questionText().reAddEntities(entitiesArr);
 };
 
