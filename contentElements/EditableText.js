@@ -52,9 +52,8 @@ EditableTextElement.prototype.getAllModifiers = function(modifiersArr) {
     modifiersArr.push(this.modifier());
 };
 
-EditableTextElement.prototype.markTranslatable = function () {
-    var text = this.rawText();
-
+EditableTextElement.prototype.markTextObsTranslatable = function(textObs) {
+    var text = textObs();
     if (typeof text !== 'number') {
         var namedEntity = this.parent;
         for (var k = 0; k <= 50 && !(namedEntity instanceof FrameElement || namedEntity instanceof PageElement); k++) {
@@ -71,7 +70,21 @@ EditableTextElement.prototype.markTranslatable = function () {
 
         var translationIdx = this.expData.translations().length;
         this.expData.translations.push(translationEntry);
-        this.rawText(translationIdx);
+        textObs(translationIdx);
+    }
+};
+
+EditableTextElement.prototype.markTranslatable = function () {
+
+    this.markTextObsTranslatable(this.rawText);
+
+    if(this.modifier().ndimModifierTrialTypes.length > 0){
+        var flattend = this.modifier().getFlattendArray();
+        for(var k=0; k<flattend.length; k++){
+            if(flattend[k].modifiedProp.rawText) {
+                this.markTextObsTranslatable(flattend[k].modifiedProp.rawText);
+            }
+        }
     }
 };
 
@@ -316,11 +329,20 @@ function createEditableTextComponents() {
                         self.dataModel.addVar(ids[i]);
                     }
                 }
-                if(typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number'){
-                    self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()](value);
+
+                var viewOnRawTextObs = self.dataModel.modifier().selectedTrialView.rawText;
+                if(typeof viewOnRawTextObs() == 'number'){
+
+                    if (viewOnRawTextObs() == self.dataModel.rawText()) {
+                        // still only the default trial:
+                        viewOnRawTextObs(value);
+                        this.markTextObsTranslatable(viewOnRawTextObs)
+                    }
+
+                    self.expData.translations()[viewOnRawTextObs()].languages()[self.expData.currentLanguage()](value);
                 }
                 else{
-                    self.dataModel.modifier().selectedTrialView.rawText(value);
+                    viewOnRawTextObs(value);
                 }
             },
             owner: self
