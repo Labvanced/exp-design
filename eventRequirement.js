@@ -669,16 +669,26 @@ var RefToObjectProperty = function(event) {
  */
 RefToObjectProperty.prototype.getValue = function() {
 
-    var propertyPath = this.property().split(".");
+
     var target = this.target();
 
-    for (var k=0; k < propertyPath.length-1; k++) {
-        target = target[propertyPath[k]];
-        if (ko.isObservable(target)) {
-            target = target();
-        }
+    if (this.property() == "content.file"){
+       var fileID =  target.content().modifier().selectedTrialView["file_id"]();
+       var name = target.content().modifier().selectedTrialView["file_orig_name"]();
+       var obj ={id:fileID, name:name};
+       return obj
     }
-    return target.modifier().selectedTrialView[propertyPath[propertyPath.length-1]]();
+    else{
+        var propertyPath = this.property().split(".");
+        for (var k=0; k < propertyPath.length-1; k++) {
+            target = target[propertyPath[k]];
+            if (ko.isObservable(target)) {
+                target = target();
+            }
+        }
+        return target.modifier().selectedTrialView[propertyPath[propertyPath.length-1]]();
+    }
+
 
 };
 
