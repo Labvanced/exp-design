@@ -32,6 +32,7 @@ var StudySettings = function (expData) {
 
     // special device requirements:
     this.isAudioRecEnabled = ko.observable(false);
+    this.multiUserOnLeaveAction = ko.observable("Finish Study With Error");
 
     // number entered before checking the validity (min/max). gets updated after check.
     this.numPartEntered = ko.observable(expData.numPartOfJointExp());
@@ -203,6 +204,10 @@ StudySettings.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("participantConsent")){
         this.participantConsent(data.participantConsent);
     }
+    if (data.hasOwnProperty("multiUserOnLeaveAction")){
+        this.multiUserOnLeaveAction(data.multiUserOnLeaveAction);
+    }
+
 
 
 };
@@ -233,7 +238,8 @@ StudySettings.prototype.toJS = function() {
         minWidth:this.minWidth(),
         minHeight:this.minHeight(),
         isAudioRecEnabled: this.isAudioRecEnabled(),
-        participantConsent:this.participantConsent()
+        participantConsent:this.participantConsent(),
+        multiUserOnLeaveAction:this.multiUserOnLeaveAction()
     };
     return data;
 };
