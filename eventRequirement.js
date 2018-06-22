@@ -364,11 +364,13 @@ var OperandVariable = function(event) {
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
 
-OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean","constantDate","constantTime","constantCategorical"];
+OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean","constantDate","constantTime","constantCategorical", "constantColor"];
 OperandVariable.prototype.unaryOperandTypes = ["abs","round0decimal","round1decimal","round2decimals","round3decimals","floor","ceil","sqrt"];
 OperandVariable.prototype.binaryOperandTypes = ["arithmetic"];
 OperandVariable.prototype.operandTypes = OperandVariable.prototype.nullaryOperandTypes.concat(OperandVariable.prototype.unaryOperandTypes, OperandVariable.prototype.binaryOperandTypes);
 OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
+
+
 
 /**
  * This function is used to associate a global variable with this operand, so that the variable knows where it is used.
@@ -496,6 +498,8 @@ OperandVariable.prototype.getValue = function(parameters) {
             if (!(indSep.length==2 && parseInt(indSep[0])>=0 && parseInt(indSep[0])<=23 && parseInt(indSep[1])>=0 && parseInt(indSep[1])<=59 )){
                 console.error("operand is not a Time");
             }
+            return value;
+        case "constantColor":
             return value;
         case "constantCategorical":
             return this.subParam();

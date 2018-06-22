@@ -28,9 +28,12 @@ var FrameElement= function(expData) {
     this.canBeDragged= ko.observable(false);
     this.canBeResized= ko.observable(false);
     this.borderSize = ko.observable(0);
-    this.borderColor = ko.observable("black");
+    this.borderColor = ko.observable("#000000");
+    this.backgroundColor = ko.observable("transparent");
     this.overflowX = ko.observable("hidden");
     this.overflowY = ko.observable("hidden");
+    this.roundness = ko.observable(0);
+
 
 
     this.id = ko.observable(guid());
@@ -73,8 +76,8 @@ FrameElement.prototype.addContent = function(element){
 };
 
 
-FrameElement.prototype.dataType =      [ "numeric","boolean", "numeric", "numeric", "numeric","numeric","boolean","numeric","numeric","boolean","boolean","boolean","numeric"];
-FrameElement.prototype.modifiableProp = ["visibility","isActive","editorX", "editorY", "editorWidth","editorHeight","keepAspectRatio","contentScaling","contentRotation","canBeSelected","canBeDragged","canBeResized", "borderSize"];
+FrameElement.prototype.dataType =      [ "numeric","boolean", "numeric", "numeric", "numeric","numeric","boolean","numeric","numeric","boolean","boolean","boolean","numeric","string","string"];
+FrameElement.prototype.modifiableProp = ["visibility","isActive","editorX", "editorY", "editorWidth","editorHeight","keepAspectRatio","contentScaling","contentRotation","canBeSelected","canBeDragged","canBeResized", "borderSize","borderColor","backgroundColor"];
 FrameElement.prototype.subElementProp = ["content"];
 
 FrameElement.prototype.setAnchorPoint = function(horizontal, vertical) {
@@ -221,6 +224,14 @@ FrameElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('overflowY')) {
         this.overflowY(data.overflowY);
     }
+    if(data.hasOwnProperty('backgroundColor')) {
+        this.backgroundColor(data.backgroundColor);
+    }
+    if(data.hasOwnProperty('roundness')) {
+        this.roundness(data.roundness);
+    }
+
+
 
     this.isActive(data.isActive);
     this.keepAspectRatio(data.keepAspectRatio);
@@ -281,6 +292,8 @@ FrameElement.prototype.toJS = function() {
         borderSize:this.borderSize(),
         borderColor:this.borderColor(),
         overflowX:this.overflowX(),
-        overflowY :this.overflowY()
+        overflowY :this.overflowY(),
+        backgroundColor:this.backgroundColor(),
+        roundness:this.roundness()
     };
 };

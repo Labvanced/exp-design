@@ -30,6 +30,23 @@ var FrameElementView = function(dataModel, parentView) {
             "border":  border
         });
     },this);
+
+    this.backgroundColor = ko.computed(function() {
+        var backgroundColor =  self.dataModel.modifier().selectedTrialView.backgroundColor();
+        $(self.divContent).css({
+            "background-color":  backgroundColor
+        });
+    },this);
+
+    this.roundness = ko.computed(function() {
+        var roundness =  self.dataModel.roundness();
+        roundness = (roundness /2 *100)+'%';
+        $(self.divContent).css({
+            "border-radius":  roundness
+        });
+    },this);
+
+
     this.overflowX = ko.computed(function() {
         var overflowX = self.dataModel.overflowX();
         $(self.divContent).css({
@@ -49,7 +66,9 @@ var FrameElementView = function(dataModel, parentView) {
         "overflow-x": this.overflowX(),
         "overflow-y ":this.overflowY(),
         "opacity": this.selectedTrialView.visibility(),
-        "border":  this.border()
+        "border":  this.border(),
+        "background-color": this.backgroundColor(),
+        "border-radius": this.roundness()
 
     });
     $(this.div).append(this.divContent);
@@ -495,22 +514,25 @@ FrameElementView.prototype.renderContent = function(data) {
 };
 
 FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function() {
-    var self = this;
-    $(this.divContent).children().remove();
+    if (typeof player == 'undefined'){
+        var self = this;
+        $(this.divContent).children().remove();
 
-    this.text = document.createElement('p');
-    $(this.text).css({
-        "position": "absolute",
-        "textAlign": "center",
-        "border": " 1px solid black"
-    });
-    $(this.text).text(this.dataModel.name());
-    this.disposables.push(this.dataModel.name.subscribe(function(newName) {
-        $(self.text).text(newName);
-    }));
+        this.text = document.createElement('p');
+        $(this.text).css({
+            "position": "absolute",
+            "textAlign": "center",
+            "border": " 1px solid black"
+        });
+        $(this.text).text(this.dataModel.name());
+        this.disposables.push(this.dataModel.name.subscribe(function(newName) {
+            $(self.text).text(newName);
+        }));
 
-    $(this.divContent).append($(this.text));
-    this.update(true,true);
+        $(this.divContent).append($(this.text));
+        this.update(true,true);
+    }
+
 };
 
 /**
