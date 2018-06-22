@@ -10,6 +10,7 @@
 var GlobalVar = function (expData) {
     var self = this;
     this.expData = expData;
+    this.dataTypes_Refactored = ko.observableArray(this.refactorDataTypes());
 
     // serialized:
     this.id = ko.observable(guid());
@@ -121,6 +122,30 @@ GlobalVar.iconArrayPerDataType = {
     'timer': "/resources/icons/variables/array/stopwatch.svg",
     'file': "/resources/icons/variables/array/structure.svg",
     'structure': "/resources/icons/variables/array/structure.svg"
+};
+
+GlobalVar.prototype.refactorDataTypes= function() {
+    var names = GlobalVar.dataTypes;
+    var out = [];
+    $.each(names,function (idx,value) {
+        if (value == "datetime" ){
+            var obj = {
+                name:value,
+                viewName: "date"
+            };
+            out.push(obj)
+        }
+
+        else if (value !="timer" && value !="structure") {
+            var obj = {
+                name:value,
+                viewName: value
+            };
+            out.push(obj)
+        }
+
+    });
+    return out;
 };
 
 GlobalVar.prototype.getIconPath = function() {
