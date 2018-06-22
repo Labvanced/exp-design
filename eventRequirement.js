@@ -358,12 +358,13 @@ var OperandVariable = function(event) {
     // serialized
     this.operandType = ko.observable('undefined');
     this.operandValueOrObject = ko.observable(null);
+    this.subParam = ko.observable(null);
 };
 
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
 
-OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean"];
+OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean","constantDate","constantTime","constantCategorical"];
 OperandVariable.prototype.unaryOperandTypes = ["abs","round0decimal","round1decimal","round2decimals","round3decimals","floor","ceil","sqrt"];
 OperandVariable.prototype.binaryOperandTypes = ["arithmetic"];
 OperandVariable.prototype.operandTypes = OperandVariable.prototype.nullaryOperandTypes.concat(OperandVariable.prototype.unaryOperandTypes, OperandVariable.prototype.binaryOperandTypes);
@@ -483,6 +484,22 @@ OperandVariable.prototype.getValue = function(parameters) {
             }
             return value;
 
+        case "constantDate":
+            var regexp = new RegExp("\\d{4}-\\d{2}-\\d{2}");
+            if (!(Array.isArray(value.match(regexp)))) {
+                console.error("operand is not a Date");
+            }
+            return value;
+
+        case "constantTime":
+            var indSep = value.split(":");
+            if (!(indSep.length==2 && parseInt(indSep[0])>=0 && parseInt(indSep[0])<=23 && parseInt(indSep[1])>=0 && parseInt(indSep[1])<=59 )){
+                console.error("operand is not a Time");
+            }
+            return value;
+        case "constantCategorical":
+            return this.subParam();
+
         case "round0decimal":
             return Math.round(value.left.getValue());
 
@@ -527,7 +544,7 @@ OperandVariable.prototype.removeVariable = function(globalVar) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 OperandVariable.prototype.setPointers = function(entitiesArr) {
-    if (this.operandType() == "variable"){
+    if (this.operandType() == "variable" || this.operandType()=="constantCategorical"){
         if (this.operandValueOrObject()) {
             var globVar = entitiesArr.byId[this.operandValueOrObject()];
             if (globVar) {
@@ -557,7 +574,7 @@ OperandVariable.prototype.setPointers = function(entitiesArr) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 OperandVariable.prototype.reAddEntities = function(entitiesArr) {
-    if (this.operandType() == "variable"){
+    if (this.operandType() == "variable" || this.operandType()=="constantCategorical"){
         if (this.operandValueOrObject()) {
             if (!entitiesArr.byId.hasOwnProperty(this.operandValueOrObject().id())) {
                 entitiesArr.push(this.operandValueOrObject());
@@ -607,6 +624,9 @@ OperandVariable.prototype.fromJS = function(data) {
     else {
         this.operandValueOrObject(data.operandValueOrObject);
     }
+    if (data.hasOwnProperty("subParam")){
+        this.subParam(data.subParam);
+    }
     return this;
 };
 
@@ -620,7 +640,7 @@ OperandVariable.prototype.toJS = function() {
         operandType: this.operandType(),
         operandValueOrObject: this.operandValueOrObject()
     };
-    if (data.operandType == "variable" && data.operandValueOrObject) {
+    if ((data.operandType == "variable" && data.operandValueOrObject) || (data.operandType == "constantCategorical" && data.operandValueOrObject)) {
         if (data.operandValueOrObject) {
             data.operandValueOrObject = data.operandValueOrObject.id();
         }
@@ -643,6 +663,7 @@ OperandVariable.prototype.toJS = function() {
             op: data.operandValueOrObject.op
         };
     }
+    data.subParam = this.subParam();
     return data;
 };
 
