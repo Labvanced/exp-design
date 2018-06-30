@@ -24,6 +24,8 @@ var FrameElement= function(expData) {
 
     // new
     this.stimulusInformation  = ko.observable(null);
+
+    // special to frame element
     this.canBeSelected = ko.observable(false);
     this.canBeDragged= ko.observable(false);
     this.canBeResized= ko.observable(false);

@@ -28,6 +28,9 @@ var PageData = function(expData) {
     // consider using additional ko.computeds to make sure that syncFrame can only be activated when exp. is joint exp.
     this.syncFrame = ko.observable(true);
 
+    // new
+    this.marginBetweenElems = ko.observable(10);
+    this.borderSizeBottom =  ko.observable(1);
 
     this.hideMouse = ko.observable(false);
 
@@ -428,6 +431,12 @@ PageData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("nrOfTrackMousemove")) {
         this.nrOfTrackMousemove(data.nrOfTrackMousemove);
     }
+    if (data.hasOwnProperty("marginBetweenElems")) {
+        this.marginBetweenElems(data.marginBetweenElems);
+    }
+    if (data.hasOwnProperty("borderSizeBottom")) {
+        this.borderSizeBottom(data.borderSizeBottom);
+    }
 
 
     return this;
@@ -453,7 +462,9 @@ PageData.prototype.toJS = function() {
         elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } ),
         localWorkspaceVars: jQuery.map( this.localWorkspaceVars(), function( variable ) { return variable.id(); } ),
         maxWidth: parseInt(this.maxWidth()),
-        nrOfTrackMousemove:this.nrOfTrackMousemove()
+        nrOfTrackMousemove:this.nrOfTrackMousemove(),
+        marginBetweenElems:this.marginBetweenElems(),
+        borderSizeBottom:this.borderSizeBottom()
 
     };
 };

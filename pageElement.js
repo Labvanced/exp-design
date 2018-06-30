@@ -18,6 +18,14 @@ var PageElement = function(expData) {
 
     // new
     this.stimulusInformation  = ko.observable(null);
+    this.marginLeft = ko.observable(35);
+    this.marginRight = ko.observable(35);
+    this.marginTop = ko.observable(35);
+    this.marginBottom = ko.observable(35);
+    this.paddingLeft = ko.observable(20);
+    this.paddingRight = ko.observable(20);
+    this.paddingTop = ko.observable(20);
+    this.paddingBottom = ko.observable(20);
 
 
     this.isActive = ko.observable(true);
@@ -163,6 +171,33 @@ PageElement.prototype.fromJS = function(data) {
         this.isVisible(data.isVisible);
     }
 
+    if(data.hasOwnProperty('marginLeft')) {
+        this.marginLeft(data.marginLeft);
+    }
+    if(data.hasOwnProperty('marginRight')) {
+        this.marginRight(data.marginRight);
+    }
+    if(data.hasOwnProperty('marginTop')) {
+        this.marginTop(data.marginTop);
+    }
+    if(data.hasOwnProperty('marginBottom')) {
+        this.marginBottom(data.marginBottom);
+    }
+
+    if(data.hasOwnProperty('paddingLeft')) {
+        this.paddingLeft(data.paddingLeft);
+    }
+    if(data.hasOwnProperty('paddingRight')) {
+        this.paddingRight(data.paddingRight);
+    }
+    if(data.hasOwnProperty('paddingTop')) {
+        this.paddingTop(data.paddingTop);
+    }
+    if(data.hasOwnProperty('paddingBottom')) {
+        this.paddingBottom(data.paddingBottom);
+    }
+
+
 
     if(data.content){
         var classObj = window[data.content.type];
@@ -205,7 +240,16 @@ PageElement.prototype.toJS = function() {
         content: contentData,
         includeInPageShuffle: this.includeInPageShuffle(),
         isActive:this.isActive(),
-        isVisible:this.isVisible()
+        isVisible:this.isVisible(),
+
+        marginLeft:this.marginLeft(),
+        marginRight:this.marginRight(),
+        marginTop:this.marginTop(),
+        marginBottom:this.marginBottom(),
+        paddingLeft:this.paddingLeft(),
+        paddingRight:this.paddingRight(),
+        paddingTop:this.paddingTop(),
+        paddingBottom:this.paddingBottom()
     };
 };
 

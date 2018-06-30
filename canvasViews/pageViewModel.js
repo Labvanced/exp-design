@@ -68,12 +68,15 @@ PageView.prototype.dispose = function() {
 
 };
 
+
+
 PageView.prototype.setDataModel = function(pageData) {
 
     this.pageData = pageData;
     this.pageDataObs(pageData);
 
 };
+
 
 PageView.prototype.resize = function(size) {
     if (size){
