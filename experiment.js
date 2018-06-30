@@ -89,7 +89,7 @@ Experiment.prototype.viewRecordings = function() {
 Experiment.prototype.stopPublishExp = function(cb) {
     var self = this;
 
-    if (this.publishing_data.recruitingEnabled()) {
+    if (this.exp_server_data().activeLicense) {
         if (this.publishing_data.recruitViaCrowdsourcing()) {
             console.log("cannot disable publishing because crowdsourcing is still enabled!");
             var tempDialog = $('<div><p>cannot disable publishing because crowdsourcing is still enabled!</li></ul></div>');
@@ -106,7 +106,7 @@ Experiment.prototype.stopPublishExp = function(cb) {
 
         var orderSubmitData = new OrderSubmitData();
         orderSubmitData.expId = this.exp_id();
-        orderSubmitData.useExpLicense = null;
+        orderSubmitData.useExpLicense = "unpublish";
 
         uc.socket.emit('submitOrder', orderSubmitData.toJS(), function (response) {
             if (response.success) {
