@@ -324,6 +324,21 @@ FrameView.prototype.updateStages = function() {
     }
 };
 
+FrameView.prototype.getSelectedElementObject = function() {
+    var found = false;
+    var i= 0;
+    var elem = null;
+    while(found==false && i<this.viewElements().length){
+        if(this.viewElements()[i].isSelected()){
+            elem  = this.viewElements()[i];
+            found= true;
+        }
+        i++;
+    }
+    return elem;
+
+};
+
 FrameView.prototype.setSelectedElement = function(elem) {
 
     if (!this.frameData) {

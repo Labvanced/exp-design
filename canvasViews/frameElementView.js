@@ -535,6 +535,20 @@ FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function() {
 
 };
 
+FrameElementView.prototype.resizeBoundingBox = function(){
+    if (this.divContentInside[0]){
+        var height =  $(this.divContentInside[0]).find(".innerObjectContent").height() * (1 / this.scale());
+        var width =  $(this.divContentInside[0]).find(".innerObjectContent").width() * (1 / this.scale());
+    }
+
+    else{
+        var width = this.divContentInside.width * (1 / this.scale());
+        var height = this.divContentInside.height * (1 / this.scale());
+    }
+
+    this.setWidthAndHeight(width, height);
+};
+
 /**
  * dispose ko component and remove dom div...
  */
