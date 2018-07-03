@@ -117,7 +117,8 @@ SortableElement.prototype.setPointers = function(entitiesArr) {
         this.setVariableBackRef();
     }
     else {
-        this.init();
+        // this is not possible because the parent of the FrameElement is not yet set in setPointers!!! therefore uncommented:
+        //this.init();
     }
 
     this.questionText().setPointers(entitiesArr);
