@@ -21,7 +21,27 @@ EyetrackerVideoStream.prototype.numVarNamesRequired = 0;
 
 
 EyetrackerVideoStream.prototype.init = function() {
+    this.enableAudioRecDialog();
+};
 
+EyetrackerVideoStream.prototype.enableAudioRecDialog = function() {
+    var self = this;
+    if (!(this.expData.studySettings.isWebcamEnabled())){
+        $('<div />').html('You have just added an webcam Eyetracking-Element, but webcam recordings are still disabled in the overall experiment settings. Please not that you need to have a webcam in order to test / conduct this experiment. Do you want to enable webcam recordings now in the experiment settings? ').dialog({
+            modal: true,
+            buttons: [
+                {text: "Enable Webacm",
+                    click: function() {
+                        self.expData.studySettings.isWebcamEnabled(true);
+                        $(this).dialog( "close" );
+                    }},
+                {text: "Keep Disabled",
+                    click: function() {
+                        $( this ).dialog( "close" );
+                    }}
+            ]
+        });
+    }
 };
 
 /**
