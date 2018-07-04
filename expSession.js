@@ -13,7 +13,7 @@ var ExpSession = function (expData) {
     this.name = ko.observable("session_1");
     this.type = "ExpSession";
     this.blockRandomization = ko.observable('fixed');
-    this.blocks = ko.observableArray([]).extend({sortById: null});
+    this.blocks = ko.observableArray([]);
 };
 
 ExpSession.prototype.addBlock = function(block) {
