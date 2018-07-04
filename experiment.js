@@ -236,7 +236,7 @@ Experiment.prototype.saveExpData = function(cb, force) {
             }
             this.changesInTransit = true;
             this.hasLocalChanges = false;
-            uc.socket.emit('updateExperiment', serializedExp, function(response){
+            uc.socket.emit('updateExperiment', {exp: serializedExp}, function(response){
                 if (response.success){
                     self.changesInTransit = false;
                     console.log("saved experiment success");
@@ -338,7 +338,7 @@ Experiment.prototype.saveMetaData = function(cb) {
         version: this.version(),
         status: this.status()
     };
-    uc.socket.emit('updateExperiment', saveData, function(response){
+    uc.socket.emit('updateExperiment', {exp: saveData}, function(response){
         if (response.success){
             console.log("saved experiment meta data to server.");
             if (cb) {
@@ -357,7 +357,7 @@ Experiment.prototype.savePublishingData = function(cb) {
             exp_id: this.exp_id(),
             publishing_data: this.publishing_data.toJS()
         };
-        uc.socket.emit('updateExperiment', saveData, function(response){
+        uc.socket.emit('updateExperiment', {exp: saveData}, function(response){
             if (response.success){
                 console.log("saved experiment publishing data to server.");
                 if (cb) {
@@ -377,7 +377,7 @@ Experiment.prototype.saveAnalysisData = function(cb) {
             exp_id: this.exp_id(),
             analysis_data: this.analysis_data().toJS()
         };
-        uc.socket.emit('updateExperiment', saveData, function(response){
+        uc.socket.emit('updateExperiment', {exp: saveData}, function(response){
             if (response.success){
                 console.log("saved experiment analysis data to server.");
                 if (cb) {
@@ -397,7 +397,7 @@ Experiment.prototype.savePrivateData = function(cb) {
             exp_id: this.exp_id(),
             private_data: this.private_data.toJS()
         };
-        uc.socket.emit('updateExperiment', saveData, function(response){
+        uc.socket.emit('updateExperiment', {exp: saveData}, function(response){
             if (response.success){
                 console.log("saved experiment private data to server.");
                 if (cb) {
