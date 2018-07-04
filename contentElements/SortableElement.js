@@ -100,25 +100,17 @@ SortableElement.prototype.getAllModifiers = function(modifiersArr) {
 };
 
 SortableElement.prototype.setPointers = function(entitiesArr) {
-//    var array = [];
     for (var i=0; i<this.elements().length; i++) {
         this.elements()[i].setPointers(entitiesArr);
-//        array[i] = ko.observable(this.elements()[i]);
     }
-//    this.elements(array);
 
     for (var i=0; i<this.elementIds().length; i++) {
         this.elementIdMap[this.elementIds()[i]] = this.elements()[i];
     }
 
-    var variable = entitiesArr.byId[this.variable()];
-    if (variable) {
-        this.variable(variable);
+    if (this.variable()) {
+        this.variable(entitiesArr.byId[this.variable()]);
         this.setVariableBackRef();
-    }
-    else {
-        // this is not possible because the parent of the FrameElement is not yet set in setPointers!!! therefore uncommented:
-        //this.init();
     }
 
     this.questionText().setPointers(entitiesArr);
@@ -210,6 +202,11 @@ SortableElement.prototype.fromJS = function(data) {
  */
 SortableElement.prototype.toJS = function() {
     var self = this;
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
+
     return {
         type: this.type,
         questionText: this.questionText().toJS(),
@@ -218,7 +215,7 @@ SortableElement.prototype.toJS = function() {
         }),
         elementIds: this.elementIds(),
         enableTitle:this.enableTitle(),
-        variable:  this.variable().id(),
+        variable:  variableId,
         activeSorting:this.activeSorting()
     };
 };
