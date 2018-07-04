@@ -32,6 +32,7 @@ var StudySettings = function (expData) {
 
     // special device requirements:
     this.isAudioRecEnabled = ko.observable(false);
+    this.isWebcamEnabled = ko.observable(false);
     this.multiUserOnLeaveAction = ko.observable("Finish Study With Error");
 
     // number entered before checking the validity (min/max). gets updated after check.
@@ -207,6 +208,10 @@ StudySettings.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("multiUserOnLeaveAction")){
         this.multiUserOnLeaveAction(data.multiUserOnLeaveAction);
     }
+    if (data.hasOwnProperty("isWebcamEnabled")){
+        this.isWebcamEnabled(data.isWebcamEnabled);
+    }
+
 
 
 
@@ -239,7 +244,8 @@ StudySettings.prototype.toJS = function() {
         minHeight:this.minHeight(),
         isAudioRecEnabled: this.isAudioRecEnabled(),
         participantConsent:this.participantConsent(),
-        multiUserOnLeaveAction:this.multiUserOnLeaveAction()
+        multiUserOnLeaveAction:this.multiUserOnLeaveAction(),
+        isWebcamEnabled:this.isWebcamEnabled()
     };
     return data;
 };

@@ -65,6 +65,12 @@ var PublishingData = function(experiment) {
     this.publicationDate =  ko.observable(null);
     this.templatePublicationDate =  ko.observable(null);
 
+    //
+    this.savedExternally = ko.observable(null);
+
+
+
+
     this.displayBackToLib = ko.observable(true);
 
     this.recruitingEnabled= ko.computed(function () {
@@ -323,12 +329,24 @@ PublishingData.prototype.fromJS = function(data) {
         this.customParticipationRequirement(data.customParticipationRequirement);
     }
 
+    if (data.hasOwnProperty('savedExternally')) {
+        var obj = {
+            userName: ko.observable(data.savedExternally.userName),
+            isJointExp:ko.observable(data.savedExternally.isJointExp),
+            numPartOfJointExp:ko.observable(data.savedExternally.numPartOfJointExp),
+            countries:ko.observable(data.savedExternally.countries),
+            languages:ko.observable(data.savedExternally.languages),
+            genders:ko.observable(data.savedExternally.genders),
+            ages:ko.observable(data.savedExternally.ages),
+            translatedLanguages:ko.observable(data.savedExternally.translatedLanguages),
+            translationsEnabled:ko.observable(data.savedExternally.translationsEnabled)
+        };
+        this.savedExternally(obj);
+    }
 
 
 
-
-
-
+    // After publication
     // After publication
     this.individualizedLinks(data.individualizedLinks);
     this.ratingValues(data.ratingValues);
@@ -361,6 +379,88 @@ PublishingData.prototype.toJS = function() {
     for (var i = 0; i<this.externalLinks().length; i++){
         externalLinks.push(this.externalLinks()[i]());
     }
+
+
+    // for external saving
+    var groups = this.experiment.exp_data.availableGroups();
+
+
+    var genders =[];
+    groups.forEach(function (group) {
+        if (group.enabledGender()){
+            if (genders.indexOf(group.genderRequirement())==-1){
+                genders.push(group.genderRequirement());
+            }
+        }
+    });
+    if (genders.length==0 || (genders.indexOf("male")>-1 && genders.indexOf("female")>-1)){
+        genders = ["All Genders"];
+    }
+
+    var countries =[];
+    groups.forEach(function (group) {
+        var subCoun = group.countryRequirement();
+        subCoun.forEach(function (country) {
+            if (group.enabledCountry()){
+                if (countries.indexOf(country)==-1){
+                    countries.push(country);
+                }
+            }
+
+        });
+    });
+    if (countries.length==0){
+        countries.push("All Locations");
+    }
+
+
+    var languages =[];
+    groups.forEach(function (group) {
+        var subCoun = group.languageRequirement();
+        subCoun.forEach(function (country) {
+            if (group.enabledLanguage()){
+                if (languages.indexOf(country)==-1){
+                    languages.push(country);
+                }
+            }
+
+        });
+    });
+    if (languages.length==0){
+        languages.push("All Languages");
+    }
+
+
+    var ages = "";
+    var ageFinalMin = null;
+    var ageFinalMax = null;
+    groups.forEach(function (group) {
+        if (group.enabledAge()){
+            var ageMin = parseInt(group.ageRequirement()[0]);
+            var ageMax =  parseInt(group.ageRequirement()[1]);
+            if(ageFinalMin ==null || ageFinalMin>ageMin){
+                ageFinalMin =ageMin;
+            }
+            if(ageFinalMax ==null || ageFinalMax<ageMax){
+                ageFinalMax =ageMax;
+            }
+        }
+    });
+    if (ageFinalMin== null && ageFinalMax==null) {
+        ages = "All Ages";
+    }
+    else if (ageFinalMax==120){
+        ages =  ageFinalMin+" or older";
+    }
+    else if (ageFinalMin==0){
+        ages = ageFinalMax+" or younger";
+    }
+    else if (ageFinalMax!= null  && ageFinalMin!=null){
+        ages = ageFinalMin+"-"+ageFinalMax;
+    }
+
+
+    var self = this;
 
     return {
 
@@ -410,8 +510,18 @@ PublishingData.prototype.toJS = function() {
         templatePublicationDate: this.templatePublicationDate(),
 
         displayBackToLib: this.displayBackToLib(),
-        customParticipationRequirement:this.customParticipationRequirement()
-
+        customParticipationRequirement:this.customParticipationRequirement(),
+        savedExternally:{
+            userName:uc.userdata.username(),
+            isJointExp:self.experiment.exp_data.isJointExp(),
+            countries:countries,
+            ages:ages,
+            languages:languages,
+            genders:genders,
+            numPartOfJointExp:self.experiment.exp_data.numPartOfJointExp(),
+            translatedLanguages:self.experiment.exp_data.translatedLanguages(),
+            translationsEnabled:self.experiment.exp_data.translationsEnabled()
+        }
 
     };
 };
