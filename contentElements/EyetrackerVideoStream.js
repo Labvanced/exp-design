@@ -30,7 +30,7 @@ EyetrackerVideoStream.prototype.enableAudioRecDialog = function() {
         $('<div />').html('You have just added an webcam Eyetracking-Element, but webcam recordings are still disabled in the overall experiment settings. Please not that you need to have a webcam in order to test / conduct this experiment. Do you want to enable webcam recordings now in the experiment settings? ').dialog({
             modal: true,
             buttons: [
-                {text: "Enable Webacm",
+                {text: "Enable Webcam",
                     click: function() {
                         self.expData.studySettings.isWebcamEnabled(true);
                         $(this).dialog( "close" );
