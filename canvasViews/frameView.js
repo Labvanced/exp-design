@@ -178,7 +178,7 @@ FrameView.prototype.recalcScale = function() {
                     this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
                     break;
                 case "visualDegree":
-                    var distToScreenInMM = 500;
+                    var distToScreenInMM = this.parent.player.distanceTScreenInCM()*10; //500;
                     var designUnitsPerDegree = task.visualDegreeToUnit();
                     var mmPerDegree = 2 * Math.PI * distToScreenInMM / 360; // at the center of the screen in mm/deg
                     var pxPerDeg = this.parent.player.PixelDensityPerMM * mmPerDegree;

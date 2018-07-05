@@ -233,11 +233,11 @@ ExpData.prototype.staticTranslations = {
         startingExp: "Starting Experiment...",
         startingIn: "Starting in ",
         calibrateIntro: "You have the following two options to calibrate your screen size:",
-        calibrateMethod1: "1) Specify your screen size manually if you know the size of your monitor.",
+        calibrateMethod1: "2a) Specify your screen size manually if you know the size of your monitor.",
         calibrateScreenSize: "Screen size (diagonal):",
         calibrateInches: "inches",
         calibrateMsgOr: "OR",
-        calibrateMethod2: "2) Use a standardized ID card (85.60 × 53.98 mm) or any other card of the same size against the screen and try to match the size of the displayed card. " +
+        calibrateMethod2: "2b) Use a standardized ID card (85.60 × 53.98 mm) or any other card of the same size against the screen and try to match the size of the displayed card. " +
         "You can change the size of the image by dragging the arrow. The calibration is correct if the image is no longer visible and the image exactly matches the size of the card.",
         endExpMsg: "Thank you! The experiment session is finished.",
         goToLib: "Go to experiment library",
@@ -264,7 +264,9 @@ ExpData.prototype.staticTranslations = {
         customRequirement: "Hereby I confirm that I fulfill the following participation requirement(s):",
         askEmailConsent1: "Why do we ask for your Email: ",
         askEmailConsent2: "This is a longitudinal study, consisting of several participation sessions. Your email will only be recoded in order to invite/remind you to take part in the next session. Your Email will not be stored together with other kinds of data, and is accessible only internally to the Labvanced platform. We will not give away " +
-        "your email or use it for different purposes."
+        "your email or use it for different purposes.",
+        calibDistance1: "Your distance to the screen (in cm) is: ",
+        calibDistance2: "centimeter"
 
     },
     German: {
@@ -305,11 +307,11 @@ ExpData.prototype.staticTranslations = {
         startingExp: "Experiment wird gestartet...",
         startingIn: "Start in ",
         calibrateIntro: "Sie haben die folgenden zwei Optionen, um Ihre Bildschirmgröße zu kalibrieren:",
-        calibrateMethod1: "1) Geben Sie Ihre Bildschirmgröße manuell an, wenn Sie die Größe Ihres Monitors kennen.",
+        calibrateMethod1: "2a) Geben Sie Ihre Bildschirmgröße manuell an, wenn Sie die Größe Ihres Monitors kennen.",
         calibrateScreenSize: "Bildschirmgröße (Diagonal):",
         calibrateInches: "Inch",
         calibrateMsgOr: "ODER",
-        calibrateMethod2: "2) Halten Sie einen standardisierten Ausweis (85.60 × 53.98 mm) oder eine andere Karte der gleichen Größe gegen den Bildschirm und versuchen Sie, die Größe der angezeigten Karte anzupassen. " +
+        calibrateMethod2: "2b) Halten Sie einen standardisierten Ausweis (85.60 × 53.98 mm) oder eine andere Karte der gleichen Größe gegen den Bildschirm und versuchen Sie, die Größe der angezeigten Karte anzupassen. " +
         "Sie können die Größe des Bildes durch Ziehen des Pfeils ändern. Die Kalibrierung ist korrekt, wenn das Bild nicht mehr sichtbar ist und das Bild genau der Größe der Karte entspricht.",
         endExpMsg: "Vielen Dank! Die Experimentssitzung ist beendet.",
         goToLib: "Gehe zur Experiment-Bibliothek",
@@ -335,8 +337,9 @@ ExpData.prototype.staticTranslations = {
         inviteFriendMultiUser4: "Einladen",
         customRequirement: "Ich bestätige hiermit, dass ich folgende Teilnahmebedingungen vollständig erfülle:",
         askEmailConsent1: "Warum fragen wir nach Ihrer E-Mail: ",
-        askEmailConsent2: "Dies ist eine Längsschnittstudie, die aus mehreren Teilnahme-Sitzungen besteht. Ihre E-Mail wird nur neu erfasst, um Sie zur Teilnahme an der nächsten Sitzung einzuladen. Ihre E-Mail wird nicht zusammen mit anderen Arten von Daten gespeichert und ist nur intern für die Labvanced-Plattform zugänglich. Wir geben Ihre E-Mail nicht weiter oder verwenden sie für andere Zwecke."
-
+        askEmailConsent2: "Dies ist eine Längsschnittstudie, die aus mehreren Teilnahme-Sitzungen besteht. Ihre E-Mail wird nur neu erfasst, um Sie zur Teilnahme an der nächsten Sitzung einzuladen. Ihre E-Mail wird nicht zusammen mit anderen Arten von Daten gespeichert und ist nur intern für die Labvanced-Plattform zugänglich. Wir geben Ihre E-Mail nicht weiter oder verwenden sie für andere Zwecke.",
+        calibDistance1: "Ihre Distanz zum Bildschirm beträgt:",
+        calibDistance2: "Centimeter"
     }
 
 };
