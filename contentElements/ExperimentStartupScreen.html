@@ -69,7 +69,7 @@
 
                                         <div  class="ssp-question" data-bind="visible:requiredAge() !='hidden'">
                                             <label>
-                                                <span class="survey-left-label" data-bind="text: expData.staticStrings().yourAge"><span data-bind="visible: requiredAge() =='required'"> (*)</span>:</span>
+                                                <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourAge"></span><span data-bind="visible: requiredAge() =='required'"> (*)</span>:</span>
                                                 <input style="min-width: 230px" type="number" data-bind="value: selectedAge">
                                                 <span data-bind="text: expData.staticStrings().years"></span>
                                             </label>
@@ -105,6 +105,19 @@
                                                 <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourEmail"></span><span data-bind="visible: requiredEmail() =='required'"> (*)</span>:</span>
                                                 <input class="ssp-input-long" type="email" data-bind="value: selectedEmail">
                                             </label>
+                                            <div style="margin-left: 90px"><span style="font-weight: bold" data-bind="text: expData.staticStrings().askEmailConsent1"></span><span data-bind="text: expData.staticStrings().askEmailConsent2"></span></div>
+                                        </div>
+
+                                        <div  class="ssp-question" data-bind="visible:requiredCustom() !=''">
+                                            <label style="cursor: pointer">
+                                                <div style="margin-left:80px; cursor: pointer">
+                                                    <input type="checkbox" data-bind="checked: acceptedCustomReq" style="cursor: pointer">
+                                                    <span style="cursor: pointer" data-bind="text: expData.staticStrings().customRequirement"></span>
+                                                </div>
+                                            </label>
+                                                <div style="margin-left:80px; font-weight: normal">
+                                                    <p data-bind="text:requiredCustom()"></p>
+                                                </div>
                                         </div>
 
 
@@ -114,7 +127,17 @@
                                         </div>
 
                                         <div class="text-center mg-20 mg-t-50">
+
+                                            <!-- ko if: (requiredCustom()=="") -->
                                             <button class="btn-regular btn-lab-green  " data-bind="click: checkSurveyData, text: expData.staticStrings().submit"></button>
+                                            <!-- /ko -->
+
+                                            <!-- ko ifnot: (requiredCustom()=="") -->
+                                                <!-- ko if: (acceptedCustomReq()) -->
+                                                <button class="btn-regular btn-lab-green  " data-bind="click: checkSurveyData, text: expData.staticStrings().submit"></button>
+                                                <!-- /ko -->
+                                            <!-- /ko -->
+
                                         </div>
 
                                     </form>

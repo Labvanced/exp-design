@@ -18,6 +18,8 @@ var ExperimentStartupScreen = function(experiment) {
     this.selectedEmail = ko.observable(null);
     this.selectedCSId= ko.observable(null);
 
+    this.acceptedCustomReq= ko.observable(false);
+
     this.agreeToTermsAndConditions = ko.observable(false);
 
     this.requiredGender = this.expData.parentExperiment.publishing_data.surveyItemGender;
@@ -25,6 +27,8 @@ var ExperimentStartupScreen = function(experiment) {
     this.requiredCountry = this.expData.parentExperiment.publishing_data.surveyItemCountry;
     this.requiredLanguage = this.expData.parentExperiment.publishing_data.surveyItemLanguage;
     this.requiredEmail = this.expData.parentExperiment.publishing_data.surveyItemEmail;
+
+    this.requiredCustom = this.expData.parentExperiment.publishing_data.customParticipationRequirement;
 
     this.displayBackToLib = this.expData.parentExperiment.publishing_data.displayBackToLib;
 
@@ -84,6 +88,10 @@ var ExperimentStartupScreen = function(experiment) {
             'width': progressRounded + "%"
         });
         return progressRounded;
+    });
+
+    this.acceptedCustomReq.subscribe(function(newLang) {
+       var l = 1;
     });
 
     this.selectedStudyLanguage.subscribe(function(newLang) {
