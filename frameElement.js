@@ -251,8 +251,8 @@ FrameElement.prototype.fromJS = function(data) {
             }
         }
         var content = new classObj(this.expData);
-        content.fromJS(data.content);
         content.parent = this;
+        content.fromJS(data.content);
         this.content(content);
     }
     return this;

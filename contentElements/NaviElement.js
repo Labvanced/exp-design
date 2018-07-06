@@ -9,15 +9,7 @@ var NaviElement = function(expData) {
     this.bgColorDefault = ko.observable('#99cc66');
     this.bgColorHover = ko.observable('#99de50');
 
-    var button1 = new ButtonEntry(this);
-    button1.init();
-    button1.buttonText().rawText('<p style="text-align: center"><span style="font-size:16px;">Back</span></p>');
-
-    var button2 = new ButtonEntry(this);
-    button2.init();
-    button2.buttonText().rawText('<p style="text-align: center"><span style="font-size:16px;">Next</span></p>');
-
-    this.buttonEntries = ko.observableArray([button1, button2]);
+    this.buttonEntries = ko.observableArray([]);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -41,6 +33,14 @@ NaviElement.prototype.initHeight = 50;
 NaviElement.prototype.numVarNamesRequired = 0;
 
 NaviElement.prototype.init = function() {
+
+    var button1 = new ButtonEntry(this);
+    var button2 = new ButtonEntry(this);
+     button1.init();
+     button1.buttonText().rawText('<p style="text-align: center"><span style="font-size:16px;">Back</span></p>');
+     button2.init();
+     button2.buttonText().rawText('<p style="text-align: center"><span style="font-size:16px;">Next</span></p>');
+    this.buttonEntries([button1,button2]);
 
     var event = new ExpEvent(this.parent.parent);
     event.trigger(new TriggerButtonClick(event));
@@ -69,6 +69,15 @@ NaviElement.prototype.addButton = function() {
     button.init();
 
     this.buttonEntries.push(button);
+};
+
+
+NaviElement.prototype.getTextRefs = function(textArr, label){
+    jQuery.each( this.buttonEntries(), function( index, elem ) {
+        var ind = index + 1;
+        elem.getTextRefs(textArr, label + '.Entry' + ind);
+    } );
+    return textArr;
 };
 
 
@@ -208,7 +217,8 @@ NaviElement.prototype.toJS = function() {
 };
 
 NaviElement.prototype.fromJS = function(data) {
-
+    this.type=data.type;
+    this.id(data.id);
     var buttonEntries = [];
     if (data.hasOwnProperty('buttonText1')) {
         // converting from old format:
