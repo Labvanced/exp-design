@@ -278,9 +278,7 @@ function createEditableTextComponents() {
                             }
                             return rawText;
                         }
-                        else{
-                            var test= 1;
-                        }
+
                     }
 
 
@@ -437,10 +435,6 @@ function createEditableTextComponents() {
                         }
                         return rawText.replace(regex, function(match, id){return replaceId(match, id);});
                     }
-                    else{
-                        var test= 1;
-                    }
-
                 }
             }
             else{
