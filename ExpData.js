@@ -1076,7 +1076,10 @@ ExpData.prototype.toJS = function() {
             if (entry==null || entry=="removedEntry") {
                 return "removedEntry";
             }
-            else {
+            else if (typeof entry.namedEntity === 'undefined' ){
+                return "removedEntry";
+            }
+            else{
                 return entry.toJS();
             }
         }),
