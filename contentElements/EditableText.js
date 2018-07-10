@@ -247,7 +247,7 @@ EditableTextElement.prototype.dispose = function () {
     if (typeof uc !== 'undefined') {
         if(typeof this.rawText() === 'number'){
             if (this.expData.translations()[this.rawText()]){
-                this.expData.translations.splice(this.rawText(),1);
+                this.expData.translations()[this.rawText()] = "removedEntry";
             }
             this.rawText('');
         }
