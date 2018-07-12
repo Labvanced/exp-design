@@ -372,19 +372,21 @@ ExpData.prototype.markAllTextsTranslatable = function() {
 };
 
 ExpData.prototype.disableTranslations = function() {
-    $.each(this.availableTasks(), function(index, task) {
-        $.each(task.subSequence().elements(), function(index, frame) {
-            $.each(frame.elements(), function(index, elem) {
-                var allTextRefs = elem.getTextRefs([], '');
-                $.each(allTextRefs, function(index, textRef) {
-                    textRef[2].disableTranslatable();
+    if (this.translationsEnabled()) {
+        $.each(this.availableTasks(), function (index, task) {
+            $.each(task.subSequence().elements(), function (index, frame) {
+                $.each(frame.elements(), function (index, elem) {
+                    var allTextRefs = elem.getTextRefs([], '');
+                    $.each(allTextRefs, function (index, textRef) {
+                        textRef[2].disableTranslatable();
+                    });
                 });
             });
         });
-    });
 
-    this.translatedLanguages([this.translatedLanguages()[0]]);
-    this.translations([]);
+        this.translatedLanguages([this.translatedLanguages()[0]]);
+        this.translations([]);
+    }
 };
 
 ExpData.prototype.initVars = function() {
