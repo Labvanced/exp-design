@@ -79,8 +79,10 @@ EditableTextElement.prototype.unmarkTextObsTranslatable = function(textObs) {
     if(typeof text === 'number'){
         var orig_real_text = "";
         if (this.expData.translations()[text]){
-            orig_real_text = this.expData.translations()[text].languages()[0]();
-            this.expData.translations()[text] = "removedEntry";
+            if (this.expData.translations()[text]){
+                orig_real_text = this.expData.translations()[text].languages()[0]();
+                this.expData.translations()[text] = "removedEntry";
+            }
         }
         this.rawText(orig_real_text);
     }
