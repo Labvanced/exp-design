@@ -371,7 +371,7 @@ ExpData.prototype.markAllTextsTranslatable = function() {
     });
 };
 
-ExpData.prototype.markAllTextsNotTranslatable = function() {
+ExpData.prototype.disableTranslations = function() {
     $.each(this.availableTasks(), function(index, task) {
         $.each(task.subSequence().elements(), function(index, frame) {
             $.each(frame.elements(), function(index, elem) {
@@ -382,6 +382,9 @@ ExpData.prototype.markAllTextsNotTranslatable = function() {
             });
         });
     });
+
+    this.translatedLanguages([this.translatedLanguages()[0]]);
+    this.translations([]);
 };
 
 ExpData.prototype.initVars = function() {
