@@ -74,6 +74,18 @@ EditableTextElement.prototype.markTextObsTranslatable = function(textObs) {
     }
 };
 
+EditableTextElement.prototype.unmarkTextObsTranslatable = function(textObs) {
+    var text = textObs();
+    if(typeof text === 'number'){
+        var orig_real_text = "";
+        if (this.expData.translations()[text]){
+            orig_real_text = this.expData.translations()[text].languages()[0]();
+            this.expData.translations()[text] = "removedEntry";
+        }
+        this.rawText(orig_real_text);
+    }
+};
+
 EditableTextElement.prototype.markTranslatable = function () {
 
     this.markTextObsTranslatable(this.rawText);
@@ -83,6 +95,20 @@ EditableTextElement.prototype.markTranslatable = function () {
         for(var k=0; k<flattend.length; k++){
             if(flattend[k].modifiedProp.rawText) {
                 this.markTextObsTranslatable(flattend[k].modifiedProp.rawText);
+            }
+        }
+    }
+};
+
+EditableTextElement.prototype.disableTranslatable = function () {
+
+    this.unmarkTextObsTranslatable(this.rawText);
+
+    if(this.modifier().ndimModifierTrialTypes.length > 0){
+        var flattend = this.modifier().getFlattendArray();
+        for(var k=0; k<flattend.length; k++){
+            if(flattend[k].modifiedProp.rawText) {
+                this.unmarkTextObsTranslatable(flattend[k].modifiedProp.rawText);
             }
         }
     }

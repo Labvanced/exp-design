@@ -371,6 +371,19 @@ ExpData.prototype.markAllTextsTranslatable = function() {
     });
 };
 
+ExpData.prototype.markAllTextsNotTranslatable = function() {
+    $.each(this.availableTasks(), function(index, task) {
+        $.each(task.subSequence().elements(), function(index, frame) {
+            $.each(frame.elements(), function(index, elem) {
+                var allTextRefs = elem.getTextRefs([], '');
+                $.each(allTextRefs, function(index, textRef) {
+                    textRef[2].disableTranslatable();
+                });
+            });
+        });
+    });
+};
+
 ExpData.prototype.initVars = function() {
 
 
