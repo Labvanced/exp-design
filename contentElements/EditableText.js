@@ -79,7 +79,7 @@ EditableTextElement.prototype.unmarkTextObsTranslatable = function(textObs) {
     if(typeof text === 'number'){
         var orig_real_text = "";
         if (this.expData.translations()[text]){
-            if (this.expData.translations()[text]){
+            if (this.expData.translations()[text].hasOwnProperty("languages")){
                 orig_real_text = this.expData.translations()[text].languages()[0]();
                 this.expData.translations()[text] = "removedEntry";
             }
