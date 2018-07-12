@@ -27,6 +27,7 @@ var Factor = function(expData, factorGroup) {
     // not serialized:
     this.nrLevels =  ko.observable(1);
     this.editName = ko.observable(false);
+    this.markedForDeletion = false;
 
 };
 
@@ -198,10 +199,7 @@ Factor.prototype.setPointers = function(entitiesArr) {
         this.randomizationConverter();
     }
     else{ // this should not happen, variable of factor no longer exits!
-        if (this.factorGroup) {
-            this.factorGroup.removeFactor(this);
-            this.expData.notifyChanged();
-        }
+        this.markedForDeletion = true;
     }
 
 };
@@ -210,7 +208,14 @@ Factor.prototype.setPointers = function(entitiesArr) {
  * this function is automatically called after all setPointers have been executed.
  */
 Factor.prototype.onFinishedLoading = function() {
-    this.setVariableBackRef();
+    if (this.markedForDeletion) {
+        if (this.factorGroup) {
+            this.factorGroup.removeFactor(this);
+        }
+    }
+    else {
+        this.setVariableBackRef();
+    }
 };
 
 /**
