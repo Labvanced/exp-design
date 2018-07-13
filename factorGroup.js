@@ -521,6 +521,10 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
         elem.setPointers(entitiesArr);
     } );
 
+};
+
+FactorGroup.prototype.onFinishedLoading = function() {
+
     var factors = this.factors();
     var levels = [];
     for (var t = 0; t < factors.length; t++) {
