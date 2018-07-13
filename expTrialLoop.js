@@ -1459,6 +1459,12 @@ ExpTrialLoop.prototype.setPointers = function(entitiesArr) {
 
 };
 
+ExpTrialLoop.prototype.onFinishedLoading = function() {
+    jQuery.each( this.factorGroups(), function( index, elem ) {
+        elem.onFinishedLoading();
+    } );
+};
+
 /**
  * Recursively adds all child objects that have a unique id to the global list of entities.
  *
