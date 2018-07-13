@@ -521,9 +521,6 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
         elem.setPointers(entitiesArr);
     } );
 
-};
-
-FactorGroup.prototype.onFinishedLoading = function() {
 
     var factors = this.factors();
     var levels = [];
@@ -559,6 +556,11 @@ FactorGroup.prototype.onFinishedLoading = function() {
 
     deepDive(condMultiDim, factors, levels, 0);
     this.conditions(condMultiDim);
+
+};
+
+FactorGroup.prototype.onFinishedLoading = function() {
+
 };
 
 /**
