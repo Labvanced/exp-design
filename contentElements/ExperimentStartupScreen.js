@@ -489,8 +489,8 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
     var survey_data = {
         selectedGender: this.selectedGender(),
         selectedAge: this.selectedAge(),
-        selectedCountry: this.selectedCountry() ? this.selectedCountry().name : null,
-        selectedLanguage: this.selectedLanguage() ? this.selectedLanguage().name : null,
+        selectedCountry: this.selectedCountry() ? this.selectedCountry().code : null,
+        selectedLanguage: this.selectedLanguage() ? this.selectedLanguage().code : null,
         selectedEmail: this.selectedEmail()
     };
     playerAjaxPost('/startFirstPlayerSession',
