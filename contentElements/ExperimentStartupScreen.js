@@ -28,6 +28,10 @@ var ExperimentStartupScreen = function(experiment) {
     this.requiredLanguage = this.expData.parentExperiment.publishing_data.surveyItemLanguage;
     this.requiredEmail = this.expData.parentExperiment.publishing_data.surveyItemEmail;
 
+
+    this.requiredGroup = this.expData.studySettings.assignSubjGroup;
+    this.requiredSession = this.expData.studySettings.assignSession;
+
     this.requiredCustom = this.expData.parentExperiment.publishing_data.customParticipationRequirement;
 
     this.displayBackToLib = this.expData.parentExperiment.publishing_data.displayBackToLib;
@@ -40,6 +44,10 @@ var ExperimentStartupScreen = function(experiment) {
     this.timeToNextSession = ko.observable("");
     this.participantName = ko.observable("");
     this.friendsEmail = ko.observable("");
+
+
+    this.initialSubjectDialog = ko.observable(new InitialSubjectDialog(this.expData));
+    this.initialSubjectDialog().selectedSubjectGroup(this.expData.availableGroups()[0]);
 
     this.imgSource = ko.computed( function() {
         return "/files/" + experiment.publishing_data.img_file_id() + "/" + experiment.publishing_data.img_file_orig_name();
@@ -449,7 +457,7 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
         return;
     }
 
-    if (this.requiredGender() =='hidden' && this.requiredAge() =='hidden' && this.requiredCountry() =='hidden' && this.requiredLanguage() =='hidden' && this.requiredEmail() =='hidden' && !player.isCrowdsourcingSession()){
+    if (this.requiredGender() =='hidden' && this.requiredAge() =='hidden' && this.requiredCountry() =='hidden' && this.requiredLanguage() =='hidden' && this.requiredEmail() =='hidden' && !player.isCrowdsourcingSession()&& this.requiredGroup() =='automatic' && this.requiredSession() =='automatic'){
         this.sendDataAndContinue();
     }
     else{
@@ -463,6 +471,11 @@ ExperimentStartupScreen.prototype.checkSurveyData = function () {
     var self = this;
     this.surveySubmitted(true);
     if (this.errorString() == "") {
+       if (this.requiredGroup() =='byParticipant' || this.requiredSession() =='byParticipant'){
+           var groupNr = this.initialSubjectDialog().selectedGroupNr();
+           var sessionNr = this.initialSubjectDialog().selectedGroupNr();
+           player.setSubjectGroupNr(groupNr, sessionNr);
+       }
       this.sendDataAndContinue();
     }
 };
@@ -502,7 +515,10 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
                 return;
             }
             player.selectedEmail = self.selectedEmail();
-            player.setSubjectGroupNr(data.groupNr, data.sessionNr);
+
+            if (!(self.requiredGroup() =='byParticipant' || self.requiredSession() =='byParticipant')){
+                player.setSubjectGroupNr(data.groupNr, data.sessionNr);
+            }
             player.preloadAllContent();
             self.jumpToJointExpLobby();
         }

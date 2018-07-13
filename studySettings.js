@@ -44,6 +44,9 @@ var StudySettings = function (expData) {
 
     this.participantConsent = ko.observable(true);
 
+    this.assignSubjGroup = ko.observable("automatic");
+    this.assignSession = ko.observable("automatic");
+
     var self = this;
     this.deviceRunType = ko.computed(function () {
         var someMobileAllowed = false;
@@ -211,6 +214,13 @@ StudySettings.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("isWebcamEnabled")){
         this.isWebcamEnabled(data.isWebcamEnabled);
     }
+    if (data.hasOwnProperty("assignSubjGroup")){
+        this.assignSubjGroup(data.assignSubjGroup);
+    }
+
+    if (data.hasOwnProperty("assignSession")){
+        this.assignSession(data.assignSession);
+    }
 
 
 
@@ -245,8 +255,9 @@ StudySettings.prototype.toJS = function() {
         isAudioRecEnabled: this.isAudioRecEnabled(),
         participantConsent:this.participantConsent(),
         multiUserOnLeaveAction:this.multiUserOnLeaveAction(),
-        isWebcamEnabled:this.isWebcamEnabled()
+        isWebcamEnabled:this.isWebcamEnabled(),
+        assignSubjGroup:this.assignSubjGroup(),
+        assignSession:this.assignSession()
     };
     return data;
 };
-

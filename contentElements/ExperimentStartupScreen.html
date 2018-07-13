@@ -54,6 +54,36 @@
                                 <div class="">
                                     <form data-bind="submit: checkSurveyData">
 
+
+                                        <div  class="ssp-question" data-bind="visible:requiredGroup()=='byParticipant'">
+                                            <label>
+                                                <span class="survey-left-label">Select Group(*):</span>
+                                                <span>
+                                                <select data-bind="
+                                                    options: initialSubjectDialog().expData().availableGroups,
+                                                    optionsText: 'name',
+                                                    value: initialSubjectDialog().selectedSubjectGroup">
+                                                </select>
+                                            </span>
+                                            </label>
+                                        </div>
+
+
+                                        <div  class="ssp-question" data-bind="visible:requiredSession()=='byParticipant'">
+                                            <label>
+                                                <span class="survey-left-label">Select Session(*):</span>
+                                                <select data-bind="
+                                                    options: initialSubjectDialog().sessionsInGroup,
+                                                    optionsText: 'name',
+                                                    optionsValue: 'nr',
+                                                    value: initialSubjectDialog().selectedSessionNr">
+                                                </select>
+                                            </label>
+                                        </div>
+
+
+
+
                                         <div  class="ssp-question" data-bind="visible:player.isCrowdsourcingSession">
                                             <label>
                                                 <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourCrowdsourcingID"></span></span>
