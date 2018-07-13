@@ -527,11 +527,6 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
         levels.push(null);
     }
 
-
-};
-
-FactorGroup.prototype.onFinishedLoading = function() {
-
     var condMultiDim = this.conditions();
 
     function deepDive(condMultiDim, factors, levels, depth){
