@@ -522,6 +522,12 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
     } );
 
 
+};
+
+FactorGroup.prototype.onFinishedLoading = function() {
+
+    var self = this;
+
     var factors = this.factors();
     var levels = [];
     for (var t = 0; t < factors.length; t++) {
@@ -537,7 +543,7 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
             for (t = 0; t < condMultiDim.length; t++) {
                 var globalVar = factors[depth].globalVar();
                 if (!(globalVar instanceof GlobalVar)){
-                    globalVar = entitiesArr.byId[globalVar];
+                    globalVar = self.expData.entities.byId[globalVar];
                 }
                 levels[depth] = globalVar.levels()[t];
                 // HACK to fix experiments  with diverging global var level structure vs. condition structure.
@@ -556,11 +562,6 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
 
     deepDive(condMultiDim, factors, levels, 0);
     this.conditions(condMultiDim);
-
-};
-
-FactorGroup.prototype.onFinishedLoading = function() {
-
 };
 
 /**
