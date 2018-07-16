@@ -419,6 +419,9 @@ ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupId
             }
             else if(this.determineNrTrials()=="setFixedNum"){
                 var nrExistingTrials = this.fixedNumTrialsPerCondGroup();
+                if (nrExistingTrials > obj.fixedFactorConds[condGroup].minNrOfTrials) {
+                    nrExistingTrials = obj.fixedFactorConds[condGroup].minNrOfTrials;
+                }
             }
         }
 
@@ -554,6 +557,9 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
         }
         else if (this.determineNrTrials()=="setFixedNum"){
             var NrTrialCount = this.fixedNumTrialsPerCondGroup();
+            if (NrTrialCount > fixedFactorConds[i].minNrOfTrials) {
+                NrTrialCount = fixedFactorConds[i].minNrOfTrials;
+            }
         }
         for (var k=0; k < NrTrialCount; k++) {
             var temp =  allConds[ffConds[i][0]].slice(0);
