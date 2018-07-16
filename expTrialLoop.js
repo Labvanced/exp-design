@@ -417,7 +417,9 @@ ExpTrialLoop.prototype.drawTrialsFromConditions = function(conditions,facGroupId
             else if(this.determineNrTrials()=="minimumWithoutZero"){
                 var nrExistingTrials =  obj.fixedFactorConds[condGroup].minNrOfTrialsWithoutZero;
             }
-
+            else if(this.determineNrTrials()=="setFixedNum"){
+                var nrExistingTrials = this.fixedNumTrialsPerCondGroup();
+            }
         }
 
         var options = [];
@@ -549,6 +551,9 @@ ExpTrialLoop.prototype.getFactorLevels= function(factorGroup) {
         }
         else if (this.determineNrTrials()=="minimumWithoutZero"){
             var NrTrialCount = fixedFactorConds[i].minNrOfTrialsWithoutZero;
+        }
+        else if (this.determineNrTrials()=="setFixedNum"){
+            var NrTrialCount = this.fixedNumTrialsPerCondGroup();
         }
         for (var k=0; k < NrTrialCount; k++) {
             var temp =  allConds[ffConds[i][0]].slice(0);
@@ -1597,6 +1602,9 @@ ExpTrialLoop.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('trialSelectionBalance')){
         this.trialSelectionBalance(data.trialSelectionBalance);
     }
+    if (data.hasOwnProperty('fixedNumTrialsPerCondGroup')){
+        this.fixedNumTrialsPerCondGroup(data.fixedNumTrialsPerCondGroup);
+    }
 
 
     this.webcamEnabled(data.webcamEnabled);
@@ -1646,6 +1654,7 @@ ExpTrialLoop.prototype.toJS = function() {
         trialLoopActivated:this.trialLoopActivated(),
         customStartTrial:this.customStartTrial(),
         trialSelectionBalance:this.trialSelectionBalance(),
+        fixedNumTrialsPerCondGroup:this.fixedNumTrialsPerCondGroup(),
 
         zoomMode: this.zoomMode(),
         visualDegreeToUnit: this.visualDegreeToUnit(),
