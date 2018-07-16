@@ -452,7 +452,7 @@ FactorGroup.prototype.removeFactor = function(factor) {
 
     var idx = this.factors().indexOf(factor);
 
-    if (factor.globalVar()) {
+    if (factor.globalVar() && factor.globalVar() instanceof GlobalVar) {
         factor.globalVar().removeBackRef(factor);
     }
 
