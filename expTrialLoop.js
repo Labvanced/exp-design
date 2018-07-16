@@ -53,6 +53,7 @@ var ExpTrialLoop = function (expData) {
     this.randomTrialSelection = ko.observable("untilMinimum");
     this.determineNrTrials = ko.observable("minimumWithoutZero");
     this.trialSelectionBalance = ko.observable("balancedPerCondGroup");
+    this.fixedNumTrialsPerCondGroup = ko.observable(1);
 
     this.allTrialsToAllSubjects = ko.observable(true);
     this.numberTrialsToShow = ko.observable(null);
