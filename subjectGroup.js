@@ -59,6 +59,15 @@ SubjectGroup.prototype.renameSession = function(idx,flag) {
 };
 
 
+SubjectGroup.prototype.removeAllSessionsByVal = function(session) {
+    var idx = this.sessions().indexOf(session);
+    while (idx > -1){
+        this.sessionTimeData.splice(idx,1);
+        this.sessions.splice(idx,1);
+        idx = this.sessions().indexOf(session); // check for more in loop
+    }
+};
+
 SubjectGroup.prototype.removeSession= function(idx) {
     this.sessionTimeData.splice(idx,1);
     this.sessions.splice(idx,1);

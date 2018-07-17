@@ -35,8 +35,9 @@ ExpBlock.prototype.addTask = function(task) {
 
 ExpBlock.prototype.removeTask = function(task) {
     var idx = this.subTasks().indexOf(task);
-    if (idx>-1){
-        this.subTasks.splice(idx,1);
+    while (idx > -1) {
+        this.subTasks.splice(idx, 1);
+        idx = this.subTasks().indexOf(task); // checking if there are more tasks
     }
 };
 

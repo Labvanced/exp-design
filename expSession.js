@@ -21,20 +21,13 @@ ExpSession.prototype.addBlock = function(block) {
 };
 
 ExpSession.prototype.removeBlock = function(data,event) {
-
     var idx = this.blocks().indexOf(data);
-    if (idx ==-1){
-        console.log('bad deletion');
-    }
-    else{
-        //this.blocks.splice(idx,1);
-        //this.blocks.valueHasMutated()
+    while (idx > -1){
         var tmpArr = this.blocks();
         tmpArr.splice(idx,1);
         this.blocks(tmpArr);
+        idx = this.blocks().indexOf(data); // check for more in loop
     }
-
-
 };
 
 /**
