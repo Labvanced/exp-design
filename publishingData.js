@@ -7,7 +7,7 @@ var PublishingData = function(experiment) {
     // others
     this.dateLastModified = ko.observable(""); // deprecated
     this.sharingDesign = ko.observable('none'); // 'none', 'public'
-    this.openAccess = ko.observable('none');
+    this.openAccess = ko.observable('none'); // 'none', 'withData', 'methodsOnly'
 
 
     // description  //
