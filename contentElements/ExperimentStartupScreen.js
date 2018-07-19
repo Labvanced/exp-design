@@ -18,6 +18,10 @@ var ExperimentStartupScreen = function(experiment) {
     this.selectedEmail = ko.observable(null);
     this.selectedCSId= ko.observable(null);
 
+    if (player.country && self.expData.parentExperiment.publishing_data.geoIpMethod() != "notused") {
+        this.selectedCountry(countries_by_code[player.country]);
+    }
+
     this.acceptedCustomReq= ko.observable(false);
 
     this.agreeToTermsAndConditions = ko.observable(false);
@@ -28,6 +32,26 @@ var ExperimentStartupScreen = function(experiment) {
     this.requiredLanguage = this.expData.parentExperiment.publishing_data.surveyItemLanguage;
     this.requiredEmail = this.expData.parentExperiment.publishing_data.surveyItemEmail;
 
+    this.countryQuestionVisible = ko.computed(function() {
+        if (self.requiredCountry() == "hidden") {
+            return false;
+        }
+        else if (self.requiredCountry() == "optional"){
+            return true;
+        }
+        else {
+            if (self.expData.parentExperiment.publishing_data.geoIpMethod() == "notused") {
+                return true;
+            }
+            else if (self.expData.parentExperiment.publishing_data.geoIpMethod() == "prefill") {
+                return true;
+            }
+            else if (self.expData.parentExperiment.publishing_data.geoIpMethod() == "forced") {
+                return false;
+            }
+        }
+
+    });
 
     this.requiredGroup = this.expData.studySettings.assignSubjGroup;
     this.requiredSession = this.expData.studySettings.assignSession;
@@ -457,7 +481,7 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
         return;
     }
 
-    if (this.requiredGender() =='hidden' && this.requiredAge() =='hidden' && this.requiredCountry() =='hidden' && this.requiredLanguage() =='hidden' && this.requiredEmail() =='hidden' && !player.isCrowdsourcingSession()&& this.requiredGroup() =='automatic' && this.requiredSession() =='automatic'){
+    if (this.requiredGender() =='hidden' && this.requiredAge() =='hidden' && !this.countryQuestionVisible() && this.requiredLanguage() =='hidden' && this.requiredEmail() =='hidden' && !player.isCrowdsourcingSession()&& this.requiredGroup() =='automatic' && this.requiredSession() =='automatic'){
         this.sendDataAndContinue();
     }
     else{
@@ -507,7 +531,7 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
         function(data) {
             if (data.hasOwnProperty('success') && data.success == false) {
                 if (data.msg == "no matching subject group") {
-                    player.finishSessionWithError("We are sorry, but the experiment is currently not available.");
+                    player.finishSessionWithError("We are sorry, but you do not qualify to take part in this study.");
                 }
                 else {
                     player.finishSessionWithError("Could not initialize first session of experiment. Error Message: " + data.msg);

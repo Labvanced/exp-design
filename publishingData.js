@@ -51,12 +51,7 @@ var PublishingData = function(experiment) {
     this.surveyItemLanguage = ko.observable('hidden');
     this.surveyItemEmail = ko.observable('hidden');
 
-    this.requiredGender = ko.observable(false);
-    this.requiredAge = ko.observable(false);
-    this.requiredCountry = ko.observable(false);
-    this.requiredLanguage = ko.observable(false);
-    this.requiredEmail = ko.observable(false);
-
+    this.geoIpMethod = ko.observable("prefill"); // "notused" or "prefill" or "forced"
     
     // After publication
     this.individualizedLinks =  ko.observableArray([]);
@@ -67,11 +62,16 @@ var PublishingData = function(experiment) {
 
     //
     this.savedExternally = ko.observable(null);
-
-
-
-
     this.displayBackToLib = ko.observable(true);
+
+
+    // not serialized:
+    this.requiredGender = ko.observable(false);
+    this.requiredAge = ko.observable(false);
+    this.requiredCountry = ko.observable(false);
+    this.requiredLanguage = ko.observable(false);
+    this.requiredEmail = ko.observable(false);
+
 
     this.recruitingEnabled= ko.computed(function () {
         if (self.recruitInLibrary() || self.recruitSecretly() || self.recruitViaCrowdsourcing() || self.recruitViaOwnCrowdsourcing() || self.recruitViaCustomLink()) {
@@ -311,6 +311,13 @@ PublishingData.prototype.fromJS = function(data) {
         this.surveyItemEmail(data.surveyItemEmail);
     }
 
+    if (data.hasOwnProperty('geoIpMethod')) {
+        this.geoIpMethod(data.geoIpMethod);
+    }
+    else {
+        // for backwards compatibility: Do not change previously created studies to suddenly change their behavior...
+        this.geoIpMethod("notused");
+    }
 
     if (data.hasOwnProperty('crowdsourcingStatus')) {
         this.crowdsourcingStatus(data.crowdsourcingStatus);
@@ -501,6 +508,7 @@ PublishingData.prototype.toJS = function() {
         surveyItemCountry:this.surveyItemCountry(),
         surveyItemLanguage:this.surveyItemLanguage(),
         surveyItemEmail:this.surveyItemEmail(),
+        geoIpMethod:this.geoIpMethod(),
 
         // After publication
         individualizedLinks:  this.individualizedLinks(),

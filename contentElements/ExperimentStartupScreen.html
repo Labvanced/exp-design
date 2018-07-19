@@ -105,7 +105,7 @@
                                             </label>
                                         </div>
 
-                                        <div  class="ssp-question" data-bind="visible:requiredCountry() !='hidden'">
+                                        <div  class="ssp-question" data-bind="visible: countryQuestionVisible">
                                             <label>
                                                 <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourCountry"></span><span data-bind="visible: requiredCountry() =='required'"> (*)</span>:</span>
                                                 <span>
