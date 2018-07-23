@@ -34,7 +34,7 @@ GlobalVarValueString.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueString.prototype.setValue = function(data) {
-    if (typeof data.parentVar == "GlobalVar"){
+    if (data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
         data = data.toJS();
     }
     // convert other data types to string:
@@ -102,7 +102,7 @@ GlobalVarValueNumeric.prototype.setValue = function(data) {
         this.value(this.convert(data));
     }
     else{
-        if (typeof data.parentVar == "GlobalVar"){
+        if (data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
             data = data.toJS();
         }
         // convert other data types to numeric:
@@ -212,7 +212,7 @@ GlobalVarValueFile.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueFile.prototype.setValue = function(data) {
-    if (typeof data.parentVar == "GlobalVar"){
+    if (data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
         data = data.toJS();
     }
     // convert other data types to file:
@@ -283,7 +283,7 @@ GlobalVarValueBoolean.prototype.convert = function(data) {
  * @param data
  */
 GlobalVarValueBoolean.prototype.setValue = function(data) {
-    if (typeof data.parentVar == "GlobalVar"){
+    if (data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
         data = data.toJS();
     }
     this.value(this.convert(data));
@@ -352,7 +352,7 @@ GlobalVarValueCategorical.prototype.setValue = function(data) {
         this.value(this.convert(data));
     }
     else{
-        if (typeof data.parentVar == "GlobalVar"){
+        if (data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
             data = data.toJS();
         }
         // convert other data types to string:
@@ -444,7 +444,7 @@ GlobalVarValueTime.prototype.setValue = function(data) {
         this.value(this.convert(data));
     }
     else{
-        if (typeof data.parentVar == "GlobalVar"){
+        if (data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
             data = data.toJS();
         }
         this.value(this.convert(data));
@@ -519,7 +519,7 @@ GlobalVarValueDatetime.prototype.setValue = function(data) {
         this.value(this.convert(data));
     }
     else{
-        if (typeof data.parentVar == "GlobalVar"){
+        if (data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
             data = data.toJS();
         }
         if (data.hasOwnProperty("value")){
@@ -918,7 +918,7 @@ GlobalVarValueArray.prototype.pushValue = function(scalarData) {
  * @param data
  */
 GlobalVarValueArray.prototype.setValue = function(data) {
-    if (typeof data.parentVar == "GlobalVar"){
+    if (data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
         data = data.toJS();
     }
     this.value(this.convert(data));
