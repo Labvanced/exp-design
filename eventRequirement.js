@@ -398,8 +398,8 @@ OperandVariable.prototype.getValue = function(parameters) {
             console.error("operand is undefined");
             return null;
         case "arithmetic":
-            var left = value.left.getValue();
-            var right = value.right.getValue();
+            var left = value.left.getValue(parameters);
+            var right = value.right.getValue(parameters);
 
             // convert to value if these are GlobalVarValueInstances:
              if (left!=null){
@@ -505,28 +505,28 @@ OperandVariable.prototype.getValue = function(parameters) {
             return this.subParam();
 
         case "round0decimal":
-            return Math.round(value.left.getValue());
+            return Math.round(value.left.getValue(parameters));
 
         case "round1decimal":
-            return Math.round( value.left.getValue()*10)/10;
+            return Math.round( value.left.getValue(parameters)*10)/10;
 
         case "round2decimals":
-            return Math.round( value.left.getValue()*100)/100;
+            return Math.round( value.left.getValue(parameters)*100)/100;
 
         case "round3decimals":
-            return Math.round( value.left.getValue()*1000)/1000;
+            return Math.round( value.left.getValue(parameters)*1000)/1000;
 
         case "floor":
-            return Math.floor(value.left.getValue());
+            return Math.floor(value.left.getValue(parameters));
 
         case "ceil":
-            return Math.ceil(value.left.getValue());
+            return Math.ceil(value.left.getValue(parameters));
 
         case "abs":
-            return Math.abs(value.left.getValue());
+            return Math.abs(value.left.getValue(parameters));
 
         case "sqrt":
-            return Math.sqrt(value.left.getValue());
+            return Math.sqrt(value.left.getValue(parameters));
     }
 };
 
