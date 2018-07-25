@@ -20,7 +20,13 @@ PageElementViewModel.prototype.setupSubcr = function() {
         var elem = $($(this.div).parent().context).children()[0];
     }
     else{
-        var elem = $($(this.div).parent().context).children()[1];
+         if ($($(this.div).parent().context).children()[1]){
+             var elem = $($(this.div).parent().context).children()[1];
+         }
+         else{
+             var elem = $($(this.div).parent().context).children()[0];
+         }
+
     }
 
 

@@ -14,11 +14,9 @@
 
                 <!-- ko if: parent.previewPlayerView() -->
                     <div class="pageElementsList" data-bind="foreach: pageDataObs().elements">
-                        <!-- ko if: (modifier().selectedTrialView.isVisible())  -->
-                        <div class="pageElementOuterBorder" data-bind="style:{marginBottom: $parent.pageDataObs().marginBetweenElems()+'px', borderBottom: $parent.pageDataObs().borderSizeBottom()+'px #EDEDED solid'}">
+                        <div class="pageElementOuterBorder" data-bind="style: { display: modifier().selectedTrialView.isVisible() ? 'block' : 'none', marginBottom: $parent.pageDataObs().marginBetweenElems()+'px', borderBottom: $parent.pageDataObs().borderSizeBottom()+'px #EDEDED solid'}">
                             <div class="pageElement" data-bind='component: {name : "pageElement-player-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
                         </div>
-                        <!-- /ko -->
                     </div>
 
                 <!-- /ko -->

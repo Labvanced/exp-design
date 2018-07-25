@@ -65,7 +65,7 @@
         <span class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.startLabel}"></span>
         <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
             <div style="display: inline-block; margin-left: inherit; margin-right: inherit" data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
-                <!-- ko if: $root.showNums -->
+                <!-- ko if: $parent.dataModel.showNums -->
                  <span style="display:block; margin-left: 5px;  margin-right: 5px" data-bind="text: $data"></span>
                 <!-- /ko -->
                 <!-- removing white space
@@ -100,7 +100,12 @@
         <span style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.startLabel}"></span>
         <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
             <div style="display: inline-block; margin-left: inherit; margin-right: inherit" data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }" >
-                <span style="display:block; margin-left: 5px;  margin-right: 5px" data-bind="visible: $root.showNums,  text: $data"></span>
+
+
+                <!-- ko if: $parent.dataModel.showNums -->
+                 <span style="display:block; margin-left: 5px;  margin-right: 5px" data-bind="text: $data"></span>
+                <!-- /ko -->
+
                 <!-- removing white space
                 --><label  class="scale-right-entry scalebutton"  style="display: inline-block; width: 16px;  height: 16px">
                         <input class="radiobutton-element" style="display:block; margin-left: 5px; margin-right: 5px;" type="radio" value="$data" data-bind="attr: {value:$data}, checked: $parent.variable().value().value, click: function(){return true}, clickBubble: false, enable: $parent.dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
