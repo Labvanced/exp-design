@@ -261,7 +261,7 @@ ExpData.prototype.staticTranslations = {
         inviteFriendMultiUser2: "Your Name:",
         inviteFriendMultiUser3: "Your Friends' Email:",
         inviteFriendMultiUser4: "Invite",
-        customRequirement: "Hereby I confirm that I fulfill the following participation requirement(s):",
+        customRequirement: "Hereby I confirm that I accept the terms and conditions of this study and fulfill the following participation requirements as stated below:",
         askEmailConsent1: "Why do we ask for your Email: ",
         askEmailConsent2: "This is a longitudinal study, consisting of several participation sessions. Your email will only be recoded in order to invite/remind you to take part in the next session. Your Email will not be stored together with other kinds of data, and is accessible only internally to the Labvanced platform. We will not give away " +
         "your email or use it for different purposes.",
@@ -335,7 +335,7 @@ ExpData.prototype.staticTranslations = {
         inviteFriendMultiUser2: "Ihr Name:",
         inviteFriendMultiUser3: "Die Email Adresse Ihres Freundes:",
         inviteFriendMultiUser4: "Einladen",
-        customRequirement: "Ich bestätige hiermit, dass ich folgende Teilnahmebedingungen vollständig erfülle:",
+        customRequirement: "Ich bestätige hiermit, dass ich mit den folgenden Regeln und Bedingungen der Studie einverstanden bin und folgende Teilnahmebedingungen vollständig erfülle:",
         askEmailConsent1: "Warum fragen wir nach Ihrer E-Mail: ",
         askEmailConsent2: "Dies ist eine Längsschnittstudie, die aus mehreren Teilnahme-Sitzungen besteht. Ihre E-Mail wird nur neu erfasst, um Sie zur Teilnahme an der nächsten Sitzung einzuladen. Ihre E-Mail wird nicht zusammen mit anderen Arten von Daten gespeichert und ist nur intern für die Labvanced-Plattform zugänglich. Wir geben Ihre E-Mail nicht weiter oder verwenden sie für andere Zwecke.",
         calibDistance1: "Ihre Distanz zum Bildschirm beträgt:",

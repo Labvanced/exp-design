@@ -481,7 +481,7 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
         return;
     }
 
-    if (this.requiredGender() =='hidden' && this.requiredAge() =='hidden' && !this.countryQuestionVisible() && this.requiredLanguage() =='hidden' && this.requiredEmail() =='hidden' && !player.isCrowdsourcingSession()&& this.requiredGroup() =='automatic' && this.requiredSession() =='automatic'){
+    if (this.requiredGender() =='hidden' && this.requiredAge() =='hidden' && !this.countryQuestionVisible() && this.requiredLanguage() =='hidden' && this.requiredEmail() =='hidden' && !player.isCrowdsourcingSession() && this.requiredGroup() =='automatic' && this.requiredSession() =='automatic' && this.requiredCustom()==''){
         this.sendDataAndContinue();
     }
     else{
