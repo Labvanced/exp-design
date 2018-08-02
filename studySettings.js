@@ -34,6 +34,7 @@ var StudySettings = function (expData) {
     this.isAudioRecEnabled = ko.observable(false);
     this.isWebcamEnabled = ko.observable(false);
     this.multiUserOnLeaveAction = ko.observable("Finish Study With Error");
+    this.multiUserAllowInviteFriends  = ko.observable(true);
 
     // number entered before checking the validity (min/max). gets updated after check.
     this.numPartEntered = ko.observable(expData.numPartOfJointExp());
@@ -211,6 +212,9 @@ StudySettings.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("multiUserOnLeaveAction")){
         this.multiUserOnLeaveAction(data.multiUserOnLeaveAction);
     }
+    if (data.hasOwnProperty("multiUserAllowInviteFriends")){
+        this.multiUserAllowInviteFriends(data.multiUserAllowInviteFriends);
+    }
     if (data.hasOwnProperty("isWebcamEnabled")){
         this.isWebcamEnabled(data.isWebcamEnabled);
     }
@@ -255,6 +259,7 @@ StudySettings.prototype.toJS = function() {
         isAudioRecEnabled: this.isAudioRecEnabled(),
         participantConsent:this.participantConsent(),
         multiUserOnLeaveAction:this.multiUserOnLeaveAction(),
+        multiUserAllowInviteFriends:this.multiUserAllowInviteFriends(),
         isWebcamEnabled:this.isWebcamEnabled(),
         assignSubjGroup:this.assignSubjGroup(),
         assignSession:this.assignSession()
