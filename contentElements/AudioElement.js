@@ -38,14 +38,15 @@ var AudioElement= function(expData) {
     this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
     this.currentTimePercentage = ko.observable(0);
     this.selected = ko.observable(false);
+    this.file = ko.observable(null);
     /////
 };
 
 
 AudioElement.prototype.label = "Audio";
 AudioElement.prototype.iconPath = "/resources/icons/tools/tool_sound.svg";
-AudioElement.prototype.dataType =      [ "string", "string"];
-AudioElement.prototype.modifiableProp = ["file_id","file_orig_name"];
+AudioElement.prototype.dataType =      [ "string", "string","file"];
+AudioElement.prototype.modifiableProp = ["file_id","file_orig_name","file"];
 AudioElement.prototype.numVarNamesRequired = 0;
 AudioElement.prototype.actionTypes = ["StartPlayback","StopPlayback"];
 AudioElement.prototype.triggerTypes = ["PlaybackStarted","PlaybackStopped"];
