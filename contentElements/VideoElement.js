@@ -26,7 +26,11 @@ var VideoElement= function(expData) {
 
     this.vidSource = ko.computed( function() {
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
-            return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
+            var file_route = "/files/";
+            if (typeof player !== 'undefined') {
+                file_route = "/player/files/" + player.expSessionNr + "/";
+            }
+            return file_route + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
         else {
             return false;
@@ -175,10 +179,10 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
     var myPreloadedVideoSource = $(this.element).find('.videoSource')[0];
     if (myPreloadedVideoSource) {
         this.updateVideoSource = function () {
-            // check if we have it preloaded:
             if(!self.dataModel.vidSource()){
                 return;
             }
+            // check if we have it preloaded:
             var videoElem;
             var htmlObjectUrl;
             if (typeof player !== 'undefined') {

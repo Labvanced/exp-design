@@ -25,7 +25,11 @@ var AudioElement= function(expData) {
 
     this.audioSource = ko.computed( function() {
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
-            return "/files/" + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
+            var file_route = "/files/";
+            if (typeof player !== 'undefined') {
+                file_route = "/player/files/" + player.expSessionNr + "/";
+            }
+            return file_route + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
         else {
             return false;
