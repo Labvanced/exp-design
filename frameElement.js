@@ -78,8 +78,8 @@ FrameElement.prototype.addContent = function(element){
 };
 
 
-FrameElement.prototype.dataType =      [ "numeric","boolean", "numeric", "numeric", "numeric","numeric","boolean","numeric","numeric","boolean","boolean","boolean","numeric","string","string"];
-FrameElement.prototype.modifiableProp = ["visibility","isActive","editorX", "editorY", "editorWidth","editorHeight","keepAspectRatio","contentScaling","contentRotation","canBeSelected","canBeDragged","canBeResized", "borderSize","borderColor","backgroundColor"];
+FrameElement.prototype.dataType =      [ "numeric","boolean", "numeric", "numeric", "numeric","numeric","boolean","numeric","numeric","boolean","boolean","boolean","numeric","string","string","numeric"];
+FrameElement.prototype.modifiableProp = ["visibility","isActive","editorX", "editorY", "editorWidth","editorHeight","keepAspectRatio","contentScaling","contentRotation","canBeSelected","canBeDragged","canBeResized", "borderSize","borderColor","backgroundColor","roundness"];
 FrameElement.prototype.subElementProp = ["content"];
 
 FrameElement.prototype.setAnchorPoint = function(horizontal, vertical) {
