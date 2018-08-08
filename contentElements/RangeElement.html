@@ -1,18 +1,19 @@
 <template id="range-editview-template">
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Range</div>
-        <br>
         <div>
             <span>Show Question Header:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
         </div>
         <hr>
 
+        <span>Values: </span>
+        From
         <input style="max-width: 30px" type="text" data-bind="value: minChoice">
         To
         <input style="max-width: 30px" type="text" data-bind="value: maxChoice">
         <br>
-        <label><input type="checkbox" data-bind="checked: dataModel.showNumber" />Show As Number</label>
+        <label>Show Number: <input type="checkbox" data-bind="checked: dataModel.showNumber" /></label>
         <br>
         <label>
             Linked Variable:

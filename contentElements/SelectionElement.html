@@ -20,15 +20,14 @@
             <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
         </label>
         <br>
-        <br>
-
-        <label style="cursor: pointer"><input class="checkbox-element" style="display: inline-block" value="predefined" type="radio" data-bind="checked: dataModel.listType">Use Predefined List: </label>
+        <div>List Use:</div>
+        <label style="cursor: pointer"><input class="checkbox-element" style="display: inline-block" value="predefined" type="radio" data-bind="checked: dataModel.listType">Predefined List</label>
             <!-- ko if: (dataModel.listType()=='predefined')  -->
             <select class="notDraggable" style="display:inline-block" data-bind="options: dataModel.predefinedListOptions, value: dataModel.selectedPredefinedOption"></select>
             <!-- /ko -->
         <br>
 
-        <label style="cursor: pointer"><input class="checkbox-element" style="display: inline-block;" value="selfCreation" type="radio" data-bind="checked: dataModel.listType">Create Manually: </label>
+        <label style="cursor: pointer"><input class="checkbox-element" style="display: inline-block;" value="selfCreation" type="radio" data-bind="checked: dataModel.listType">Create Manually</label>
             <!-- ko if: (dataModel.listType()=="selfCreation")  -->
             <input style="width: 120px; display: inline-block" type="text" class="form-control" data-bind="value:currentEntry"> <span style="cursor: pointer" data-bind="click:addEntry"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
             <br>

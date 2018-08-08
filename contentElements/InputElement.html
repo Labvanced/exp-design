@@ -1,18 +1,19 @@
 <template id='input-editview-template'>
     <div class="panel-body" style="height: 100%; margin-top: -10px">
-        <div class="taskeditor-header">Input</div>
-        <label>Input type:<select data-bind="options: InputElement.prototype.typeOptions, value: inputType"></select></label>
-        <br>
 
+        <div class="taskeditor-header">Input</div>
         <div>
             <span>Show Question Header:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
         </div>
 
         <div>
-            <span>Required Answer:</span>
+            <span>Required:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
         </div>
+
+
+        <label>Input type:<select data-bind="options: InputElement.prototype.typeOptions, value: inputType"></select></label>
         <hr>
 
 

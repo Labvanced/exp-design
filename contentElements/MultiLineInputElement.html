@@ -3,13 +3,6 @@
         <div class="taskeditor-header">Multiline Answer</div>
 
         <div>
-            <label>
-                Linked Variable:
-                <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel().variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
-            </label>
-        </div>
-
-        <div>
             <span>Show Question Header:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel().enableTitle,click:function(){return true},clickBubble: false">
         </div>
@@ -19,6 +12,13 @@
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel().isRequired,click:function(){return true},clickBubble: false">
         </div>
         <hr>
+
+        <div>
+            <label>
+                Linked Variable:
+                <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel().variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
+            </label>
+        </div>
 
 
         <div>

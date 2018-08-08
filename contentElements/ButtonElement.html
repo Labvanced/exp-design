@@ -6,13 +6,6 @@
         <br>
         <span>Default Color: </span><input id="bgColorPickerDefault">
         <span>Hover Color: </span><input id="bgColorPickerHover">
-
-        <!-- ko if: (dataModel.parent.parent instanceof PageData)  -->
-        <div>
-            <span>Shuffle position on page:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.parent.includeInPageShuffle,click:function(){return true},clickBubble: false">
-        </div>
-        <!-- /ko -->
     </div>
 </template>
 

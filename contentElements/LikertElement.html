@@ -2,10 +2,6 @@
     <div class="panel-body" style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Likert</div>
 
-        <div>
-            <span>Balance Label Sides:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.reshuffleElements,click:function(){return true},clickBubble: false">
-        </div>
 
         <div>
             <span>Show Question Header:</span>
@@ -21,9 +17,16 @@
             <span>Required:</span>
             <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
         </div>
+
+        <div>
+            <span>Balance Label Sides:</span>
+            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.reshuffleElements,click:function(){return true},clickBubble: false">
+        </div>
+
         <hr>
 
-
+        <span>Numbers: </span>
+        From
         <select data-bind="options: values, value: startChoice, event: {change: finish}"></select>
         To
         <select data-bind="options: values, value: endChoice, event: {change: finish}">
