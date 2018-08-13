@@ -218,6 +218,15 @@ StudySettings.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("multiUserAllowInviteFriends")){
         this.multiUserAllowInviteFriends(data.multiUserAllowInviteFriends);
     }
+    if (data.hasOwnProperty("multiUserCheckPing")){
+        this.multiUserCheckPing(data.multiUserCheckPing);
+    }
+    if (data.hasOwnProperty("multiUserMaxPingAllowed")){
+        this.multiUserMaxPingAllowed(data.multiUserMaxPingAllowed);
+    }
+    if (data.hasOwnProperty("multiUserMaxAvgPingAllowed")){
+        this.multiUserMaxAvgPingAllowed(data.multiUserMaxAvgPingAllowed);
+    }
     if (data.hasOwnProperty("isWebcamEnabled")){
         this.isWebcamEnabled(data.isWebcamEnabled);
     }
@@ -263,6 +272,9 @@ StudySettings.prototype.toJS = function() {
         participantConsent:this.participantConsent(),
         multiUserOnLeaveAction:this.multiUserOnLeaveAction(),
         multiUserAllowInviteFriends:this.multiUserAllowInviteFriends(),
+        multiUserCheckPing:this.multiUserCheckPing(),
+        multiUserMaxPingAllowed:this.multiUserMaxPingAllowed(),
+        multiUserMaxAvgPingAllowed:this.multiUserMaxAvgPingAllowed(),
         isWebcamEnabled:this.isWebcamEnabled(),
         assignSubjGroup:this.assignSubjGroup(),
         assignSession:this.assignSession()
