@@ -63,8 +63,6 @@ var ExperimentStartupScreen = function(experiment) {
     this.wizardStep = ko.observable("selectStudyLanguage");
     this.selectedStudyLanguage = ko.observable(this.expData.translatedLanguages()[0]);
 
-    this.jointExpLobbyModel = ko.observable(new JointExpLobby(self.expData));
-
     this.timeToNextSession = ko.observable("");
     this.participantName = ko.observable("");
     this.friendsEmail = ko.observable("");
@@ -197,10 +195,15 @@ var ExperimentStartupScreen = function(experiment) {
     this.osAllowed = ko.observable(null);
     this.detectBrowserAndSystemSpecs();
 
-    var numLang = this.expData.translatedLanguages().length;
-    if (numLang < 2) {
-        // directly skip to survey if only one language is defined:
-        this.jumpToAskSubjData();
+    if (this.osAllowed() && this.browserAllowed() && this.resolutionAllowed()) {
+        // only start joinExpLobby if allowed:
+        this.jointExpLobbyModel = ko.observable(new JointExpLobby(self.expData));
+
+        var numLang = this.expData.translatedLanguages().length;
+        if (numLang < 2) {
+            // directly skip to survey if only one language is defined:
+            this.jumpToAskSubjData();
+        }
     }
 
 };
