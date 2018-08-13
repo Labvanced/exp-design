@@ -365,13 +365,11 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
         {s: 'Mac/OS-X', r: /Mac OS X/},
         {s: 'Mac/OS-X', r: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/},
 
-        {s: 'Linux-PC', r: /(Linux|X11)/},
-
         {s: 'Android', r: /Android/},
-
         {s: 'iPhone', r: /iPhone/},
-
         {s: 'iPad', r: /iPad/},
+
+        {s: 'Linux-PC', r: /(Linux|X11)/},
 
         {s: 'others', r: /iPod/},
         {s: 'others', r: /OpenBSD/},
@@ -386,6 +384,7 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
     for (var id in clientStrings) {
         var cs = clientStrings[id];
         if (cs.r.test(nAgt)) {
+            console.log("matched "+cs.r)
             os = cs.s;
             break;
         }
