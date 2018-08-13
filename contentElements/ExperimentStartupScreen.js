@@ -369,7 +369,7 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
         {s: 'iPhone', r: /iPhone/},
         {s: 'iPad', r: /iPad/},
 
-        {s: 'Linux-PC', r: /(Linux|X11)/},
+        {s: 'Linux-PC', r: /(Linux|X11)/}, // warning: it is important to first check Android above, because it also includes Linux in agent string.
 
         {s: 'others', r: /iPod/},
         {s: 'others', r: /OpenBSD/},
@@ -384,7 +384,7 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
     for (var id in clientStrings) {
         var cs = clientStrings[id];
         if (cs.r.test(nAgt)) {
-            console.log("matched "+cs.r)
+            console.log("matched "+cs.r);
             os = cs.s;
             break;
         }

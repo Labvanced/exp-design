@@ -35,6 +35,9 @@ var StudySettings = function (expData) {
     this.isWebcamEnabled = ko.observable(false);
     this.multiUserOnLeaveAction = ko.observable("Finish Study With Error");
     this.multiUserAllowInviteFriends  = ko.observable(true);
+    this.multiUserCheckPing  = ko.observable(true);
+    this.multiUserMaxPingAllowed  = ko.observable(600);
+    this.multiUserMaxAvgPingAllowed  = ko.observable(300);
 
     // number entered before checking the validity (min/max). gets updated after check.
     this.numPartEntered = ko.observable(expData.numPartOfJointExp());
