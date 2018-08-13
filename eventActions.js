@@ -864,7 +864,7 @@ var ActionWriteToArray = function(event) {
 };
 
 ActionWriteToArray.prototype.type = "ActionWriteToArray";
-ActionWriteToArray.prototype.label = "Change Array Entry (Write)";
+ActionWriteToArray.prototype.label = "Change Array Entry (Replace)";
 
 ActionWriteToArray.prototype.isValid = function(){
     return true;
@@ -1054,7 +1054,7 @@ var ActionModifyArray = function(event) {
 };
 
 ActionModifyArray.prototype.type = "ActionModifyArray";
-ActionModifyArray.prototype.label = "Add / Remove Entries (Splice)";
+ActionModifyArray.prototype.label = "Add / Remove Array Entries";
 
 ActionModifyArray.prototype.isValid = function(){
     return true;
