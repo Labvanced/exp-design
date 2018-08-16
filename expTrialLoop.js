@@ -193,6 +193,7 @@ ExpTrialLoop.prototype.addSequenceToDataModel = function(subsequence) {
     this.subSequence(subsequence);
     this.reAddEntities(this.expData.entities);
     this.expData.notifyChanged();
+    window.location.reload(true)
 };
 
 
