@@ -341,8 +341,11 @@ ActionSetElementProp.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
-    var target = entitiesArr.byId[this.target()];
-    this.target(target);
+    if (this.target()){
+        var target = entitiesArr.byId[this.target()];
+        this.target(target);
+    }
+
 
     var changes = this.changes();
     for (var i=0; i<changes.length; i++) {
@@ -756,21 +759,29 @@ ActionSelectFromArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionSelectFromArray.prototype.setPointers = function(entitiesArr) {
-    var inVarArr = entitiesArr.byId[this.inVarArr()];
-    if (inVarArr){
-        this.inVarArr(inVarArr);
-        this.setInVarArrBackRef();
+    if (this.inVarArr()){
+        var inVarArr = entitiesArr.byId[this.inVarArr()];
+        if (inVarArr){
+            this.inVarArr(inVarArr);
+            this.setInVarArrBackRef();
+        }
     }
-    var inVarIndex = entitiesArr.byId[this.inVarIndex()];
-    if (inVarIndex){
-        this.inVarIndex(inVarIndex);
-        this.setInVarIndexBackRef();
+
+    if (this.inVarIndex()){
+        var inVarIndex = entitiesArr.byId[this.inVarIndex()];
+        if (inVarIndex){
+            this.inVarIndex(inVarIndex);
+            this.setInVarIndexBackRef();
+        }
     }
-    var outVar = entitiesArr.byId[this.outVar()];
-    if (outVar){
-        this.outVar(outVar);
-        this.setOutVarBackRef();
+    if (this.outVar()){
+        var outVar = entitiesArr.byId[this.outVar()];
+        if (outVar){
+            this.outVar(outVar);
+            this.setOutVarBackRef();
+        }
     }
+
 };
 
 /**
@@ -944,20 +955,28 @@ ActionWriteToArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionWriteToArray.prototype.setPointers = function(entitiesArr) {
-    var inVarArr = entitiesArr.byId[this.inVarArr()];
-    if (inVarArr){
-        this.inVarArr(inVarArr);
-        this.setInVarArrBackRef();
+    if (this.inVarArr()){
+        var inVarArr = entitiesArr.byId[this.inVarArr()];
+        if (inVarArr){
+            this.inVarArr(inVarArr);
+            this.setInVarArrBackRef();
+        }
     }
-    var inVarIndex = entitiesArr.byId[this.inVarIndex()];
-    if (inVarIndex){
-        this.inVarIndex(inVarIndex);
-        this.setInVarIndexBackRef();
+
+    if (this.inVarIndex()) {
+        var inVarIndex = entitiesArr.byId[this.inVarIndex()];
+        if (inVarIndex) {
+            this.inVarIndex(inVarIndex);
+            this.setInVarIndexBackRef();
+        }
     }
-    var inVar = entitiesArr.byId[this.inVar()];
-    if (inVar){
-        this.inVar(inVar);
-        this.setInVarBackRef();
+
+    if (this.inVar()) {
+        var inVar = entitiesArr.byId[this.inVar()];
+        if (inVar) {
+            this.inVar(inVar);
+            this.setInVarBackRef();
+        }
     }
 };
 
@@ -1161,20 +1180,25 @@ ActionModifyArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionModifyArray.prototype.setPointers = function(entitiesArr) {
-    var inVarArr = entitiesArr.byId[this.inVarArr()];
-    if (inVarArr){
-        this.inVarArr(inVarArr);
-        this.setInVarArrBackRef();
+    if (this.inVarArr()){
+        var inVarArr = entitiesArr.byId[this.inVarArr()];
+        if (inVarArr){
+            this.inVarArr(inVarArr);
+            this.setInVarArrBackRef();
+        }
     }
-    var inVarIndex = entitiesArr.byId[this.inVarIndex()];
-    if (inVarIndex){
-        this.inVarIndex(inVarIndex);
-        this.setInVarIndexBackRef();
+
+    if (this.inVarIndex()) {
+        var inVarIndex = entitiesArr.byId[this.inVarIndex()];
+        if (inVarIndex) {
+            this.inVarIndex(inVarIndex);
+            this.setInVarIndexBackRef();
+        }
     }
 
 
     var list = this.insertVarList();
-    var newList = []
+    var newList = [];
     for (var i = 0; i<list.length; i++){
         newList.push(entitiesArr.byId[list[i]]);
     }
@@ -1351,11 +1375,15 @@ ActionShuffleArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionShuffleArray.prototype.setPointers = function(entitiesArr) {
-    var inVarArr = entitiesArr.byId[this.inVarArr()];
-    if (inVarArr){
-        this.inVarArr(inVarArr);
-        this.setInVarArrBackRef();
+
+    if (this.inVarArr()){
+        var inVarArr = entitiesArr.byId[this.inVarArr()];
+        if (inVarArr){
+            this.inVarArr(inVarArr);
+            this.setInVarArrBackRef();
+        }
     }
+
 };
 
 /**
@@ -1707,9 +1735,10 @@ ActionJumpTo.prototype.reAddEntities = function(entitiesArr) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionJumpTo.prototype.setPointers = function(entitiesArr) {
-    var frame = entitiesArr.byId[this.frameToJump()];
-    this.frameToJump(frame);
-
+    if (this.frameToJump()){
+        var frame = entitiesArr.byId[this.frameToJump()];
+        this.frameToJump(frame);
+    }
     // converter for old studies
     if (this.checkRequired()=== null && this.jumpType() == "nextFrame"){
         this.checkRequired(true);
@@ -1891,11 +1920,14 @@ ActionDelayedActions.prototype.destroyOnPlayerFrame = function(playerFrame) {
  */
 ActionDelayedActions.prototype.setPointers = function(entitiesArr) {
 
-    var varToSet = entitiesArr.byId[this.variable()];
-    if (varToSet){
-        this.variable(varToSet);
-        this.setVariableBackRef(varToSet);
+    if (this.variable()){
+        var varToSet = entitiesArr.byId[this.variable()];
+        if (varToSet){
+            this.variable(varToSet);
+            this.setVariableBackRef(varToSet);
+        }
     }
+
 
     jQuery.each( this.subActions(), function( index, elem ) {
         elem.setPointers(entitiesArr);
@@ -3100,8 +3132,11 @@ ActionModifyVariable.prototype.destroyOnPlayerFrame = function(playerFrame) {
  */
 ActionModifyVariable.prototype.setPointers = function(entitiesArr) {
 
-    var mainVariable = entitiesArr.byId[this.variable()];
-    this.variable(mainVariable);
+    if (this.variable()){
+        var mainVariable = entitiesArr.byId[this.variable()];
+        this.variable(mainVariable);
+    }
+
 
     if (entitiesArr.byId[this.value()]){
         var valueVariable = entitiesArr.byId[this.value()];
@@ -3659,7 +3694,10 @@ ActionControlAV.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionControlAV.prototype.setPointers = function(entitiesArr) {
-    this.target(entitiesArr.byId[this.target()]);
+    if (this.target()){
+        this.target(entitiesArr.byId[this.target()]);
+    }
+
 };
 
 /**
@@ -3760,7 +3798,10 @@ ActionControlElement.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionControlElement.prototype.setPointers = function(entitiesArr) {
-    this.target(entitiesArr.byId[this.target()]);
+    if (this.target()){
+        this.target(entitiesArr.byId[this.target()]);
+    }
+
 };
 
 /**
@@ -3890,11 +3931,14 @@ ActionControlTimer.prototype.destroyOnPlayerFrame = function(playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionControlTimer.prototype.setPointers = function(entitiesArr) {
-    var timerVar = entitiesArr.byId[this.timerVar()];
-    if (timerVar){
-        this.timerVar(timerVar);
-        this.setVariableBackRef(timerVar);
+    if (this.timerVar()){
+        var timerVar = entitiesArr.byId[this.timerVar()];
+        if (timerVar){
+            this.timerVar(timerVar);
+            this.setVariableBackRef(timerVar);
+        }
     }
+
 };
 
 /**
@@ -4267,9 +4311,11 @@ ActionDistributeVariable.prototype.toJS = function(data) {
 };
 
 ActionDistributeVariable.prototype.setPointers = function(entitiesArr){
-    var varToSet = entitiesArr.byId[this.variable()];
-    if (varToSet){
-        this.variable(varToSet);
+    if (this.variable()){
+        var varToSet = entitiesArr.byId[this.variable()];
+        if (varToSet){
+            this.variable(varToSet);
+        }
     }
     this.operand().setPointers(entitiesArr);
 };
