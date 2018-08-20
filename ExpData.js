@@ -236,7 +236,6 @@ ExpData.prototype.staticTranslations = {
         calibrateMethod1: "Specify your screen size manually if you know the size of your monitor.",
         calibrateScreenSize: "Screen size (diagonal):",
         calibrateInches: "inches",
-        calibrateMsgOr: "Use alternative method (if screen size is unknown)",
         calibrateMethod2: "Use a standardized ID card (85.60 × 53.98 mm) or any other card of the same size against the screen and try to match the size of the displayed card. " +
         "You can change the size of the image by dragging the arrow. The calibration is correct if the image exactly matches the size of the card.",
         endExpMsg: "Thank you! The experiment session is finished.",
@@ -311,7 +310,6 @@ ExpData.prototype.staticTranslations = {
         calibrateMethod1: "Geben Sie Ihre Bildschirmgröße manuell an, wenn Sie die Größe Ihres Monitors kennen.",
         calibrateScreenSize: "Bildschirmgröße (Diagonal):",
         calibrateInches: "Inch",
-        calibrateMsgOr: "Benutze Alternative Methode (falls Bildschirmgröße nicht bekannt)",
         calibrateMethod2: "Halten Sie einen standardisierten Ausweis (85.60 × 53.98 mm) oder eine andere Karte der gleichen Größe gegen den Bildschirm und versuchen Sie, die Größe der angezeigten Karte anzupassen. " +
         "Sie können die Größe des Bildes durch Ziehen des Pfeils ändern. Die Kalibrierung ist korrekt, wenn das Bild genau der Größe der Karte entspricht.",
         endExpMsg: "Vielen Dank! Die Experimentssitzung ist beendet.",
