@@ -179,7 +179,7 @@
                             <div id="JointExpLobby" style="border-style: solid; border-width: 1px;" data-bind="if: wizardStep()=='jointExpLobby'">
                                 <h3 class="text-center" data-bind="text: expData.staticStrings().multiUserExpLobby"></h3>
 
-                                <div data-bind="if: jointExpLobbyModel().pingTestProgressPercent() < 100">
+                                <div data-bind="if: jointExpLobbyModel().pingTestInProgress()">
 
                                     <div style="text-align: center; margin-top: 20px; font-size: 100%;">
                                         <span data-bind="text: expData.staticStrings().jointExpTestConnection"></span><br>
@@ -189,7 +189,7 @@
                                     </div> <br>
 
                                 </div>
-                                <div data-bind="if: jointExpLobbyModel().pingTestProgressPercent() == 100">
+                                <div data-bind="if: !jointExpLobbyModel().pingTestInProgress()">
 
                                     <div style="text-align: center; margin-top: 20px; font-size: 100%;" data-bind="visible: !jointExpLobbyModel().gotMatchedFromServer()"><span data-bind="text: expData.staticStrings().participantsInLobby"></span> <span style="font-weight: bold" data-bind="text: jointExpLobbyModel().currentNrOfParticipants()"></span></div> <br>
 
