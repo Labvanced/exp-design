@@ -4352,14 +4352,8 @@ ActionDistributeVariable.prototype.run = function(triggerParams) {
 
     //console.log("try to distribute variable '" + self.variable().name() + "'");
 
-    player.socket.emit('distribute variable',
-        {
-            variable:  {name: self.variable().name(), id: self.variable().id()},
-            operandValue: operandValueToSend,
-            playersToDistributeTo: playersToDistributeToArray,
-            blockVarUntilDone: self.blockVarUntilDone()
-        }
-    );
+    player.jointExpLobby.distributeVariable(self.variable(), operandValueToSend, playersToDistributeToArray, self.blockVarUntilDone());
+
 };
 
 ActionDistributeVariable.prototype.destroyOnPlayerFrame = function() {

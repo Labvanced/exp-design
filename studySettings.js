@@ -35,6 +35,8 @@ var StudySettings = function (expData) {
     this.isWebcamEnabled = ko.observable(false);
     this.multiUserOnLeaveAction = ko.observable("Finish Study With Error");
     this.multiUserAllowInviteFriends  = ko.observable(true);
+    this.multiUserAllowReconnect  = ko.observable(true);
+    this.multiUserReconnectTimeout  = ko.observable(120);
     this.multiUserCheckPing  = ko.observable(true);
     this.multiUserMaxPingAllowed  = ko.observable(600);
     this.multiUserMaxAvgPingAllowed  = ko.observable(300);
@@ -221,6 +223,12 @@ StudySettings.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("multiUserCheckPing")){
         this.multiUserCheckPing(data.multiUserCheckPing);
     }
+    if (data.hasOwnProperty("multiUserAllowReconnect")){
+        this.multiUserAllowReconnect(data.multiUserAllowReconnect);
+    }
+    if (data.hasOwnProperty("multiUserReconnectTimeout")){
+        this.multiUserReconnectTimeout(data.multiUserReconnectTimeout);
+    }
     if (data.hasOwnProperty("multiUserMaxPingAllowed")){
         this.multiUserMaxPingAllowed(data.multiUserMaxPingAllowed);
     }
@@ -272,6 +280,8 @@ StudySettings.prototype.toJS = function() {
         participantConsent:this.participantConsent(),
         multiUserOnLeaveAction:this.multiUserOnLeaveAction(),
         multiUserAllowInviteFriends:this.multiUserAllowInviteFriends(),
+        multiUserAllowReconnect:this.multiUserAllowReconnect(),
+        multiUserReconnectTimeout:this.multiUserReconnectTimeout(),
         multiUserCheckPing:this.multiUserCheckPing(),
         multiUserMaxPingAllowed:this.multiUserMaxPingAllowed(),
         multiUserMaxAvgPingAllowed:this.multiUserMaxAvgPingAllowed(),

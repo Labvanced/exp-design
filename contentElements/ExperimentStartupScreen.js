@@ -198,6 +198,7 @@ var ExperimentStartupScreen = function(experiment) {
     if (this.osAllowed() && this.browserAllowed() && this.resolutionAllowed()) {
         // only start joinExpLobby if allowed:
         this.jointExpLobbyModel = ko.observable(new JointExpLobby(self.expData));
+        player.jointExpLobby = this.jointExpLobbyModel();
 
         var numLang = this.expData.translatedLanguages().length;
         if (numLang < 2) {
