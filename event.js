@@ -25,6 +25,9 @@ var ExpEvent = function(parent) {
         else return '';
     });
 
+    // not serialized:
+    this.isPaused = false;
+
 };
 
 /**
@@ -82,9 +85,11 @@ ExpEvent.prototype.moveAction = function(index, UpOrDown, subElement) {
  * @param parameters
  */
 ExpEvent.prototype.triggerActions = function(parameters) {
-    var actions = this.actions();
-    for (var i=0; i<actions.length; i++) {
-        actions[i].run(parameters);
+    if (!this.isPaused) {
+        var actions = this.actions();
+        for (var i = 0; i < actions.length; i++) {
+            actions[i].run(parameters);
+        }
     }
 };
 
