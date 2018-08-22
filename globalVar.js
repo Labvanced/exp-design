@@ -60,6 +60,9 @@ var GlobalVar = function (expData) {
     this.unused =  ko.observable(true);
     this.calcUnused();
 
+    // only for display in editor list:
+    this.isShown = ko.observable(true);
+
 };
 
 
