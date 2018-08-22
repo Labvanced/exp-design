@@ -38,6 +38,7 @@ var StudySettings = function (expData) {
     this.multiUserAllowInviteFriends  = ko.observable(true);
     this.multiUserAllowReconnect  = ko.observable(true);
     this.multiUserReconnectTimeout  = ko.observable(120);
+    this.multiUserPauseAfter  = ko.observable(6);
     this.multiUserCheckPing  = ko.observable(true);
     this.multiUserMaxPingAllowed  = ko.observable(1000);
     this.multiUserMaxAvgPingAllowed  = ko.observable(600);
@@ -233,6 +234,9 @@ StudySettings.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("multiUserReconnectTimeout")){
         this.multiUserReconnectTimeout(data.multiUserReconnectTimeout);
     }
+    if (data.hasOwnProperty("multiUserPauseAfter")){
+        this.multiUserPauseAfter(data.multiUserPauseAfter);
+    }
     if (data.hasOwnProperty("multiUserMaxPingAllowed")){
         this.multiUserMaxPingAllowed(data.multiUserMaxPingAllowed);
     }
@@ -287,6 +291,7 @@ StudySettings.prototype.toJS = function() {
         multiUserAllowInviteFriends:this.multiUserAllowInviteFriends(),
         multiUserAllowReconnect:this.multiUserAllowReconnect(),
         multiUserReconnectTimeout:this.multiUserReconnectTimeout(),
+        multiUserPauseAfter:this.multiUserPauseAfter(),
         multiUserCheckPing:this.multiUserCheckPing(),
         multiUserMaxPingAllowed:this.multiUserMaxPingAllowed(),
         multiUserMaxAvgPingAllowed:this.multiUserMaxAvgPingAllowed(),

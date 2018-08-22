@@ -214,7 +214,9 @@
                                         <!-- /ko -->
 
 
-                                        <div style="text-align: center"><label class="checkbox-inline" data-bind="visible: !jointExpLobbyModel().waiting()"><input type="checkbox" id="readyToStart" data-bind="checked: jointExpLobbyModel().readyToStart, click: jointExpLobbyModel().emitReadiness"> <span data-bind="text: expData.staticStrings().readyToStart"></span></label></div> <br>
+                                        <div style="text-align: center"><label class="checkbox-inline" data-bind="visible: !jointExpLobbyModel().waiting()">
+                                            <input type="checkbox" id="readyToStart" data-bind="checked: jointExpLobbyModel().readyToStartCheckbox">
+                                            <span data-bind="text: expData.staticStrings().readyToStart"></span></label></div> <br>
                                         <h5 class="text-center" style="margin-left: 20px; font-style: italic;" data-bind="visible: jointExpLobbyModel().readyToStart(), text: expData.staticStrings().experimentStartsShortly"></h5>
                                     </div>
 
