@@ -38,8 +38,8 @@ var StudySettings = function (expData) {
     this.multiUserAllowReconnect  = ko.observable(true);
     this.multiUserReconnectTimeout  = ko.observable(120);
     this.multiUserCheckPing  = ko.observable(true);
-    this.multiUserMaxPingAllowed  = ko.observable(600);
-    this.multiUserMaxAvgPingAllowed  = ko.observable(300);
+    this.multiUserMaxPingAllowed  = ko.observable(1000);
+    this.multiUserMaxAvgPingAllowed  = ko.observable(600);
 
     // number entered before checking the validity (min/max). gets updated after check.
     this.numPartEntered = ko.observable(expData.numPartOfJointExp());
