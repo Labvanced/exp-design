@@ -29,6 +29,7 @@ var StudySettings = function (expData) {
     this.minRes = ko.observable(false);
     this.minWidth = ko.observable(800);
     this.minHeight = ko.observable(600);
+    this.pauseOnExitFullscreen = ko.observable(false);
 
     // special device requirements:
     this.isAudioRecEnabled = ko.observable(false);
@@ -208,6 +209,9 @@ StudySettings.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("minHeight")){
         this.minHeight(data.minHeight);
     }
+    if (data.hasOwnProperty("pauseOnExitFullscreen")){
+        this.pauseOnExitFullscreen(data.pauseOnExitFullscreen);
+    }
     if(data.hasOwnProperty('isAudioRecEnabled')) {
         this.isAudioRecEnabled(data.isAudioRecEnabled);
     }
@@ -276,6 +280,7 @@ StudySettings.prototype.toJS = function() {
         minRes:this.minRes(),
         minWidth:this.minWidth(),
         minHeight:this.minHeight(),
+        pauseOnExitFullscreen:this.pauseOnExitFullscreen(),
         isAudioRecEnabled: this.isAudioRecEnabled(),
         participantConsent:this.participantConsent(),
         multiUserOnLeaveAction:this.multiUserOnLeaveAction(),
