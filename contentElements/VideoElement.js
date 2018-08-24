@@ -249,6 +249,12 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
         // Update the seek bar as the video plays
         myVideo.addEventListener("timeupdate", this.timeUpdateListener);
 
+        // on ended listener:
+        this.onEndedListener = function() {
+            self.dataModel.currentlyPlaying(false);
+        };
+        myVideo.addEventListener("ended", this.onEndedListener);
+
         this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
             seekBar.value = percentage;
         });
@@ -272,6 +278,7 @@ VideoPreviewAndPlayerViewModel.prototype.dispose = function() {
     }
     var myVideo = $(this.element).find('video')[0];
     myVideo.removeEventListener("timeupdate", this.timeUpdateListener);
+    myVideo.removeEventListener("ended", this.onEndedListener);
 };
 
 

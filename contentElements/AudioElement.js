@@ -252,6 +252,12 @@ function createAudioComponents() {
             // Update the seek bar as the audio plays
             myAudio.addEventListener("timeupdate", this.timeUpdateListener);
 
+            // on ended listener:
+            this.onEndedListener = function() {
+                self.dataModel.currentlyPlaying(false);
+            };
+            myAudio.addEventListener("ended", this.onEndedListener);
+
             this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
                 seekBar.value = percentage;
             });
@@ -274,6 +280,7 @@ function createAudioComponents() {
         }
         var myAudio = $(this.element).find('audio')[0];
         myAudio.removeEventListener("timeupdate", this.timeUpdateListener);
+        myAudio.removeEventListener("ended", this.onEndedListener);
     };
 
     ko.components.register('audio-preview',{
