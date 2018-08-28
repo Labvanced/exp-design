@@ -3659,21 +3659,19 @@ ActionControlAV.prototype.isValid = function(){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionControlAV.prototype.run = function(triggerParams) {
-
     if (this.target()) {
-        var elem = $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
-
-        if (elem.length > 0) {
-            if (this.actionType() == 'start') {
-                elem[0].play();
-            }
-            else if (this.actionType() == 'end') {
-                elem[0].pause();
+        if (this.actionType() == 'start') {
+            this.target().content().currentlyPlaying(true);
+        }
+        else if (this.actionType() == 'end') {
+            this.target().content().currentlyPlaying(false);
+            var elem = $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
+            if (elem.length > 0) {
                 elem[0].currentTime = 0;
             }
-            else if (this.actionType() == 'pause') {
-                elem[0].pause();
-            }
+        }
+        else if (this.actionType() == 'pause') {
+            this.target().content().currentlyPlaying(false);
         }
     }
 
