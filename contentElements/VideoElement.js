@@ -216,8 +216,11 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
         var myVideo = $(this.element).find('video')[0];
         var seekBar = $(this.element).find('.seek-bar')[0];
 
-        seekBar.addEventListener("change", function () {
-            dataModel.jumpToByFraction(seekBar.value / 100);
+        seekBar.addEventListener("click", function (param1) {
+            var widthClicked = param1.pageX - $(this).offset().left;
+            var totalWidth =  $(this)[0].getBoundingClientRect().width;
+            var fractionClicked = widthClicked / totalWidth;
+            dataModel.jumpToByFraction(fractionClicked);
         });
 
         this.dataModel.currentlyPlaying.subscribe(function (value) {
@@ -234,7 +237,11 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
             if (evtParam.jumpToFraction) {
                 var time = myVideo.duration * evtParam.jumpToFraction;
                 console.log("setting video time to " + time);
-                myVideo.currentTime = 5;
+                myVideo.currentTime = time;
+            }
+            else if (evtParam.jumpToTime) {
+                console.log("setting video time to " + evtParam.jumpToTime);
+                myVideo.currentTime = evtParam.jumpToTime;
             }
         };
         this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);

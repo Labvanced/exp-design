@@ -217,8 +217,11 @@ function createAudioComponents() {
             var myAudio = $(this.element).find('audio')[0];
             var seekBar = $(this.element).find('.seek-bar')[0];
 
-            seekBar.addEventListener("change", function () {
-                dataModel.jumpToByFraction(seekBar.value / 100);
+            seekBar.addEventListener("click", function (param1) {
+                var widthClicked = param1.pageX - $(this).offset().left;
+                var totalWidth =  $(this)[0].getBoundingClientRect().width;
+                var fractionClicked = widthClicked / totalWidth;
+                dataModel.jumpToByFraction(fractionClicked);
             });
 
             this.dataModel.currentlyPlaying.subscribe(function (value) {
@@ -238,6 +241,10 @@ function createAudioComponents() {
                     var time = myAudio.duration * evtParam.jumpToFraction;
                     console.log("setting audio time to " + time);
                     myAudio.currentTime = time;
+                }
+                else if (evtParam.jumpToTime) {
+                    console.log("setting audio time to " + evtParam.jumpToTime);
+                    myAudio.currentTime = evtParam.jumpToTime;
                 }
             };
             this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
