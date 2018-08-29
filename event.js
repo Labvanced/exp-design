@@ -40,6 +40,28 @@ ExpEvent.prototype.deleteAction = function(index) {
 };
 
 
+ExpEvent.prototype.startPause = function(playerFrame) {
+    this.isPaused = true;
+    var actionsArr = [];
+    this.getAllActions(actionsArr);
+    $.each(actionsArr, function(idx, action) {
+        if (typeof action.startPause === "function") {
+            action.startPause(playerFrame);
+        }
+    });
+};
+
+ExpEvent.prototype.stopPause = function(playerFrame) {
+    this.isPaused = false;
+    var actionsArr = [];
+    this.getAllActions(actionsArr);
+    $.each(actionsArr, function(idx, action) {
+        if (typeof action.stopPause === "function") {
+            action.stopPause(playerFrame);
+        }
+    });
+};
+
 ExpEvent.prototype.moveActionDown = function(index, parent) {
     this.moveAction(index,"Down",parent.parent);
 };

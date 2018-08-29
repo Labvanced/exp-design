@@ -1805,6 +1805,49 @@ ActionJumpTo.prototype.toJS = function() {
 
 
 
+
+function PausableSetTimeout(callback, delay) {
+    this.timerId = null;
+    this.startTime = null;
+    this.remainingTime = delay;
+    this.callback = callback;
+    this.resume();
+}
+
+PausableSetTimeout.prototype.pause = function() {
+    if (this.timerId) {
+        window.clearTimeout(this.timerId);
+        this.remainingTime -= new Date() - this.startTime;
+        this.timerId = null;
+        this.startTime = null;
+        console.log("paused PausableSetTimeout with remainingTime="+this.remainingTime);
+    }
+};
+
+PausableSetTimeout.prototype.stop = function() {
+    console.log("stopping PausableSetTimeout with remainingTime="+this.remainingTime);
+    if (this.timerId) {
+        window.clearTimeout(this.timerId);
+    }
+    this.timerId = null;
+    this.startTime = null;
+    this.callback = null;
+    this.remainingTime = null;
+};
+
+PausableSetTimeout.prototype.resume = function() {
+    var self = this;
+    if (!this.timerId) {
+        console.log("resuming PausableSetTimeout with remainingTime="+this.remainingTime);
+        this.startTime = new Date();
+        this.timerId = window.setTimeout(function() {
+            self.callback();
+            self.stop();
+        }, this.remainingTime);
+    }
+};
+
+
 ////////////////////////////////////////////   ActionDelayedActions   /////////////////////////////////////////////////////
 
 /**
@@ -1815,7 +1858,7 @@ ActionJumpTo.prototype.toJS = function() {
  */
 var ActionDelayedActions = function(event) {
     this.event = event;
-    this.timeoutFcns = [];
+    this.pausableTimeouts = [];
 
     // serialized:
     this.delayInMs = ko.observable(1000);
@@ -1827,7 +1870,6 @@ var ActionDelayedActions = function(event) {
 
 ActionDelayedActions.prototype.type = "ActionDelayedActions";
 ActionDelayedActions.prototype.label = "Delayed Actions (Time Callback)";
-
 
 ActionDelayedActions.prototype.setVariableBackRef = function(variable){
     variable.addBackRef(this, this.event, true, false, 'Delayed Action');
@@ -1875,15 +1917,22 @@ ActionDelayedActions.prototype.run = function(triggerParams) {
         var delayInMs =   parseInt(this.delayInMs());
     }
 
-    var timeoutFcn = setTimeout(function() {
-        var actions = self.subActions();
-        for (var i=0; i<actions.length; i++) {
-            actions[i].run(triggerParams);
+    var pausableTimeout = new PausableSetTimeout(function() {
+        var idx = self.pausableTimeouts.indexOf(pausableTimeout);
+        if (idx > -1) {
+            self.pausableTimeouts.splice(idx, 1);
         }
+        self.delayedRun(triggerParams);
     },delayInMs);
-    this.timeoutFcns.push(timeoutFcn);
+    this.pausableTimeouts.push(pausableTimeout);
 };
 
+ActionDelayedActions.prototype.delayedRun = function(triggerParams) {
+    var actions = self.subActions();
+    for (var i=0; i<actions.length; i++) {
+        actions[i].run(triggerParams);
+    }
+};
 
 /**
  * this function is called in the player when the frame starts. It sets up the knockout subscribers at the globalVars.
@@ -1898,14 +1947,27 @@ ActionDelayedActions.prototype.setupOnPlayerFrame = function(playerFrame) {
     } );
 };
 
+ActionDelayedActions.prototype.startPause = function(playerFrame) {
+    for (var i=0; i<this.pausableTimeouts.length; i++) {
+        this.pausableTimeouts[i].pause();
+    }
+};
+
+ActionDelayedActions.prototype.stopPause = function(playerFrame) {
+    for (var i=0; i<this.pausableTimeouts.length; i++) {
+        this.pausableTimeouts[i].resume();
+    }
+};
+
 /**
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
 ActionDelayedActions.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    jQuery.each( this.timeoutFcns, function( index, fcn ) {
-        clearTimeout(fcn);
+    jQuery.each( this.pausableTimeouts, function( index, pausableTimeout ) {
+        pausableTimeout.stop();
     } );
+    this.pausableTimeouts = [];
     jQuery.each( this.subActions(), function( index, action ) {
         action.destroyOnPlayerFrame(playerFrame);
     } );
@@ -2016,7 +2078,7 @@ ActionDelayedActions.prototype.toJS = function() {
  */
 var ActionStartRepeatedActions = function(event) {
     this.event = event;
-    this.timeoutFcns = [];
+    this.pausableTimeouts = [];
 
     // serialized:
     this.allowMultiple = ko.observable(false); // should it be possible to start this repeatedAction again even if it is still running?
@@ -2066,7 +2128,7 @@ ActionStartRepeatedActions.prototype.run = function(triggerParams) {
         var self = this;
         var start = new Date().getTime();
         var nextAt = start;
-        var timeoutIdx = this.timeoutFcns.length;
+        var timeoutIdx = this.pausableTimeouts.length;
 
         if (!this.allowMultiple()) {
             if (timeoutIdx > 0) {
@@ -2075,7 +2137,7 @@ ActionStartRepeatedActions.prototype.run = function(triggerParams) {
             }
         }
 
-        this.timeoutFcns.push(null);
+        this.pausableTimeouts.push(null);
 
         var scheduleNextRepetition = function() {
 
@@ -2083,7 +2145,7 @@ ActionStartRepeatedActions.prototype.run = function(triggerParams) {
             nextAt += self.delayInMs();
             var currTime = new Date().getTime();
             var waitingTime = nextAt - currTime;
-            self.timeoutFcns[timeoutIdx] = setTimeout(runRepetition, waitingTime);
+            self.pausableTimeouts[timeoutIdx] = new PausableSetTimeout(runRepetition, waitingTime);
 
             if (waitingTime < 0) {
                 console.warn("warning: ActionStartRepeatedActions cannot keep up with the desired delayInMs ("+self.delayInMs()+")")
@@ -2149,14 +2211,27 @@ ActionStartRepeatedActions.prototype.setupOnPlayerFrame = function(playerFrame) 
     } );
 };
 
+ActionStartRepeatedActions.prototype.startPause = function(playerFrame) {
+    for (var i=0; i<this.pausableTimeouts.length; i++) {
+        this.pausableTimeouts[i].pause();
+    }
+};
+
+ActionStartRepeatedActions.prototype.stopPause = function(playerFrame) {
+    for (var i=0; i<this.pausableTimeouts.length; i++) {
+        this.pausableTimeouts[i].resume();
+    }
+};
+
 /**
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
 ActionStartRepeatedActions.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    jQuery.each( this.timeoutFcns, function( index, fcn ) {
-        clearTimeout(fcn);
+    jQuery.each( this.pausableTimeouts, function( index, pausableTimeout ) {
+        pausableTimeout.stop();
     } );
+    this.pausableTimeouts = [];
     jQuery.each( this.subActions(), function( index, action ) {
         action.destroyOnPlayerFrame(playerFrame);
     } );
