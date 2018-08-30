@@ -1928,7 +1928,7 @@ ActionDelayedActions.prototype.run = function(triggerParams) {
 };
 
 ActionDelayedActions.prototype.delayedRun = function(triggerParams) {
-    var actions = self.subActions();
+    var actions = this.subActions();
     for (var i=0; i<actions.length; i++) {
         actions[i].run(triggerParams);
     }
