@@ -373,7 +373,7 @@ function createEditableTextComponents() {
                     if (viewOnRawTextObs() == self.dataModel.rawText()) {
                         // still only the default trial:
                         viewOnRawTextObs(value);
-                        this.markTextObsTranslatable(viewOnRawTextObs)
+                        self.markTextObsTranslatable(viewOnRawTextObs)
                     }
 
                     self.expData.translations()[viewOnRawTextObs()].languages()[self.expData.currentLanguage()](value);
