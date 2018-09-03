@@ -331,6 +331,42 @@ Experiment.prototype.startLockingDialog = function() {
     });
 };
 
+
+
+Experiment.prototype.startLockingDialog2 = function() {
+    var self= this;
+    var tempDialog = $('<div><p><b>WARNING!</b> In order to keep the specification of the experiment and the recorded data synchronized all existing data recordings will be deleted before re-enabling experiment editing! Futhermore, in case your study is currently published, it will be unpublished. Do you really want to continue?</div>');
+
+    var buttons = [];
+    if (!this.publishing_data.recruitViaCrowdsourcing()) {
+        buttons.push({
+            text: "YES, DELETE ALL RECORDED DATA and disable publishing.",
+            click: function () {
+                self.switchToCreateState(function() {
+                    console.log("successfully switched experiment to create state.");
+                    tempDialog.dialog( "close" );
+                });
+            }
+        });
+    }
+
+    buttons.push({
+        text: "Cancel",
+        click: function () {
+            $( this ).dialog( "close" );
+        }
+    });
+
+
+    tempDialog.dialog({
+        modal: true,
+        title: "Experiment is Locked",
+        resizable: false,
+        width: 450,
+        buttons: buttons
+    });
+};
+
 Experiment.prototype.saveMetaData = function(cb) {
     var saveData = {
         exp_id: this.exp_id(),
