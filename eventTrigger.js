@@ -782,7 +782,9 @@ TriggerEnterOnInput.prototype.isValid = function() {
 
 
 TriggerEnterOnInput.prototype.trigger = function(ev) {
-    this.event.triggerActions([ev.key.toUpperCase(),player.currentFrame.getFrameTime()]);
+    if (ev.key) {
+        this.event.triggerActions([ev.key.toUpperCase(), player.currentFrame.getFrameTime()]);
+    }
 };
 
 TriggerEnterOnInput.prototype.getParameterSpec = function() {
