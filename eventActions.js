@@ -4284,17 +4284,17 @@ ActionDistributeVariable.prototype.label = "Distribute Variable";
  */
 ActionDistributeVariable.prototype.initPlayersToDistributeTo = function(playerArray) {
 
-    var observableArray = ko.observableArray(null);
+    var observableArray = ko.observableArray([]);
 
     for(var i=0; i<this.event.parent.expData.numPartOfJointExp(); i++){
         var isSelected;
-        if(!playerArray || playerArray.includes(i)){
+        if(!playerArray || playerArray.indexOf(i) > -1){
             isSelected = true;
         } else{
             isSelected = false;
         }
         observableArray.push({
-            playerId: (i+1),
+            playerId: i+1,
             isSelected: ko.observable(isSelected)
         });
     }
