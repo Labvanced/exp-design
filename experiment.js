@@ -335,7 +335,7 @@ Experiment.prototype.startLockingDialog = function() {
 
 Experiment.prototype.startLockingDialog2 = function() {
     var self= this;
-    var tempDialog = $('<div><p><b>WARNING!</b> In order to keep the specification of the experiment and the recorded data synchronized all existing data recordings will be deleted before re-enabling experiment editing! Futhermore, in case your study is currently published, it will be unpublished. Do you really want to continue?</div>');
+    var tempDialog = $('<div><p><b>WARNING!</b> In order to keep the specification of the experiment and the recorded data synchronized all existing data recordings will be deleted before re-enabling experiment editing! Futhermore, in case your study is currently published, it will be unpublished. Do you really want to continue? <br><br><b>Suggestion: Download all existing data before proceeding!</b> </div>');
 
     var buttons = [];
     if (!this.publishing_data.recruitViaCrowdsourcing()) {

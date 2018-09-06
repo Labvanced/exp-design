@@ -500,7 +500,7 @@ ExperimentStartupScreen.prototype.checkSurveyData = function () {
     if (this.errorString() == "") {
        if (this.requiredGroup() =='byParticipant' || this.requiredSession() =='byParticipant'){
            var groupNr = this.initialSubjectDialog().selectedGroupNr();
-           var sessionNr = this.initialSubjectDialog().selectedGroupNr();
+           var sessionNr = this.initialSubjectDialog().selectedSessionNr();
            player.setSubjectGroupNr(groupNr, sessionNr);
        }
       this.sendDataAndContinue();
