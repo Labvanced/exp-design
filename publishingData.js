@@ -348,6 +348,12 @@ PublishingData.prototype.fromJS = function(data) {
             translatedLanguages:ko.observable(data.savedExternally.translatedLanguages),
             translationsEnabled:ko.observable(data.savedExternally.translationsEnabled)
         };
+        if (data.savedExternally.hasOwnProperty('totalNrSubjects')) {
+            obj.totalNrSubjects= ko.observable(data.savedExternally.totalNrSubjects)
+        }
+        else{
+            obj.totalNrSubjects= ko.observable(0);
+        }
         this.savedExternally(obj);
     }
 
@@ -528,7 +534,8 @@ PublishingData.prototype.toJS = function() {
             genders:genders,
             numPartOfJointExp:self.experiment.exp_data.numPartOfJointExp(),
             translatedLanguages:self.experiment.exp_data.translatedLanguages(),
-            translationsEnabled:self.experiment.exp_data.translationsEnabled()
+            translationsEnabled:self.experiment.exp_data.translationsEnabled(),
+            totalNrSubjects:self.experiment.exp_run_data().subjCounterGlobal
         }
 
     };
