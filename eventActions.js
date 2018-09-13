@@ -934,6 +934,10 @@ ActionWriteToArray.prototype.run = function(triggerParams) {
         var index = parseInt(this.inVarIndex().value().value())-1;
     }
 
+    if (index<0){
+        index = 0;
+    }
+
     var value = this.inVar().value().value();
     if (this.inVarArr) {
         this.inVarArr().value().setValueAt(index,value);
@@ -1135,10 +1139,14 @@ ActionModifyArray.prototype.run = function(triggerParams) {
         var index = parseInt(this.indexFixedVal())-1;
     }
     else if (this.InsertOption()=='end'){
-        var index = this.inVarArr().value().value().length;
+        var index = this.inVarArr().value().value().length-1;
     }
     else {
         var index = parseInt(this.inVarIndex().value().value())-1;
+    }
+
+    if (index<0){
+        index = 0;
     }
 
     var valueList = [];
@@ -1150,16 +1158,27 @@ ActionModifyArray.prototype.run = function(triggerParams) {
         // if if should not be linked add a new variable inside
         else{
             var newVar = new GlobalVar(this.insertVarList()[i].expData).fromJS(this.insertVarList()[i].toJS());
-            newVar.value().value(this.insertVarList()[i].value().toJS());
+            if (this.insertVarList()[i].value() instanceof GlobalVarValueFile){
+                newVar.value().value(this.insertVarList()[i].value().convert(this.insertVarList()[i].value().toJS()));
+            }
+            else{
+                newVar.value().value(this.insertVarList()[i].value().toJS());
+            }
             valueList.push(newVar.value());
         }
 
     }
 
     if (this.inVarArr()) {
-        this.inVarArr().value().value().splice(index-1,parseInt(this.nrOfDeletions()));
+        this.inVarArr().value().value.splice(index,parseInt(this.nrOfDeletions()));
         for (var i = 0; i<valueList.length; i++){
-            this.inVarArr().value().value().splice(index,0,valueList[i]);
+            if (this.InsertOption()=='end'){
+                this.inVarArr().value().value.splice(index+1,0,valueList[i]);
+            }
+            else{
+                this.inVarArr().value().value.splice(index,0,valueList[i]);
+            }
+
         }
 
     }
