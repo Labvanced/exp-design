@@ -32,6 +32,8 @@ var ExperimentStartupScreen = function(experiment) {
     this.requiredLanguage = this.expData.parentExperiment.publishing_data.surveyItemLanguage;
     this.requiredEmail = this.expData.parentExperiment.publishing_data.surveyItemEmail;
 
+    this.dataAlreadySent = false;
+
     this.countryQuestionVisible = ko.computed(function() {
         if (self.requiredCountry() == "hidden") {
             return false;
@@ -496,18 +498,25 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
 
 ExperimentStartupScreen.prototype.checkSurveyData = function () {
     var self = this;
-    this.surveySubmitted(true);
-    if (this.errorString() == "") {
-       if (this.requiredGroup() =='byParticipant' || this.requiredSession() =='byParticipant'){
+    if (this.errorString() == "" && !this.surveySubmitted()) {
+        this.surveySubmitted(true);
+        if (this.requiredGroup() =='byParticipant' || this.requiredSession() =='byParticipant'){
            var groupNr = this.initialSubjectDialog().selectedGroupNr();
            var sessionNr = this.initialSubjectDialog().selectedSessionNr();
            player.setSubjectGroupNr(groupNr, sessionNr);
-       }
-      this.sendDataAndContinue();
+        }
+        this.sendDataAndContinue();
     }
 };
 
 ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
+
+    if (this.dataAlreadySent) {
+        // prevent double sending data...
+        return;
+    }
+
+    this.dataAlreadySent = true;
 
     // temp save worker id
     this.expData.varCrowdsourcingSubjId().value().value(this.selectedCSId());
