@@ -696,24 +696,27 @@ RefToObjectProperty.prototype.getValue = function() {
 
 
     var target = this.target();
-
-    if (this.property() == "content.file"){
-       var fileID =  target.content().modifier().selectedTrialView["file_id"]();
-       var name = target.content().modifier().selectedTrialView["file_orig_name"]();
-       var obj ={id:fileID, name:name};
-       return obj
-    }
-    else{
-        var propertyPath = this.property().split(".");
-        for (var k=0; k < propertyPath.length-1; k++) {
-            target = target[propertyPath[k]];
-            if (ko.isObservable(target)) {
-                target = target();
-            }
+    if (target) {
+        if (this.property() == "content.file") {
+            var fileID = target.content().modifier().selectedTrialView["file_id"]();
+            var name = target.content().modifier().selectedTrialView["file_orig_name"]();
+            var obj = {id: fileID, name: name};
+            return obj
         }
-        return target.modifier().selectedTrialView[propertyPath[propertyPath.length-1]]();
+        else {
+            var propertyPath = this.property().split(".");
+            for (var k = 0; k < propertyPath.length - 1; k++) {
+                target = target[propertyPath[k]];
+                if (ko.isObservable(target)) {
+                    target = target();
+                }
+            }
+            return target.modifier().selectedTrialView[propertyPath[propertyPath.length - 1]]();
+        }
     }
-
+    else {
+        return null;
+    }
 
 };
 
@@ -723,23 +726,22 @@ RefToObjectProperty.prototype.getValue = function() {
 RefToObjectProperty.prototype.setValue = function(newVal) {
 
     var target = this.target();
-    if  (this.property() == "content.file"){
-        target.content().modifier().selectedTrialView["file_id"](newVal.id());
-        target.content().modifier().selectedTrialView["file_orig_name"](newVal.name());
-    }
-    else{
-        var propertyPath = this.property().split(".");
-        for (var k=0; k < propertyPath.length-1; k++) {
-            target = target[propertyPath[k]];
-            if (ko.isObservable(target)) {
-                target = target();
-            }
+    if (target) {
+        if (this.property() == "content.file") {
+            target.content().modifier().selectedTrialView["file_id"](newVal.id());
+            target.content().modifier().selectedTrialView["file_orig_name"](newVal.name());
         }
-        target.modifier().selectedTrialView[propertyPath[propertyPath.length-1]](newVal);
+        else {
+            var propertyPath = this.property().split(".");
+            for (var k = 0; k < propertyPath.length - 1; k++) {
+                target = target[propertyPath[k]];
+                if (ko.isObservable(target)) {
+                    target = target();
+                }
+            }
+            target.modifier().selectedTrialView[propertyPath[propertyPath.length - 1]](newVal);
+        }
     }
-
-
-
 };
 
 /**

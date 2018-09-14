@@ -37,6 +37,9 @@ var ImageElement= function(expData) {
             var file_route = "/files/";
             if (typeof player !== 'undefined') {
                 file_route = "/player/files/" + player.expSessionNr + "/";
+                if (is_nwjs()) {
+                    file_route = "files/";
+                }
             }
             return file_route + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
         }
