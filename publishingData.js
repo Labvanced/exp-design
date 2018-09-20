@@ -61,7 +61,7 @@ var PublishingData = function(experiment) {
     this.templatePublicationDate =  ko.observable(null);
 
     //
-    this.savedExternally = ko.observable(null);
+    this.savedExternally = ko.observable(new SavedExternally(experiment));
     this.displayBackToLib = ko.observable(true);
 
 
@@ -337,27 +337,8 @@ PublishingData.prototype.fromJS = function(data) {
     }
 
     if (data.hasOwnProperty('savedExternally')) {
-        var obj = {
-            userName: ko.observable(data.savedExternally.userName),
-            isJointExp:ko.observable(data.savedExternally.isJointExp),
-            numPartOfJointExp:ko.observable(data.savedExternally.numPartOfJointExp),
-            countries:ko.observable(data.savedExternally.countries),
-            languages:ko.observable(data.savedExternally.languages),
-            genders:ko.observable(data.savedExternally.genders),
-            ages:ko.observable(data.savedExternally.ages),
-            translatedLanguages:ko.observable(data.savedExternally.translatedLanguages),
-            translationsEnabled:ko.observable(data.savedExternally.translationsEnabled)
-        };
-        if (data.savedExternally.hasOwnProperty('totalNrSubjects')) {
-            obj.totalNrSubjects= ko.observable(data.savedExternally.totalNrSubjects)
-        }
-        else{
-            obj.totalNrSubjects= ko.observable(0);
-        }
-        this.savedExternally(obj);
+        this.savedExternally().fromJS(data.savedExternally);
     }
-
-
 
     // After publication
     // After publication
@@ -525,18 +506,7 @@ PublishingData.prototype.toJS = function() {
 
         displayBackToLib: this.displayBackToLib(),
         customParticipationRequirement:this.customParticipationRequirement(),
-        savedExternally:{
-            userName:uc.userdata.username(),
-            isJointExp:self.experiment.exp_data.isJointExp(),
-            countries:countries,
-            ages:ages,
-            languages:languages,
-            genders:genders,
-            numPartOfJointExp:self.experiment.exp_data.numPartOfJointExp(),
-            translatedLanguages:self.experiment.exp_data.translatedLanguages(),
-            translationsEnabled:self.experiment.exp_data.translationsEnabled(),
-            totalNrSubjects:self.experiment.exp_run_data().subjCounterGlobal
-        }
+        savedExternally: this.savedExternally().toJS()
 
     };
 };
