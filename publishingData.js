@@ -64,6 +64,12 @@ var PublishingData = function(experiment) {
     this.savedExternally = ko.observable(new SavedExternally(experiment));
     this.displayBackToLib = ko.observable(true);
 
+    // for adding the folder structure
+    this.isFolder = ko.observable(false);
+    this.folderItems = ko.observableArray([]);
+    this.filePath = ko.observable("/root");
+
+
 
     // not serialized:
     this.requiredGender = ko.observable(false);
@@ -340,6 +346,19 @@ PublishingData.prototype.fromJS = function(data) {
         this.savedExternally().fromJS(data.savedExternally);
     }
 
+    if (data.hasOwnProperty('isFolder')) {
+        this.isFolder(data.isFolder);
+    }
+
+    if (data.hasOwnProperty('folderItems')) {
+        this.folderItems(data.folderItems);
+    }
+
+    if (data.hasOwnProperty('filePath')) {
+        this.filePath(data.filePath);
+    }
+
+
     // After publication
     // After publication
     this.individualizedLinks(data.individualizedLinks);
@@ -376,82 +395,84 @@ PublishingData.prototype.toJS = function() {
 
 
     // for external saving
-    var groups = this.experiment.exp_data.availableGroups();
+    if (this.experiment.exp_data.availableGroups){
+        var groups = this.experiment.exp_data.availableGroups();
 
-
-    var genders =[];
-    groups.forEach(function (group) {
-        if (group.enabledGender()){
-            if (genders.indexOf(group.genderRequirement())==-1){
-                genders.push(group.genderRequirement());
-            }
-        }
-    });
-    if (genders.length==0 || (genders.indexOf("male")>-1 && genders.indexOf("female")>-1)){
-        genders = ["All Genders"];
-    }
-
-    var countries =[];
-    groups.forEach(function (group) {
-        var subCoun = group.countryRequirement();
-        subCoun.forEach(function (country) {
-            if (group.enabledCountry()){
-                if (countries.indexOf(country)==-1){
-                    countries.push(country);
+        var genders =[];
+        groups.forEach(function (group) {
+            if (group.enabledGender()){
+                if (genders.indexOf(group.genderRequirement())==-1){
+                    genders.push(group.genderRequirement());
                 }
             }
-
         });
-    });
-    if (countries.length==0){
-        countries.push("All Locations");
-    }
+        if (genders.length==0 || (genders.indexOf("male")>-1 && genders.indexOf("female")>-1)){
+            genders = ["All Genders"];
+        }
+
+        var countries =[];
+        groups.forEach(function (group) {
+            var subCoun = group.countryRequirement();
+            subCoun.forEach(function (country) {
+                if (group.enabledCountry()){
+                    if (countries.indexOf(country)==-1){
+                        countries.push(country);
+                    }
+                }
+
+            });
+        });
+        if (countries.length==0){
+            countries.push("All Locations");
+        }
 
 
-    var languages =[];
-    groups.forEach(function (group) {
-        var subCoun = group.languageRequirement();
-        subCoun.forEach(function (country) {
-            if (group.enabledLanguage()){
-                if (languages.indexOf(country)==-1){
-                    languages.push(country);
+        var languages =[];
+        groups.forEach(function (group) {
+            var subCoun = group.languageRequirement();
+            subCoun.forEach(function (country) {
+                if (group.enabledLanguage()){
+                    if (languages.indexOf(country)==-1){
+                        languages.push(country);
+                    }
+                }
+
+            });
+        });
+        if (languages.length==0){
+            languages.push("All Languages");
+        }
+
+
+        var ages = "";
+        var ageFinalMin = null;
+        var ageFinalMax = null;
+        groups.forEach(function (group) {
+            if (group.enabledAge()){
+                var ageMin = parseInt(group.ageRequirement()[0]);
+                var ageMax =  parseInt(group.ageRequirement()[1]);
+                if(ageFinalMin ==null || ageFinalMin>ageMin){
+                    ageFinalMin =ageMin;
+                }
+                if(ageFinalMax ==null || ageFinalMax<ageMax){
+                    ageFinalMax =ageMax;
                 }
             }
-
         });
-    });
-    if (languages.length==0){
-        languages.push("All Languages");
-    }
-
-
-    var ages = "";
-    var ageFinalMin = null;
-    var ageFinalMax = null;
-    groups.forEach(function (group) {
-        if (group.enabledAge()){
-            var ageMin = parseInt(group.ageRequirement()[0]);
-            var ageMax =  parseInt(group.ageRequirement()[1]);
-            if(ageFinalMin ==null || ageFinalMin>ageMin){
-                ageFinalMin =ageMin;
-            }
-            if(ageFinalMax ==null || ageFinalMax<ageMax){
-                ageFinalMax =ageMax;
-            }
+        if (ageFinalMin== null && ageFinalMax==null) {
+            ages = "All Ages";
         }
-    });
-    if (ageFinalMin== null && ageFinalMax==null) {
-        ages = "All Ages";
+        else if (ageFinalMax==120){
+            ages =  ageFinalMin+" or older";
+        }
+        else if (ageFinalMin==0){
+            ages = ageFinalMax+" or younger";
+        }
+        else if (ageFinalMax!= null  && ageFinalMin!=null){
+            ages = ageFinalMin+"-"+ageFinalMax;
+        }
     }
-    else if (ageFinalMax==120){
-        ages =  ageFinalMin+" or older";
-    }
-    else if (ageFinalMin==0){
-        ages = ageFinalMax+" or younger";
-    }
-    else if (ageFinalMax!= null  && ageFinalMin!=null){
-        ages = ageFinalMin+"-"+ageFinalMax;
-    }
+
 
 
     var self = this;
@@ -506,7 +527,11 @@ PublishingData.prototype.toJS = function() {
 
         displayBackToLib: this.displayBackToLib(),
         customParticipationRequirement:this.customParticipationRequirement(),
-        savedExternally: this.savedExternally().toJS()
+        savedExternally: this.savedExternally().toJS(),
+
+        isFolder: this.isFolder(),
+        folderItems: this.folderItems(),
+        filePath: this.filePath()
 
     };
 };
