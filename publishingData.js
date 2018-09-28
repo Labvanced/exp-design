@@ -66,7 +66,6 @@ var PublishingData = function(experiment) {
 
     // for adding the folder structure
     this.isFolder = ko.observable(false);
-    this.folderItems = ko.observableArray([]);
     this.filePath = ko.observable("/root");
 
 
@@ -350,9 +349,6 @@ PublishingData.prototype.fromJS = function(data) {
         this.isFolder(data.isFolder);
     }
 
-    if (data.hasOwnProperty('folderItems')) {
-        this.folderItems(data.folderItems);
-    }
 
     if (data.hasOwnProperty('filePath')) {
         this.filePath(data.filePath);
@@ -530,7 +526,6 @@ PublishingData.prototype.toJS = function() {
         savedExternally: this.savedExternally().toJS(),
 
         isFolder: this.isFolder(),
-        folderItems: this.folderItems(),
         filePath: this.filePath()
 
     };
