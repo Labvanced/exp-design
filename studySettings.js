@@ -55,6 +55,9 @@ var StudySettings = function (expData) {
     this.assignSubjGroup = ko.observable("automatic");
     this.assignSession = ko.observable("automatic");
 
+    this.actionOnResourceError = ko.observable("continue experiment");
+
+
     var self = this;
     this.deviceRunType = ko.computed(function () {
         var someMobileAllowed = false;
@@ -254,6 +257,10 @@ StudySettings.prototype.fromJS = function(data) {
         this.assignSession(data.assignSession);
     }
 
+    if (data.hasOwnProperty("actionOnResourceError")){
+        this.actionOnResourceError(data.actionOnResourceError);
+    }
+
 
 
 
@@ -297,7 +304,8 @@ StudySettings.prototype.toJS = function() {
         multiUserMaxAvgPingAllowed:this.multiUserMaxAvgPingAllowed(),
         isWebcamEnabled:this.isWebcamEnabled(),
         assignSubjGroup:this.assignSubjGroup(),
-        assignSession:this.assignSession()
+        assignSession:this.assignSession(),
+        actionOnResourceError:this.actionOnResourceError()
     };
     return data;
 };
