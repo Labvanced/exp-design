@@ -470,6 +470,23 @@ PublishingData.prototype.toJS = function() {
     }
 
 
+    if (this.experiment.exp_data == "not loaded"){
+        var savedExternally = {
+            userName: this.savedExternally().userName(),
+            isJointExp: this.savedExternally().isJointExp(),
+            countries:this.savedExternally().countries(),
+            ages:this.savedExternally().ages(),
+            languages:this.savedExternally().languages(),
+            genders:this.savedExternally().genders(),
+            numPartOfJointExp:this.savedExternally().numPartOfJointExp(),
+            translatedLanguages:this.savedExternally().translatedLanguages(),
+            translationsEnabled:this.savedExternally().translationsEnabled(),
+            totalNrSubjects: this.savedExternally().totalNrSubjects()
+        }
+    }
+    else{
+        var savedExternally = this.savedExternally().toJS();
+    }
 
     var self = this;
 
@@ -503,7 +520,7 @@ PublishingData.prototype.toJS = function() {
 
         // crowdsourcing
         crowdsourcingStatus: this.crowdsourcingStatus(),
-        measuredAverageTime:this.measuredAverageTime,
+        measuredAverageTime:this.measuredAverageTime(),
         completionLink:this.completionLink(),
 
         // initial subject survey
@@ -523,7 +540,7 @@ PublishingData.prototype.toJS = function() {
 
         displayBackToLib: this.displayBackToLib(),
         customParticipationRequirement:this.customParticipationRequirement(),
-        savedExternally: this.savedExternally().toJS(),
+        savedExternally: savedExternally,
 
         isFolder: this.isFolder(),
         filePath: this.filePath()
