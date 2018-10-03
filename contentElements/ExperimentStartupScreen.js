@@ -453,11 +453,12 @@ ExperimentStartupScreen.prototype.jumpToAskSubjData = function () {
 
 ExperimentStartupScreen.prototype.jumpToSurvey = function () {
 
+    var self = this;
     if (player.runOnlyTaskId) {
         // directly skip to joint exp lobby:
         player.setSubjectGroupNr(1, 1);
-        player.preloadAllContent();
-        this.jumpToJointExpLobby();
+        player.preloadAllContent(function (){self.jumpToJointExpLobby.call(self)});
+
         return;
     }
 
@@ -465,7 +466,7 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
         // directly skip to joint exp lobby:
         player.setSubjectGroupNr(player.runOnlyGroupNr, player.runOnlySessionNr);
         player.preloadAllContent();
-        this.sendDataAndContinue();
+        this.sendDataAndContinue;
         return;
     }
 
@@ -481,8 +482,8 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
     if (player.groupNrAssignedByServer && player.sessionNrAssignedByServer) {
         // directly skip to loading screen (recording session already initialized on server:
         player.setSubjectGroupNr(player.groupNrAssignedByServer, player.sessionNrAssignedByServer);
-        player.preloadAllContent();
-        this.jumpToJointExpLobby();
+        player.preloadAllContent(function (){self.jumpToJointExpLobby.call(self)});
+
         return;
     }
 
@@ -555,8 +556,8 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
             if (!(self.requiredGroup() =='byParticipant' || self.requiredSession() =='byParticipant')){
                 player.setSubjectGroupNr(data.groupNr, data.sessionNr);
             }
-            player.preloadAllContent();
-            self.jumpToJointExpLobby();
+            player.preloadAllContent(function (){self.jumpToJointExpLobby.call(self)});
+
         }
     );
 };
