@@ -38,7 +38,8 @@ var ImageElement= function(expData) {
             if (typeof player !== 'undefined') {
                 file_route = "/player/files/" + player.expSessionNr + "/";
                 if (is_nwjs()) {
-                    file_route = "files/";
+                    return player.playerPreloader.preloadedObjectUrlsById[this.modifier().selectedTrialView.file_id()];
+                    //file_route = "files/";
                 }
             }
             return file_route + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
