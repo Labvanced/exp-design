@@ -60,6 +60,10 @@ var PublishingData = function(experiment) {
     this.publicationDate =  ko.observable(null);
     this.templatePublicationDate =  ko.observable(null);
 
+    this.connectToExternalDevices = ko.observable(false);
+    this.connectToIP = ko.observable('localhost');
+    this.connectToPort = ko.observable(8081);
+
     //
     this.savedExternally = ko.observable(new SavedExternally(experiment));
     this.displayBackToLib = ko.observable(true);
@@ -353,6 +357,16 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('filePath')) {
         this.filePath(data.filePath);
     }
+    
+    if (data.hasOwnProperty('connectToExternalDevices')) {
+        this.connectToExternalDevices(data.connectToExternalDevices);
+    }
+    if (data.hasOwnProperty('connectToIP')) {
+        this.connectToIP(data.connectToIP);
+    }
+    if (data.hasOwnProperty('connectToPort')) {
+        this.connectToPort(data.connectToPort);
+    }
 
 
     // After publication
@@ -366,7 +380,6 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('displayBackToLib')) {
         this.displayBackToLib(data.displayBackToLib);
     }
-
 };
 
 
@@ -543,7 +556,12 @@ PublishingData.prototype.toJS = function() {
         savedExternally: savedExternally,
 
         isFolder: this.isFolder(),
-        filePath: this.filePath()
+        filePath: this.filePath(),
+
+        connectToExternalDevices: this.connectToExternalDevices(),
+        connectToIP: this.connectToIP(),
+        connectToPort:this.connectToPort()
+
 
     };
 };

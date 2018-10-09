@@ -4456,6 +4456,89 @@ ActionDistributeVariable.prototype.destroyOnPlayerFrame = function() {
 
 
 
+//////////////////////////////////////  ActionSendExternalTrigger  //////////////////////////////////////////
+
+/**
+ * This action distributes variables to other players within a joint experiment.
+ *
+ * @param {ExpEvent} event - the parent event
+ * @constructor
+ */
+var ActionSendExternalTrigger = function(event) {
+    var self = this;
+
+    this.event = event;
+    // serialized
+    this.variable = ko.observable(null);
+    this.message = ko.observable('');
+};
+
+ActionSendExternalTrigger.prototype.type = "ActionSendExternalTrigger";
+ActionSendExternalTrigger.prototype.label = "Send External Trigger";
+
+
+ActionSendExternalTrigger.prototype.isValid = function(){
+    return true;
+};
+
+ActionSendExternalTrigger.prototype.setVariableBackRef = function(variable){
+    variable.addBackRef(this, this.event, true, false, 'dist variable');
+};
+
+// like ActionSetVariable
+ActionSendExternalTrigger.prototype.fromJS = function(data) {
+    this.variable(data.variable);
+    this.message(data.message);
+    return this;
+};
+
+// like ActionSetVariable
+ActionSendExternalTrigger.prototype.toJS = function(data) {
+    var varId = null;
+    if (this.variable()) {
+        varId = this.variable().id();
+    }
+    return {
+        variable: varId,
+        message: this.message(),
+        type: this.type
+    };
+};
+
+ActionSendExternalTrigger.prototype.setPointers = function(entitiesArr){
+    if (this.variable()){
+        var varToSet = entitiesArr.byId[this.variable()];
+        if (varToSet){
+            this.variable(varToSet);
+        }
+    }
+};
+
+ActionSendExternalTrigger.prototype.reAddEntities = function(entitiesArr) {
+
+    // add variable:
+    if (this.variable()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
+    }
+};
+
+ActionSendExternalTrigger.prototype.run = function(triggerParams) {
+    // TODO create a web-socket connection with specified IP and port
+};
+
+ActionSendExternalTrigger.prototype.destroyOnPlayerFrame = function() {
+};
+
+
+
+
+
+
+
+
+
 ////////////////////////////////////////  ActionMathAndStats ///////////////////////////////////////////////////
 
 var ActionMathAndStats = function(event) {

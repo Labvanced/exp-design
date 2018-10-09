@@ -1,7 +1,7 @@
 var ExperimentStartupScreen = function(experiment) {
     var self = this;
 
-
+    this.experiment = experiment;
     this.expData = experiment.exp_data;
 
     this.imageType = ko.observable(experiment.publishing_data.imageType());
@@ -207,6 +207,12 @@ var ExperimentStartupScreen = function(experiment) {
             // directly skip to survey if only one language is defined:
             this.jumpToAskSubjData();
         }
+    }
+
+    if (this.experiment.publishing_data.connectToExternalDevices()) {
+        // only start external connection if enabled:
+        this.externalConnection = ko.observable(new ExternalConnection(self.expData));
+        player.externalConnection = this.externalConnection();
     }
 
 };
@@ -617,6 +623,9 @@ ExperimentStartupScreen.prototype.onPreloaderFinished = function() {
     if (this.expData.isJointExp()) {
         this.jumpToJointExpLobby();
     }
+    else if (this.experiment.publishing_data.connectToExternalDevices()){
+        this.startExternalConnection();
+    }
     else {
         this.onReadyToStart();
     }
@@ -631,6 +640,13 @@ ExperimentStartupScreen.prototype.jumpToJointExpLobby = function() {
             self.onReadyToStart();
         }
     });
+};
+
+
+ExperimentStartupScreen.prototype.startExternalConnection = function() {
+    var self = this;
+    this.externalConnection().initSocketAndListeners(self.onReadyToStart);
+
 };
 
 ExperimentStartupScreen.prototype.onReadyToStart = function() {
