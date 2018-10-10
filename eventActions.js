@@ -4526,6 +4526,12 @@ ActionSendExternalTrigger.prototype.reAddEntities = function(entitiesArr) {
 
 ActionSendExternalTrigger.prototype.run = function(triggerParams) {
     // TODO create a web-socket connection with specified IP and port
+    var data  = {
+        msg: this.message(),
+        value: this.variable().getValue()
+    };
+    player.externalWebsocket.send(JSON.stringify(data));
+
 };
 
 ActionSendExternalTrigger.prototype.destroyOnPlayerFrame = function() {

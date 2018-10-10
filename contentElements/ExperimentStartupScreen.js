@@ -211,8 +211,19 @@ var ExperimentStartupScreen = function(experiment) {
 
     if (this.experiment.publishing_data.connectToExternalDevices()) {
         // only start external connection if enabled:
-        this.externalConnection = ko.observable(new ExternalConnection(self.expData));
-        player.externalConnection = this.externalConnection();
+        //var param = "ws://"+this.experiment.publishing_data.connectToIP()+":"+this.experiment.publishing_data.connectToPort()+"/";
+        var param = "ws://127.0.0.1:"+this.experiment.publishing_data.connectToPort()+"/";
+        player.externalWebsocket = new WebSocket(param);
+        player.externalWebsocket.onmessage = function (event) {
+            var data = JSON.parse(event.data);
+            var allCBs = player.playerFrame.websocketTriggerCallbacks;
+            if (allCBs[data.msg]){
+                var cbs = allCBs[data.msg];
+                cbs.foreach(function (cb) {
+                    cb();
+                })
+            }
+        };
     }
 
 };
@@ -623,9 +634,6 @@ ExperimentStartupScreen.prototype.onPreloaderFinished = function() {
     if (this.expData.isJointExp()) {
         this.jumpToJointExpLobby();
     }
-    else if (this.experiment.publishing_data.connectToExternalDevices()){
-        this.startExternalConnection();
-    }
     else {
         this.onReadyToStart();
     }
@@ -640,13 +648,6 @@ ExperimentStartupScreen.prototype.jumpToJointExpLobby = function() {
             self.onReadyToStart();
         }
     });
-};
-
-
-ExperimentStartupScreen.prototype.startExternalConnection = function() {
-    var self = this;
-    this.externalConnection().initSocketAndListeners(self.onReadyToStart);
-
 };
 
 ExperimentStartupScreen.prototype.onReadyToStart = function() {

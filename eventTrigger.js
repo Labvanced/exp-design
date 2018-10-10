@@ -970,6 +970,140 @@ TriggerOnFrameStart.prototype.toJS = function() {
 ////////////////////////
 
 
+
+
+
+
+
+
+
+/**
+ * This Trigger is executed when the frame starts.
+ *
+ * @param {ExpEvent} event - the parent event where this requirements is used.
+ * @constructor
+ */
+var TriggerWebsocket = function(event) {
+    this.event = event;
+
+    // not serialized
+    this.msg = ko.observable("");
+    this.callbackForCleanUp = null;
+
+};
+
+TriggerWebsocket.prototype.type = "TriggerWebsocket";
+TriggerWebsocket.prototype.label = "External Trigger";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+TriggerWebsocket.prototype.isValid = function() {
+    return true;
+};
+
+/**
+ * Returns the parameters that this trigger will pass on to the requirements and actions.
+ *
+ * @returns {string[]}
+ */
+TriggerWebsocket.prototype.getParameterSpec = function() {
+    return [
+        this.msg()
+    ];
+};
+
+/**
+ * this function is called in the player when the frame starts. It directly triggers the actions.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+
+TriggerWebsocket.prototype.setupOnPlayerFrame = function(playerFrame) {
+    var self = this;
+    this.callbackForCleanUp = function(){
+        self.event.triggerActions([this.msg()]);
+    };
+    if (playerFrame.websocketTriggerCallbacks[this.msg()]){
+        playerFrame.websocketTriggerCallbacks[this.msg()].push(this.callbackForCleanUp)
+    }
+    else {
+        playerFrame.websocketTriggerCallbacks[this.msg()] = [this.callbackForCleanUp]
+    }
+};
+
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+TriggerWebsocket.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    var allCBs = playerFrame.websocketTriggerCallbacks[this.msg()];
+    if (allCBs){
+        if (allCBs.length==1){
+            delete playerFrame.websocketTriggerCallbacks[this.msg()];
+        }
+        else{
+            var callbackIdx = playerFrame.websocketTriggerCallbacks[this.msg()].indexOf(this.callbackForCleanUp)
+            playerFrame.websocketTriggerCallbacks[this.msg()].splice(callbackIdx,1);
+        }
+    }
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerWebsocket.prototype.setPointers = function(entitiesArr) {
+
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerWebsocket.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {TriggerOnFrameStart}
+ */
+TriggerWebsocket.prototype.fromJS = function(data) {
+    this.msg(data.msg);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+TriggerWebsocket.prototype.toJS = function() {
+    return {
+        type: this.type,
+        msg: this.msg()
+    };
+};
+
+
+////////////////////////
+
+
+
+
+
+
+
+
+
+
 /**
  * This Trigger is executed when the frame ends.
  *
