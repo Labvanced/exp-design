@@ -4525,10 +4525,13 @@ ActionSendExternalTrigger.prototype.reAddEntities = function(entitiesArr) {
 };
 
 ActionSendExternalTrigger.prototype.run = function(triggerParams) {
-    // TODO create a web-socket connection with specified IP and port
+   var value = null;
+   if (this.variable()){
+       value = this.variable().getValue();
+   }
     var data  = {
         msg: this.message(),
-        value: this.variable().getValue()
+        value: value
     };
     player.externalWebsocket.send(JSON.stringify(data));
 
