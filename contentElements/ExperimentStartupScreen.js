@@ -211,19 +211,28 @@ var ExperimentStartupScreen = function(experiment) {
 
     if (this.experiment.publishing_data.connectToExternalDevices()) {
         // only start external connection if enabled:
-        //var param = "ws://"+this.experiment.publishing_data.connectToIP()+":"+this.experiment.publishing_data.connectToPort()+"/";
-        var param = "ws://127.0.0.1:"+this.experiment.publishing_data.connectToPort()+"/";
+        var param = "ws://"+this.experiment.publishing_data.connectToIP()+":"+this.experiment.publishing_data.connectToPort()+"/";
         player.externalWebsocket = new WebSocket(param);
         player.externalWebsocket.onmessage = function (event) {
             var data = JSON.parse(event.data);
-            var allCBs = player.playerFrame.websocketTriggerCallbacks;
-            if (allCBs[data.msg]){
-                var cbs = allCBs[data.msg];
-                cbs.foreach(function (cb) {
-                    cb();
+            var allCBs = player.currentFrame.websocketTriggerCallbacks;
+            // execute all callbacks (events) with 'any' as trigger
+            var callbacksToExe = allCBs["any"];
+            if (callbacksToExe){
+                callbacksToExe.forEach(function (cb) {
+                    cb(data.msg,data.value);
                 })
             }
-        };
+            // execute all callbacks (events) with 'specific' trigger
+            if (allCBs[data.msg]){
+                var cbs = allCBs[data.msg];
+                cbs.forEach(function (cb) {
+                    cb(data.msg,data.value);
+                })
+            }
+
+
+        }
     }
 
 };

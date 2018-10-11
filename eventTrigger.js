@@ -985,9 +985,10 @@ TriggerOnFrameStart.prototype.toJS = function() {
  */
 var TriggerWebsocket = function(event) {
     this.event = event;
+    this.msg = ko.observable("");
 
     // not serialized
-    this.msg = ko.observable("");
+    this.data = null;
     this.callbackForCleanUp = null;
 
 };
@@ -1010,7 +1011,8 @@ TriggerWebsocket.prototype.isValid = function() {
  */
 TriggerWebsocket.prototype.getParameterSpec = function() {
     return [
-        this.msg()
+        "Message",
+        "Data"
     ];
 };
 
@@ -1022,8 +1024,10 @@ TriggerWebsocket.prototype.getParameterSpec = function() {
 
 TriggerWebsocket.prototype.setupOnPlayerFrame = function(playerFrame) {
     var self = this;
-    this.callbackForCleanUp = function(){
-        self.event.triggerActions([this.msg()]);
+    this.callbackForCleanUp = function(msg,data){
+        self.data = data;
+        self.msg(msg);
+        self.event.triggerActions([msg,data]);
     };
     if (playerFrame.websocketTriggerCallbacks[this.msg()]){
         playerFrame.websocketTriggerCallbacks[this.msg()].push(this.callbackForCleanUp)
@@ -1039,15 +1043,9 @@ TriggerWebsocket.prototype.setupOnPlayerFrame = function(playerFrame) {
  * @param playerFrame
  */
 TriggerWebsocket.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    var allCBs = playerFrame.websocketTriggerCallbacks[this.msg()];
-    if (allCBs){
-        if (allCBs.length==1){
-            delete playerFrame.websocketTriggerCallbacks[this.msg()];
-        }
-        else{
-            var callbackIdx = playerFrame.websocketTriggerCallbacks[this.msg()].indexOf(this.callbackForCleanUp)
-            playerFrame.websocketTriggerCallbacks[this.msg()].splice(callbackIdx,1);
-        }
+    var allCBs = playerFrame.websocketTriggerCallbacks;
+    for (var member in allCBs){
+        delete allCBs[member];
     }
 };
 
