@@ -27,6 +27,8 @@ var GlobalVar = function (expData) {
     this.isInteracting = ko.observable(false); // TODO: remove
     this.levels = ko.observableArray([]);
 
+
+    this.isHidden = ko.observable(false);
     this.isRecorded = ko.observable(true);
 
     this.resetAtTrialStart = ko.observable(false);
@@ -430,6 +432,12 @@ GlobalVar.prototype.fromJS = function(data) {
         this.isObjectVar(data.isObjectVar);
     }
 
+    if (data.hasOwnProperty('isHidden')) {
+        this.isHidden(data.isHidden);
+    }
+
+
+
     if (data.hasOwnProperty('startValue')) {
         var startValue = this.createValueFromDataType();
         if (startValue) {
@@ -483,6 +491,7 @@ GlobalVar.prototype.toJS = function() {
         startValue: startValue,
         isRecorded:this.isRecorded(),
         recType: this.recType(),
+        isHidden: this.isHidden(),
 
         type: this.type,
         levels: jQuery.map( this.levels(), function( lvl ) { return lvl.toJS(); } )
