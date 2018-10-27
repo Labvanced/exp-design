@@ -1687,6 +1687,74 @@ TriggerOnContentElement.prototype.toJS = function() {
 
 
 
+
+///////////////////////////
+
+
+var TriggerOnUserLeave = function(event) {
+    this.event = event;
+    this.subscription = null
+
+};
+
+TriggerOnUserLeave.prototype.type = "TriggerOnUserLeave";
+TriggerOnUserLeave.prototype.label = "User Leaves Experiment";
+
+TriggerOnUserLeave.prototype.getParameterSpec = function() {
+    return [
+        "remainingNrParticipants"
+    ];
+};
+
+TriggerOnUserLeave.prototype.isValid = function() {
+    return true;
+};
+
+TriggerOnUserLeave.prototype.setupOnPlayerFrame = function(playerFrame) {
+
+    var self = this;
+    if (!this.subscription){
+        this.subscription = playerFrame.player.currentNumberParticipants.subscribe(function(newVal) {
+            self.event.triggerActions([newVal]);
+        });
+    }
+
+};
+
+
+TriggerOnUserLeave.prototype.destroyOnPlayerFrame = function(playerFrame) {
+    this.subscription.dispose();
+};
+
+
+TriggerOnUserLeave.prototype.setPointers = function(entitiesArr) {
+
+};
+
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+TriggerOnUserLeave.prototype.reAddEntities = function(entitiesArr) {
+
+};
+
+TriggerOnUserLeave.prototype.fromJS = function(data) {
+    return this;
+};
+
+TriggerOnUserLeave.prototype.toJS = function() {
+    return {
+        type: this.type
+    };
+};
+
+////////////////////////
+
+
+
 var TriggerAudioVideoEvent= function(event) {
     this.event = event;
 
