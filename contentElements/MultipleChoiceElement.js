@@ -82,7 +82,7 @@ MultipleChoiceElement.prototype.removeEntry = function() {
 };
 
 MultipleChoiceElement.prototype.setVariableBackRef = function() {
-    if (this.variable() instanceof GlobalVar){
+    if (this.variable() instanceof GlobalVar && !this.parent.flagDeleted()){
         this.variable().addBackRef(this, this.parent, true, true, 'multipleChoice');
     }
 
@@ -453,6 +453,9 @@ function createMultipleChoiceComponents() {
                         var frameData = self.multipleChoiceElement.parent.parent;
                         var variableDialog = new AddNewVariable(self.multipleChoiceElement.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
+                            if (self.multipleChoiceElement.variable()){
+                                self.multipleChoiceElement.variable().removeBackRef(self.multipleChoiceElement);
+                            }
                             self.multipleChoiceElement.variable(newVariable);
                             self.multipleChoiceElement.setVariableBackRef(newVariable);
                         }, frameData);

@@ -248,7 +248,7 @@ CheckBoxEntry.prototype.init = function(varName) {
 
 CheckBoxEntry.prototype.setVariableBackRef = function() {
     var self = this;
-    if (this.variable() instanceof GlobalVar) {
+    if (this.variable() instanceof GlobalVar && !this.parent.parent.flagDeleted()) {
         this.backRef = this.variable().addBackRef(this, this.parent.parent, true, true, 'checkbox', function(globalVar) {
             self.removeVariable();
         });
@@ -357,6 +357,9 @@ function createCheckBoxComponents() {
                         var checkboxEntry = self.dataModel.elements()[index];
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
+                            if (checkboxEntry.variable()){
+                                checkboxEntry.variable().removeBackRef(checkboxEntry);
+                            }
                             checkboxEntry.variable(newVariable);
                             checkboxEntry.setVariableBackRef(newVariable);
                         }, frameData);

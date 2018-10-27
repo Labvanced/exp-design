@@ -64,7 +64,7 @@ SortableElement.prototype.init = function(variableName) {
 };
 
 SortableElement.prototype.setVariableBackRef = function() {
-    if (this.variable() instanceof GlobalVar){
+    if (this.variable() instanceof GlobalVar && !this.parent.flagDeleted()){
         this.variable().addBackRef(this, this.parent, true, true, 'sortableArray');
     }
 };
@@ -352,6 +352,9 @@ function createSortableElementComponents() {
                         var sortableEntry = self.dataModel.elements()[index];
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
+                            if (sortableEntry.variable()){
+                                sortableEntry.variable().removeBackRef(sortableEntry);
+                            }
                             sortableEntry.variable(newVariable);
                             sortableEntry.setVariableBackRef(newVariable);
                         }, frameData);

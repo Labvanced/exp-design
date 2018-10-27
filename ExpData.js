@@ -580,6 +580,14 @@ ExpData.prototype.deleteEntity = function(entity) {
     }
 };
 
+ExpData.prototype.setFlagDeleted = function(entity) {
+    var idx = this.entities().indexOf(entity);
+    if (idx>=0){
+        entity.flagDeleted(true);
+    }
+};
+
+
 ExpData.prototype.deleteGlobalVar = function(globalVar) {
     // allow deletion only if all back refs were removed:
     if (globalVar.backRefs().length == 0) {

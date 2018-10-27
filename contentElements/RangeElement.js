@@ -56,7 +56,7 @@ RangeElement.prototype.init = function(variableName) {
 
 
 RangeElement.prototype.setVariableBackRef = function() {
-    if (this.variable() instanceof GlobalVar){
+    if (this.variable() instanceof GlobalVar && !this.parent.flagDeleted()){
         this.variable().addBackRef(this, this.parent, true, true, 'Range');
     }
 };
@@ -190,6 +190,9 @@ function createRangeComponents() {
                         var frameData = self.dataModel.parent.parent;
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
+                            if (self.dataModel.variable()){
+                                self.dataModel.variable().removeBackRef(self.dataModel);
+                            }
                             self.dataModel.variable(newVariable);
                             self.dataModel.setVariableBackRef(newVariable);
                         }, frameData);

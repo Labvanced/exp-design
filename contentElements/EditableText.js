@@ -136,7 +136,7 @@ EditableTextElement.prototype.removeVar = function (varId) {
 
 EditableTextElement.prototype.setVariableBackRef = function(globalVarId){
     var entity = this.expData.entities.byId[globalVarId];
-    if(entity) {
+    if(entity && !this.parent.parent.flagDeleted()) {
         var ref = entity.addBackRef(this, this.parent.parent, false, true, 'withinText');
         this.globalVarRefs[globalVarId] = ref;
     }

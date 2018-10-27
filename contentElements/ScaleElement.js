@@ -344,7 +344,7 @@ ScaleEntry.prototype.init = function(varName) {
 };
 
 ScaleEntry.prototype.setVariableBackRef = function() {
-    if (this.variable() instanceof GlobalVar){
+    if (this.variable() instanceof GlobalVar && !this.parent.parent.flagDeleted()){
         this.variable().addBackRef(this, this.parent.parent, true, true, 'scale');
     }
 };
@@ -515,6 +515,9 @@ function createScaleComponents() {
         var checkboxEntry = this.dataModel.elements()[index];
         var variableDialog = new AddNewVariable(this.dataModel.expData, function (newVariable) {
             frameData.addVariableToLocalWorkspace(newVariable);
+            if (checkboxEntry.variable()){
+                checkboxEntry.variable().removeBackRef(checkboxEntry);
+            }
             checkboxEntry.variable(newVariable);
             checkboxEntry.setVariableBackRef(newVariable);
         }, frameData);

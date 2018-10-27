@@ -17,6 +17,7 @@ var PageElement = function(expData) {
     this.includeInPageShuffle  = ko.observable(false);
 
     // new
+    this.flagDeleted = ko.observable(false);
     this.stimulusInformation  = ko.observable(null);
     this.marginLeft = ko.observable(35);
     this.marginRight = ko.observable(35);
@@ -196,6 +197,10 @@ PageElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('paddingBottom')) {
         this.paddingBottom(data.paddingBottom);
     }
+    if(data.hasOwnProperty('flagDeleted')) {
+        this.flagDeleted(data.flagDeleted);
+    }
+
 
 
 
@@ -250,7 +255,8 @@ PageElement.prototype.toJS = function() {
         paddingLeft:this.paddingLeft(),
         paddingRight:this.paddingRight(),
         paddingTop:this.paddingTop(),
-        paddingBottom:this.paddingBottom()
+        paddingBottom:this.paddingBottom(),
+        flagDeleted:this.flagDeleted()
     };
 };
 

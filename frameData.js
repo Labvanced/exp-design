@@ -71,6 +71,7 @@ FrameData.prototype.deleteChildEntity = function(entity) {
         if (typeof entity.content().dispose === 'function'){
             entity.content().dispose();
         }
+        self.expData.setFlagDeleted(entity);
     }
     obsArr.remove(entity);
 
