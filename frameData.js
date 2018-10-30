@@ -73,7 +73,6 @@ FrameData.prototype.deleteChildEntity = function(entity) {
             entity.dispose();
         }
         self.expData.entities.remove(entity);
-        self.expData.setFlagDeleted(entity);
     }
 
     // if this element was selected, set selection to null

@@ -248,7 +248,7 @@ CheckBoxEntry.prototype.init = function(varName) {
 
 CheckBoxEntry.prototype.setVariableBackRef = function() {
     var self = this;
-    if (this.variable() instanceof GlobalVar && !this.parent.parent.flagDeleted()) {
+    if (this.variable() instanceof GlobalVar) {
         this.backRef = this.variable().addBackRef(this, this.parent.parent, true, true, 'checkbox', function(globalVar) {
             self.removeVariable();
         });
@@ -293,7 +293,7 @@ CheckBoxEntry.prototype.dispose = function () {
     this.checkBoxText().dispose();
     if (this.variable() instanceof GlobalVar){
         this.variable().removeBackRef(this);
-        //this.variable(null);
+        this.variable(null);
     }
 };
 

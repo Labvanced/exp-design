@@ -8,7 +8,7 @@ var InputElement = function(expData) {
     this.questionText = ko.observable(null); // EditableTextElement
     this.inputType = ko.observable('number');
 
-    this.variable = ko.observable();
+    this.variable = ko.observable(null);
     this.isRequired = ko.observable(false);
     this.enableTitle= ko.observable(true);
 
@@ -261,21 +261,28 @@ function createInputComponents() {
 
                     this.value = ko.pureComputed({
                         read: function () {
-                            if (self.dataModel.variable().startValue() instanceof GlobalVarValueDatetime){
-                                if (self.dataModel.variable().startValue().value()!=null){
-                                    return self.dataModel.variable().startValue().value().toISOString().substring(0,10);
+                            if (self.dataModel.variable()) {
+                                if (self.dataModel.variable().startValue() instanceof GlobalVarValueDatetime) {
+                                    if (self.dataModel.variable().startValue().value() != null) {
+                                        return self.dataModel.variable().startValue().value().toISOString().substring(0, 10);
+                                    }
+                                    else {
+                                        return null
+                                    }
                                 }
-                                else{
-                                    return null
+                                else {
+                                    return self.dataModel.variable().startValue().value();
                                 }
                             }
-                            else{
-                                return self.dataModel.variable().startValue().value();
+                            else {
+                                return null;
                             }
                         },
                         write: function (value) {
                             // setValue will convert to the correct datatype:
-                            self.dataModel.variable().startValue().setValue(value);
+                            if (self.dataModel.variable()) {
+                                self.dataModel.variable().startValue().setValue(value);
+                            }
                         },
                         owner: this
                     });

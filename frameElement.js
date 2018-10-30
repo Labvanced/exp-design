@@ -36,8 +36,6 @@ var FrameElement= function(expData) {
     this.overflowY = ko.observable("hidden");
     this.roundness = ko.observable(0);
 
-
-    this.flagDeleted = ko.observable(false);
     this.id = ko.observable(guid());
     this.type = "FrameElement";
     this.name = ko.observable("frameElement");
@@ -232,12 +230,6 @@ FrameElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('roundness')) {
         this.roundness(data.roundness);
     }
-    if(data.hasOwnProperty('flagDeleted')) {
-        this.flagDeleted(data.flagDeleted);
-    }
-
-
-
 
 
     this.isActive(data.isActive);
@@ -301,7 +293,6 @@ FrameElement.prototype.toJS = function() {
         overflowX:this.overflowX(),
         overflowY :this.overflowY(),
         backgroundColor:this.backgroundColor(),
-        roundness:this.roundness(),
-        flagDeleted:this.flagDeleted()
+        roundness:this.roundness()
     };
 };
