@@ -121,24 +121,22 @@ PageData.prototype.reshuffleEntries = function() {
 
 PageData.prototype.deleteChildEntity = function(entity) {
     var self = this;
-    var obsArr;
     if (entity instanceof ExpEvent) {
-        obsArr = this.events;
+        this.events.remove(entity);
     }
     else if (entity instanceof GlobalVar) {
-        obsArr = this.localWorkspaceVars;
+        this.localWorkspaceVars.remove(entity);
         // remove back Ref from workspace
         entity.removeBackRef(self);
     }
     else {
-        obsArr = this.elements;
+        this.elements.remove(entity);
         if (typeof entity.dispose === 'function'){
             entity.dispose();
         }
         self.expData.entities.remove(entity);
         self.expData.setFlagDeleted(entity);
     }
-    obsArr.remove(entity);
 
     // if this element was selected, set selection to null
     if (entity === this.currSelectedElement()) {
