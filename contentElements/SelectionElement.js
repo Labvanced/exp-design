@@ -59,6 +59,7 @@ SelectionElement.prototype.dispose = function() {
     this.questionText().dispose();
     if (this.variable() instanceof GlobalVar) {
         this.variable().removeBackRef(this);
+        this.variable(null);
     }
 
     jQuery.each( this.elements(), function( index, elem ) {
@@ -88,7 +89,7 @@ SelectionElement.prototype.init = function(variableName) {
 };
 
 SelectionElement.prototype.setVariableBackRef = function() {
-    if (this.variable() instanceof GlobalVar && !this.parent.flagDeleted()){
+    if (this.variable() instanceof GlobalVar){
         this.variable().addBackRef(this, this.parent, true, true, 'Selection');
     }
 };

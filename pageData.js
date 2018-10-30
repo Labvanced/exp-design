@@ -73,9 +73,13 @@ var PageData = function(expData) {
 PageData.prototype.modifiableProp = ["name","offset","offsetEnabled","hideMouse", "syncFrame"];
 
 PageData.prototype.dispose = function() {
+    var self = this;
     this.elements().forEach(function (elem){
-        elem.dispose();
+        self.deleteChildEntity(elem)
     });
+    jQuery.each( this.localWorkspaceVars(), function( index, entity ) {
+        entity.removeBackRef(self);
+    } );
 };
 
 PageData.prototype.reshuffleEntries = function() {
@@ -128,13 +132,13 @@ PageData.prototype.deleteChildEntity = function(entity) {
     }
     else {
         obsArr = this.elements;
-        if (typeof entity.content().dispose === 'function'){
-            entity.content().dispose();
+        if (typeof entity.dispose === 'function'){
+            entity.dispose();
         }
+        self.expData.entities.remove(entity);
         self.expData.setFlagDeleted(entity);
     }
     obsArr.remove(entity);
-
 
     // if this element was selected, set selection to null
     if (entity === this.currSelectedElement()) {

@@ -60,7 +60,7 @@ LikertElement.prototype.init = function(variableName) {
 
 LikertElement.prototype.setVariableBackRef = function() {
     if (this.variable()) {
-        if (this.variable() instanceof GlobalVar && !this.parent.flagDeleted()){
+        if (this.variable() instanceof GlobalVar){
             this.variable().addBackRef(this, this.parent, true, true, 'Likert');
         }
 
@@ -129,6 +129,7 @@ LikertElement.prototype.dispose = function () {
   this.endLabel().dispose();
     if (this.variable() instanceof GlobalVar){
         this.variable().removeBackRef(this);
+        this.variable(null);
     }
 
 };

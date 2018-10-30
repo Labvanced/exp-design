@@ -48,9 +48,13 @@ FrameData.prototype.modifiableProp = ["name","offset","offsetEnabled","frameWidt
 
 
 FrameData.prototype.dispose = function() {
+    var self = this;
     this.elements().forEach(function (elem){
-        elem.dispose();
+        self.deleteChildEntity(elem)
     });
+    jQuery.each( this.localWorkspaceVars(), function( index, entity ) {
+        entity.removeBackRef(self);
+    } );
 };
 
 FrameData.prototype.deleteChildEntity = function(entity) {
@@ -68,9 +72,10 @@ FrameData.prototype.deleteChildEntity = function(entity) {
     else {
         obsArr = this.elements;
 
-        if (typeof entity.content().dispose === 'function'){
-            entity.content().dispose();
+        if (typeof entity.dispose === 'function'){
+            entity.dispose();
         }
+        self.expData.entities.remove(entity);
         self.expData.setFlagDeleted(entity);
     }
     obsArr.remove(entity);

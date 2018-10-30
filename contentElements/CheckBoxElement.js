@@ -293,6 +293,7 @@ CheckBoxEntry.prototype.dispose = function () {
     this.checkBoxText().dispose();
     if (this.variable() instanceof GlobalVar){
         this.variable().removeBackRef(this);
+        //this.variable(null);
     }
 };
 

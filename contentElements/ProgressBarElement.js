@@ -34,6 +34,7 @@ ProgressBarElement.prototype.init = function() {
 ProgressBarElement.prototype.dispose = function() {
     if (this.variable() instanceof GlobalVar) {
         this.variable().removeBackRef(this);
+        this.variable(null);
     }
 
 };
@@ -66,7 +67,7 @@ ProgressBarElement.prototype.bindToVariable = function(variable) {
 };
 
 ProgressBarElement.prototype.setVariableBackRef = function() {
-    if (this.variable() instanceof GlobalVar && !this.parent.flagDeleted()){
+    if (this.variable() instanceof GlobalVar){
         this.variable().addBackRef(this, this.parent, true, true, 'Progress Bar');
     }
 };

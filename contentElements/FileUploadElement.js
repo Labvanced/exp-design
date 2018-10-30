@@ -44,6 +44,7 @@ FileUploadElement.prototype.dispose = function() {
     this.buttonText().dispose();
     if (this.variable() instanceof GlobalVar) {
         this.variable().removeBackRef(this);
+        this.variable(null);
     }
 };
 
@@ -72,7 +73,7 @@ FileUploadElement.prototype.init = function(variableName) {
 };
 
 FileUploadElement.prototype.setVariableBackRef = function() {
-    if (this.variable() instanceof GlobalVar && !this.parent.flagDeleted()) {
+    if (this.variable() instanceof GlobalVar) {
         this.variable().addBackRef(this, this.parent, true, true, 'File Upload');
     }
 };

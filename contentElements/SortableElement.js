@@ -64,7 +64,7 @@ SortableElement.prototype.init = function(variableName) {
 };
 
 SortableElement.prototype.setVariableBackRef = function() {
-    if (this.variable() instanceof GlobalVar && !this.parent.flagDeleted()){
+    if (this.variable() instanceof GlobalVar){
         this.variable().addBackRef(this, this.parent, true, true, 'sortableArray');
     }
 };
@@ -149,6 +149,7 @@ SortableElement.prototype.dispose = function () {
 
     if (this.variable() instanceof GlobalVar) {
         this.variable().removeBackRef(this);
+        this.variable(null);
     }
 
 };
