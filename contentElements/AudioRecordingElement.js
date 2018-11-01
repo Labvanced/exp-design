@@ -63,7 +63,6 @@ AudioRecordingElement.prototype.dispose = function() {
     this.questionText().dispose();
     if (this.variable() instanceof GlobalVar) {
         this.variable().removeBackRef(this);
-        this.variable(null);
     }
 
 };

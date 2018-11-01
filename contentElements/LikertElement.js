@@ -129,7 +129,6 @@ LikertElement.prototype.dispose = function () {
   this.endLabel().dispose();
     if (this.variable() instanceof GlobalVar){
         this.variable().removeBackRef(this);
-        this.variable(null);
     }
 
 };

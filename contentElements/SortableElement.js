@@ -149,7 +149,6 @@ SortableElement.prototype.dispose = function () {
 
     if (this.variable() instanceof GlobalVar) {
         this.variable().removeBackRef(this);
-        this.variable(null);
     }
 
 };

@@ -260,7 +260,6 @@ CheckBoxEntry.prototype.removeVariable = function() {
         if (this.backRef) {
             this.variable().removeBackRef(this.backRef)
         }
-        this.variable(null);
     }
 };
 
@@ -293,7 +292,6 @@ CheckBoxEntry.prototype.dispose = function () {
     this.checkBoxText().dispose();
     if (this.variable() instanceof GlobalVar){
         this.variable().removeBackRef(this);
-        this.variable(null);
     }
 };
 
