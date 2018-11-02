@@ -425,13 +425,23 @@ GlobalVarValueTime.prototype.convert = function(data) {
     if (data === null) {
         return null;
     }
-    else   {
-        var indSep = data.split(":");
-        if (indSep.length==2 && parseInt(indSep[0])>=0 && parseInt(indSep[0])<=23 && parseInt(indSep[1])>=0 && parseInt(indSep[1])<=59 ){
-            return data;
+    else {
+        if (typeof data === 'string' || data instanceof String) {
+            var indSep = data.split(":");
+            if (indSep.length==2 && parseInt(indSep[0])>=0 && parseInt(indSep[0])<=23 && parseInt(indSep[1])>=0 && parseInt(indSep[1])<=59 ){
+                return data;
+            }
+            else if (data.length == 2 && parseInt(data)>=0 && parseInt(data)<=23) {
+                var hour = parseInt(data);
+                return hour+":00";
+            }
+            else {
+                return null;
+            }
         }
-        else return null
-
+        else {
+            return null; // TODO: handle other formats than string
+        }
     }
 };
 
