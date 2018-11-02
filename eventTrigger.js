@@ -465,16 +465,18 @@ TriggerButtonClick.prototype.triggerOnTarget = function(playerFrame,target) {
 TriggerButtonClick.prototype.setupOnPlayerFrame = function(playerFrame) {
     var self = this;
     var target = this.target();
-    var targetElem = $(playerFrame.frameView.viewElements.byId[target.id()].div);
-    var buttonElem = $(targetElem.find('.navi-button'))[this.buttonIdx()];
-    if (buttonElem===undefined){
-        buttonElem = $(targetElem).children()[this.buttonIdx()];
+    if (target) {
+        var targetElem = $(playerFrame.frameView.viewElements.byId[target.id()].div);
+        var buttonElem = $(targetElem.find('.navi-button'))[this.buttonIdx()];
+        if (buttonElem === undefined) {
+            buttonElem = $(targetElem).children()[this.buttonIdx()];
+        }
+        this.eventHandleForCleanUp = function (ev) {
+            ev.stopImmediatePropagation();
+            self.triggerOnTarget(playerFrame, target);
+        };
+        $(buttonElem).on("click", this.eventHandleForCleanUp);
     }
-    this.eventHandleForCleanUp = function(ev) {
-        ev.stopImmediatePropagation();
-        self.triggerOnTarget(playerFrame,target);
-    };
-    $(buttonElem).on("click",this.eventHandleForCleanUp);
 };
 
 /**
@@ -483,10 +485,12 @@ TriggerButtonClick.prototype.setupOnPlayerFrame = function(playerFrame) {
  */
 TriggerButtonClick.prototype.destroyOnPlayerFrame = function(playerFrame) {
     var target = this.target();
-    var targetElem = $(playerFrame.frameView.viewElements.byId[target.id()].div);
-    var buttonElem = $(targetElem.find('.navi-button'))[this.buttonIdx()];
-    $(buttonElem).off("click",this.eventHandleForCleanUp);
-    this.eventHandleForCleanUp = null;
+    if (target) {
+        var targetElem = $(playerFrame.frameView.viewElements.byId[target.id()].div);
+        var buttonElem = $(targetElem.find('.navi-button'))[this.buttonIdx()];
+        $(buttonElem).off("click", this.eventHandleForCleanUp);
+        this.eventHandleForCleanUp = null;
+    }
 };
 
 /**
