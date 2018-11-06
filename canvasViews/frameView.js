@@ -280,7 +280,7 @@ FrameView.prototype.removeElemFromView = function(elementData,index) {
     var elemDiv = this.viewElements()[index].div;
 
     // remove div from DOM:
-    elemDiv.remove();
+    $(elemDiv).remove();
 
     // remove from viewElements:
     this.viewElements.splice(index,1);
