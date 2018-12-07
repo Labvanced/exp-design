@@ -58,8 +58,7 @@ PageView.prototype.dispose = function() {
 
     // remove complete div
     ko.cleanNode( $(this.divContainer)[0]);
-    $(this.divContainer)[0].remove();
-
+    $(this.divContainer).remove();
 
     // remove all view elements and related things
     Object.keys(this.viewElements.byId).forEach(function(key,index) {
