@@ -276,9 +276,20 @@ ExpEvent.prototype.toJS = function() {
  * @param playerFrame
  */
 ExpEvent.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    this.trigger().destroyOnPlayerFrame(playerFrame);
+    try {
+        this.trigger().destroyOnPlayerFrame(playerFrame);
+    }
+    catch(err) {
+        console.error("error during this.trigger().destroyOnPlayerFrame(playerFrame)")
+    }
+
     var actions = this.actions();
     for (var i = 0; i < actions.length; i++){
-        actions[i].destroyOnPlayerFrame(playerFrame);
+        try {
+            actions[i].destroyOnPlayerFrame(playerFrame);
+        }
+        catch(err) {
+            console.error("error during actions[i].destroyOnPlayerFrame(playerFrame)")
+        }
     }
 };
