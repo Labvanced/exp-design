@@ -486,10 +486,13 @@ TriggerButtonClick.prototype.setupOnPlayerFrame = function(playerFrame) {
 TriggerButtonClick.prototype.destroyOnPlayerFrame = function(playerFrame) {
     var target = this.target();
     if (target) {
-        var targetElem = $(playerFrame.frameView.viewElements.byId[target.id()].div);
-        var buttonElem = $(targetElem.find('.navi-button'))[this.buttonIdx()];
-        $(buttonElem).off("click", this.eventHandleForCleanUp);
-        this.eventHandleForCleanUp = null;
+        var targetViewElem = playerFrame.frameView.viewElements.byId[target.id()];
+        if (targetViewElem) {
+            var targetElem = $(targetViewElem.div);
+            var buttonElem = $(targetElem.find('.navi-button'))[this.buttonIdx()];
+            $(buttonElem).off("click", this.eventHandleForCleanUp);
+            this.eventHandleForCleanUp = null;
+        }
     }
 };
 
