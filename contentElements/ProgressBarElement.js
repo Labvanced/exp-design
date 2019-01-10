@@ -50,7 +50,6 @@ ProgressBarElement.prototype.getProgressValue = function (type) {
             else if (type =="player"){
                 return parseFloat(this.variable().value().getValue());
             }
-
         }
         else{
             return 0;
@@ -171,44 +170,10 @@ function createProgressBarComponents() {
                 var viewModel = function(dataModel){
                     var self = this;
                     this.dataModel = ko.observable(dataModel);
-
-
-                    this.progressbar = $('#progressBarPrev');
-                    var varNewId  = guid();
-                    this.progressbar.attr("id",varNewId);
-
-                    this.progress = ko.observable(self.dataModel().getProgressValue('editor'));
-                    this.progressbar.css(
-                        "width", self.progress()+'%'
-                    );
-
-                    if (this.progressBarTypeSubscription){
-                        this.progressBarTypeSubscription.dispose()
-                    }
-                    this.progressBarTypeSubscription = this.dataModel().progressType.subscribe(function(newVal){
-                        self.progress(self.dataModel().getProgressValue('editor'));
-                        self.progressbar.css(
-                            "width", self.progress()+'%'
-                        );
+                    this.progress = ko.computed(function() {
+                        return self.dataModel().getProgressValue('editor');
                     });
-
-                    if (this.progressBarSubscription){
-                        this.progressBarSubscription.dispose()
-                    }
-                    this.progressBarSubscription = this.dataModel().progressValue.subscribe(function(val){
-                        self.progress(self.dataModel().getProgressValue('editor'));
-                        self.progressbar.css(
-                            "width", self.progress()+'%'
-                        );
-                    });
-
-
-
-
                 };
-
-
-
                 return new viewModel(dataModel);
             }
         },
@@ -222,15 +187,9 @@ function createProgressBarComponents() {
                 var viewModel = function(dataModel){
                     var self = this;
                     this.dataModel = ko.observable(dataModel);
-
-                    this.progressbar = $('#progressBarPlayer');
-                    var varNewId  = guid();
-                    this.progressbar.attr("id",varNewId);
-                    this.progress = ko.observable(self.dataModel().getProgressValue('player'));
-                    self.progressbar.css(
-                        "width", self.progress()+'%'
-                    );
-
+                    this.progress = ko.computed(function() {
+                        return self.dataModel().getProgressValue('player');
+                    });
                 };
                 return new viewModel(dataModel);
             }

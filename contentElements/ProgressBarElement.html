@@ -14,7 +14,8 @@
 
             <!-- ko if: dataModel().progressType()=="variable" -->
             <label>
-                Linked Variable:
+                Linked Variable<br>
+                (value should be between 0 and 100):
                 <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel().variable, allowedDatatypes: ['numeric'], relinkCallback: relinkCallback } }"></span>
             </label>
             <!-- /ko -->
@@ -24,15 +25,13 @@
 </template>
 
 <template id="progress-bar-preview-template">
-
     <div class="myProgress">
-        <div class="myBar" id="progressBarPrev"><span data-bind="text: progress()+'%'"></span></div>
+        <div class="myBar" data-bind="style: {'width': progress()+'%'}"><span data-bind="text: progress()+'%'"></span></div>
     </div>
-
 </template>
 
 <template id="progress-bar-playerview-template">
     <div class="myProgress">
-        <div class="myBar" id="progressBarPlayer"><span data-bind="text: progress()+'%'"></span></div>
+        <div class="myBar" data-bind="style: {'width': progress()+'%'}"><span data-bind="text: progress()+'%'"></span></div>
     </div>
 </template>
