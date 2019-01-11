@@ -177,30 +177,38 @@ var PublishingData = function(experiment) {
 
 PublishingData.prototype.updateReqProperties = function () {
     // calculate required survey fields (it is required if the field is enabled in any group):
-    var someRequirements = false;
     var availableGroups = this.experiment.exp_data.availableGroups();
+
+    var someRequirements = false;
+
+    var requiredGender = false;
+    var requiredAge = false;
+    var requiredCountry = false;
+    var requiredLanguage = false;
+    var requiredEmail = false;
+
     for (var i=0; i<availableGroups.length; i++) {
         if (availableGroups[i].enabledGender()) {
             this.surveyItemGender('required');
-            this.requiredGender(true);
+            requiredGender = true;
             someRequirements = true;
         }
 
         if (availableGroups[i].enabledAge()) {
             this.surveyItemAge('required');
-            this.requiredAge(true);
+            requiredAge  = true;
             someRequirements = true;
         }
 
         if (availableGroups[i].enabledCountry()) {
             this.surveyItemCountry('required');
-            this.requiredCountry(true);
+            requiredCountry = true;
             someRequirements = true;
         }
 
         if (availableGroups[i].enabledLanguage()) {
             this.surveyItemLanguage('required');
-            this.requiredLanguage(true);
+            requiredLanguage = true;
             someRequirements = true;
         }
 
@@ -208,10 +216,17 @@ PublishingData.prototype.updateReqProperties = function () {
         var sessionTimeData = availableGroups[i].sessionTimeData();
         if (sessionTimeData.length > 1) {
             this.surveyItemEmail('required');
-            this.requiredEmail(true);
+            requiredEmail = true;
             someRequirements = true;
         }
     }
+
+    this.requiredGender(requiredGender);
+    this.requiredAge(requiredAge);
+    this.requiredCountry(requiredCountry);
+    this.requiredLanguage(requiredLanguage);
+    this.requiredEmail(requiredEmail);
+
     return someRequirements
 };
 
