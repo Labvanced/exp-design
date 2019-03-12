@@ -887,6 +887,13 @@ GlobalVarValueArray.prototype.convert = function(data) {
             return newDatType;
         });
     }
+    else if (data instanceof GlobalVarValueArray) {
+        var arrValues = jQuery.map(data.value(), function(scalar) {
+            var newDatType = self.parentVar.createScalarValueFromDataType();
+            newDatType.setValue(scalar);
+            return newDatType;
+        });
+    }
     else {
         var newDatType = self.parentVar.createScalarValueFromDataType();
         newDatType.setValue(data);
