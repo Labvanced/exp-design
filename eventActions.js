@@ -3626,22 +3626,39 @@ ActionControlWebGazer.prototype.run = function(triggerParams) {
     if (this.actionType() == 'start') {
         if (!player.eyetrackerLoaded) {
             player.eyetrackerLoaded = true;
-            function ridgeNoMouseReg() {
-                tmp = new webgazer.reg.RidgeReg();
-                tmp.trailTime = -Infinity;
-                tmp.trailDataWindow = 0;
-                return tmp;
+
+            function startupWebgazer() {
+                // now start webgazer:
+                function ridgeNoMouseReg() {
+                    tmp = new webgazer.reg.RidgeReg();
+                    tmp.trailTime = -Infinity;
+                    tmp.trailDataWindow = 0;
+                    return tmp;
+                }
+                webgazer.addRegressionModule("ridgeNoMouse", ridgeNoMouseReg);
+                webgazer.setRegression('ridgeNoMouse') /* currently must set regression and tracker   use ridge or weightedRidge*/
+                    .setTracker('clmtrackr')
+                    .setGazeListener(function(data, clock) {
+                        if (data) {
+                            player.currentFrame.triggerEyetracking(data);
+                        }
+                    })
+                    .begin();
+                //.showPredictionPoints(true); /* shows a square every 100 milliseconds where current prediction is */
             }
-            webgazer.addRegressionModule("ridgeNoMouse", ridgeNoMouseReg);
-            webgazer.setRegression('ridgeNoMouse') /* currently must set regression and tracker   use ridge or weightedRidge*/
-                .setTracker('clmtrackr')
-                .setGazeListener(function(data, clock) {
-                    if (data) {
-                        player.currentFrame.triggerEyetracking(data);
-                    }
-                })
-                .begin();
-            //.showPredictionPoints(true); /* shows a square every 100 milliseconds where current prediction is */
+
+            if (window.hasOwnProperty('webgazer')) {
+                startupWebgazer();
+            }
+            else {
+                // first dynamically load webgazer.js:
+                var script = document.createElement('script');
+                script.onload = function () {
+                    startupWebgazer();
+                };
+                script.src = "assets/js/webgazer.js";
+                document.head.appendChild(script);
+            }
         }
     }
     else if (this.actionType() == 'end') {
