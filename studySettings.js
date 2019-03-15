@@ -31,6 +31,7 @@ var StudySettings = function (expData) {
     this.minHeight = ko.observable(600);
     this.pauseOnExitFullscreen = ko.observable(false);
     this.useOnlyCompletedSessionsForGroupRand = ko.observable(false);
+    this.disablePreloadingResources = ko.observable(false);
 
     // special device requirements:
     this.isAudioRecEnabled = ko.observable(false);
@@ -220,6 +221,9 @@ StudySettings.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("useOnlyCompletedSessionsForGroupRand")){
         this.useOnlyCompletedSessionsForGroupRand(data.useOnlyCompletedSessionsForGroupRand);
     }
+    if (data.hasOwnProperty("disablePreloadingResources")){
+        this.disablePreloadingResources(data.disablePreloadingResources);
+    }
     if(data.hasOwnProperty('isAudioRecEnabled')) {
         this.isAudioRecEnabled(data.isAudioRecEnabled);
     }
@@ -297,6 +301,7 @@ StudySettings.prototype.toJS = function() {
         minHeight:this.minHeight(),
         pauseOnExitFullscreen:this.pauseOnExitFullscreen(),
         useOnlyCompletedSessionsForGroupRand:this.useOnlyCompletedSessionsForGroupRand(),
+        disablePreloadingResources:this.disablePreloadingResources(),
         isAudioRecEnabled: this.isAudioRecEnabled(),
         participantConsent:this.participantConsent(),
         multiUserOnLeaveAction:this.multiUserOnLeaveAction(),
