@@ -415,7 +415,9 @@ ScaleEntry.prototype.fromJS = function(data) {
     else{
         this.rowText = ko.observable(new EditableTextElement(this.parent.expData, this.parent, data.rowText));
     }
-    this.variable(data.variable);
+    if(data.hasOwnProperty('variable')){
+        this.variable(data.variable);
+    }
     if(data.hasOwnProperty('isRequired')) {
        this.isRequired(data.isRequired);
     }
@@ -425,8 +427,12 @@ ScaleEntry.prototype.fromJS = function(data) {
 
 
 ScaleEntry.prototype.toJS = function() {
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
     return {
-        variable:  this.variable().id(),
+        variable:  variableId,
         rowText:  this.rowText().toJS(),
         isRequired: this.isRequired()
     };
