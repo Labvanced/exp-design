@@ -365,9 +365,10 @@ OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
 
 OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean","constantDate","constantTime","constantCategorical", "constantColor"];
-OperandVariable.prototype.unaryOperandTypes = ["abs","round0decimal","round1decimal","round2decimals","round3decimals","floor","ceil","sqrt"];
+OperandVariable.prototype.unaryOperandTypes = ["abs","round0decimal","round1decimal","round2decimals","round3decimals","floor","ceil","sqrt","toLowercase","toUppercase","removeSpaces","trimSpaces"];
 OperandVariable.prototype.binaryOperandTypes = ["arithmetic"];
-OperandVariable.prototype.operandTypes = OperandVariable.prototype.nullaryOperandTypes.concat(OperandVariable.prototype.unaryOperandTypes, OperandVariable.prototype.binaryOperandTypes);
+OperandVariable.prototype.ternaryOperandTypes = ["strReplace"];
+OperandVariable.prototype.operandTypes = OperandVariable.prototype.nullaryOperandTypes.concat(OperandVariable.prototype.unaryOperandTypes, OperandVariable.prototype.binaryOperandTypes, OperandVariable.prototype.ternaryOperandTypes);
 OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
 
 
@@ -504,6 +505,53 @@ OperandVariable.prototype.getValue = function(parameters) {
         case "constantCategorical":
             return this.subParam();
 
+        case "toLowercase":
+            var inputStrValue = value.left.getValue(parameters);
+            if (typeof inputStrValue === 'string' || inputStrValue instanceof String) {
+                return inputStrValue.toLowerCase();
+            }
+            else {
+                return "";
+            }
+        case "toUppercase":
+            var inputStrValue = value.left.getValue(parameters);
+            if (typeof inputStrValue === 'string' || inputStrValue instanceof String) {
+                return inputStrValue.toUpperCase();
+            }
+            else {
+                return "";
+            }
+        case "removeSpaces":
+            var inputStrValue = value.left.getValue(parameters);
+            if (typeof inputStrValue === 'string' || inputStrValue instanceof String) {
+                return inputStrValue.replace(/\s/g,'')
+            }
+            else {
+                return "";
+            }
+        case "trimSpaces":
+            var inputStrValue = value.left.getValue(parameters);
+            if (typeof inputStrValue === 'string' || inputStrValue instanceof String) {
+                return inputStrValue.trim();
+            }
+            else {
+                return "";
+            }
+        case "strReplace":
+            var inputStrValue = value.param1.getValue(parameters);
+            var substrReplaceRegexp = value.param2.getValue(parameters);
+            var replacementStr = value.param3.getValue(parameters);
+            if (!(typeof inputStrValue === 'string' || inputStrValue instanceof String)) {
+                return "";
+            }
+            if (!(typeof substrReplaceRegexp === 'string' || substrReplaceRegexp instanceof String)) {
+                return "";
+            }
+            if (!(typeof replacementStr === 'string' || replacementStr instanceof String)) {
+                return "";
+            }
+            return inputStrValue.replace(new RegExp(substrReplaceRegexp, 'gm'), replacementStr);
+
         case "round0decimal":
             return Math.round(value.left.getValue(parameters));
 
@@ -567,6 +615,11 @@ OperandVariable.prototype.setPointers = function(entitiesArr) {
         this.operandValueOrObject().left.setPointers(entitiesArr);
         this.operandValueOrObject().right.setPointers(entitiesArr);
     }
+    if (OperandVariable.prototype.ternaryOperandTypes.indexOf(this.operandType()) > -1) {
+        this.operandValueOrObject().param1.setPointers(entitiesArr);
+        this.operandValueOrObject().param2.setPointers(entitiesArr);
+        this.operandValueOrObject().param3.setPointers(entitiesArr);
+    }
     if (OperandVariable.prototype.unaryOperandTypes.indexOf(this.operandType()) > -1) {
         this.operandValueOrObject().left.setPointers(entitiesArr);
     }
@@ -588,6 +641,11 @@ OperandVariable.prototype.reAddEntities = function(entitiesArr) {
     if (this.operandType() == "arithmetic"){
         this.operandValueOrObject().left.reAddEntities(entitiesArr);
         this.operandValueOrObject().right.reAddEntities(entitiesArr);
+    }
+    if (OperandVariable.prototype.ternaryOperandTypes.indexOf(this.operandType()) > -1) {
+        this.operandValueOrObject().param1.reAddEntities(entitiesArr);
+        this.operandValueOrObject().param2.reAddEntities(entitiesArr);
+        this.operandValueOrObject().param3.reAddEntities(entitiesArr);
     }
     if (OperandVariable.prototype.unaryOperandTypes.indexOf(this.operandType()) > -1) {
         this.operandValueOrObject().left.reAddEntities(entitiesArr);
@@ -617,13 +675,29 @@ OperandVariable.prototype.fromJS = function(data) {
             op: data.operandValueOrObject.op
         });
     }
+    else if (OperandVariable.prototype.ternaryOperandTypes.indexOf(this.operandType()) > -1) {
+        var param1 = new OperandVariable(this.event);
+        var param2 = new OperandVariable(this.event);
+        var param3 = new OperandVariable(this.event);
+        param1.fromJS(data.operandValueOrObject.param1);
+        param2.fromJS(data.operandValueOrObject.param2);
+        param3.fromJS(data.operandValueOrObject.param3);
+        this.operandValueOrObject({
+            param1: param1,
+            param2: param2,
+            param3: param3,
+        });
+    }
     else if (OperandVariable.prototype.unaryOperandTypes.indexOf(this.operandType()) > -1) {
         var left = new OperandVariable(this.event);
         left.fromJS(data.operandValueOrObject.left);
-        this.operandValueOrObject({
-            left: left,
-            op: data.operandValueOrObject.op
-        });
+        var deserializedObj = {
+            left: left
+        };
+        if (data.operandValueOrObject.hasOwnProperty("op")) {
+            deserializedObj.op = data.operandValueOrObject.op;
+        }
+        this.operandValueOrObject(deserializedObj);
     }
     else {
         this.operandValueOrObject(data.operandValueOrObject);
@@ -661,11 +735,20 @@ OperandVariable.prototype.toJS = function() {
             op: data.operandValueOrObject.op
         };
     }
+    if (OperandVariable.prototype.ternaryOperandTypes.indexOf(this.operandType()) > -1) {
+        data.operandValueOrObject = {
+            param1: data.operandValueOrObject.param1.toJS(),
+            param2: data.operandValueOrObject.param2.toJS(),
+            param3: data.operandValueOrObject.param3.toJS()
+        };
+    }
     if (OperandVariable.prototype.unaryOperandTypes.indexOf(this.operandType()) > -1) {
         data.operandValueOrObject = {
-            left: data.operandValueOrObject.left.toJS(),
-            op: data.operandValueOrObject.op
+            left: data.operandValueOrObject.left.toJS()
         };
+        if (data.operandValueOrObject.hasOwnProperty("op")) {
+            data.operandValueOrObject.op = data.operandValueOrObject.op;
+        }
     }
     data.subParam = this.subParam();
     return data;
