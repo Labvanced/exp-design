@@ -1681,7 +1681,7 @@ ActionJumpTo.prototype.run = function(triggerParams) {
         }
         else if (this.jumpType() == "nextTrial"){
             player.currentFrame.finishFrame();
-            player.startNextTrial()
+            player.startNextTrial(player.trialIndex + 1)
         }
         else if (this.jumpType() == "nextTask"){
             player.currentFrame.finishFrame();
@@ -1700,7 +1700,23 @@ ActionJumpTo.prototype.run = function(triggerParams) {
         else if (this.jumpType() == "specificTrial"){
             player.currentFrame.finishFrame();
             player.recordData();
-            player.startSpecificTrial(this.trialToJumpId());
+
+            var trialIds = [];
+            for (var j = 0; j< player.randomizedTrials.length; j++){
+                trialIds.push( player.randomizedTrials[j].trialVariation.uniqueId());
+            }
+            var indexOfNewTrial = trialIds.indexOf(parseInt(this.trialToJumpId()));
+            if (indexOfNewTrial instanceof Array){
+                var trialIndex  = indexOfNewTrial[0];
+            }
+            else if (indexOfNewTrial >=0){
+                var trialIndex  = indexOfNewTrial;
+            }
+            else {
+                var trialIndex  = player.trialIter+1;
+            }
+
+            player.startNextTrial(trialIndex);
         }
         else if (this.jumpType() == "specificTask"){
             player.currentFrame.finishFrame();
