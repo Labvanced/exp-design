@@ -44,6 +44,7 @@ PageView.prototype.init = function(size) {
         }
 
         $(this.divContainer).append(this.divContentInside);
+        ko.cleanNode($(this.divContainer)[0]);
         ko.applyBindings(this, $(this.divContainer)[0]);
 
         // resize once and set dataModel
