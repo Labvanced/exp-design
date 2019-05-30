@@ -12,7 +12,9 @@ var SubjectGroup = function (expData) {
     this.id = ko.observable(guid());
     this.name = ko.observable("group_1");
     this.type = "SubjectGroup";
-    this.sessions = ko.observableArray([]).extend({sortById: null});
+
+    // the following array is extended with sortById to fix a bug with ko-sortable when adding new sub items in a newly created item:
+    this.sessions = ko.observableArray([]).extend({sortById: {do_not_warn_when_double_entries: true}});
     this.sessionTimeData = ko.observableArray([]).extend({sortById: null});
     this.editName =  ko.observable(false);
     
@@ -35,7 +37,6 @@ SubjectGroup.prototype.addSession = function(session) {
     this.sessionTimeData.push(sessionTimeSettings);
     this.sessions.push(session);
     this.expData.addEntity(sessionTimeSettings);
-    return;
 };
 
 SubjectGroup.prototype.rename = function(idx,flag,data,event) {

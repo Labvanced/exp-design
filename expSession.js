@@ -13,11 +13,13 @@ var ExpSession = function (expData) {
     this.name = ko.observable("session_1");
     this.type = "ExpSession";
     this.blockRandomization = ko.observable('fixed');
-    this.blocks = ko.observableArray([]);
+
+    // the following array is extended with sortById to fix a bug with ko-sortable when adding new sub items in a newly created item:
+    this.blocks = ko.observableArray([]).extend({sortById: {do_not_warn_when_double_entries: true}});
 };
 
 ExpSession.prototype.addBlock = function(block) {
-    return this.blocks.push(block);
+    this.blocks.push(block);
 };
 
 ExpSession.prototype.removeBlock = function(data,event) {

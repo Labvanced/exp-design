@@ -54,7 +54,12 @@ ko.extenders.sortById = function(target, option) {
             }
             if (status == 'added'){
                 if (id && target.byId.hasOwnProperty(id)) {
-                    console.warn("id was already in list and appears now twice in observableArray (extended with sortByID).")
+                    if (option && option.hasOwnProperty("do_not_warn_when_double_entries") && option["do_not_warn_when_double_entries"]) {
+                        // warning is not issued.
+                    }
+                    else {
+                        console.warn("id was already in list and appears now twice in observableArray (extended with sortByID).")
+                    }
                 }
                 target.byId[id] = entity;
             }

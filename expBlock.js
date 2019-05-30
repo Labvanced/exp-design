@@ -13,7 +13,10 @@ var ExpBlock = function (expData) {
     this.id = ko.observable(guid());
     this.name = ko.observable("block_1");
     this.type = "ExpBlock";
-    this.subTasks = ko.observableArray([]).extend({sortById: null});
+
+    // the following array is extended with sortById to fix a bug with ko-sortable when adding new sub items in a newly created item:
+    this.subTasks = ko.observableArray([]).extend({sortById: {do_not_warn_when_double_entries: true}});
+
     this.editName =  ko.observable(false);
     this.taskRandomization =ko.observable('fixed'); // fixed, or 'permute' per subject
 };
