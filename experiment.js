@@ -561,6 +561,7 @@ Experiment.prototype.toJS = function() {
 
     if (this.exp_data instanceof ExpData){
         var exp_data_serialized = this.exp_data.toJS();
+        var study_settings = exp_data_serialized.studySettings; // this is copied to have faster top level access from db.
     }
     else {
         throw Error("cannot save exp data");
@@ -605,6 +606,7 @@ Experiment.prototype.toJS = function() {
         exp_data: exp_data_serialized,
         publishing_data: publishing_data_serialized,
         exp_run_data: exp_run_data_serialized,
+        study_settings: study_settings,
         analysis_data: analysisData_serialized,
         private_data: private_data_serialized
     };
