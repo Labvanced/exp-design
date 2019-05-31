@@ -186,7 +186,7 @@ if (typeof CKEDITOR !== 'undefined') {
             var selectAll = allBindings.get('selectAll');
 
             var instance = CKEDITOR.inline(element, {
-                customConfig: '/assets/js/ckeditor_config.js',
+                customConfig: '/assets/js/ckeditor_config.js?FILE_VERSION_PLACEHOLDER',
                 on: {
                     change: function () {
                         ignoreChanges = true;
