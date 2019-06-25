@@ -34,8 +34,8 @@ var PublishingData = function(experiment) {
     this.recruitInLibrary = ko.observable(false);
     this.recruitSecretly = ko.observable(false);
     this.recruitViaCrowdsourcing = ko.observable(false);
-    this.recruitViaOwnCrowdsourcing = ko.observable(false);
-    this.recruitViaCustomLink= ko.observable(false);
+    this.recruitViaOwnCrowdsourcing = ko.observable(true);
+    this.recruitViaCustomLink= ko.observable(true);
 
     // crowdsourcing
     this.crowdsourcingStatus = ko.observable('inactive');
