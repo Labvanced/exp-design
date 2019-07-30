@@ -42,7 +42,7 @@ var ExpTrialLoop = function (expData) {
     this.blockFixedFactorConditions = ko.observable(false);
     this.orderOfConditions = ko.observable("fixed");
     this.trialRandomization = ko.observable("permute");
-    this.fixedTrialOrder = ko.observableArray([]);
+    this.fixedTrialOrder = ko.observable('');
     this.uploadedTrialOrder = ko.observableArray([]);
     this.subjectCounterType = ko.observable("global"); // global or group
 
@@ -1118,45 +1118,42 @@ ExpTrialLoop.prototype.sortTrialBasedOnInputArray = function(sortedArray) {
 
     var trialOrder = this.fixedTrialOrder();
 
-    if  (this.fixedTrialOrder().length==0){
-        return [];
-    }
-    else{
-        try {
-            var StringArray = trialOrder.split(',');
-            var numberArray = [];
-            for (var i = 0; i<StringArray.length; i++){
-                var value = parseInt(StringArray[i]);
-                if (isNaN(value)){
-                    console.log("bad input sequence, trial id is not a number.")
-                }
-                else{
-                    numberArray.push(value-1);
-                }
-
-            }
-            var outArray = [];
-
-            for (var t = 0; t<numberArray.length; t++){
-                var trial = sortedArray[numberArray[t]];
-                if (trial){
-                    outArray.push(trial)
-                }
-                else{
-                    console.log("bad input sequence, trial number not specified.")
-                }
-
-            }
-
-            return outArray;
-        }
-        catch(err){
-            console.log(err.message);
-            return sortedArray;
-        }
+    if  (trialOrder.length==0){
+        trialOrder = '1';
     }
 
+    try {
+        var StringArray = trialOrder.split(',');
+        var numberArray = [];
+        for (var i = 0; i<StringArray.length; i++){
+            var value = parseInt(StringArray[i]);
+            if (isNaN(value)){
+                console.log("bad input sequence, trial id is not a number.")
+            }
+            else{
+                numberArray.push(value-1);
+            }
 
+        }
+        var outArray = [];
+
+        for (var t = 0; t<numberArray.length; t++){
+            var trial = sortedArray[numberArray[t]];
+            if (trial){
+                outArray.push(trial)
+            }
+            else{
+                console.log("bad input sequence, trial number not specified.")
+            }
+
+        }
+
+        return outArray;
+    }
+    catch(err){
+        console.log(err.message);
+        return sortedArray;
+    }
 
 };
 
