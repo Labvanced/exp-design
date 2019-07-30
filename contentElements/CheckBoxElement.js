@@ -83,7 +83,7 @@ CheckBoxElement.prototype.removeEntry = function() {
 
 CheckBoxElement.prototype.doReshuffle = function() {
     var elemCopy = this.elements().slice();
-    var reshuffledArray = this.parent.parent.parent.parent.reshuffle(elemCopy);
+    var reshuffledArray = ExpTrialLoop.prototype.reshuffle(elemCopy);
     this.elements(reshuffledArray);
 };
 

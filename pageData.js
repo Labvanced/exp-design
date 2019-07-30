@@ -96,7 +96,7 @@ PageData.prototype.reshuffleEntries = function() {
         }
     }
     // reshuffle
-    var reshuffledArray = this.parent.parent.reshuffle(elemCopy);
+    var reshuffledArray = ExpTrialLoop.prototype.reshuffle(elemCopy);
 
 
     // merge old and reshuffled array

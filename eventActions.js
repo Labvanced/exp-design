@@ -1375,7 +1375,7 @@ ActionShuffleArray.prototype.removeInArrVariable = function(){
 ActionShuffleArray.prototype.run = function(triggerParams) {
 
     if (this.inVarArr()) {
-        this.inVarArr().value().setValue(this.event.parent.parent.factorGroup.expTrialLoop.reshuffle(this.inVarArr().value().value()));
+        this.inVarArr().value().setValue(ExpTrialLoop.prototype.reshuffle(this.inVarArr().value().value()));
     }
 };
 
