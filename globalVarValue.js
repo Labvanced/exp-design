@@ -138,9 +138,10 @@ GlobalVarValueNumeric.prototype.toJS = function() {
  */
 
 GlobalVarValueNumeric.prototype.toString = function () {
-    if(this.value() !== null){
+    if (this.value() != null){
         return this.value().toString();
-    }else{
+    }
+    else {
         return null;
     }
 };
@@ -250,9 +251,10 @@ GlobalVarValueFile.prototype.toJS = function() {
  */
 
 GlobalVarValueFile.prototype.toString = function () {
-    if(this.value() !== null){
+    if (this.value() != null){
         return this.value().toString();
-    }else{
+    }
+    else {
         return null;
     }
 };
@@ -315,9 +317,10 @@ GlobalVarValueBoolean.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueBoolean.prototype.toString = function () {
-    if(this.value() !== null){
+    if (this.value() != null){
         return this.value().toString();
-    }else{
+    }
+    else {
         return null;
     }
 };
@@ -398,9 +401,10 @@ GlobalVarValueCategorical.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueCategorical.prototype.toString = function () {
-    if(this.value() !== null){
+    if (this.value() != null){
         return this.value().toString();
-    }else{
+    }
+    else {
         return null;
     }
 };
@@ -489,9 +493,10 @@ GlobalVarValueTime.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueTime.prototype.toString = function () {
-    if(this.value() !== null){
+    if (this.value() != null){
         return this.value().toString();
-    }else{
+    }
+    else {
         return null;
     }
 };
@@ -579,9 +584,10 @@ GlobalVarValueDatetime.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueDatetime.prototype.toString = function () {
-    if(this.value() !== null){
+    if (this.value() != null){
         return this.value().toString().substring(0,10);
-    }else{
+    }
+    else {
         return null;
     }
 };
@@ -973,12 +979,13 @@ GlobalVarValueArray.prototype.toJS = function() {
  */
 
 GlobalVarValueArray.prototype.toString = function () {
-    if(this.value() !== null){
+    if (this.value() != null){
         var arrValuesString = jQuery.map(this.value(), function(scalar) {
             return scalar.toString();
         });
         return arrValuesString.join();
-    }else{
+    }
+    else {
         return null;
     }
 };
@@ -1029,9 +1036,10 @@ GlobalVarValueStructure.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueStructure.prototype.toString = function () {
-    if(this.value() !== null){
+    if (this.value() != null){
         return this.value().toString();
-    }else{
+    }
+    else {
         return null;
     }
 };
@@ -1081,9 +1089,10 @@ GlobalVarValueUndefined.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueUndefined.prototype.toString = function () {
-    if(this.value() !== null){
+    if (this.value() != null){
         return this.value().toString();
-    }else{
+    }
+    else {
         return null;
     }
 };
