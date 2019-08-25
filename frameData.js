@@ -81,64 +81,6 @@ FrameData.prototype.deleteChildEntity = function(entity) {
     }
 };
 
-
-FrameData.prototype.copyChildEntity = function(entity) {
-    var obsArr;
-    if (entity instanceof ExpEvent) {
-        obsArr = this.events;
-    }
-    else if (entity instanceof GlobalVar) {
-        obsArr = this.localWorkspaceVars;
-    }
-    else {
-        obsArr = this.elements;
-    }
-    var index = obsArr.indexOf(entity);
-    var entityCopy = entityFactory(entity.toJS(), this.expData);
-
-    if (!(entityCopy instanceof ExpEvent)) {
-        entityCopy.id(guid());
-    }
-
-    if (entityCopy instanceof FrameElement){
-        if (entityCopy.content().hasOwnProperty('variable')){
-
-            var varEntity = entityCopy.content().variable();
-            if (varEntity){
-                var variableCopy =  this.copyVariable(varEntity);
-                this.expData.entities.insertIfNotExist(variableCopy);
-                entityCopy.content().variable(variableCopy.id());
-                this.addVariableToLocalWorkspace(variableCopy)
-            }
-
-        }
-        if ( entityCopy.content().hasOwnProperty("elements")){
-            var subElements = entityCopy.content().elements();
-            for(var i = 0; i<subElements.length;i++){
-                if (subElements[i].hasOwnProperty("variable")){
-                    var varEntity = subElements[i].variable();
-                    var variableCopy =  this.copyVariable(varEntity);
-                    this.expData.entities.insertIfNotExist(variableCopy);
-                    subElements[i].variable(variableCopy.id());
-                    this.localWorkspaceVars.splice(index+1, 0, variableCopy);
-
-                }
-            }
-        }
-    }
-    // for content elements which have pre-defined sub-variables
-
-
-    entityCopy.name(entityCopy.name() + "_copy_"+guid().substring(0,4));
-    entityCopy.parent = this;
-    entityCopy.setPointers(this.expData.entities);
-    obsArr.splice(index+1, 0, entityCopy);
-    if (!(entityCopy instanceof ExpEvent)) {
-        this.expData.entities.insertIfNotExist(entityCopy);
-    }
-    this.expData.parentExperiment.save();
-};
-
 FrameData.prototype.getTextRefs = function(textArrOuter, label){
     jQuery.each( this.elements(), function( index, elem ) {
         var textArr = [];
@@ -170,24 +112,6 @@ FrameData.prototype.setVarBackRef = function(variable) {
         self.deleteChildEntity(globalVar);
     });
 };
-
-FrameData.prototype.copyVariable = function(varEntity) {
-
-    if (!(varEntity instanceof GlobalVar)){
-        varEntity= this.expData.entities.byId[varEntity];
-    }
-    var variableCopy = entityFactory(varEntity.toJS(), this.expData);
-    variableCopy.name(variableCopy.name() + "_copy");
-    variableCopy.parent = this;
-    variableCopy.setPointers(this.expData.entities);
-    variableCopy.id(guid());
-    variableCopy.fromJS(variableCopy.toJS());
-    variableCopy.setPointers(this.expData.entities);
-
-    return variableCopy
-};
-
-
 
 /**
  * add a new frame element to this frame.
