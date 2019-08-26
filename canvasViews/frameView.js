@@ -222,6 +222,10 @@ FrameView.prototype.setupBackground= function() {
 };
 
 FrameView.prototype.setupGrid = function() {
+    // first clean up old element (if exists):
+    if (this.bgElement) {
+        this.bgElement.dispose();
+    }
     var bgFrameElement = new BgFrameElement(this.frameData,this);
     this.bgElement = bgFrameElement;
     $(this.divContainer).append(bgFrameElement.div);

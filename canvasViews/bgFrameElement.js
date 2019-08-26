@@ -7,17 +7,6 @@ var BgFrameElement = function(frameData,editor) {
         "left": 0,
         "top": 0
     });
-    this.divClickOverlay = document.createElement('div');
-    $(this.divClickOverlay).click(function() {
-        console.log("bg clicked");
-    });
-    $(this.divClickOverlay).css({
-        position: "absolute",
-        left: 0,
-        top: 0,
-        width: "100%",
-        height: "100%"
-    });
     this.canvas = document.createElement('canvas');
     this.canvas.id = "canvasBG";
     this.stage = new createjs.Stage(this.canvas);
@@ -35,9 +24,9 @@ var BgFrameElement = function(frameData,editor) {
     this.x= ko.observable(0);
     this.y= ko.observable(0);
 
-    this.scale = ko.computed(function() {
-        return this.editor.scale();
-    }, this);
+    this.scale = ko.pureComputed(function() {
+        return self.editor.scale();
+    });
 
     if (this.gridSubscription ){
         this.gridSubscription.dispose();
@@ -63,19 +52,16 @@ var BgFrameElement = function(frameData,editor) {
 
     this.drawBg();
 
-    this.bgImgSubgrid10.addEventListener('load', function() {
+    this.bgImgOnLoadCallback = function() {
         self.drawBg();
-    });
-    this.bgImgSubgrid5.addEventListener('load', function() {
-        self.drawBg();
-    });
-    this.bgImgSubgrid2.addEventListener('load', function() {
-        self.drawBg();
-    });
+    };
+    this.bgImgSubgrid10.addEventListener('load', this.bgImgOnLoadCallback);
+    this.bgImgSubgrid5.addEventListener('load', this.bgImgOnLoadCallback);
+    this.bgImgSubgrid2.addEventListener('load', this.bgImgOnLoadCallback);
 
-    createjs.Ticker.addEventListener("tick", function() {
+    /*createjs.Ticker.addEventListener("tick", function() {
         self.stage.update();
-    });
+    });*/
 
     this.addCallback();
 
@@ -86,7 +72,6 @@ var BgFrameElement = function(frameData,editor) {
 
 BgFrameElement.prototype.addGridToDOM = function() {
     $(this.div).append(this.canvas);
-    $(this.div).append(this.divClickOverlay);
 };
 
 BgFrameElement.prototype.update = function() {
@@ -173,7 +158,6 @@ BgFrameElement.prototype.drawBg = function() {
     }
 };
 
-
 BgFrameElement.prototype.addCallback = function() {
 
     var self = this;
@@ -186,4 +170,21 @@ BgFrameElement.prototype.addCallback = function() {
         self.editor.setSelectedElement(null);
     });
 
+};
+
+BgFrameElement.prototype.dispose = function() {
+    if (this.gridSubscription ){
+        this.gridSubscription.dispose();
+    }
+    if (this.scaleSubscription ){
+        this.scaleSubscription.dispose();
+    }
+
+    $(this.div).unbind('click');
+
+    this.bgImgSubgrid10.removeEventListener('load', this.bgImgOnLoadCallback);
+    this.bgImgSubgrid5.removeEventListener('load', this.bgImgOnLoadCallback);
+    this.bgImgSubgrid2.removeEventListener('load', this.bgImgOnLoadCallback);
+
+    $(this.div).remove();
 };
