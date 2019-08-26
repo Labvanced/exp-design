@@ -561,10 +561,15 @@ FrameElementView.prototype.dispose = function() {
     });
     this.disposables = [];
 
-    if (this.parentView.type == "playerView"){
-        if (this.editorCallbacks){
-            this.editorCallbacks.dispose();
-        }
+    this.border.dispose();
+    this.scale.dispose();
+    this.overflowX.dispose();
+    this.overflowY.dispose();
+    this.roundness.dispose();
+    this.backgroundColor.dispose();
+
+    if (this.editorCallbacks){
+        this.editorCallbacks.dispose();
     }
     delete this.parentView.viewElements.byId[this.dataModel.id()];
 };
