@@ -2699,6 +2699,7 @@ ActionIfCondition.prototype.fromJS = function(data) {
     var requirement = requirementFactory(this.event, data.requirement.type);
     requirement.fromJS(data.requirement);
     this.requirement(requirement);
+    this.requirement().setParent(this);
 
     var subActions = [];
     for (var i=0; i<data.subActions.length; i++) {
