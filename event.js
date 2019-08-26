@@ -62,42 +62,23 @@ ExpEvent.prototype.stopPause = function(playerFrame) {
     });
 };
 
-ExpEvent.prototype.moveActionDown = function(index, parent) {
-    this.moveAction(index,"Down",parent.parent);
+ExpEvent.prototype.moveActionDown = function(index, actionsObsArr) {
+    this.moveAction(index,"Down",actionsObsArr);
 };
 
-ExpEvent.prototype.moveActionUp = function(index, parent) {
-    this.moveAction(index,"Up",parent.parent);
+ExpEvent.prototype.moveActionUp = function(index, actionsObsArr) {
+    this.moveAction(index,"Up",actionsObsArr);
 };
 
-ExpEvent.prototype.moveAction = function(index, UpOrDown, subElement) {
-    //var elem = this.dataModel.elements()[index];
-    if (subElement != undefined){
-        var actions = subElement.subActions.slice();
-        if (UpOrDown=="Up"  && index < actions.length-1){
-            var elem = actions.splice(index, 1)[0];
-            actions.splice(index+1, 0, elem);
-
-        }
-        else if (UpOrDown=="Down" && index >0){
-            var elem = actions.splice(index, 1)[0];
-            actions.splice(index-1, 0, elem);
-        }
-        subElement.subActions(actions);
+ExpEvent.prototype.moveAction = function(index, UpOrDown, actionsObsArr) {
+    if (UpOrDown == "Up" && index < actionsObsArr().length - 1) {
+        var elem = actionsObsArr.splice(index, 1)[0];
+        actionsObsArr.splice(index + 1, 0, elem);
     }
-    else{
-
-        if (UpOrDown=="Up"  && index < this.actions().length-1){
-            var elem = this.actions.splice(index, 1)[0];
-            this.actions.splice(index+1, 0, elem);
-
-        }
-        else if (UpOrDown=="Down" && index >0){
-            var elem = this.actions.splice(index, 1)[0];
-            this.actions.splice(index-1, 0, elem);
-        }
+    else if (UpOrDown == "Down" && index > 0) {
+        var elem = actionsObsArr.splice(index, 1)[0];
+        actionsObsArr.splice(index - 1, 0, elem);
     }
-
     this.parent.expData.notifyChanged();
 };
 
