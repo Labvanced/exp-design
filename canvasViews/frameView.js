@@ -3,6 +3,7 @@
 
 var FrameView = function(divContainer,parent,type) {
     var self = this;
+    this.disposables = [];
 
     this.divContainer = divContainer;
 
@@ -36,6 +37,8 @@ var FrameView = function(divContainer,parent,type) {
 
     this.selectedTrialType = ko.observable({ type: 'default'});
     this.isInitialized = false;
+
+    this.mouseWheelHandler = null;
 };
 
 /**
@@ -50,7 +53,7 @@ FrameView.prototype.init = function(size) {
         this.setSize(size);
 
         if (this.type == "editorView") {
-            function MouseWheelHandler(e) {
+            this.mouseWheelHandler = function (e) {
 
                 // cross-browser wheel delta
                 var e = window.event || e; // old IE support
@@ -67,8 +70,7 @@ FrameView.prototype.init = function(size) {
                 e.preventDefault();
 
                 return false;
-            }
-
+            };
 
             var outerDiv = $('#editorFrameView')[0];
             $(outerDiv).css({
@@ -77,13 +79,13 @@ FrameView.prototype.init = function(size) {
 
             if (outerDiv.addEventListener) {
                 // IE9, Chrome, Safari, Opera
-                outerDiv.addEventListener("mousewheel", MouseWheelHandler, false);
+                outerDiv.addEventListener("mousewheel", this.mouseWheelHandler, false);
                 // Firefox
-                outerDiv.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+                outerDiv.addEventListener("DOMMouseScroll", this.mouseWheelHandler, false);
             }
             else {
                 // IE 6/7/8
-                outerDiv.attachEvent("onmousewheel", MouseWheelHandler);
+                outerDiv.attachEvent("onmousewheel", this.mouseWheelHandler);
             }
 
         }
@@ -97,8 +99,34 @@ FrameView.prototype.dispose = function() {
     for (var i= 0, len=viewElements.length; i<len; i++) {
         viewElements[i].dispose();
     }
-    this.scaleSubscription.dispose();
+    if(this.bgElement) {
+        this.bgElement.dispose();
+    }
+    if(this.scaleSubscription) {
+        this.scaleSubscription.dispose();
+    }
+    if(this.elementChangeSubscription) {
+        this.elementChangeSubscription.dispose();
+    }
+    if(this.frameWidthSubscription) {
+        this.frameWidthSubscription.dispose();
+    }
+    if(this.frameHeightSubscription) {
+        this.frameHeightSubscription.dispose();
+    }
+    if (this.colorSubscription ){
+        this.colorSubscription.dispose();
+    }
 
+    if (this.mouseWheelHandler) {
+        var outerDiv = $('#editorFrameView')[0];
+        if (outerDiv.removeEventListener) {
+            // IE9, Chrome, Safari, Opera
+            outerDiv.removeEventListener("mousewheel", this.mouseWheelHandler, false);
+            // Firefox
+            outerDiv.removeEventListener("DOMMouseScroll", this.mouseWheelHandler, false);
+        }
+    }
 
     // remove complete div
    // this.divContainer[0].remove();

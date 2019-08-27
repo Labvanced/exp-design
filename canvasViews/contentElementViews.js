@@ -9,7 +9,7 @@ function ContentElementPreviewViewModel (contentElement) {
     this.isSelected = ko.observable(false);
 }
 ContentElementPreviewViewModel.prototype.dispose = function() {
-    console.log("disposing ContentElementPreviewViewModel");
+    //console.log("disposing ContentElementPreviewViewModel");
 };
 
 ko.components.register('contentElementPreview', {
@@ -99,7 +99,7 @@ function ContentElementPlayerViewModel (contentElement) {
     this.contentElement = contentElement;
 }
 ContentElementPlayerViewModel.prototype.dispose = function() {
-    console.log("disposing ContentElementPlayerViewModel");
+    //console.log("disposing ContentElementPlayerViewModel");
 };
 
 ko.components.register('contentElementPlayerview', {

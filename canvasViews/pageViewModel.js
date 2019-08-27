@@ -145,9 +145,6 @@ PageView.prototype.moveDownElement = function (index) {
     }
 };
 
-
-
-
 function createPageComponents() {
 
     ko.components.register('page-preview',{
