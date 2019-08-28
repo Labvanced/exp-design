@@ -355,9 +355,6 @@ function createAudioRecordingComponents() {
                     var self = this;
                     this.dataModel = dataModel;
                     this.currentEntry = ko.observable('');
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus()
-                    };
 
                     this.relinkCallback = function() {
                         var frameData = self.dataModel.parent.parent;
@@ -445,10 +442,6 @@ function createAudioRecordingComponents() {
             }
             self.myAudioElem.load();
         });
-
-        this.focus = function () {
-            this.dataModel.ckInstance.focus()
-        };
     };
     AudioRecordingPreviewAndPlayerViewModel.prototype.afterRenderInit = function(elem) {
         var self = this;
@@ -457,7 +450,7 @@ function createAudioRecordingComponents() {
         this.seekBar = $(elem).find('.seek-bar')[0];
 
         if (this.seekBar){
-            this.seekBar.addEventListener("change", function () {
+            $(this.seekBar).on("change", function () {
                 self.dataModel.jumpToByFraction(self.seekBar.value / 100);
             });
 
@@ -484,6 +477,7 @@ function createAudioRecordingComponents() {
 
         myAudio.removeEventListener("timeupdate", this.timeUpdateListener);
         myAudio.removeEventListener("ended", this.onPlaybackEnded);
+        $(this.seekBar).off("change")
     };
     
     ko.components.register('audiorecording-preview',{

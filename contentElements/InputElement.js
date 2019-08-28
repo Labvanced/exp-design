@@ -224,10 +224,6 @@ function createInputComponents() {
                         return [allowedDataType];
                     });
 
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus();
-                    };
-
                     this.relinkCallback = function() {
                         var frameData = self.dataModel.parent.parent;
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {

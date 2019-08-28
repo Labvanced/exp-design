@@ -10,10 +10,6 @@ var SectionElement = function(expData) {
     this.selected = ko.observable(false);
     this.elements =  ko.observableArray([]).extend({sortById: null});
 
-    this.focus = function () {
-        this.dataModel.ckInstance.focus()
-    };
-
     ///// not serialized
     this.selected = ko.observable(false);
     /////
@@ -96,9 +92,6 @@ function createSectionElementComponents() {
             createViewModel: function (section, componentInfo) {
                 var viewModel = function(section){
                     this.section = section;
-                    this.focus = function () {
-                        this.section.ckInstance.focus()
-                    };
                 };
 
                 return new viewModel(section);
@@ -114,10 +107,6 @@ function createSectionElementComponents() {
             createViewModel: function(section, componentInfo){
                 var viewModel = function(section){
                     this.section = section;
-
-                    this.focus = function () {
-                        this.section.ckInstance.focus()
-                    };
                 };
 
                 return new viewModel(section);
@@ -132,10 +121,6 @@ function createSectionElementComponents() {
             createViewModel: function(section, componentInfo){
                 var viewModel = function(section){
                     this.section = section;
-
-                    this.focus = function () {
-                        this.section.ckInstance.focus()
-                    };
                 };
 
                 return new viewModel(section);

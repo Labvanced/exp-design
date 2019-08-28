@@ -257,10 +257,6 @@ function createLikertElementComponents() {
                         }
                     };
 
-                    this.focus = function () {
-                        self.dataModel.ckInstance.focus();
-                    };
-
                     this.relinkCallback = function() {
                         var frameData = self.dataModel.parent.parent;
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {

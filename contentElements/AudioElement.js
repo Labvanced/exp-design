@@ -156,9 +156,10 @@ function createAudioComponents() {
         this.element = componentInfo.element;
         this.dataModel = dataModel;
         var seekBar = $(this.element).find('.seek-bar')[0];
-        seekBar.addEventListener("change", function() {
+        this.changeListener = function() {
             dataModel.jumpToByFraction(seekBar.value / 100);
-        });
+        };
+        seekBar.addEventListener("change", this.changeListener);
 
         this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function(percentage) {
             seekBar.value = percentage;
@@ -168,6 +169,8 @@ function createAudioComponents() {
     AudioEditViewModel.prototype.dispose = function() {
         console.log("disposing AudioEditViewModel");
         this.subscriberTimePercentage.dispose();
+        var seekBar = $(this.element).find('.seek-bar')[0];
+        seekBar.removeEventListener("change", this.changeListener);
     };
 
     ko.components.register('audio-editview', {
@@ -206,7 +209,7 @@ function createAudioComponents() {
                 $(this.element).find('audio')[0].load();
             };
             this.updateAudioSource();
-            self.dataModel.modifier().selectedTrialView.file_id.subscribe(function() {
+            this.subscriberFileId = self.dataModel.modifier().selectedTrialView.file_id.subscribe(function() {
                 self.updateAudioSource();
             });
         }
@@ -217,14 +220,14 @@ function createAudioComponents() {
             var myAudio = $(this.element).find('audio')[0];
             var seekBar = $(this.element).find('.seek-bar')[0];
 
-            seekBar.addEventListener("click", function (param1) {
+            $(seekBar).on("click", function (param1) {
                 var widthClicked = param1.pageX - $(this).offset().left;
                 var totalWidth =  $(this)[0].getBoundingClientRect().width;
                 var fractionClicked = widthClicked / totalWidth;
                 dataModel.jumpToByFraction(fractionClicked);
             });
 
-            this.dataModel.currentlyPlaying.subscribe(function (value) {
+            this.subscriberCurrentlyPlaying = this.dataModel.currentlyPlaying.subscribe(function (value) {
                 if (value) {
                     myAudio.play();
                     $(self.dataModel.parent).trigger("PlaybackStarted");
@@ -270,7 +273,7 @@ function createAudioComponents() {
             });
         }
 
-        this.dataModel.audioSource.subscribe(function() {
+        this.subscriberAudioSource = this.dataModel.audioSource.subscribe(function() {
             var myAudio = $(self.element).find('audio')[0];
             myAudio.load();
         });
@@ -281,13 +284,27 @@ function createAudioComponents() {
         var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
         if (index > -1) {
             this.dataModel.subscribersForJumpEvents.splice(index, 1);
+            this.listenForJumpTo = null;
         }
         if (this.subscriberTimePercentage) {
             this.subscriberTimePercentage.dispose();
         }
+        if (this.subscriberAudioSource) {
+            this.subscriberAudioSource.dispose();
+        }
+        if (this.subscriberCurrentlyPlaying) {
+            this.subscriberCurrentlyPlaying.dispose();
+        }
+        if (this.subscriberFileId) {
+            this.subscriberFileId.dispose();
+        }
         var myAudio = $(this.element).find('audio')[0];
         myAudio.removeEventListener("timeupdate", this.timeUpdateListener);
+        this.timeUpdateListener = null;
         myAudio.removeEventListener("ended", this.onEndedListener);
+        this.onEndedListener = null;
+        var seekBar = $(this.element).find('.seek-bar')[0];
+        $(seekBar).off("click");
     };
 
     ko.components.register('audio-preview',{

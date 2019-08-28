@@ -445,10 +445,6 @@ function createMultipleChoiceComponents() {
                         self.multipleChoiceElement.removeEntry();
                     };
 
-                    this.focus = function () {
-                        self.multipleChoiceElement.ckInstance.focus();
-                    };
-
                     this.relinkCallback = function() {
                         var frameData = self.multipleChoiceElement.parent.parent;
                         var variableDialog = new AddNewVariable(self.multipleChoiceElement.expData, function (newVariable) {

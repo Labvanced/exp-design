@@ -347,10 +347,6 @@ function createCheckBoxComponents() {
                         this.dataModel.removeEntry();
                     };
 
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus();
-                    };
-
                     this.relinkCallback = function(index) {
                         var frameData = self.dataModel.parent.parent;
                         var checkboxEntry = self.dataModel.elements()[index];

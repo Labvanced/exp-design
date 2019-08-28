@@ -321,9 +321,6 @@ function createFileUploadElementComponents() {
                     this.dataModel = dataModel;
                     this.dataModel.initColorPicker();
                     this.currentEntry = ko.observable('');
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus()
-                    };
 
                     this.relinkCallback = function() {
                         var frameData = self.dataModel.parent.parent;
@@ -361,9 +358,6 @@ function createFileUploadElementComponents() {
                 var viewModel = function(dataModel){
                     var self = this;
                     this.dataModel = dataModel;
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus()
-                    };
                 };
 
                 return new viewModel(dataModel);
@@ -380,10 +374,6 @@ function createFileUploadElementComponents() {
                 var viewModel = function(dataModel){
                     var self = this;
                     this.dataModel = dataModel;
-
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus()
-                    };
 
                     this.fileSelected = function(file) {
                         self.dataModel.selectedFile(file);

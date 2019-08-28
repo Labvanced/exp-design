@@ -137,9 +137,6 @@ function createProgressBarComponents() {
                     var self = this;
                     this.dataModel = ko.observable(dataModel);
                     this.progressValue = dataModel.progressValue;
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus();
-                    };
 
                     this.relinkCallback = function() {
                         var frameData = self.dataModel().parent.parent;

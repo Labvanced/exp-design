@@ -329,10 +329,6 @@ function createSortableElementComponents() {
                     var self = this;
                     this.dataModel = dataModel;
                     this.currentEntry = ko.observable('');
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus();
-                    };
-
 
                     if (this.enableSortingSubscription){
                         this.enableSortingSubscription.dispose();
@@ -388,10 +384,6 @@ function createSortableElementComponents() {
                     this.dataModel = dataModel;
                     this.startPosition = ko.observable(null);
                     this.stopPosition = ko.observable(null);
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus();
-
-                    };
 
                     this.sortableElement = $('#sortableElementPrev');
                     var varNewId  = guid();
@@ -442,10 +434,6 @@ function createSortableElementComponents() {
                     this.dataModel = dataModel;
                     this.startPosition = ko.observable(null);
                     this.stopPosition = ko.observable(null);
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus();
-
-                    };
 
                     this.sortableElement = $('#sortableElementPlayer');
                     var varNewId  = guid();

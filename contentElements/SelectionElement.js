@@ -296,9 +296,6 @@ function createSelectionElementComponents() {
                     var self = this;
                     this.dataModel = dataModel;
                     this.currentEntry = ko.observable('');
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus()
-                    };
 
                     this.relinkCallback = function() {
                         var frameData = self.dataModel.parent.parent;
@@ -335,10 +332,6 @@ function createSelectionElementComponents() {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
-
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus()
-                    };
                 };
 
                 return new viewModel(dataModel);
@@ -353,10 +346,6 @@ function createSelectionElementComponents() {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
-
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus()
-                    };
                 };
 
                 return new viewModel(dataModel);

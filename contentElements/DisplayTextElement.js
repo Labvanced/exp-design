@@ -111,9 +111,6 @@ function createDisplayTextComponents() {
                     var self = this;
                     this.dataModel = dataModel;
                     this.text = dataModel.text;
-                    this.focus = function () {
-                        this.dataModel.ckInstance.focus();
-                    };
 
                     this.relinkCallback = function(index) {
                         var frameData = self.dataModel.parent.parent;

@@ -242,6 +242,10 @@ EditorCallbacks.prototype.dispose = function() {
     this.div.removeEventListener('resize', this.resizeEventListener , false);
     this.resizeEventListener = null;
 
+    if (this.select){
+        this.div.removeEventListener('click', this.clickEventListener);
+    }
+
     if ($(this.div).resizable( "instance" )) {
         $(this.div).resizable( "destroy" );
     }

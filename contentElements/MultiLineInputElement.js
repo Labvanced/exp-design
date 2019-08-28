@@ -217,10 +217,6 @@ function createMultiLineInputComponents() {
                     this.dataModel = ko.observable(dataModel);
                     this.questionText = dataModel.questionText;
 
-                    this.focus = function () {
-                        dataModel.ckInstance.focus();
-                    };
-
                     this.relinkCallback = function() {
                         var frameData = self.dataModel().parent.parent;
                         var variableDialog = new AddNewVariable(self.dataModel().expData, function (newVariable) {

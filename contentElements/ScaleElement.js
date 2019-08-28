@@ -512,10 +512,6 @@ function createScaleComponents() {
         this.dataModel = dataModel;
     };
 
-    ScaleEditViewModel.prototype.focus = function() {
-        this.dataModel.ckInstance.focus();
-    };
-
     ScaleEditViewModel.prototype.relinkCallback = function(index) {
         var frameData = this.dataModel.parent.parent;
         var checkboxEntry = this.dataModel.elements()[index];
