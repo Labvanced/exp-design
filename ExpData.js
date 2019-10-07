@@ -804,6 +804,11 @@ ExpData.prototype.setPointers = function() {
        delete this.entities.byId["undefined"];
     }
 
+    // bug fix for wrong trial id variable name:
+    if (this.varTrialId().name() != "Trial_Id") {
+        this.varTrialId().name("Trial_Id");
+    }
+
 };
 
 
