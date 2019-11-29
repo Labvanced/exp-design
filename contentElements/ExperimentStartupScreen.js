@@ -16,7 +16,10 @@ var ExperimentStartupScreen = function(experiment) {
     this.selectedCountry = ko.observable(null);
     this.selectedLanguage = ko.observable(null);
     this.selectedEmail = ko.observable(null);
-    this.selectedCSId= ko.observable(null);
+    this.selectedCSId = ko.observable(null);
+    if (player.crowdsourcinSubjId) {
+        this.selectedCSId(player.crowdsourcinSubjId);
+    }
 
     if (player.country && self.expData.parentExperiment.publishing_data.geoIpMethod() != "notused") {
         this.selectedCountry(countries_by_code[player.country]);
