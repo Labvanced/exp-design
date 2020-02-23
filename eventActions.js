@@ -4715,7 +4715,7 @@ ActionMathAndStats.prototype.run = function(triggerParams) {
         });
         if (inputData.length>0){
             var globalVarOutput = self.outputs()[0]();// ToDo  change outcome to more variables in the future
-            var outcome =  func_spec.operation.apply(null, inputData);
+            var outcome =  func_spec.operation.apply(self, inputData);
             globalVarOutput.setValue(outcome);
             self.testOutcome(globalVarOutput.getValueAsJS());
         }
@@ -4876,9 +4876,564 @@ ActionMathAndStats.prototype.operationTypes = ["Array Operations", "Linear Algeb
 
 ActionMathAndStats.prototype.statisticalOerations = [
 
-];
-ActionMathAndStats.prototype.algebraOerations = [
+    {
+        key: "zscore",
+        name: 'zscore',
+        inputs: [
+            {
+                name: "Input Array",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+            },
+            {
+                name: "Input Value",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+            },
+            {
+                name: "stdSelection",
+                dataFormats: ["scalar"],
+                dataTypes: ["boolean"],
+                booleanText: "Use Sample Standard Deviation",
+                relationGlobalVar: "cannotBeGlobalVar",
+                required: false,
+                value: false,
+                formType: "boolean"
+            }
 
+        ],
+        outputs: [
+            {
+                name: "output Z-score",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            var arrIn = arguments[0];
+            var val = arguments[1];
+            var stdSelection = arguments[2];
+            var result = jStat(arrIn).zscore(val, stdSelection);
+            return result;
+        }
+    },
+    {
+        key: "ztest",
+        name: 'ztest',
+        inputs: [
+            {
+                name: "Input Array",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+            },
+            {
+                name: "Input Value",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+            },
+            {
+                name: "twoSided",
+                dataFormats: ["scalar"],
+                dataTypes: ["boolean"],
+                booleanText: "two sided",
+                relationGlobalVar: "cannotBeGlobalVar",
+                required: true,
+                value: false,
+                formType: "boolean"
+            },
+            {
+                name: "stdSelection",
+                dataFormats: ["scalar"],
+                dataTypes: ["boolean"],
+                booleanText: "Use Sample Standard Deviation",
+                relationGlobalVar: "cannotBeGlobalVar",
+                required: false,
+                value: false,
+                formType: "boolean"
+            }
+
+        ],
+        outputs: [
+            {
+                name: "output p-value",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            var arrIn = arguments[0];
+            var val = arguments[1];
+            var sided = arguments[2] ? 2 : 1;
+            var stdSelection = arguments[3];
+            var result = jStat(arrIn).ztest(val, sided, stdSelection);
+            return result;
+        }
+    },
+
+
+    {
+        key: "tscore",
+        name: 'tscore',
+        inputs: [
+            {
+                name: "Input Array",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+            },
+            {
+                name: "Input Value",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+            }
+        ],
+        outputs: [
+            {
+                name: "output t-score",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            var arrIn = arguments[0];
+            var val = arguments[1];
+            var result = jStat(arrIn).tscore(val);
+            return result;
+        }
+    },
+    {
+        key: "ttest",
+        name: 'ttest',
+        inputs: [
+            {
+                name: "Input Array",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+            },
+            {
+                name: "Input Value",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+            },
+            {
+                name: "twoSided",
+                dataFormats: ["scalar"],
+                dataTypes: ["boolean"],
+                booleanText: "two sided",
+                relationGlobalVar: "cannotBeGlobalVar",
+                required: true,
+                value: false,
+                formType: "boolean"
+            }
+        ],
+        outputs: [
+            {
+                name: "output p-value",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            var arrIn = arguments[0];
+            var val = arguments[1];
+            var sided = arguments[2] ? 2 : 1;
+            var result = jStat(arrIn).ttest(val, sided);
+            return result;
+        }
+    },
+];
+
+
+ActionMathAndStats.prototype.algebraOerations = [
+    // with parameters
+    {
+        key: "add",
+        name: 'add',
+        inputs: [
+            {
+                name: "input array",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            },
+            {
+                name: "input scalar",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        operation: function () {
+            var result = jStat(arguments[0]).add(arguments[1]);
+            return result[0];
+        }
+    },
+    {
+        key: "subtract",
+        name: 'subtract',
+        inputs: [
+            {
+                name: "input array",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            },
+            {
+                name: "input scalar",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        operation: function () {
+            var result = jStat(arguments[0]).subtract(arguments[1]);
+            return result[0];
+        }
+    },
+    {
+        key: "divide",
+        name: 'divide',
+        inputs: [
+            {
+                name: "input array",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            },
+            {
+                name: "input scalar",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        operation: function () {
+            var result = jStat(arguments[0]).divide(arguments[1]);
+            return result[0];
+        }
+    },
+    {
+        key: "multiply",
+        name: 'multiply',
+        inputs: [
+            {
+                name: "input array",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            },
+            {
+                name: "input scalar",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        operation: function () {
+            var result = jStat(arguments[0]).multiply(arguments[1]);
+            return result[0];
+        }
+    },
+    {
+        key: "dot",
+        name: 'dot',
+        inputs: [
+            {
+                name: "vector 1",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            },
+            {
+                name: "vector 2",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        operation: function () {
+            var result = jStat(arguments[0]).dot(arguments[1]);
+            return result[0];
+        }
+    },
+    {
+        key: "pow",
+        name: 'pow',
+        inputs: [
+            {
+                name: "input array",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            },
+            {
+                name: "input scalar",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        operation: function () {
+            var result = jStat(arguments[0]).pow(arguments[1]);
+            return result[0];
+        }
+    },
+    {
+        key: "exp",
+        name: 'exp',
+        inputs: [
+            {
+                name: "input",
+                dataFormats: ["array", "scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["array", "scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        operation: function () {
+            if (arguments[0] instanceof Array) {
+                var result = jStat(arguments[0]).exp();
+                return result[0];
+            }
+            else {
+                var result = jStat([arguments[0]]).exp();
+                return result[0][0];
+            }
+        }
+    },
+    {
+        key: "log",
+        name: 'log (natural log)',
+        inputs: [
+            {
+                name: "input",
+                dataFormats: ["array", "scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["array", "scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        operation: function () {
+            if (arguments[0] instanceof Array) {
+                var result = jStat(arguments[0]).log();
+                return result[0];
+            }
+            else {
+                var result = jStat([arguments[0]]).log();
+                return result[0][0];
+            }
+        }
+    },
+    {
+        key: "abs",
+        name: 'abs',
+        inputs: [
+            {
+                name: "input",
+                dataFormats: ["array", "scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["array", "scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        operation: function () {
+            if (arguments[0] instanceof Array) {
+                var result = jStat(arguments[0]).abs();
+                return result[0];
+            }
+            else {
+                var result = jStat([arguments[0]]).abs();
+                return result[0][0];
+            }
+        }
+    },
+    {
+        key: "norm",
+        name: 'norm',
+        inputs: [
+            {
+                name: "input",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        operation: function () {
+            var result = jStat(arguments[0]).norm();
+            return result[0];
+        }
+    },
+    {
+        key: "angle",
+        name: 'angle',
+        inputs: [
+            {
+                name: "vector 1",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            },
+            {
+                name: "vector 2",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        outputs: [
+            {
+                name: "output",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true
+            }
+        ],
+        operation: function () {
+            var result = jStat(arguments[0]).angle(arguments[1]);
+            return result[0];
+        }
+    },
 ];
 
 
@@ -4896,7 +5451,6 @@ ActionMathAndStats.prototype.arrayOperations = [
                 relationGlobalVar: "mustBeVariable",
                 required: true,
                 value: null,
-                formType: "array"
             },
             {
                 name: "varianceSelection",
@@ -4935,8 +5489,7 @@ ActionMathAndStats.prototype.arrayOperations = [
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
-                value: null,
-                formType: "array"
+                value: null
             },
             {
                 name: "stdSelection",
