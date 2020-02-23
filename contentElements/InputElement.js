@@ -274,6 +274,12 @@ function createInputComponents() {
                             }
                         },
                         write: function (value) {
+                            if (self.dataModel.inputType()=='number') {
+                                // prevent resetting to 0 when starting to enter a negative number:
+                                if (value == "" || value == "-") {
+                                    return;
+                                }
+                            }
                             // setValue will convert to the correct datatype:
                             if (self.dataModel.variable()) {
                                 self.dataModel.variable().startValue().setValue(value);
@@ -312,6 +318,12 @@ function createInputComponents() {
                         },
 
                         write: function (value) {
+                            if (self.dataModel.inputType()=='number') {
+                                // prevent resetting to 0 when starting to enter a negative number:
+                                if (value == "" || value == "-") {
+                                    return;
+                                }
+                            }
                             // setValue will convert to the correct datatype:
                             self.dataModel.variable().value().setValue(value);
                         },
