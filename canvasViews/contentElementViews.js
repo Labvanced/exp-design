@@ -80,6 +80,9 @@ ko.components.register('contentElementPreview', {
             else if (contentElement instanceof AudioRecordingElement) {
                 elem = $("<div data-bind='component: {name : \"audiorecording-preview\", params : $data.contentElement}'></div>");
             }
+            if (contentElement instanceof IFrameElement) {
+                elem = $("<div data-bind='component: {name : \"iframe-preview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
             return viewModel;
         }
@@ -170,6 +173,9 @@ ko.components.register('contentElementPlayerview', {
             else if (contentElement instanceof AudioRecordingElement) {
                 elem = $("<div data-bind='component: {name : \"audiorecording-playerview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof IFrameElement) {
+                elem = $("<div data-bind='component: {name : \"iframe-playerview\", params : $data.contentElement}'></div>");
+            }
             $(divElem).append(elem);
 
             return viewModel;
@@ -259,6 +265,9 @@ ko.components.register('contentElementEditview', {
             }
             else if (contentElement instanceof AudioRecordingElement) {
                 elem = $("<div data-bind='component: {name : \"audiorecording-editview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof IFrameElement) {
+                elem = $("<div data-bind='component: {name : \"iframe-editview\", params : $data.contentElement}'></div>");
             }
             $(divElem).append(elem);
 

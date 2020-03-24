@@ -109,7 +109,11 @@ var createExpDesignComponents = (function() {
                 {
                     filepath: "/html_views/AudioRecordingElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createAudioRecordingComponents
-                }
+                },
+                {
+                    filepath: "/html_views/IFrameElement.html?FILE_VERSION_PLACEHOLDER",
+                    createCompFcn: createIFrameElementComponents
+                },
             ];
 
             var numRemainingItems = templates.length;
