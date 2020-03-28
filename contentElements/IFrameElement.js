@@ -59,7 +59,7 @@ IFrameElement.prototype.fromJS = function(data) {
 };
 
 function createIFrameElementComponents() {
-    ko.components.register('iframe-editview', {
+    ko.components.register('iframe-element-editview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
@@ -70,7 +70,7 @@ function createIFrameElementComponents() {
             }
 
         },
-        template: {element: 'iframe-editview-template'}
+        template: {element: 'iframe-element-editview-template'}
     });
 
     ko.components.register('iframe-element-preview',{
