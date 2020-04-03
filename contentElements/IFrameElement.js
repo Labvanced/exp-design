@@ -1,18 +1,23 @@
 
 var IFrameElement = function(expData) {
-    var self  = this;
     this.expData = expData;
     this.parent = null;
+
+    this.type= "IFrameElement";
+    this.iFrameUrl = null;
+    this.variable = ko.observable(null);
 
 };
 
 IFrameElement.prototype.label = "IFrame";
 IFrameElement.prototype.iconPath = "/resources/icons/tools/tool_text.svg";
-
+IFrameElement.prototype.modifiableProp = [];
+IFrameElement.prototype.numVarNamesRequired = 0;
+IFrameElement.prototype.dataType =      [];
 
 
 IFrameElement.prototype.init = function() {
-    var self = this;
+
 };
 
 /**
@@ -50,11 +55,13 @@ IFrameElement.prototype.getTextRefs = function(textArr, label){
 IFrameElement.prototype.toJS = function() {
     return {
         type: this.type,
+        iFrameUrl: this.iFrameUrl,
     };
 };
 
 IFrameElement.prototype.fromJS = function(data) {
     this.type=data.type;
+    this.iFrameUrl=data.iFrameUrl;
 
 };
 
@@ -63,7 +70,8 @@ function createIFrameElementComponents() {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
-                  
+                    this.dataModel = dataModel;
+                    this.iFrameUrl = dataModel.iFrameUrl;
                 };
 
                 return new viewModel(dataModel);
@@ -73,28 +81,30 @@ function createIFrameElementComponents() {
         template: {element: 'iframe-editview-template'}
     });
 
-    ko.components.register('iframe-element-preview',{
+    ko.components.register('iframe-preview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
+                    this.iFrameUrl = dataModel.iFrameUrl;
                 };
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'iframe-element-preview-template'}
+        template: {element: 'iframe-preview-template'}
     });
 
 
-    ko.components.register('iframe-element-playerview',{
+    ko.components.register('iframe-playerview',{
         viewModel: {
             createViewModel: function(dataModel, componentInfo){
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
+                    this.iFrameUrl = dataModel.iFrameUrl;
                 };
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'iframe-element-playerview-template'}
+        template: {element: 'iframe-playerview-template'}
     });
 }
