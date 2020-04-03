@@ -72,7 +72,7 @@ function createIFrameElementComponents() {
                     this.dataModel = dataModel;
                     this.iFrameUrl = dataModel.iFrameUrl;
                 };
-
+               
                 return new viewModel(dataModel);
             }
 
@@ -86,7 +86,7 @@ function createIFrameElementComponents() {
                 var viewModel = function(dataModel){
                     this.dataModel = dataModel;
                     this.iFrameUrl = dataModel.iFrameUrl;
-                };
+                };                
                 return new viewModel(dataModel);
             }
         },
@@ -102,7 +102,7 @@ function createIFrameElementComponents() {
                     this.iFrameUrl = dataModel.iFrameUrl;
                 };
                 return new viewModel(dataModel);
-            }
+            }          
         },
         template: {element: 'iframe-playerview-template'}
     });
