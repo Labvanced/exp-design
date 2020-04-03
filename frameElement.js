@@ -24,6 +24,7 @@ var FrameElement= function(expData) {
 
     // new
     this.stimulusInformation  = ko.observable(null);
+    this.iFrameUrl  = ko.observable("");
 
     // special to frame element
     this.canBeSelected = ko.observable(false);
@@ -202,6 +203,9 @@ FrameElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('stimulusInformation')) {
         this.stimulusInformation(data.stimulusInformation);
     }
+    if(data.hasOwnProperty('iFrameUrl')) {
+        this.iFrameUrl(data.iFrameUrl);
+    }
     if(data.hasOwnProperty('canBeSelected')) {
         this.canBeSelected(data.canBeSelected);
     }
@@ -217,7 +221,6 @@ FrameElement.prototype.fromJS = function(data) {
     if(data.hasOwnProperty('borderColor')) {
         this.borderColor(data.borderColor);
     }
-
     if(data.hasOwnProperty('overflowX')) {
         this.overflowX(data.overflowX);
     }
@@ -284,6 +287,7 @@ FrameElement.prototype.toJS = function() {
         isActive:  this.isActive(),
         keepAspectRatio: this.keepAspectRatio(),
         stimulusInformation: this.stimulusInformation(),
+        iFrameUrl: this.iFrameUrl(),
         content: contentData,
         canBeSelected:this.canBeSelected(),
         canBeDragged:this.canBeDragged(),

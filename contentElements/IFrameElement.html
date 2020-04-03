@@ -1,23 +1,13 @@
 <template id="iframe-editview-template">
     <div class="panel-body" style="height: 100%; margin-top: -10px">
-        <div class="taskeditor-header">I-Frame</div>
-
-        <label class="property-description">Fixed URL: </label>
-
-        <input style="display:inline-block; width: 160px; margin-left: 10px" type="text" class="form-control" data-bind="value: dataModel.iFrameUrl">
-       
-
-   
-
-
     </div>
 </template>
 
 
 <template id="iframe-preview-template">
-    <div>TEST</div>
+    <iframe style="width:100%; height:100%" data-bind="attr: { src:  dataModel.iFrameUrl}">TEST</iframe>
 </template>
 
 <template id="iframe-playerview-template">
-    <div>TEST</div>
+    <iframe style="width:100%; height:100%" data-bind="attr: { src:  dataModel.iFrameUrl}">TEST</iframe>
 </template>

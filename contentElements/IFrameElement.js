@@ -2,18 +2,20 @@
 var IFrameElement = function(expData) {
     this.expData = expData;
     this.parent = null;
+    this.expData = expData;
 
     this.type= "IFrameElement";
-    this.iFrameUrl = null;
+    this.iFrameUrl =  ko.observable("");
     this.variable = ko.observable(null);
+    this.modifier = ko.observable(new Modifier(this.expData, this));
 
 };
 
-IFrameElement.prototype.label = "IFrame";
+IFrameElement.prototype.label = "I-Frame";
 IFrameElement.prototype.iconPath = "/resources/icons/tools/tool_text.svg";
-IFrameElement.prototype.modifiableProp = [];
 IFrameElement.prototype.numVarNamesRequired = 0;
-IFrameElement.prototype.dataType =      [];
+IFrameElement.prototype.dataType =      ["string"];
+IFrameElement.prototype.modifiableProp = ["iFrameUrl" ];
 
 
 IFrameElement.prototype.init = function() {
@@ -25,48 +27,45 @@ IFrameElement.prototype.init = function() {
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 IFrameElement.prototype.getAllModifiers = function(modifiersArr) {
-
+    modifiersArr.push(this.modifier());
 };
 
 IFrameElement.prototype.setPointers = function(entitiesArr) {
-  
+    this.modifier().setPointers(entitiesArr);
 };
 
-IFrameElement.prototype.recalcTextVariables = function() {
-
-};
 
 IFrameElement.prototype.reAddEntities = function(entitiesArr) {
-  
+    this.modifier().reAddEntities(entitiesArr);
 };
 
 IFrameElement.prototype.selectTrialType = function(selectionSpec) {
-   
+    this.modifier().selectTrialType(selectionSpec);
 };
 
 IFrameElement.prototype.dispose = function () {
 
 };
 
-IFrameElement.prototype.getTextRefs = function(textArr, label){
- 
-};
 
 IFrameElement.prototype.toJS = function() {
     return {
         type: this.type,
-        iFrameUrl: this.iFrameUrl,
+        iFrameUrl: this.iFrameUrl(),
+        modifier: this.modifier().toJS()
     };
 };
 
 IFrameElement.prototype.fromJS = function(data) {
     this.type=data.type;
-    this.iFrameUrl=data.iFrameUrl;
+    this.modifier(new Modifier(this.expData, this));
+    this.modifier().fromJS(data.modifier);
+    this.iFrameUrl(data.iFrameUrl);
 
 };
 
 function createIFrameElementComponents() {
-    ko.components.register('iframe-element-editview', {
+    ko.components.register('iframe-editview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function(dataModel){
@@ -78,7 +77,7 @@ function createIFrameElementComponents() {
             }
 
         },
-        template: {element: 'iframe-element-editview-template'}
+        template: {element: 'iframe-editview-template'}
     });
 
     ko.components.register('iframe-preview',{
