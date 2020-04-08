@@ -6,8 +6,23 @@ var IFrameElement = function (expData) {
 
     this.type = "IFrameElement";
     this.iFrameUrl = ko.observable("");
+
     this.variable = ko.observable(null);
     this.modifier = ko.observable(new Modifier(this.expData, this));
+
+    var self = this;
+    this.iFrameUrlWithProtocol = ko.computed(function () {
+        var tmp = self.modifier().selectedTrialView.iFrameUrl();
+        if (tmp.startsWith("http://") || tmp.startsWith("https://")) {
+            return tmp;
+        }
+        else if (tmp == "") {
+            return false;
+        }
+        else {
+            return "https://" + tmp;
+        }
+    }, this);
 
 };
 
@@ -85,7 +100,6 @@ function createIFrameElementComponents() {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function (dataModel) {
                     this.dataModel = dataModel;
-                    this.iFrameUrl = dataModel.iFrameUrl;
                 };
                 return new viewModel(dataModel);
             }
@@ -99,7 +113,6 @@ function createIFrameElementComponents() {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function (dataModel) {
                     this.dataModel = dataModel;
-                    this.iFrameUrl = dataModel.iFrameUrl;
                 };
                 return new viewModel(dataModel);
             }

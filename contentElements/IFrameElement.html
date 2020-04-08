@@ -1,13 +1,39 @@
 <template id="iframe-editview-template">
     <div class="panel-body" style="height: 100%; margin-top: -10px">
+        <div class="taskeditor-header">I-Frame</div>
+        <p class="text-left">The I-Frame Object can be used to display another website inside the experiment.
+            <br>
+            <b>IMPORTANT: </b>In order that the I-Frame can be displayed, the
+            server that controls the target URL must:
+        </p>
+        <ul style="padding-left:15px">
+            <li>
+                set the http header "Access-Control-Allow-Origin" to be either
+                "*" or it must include "labvanced.com"
+            </li>
+            <li>
+                NOT set the http header "X-Frame-Options"
+            </li>
+        </ul>
+        <label class="property-description " for="iFrameUrl">Target URL:</label>
+        <span class="property-input">
+            <input class="taskeditor-input" id="iFrameUrl" style="width: 160px" type="text"
+                data-bind="{textInput: content().modifier().selectedTrialView.iFrameUrl, css: { 'modified-prop': !(content().iFrameUrl()==content().modifier().selectedTrialView.iFrameUrl()) }}">
+        </span>
     </div>
 </template>
 
 
 <template id="iframe-preview-template">
-    <iframe style="width:98%; height:97%; margin-left:1%;  margin-top:1%" data-bind="attr: { src:  dataModel.modifier().selectedTrialView.iFrameUrl}"></iframe>
+    <div data-bind="if: dataModel.iFrameUrlWithProtocol">
+        <iframe style="width:98%; height:97%; margin-left:1%;  margin-top:1%"
+            data-bind="attr: { src:  dataModel.iFrameUrlWithProtocol}"></iframe>
+    </div>
 </template>
 
 <template id="iframe-playerview-template">
-    <iframe style="width:98%; height:97%; margin-left:1%;  margin-top:1%" data-bind="attr: { src:  dataModel.modifier().selectedTrialView.iFrameUrl}"></iframe>
+    <div data-bind="if: dataModel.iFrameUrlWithProtocol">
+        <iframe style="width:98%; height:97%; margin-left:1%;  margin-top:1%"
+            data-bind="attr: { src:  dataModel.iFrameUrlWithProtocol}"></iframe>
+    </div>
 </template>
