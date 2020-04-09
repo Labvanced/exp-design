@@ -18,7 +18,7 @@
         <label class="property-description " for="iFrameUrl">Target URL:</label>
         <span class="property-input">
             <input class="taskeditor-input" id="iFrameUrl" style="width: 160px" type="text"
-                data-bind="{textInput: content().modifier().selectedTrialView.iFrameUrl, css: { 'modified-prop': !(content().iFrameUrl()==content().modifier().selectedTrialView.iFrameUrl()) }}">
+                data-bind="{textInput: dataModel.modifier().selectedTrialView.iFrameUrl, css: { 'modified-prop': !(dataModel.iFrameUrl()==dataModel.modifier().selectedTrialView.iFrameUrl()) }}">
         </span>
     </div>
 </template>
