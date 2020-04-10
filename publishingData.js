@@ -1,4 +1,4 @@
-var PublishingData = function(experiment) {
+var PublishingData = function (experiment) {
 
     this.experiment = experiment;
 
@@ -12,7 +12,7 @@ var PublishingData = function(experiment) {
 
     // description  //
     this.exp_name = ko.observable("");
-    if (experiment){
+    if (experiment) {
         this.exp_name(experiment.exp_name());
     }
     this.description = ko.observable("");
@@ -21,7 +21,7 @@ var PublishingData = function(experiment) {
     this.jdenticonHash = ko.observable(guid());
     this.imageType = ko.observable("jdenticon"); // "jdenticon" or "imgfile"
     this.categories = ko.observableArray([]);
-    this.affiliation= ko.observable('');
+    this.affiliation = ko.observable('');
     this.duration = ko.observable(25);
     this.durationMax = ko.observable(30);
     this.references = ko.observableArray([]);
@@ -29,18 +29,19 @@ var PublishingData = function(experiment) {
     this.externalnfo = ko.observableArray([]);
     this.externalLinks = ko.observableArray([]);
 
-    
+
     // recruiting options //
     this.recruitInLibrary = ko.observable(false);
     this.recruitSecretly = ko.observable(false);
     this.recruitViaCrowdsourcing = ko.observable(false);
     this.recruitViaOwnCrowdsourcing = ko.observable(true);
-    this.recruitViaCustomLink= ko.observable(true);
+    this.recruitViaCustomLink = ko.observable(true);
 
     // crowdsourcing
     this.crowdsourcingStatus = ko.observable('inactive');
-    this.measuredAverageTime =  ko.observable(null);
+    this.measuredAverageTime = ko.observable(null);
     this.completionLink = ko.observable('');
+    this.sonaCompletionLink = ko.observable('');
     this.customParticipationRequirement = ko.observable('');
 
 
@@ -52,13 +53,13 @@ var PublishingData = function(experiment) {
     this.surveyItemEmail = ko.observable('hidden');
 
     this.geoIpMethod = ko.observable("prefill"); // "notused" or "prefill" or "forced"
-    
+
     // After publication
-    this.individualizedLinks =  ko.observableArray([]);
-    this.ratingValues =  ko.observableArray([]);
-    this.raterUserIds=  ko.observableArray([]);
-    this.publicationDate =  ko.observable(null);
-    this.templatePublicationDate =  ko.observable(null);
+    this.individualizedLinks = ko.observableArray([]);
+    this.ratingValues = ko.observableArray([]);
+    this.raterUserIds = ko.observableArray([]);
+    this.publicationDate = ko.observable(null);
+    this.templatePublicationDate = ko.observable(null);
 
     this.connectToExternalDevices = ko.observable(false);
     this.connectToIP = ko.observable('localhost');
@@ -82,11 +83,11 @@ var PublishingData = function(experiment) {
     this.requiredEmail = ko.observable(false);
 
 
-    this.recruitingEnabled= ko.computed(function () {
+    this.recruitingEnabled = ko.computed(function () {
         if (self.recruitInLibrary() || self.recruitSecretly() || self.recruitViaCrowdsourcing() || self.recruitViaOwnCrowdsourcing() || self.recruitViaCustomLink()) {
             return true;
         }
-        else  {
+        else {
             return false;
         }
     }, this);
@@ -95,26 +96,26 @@ var PublishingData = function(experiment) {
 
     this.isDescriptionValid = ko.computed(function () {
 
-        if (this.exp_name().length == 0){
+        if (this.exp_name().length == 0) {
             return false;
         }
 
-        if (this.categories().length == 0){
+        if (this.categories().length == 0) {
             return false;
         }
 
-        if (this.affiliation() == ''){
+        if (this.affiliation() == '') {
             return false;
         }
-        if (this.duration() === null){
-            return false;
-        }
-
-        if (this.durationMax() === null){
+        if (this.duration() === null) {
             return false;
         }
 
-        if (parseInt(this.durationMax())<=parseInt(this.duration())){
+        if (this.durationMax() === null) {
+            return false;
+        }
+
+        if (parseInt(this.durationMax()) <= parseInt(this.duration())) {
             return false;
         }
 
@@ -132,7 +133,7 @@ var PublishingData = function(experiment) {
         return true;
     }, this);
 
-    this.errorString = ko.computed(function() {
+    this.errorString = ko.computed(function () {
         var errorString = "";
         if (this.exp_name().length == 0) {
             errorString += "No name, ";
@@ -140,14 +141,14 @@ var PublishingData = function(experiment) {
         if (this.categories().length == 0) {
             errorString += "No keyword(s), ";
         }
-        if (this.affiliation() == ''){
+        if (this.affiliation() == '') {
             errorString += "No affiliation, ";
         }
-        if (this.duration() === null){
+        if (this.duration() === null) {
             errorString += "No minimum time, ";
         }
 
-        if (this.durationMax() === null){
+        if (this.durationMax() === null) {
             errorString += "No maximum time, ";
         }
 
@@ -167,7 +168,7 @@ var PublishingData = function(experiment) {
         }
 
         // remove last comma:
-        if (errorString!="") {
+        if (errorString != "") {
             errorString = errorString.substring(0, errorString.length - 2);
         }
         return errorString;
@@ -187,7 +188,7 @@ PublishingData.prototype.updateReqProperties = function () {
     var requiredLanguage = false;
     var requiredEmail = false;
 
-    for (var i=0; i<availableGroups.length; i++) {
+    for (var i = 0; i < availableGroups.length; i++) {
         if (availableGroups[i].enabledGender()) {
             this.surveyItemGender('required');
             requiredGender = true;
@@ -196,7 +197,7 @@ PublishingData.prototype.updateReqProperties = function () {
 
         if (availableGroups[i].enabledAge()) {
             this.surveyItemAge('required');
-            requiredAge  = true;
+            requiredAge = true;
             someRequirements = true;
         }
 
@@ -230,20 +231,20 @@ PublishingData.prototype.updateReqProperties = function () {
     return someRequirements
 };
 
-PublishingData.prototype.getCurrentDate = function() {
-    if (this.experiment.expData){
-       var offset =  this.experiment.exp_data.studySettings.timeZoneOffset();
+PublishingData.prototype.getCurrentDate = function () {
+    if (this.experiment.expData) {
+        var offset = this.experiment.exp_data.studySettings.timeZoneOffset();
     }
-   return getCurrentDate(offset);
+    return getCurrentDate(offset);
 };
 
-PublishingData.prototype.setPointers = function() {
+PublishingData.prototype.setPointers = function () {
     if (this.experiment.exp_data instanceof ExpData) {
         this.updateReqProperties();
     }
 };
 
-PublishingData.prototype.fromJS = function(data) {
+PublishingData.prototype.fromJS = function (data) {
 
     this.sharingDesign(data.sharingDesign);
 
@@ -258,7 +259,7 @@ PublishingData.prototype.fromJS = function(data) {
 
     if (data.hasOwnProperty('references')) {
         var references = [];
-        for (var i = 0; i<data.references.length; i++){
+        for (var i = 0; i < data.references.length; i++) {
             references.push(ko.observable(data.references[i]));
         }
         this.references(references);
@@ -266,7 +267,7 @@ PublishingData.prototype.fromJS = function(data) {
 
     if (data.hasOwnProperty('referenceURLs')) {
         var referenceURLs = [];
-        for (var i = 0; i<data.referenceURLs.length; i++){
+        for (var i = 0; i < data.referenceURLs.length; i++) {
             referenceURLs.push(ko.observable(data.referenceURLs[i]));
         }
         this.referenceURLs(referenceURLs);
@@ -274,7 +275,7 @@ PublishingData.prototype.fromJS = function(data) {
 
     if (data.hasOwnProperty('externalnfo')) {
         var externalnfo = [];
-        for (var i = 0; i<data.externalnfo.length; i++){
+        for (var i = 0; i < data.externalnfo.length; i++) {
             externalnfo.push(ko.observable(data.externalnfo[i]));
         }
         this.externalnfo(externalnfo);
@@ -282,7 +283,7 @@ PublishingData.prototype.fromJS = function(data) {
 
     if (data.hasOwnProperty('externalLinks')) {
         var externalLinks = [];
-        for (var i = 0; i<data.externalLinks.length; i++){
+        for (var i = 0; i < data.externalLinks.length; i++) {
             externalLinks.push(ko.observable(data.externalLinks[i]));
         }
         this.externalLinks(externalLinks);
@@ -303,17 +304,17 @@ PublishingData.prototype.fromJS = function(data) {
     // recruiting options //
     this.recruitInLibrary(data.recruitInLibrary);
 
-    if (data.hasOwnProperty('recruitSecretly')  ) {
+    if (data.hasOwnProperty('recruitSecretly')) {
         this.recruitSecretly(data.recruitSecretly);
     }
 
-    if (data.hasOwnProperty('recruitViaCrowdsourcing') ) {
+    if (data.hasOwnProperty('recruitViaCrowdsourcing')) {
         this.recruitViaCrowdsourcing(data.recruitViaCrowdsourcing);
     }
-    if (data.hasOwnProperty('recruitViaOwnCrowdsourcing') ) {
+    if (data.hasOwnProperty('recruitViaOwnCrowdsourcing')) {
         this.recruitViaOwnCrowdsourcing(data.recruitViaOwnCrowdsourcing);
     }
-    if (data.hasOwnProperty('recruitViaCustomLink') ) {
+    if (data.hasOwnProperty('recruitViaCustomLink')) {
         this.recruitViaCustomLink(data.recruitViaCustomLink);
     }
 
@@ -353,6 +354,9 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('completionLink')) {
         this.completionLink(data.completionLink);
     }
+    if (data.hasOwnProperty('sonaCompletionLink')) {
+        this.sonaCompletionLink(data.sonaCompletionLink);
+    }
     if (data.hasOwnProperty('openAccess')) {
         this.openAccess(data.openAccess);
     }
@@ -372,7 +376,7 @@ PublishingData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('filePath')) {
         this.filePath(data.filePath);
     }
-    
+
     if (data.hasOwnProperty('connectToExternalDevices')) {
         this.connectToExternalDevices(data.connectToExternalDevices);
     }
@@ -398,72 +402,72 @@ PublishingData.prototype.fromJS = function(data) {
 };
 
 
-PublishingData.prototype.toJS = function() {
+PublishingData.prototype.toJS = function () {
 
     var references = [];
-    for (var i = 0; i<this.references().length; i++){
+    for (var i = 0; i < this.references().length; i++) {
         references.push(this.references()[i]());
     }
     var referenceURLs = [];
-    for (var i = 0; i<this.referenceURLs().length; i++){
+    for (var i = 0; i < this.referenceURLs().length; i++) {
         referenceURLs.push(this.referenceURLs()[i]());
     }
     var externalnfo = [];
-    for (var i = 0; i<this.externalnfo().length; i++){
+    for (var i = 0; i < this.externalnfo().length; i++) {
         externalnfo.push(this.externalnfo()[i]());
     }
     var externalLinks = [];
-    for (var i = 0; i<this.externalLinks().length; i++){
+    for (var i = 0; i < this.externalLinks().length; i++) {
         externalLinks.push(this.externalLinks()[i]());
     }
 
 
     // for external saving
-    if (this.experiment.exp_data.availableGroups){
+    if (this.experiment.exp_data.availableGroups) {
         var groups = this.experiment.exp_data.availableGroups();
 
-        var genders =[];
+        var genders = [];
         groups.forEach(function (group) {
-            if (group.enabledGender()){
-                if (genders.indexOf(group.genderRequirement())==-1){
+            if (group.enabledGender()) {
+                if (genders.indexOf(group.genderRequirement()) == -1) {
                     genders.push(group.genderRequirement());
                 }
             }
         });
-        if (genders.length==0 || (genders.indexOf("male")>-1 && genders.indexOf("female")>-1)){
+        if (genders.length == 0 || (genders.indexOf("male") > -1 && genders.indexOf("female") > -1)) {
             genders = ["All Genders"];
         }
 
-        var countries =[];
+        var countries = [];
         groups.forEach(function (group) {
             var subCoun = group.countryRequirement();
             subCoun.forEach(function (country) {
-                if (group.enabledCountry()){
-                    if (countries.indexOf(country)==-1){
+                if (group.enabledCountry()) {
+                    if (countries.indexOf(country) == -1) {
                         countries.push(country);
                     }
                 }
 
             });
         });
-        if (countries.length==0){
+        if (countries.length == 0) {
             countries.push("All Locations");
         }
 
 
-        var languages =[];
+        var languages = [];
         groups.forEach(function (group) {
             var subCoun = group.languageRequirement();
             subCoun.forEach(function (country) {
-                if (group.enabledLanguage()){
-                    if (languages.indexOf(country)==-1){
+                if (group.enabledLanguage()) {
+                    if (languages.indexOf(country) == -1) {
                         languages.push(country);
                     }
                 }
 
             });
         });
-        if (languages.length==0){
+        if (languages.length == 0) {
             languages.push("All Languages");
         }
 
@@ -472,47 +476,47 @@ PublishingData.prototype.toJS = function() {
         var ageFinalMin = null;
         var ageFinalMax = null;
         groups.forEach(function (group) {
-            if (group.enabledAge()){
+            if (group.enabledAge()) {
                 var ageMin = parseInt(group.ageRequirement()[0]);
-                var ageMax =  parseInt(group.ageRequirement()[1]);
-                if(ageFinalMin ==null || ageFinalMin>ageMin){
-                    ageFinalMin =ageMin;
+                var ageMax = parseInt(group.ageRequirement()[1]);
+                if (ageFinalMin == null || ageFinalMin > ageMin) {
+                    ageFinalMin = ageMin;
                 }
-                if(ageFinalMax ==null || ageFinalMax<ageMax){
-                    ageFinalMax =ageMax;
+                if (ageFinalMax == null || ageFinalMax < ageMax) {
+                    ageFinalMax = ageMax;
                 }
             }
         });
-        if (ageFinalMin== null && ageFinalMax==null) {
+        if (ageFinalMin == null && ageFinalMax == null) {
             ages = "All Ages";
         }
-        else if (ageFinalMax==120){
-            ages =  ageFinalMin+" or older";
+        else if (ageFinalMax == 120) {
+            ages = ageFinalMin + " or older";
         }
-        else if (ageFinalMin==0){
-            ages = ageFinalMax+" or younger";
+        else if (ageFinalMin == 0) {
+            ages = ageFinalMax + " or younger";
         }
-        else if (ageFinalMax!= null  && ageFinalMin!=null){
-            ages = ageFinalMin+"-"+ageFinalMax;
+        else if (ageFinalMax != null && ageFinalMin != null) {
+            ages = ageFinalMin + "-" + ageFinalMax;
         }
     }
 
 
-    if (this.experiment.exp_data == "not loaded"){
+    if (this.experiment.exp_data == "not loaded") {
         var savedExternally = {
             userName: this.savedExternally().userName(),
             isJointExp: this.savedExternally().isJointExp(),
-            countries:this.savedExternally().countries(),
-            ages:this.savedExternally().ages(),
-            languages:this.savedExternally().languages(),
-            genders:this.savedExternally().genders(),
-            numPartOfJointExp:this.savedExternally().numPartOfJointExp(),
-            translatedLanguages:this.savedExternally().translatedLanguages(),
-            translationsEnabled:this.savedExternally().translationsEnabled(),
+            countries: this.savedExternally().countries(),
+            ages: this.savedExternally().ages(),
+            languages: this.savedExternally().languages(),
+            genders: this.savedExternally().genders(),
+            numPartOfJointExp: this.savedExternally().numPartOfJointExp(),
+            translatedLanguages: this.savedExternally().translatedLanguages(),
+            translationsEnabled: this.savedExternally().translationsEnabled(),
             totalNrSubjects: this.savedExternally().totalNrSubjects()
         }
     }
-    else{
+    else {
         var savedExternally = this.savedExternally().toJS();
     }
 
@@ -520,8 +524,8 @@ PublishingData.prototype.toJS = function() {
 
     return {
 
-        sharingDesign:this.sharingDesign(),
-        openAccess:this.openAccess(),
+        sharingDesign: this.sharingDesign(),
+        openAccess: this.openAccess(),
 
         // description //
         exp_name: this.exp_name(),
@@ -531,13 +535,13 @@ PublishingData.prototype.toJS = function() {
         jdenticonHash: this.jdenticonHash(),
         imageType: this.imageType(),
         categories: this.categories(),
-        affiliation:this.affiliation(),
+        affiliation: this.affiliation(),
         duration: this.duration(),
-        durationMax:this.durationMax(),
-        references:references,
-        referenceURLs:referenceURLs,
-        externalnfo:externalnfo,
-        externalLinks:externalLinks,
+        durationMax: this.durationMax(),
+        references: references,
+        referenceURLs: referenceURLs,
+        externalnfo: externalnfo,
+        externalLinks: externalLinks,
 
         // recruiting options
         recruitInLibrary: this.recruitInLibrary(),
@@ -548,26 +552,27 @@ PublishingData.prototype.toJS = function() {
 
         // crowdsourcing
         crowdsourcingStatus: this.crowdsourcingStatus(),
-        measuredAverageTime:this.measuredAverageTime(),
-        completionLink:this.completionLink(),
+        measuredAverageTime: this.measuredAverageTime(),
+        completionLink: this.completionLink(),
+        sonaCompletionLink: this.sonaCompletionLink(),
 
         // initial subject survey
-        surveyItemGender:this.surveyItemGender(),
-        surveyItemAge:this.surveyItemAge(),
-        surveyItemCountry:this.surveyItemCountry(),
-        surveyItemLanguage:this.surveyItemLanguage(),
-        surveyItemEmail:this.surveyItemEmail(),
-        geoIpMethod:this.geoIpMethod(),
+        surveyItemGender: this.surveyItemGender(),
+        surveyItemAge: this.surveyItemAge(),
+        surveyItemCountry: this.surveyItemCountry(),
+        surveyItemLanguage: this.surveyItemLanguage(),
+        surveyItemEmail: this.surveyItemEmail(),
+        geoIpMethod: this.geoIpMethod(),
 
         // After publication
-        individualizedLinks:  this.individualizedLinks(),
-        ratingValues:  this.ratingValues(),
-        raterUserIds:  this.raterUserIds(),
+        individualizedLinks: this.individualizedLinks(),
+        ratingValues: this.ratingValues(),
+        raterUserIds: this.raterUserIds(),
         publicationDate: this.publicationDate(),
         templatePublicationDate: this.templatePublicationDate(),
 
         displayBackToLib: this.displayBackToLib(),
-        customParticipationRequirement:this.customParticipationRequirement(),
+        customParticipationRequirement: this.customParticipationRequirement(),
         savedExternally: savedExternally,
 
         isFolder: this.isFolder(),
@@ -575,7 +580,7 @@ PublishingData.prototype.toJS = function() {
 
         connectToExternalDevices: this.connectToExternalDevices(),
         connectToIP: this.connectToIP(),
-        connectToPort:this.connectToPort()
+        connectToPort: this.connectToPort()
 
 
     };
