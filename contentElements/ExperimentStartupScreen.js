@@ -1,4 +1,4 @@
-var ExperimentStartupScreen = function(experiment) {
+var ExperimentStartupScreen = function (experiment) {
     var self = this;
 
     this.experiment = experiment;
@@ -25,7 +25,7 @@ var ExperimentStartupScreen = function(experiment) {
         this.selectedCountry(countries_by_code[player.country]);
     }
 
-    this.acceptedCustomReq= ko.observable(false);
+    this.acceptedCustomReq = ko.observable(false);
 
     this.agreeToTermsAndConditions = ko.observable(false);
 
@@ -37,11 +37,11 @@ var ExperimentStartupScreen = function(experiment) {
 
     this.dataAlreadySent = false;
 
-    this.countryQuestionVisible = ko.computed(function() {
+    this.countryQuestionVisible = ko.computed(function () {
         if (self.requiredCountry() == "hidden") {
             return false;
         }
-        else if (self.requiredCountry() == "optional"){
+        else if (self.requiredCountry() == "optional") {
             return true;
         }
         else {
@@ -76,48 +76,48 @@ var ExperimentStartupScreen = function(experiment) {
     this.initialSubjectDialog = ko.observable(new InitialSubjectDialog(this.expData));
     this.initialSubjectDialog().selectedSubjectGroup(this.expData.availableGroups()[0]);
 
-    this.imgSource = ko.computed( function() {
+    this.imgSource = ko.computed(function () {
         return "/files/" + experiment.publishing_data.img_file_id() + "/" + experiment.publishing_data.img_file_orig_name();
     }, this);
 
-    this.errorString = ko.computed(function() {
+    this.errorString = ko.computed(function () {
         var errorString = "";
 
         // validate if all required fields are filled:
-        if (this.requiredGender()== 'required') {
+        if (this.requiredGender() == 'required') {
             if (this.selectedGender() != "male" && this.selectedGender() != "female") {
                 errorString += self.expData.staticStrings().errorGender + ", ";
             }
         }
-        if (this.requiredAge()== 'required') {
+        if (this.requiredAge() == 'required') {
             if (!(this.selectedAge() > 0)) {
                 errorString += self.expData.staticStrings().errorAge + ", ";
             }
         }
-        if (this.requiredCountry()== 'required') {
+        if (this.requiredCountry() == 'required') {
             if (this.selectedCountry() == null) {
                 errorString += self.expData.staticStrings().errorCountry + ", ";
             }
         }
-        if (this.requiredLanguage()== 'required') {
+        if (this.requiredLanguage() == 'required') {
             if (this.selectedLanguage() == null) {
                 errorString += self.expData.staticStrings().errorLanguage + ", ";
             }
         }
-        if (this.requiredEmail()== 'required') {
+        if (this.requiredEmail() == 'required') {
             if (this.selectedEmail() == null) {
                 errorString += self.expData.staticStrings().errorEmail + ", ";
             }
         }
 
         // remove last comma:
-        if (errorString!="") {
+        if (errorString != "") {
             errorString = errorString.substring(0, errorString.length - 2);
         }
         return errorString;
     }, this);
 
-    this.preloadingProgressRounded = ko.computed(function() {
+    this.preloadingProgressRounded = ko.computed(function () {
         var progressRounded = Math.round(player.playerPreloader.progress() * 100);
         $("#progressbar .bar").css({
             'width': progressRounded + "%"
@@ -125,74 +125,74 @@ var ExperimentStartupScreen = function(experiment) {
         return progressRounded;
     });
 
-    this.acceptedCustomReq.subscribe(function(newLang) {
-       var l = 1;
+    this.acceptedCustomReq.subscribe(function (newLang) {
+        var l = 1;
     });
 
-    this.selectedStudyLanguage.subscribe(function(newLang) {
+    this.selectedStudyLanguage.subscribe(function (newLang) {
         var langIdx = self.expData.translatedLanguages().indexOf(newLang);
         self.expData.currentLanguage(langIdx);
         self.expData.varDisplayedLanguage().setValue(newLang);
         self.expData.updateLanguage();
     });
 
-    this.allowedBrowsers = ko.computed( function() {
-          var settings =  self.expData.studySettings;
-          var list = [];
-        if (settings.allowChrome()){
+    this.allowedBrowsers = ko.computed(function () {
+        var settings = self.expData.studySettings;
+        var list = [];
+        if (settings.allowChrome()) {
             list.push("Chrome");
         }
-        if (settings.allowFirefox()){
+        if (settings.allowFirefox()) {
             list.push("Firefox");
         }
-        if (settings.allowInternetExplorer()){
+        if (settings.allowInternetExplorer()) {
             list.push("Microsoft Internet Explorer");
         }
-        if (settings.allowEdge()){
+        if (settings.allowEdge()) {
             list.push("Microsoft Edge");
         }
-        if (settings.allowSafari()){
+        if (settings.allowSafari()) {
             list.push("Safari");
         }
-        if (settings.allowOpera()){
+        if (settings.allowOpera()) {
             list.push("Opera");
         }
         return list;
-        }, this);
+    }, this);
 
 
-    this.allowedSystems= ko.computed( function() {
-        var settings =  self.expData.studySettings;
+    this.allowedSystems = ko.computed(function () {
+        var settings = self.expData.studySettings;
         var list = [];
-        if (settings.allowAndroidMobile()){
+        if (settings.allowAndroidMobile()) {
             list.push("Android-Mobile");
         }
-        if (settings.allowAndroidTablet()){
+        if (settings.allowAndroidTablet()) {
             list.push("Android-Tablet");
         }
-        if (settings.allowIPhone()){
+        if (settings.allowIPhone()) {
             list.push("iPhone");
         }
-        if (settings.allowIPad()){
+        if (settings.allowIPad()) {
             list.push("iPad");
         }
-        if (settings.allowMac()){
+        if (settings.allowMac()) {
             list.push("Mac/OS-X");
         }
-        if (settings.allowPCWindows()){
+        if (settings.allowPCWindows()) {
             list.push("Windows-PC");
         }
-        if (settings.allowPCLinux()){
+        if (settings.allowPCLinux()) {
             list.push("Linux-PC");
         }
-        if (settings.allowOtherOS()){
+        if (settings.allowOtherOS()) {
             list.push("others");
         }
         return list;
     }, this);
 
 
-    this.allowOtherBrowser =  self.expData.studySettings.allowOtherBrowser();
+    this.allowOtherBrowser = self.expData.studySettings.allowOtherBrowser();
     this.miniRes = ko.observable('');
 
     this.resolutionAllowed = ko.observable(null);
@@ -214,23 +214,23 @@ var ExperimentStartupScreen = function(experiment) {
 
     if (this.experiment.publishing_data.connectToExternalDevices()) {
         // only start external connection if enabled:
-        var param = "ws://"+this.experiment.publishing_data.connectToIP()+":"+this.experiment.publishing_data.connectToPort()+"/";
+        var param = "ws://" + this.experiment.publishing_data.connectToIP() + ":" + this.experiment.publishing_data.connectToPort() + "/";
         player.externalWebsocket = new WebSocket(param);
         player.externalWebsocket.onmessage = function (event) {
             var data = JSON.parse(event.data);
             var allCBs = player.currentFrame.websocketTriggerCallbacks;
             // execute all callbacks (events) with 'any' as trigger
             var callbacksToExe = allCBs["any"];
-            if (callbacksToExe){
+            if (callbacksToExe) {
                 callbacksToExe.forEach(function (cb) {
-                    cb(data.msg,data.value);
+                    cb(data.msg, data.value);
                 })
             }
             // execute all callbacks (events) with 'specific' trigger
-            if (allCBs[data.msg]){
+            if (allCBs[data.msg]) {
                 var cbs = allCBs[data.msg];
                 cbs.forEach(function (cb) {
-                    cb(data.msg,data.value);
+                    cb(data.msg, data.value);
                 })
             }
 
@@ -246,12 +246,12 @@ var ExperimentStartupScreen = function(experiment) {
 
 
 
-ExperimentStartupScreen.prototype.sendFriendInvite = function() {
+ExperimentStartupScreen.prototype.sendFriendInvite = function () {
 
     var emailData = {
         InputName: this.participantName(),
         InputEmail: this.friendsEmail(),
-        LinkToStudy: 'https://www.labvanced.com/player.html?id='+this.expData.parentExperiment.exp_id()
+        LinkToStudy: 'https://www.labvanced.com/player.html?id=' + this.expData.parentExperiment.exp_id()
     };
 
     var self = this;
@@ -259,16 +259,16 @@ ExperimentStartupScreen.prototype.sendFriendInvite = function() {
     $.ajax({
         url: '/inviteFriendForMultiUser',
         type: 'post',
-        data : emailData,
-        success: function(data){
+        data: emailData,
+        success: function (data) {
             self.participantName("");
             self.friendsEmail("");
             $('#confirmInvite').html("Invite Send");
 
             setTimeout(
-                function(){
+                function () {
                     $('#confirmInvite').html("")
-                },15000);
+                }, 15000);
 
         }
     });
@@ -276,7 +276,7 @@ ExperimentStartupScreen.prototype.sendFriendInvite = function() {
 
 };
 
-ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
+ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function () {
     var unknown = '-';
 
     // screen
@@ -288,16 +288,16 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
     }
 
 
-    if (this.expData.studySettings.minRes()){
+    if (this.expData.studySettings.minRes()) {
         this.miniRes(this.expData.studySettings.minWidth() + "x" + this.expData.studySettings.minHeight());
-        if (width>=parseInt(this.expData.studySettings.minWidth()) && height>=parseInt(this.expData.studySettings.minHeight())){
+        if (width >= parseInt(this.expData.studySettings.minWidth()) && height >= parseInt(this.expData.studySettings.minHeight())) {
             this.resolutionAllowed(true);
         }
-        else{
+        else {
             this.resolutionAllowed(false);
         }
     }
-    else{
+    else {
         this.resolutionAllowed(true);
     }
 
@@ -365,13 +365,13 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
             browser = navigator.appName;
         }
     }
-    if (this.allowedBrowsers().indexOf(browser)>=0){
+    if (this.allowedBrowsers().indexOf(browser) >= 0) {
         this.browserAllowed(true);
     }
-    else if (isOtherBrowser && this.allowOtherBrowser){
+    else if (isOtherBrowser && this.allowOtherBrowser) {
         this.browserAllowed(true);
     }
-    else{
+    else {
         this.browserAllowed(false);
     }
 
@@ -379,62 +379,62 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function() {
     // system
     var os = "others";
     var clientStrings = [
-        {s: 'Windows-PC', r: /(Windows 10.0|Windows NT 10.0)/},
-        {s: 'Windows-PC', r: /(Windows 8.1|Windows NT 6.3)/},
-        {s: 'Windows-PC', r: /(Windows 8|Windows NT 6.2)/},
-        {s: 'Windows-PC', r: /(Windows 7|Windows NT 6.1)/},
-        {s: 'Windows-PC', r: /Windows NT 6.0/},
-        {s: 'Windows-PC', r: /Windows NT 5.2/},
-        {s: 'Windows-PC', r: /(Windows NT 5.1|Windows XP)/},
-        {s: 'Windows-PC', r: /(Windows NT 5.0|Windows 2000)/},
-        {s: 'Windows-PC', r: /(Win 9x 4.90|Windows ME)/},
-        {s: 'Windows-PC', r: /(Windows 98|Win98)/},
-        {s: 'Windows-PC', r: /(Windows 95|Win95|Windows_95)/},
-        {s: 'Windows-PC', r: /(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/},
-        {s: 'Windows-PC', r: /Windows CE/},
-        {s: 'Windows-PC', r: /Win16/},
+        { s: 'Windows-PC', r: /(Windows 10.0|Windows NT 10.0)/ },
+        { s: 'Windows-PC', r: /(Windows 8.1|Windows NT 6.3)/ },
+        { s: 'Windows-PC', r: /(Windows 8|Windows NT 6.2)/ },
+        { s: 'Windows-PC', r: /(Windows 7|Windows NT 6.1)/ },
+        { s: 'Windows-PC', r: /Windows NT 6.0/ },
+        { s: 'Windows-PC', r: /Windows NT 5.2/ },
+        { s: 'Windows-PC', r: /(Windows NT 5.1|Windows XP)/ },
+        { s: 'Windows-PC', r: /(Windows NT 5.0|Windows 2000)/ },
+        { s: 'Windows-PC', r: /(Win 9x 4.90|Windows ME)/ },
+        { s: 'Windows-PC', r: /(Windows 98|Win98)/ },
+        { s: 'Windows-PC', r: /(Windows 95|Win95|Windows_95)/ },
+        { s: 'Windows-PC', r: /(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/ },
+        { s: 'Windows-PC', r: /Windows CE/ },
+        { s: 'Windows-PC', r: /Win16/ },
 
-        {s: 'Mac/OS-X', r: /Mac OS X/},
-        {s: 'Mac/OS-X', r: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/},
+        { s: 'Mac/OS-X', r: /Mac OS X/ },
+        { s: 'Mac/OS-X', r: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/ },
 
-        {s: 'Android', r: /Android/},
-        {s: 'iPhone', r: /iPhone/},
-        {s: 'iPad', r: /iPad/},
+        { s: 'Android', r: /Android/ },
+        { s: 'iPhone', r: /iPhone/ },
+        { s: 'iPad', r: /iPad/ },
 
-        {s: 'Linux-PC', r: /(Linux|X11)/}, // warning: it is important to first check Android above, because it also includes Linux in agent string.
+        { s: 'Linux-PC', r: /(Linux|X11)/ }, // warning: it is important to first check Android above, because it also includes Linux in agent string.
 
-        {s: 'others', r: /iPod/},
-        {s: 'others', r: /OpenBSD/},
-        {s: 'others', r: /SunOS/},
-        {s: 'others', r: /QNX/},
-        {s: 'others', r: /UNIX/},
-        {s: 'others', r: /BeOS/},
-        {s: 'others', r: /OS\/2/},
-        {s: 'others', r: /(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/}
+        { s: 'others', r: /iPod/ },
+        { s: 'others', r: /OpenBSD/ },
+        { s: 'others', r: /SunOS/ },
+        { s: 'others', r: /QNX/ },
+        { s: 'others', r: /UNIX/ },
+        { s: 'others', r: /BeOS/ },
+        { s: 'others', r: /OS\/2/ },
+        { s: 'others', r: /(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/ }
     ];
 
     for (var id in clientStrings) {
         var cs = clientStrings[id];
         if (cs.r.test(nAgt)) {
-            console.log("matched "+cs.r);
+            console.log("matched " + cs.r);
             os = cs.s;
             break;
         }
     }
 
-    if (os == "Android"){
-        if (/Mobile/.test(nAgt)){
+    if (os == "Android") {
+        if (/Mobile/.test(nAgt)) {
             os = "Android-Mobile";
         }
-        else{
+        else {
             os = "Android-Tablet";
         }
     }
 
-    if (this.allowedSystems().indexOf(os)>=0){
+    if (this.allowedSystems().indexOf(os) >= 0) {
         this.osAllowed(true);
     }
-    else{
+    else {
         this.osAllowed(false);
     }
 
@@ -460,7 +460,7 @@ ExperimentStartupScreen.prototype.jumpToAskSubjData = function () {
             initialSubjectDialog.selectedSessionNr(player.runOnlySessionNr);
         }
         initialSubjectDialog.subjectCode(player.subject_code);
-        initialSubjectDialog.start(function() {
+        initialSubjectDialog.start(function () {
             player.subject_code = initialSubjectDialog.subjectCode();
             var groupNr = initialSubjectDialog.selectedGroupNr();
             var sessionNr = initialSubjectDialog.selectedSessionNr();
@@ -515,10 +515,10 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
         return;
     }
 
-    if (this.requiredGender() =='hidden' && this.requiredAge() =='hidden' && !this.countryQuestionVisible() && this.requiredLanguage() =='hidden' && this.requiredEmail() =='hidden' && !player.isCrowdsourcingSession() && this.requiredGroup() =='automatic' && this.requiredSession() =='automatic' && this.requiredCustom()==''){
+    if (this.requiredGender() == 'hidden' && this.requiredAge() == 'hidden' && !this.countryQuestionVisible() && this.requiredLanguage() == 'hidden' && this.requiredEmail() == 'hidden' && !player.askForWorkerId() && this.requiredGroup() == 'automatic' && this.requiredSession() == 'automatic' && this.requiredCustom() == '') {
         this.sendDataAndContinue();
     }
-    else{
+    else {
         this.wizardStep("initialSurvey");
     }
 
@@ -529,16 +529,16 @@ ExperimentStartupScreen.prototype.checkSurveyData = function () {
     var self = this;
     if (this.errorString() == "" && !this.surveySubmitted()) {
         this.surveySubmitted(true);
-        if (this.requiredGroup() =='byParticipant' || this.requiredSession() =='byParticipant'){
-           var groupNr = this.initialSubjectDialog().selectedGroupNr();
-           var sessionNr = this.initialSubjectDialog().selectedSessionNr();
-           player.setSubjectGroupNr(groupNr, sessionNr);
+        if (this.requiredGroup() == 'byParticipant' || this.requiredSession() == 'byParticipant') {
+            var groupNr = this.initialSubjectDialog().selectedGroupNr();
+            var sessionNr = this.initialSubjectDialog().selectedSessionNr();
+            player.setSubjectGroupNr(groupNr, sessionNr);
         }
         this.sendDataAndContinue();
     }
 };
 
-ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
+ExperimentStartupScreen.prototype.sendDataAndContinue = function () {
 
     if (this.dataAlreadySent) {
         // prevent double sending data...
@@ -569,7 +569,7 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
             runOnlyGroupNr: player.runOnlyGroupNr,
             runOnlySessionNr: player.runOnlySessionNr
         },
-        function(data) {
+        function (data) {
             if (data.hasOwnProperty('success') && data.success == false) {
                 if (data.msg == "no matching subject group") {
                     player.finishSessionWithError("We are sorry, but you do not qualify to take part in this study.");
@@ -581,7 +581,7 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
             }
             player.selectedEmail = self.selectedEmail();
 
-            if (!(self.requiredGroup() =='byParticipant' || self.requiredSession() =='byParticipant')){
+            if (!(self.requiredGroup() == 'byParticipant' || self.requiredSession() == 'byParticipant')) {
                 player.setSubjectGroupNr(data.groupNr, data.sessionNr);
             }
             player.preloadAllContent();
@@ -590,7 +590,7 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function() {
     );
 };
 
-ExperimentStartupScreen.prototype.jumpToLoadingScreen = function() {
+ExperimentStartupScreen.prototype.jumpToLoadingScreen = function () {
     var self = this;
     this.wizardStep("loading");
 
@@ -618,23 +618,23 @@ ExperimentStartupScreen.prototype.jumpToLoadingScreen = function() {
     }
 };
 
-ExperimentStartupScreen.prototype.recalcStartingTime = function() {
+ExperimentStartupScreen.prototype.recalcStartingTime = function () {
     var self = this;
     var currentStartWindow = player.getCurrentStartWindow();
-    var timeToWait =  player.getDifferenceBetweenDates(currentStartWindow.current,currentStartWindow.start);
+    var timeToWait = player.getDifferenceBetweenDates(currentStartWindow.current, currentStartWindow.start);
     self.timeToNextSession(timeToWait[3]);
-    if (timeToWait[3]== 'now'){
+    if (timeToWait[3] == 'now') {
         self.checkPreloadingState();
     }
 };
 
-ExperimentStartupScreen.prototype.checkPreloadingState = function() {
+ExperimentStartupScreen.prototype.checkPreloadingState = function () {
     var self = this;
-    if ( player.preloaderCompleted()) {
+    if (player.preloaderCompleted()) {
         this.onPreloaderFinished();
     }
     else {
-        player.preloaderCompleted.subscribe(function(newVal) {
+        player.preloaderCompleted.subscribe(function (newVal) {
             if (newVal) {
                 self.onPreloaderFinished();
             }
@@ -642,7 +642,7 @@ ExperimentStartupScreen.prototype.checkPreloadingState = function() {
     }
 };
 
-ExperimentStartupScreen.prototype.onPreloaderFinished = function() {
+ExperimentStartupScreen.prototype.onPreloaderFinished = function () {
     if (this.expData.isJointExp()) {
         this.jumpToJointExpLobby();
     }
@@ -651,45 +651,45 @@ ExperimentStartupScreen.prototype.onPreloaderFinished = function() {
     }
 };
 
-ExperimentStartupScreen.prototype.jumpToJointExpLobby = function() {
+ExperimentStartupScreen.prototype.jumpToJointExpLobby = function () {
     var self = this;
     this.jointExpLobbyModel().initSocketAndListeners();
     this.wizardStep("jointExpLobby");
-    this.jointExpLobbyModel().gotMatchedFromServer.subscribe(function(isMatched) {
+    this.jointExpLobbyModel().gotMatchedFromServer.subscribe(function (isMatched) {
         if (isMatched) {
             self.onReadyToStart();
         }
     });
 };
 
-ExperimentStartupScreen.prototype.onReadyToStart = function() {
+ExperimentStartupScreen.prototype.onReadyToStart = function () {
     this.wizardStep("readyToStart");
 };
 
-ExperimentStartupScreen.prototype.startExp = function() {
+ExperimentStartupScreen.prototype.startExp = function () {
 
     player.startFullscreen();
 
     $('#sectionPreload').html("<div style='position: fixed; width: 100%; height: 100%;'>" +
-        "<div style='margin: 0; position: absolute; top: 50%; left: 50%;margin-right: -50%; transform: translate(-50%, -50%); font-size: xx-large;'>"+this.expData.staticStrings().startingExp+"</div>" +
+        "<div style='margin: 0; position: absolute; top: 50%; left: 50%;margin-right: -50%; transform: translate(-50%, -50%); font-size: xx-large;'>" + this.expData.staticStrings().startingExp + "</div>" +
         "</div>");
     $("#startExpSection").hide();
 
     // wait for five seconds:
-    setTimeout(function(){
+    setTimeout(function () {
         $("#sectionPreload").hide();
 
         // TODO: this check is not working yet:
         var fullscreenEnabled = document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled || document.msFullscreenEnabled;
-        if (fullscreenEnabled){ // this is false on Safari on iOS!!!!
+        if (fullscreenEnabled) { // this is false on Safari on iOS!!!!
 
         }
         player.startExperiment();
-    },5000);
+    }, 5000);
 
 };
 
-ExperimentStartupScreen.prototype.init = function(divWidth, divHeight) {
+ExperimentStartupScreen.prototype.init = function (divWidth, divHeight) {
     jdenticon();
     //jdenticon.update("#identicon", this.jdenticonHash());
 };

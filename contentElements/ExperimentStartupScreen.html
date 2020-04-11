@@ -1,6 +1,6 @@
 <div id="experimentPreview" style="position:absolute; height:100%; width: 100%; overflow: auto">
     <div style="position:relative;">
-        <div class="container-fluid" >
+        <div class="container-fluid">
 
 
             <!-- ko if: (osAllowed() && browserAllowed()&& resolutionAllowed()) -->
@@ -10,15 +10,19 @@
                     <div class="row ">
                         <div class="col-md-2 ssp-link mg-t-50">
                             <div data-bind="if: displayBackToLib">
-                                <a href="/expLibrary.html" class="ssp-link-back"><img width="24px" src="/resources/shapes/dark/left-arrow-1.svg"><span data-bind="text: expData.staticStrings().library"></span></a>
+                                <a href="/expLibrary.html" class="ssp-link-back"><img width="24px"
+                                        src="/resources/shapes/dark/left-arrow-1.svg"><span
+                                        data-bind="text: expData.staticStrings().library"></span></a>
                             </div>
                         </div>
                         <div class="col-md-8 ssp-img">
                             <!-- ko if: (imageType() == 'imgfile') -->
-                            <img class="round-image" width=" 220px" height=" 220px" id="ownImage" width="50%" data-bind="attr:{src: imgSource}"/>
+                            <img class="round-image" width=" 220px" height=" 220px" id="ownImage" width="50%"
+                                data-bind="attr:{src: imgSource}" />
                             <!-- /ko -->
                             <!-- ko if: (imageType() == 'jdenticon') -->
-                            <svg class="round-image" style="width:220px; height:220px" id="identicon" width="50%" data-bind="attr:{'data-jdenticon-hash': jdenticonHash() }"></svg>
+                            <svg class="round-image" style="width:220px; height:220px" id="identicon" width="50%"
+                                data-bind="attr:{'data-jdenticon-hash': jdenticonHash() }"></svg>
                             <!-- /ko -->
                         </div>
                     </div>
@@ -32,44 +36,49 @@
 
                             <!-- 1. Select study langauge-->
                             <div class="row ssp-questionaire" data-bind="if: wizardStep()=='selectStudyLanguage'">
-                                <p class="pt-studydescription text-center" data-bind="text: expData.staticStrings().langSelect"></p>
+                                <p class="pt-studydescription text-center"
+                                    data-bind="text: expData.staticStrings().langSelect"></p>
                                 <form data-bind="submit: languageSelected">
                                     <div class="text-center">
                                         <label class="center">
-                                            <span class="survey-left-label" data-bind="text: expData.staticStrings().studyLanguage"></span>
+                                            <span class="survey-left-label"
+                                                data-bind="text: expData.staticStrings().studyLanguage"></span>
                                             <select data-bind="
                                                 options: expData.translatedLanguages(),
                                                 value: selectedStudyLanguage"></select>
                                         </label>
                                     </div>
                                     <div class="text-center mg-10">
-                                        <button class="btn-regular btn-green mg-20" data-bind="click: languageSelected, text: expData.staticStrings().continue"></button>
+                                        <button class="btn-regular btn-green mg-20"
+                                            data-bind="click: languageSelected, text: expData.staticStrings().continue"></button>
                                     </div>
                                 </form>
                             </div>
 
                             <!-- 2. Subject Survey-->
                             <div class="row ssp-questionaire" data-bind="if: wizardStep()=='initialSurvey'">
-                                <p class="pt-studydescription text-center" data-bind="text: expData.staticStrings().initialSurvey"></p>
+                                <p class="pt-studydescription text-center"
+                                    data-bind="text: expData.staticStrings().initialSurvey"></p>
                                 <div class="">
                                     <form data-bind="submit: checkSurveyData">
 
 
-                                        <div  class="ssp-question" data-bind="visible:requiredGroup()=='byParticipant'">
+                                        <div class="ssp-question" data-bind="visible:requiredGroup()=='byParticipant'">
                                             <label>
                                                 <span class="survey-left-label">Select Group(*):</span>
                                                 <span>
-                                                <select data-bind="
+                                                    <select data-bind="
                                                     options: initialSubjectDialog().expData().availableGroups,
                                                     optionsText: 'name',
                                                     value: initialSubjectDialog().selectedSubjectGroup">
-                                                </select>
-                                            </span>
+                                                    </select>
+                                                </span>
                                             </label>
                                         </div>
 
 
-                                        <div  class="ssp-question" data-bind="visible:requiredSession()=='byParticipant'">
+                                        <div class="ssp-question"
+                                            data-bind="visible:requiredSession()=='byParticipant'">
                                             <label>
                                                 <span class="survey-left-label">Select Session(*):</span>
                                                 <select data-bind="
@@ -81,33 +90,46 @@
                                             </label>
                                         </div>
 
-
-
-
-                                        <div  class="ssp-question" data-bind="visible:player.isCrowdsourcingSession">
+                                        <div class="ssp-question" data-bind="visible:player.askForWorkerId">
                                             <label>
-                                                <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourCrowdsourcingID"></span></span>
-                                                <input class="ssp-input-long" type="text" data-bind="value: selectedCSId">
+                                                <span class="survey-left-label"><span
+                                                        data-bind="text: expData.staticStrings().yourCrowdsourcingID"></span></span>
+                                                <input class="ssp-input-long" type="text"
+                                                    data-bind="value: selectedCSId">
                                             </label>
                                         </div>
 
                                         <div class="ssp-question" data-bind="visible:requiredGender() !='hidden'">
-                                            <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourGender"></span><span data-bind="visible: requiredGender() =='required'"> (*)</span>:</span>
-                                            <label class="mg-r-10 ssp-radio"><input type="radio" name="genderReq" value="male" data-bind="checked: selectedGender"><span data-bind="text: expData.staticStrings().yourGenderMale"></span></label>
-                                            <label class="ssp-radio"><input type="radio" name="genderReq" value="female" data-bind="checked: selectedGender"><span data-bind="text: expData.staticStrings().yourGenderFemale"></span></label>
+                                            <span class="survey-left-label"><span
+                                                    data-bind="text: expData.staticStrings().yourGender"></span><span
+                                                    data-bind="visible: requiredGender() =='required'">
+                                                    (*)</span>:</span>
+                                            <label class="mg-r-10 ssp-radio"><input type="radio" name="genderReq"
+                                                    value="male" data-bind="checked: selectedGender"><span
+                                                    data-bind="text: expData.staticStrings().yourGenderMale"></span></label>
+                                            <label class="ssp-radio"><input type="radio" name="genderReq" value="female"
+                                                    data-bind="checked: selectedGender"><span
+                                                    data-bind="text: expData.staticStrings().yourGenderFemale"></span></label>
                                         </div>
 
-                                        <div  class="ssp-question" data-bind="visible:requiredAge() !='hidden'">
+                                        <div class="ssp-question" data-bind="visible:requiredAge() !='hidden'">
                                             <label>
-                                                <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourAge"></span><span data-bind="visible: requiredAge() =='required'"> (*)</span>:</span>
-                                                <input style="min-width: 230px" type="number" data-bind="value: selectedAge">
+                                                <span class="survey-left-label"><span
+                                                        data-bind="text: expData.staticStrings().yourAge"></span><span
+                                                        data-bind="visible: requiredAge() =='required'">
+                                                        (*)</span>:</span>
+                                                <input style="min-width: 230px" type="number"
+                                                    data-bind="value: selectedAge">
                                                 <span data-bind="text: expData.staticStrings().years"></span>
                                             </label>
                                         </div>
 
-                                        <div  class="ssp-question" data-bind="visible: countryQuestionVisible">
+                                        <div class="ssp-question" data-bind="visible: countryQuestionVisible">
                                             <label>
-                                                <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourCountry"></span><span data-bind="visible: requiredCountry() =='required'"> (*)</span>:</span>
+                                                <span class="survey-left-label"><span
+                                                        data-bind="text: expData.staticStrings().yourCountry"></span><span
+                                                        data-bind="visible: requiredCountry() =='required'">
+                                                        (*)</span>:</span>
                                                 <span>
                                                     <select class="ssp-input-long" data-bind="
                                                         options: country_codes,
@@ -119,9 +141,12 @@
                                             </label>
                                         </div>
 
-                                        <div  class="ssp-question" data-bind="visible:requiredLanguage() !='hidden'">
+                                        <div class="ssp-question" data-bind="visible:requiredLanguage() !='hidden'">
                                             <label>
-                                                <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourFirstLang"></span><span data-bind="visible: requiredLanguage() =='required'"> (*)</span>:</span>
+                                                <span class="survey-left-label"><span
+                                                        data-bind="text: expData.staticStrings().yourFirstLang"></span><span
+                                                        data-bind="visible: requiredLanguage() =='required'">
+                                                        (*)</span>:</span>
                                                 <select class="ssp-input-long" data-bind="
                                                     options: language_codes,
                                                     optionsText: 'name',
@@ -130,42 +155,54 @@
                                             </label>
                                         </div>
 
-                                        <div  class="ssp-question" data-bind="visible:requiredEmail() !='hidden'">
+                                        <div class="ssp-question" data-bind="visible:requiredEmail() !='hidden'">
                                             <label>
-                                                <span class="survey-left-label"><span data-bind="text: expData.staticStrings().yourEmail"></span><span data-bind="visible: requiredEmail() =='required'"> (*)</span>:</span>
-                                                <input class="ssp-input-long" type="email" data-bind="value: selectedEmail">
+                                                <span class="survey-left-label"><span
+                                                        data-bind="text: expData.staticStrings().yourEmail"></span><span
+                                                        data-bind="visible: requiredEmail() =='required'">
+                                                        (*)</span>:</span>
+                                                <input class="ssp-input-long" type="email"
+                                                    data-bind="value: selectedEmail">
                                             </label>
-                                            <div style="margin-left: 90px"><span style="font-weight: bold" data-bind="text: expData.staticStrings().askEmailConsent1"></span><span data-bind="text: expData.staticStrings().askEmailConsent2"></span></div>
+                                            <div style="margin-left: 90px"><span style="font-weight: bold"
+                                                    data-bind="text: expData.staticStrings().askEmailConsent1"></span><span
+                                                    data-bind="text: expData.staticStrings().askEmailConsent2"></span>
+                                            </div>
                                         </div>
 
-                                        <div  class="ssp-question" data-bind="visible:requiredCustom() !=''">
+                                        <div class="ssp-question" data-bind="visible:requiredCustom() !=''">
                                             <label style="cursor: pointer">
                                                 <div style="margin-left:80px; cursor: pointer">
-                                                    <input type="checkbox" data-bind="checked: acceptedCustomReq" style="cursor: pointer">
-                                                    <span style="cursor: pointer" data-bind="text: expData.staticStrings().customRequirement"></span>
+                                                    <input type="checkbox" data-bind="checked: acceptedCustomReq"
+                                                        style="cursor: pointer">
+                                                    <span style="cursor: pointer"
+                                                        data-bind="text: expData.staticStrings().customRequirement"></span>
                                                 </div>
                                             </label>
-                                                <div style="margin-left:80px; font-weight: normal">
-                                                    <p data-bind="text:requiredCustom()"></p>
-                                                </div>
+                                            <div style="margin-left:80px; font-weight: normal">
+                                                <p data-bind="text:requiredCustom()"></p>
+                                            </div>
                                         </div>
 
 
 
-                                        <div class="alert alert-warning" data-bind="visible: (surveySubmitted() && errorString()!='')" >
+                                        <div class="alert alert-warning"
+                                            data-bind="visible: (surveySubmitted() && errorString()!='')">
                                             <span data-bind="text: errorString"></span>
                                         </div>
 
                                         <div class="text-center mg-20 mg-t-50">
 
                                             <!-- ko if: (requiredCustom()=="") -->
-                                            <button class="btn-regular btn-lab-green  " data-bind="click: checkSurveyData, text: expData.staticStrings().submit"></button>
+                                            <button class="btn-regular btn-lab-green  "
+                                                data-bind="click: checkSurveyData, text: expData.staticStrings().submit"></button>
                                             <!-- /ko -->
 
                                             <!-- ko ifnot: (requiredCustom()=="") -->
-                                                <!-- ko if: (acceptedCustomReq()) -->
-                                                <button class="btn-regular btn-lab-green  " data-bind="click: checkSurveyData, text: expData.staticStrings().submit"></button>
-                                                <!-- /ko -->
+                                            <!-- ko if: (acceptedCustomReq()) -->
+                                            <button class="btn-regular btn-lab-green  "
+                                                data-bind="click: checkSurveyData, text: expData.staticStrings().submit"></button>
+                                            <!-- /ko -->
                                             <!-- /ko -->
 
                                         </div>
@@ -176,56 +213,87 @@
                             </div>
 
                             <!-- 3. lobby for joint experiments -->
-                            <div id="JointExpLobby" style="border-style: solid; border-width: 1px;" data-bind="if: wizardStep()=='jointExpLobby'">
-                                <h3 class="text-center" data-bind="text: expData.staticStrings().multiUserExpLobby"></h3>
+                            <div id="JointExpLobby" style="border-style: solid; border-width: 1px;"
+                                data-bind="if: wizardStep()=='jointExpLobby'">
+                                <h3 class="text-center" data-bind="text: expData.staticStrings().multiUserExpLobby">
+                                </h3>
 
                                 <div data-bind="if: jointExpLobbyModel().pingTestInProgress()">
 
                                     <div style="text-align: center; margin-top: 20px; font-size: 100%;">
-                                        <span data-bind="text: expData.staticStrings().jointExpTestConnection"></span><br>
+                                        <span
+                                            data-bind="text: expData.staticStrings().jointExpTestConnection"></span><br>
                                         <div class="myProgress">
-                                            <div class="myBar" id="progressBarPrev" data-bind="style: { width: (jointExpLobbyModel().pingTestProgressPercent()+'%') }"></span></div>
+                                            <div class="myBar" id="progressBarPrev"
+                                                data-bind="style: { width: (jointExpLobbyModel().pingTestProgressPercent()+'%') }">
+                                                </span></div>
                                         </div>
                                     </div> <br>
 
                                 </div>
                                 <div data-bind="if: !jointExpLobbyModel().pingTestInProgress()">
 
-                                    <div style="text-align: center; margin-top: 20px; font-size: 100%;" data-bind="visible: !jointExpLobbyModel().gotMatchedFromServer()"><span data-bind="text: expData.staticStrings().participantsInLobby"></span> <span style="font-weight: bold" data-bind="text: jointExpLobbyModel().currentNrOfParticipants()"></span></div> <br>
+                                    <div style="text-align: center; margin-top: 20px; font-size: 100%;"
+                                        data-bind="visible: !jointExpLobbyModel().gotMatchedFromServer()"><span
+                                            data-bind="text: expData.staticStrings().participantsInLobby"></span> <span
+                                            style="font-weight: bold"
+                                            data-bind="text: jointExpLobbyModel().currentNrOfParticipants()"></span>
+                                    </div> <br>
 
-                                    <div name="participantReady" style="text-align: center; margin-top: 10px;" data-bind="visible: !jointExpLobbyModel().gotMatchedFromServer()">
-                                        <span style="text-align: center; margin-left: 20px; font-style: italic;" data-bind="visible: jointExpLobbyModel().waiting(), text: expData.staticStrings().waitingForOtherParticipants"></span>
+                                    <div name="participantReady" style="text-align: center; margin-top: 10px;"
+                                        data-bind="visible: !jointExpLobbyModel().gotMatchedFromServer()">
+                                        <span style="text-align: center; margin-left: 20px; font-style: italic;"
+                                            data-bind="visible: jointExpLobbyModel().waiting(), text: expData.staticStrings().waitingForOtherParticipants"></span>
                                         <!-- ko if: (jointExpLobbyModel().waiting() && expData.studySettings.multiUserAllowInviteFriends()) -->
                                         <br>
-                                        <div style="margin-top: 10px; font-weight: bold" data-bind="text: expData.staticStrings().inviteFriendMultiUser1"></div>
+                                        <div style="margin-top: 10px; font-weight: bold"
+                                            data-bind="text: expData.staticStrings().inviteFriendMultiUser1"></div>
                                         <div style="text-align: left; margin-top: 10px">
-                                            <div >
-                                                <span style="margin-left: 100px;" data-bind="text: expData.staticStrings().inviteFriendMultiUser2"></span>
-                                                <input placeholder="Name" type="text" width="150px" data-bind="value: participantName">
+                                            <div>
+                                                <span style="margin-left: 100px;"
+                                                    data-bind="text: expData.staticStrings().inviteFriendMultiUser2"></span>
+                                                <input placeholder="Name" type="text" width="150px"
+                                                    data-bind="value: participantName">
                                             </div>
                                             <div style="margin-top:-10px; padding-top: 0">
-                                                <span style="margin-left: 50px;" data-bind="text: expData.staticStrings().inviteFriendMultiUser3"></span>
-                                                <input placeholder="Email" type="text" width="150px" data-bind="value: friendsEmail">
-                                                <button class="btn-regular btn-lab-lightblue mg-20" data-bind="text: expData.staticStrings().inviteFriendMultiUser4, click: function(data,event) {sendFriendInvite()}"></button>
-                                                <div id="confirmInvite" style="color: green; float: right; margin-right: 40px; margin-top: -15px"></div>
+                                                <span style="margin-left: 50px;"
+                                                    data-bind="text: expData.staticStrings().inviteFriendMultiUser3"></span>
+                                                <input placeholder="Email" type="text" width="150px"
+                                                    data-bind="value: friendsEmail">
+                                                <button class="btn-regular btn-lab-lightblue mg-20"
+                                                    data-bind="text: expData.staticStrings().inviteFriendMultiUser4, click: function(data,event) {sendFriendInvite()}"></button>
+                                                <div id="confirmInvite"
+                                                    style="color: green; float: right; margin-right: 40px; margin-top: -15px">
+                                                </div>
                                             </div>
 
                                         </div>
                                         <!-- /ko -->
 
 
-                                        <div style="text-align: center"><label class="checkbox-inline" data-bind="visible: !jointExpLobbyModel().waiting()">
-                                            <input type="checkbox" id="readyToStart" data-bind="checked: jointExpLobbyModel().readyToStartCheckbox">
-                                            <span data-bind="text: expData.staticStrings().readyToStart"></span></label></div> <br>
-                                        <h5 class="text-center" style="margin-left: 20px; font-style: italic;" data-bind="visible: jointExpLobbyModel().readyToStart(), text: expData.staticStrings().experimentStartsShortly"></h5>
+                                        <div style="text-align: center"><label class="checkbox-inline"
+                                                data-bind="visible: !jointExpLobbyModel().waiting()">
+                                                <input type="checkbox" id="readyToStart"
+                                                    data-bind="checked: jointExpLobbyModel().readyToStartCheckbox">
+                                                <span
+                                                    data-bind="text: expData.staticStrings().readyToStart"></span></label>
+                                        </div> <br>
+                                        <h5 class="text-center" style="margin-left: 20px; font-style: italic;"
+                                            data-bind="visible: jointExpLobbyModel().readyToStart(), text: expData.staticStrings().experimentStartsShortly">
+                                        </h5>
                                     </div>
 
-                                    <div name="Matched" style="text-align: center; font-style: italic;" data-bind="visible: jointExpLobbyModel().gotMatchedFromServer()">
-                                        <span style="margin-left: 20px; font-style: italic;" data-bind="text: expData.staticStrings().successfullyMatched_1"></span>
+                                    <div name="Matched" style="text-align: center; font-style: italic;"
+                                        data-bind="visible: jointExpLobbyModel().gotMatchedFromServer()">
+                                        <span style="margin-left: 20px; font-style: italic;"
+                                            data-bind="text: expData.staticStrings().successfullyMatched_1"></span>
                                         <b data-bind="text: expData.staticStrings().continueJointExpLobby"></b>
-                                        <span data-bind="text: expData.staticStrings().successfullyMatched_2"></span><br>
+                                        <span
+                                            data-bind="text: expData.staticStrings().successfullyMatched_2"></span><br>
 
-                                        <button class="btn-regular btn-lab-lightblue mg-20" style="margin-top: 20px; margin-bottom: 20px;" data-bind="click: jumpToLoadingScreen, text: expData.staticStrings().continue"></button>
+                                        <button class="btn-regular btn-lab-lightblue mg-20"
+                                            style="margin-top: 20px; margin-bottom: 20px;"
+                                            data-bind="click: jumpToLoadingScreen, text: expData.staticStrings().continue"></button>
                                     </div>
                                 </div>
 
@@ -236,8 +304,10 @@
                                 <div>
                                     <span data-bind="text: expData.staticStrings().errorSessionNotReady"></span>
                                     <br>
-                                    <span data-bind="text: expData.staticStrings().errorSessionStartIn"></span>: <span data-bind="text: timeToNextSession"> </span>
-                                    <button type="button" class="pointer btn btn-default" data-bind="click: recalcStartingTime, text: expData.staticStrings().refresh"></button>
+                                    <span data-bind="text: expData.staticStrings().errorSessionStartIn"></span>: <span
+                                        data-bind="text: timeToNextSession"> </span>
+                                    <button type="button" class="pointer btn btn-default"
+                                        data-bind="click: recalcStartingTime, text: expData.staticStrings().refresh"></button>
                                 </div>
                                 <br>
                             </div>
@@ -253,7 +323,8 @@
                             <!-- 6. Loading -->
                             <div class="row text-center" data-bind="if: wizardStep()=='loading'">
                                 <div class="study-loader"></div>
-                                <p class="text-bold lightblue"><span data-bind="text: preloadingProgressRounded"></span>%</p>
+                                <p class="text-bold lightblue"><span
+                                        data-bind="text: preloadingProgressRounded"></span>%</p>
                                 <div id="progressbar" style="width: 100%">
                                     <div class="bar"></div>
                                 </div>
@@ -268,28 +339,33 @@
                                 <p class="text-regular" data-bind="text: expData.staticStrings().keepFullscreen"></p>
 
                                 <!-- ko ifnot: (player.isTestrun ) -->
-                                    <!-- ko if: (player.experiment.exp_data.studySettings.participantConsent) -->
-                                        <label style="cursor: pointer">
-                                            <input type="checkbox" data-bind="checked: agreeToTermsAndConditions">
-                                            <span data-bind="text: expData.staticStrings().participationAgreement1"></span>
-                                            <a href="/agb.html" target="_blank" ><span class="text-semibold blue-link" >Terms and Conditions</span></a>
-                                            <span data-bind="text: expData.staticStrings().participationAgreement2"></span>
-                                        </label>
-                                        <!-- ko if: (agreeToTermsAndConditions) -->
-                                        <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: expData.staticStrings().start"></button>
-                                        <!-- /ko -->
-                                        <!-- ko ifnot: (agreeToTermsAndConditions) -->
-                                        <button class="btn-regular btn-lab-gray mg-20" disabled data-bind="text: expData.staticStrings().start"></button>
-                                        <!-- /ko -->
-                                    <!-- /ko -->
+                                <!-- ko if: (player.experiment.exp_data.studySettings.participantConsent) -->
+                                <label style="cursor: pointer">
+                                    <input type="checkbox" data-bind="checked: agreeToTermsAndConditions">
+                                    <span data-bind="text: expData.staticStrings().participationAgreement1"></span>
+                                    <a href="/agb.html" target="_blank"><span class="text-semibold blue-link">Terms and
+                                            Conditions</span></a>
+                                    <span data-bind="text: expData.staticStrings().participationAgreement2"></span>
+                                </label>
+                                <!-- ko if: (agreeToTermsAndConditions) -->
+                                <button class="btn-regular btn-lab-lightblue mg-20"
+                                    data-bind="click: startExp, text: expData.staticStrings().start"></button>
+                                <!-- /ko -->
+                                <!-- ko ifnot: (agreeToTermsAndConditions) -->
+                                <button class="btn-regular btn-lab-gray mg-20" disabled
+                                    data-bind="text: expData.staticStrings().start"></button>
+                                <!-- /ko -->
+                                <!-- /ko -->
 
-                                    <!-- ko ifnot: (player.experiment.exp_data.studySettings.participantConsent) -->
-                                        <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: expData.staticStrings().start"></button>
-                                    <!-- /ko -->
+                                <!-- ko ifnot: (player.experiment.exp_data.studySettings.participantConsent) -->
+                                <button class="btn-regular btn-lab-lightblue mg-20"
+                                    data-bind="click: startExp, text: expData.staticStrings().start"></button>
+                                <!-- /ko -->
                                 <!-- /ko -->
 
                                 <!-- ko if:(player.isTestrun) -->
-                                    <button class="btn-regular btn-lab-lightblue mg-20" data-bind="click: startExp, text: expData.staticStrings().start"></button>
+                                <button class="btn-regular btn-lab-lightblue mg-20"
+                                    data-bind="click: startExp, text: expData.staticStrings().start"></button>
                                 <!-- /ko -->
                             </div>
                         </div>
@@ -302,39 +378,42 @@
 
             <!-- ko if: (!osAllowed() || !browserAllowed() || !resolutionAllowed()) -->
             <div style="margin-top: 20%">
-                    <!-- ko if: (!osAllowed()) -->
-                    <div class="text-center" style="font-size: x-large">Please use a different device / operating system for taking part in this study! </div>
-                    <div class="text-center"  style="font-size: x-large">
-                        Allowed devices:
-                        <!-- ko foreach: allowedSystems -->
+                <!-- ko if: (!osAllowed()) -->
+                <div class="text-center" style="font-size: x-large">Please use a different device / operating system for
+                    taking part in this study! </div>
+                <div class="text-center" style="font-size: x-large">
+                    Allowed devices:
+                    <!-- ko foreach: allowedSystems -->
+                    <span data-bind="text:$data+', '"></span>
+                    <!-- /ko -->
+                </div>
+                <br>
+                <!-- /ko -->
+
+                <!-- ko if: (!browserAllowed()) -->
+                <div>
+                    <div class="text-center" style="font-size: x-large">Please use a different browser for taking part
+                        in this study!</div>
+                    <div class="text-center" style="font-size: x-large">
+                        Allowed browsers:
+                        <!-- ko foreach: allowedBrowsers -->
                         <span data-bind="text:$data+', '"></span>
                         <!-- /ko -->
                     </div>
-                    <br>
-                    <!-- /ko -->
+                </div>
+                <br>
+                <!-- /ko -->
 
-                    <!-- ko if: (!browserAllowed()) -->
-                    <div>
-                        <div class="text-center" style="font-size: x-large">Please use a different browser for taking part in this study!</div>
-                        <div class="text-center"  style="font-size: x-large">
-                            Allowed browsers:
-                            <!-- ko foreach: allowedBrowsers -->
-                            <span data-bind="text:$data+', '"></span>
-                            <!-- /ko -->
-                        </div>
+                <!-- ko if: (!resolutionAllowed()) -->
+                <div>
+                    <div class="text-center" style="font-size: x-large">This device has not the required resolution for
+                        taking part in this study! </div>
+                    <div class="text-center" style="font-size: x-large">
+                        Minimum Required Resolution: <span data-bind="text:miniRes"></span>
                     </div>
-                    <br>
-                    <!-- /ko -->
-
-                    <!-- ko if: (!resolutionAllowed()) -->
-                    <div>
-                        <div class="text-center" style="font-size: x-large">This device has not the required resolution for taking part in this study! </div>
-                        <div class="text-center"  style="font-size: x-large">
-                            Minimum Required Resolution: <span data-bind="text:miniRes"></span>
-                        </div>
-                    </div>
-                    <br>
-                    <!-- /ko -->
+                </div>
+                <br>
+                <!-- /ko -->
                 <br>
                 <div class="text-center"><a href="/page/library">Go back to Experiment Library</a></div>
             </div>
@@ -344,6 +423,3 @@
         </div>
     </div>
 </div>
-
-
-
