@@ -1,5 +1,6 @@
 <template id="iframe-editview-template">
-    <div class="panel-body" style="height: 100%; margin-top: -10px">
+    <div class="panel-body"
+         style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">I-Frame</div>
         <p class="text-left">The I-Frame Object can be used to display another website inside the experiment.
             <br>
@@ -15,25 +16,31 @@
                 NOT set the http header "X-Frame-Options"
             </li>
         </ul>
-        <label class="property-description " for="iFrameUrl">Target URL:</label>
+        <label class="property-description "
+               for="iFrameUrl">Target URL:</label>
         <span class="property-input">
-            <input class="taskeditor-input" id="iFrameUrl" style="width: 160px" type="text"
-                data-bind="{textInput: dataModel.modifier().selectedTrialView.iFrameUrl, css: { 'modified-prop': !(dataModel.iFrameUrl()==dataModel.modifier().selectedTrialView.iFrameUrl()) }}">
+            <input class="taskeditor-input"
+                   id="iFrameUrl"
+                   style="width: 160px"
+                   type="text"
+                   data-bind="{textInput: dataModel.modifier().selectedTrialView.iFrameUrl, css: { 'modified-prop': !(dataModel.iFrameUrl()==dataModel.modifier().selectedTrialView.iFrameUrl()) }}">
         </span>
     </div>
 </template>
 
 
 <template id="iframe-preview-template">
-    <div data-bind="if: dataModel.iFrameUrlWithProtocol">
+    <div data-bind="if: dataModel.iFrameUrlWithProtocol"
+         style="height:100%;">
         <iframe style="width:98%; height:97%; margin-left:1%;  margin-top:1%"
-            data-bind="attr: { src:  dataModel.iFrameUrlWithProtocol}"></iframe>
+                data-bind="attr: { src:  dataModel.iFrameUrlWithProtocol}"></iframe>
     </div>
 </template>
 
 <template id="iframe-playerview-template">
-    <div data-bind="if: dataModel.iFrameUrlWithProtocol">
+    <div data-bind="if: dataModel.iFrameUrlWithProtocol"
+         style="height:100%;">
         <iframe style="width:98%; height:97%; margin-left:1%;  margin-top:1%"
-            data-bind="attr: { src:  dataModel.iFrameUrlWithProtocol}"></iframe>
+                data-bind="attr: { src:  dataModel.iFrameUrlWithProtocol}"></iframe>
     </div>
 </template>
