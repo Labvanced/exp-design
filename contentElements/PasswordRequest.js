@@ -1,4 +1,4 @@
-var PasswordRequest = function(publishing_data) {
+var PasswordRequest = function (publishing_data) {
     var self = this;
 
     this.publishing_data = publishing_data;
@@ -11,7 +11,7 @@ var PasswordRequest = function(publishing_data) {
 
     this.password = ko.observable("");
 
-    this.imgSource = ko.computed( function() {
+    this.imgSource = ko.computed(function () {
         return "/files/" + publishing_data.img_file_id() + "/" + publishing_data.img_file_orig_name();
     }, this);
 
@@ -20,11 +20,11 @@ var PasswordRequest = function(publishing_data) {
 
 };
 
-PasswordRequest.prototype.init = function(callback) {
+PasswordRequest.prototype.init = function (callback) {
     this.callback = callback;
 };
 
 
-PasswordRequest.prototype.submitPassword = function() {
+PasswordRequest.prototype.submitPassword = function () {
     this.callback(this.password());
 };

@@ -3,11 +3,11 @@
 
 ////////////////////  GlobalVarValueString  ///////////////////////////////////
 
-GlobalVarValueString = function(parentVar) {
+GlobalVarValueString = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observable("");
-    this.value.subscribe(function() {
+    this.value.subscribe(function () {
         self.parentVar.notifyValueChanged();
     });
 
@@ -15,11 +15,11 @@ GlobalVarValueString = function(parentVar) {
     this.editVal = ko.observable(false)
 };
 
-GlobalVarValueString.prototype.editEntry = function() {
+GlobalVarValueString.prototype.editEntry = function () {
     this.editVal(true);
 };
 
-GlobalVarValueString.prototype.convert = function(data) {
+GlobalVarValueString.prototype.convert = function (data) {
     if (data === null) {
         return null;
     }
@@ -33,15 +33,15 @@ GlobalVarValueString.prototype.convert = function(data) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueString.prototype.setValue = function(data) {
-    if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
+GlobalVarValueString.prototype.setValue = function (data) {
+    if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
         data = data.toJS();
     }
     // convert other data types to string:
     this.value(this.convert(data));
 };
 
-GlobalVarValueString.prototype.getValue = function() {
+GlobalVarValueString.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -50,7 +50,7 @@ GlobalVarValueString.prototype.getValue = function() {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueString.prototype.fromJS = function(data) {
+GlobalVarValueString.prototype.fromJS = function (data) {
     this.value(this.convert(data));
 };
 
@@ -58,7 +58,7 @@ GlobalVarValueString.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueString.prototype.toJS = function() {
+GlobalVarValueString.prototype.toJS = function () {
     return this.value();
 };
 
@@ -74,16 +74,16 @@ GlobalVarValueString.prototype.toString = function () {
 
 ////////////////////  GlobalVarValueNumeric  ///////////////////////////////////
 
-GlobalVarValueNumeric = function(parentVar) {
+GlobalVarValueNumeric = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observable(null);
-    this.value.subscribe(function() {
+    this.value.subscribe(function () {
         self.parentVar.notifyValueChanged();
     });
 };
 
-GlobalVarValueNumeric.prototype.convert = function(data) {
+GlobalVarValueNumeric.prototype.convert = function (data) {
     if (data === null) {
         return null;
     }
@@ -97,12 +97,12 @@ GlobalVarValueNumeric.prototype.convert = function(data) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueNumeric.prototype.setValue = function(data) {
-    if (data === null){
+GlobalVarValueNumeric.prototype.setValue = function (data) {
+    if (data === null) {
         this.value(this.convert(data));
     }
-    else{
-        if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
+    else {
+        if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
             data = data.toJS();
         }
         // convert other data types to numeric:
@@ -111,7 +111,7 @@ GlobalVarValueNumeric.prototype.setValue = function(data) {
 
 };
 
-GlobalVarValueNumeric.prototype.getValue = function() {
+GlobalVarValueNumeric.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -120,7 +120,7 @@ GlobalVarValueNumeric.prototype.getValue = function() {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueNumeric.prototype.fromJS = function(data) {
+GlobalVarValueNumeric.prototype.fromJS = function (data) {
     this.value(this.convert(data));
 };
 
@@ -128,7 +128,7 @@ GlobalVarValueNumeric.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueNumeric.prototype.toJS = function() {
+GlobalVarValueNumeric.prototype.toJS = function () {
     return this.value();
 };
 
@@ -138,7 +138,7 @@ GlobalVarValueNumeric.prototype.toJS = function() {
  */
 
 GlobalVarValueNumeric.prototype.toString = function () {
-    if (this.value() != null){
+    if (this.value() != null) {
         return this.value().toString();
     }
     else {
@@ -148,7 +148,7 @@ GlobalVarValueNumeric.prototype.toString = function () {
 
 ////////////////////  GlobalVarValueFile ///////////////////////////////////
 
-GlobalVarValueFile = function(parentVar) {
+GlobalVarValueFile = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observable({
@@ -157,22 +157,22 @@ GlobalVarValueFile = function(parentVar) {
         id: ko.observable(null)
     });
 
-    this.value.subscribe(function() {
+    this.value.subscribe(function () {
         self.parentVar.notifyValueChanged();
     });
 };
 
-GlobalVarValueFile.prototype.setName = function(name) {
+GlobalVarValueFile.prototype.setName = function (name) {
     this.value().name(name);
     this.parentVar.notifyValueChanged();
 };
 
-GlobalVarValueFile.prototype.setGuid = function(guid) {
+GlobalVarValueFile.prototype.setGuid = function (guid) {
     this.value().guid(guid);
     this.parentVar.notifyValueChanged();
 };
 
-GlobalVarValueFile.prototype.setNameAndGuidAndId = function(name,guid,id) {
+GlobalVarValueFile.prototype.setNameAndGuidAndId = function (name, guid, id) {
     this.value({
         name: ko.observable(name),
         guid: ko.observable(guid),
@@ -180,31 +180,31 @@ GlobalVarValueFile.prototype.setNameAndGuidAndId = function(name,guid,id) {
     });
 };
 
-GlobalVarValueFile.prototype.convert = function(data) {
-     if (data instanceof GlobalVarValueFile){
-         return data.value()
-     }
-     else{
-         var newValue = {
-             name: ko.observable(null),
-             guid: ko.observable(null),
-             id: ko.observable(null)
-         };
+GlobalVarValueFile.prototype.convert = function (data) {
+    if (data instanceof GlobalVarValueFile) {
+        return data.value()
+    }
+    else {
+        var newValue = {
+            name: ko.observable(null),
+            guid: ko.observable(null),
+            id: ko.observable(null)
+        };
 
-         if (data === null) {
-             return newValue;
-         }
-         if (data.hasOwnProperty("name")) {
-             newValue.name(data.name)
-         }
-         if (data.hasOwnProperty("guid")) {
-             newValue.guid(data.guid)
-         }
-         if (data.hasOwnProperty("id")) {
-             newValue.id(data.id)
-         }
-         return newValue;
-     }
+        if (data === null) {
+            return newValue;
+        }
+        if (data.hasOwnProperty("name")) {
+            newValue.name(data.name)
+        }
+        if (data.hasOwnProperty("guid")) {
+            newValue.guid(data.guid)
+        }
+        if (data.hasOwnProperty("id")) {
+            newValue.id(data.id)
+        }
+        return newValue;
+    }
 
 };
 
@@ -212,15 +212,15 @@ GlobalVarValueFile.prototype.convert = function(data) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueFile.prototype.setValue = function(data) {
-    if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
+GlobalVarValueFile.prototype.setValue = function (data) {
+    if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
         data = data.toJS();
     }
     // convert other data types to file:
     this.value(this.convert(data));
 };
 
-GlobalVarValueFile.prototype.getValue = function() {
+GlobalVarValueFile.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -229,7 +229,7 @@ GlobalVarValueFile.prototype.getValue = function() {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueFile.prototype.fromJS = function(data) {
+GlobalVarValueFile.prototype.fromJS = function (data) {
     this.value(this.convert(data));
 };
 
@@ -237,7 +237,7 @@ GlobalVarValueFile.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueFile.prototype.toJS = function() {
+GlobalVarValueFile.prototype.toJS = function () {
     return {
         name: this.value().name(),
         guid: this.value().guid(),
@@ -251,7 +251,7 @@ GlobalVarValueFile.prototype.toJS = function() {
  */
 
 GlobalVarValueFile.prototype.toString = function () {
-    if (this.value() != null){
+    if (this.value() != null) {
         return this.value().toString();
     }
     else {
@@ -261,16 +261,16 @@ GlobalVarValueFile.prototype.toString = function () {
 
 ////////////////////  GlobalVarValueBoolean  ///////////////////////////////////
 
-GlobalVarValueBoolean = function(parentVar) {
+GlobalVarValueBoolean = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observable(false);
-    this.value.subscribe(function() {
+    this.value.subscribe(function () {
         self.parentVar.notifyValueChanged();
     });
 };
 
-GlobalVarValueBoolean.prototype.convert = function(data) {
+GlobalVarValueBoolean.prototype.convert = function (data) {
     if (data === null) {
         return null;
     }
@@ -284,14 +284,14 @@ GlobalVarValueBoolean.prototype.convert = function(data) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueBoolean.prototype.setValue = function(data) {
-    if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
+GlobalVarValueBoolean.prototype.setValue = function (data) {
+    if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
         data = data.toJS();
     }
     this.value(this.convert(data));
 };
 
-GlobalVarValueBoolean.prototype.getValue = function() {
+GlobalVarValueBoolean.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -300,7 +300,7 @@ GlobalVarValueBoolean.prototype.getValue = function() {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueBoolean.prototype.fromJS = function(data) {
+GlobalVarValueBoolean.prototype.fromJS = function (data) {
     this.value(this.convert(data));
 };
 
@@ -308,7 +308,7 @@ GlobalVarValueBoolean.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueBoolean.prototype.toJS = function() {
+GlobalVarValueBoolean.prototype.toJS = function () {
     return this.value();
 };
 
@@ -317,7 +317,7 @@ GlobalVarValueBoolean.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueBoolean.prototype.toString = function () {
-    if (this.value() != null){
+    if (this.value() != null) {
         return this.value().toString();
     }
     else {
@@ -327,16 +327,16 @@ GlobalVarValueBoolean.prototype.toString = function () {
 
 ////////////////////  GlobalVarValueCategorical  ///////////////////////////////////
 
-GlobalVarValueCategorical = function(parentVar) {
+GlobalVarValueCategorical = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observable(null);
-    this.value.subscribe(function(val) {
+    this.value.subscribe(function (val) {
         self.parentVar.notifyValueChanged();
     });
 };
 
-GlobalVarValueCategorical.prototype.convert = function(data) {
+GlobalVarValueCategorical.prototype.convert = function (data) {
     if (data === null) {
         return null;
     }
@@ -350,18 +350,18 @@ GlobalVarValueCategorical.prototype.convert = function(data) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueCategorical.prototype.setValue = function(data) {
-    if (data === null){
+GlobalVarValueCategorical.prototype.setValue = function (data) {
+    if (data === null) {
         this.value(this.convert(data));
     }
-    else{
-        if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
+    else {
+        if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
             data = data.toJS();
         }
         // convert other data types to string:
         data = this.convert(data);
 
-        if (this.parentVar.levels().indexOf(data) == -1){
+        if (this.parentVar.levels().indexOf(data) == -1) {
             this.value(null);
         }
         else {
@@ -374,7 +374,7 @@ GlobalVarValueCategorical.prototype.setValue = function(data) {
 
 };
 
-GlobalVarValueCategorical.prototype.getValue = function() {
+GlobalVarValueCategorical.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -383,7 +383,7 @@ GlobalVarValueCategorical.prototype.getValue = function() {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueCategorical.prototype.fromJS = function(data) {
+GlobalVarValueCategorical.prototype.fromJS = function (data) {
     this.value(this.convert(data));
 };
 
@@ -391,7 +391,7 @@ GlobalVarValueCategorical.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueCategorical.prototype.toJS = function() {
+GlobalVarValueCategorical.prototype.toJS = function () {
     return this.value();
 };
 
@@ -401,7 +401,7 @@ GlobalVarValueCategorical.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueCategorical.prototype.toString = function () {
-    if (this.value() != null){
+    if (this.value() != null) {
         return this.value().toString();
     }
     else {
@@ -416,28 +416,28 @@ GlobalVarValueCategorical.prototype.toString = function () {
 
 ////////////////////  GlobalVarValueTime  ///////////////////////////////////
 
-GlobalVarValueTime = function(parentVar) {
+GlobalVarValueTime = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observable(null);
-    this.value.subscribe(function() {
+    this.value.subscribe(function () {
         self.parentVar.notifyValueChanged();
     });
 };
 
-GlobalVarValueTime.prototype.convert = function(data) {
+GlobalVarValueTime.prototype.convert = function (data) {
     if (data === null) {
         return null;
     }
     else {
         if (typeof data === 'string' || data instanceof String) {
             var indSep = data.split(":");
-            if (indSep.length==2 && parseInt(indSep[0])>=0 && parseInt(indSep[0])<=23 && parseInt(indSep[1])>=0 && parseInt(indSep[1])<=59 ){
+            if (indSep.length == 2 && parseInt(indSep[0]) >= 0 && parseInt(indSep[0]) <= 23 && parseInt(indSep[1]) >= 0 && parseInt(indSep[1]) <= 59) {
                 return data;
             }
-            else if (data.length == 2 && parseInt(data)>=0 && parseInt(data)<=23) {
+            else if (data.length == 2 && parseInt(data) >= 0 && parseInt(data) <= 23) {
                 var hour = parseInt(data);
-                return hour+":00";
+                return hour + ":00";
             }
             else {
                 return null;
@@ -453,12 +453,12 @@ GlobalVarValueTime.prototype.convert = function(data) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueTime.prototype.setValue = function(data) {
-    if (data === null){
+GlobalVarValueTime.prototype.setValue = function (data) {
+    if (data === null) {
         this.value(this.convert(data));
     }
-    else{
-        if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
+    else {
+        if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
             data = data.toJS();
         }
         this.value(this.convert(data));
@@ -466,7 +466,7 @@ GlobalVarValueTime.prototype.setValue = function(data) {
 
 };
 
-GlobalVarValueTime.prototype.getValue = function() {
+GlobalVarValueTime.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -475,7 +475,7 @@ GlobalVarValueTime.prototype.getValue = function() {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueTime.prototype.fromJS = function(data) {
+GlobalVarValueTime.prototype.fromJS = function (data) {
     this.value(this.convert(data));
 };
 
@@ -483,7 +483,7 @@ GlobalVarValueTime.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueTime.prototype.toJS = function() {
+GlobalVarValueTime.prototype.toJS = function () {
     return this.value();
 };
 
@@ -493,7 +493,7 @@ GlobalVarValueTime.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueTime.prototype.toString = function () {
-    if (this.value() != null){
+    if (this.value() != null) {
         return this.value().toString();
     }
     else {
@@ -508,17 +508,17 @@ GlobalVarValueTime.prototype.toString = function () {
 
 ////////////////////  GlobalVarValueDatetime  ///////////////////////////////////
 
-GlobalVarValueDatetime = function(parentVar) {
+GlobalVarValueDatetime = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observable(null);
-    this.value.subscribe(function() {
+    this.value.subscribe(function () {
         self.parentVar.notifyValueChanged();
     });
 };
 
-GlobalVarValueDatetime.prototype.convert = function(data) {
-    if (data === null || data === "null" ) {
+GlobalVarValueDatetime.prototype.convert = function (data) {
+    if (data === null || data === "null") {
         return null;
     }
     data = new Date(data);
@@ -529,15 +529,15 @@ GlobalVarValueDatetime.prototype.convert = function(data) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueDatetime.prototype.setValue = function(data) {
-    if (data === null){
+GlobalVarValueDatetime.prototype.setValue = function (data) {
+    if (data === null) {
         this.value(this.convert(data));
     }
-    else{
-        if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
+    else {
+        if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
             data = data.toJS();
         }
-        if (data.hasOwnProperty("value")){
+        if (data.hasOwnProperty("value")) {
             data = null;
         }
         this.value(this.convert(data));
@@ -545,7 +545,7 @@ GlobalVarValueDatetime.prototype.setValue = function(data) {
 
 };
 
-GlobalVarValueDatetime.prototype.getValue = function() {
+GlobalVarValueDatetime.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -555,7 +555,7 @@ GlobalVarValueDatetime.prototype.getValue = function() {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueDatetime.prototype.fromJS = function(data) {
+GlobalVarValueDatetime.prototype.fromJS = function (data) {
     this.value(this.convert(data));
 };
 
@@ -563,17 +563,17 @@ GlobalVarValueDatetime.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueDatetime.prototype.toJS = function() {
-    if (this.value()!=null){ // check for invalid Date object
+GlobalVarValueDatetime.prototype.toJS = function () {
+    if (this.value() != null) { // check for invalid Date object
         if (this.value() instanceof Date && !isNaN(this.value().valueOf())) {
             this.value(this.convert(this.value()));
-            return this.value().toISOString().substring(0,10)
+            return this.value().toISOString().substring(0, 10)
         }
         else {
             return this.value();
         }
     }
-    else{
+    else {
         return null;
     }
 
@@ -584,8 +584,8 @@ GlobalVarValueDatetime.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueDatetime.prototype.toString = function () {
-    if (this.value() != null){
-        return this.value().toString().substring(0,10);
+    if (this.value() != null) {
+        return this.value().toString().substring(0, 10);
     }
     else {
         return null;
@@ -594,7 +594,7 @@ GlobalVarValueDatetime.prototype.toString = function () {
 
 ////////////////////  GlobalVarValueTimer  ///////////////////////////////////
 
-GlobalVarValueTimer = function(parentVar) {
+GlobalVarValueTimer = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observable(0); // in ms
@@ -608,16 +608,16 @@ GlobalVarValueTimer = function(parentVar) {
     this.triggerTimes = [];
     this.jsIntervalHandle = null;
     this.jsTimeoutHandle = null;
-    this.value.subscribe(function() {
+    this.value.subscribe(function () {
         self.parentVar.notifyValueChanged();
     });
 };
 
 // enum definitions:
-GlobalVarValueTimer.states = ['pause','up','down'];
+GlobalVarValueTimer.states = ['pause', 'up', 'down'];
 
-GlobalVarValueTimer.prototype.setValue = function(timeInMs) {
-    if (timeInMs === null){
+GlobalVarValueTimer.prototype.setValue = function (timeInMs) {
+    if (timeInMs === null) {
         timeInMs = 0;
     }
     timeInMs = parseInt(timeInMs);
@@ -628,7 +628,7 @@ GlobalVarValueTimer.prototype.setValue = function(timeInMs) {
     this.updateTimeout();
 };
 
-GlobalVarValueTimer.prototype.getValue = function(currentTime) {
+GlobalVarValueTimer.prototype.getValue = function (currentTime) {
     // initialize timerValueAtStart if not done yet:
     if (this.timerValueAtStart === null) {
         this.timerValueAtStart = this.value();
@@ -640,34 +640,34 @@ GlobalVarValueTimer.prototype.getValue = function(currentTime) {
         case "pause":
             return this.timerValueAtStart;
         case "up":
-            return this.timerValueAtStart + (currentTime-this.startTimeInUTC);
+            return this.timerValueAtStart + (currentTime - this.startTimeInUTC);
         case "down":
-            return this.timerValueAtStart - (currentTime-this.startTimeInUTC);
+            return this.timerValueAtStart - (currentTime - this.startTimeInUTC);
     }
 };
 
-GlobalVarValueTimer.prototype.pause = function() {
+GlobalVarValueTimer.prototype.pause = function () {
     this.updateCurrentValue();
     this.state('pause');
     this.updateInterval();
     this.updateTimeout();
 };
 
-GlobalVarValueTimer.prototype.startCountdown = function() {
+GlobalVarValueTimer.prototype.startCountdown = function () {
     this.updateCurrentValue();
     this.state('down');
     this.updateInterval();
     this.updateTimeout();
 };
 
-GlobalVarValueTimer.prototype.startCountup = function() {
+GlobalVarValueTimer.prototype.startCountup = function () {
     this.updateCurrentValue();
     this.state('up');
     this.updateInterval();
     this.updateTimeout();
 };
 
-GlobalVarValueTimer.prototype.updateCurrentValue = function() {
+GlobalVarValueTimer.prototype.updateCurrentValue = function () {
     var curTime = Date.now();
     var newVal = this.getValue(curTime);
     this.value(newVal);
@@ -675,27 +675,27 @@ GlobalVarValueTimer.prototype.updateCurrentValue = function() {
     this.startTimeInUTC = curTime;
 };
 
-GlobalVarValueTimer.prototype.updateInterval = function() {
+GlobalVarValueTimer.prototype.updateInterval = function () {
     var self = this;
-    if (this.jsIntervalHandle){
+    if (this.jsIntervalHandle) {
         clearInterval(this.jsIntervalHandle);
         this.jsIntervalHandle = null;
     }
-    this.jsIntervalHandle = setInterval(function() {
+    this.jsIntervalHandle = setInterval(function () {
         self.updateCurrentValue();
     }, this.forcedUpdateInterval());
 };
 
-GlobalVarValueTimer.prototype.getTimeUntilValueReached = function(targetValue) {
+GlobalVarValueTimer.prototype.getTimeUntilValueReached = function (targetValue) {
 
 };
 
-GlobalVarValueTimer.prototype.updateTimeout = function() {
+GlobalVarValueTimer.prototype.updateTimeout = function () {
 
     var self = this;
 
     // remove old timeout callback
-    if (this.jsTimeoutHandle){
+    if (this.jsTimeoutHandle) {
         clearTimeout(this.jsTimeoutHandle);
         this.jsTimeoutHandle = null;
     }
@@ -715,7 +715,7 @@ GlobalVarValueTimer.prototype.updateTimeout = function() {
     var nextTriggerValue = null;
     var timeUntilNextTrigger = null;
     if (this.state() === "up") {
-        this.nextTriggerIdx = this.binarySearchForTriggerTime(currentTimerVal,false);
+        this.nextTriggerIdx = this.binarySearchForTriggerTime(currentTimerVal, false);
         if (this.triggerTimes[this.nextTriggerIdx] === currentTimerVal) {
             // do not trigger if the value exactly matches:
             this.nextTriggerIdx++;
@@ -726,10 +726,10 @@ GlobalVarValueTimer.prototype.updateTimeout = function() {
             return;
         }
         nextTriggerValue = this.triggerTimes[this.nextTriggerIdx];
-        timeUntilNextTrigger = nextTriggerValue-currentTimerVal;
+        timeUntilNextTrigger = nextTriggerValue - currentTimerVal;
     }
     else { // "down"
-        this.nextTriggerIdx = this.binarySearchForTriggerTime(currentTimerVal,true);
+        this.nextTriggerIdx = this.binarySearchForTriggerTime(currentTimerVal, true);
         this.nextTriggerIdx--;
         if (this.nextTriggerIdx < 0) {
             // no more triggers below this value
@@ -737,13 +737,13 @@ GlobalVarValueTimer.prototype.updateTimeout = function() {
             return;
         }
         nextTriggerValue = this.triggerTimes[this.nextTriggerIdx];
-        timeUntilNextTrigger = currentTimerVal-nextTriggerValue;
+        timeUntilNextTrigger = currentTimerVal - nextTriggerValue;
     }
-    console.log("this.nextTriggerIdx = "+this.nextTriggerIdx+" nextTriggerValue = "+nextTriggerValue+" timeUntilNextTrigger = " + timeUntilNextTrigger);
+    console.log("this.nextTriggerIdx = " + this.nextTriggerIdx + " nextTriggerValue = " + nextTriggerValue + " timeUntilNextTrigger = " + timeUntilNextTrigger);
 
     // add new timeout callback:
     this.jsTimeoutHandle = setTimeout(function () {
-        console.log("trigger timer idx "+self.nextTriggerIdx);
+        console.log("trigger timer idx " + self.nextTriggerIdx);
         self.triggerCallbacks[self.nextTriggerIdx]();
         self.updateTimeout();
     }, timeUntilNextTrigger);
@@ -752,8 +752,8 @@ GlobalVarValueTimer.prototype.updateTimeout = function() {
 GlobalVarValueTimer.prototype.addTriggerCallback = function (triggerCallback, triggerTime) {
     //this.unittest();
     var idx = this.binarySearchForTriggerTime(triggerTime);
-    this.triggerCallbacks.splice(idx,0,triggerCallback);
-    this.triggerTimes.splice(idx,0,triggerTime);
+    this.triggerCallbacks.splice(idx, 0, triggerCallback);
+    this.triggerTimes.splice(idx, 0, triggerTime);
     this.updateTimeout();
 };
 
@@ -784,12 +784,12 @@ GlobalVarValueTimer.prototype.removeTriggerCallback = function (triggerCallback)
  *              binarySearchForTriggerTime(13,false) returns 6
  * @returns {*}
  */
-GlobalVarValueTimer.prototype.binarySearchForTriggerTime = function(newTimeToInsert, searchSmallest) {
+GlobalVarValueTimer.prototype.binarySearchForTriggerTime = function (newTimeToInsert, searchSmallest) {
     var len = this.triggerTimes.length;
-    if (len === 0){
+    if (len === 0) {
         return 0;
     }
-    if (this.triggerTimes[len-1] < newTimeToInsert){
+    if (this.triggerTimes[len - 1] < newTimeToInsert) {
         return len;
     }
 
@@ -799,7 +799,7 @@ GlobalVarValueTimer.prototype.binarySearchForTriggerTime = function(newTimeToIns
     var currentElement;
 
     while (true) {
-        middleIndex = Math.floor((minIndex + maxIndex)/2);
+        middleIndex = Math.floor((minIndex + maxIndex) / 2);
         currentElement = this.triggerTimes[middleIndex];
 
         if (currentElement < newTimeToInsert) {
@@ -817,13 +817,13 @@ GlobalVarValueTimer.prototype.binarySearchForTriggerTime = function(newTimeToIns
         else {
             // found exact match!
             if (searchSmallest) {
-                while (middleIndex>0 && this.triggerTimes[middleIndex-1] === newTimeToInsert) {
+                while (middleIndex > 0 && this.triggerTimes[middleIndex - 1] === newTimeToInsert) {
                     middleIndex--;
                 }
                 return middleIndex;
             }
             else {
-                while (middleIndex<len && this.triggerTimes[middleIndex+1] === newTimeToInsert) {
+                while (middleIndex < len && this.triggerTimes[middleIndex + 1] === newTimeToInsert) {
                     middleIndex++;
                 }
                 return middleIndex;
@@ -833,18 +833,18 @@ GlobalVarValueTimer.prototype.binarySearchForTriggerTime = function(newTimeToIns
     return middleIndex;
 };
 
-GlobalVarValueTimer.prototype.unittest = function() {
+GlobalVarValueTimer.prototype.unittest = function () {
     this.triggerTimes = [3, 8, 9, 9, 9, 11];
-    if(this.binarySearchForTriggerTime(2,true) != 0) console.error("failed 2");
-    if(this.binarySearchForTriggerTime(2,false) != 0) console.error("failed 2");
-    if(this.binarySearchForTriggerTime(9,true) != 2) console.error("failed 9");
-    if(this.binarySearchForTriggerTime(9,false) != 4) console.error("failed 9");
-    if(this.binarySearchForTriggerTime(8,true) != 1) console.error("failed 8");
-    if(this.binarySearchForTriggerTime(8,false) != 1) console.error("failed 8");
-    if(this.binarySearchForTriggerTime(10,true) != 5) console.error("failed 10");
-    if(this.binarySearchForTriggerTime(10,false) != 5) console.error("failed 10");
-    if(this.binarySearchForTriggerTime(13,true) != 6) console.error("failed 13");
-    if(this.binarySearchForTriggerTime(13,false) != 6) console.error("failed 13");
+    if (this.binarySearchForTriggerTime(2, true) != 0) console.error("failed 2");
+    if (this.binarySearchForTriggerTime(2, false) != 0) console.error("failed 2");
+    if (this.binarySearchForTriggerTime(9, true) != 2) console.error("failed 9");
+    if (this.binarySearchForTriggerTime(9, false) != 4) console.error("failed 9");
+    if (this.binarySearchForTriggerTime(8, true) != 1) console.error("failed 8");
+    if (this.binarySearchForTriggerTime(8, false) != 1) console.error("failed 8");
+    if (this.binarySearchForTriggerTime(10, true) != 5) console.error("failed 10");
+    if (this.binarySearchForTriggerTime(10, false) != 5) console.error("failed 10");
+    if (this.binarySearchForTriggerTime(13, true) != 6) console.error("failed 13");
+    if (this.binarySearchForTriggerTime(13, false) != 6) console.error("failed 13");
 };
 
 GlobalVarValueTimer.prototype.toString = function () {
@@ -856,7 +856,7 @@ GlobalVarValueTimer.prototype.toString = function () {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueTimer.prototype.fromJS = function(data) {
+GlobalVarValueTimer.prototype.fromJS = function (data) {
     this.setValue(data);
     this.pause();
 };
@@ -865,36 +865,36 @@ GlobalVarValueTimer.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueTimer.prototype.toJS = function() {
+GlobalVarValueTimer.prototype.toJS = function () {
     return this.value();
 };
 
 ////////////////////  GlobalVarValueArray  ///////////////////////////////////
 
-GlobalVarValueArray = function(parentVar) {
+GlobalVarValueArray = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observableArray([]);
-    this.value.subscribe(function() {
+    this.value.subscribe(function () {
         self.parentVar.notifyValueChanged();
     });
 };
 
-GlobalVarValueArray.prototype.convert = function(data) {
+GlobalVarValueArray.prototype.convert = function (data) {
     var self = this;
     if (data === null) {
         return [];
     }
 
     if (data instanceof Array) {
-        var arrValues = jQuery.map(data, function(scalar) {
+        var arrValues = jQuery.map(data, function (scalar) {
             var newDatType = self.parentVar.createScalarValueFromDataType();
             newDatType.setValue(scalar);
             return newDatType;
         });
     }
     else if (data instanceof GlobalVarValueArray) {
-        var arrValues = jQuery.map(data.value(), function(scalar) {
+        var arrValues = jQuery.map(data.value(), function (scalar) {
             var newDatType = self.parentVar.createScalarValueFromDataType();
             newDatType.setValue(scalar);
             return newDatType;
@@ -912,16 +912,16 @@ GlobalVarValueArray.prototype.convert = function(data) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueArray.prototype.getValueAt = function(idx) {
+GlobalVarValueArray.prototype.getValueAt = function (idx) {
     return this.value()[idx];
 };
 
-GlobalVarValueArray.prototype.getValues = function() {
+GlobalVarValueArray.prototype.getValues = function () {
     return this.getValue();
 };
 
 
-GlobalVarValueArray.prototype.setValueAt = function(idx,val) {
+GlobalVarValueArray.prototype.setValueAt = function (idx, val) {
     this.value()[idx].value(val);
 };
 
@@ -930,7 +930,7 @@ GlobalVarValueArray.prototype.setValueAt = function(idx,val) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueArray.prototype.pushValue = function(scalarData) {
+GlobalVarValueArray.prototype.pushValue = function (scalarData) {
     var newScalar = this.parentVar.createScalarValueFromDataType();
     newScalar.setValue(scalarData);
     this.value.push(newScalar);
@@ -940,14 +940,14 @@ GlobalVarValueArray.prototype.pushValue = function(scalarData) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueArray.prototype.setValue = function(data) {
-    if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar"){
+GlobalVarValueArray.prototype.setValue = function (data) {
+    if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
         data = data.toJS();
     }
     this.value(this.convert(data));
 };
 
-GlobalVarValueArray.prototype.getValue = function() {
+GlobalVarValueArray.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -956,7 +956,7 @@ GlobalVarValueArray.prototype.getValue = function() {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueArray.prototype.fromJS = function(data) {
+GlobalVarValueArray.prototype.fromJS = function (data) {
     this.value(this.convert(data));
 };
 
@@ -964,7 +964,7 @@ GlobalVarValueArray.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueArray.prototype.toJS = function() {
+GlobalVarValueArray.prototype.toJS = function () {
     var self = this;
     var arrValuesJS = [];
     this.value().forEach(function (scalar) {
@@ -979,8 +979,8 @@ GlobalVarValueArray.prototype.toJS = function() {
  */
 
 GlobalVarValueArray.prototype.toString = function () {
-    if (this.value() != null){
-        var arrValuesString = jQuery.map(this.value(), function(scalar) {
+    if (this.value() != null) {
+        var arrValuesString = jQuery.map(this.value(), function (scalar) {
             return scalar.toString();
         });
         return arrValuesString.join();
@@ -992,11 +992,11 @@ GlobalVarValueArray.prototype.toString = function () {
 
 ////////////////////  GlobalVarValueStructure  ///////////////////////////////////
 
-GlobalVarValueStructure = function(parentVar) {
+GlobalVarValueStructure = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observable(null);
-    this.value.subscribe(function() {
+    this.value.subscribe(function () {
         self.parentVar.notifyValueChanged();
     });
 };
@@ -1005,11 +1005,11 @@ GlobalVarValueStructure = function(parentVar) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueStructure.prototype.setValue = function(data) {
+GlobalVarValueStructure.prototype.setValue = function (data) {
 
 };
 
-GlobalVarValueStructure.prototype.getValue = function() {
+GlobalVarValueStructure.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -1018,7 +1018,7 @@ GlobalVarValueStructure.prototype.getValue = function() {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueStructure.prototype.fromJS = function(data) {
+GlobalVarValueStructure.prototype.fromJS = function (data) {
     this.value(data);
 };
 
@@ -1026,7 +1026,7 @@ GlobalVarValueStructure.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueStructure.prototype.toJS = function() {
+GlobalVarValueStructure.prototype.toJS = function () {
     return this.value();
 };
 
@@ -1036,7 +1036,7 @@ GlobalVarValueStructure.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueStructure.prototype.toString = function () {
-    if (this.value() != null){
+    if (this.value() != null) {
         return this.value().toString();
     }
     else {
@@ -1046,11 +1046,11 @@ GlobalVarValueStructure.prototype.toString = function () {
 
 ////////////////////  GlobalVarValueUndefined  ///////////////////////////////////
 
-GlobalVarValueUndefined = function(parentVar) {
+GlobalVarValueUndefined = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observable(null);
-    this.value.subscribe(function() {
+    this.value.subscribe(function () {
         self.parentVar.notifyValueChanged();
     });
 };
@@ -1059,11 +1059,11 @@ GlobalVarValueUndefined = function(parentVar) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueUndefined.prototype.setValue = function(data) {
+GlobalVarValueUndefined.prototype.setValue = function (data) {
     this.value(data);
 };
 
-GlobalVarValueUndefined.prototype.getValue = function() {
+GlobalVarValueUndefined.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -1072,7 +1072,7 @@ GlobalVarValueUndefined.prototype.getValue = function() {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueUndefined.prototype.fromJS = function(data) {
+GlobalVarValueUndefined.prototype.fromJS = function (data) {
     this.value(data);
 };
 
@@ -1080,7 +1080,7 @@ GlobalVarValueUndefined.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueUndefined.prototype.toJS = function() {
+GlobalVarValueUndefined.prototype.toJS = function () {
     return this.value();
 };
 
@@ -1089,7 +1089,7 @@ GlobalVarValueUndefined.prototype.toJS = function() {
  * @returns {object}
  */
 GlobalVarValueUndefined.prototype.toString = function () {
-    if (this.value() != null){
+    if (this.value() != null) {
         return this.value().toString();
     }
     else {

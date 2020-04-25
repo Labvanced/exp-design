@@ -1,7 +1,7 @@
 // � by Caspar Goeke and Holger Finger
 
 
-var FrameView = function(divContainer,parent,type) {
+var FrameView = function (divContainer, parent, type) {
     var self = this;
     this.disposables = [];
 
@@ -14,7 +14,7 @@ var FrameView = function(divContainer,parent,type) {
     this.frameDataObs = ko.observable(null);
 
     this.bgElement = null;
-    this.viewElements= ko.observableArray([]).extend({sortById: null});
+    this.viewElements = ko.observableArray([]).extend({ sortById: null });
 
     this.width = 0;
     this.height = 0;
@@ -22,20 +22,20 @@ var FrameView = function(divContainer,parent,type) {
     this.subElemSelected = false;
 
     this.scale = ko.observable(1);
-    this.scaleSubscription = this.scale.subscribe(function(scale){
-        if (self.type== "editorView") {
+    this.scaleSubscription = this.scale.subscribe(function (scale) {
+        if (self.type == "editorView") {
             $(self.divContainer).css({
                 "width": self.frameData.frameWidth() * scale + 4,
                 "height": self.frameData.frameHeight() * scale + 4
             });
             $(self.backgroundDiv).css({
-                "width":self.frameData.frameWidth() *   self.scale(),
-                "height": self.frameData.frameHeight()  * self.scale()
+                "width": self.frameData.frameWidth() * self.scale(),
+                "height": self.frameData.frameHeight() * self.scale()
             });
         }
     });
 
-    this.selectedTrialType = ko.observable({ type: 'default'});
+    this.selectedTrialType = ko.observable({ type: 'default' });
     this.isInitialized = false;
 
     this.mouseWheelHandler = null;
@@ -45,7 +45,7 @@ var FrameView = function(divContainer,parent,type) {
  * this init function should only be called after setDataModel was called!
  * @param size
  */
-FrameView.prototype.init = function(size) {
+FrameView.prototype.init = function (size) {
 
     if (!this.isInitialized) {
         var self = this;
@@ -93,28 +93,28 @@ FrameView.prototype.init = function(size) {
     }
 };
 
-FrameView.prototype.dispose = function() {
+FrameView.prototype.dispose = function () {
     // dispose all previous view elements (removing ko components and other clean up):
     var viewElements = this.viewElements();
-    for (var i= 0, len=viewElements.length; i<len; i++) {
+    for (var i = 0, len = viewElements.length; i < len; i++) {
         viewElements[i].dispose();
     }
-    if(this.bgElement) {
+    if (this.bgElement) {
         this.bgElement.dispose();
     }
-    if(this.scaleSubscription) {
+    if (this.scaleSubscription) {
         this.scaleSubscription.dispose();
     }
-    if(this.elementChangeSubscription) {
+    if (this.elementChangeSubscription) {
         this.elementChangeSubscription.dispose();
     }
-    if(this.frameWidthSubscription) {
+    if (this.frameWidthSubscription) {
         this.frameWidthSubscription.dispose();
     }
-    if(this.frameHeightSubscription) {
+    if (this.frameHeightSubscription) {
         this.frameHeightSubscription.dispose();
     }
-    if (this.colorSubscription ){
+    if (this.colorSubscription) {
         this.colorSubscription.dispose();
     }
 
@@ -129,46 +129,46 @@ FrameView.prototype.dispose = function() {
     }
 
     // remove complete div
-   // this.divContainer[0].remove();
+    // this.divContainer[0].remove();
 };
 
-FrameView.prototype.setDataModel = function(frameData) {
+FrameView.prototype.setDataModel = function (frameData) {
 
     var self = this;
     this.frameData = frameData;
     this.frameDataObs(frameData);
 
-    if(this.elementChangeSubscription) {
+    if (this.elementChangeSubscription) {
         this.elementChangeSubscription.dispose();
     }
-    this.elementChangeSubscription = this.frameData.elements.subscribe(function(changes){
-        for (var i =0; i<changes.length;+i++){
+    this.elementChangeSubscription = this.frameData.elements.subscribe(function (changes) {
+        for (var i = 0; i < changes.length; +i++) {
             var obj = changes[i];
-            if (obj.status=="added"){
-                self.addElem(obj.value,obj.index);
+            if (obj.status == "added") {
+                self.addElem(obj.value, obj.index);
                 self.updateElements();
                 self.updateStages();
             }
-            else if(obj.status=="deleted"){
-                console.log("removing object with index "+obj.index);
-                self.removeElemFromView(obj.value,obj.index);
+            else if (obj.status == "deleted") {
+                console.log("removing object with index " + obj.index);
+                self.removeElemFromView(obj.value, obj.index);
                 self.updateElements();
                 self.updateStages();
             }
         }
-    },null, "arrayChange");
+    }, null, "arrayChange");
 
-    if(this.frameWidthSubscription) {
+    if (this.frameWidthSubscription) {
         this.frameWidthSubscription.dispose();
     }
-    this.frameWidthSubscription = this.frameData.frameWidth.subscribe(function(newVal){
+    this.frameWidthSubscription = this.frameData.frameWidth.subscribe(function (newVal) {
         self.recalcScale();
     });
 
-    if(this.frameHeightSubscription) {
+    if (this.frameHeightSubscription) {
         this.frameHeightSubscription.dispose();
     }
-    this.frameHeightSubscription =  this.frameData.frameHeight.subscribe(function(newVal){
+    this.frameHeightSubscription = this.frameData.frameHeight.subscribe(function (newVal) {
         self.recalcScale();
     });
 
@@ -186,16 +186,16 @@ FrameView.prototype.setDataModel = function(frameData) {
     this.renderElements();
 };
 
-FrameView.prototype.recalcScale = function() {
+FrameView.prototype.recalcScale = function () {
     // can only be done if frameData is set:
     var self = this;
     if (this.frameData) {
-        this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
-        if (this.type== "editorView" && this.bgElement){
+        this.scale(Math.min(this.width / this.frameData.frameWidth(), this.height / this.frameData.frameHeight()));
+        if (this.type == "editorView" && this.bgElement) {
             this.bgElement.update();
 
             $(this.backgroundDiv).css({
-                "width":self.frameData.frameWidth() * self.scale(),
+                "width": self.frameData.frameWidth() * self.scale(),
                 "height": self.frameData.frameHeight() * self.scale()
             });
         }
@@ -203,10 +203,10 @@ FrameView.prototype.recalcScale = function() {
             var task = this.frameData.parent.parent;
             switch (task.zoomMode()) {
                 case "fullscreen":
-                    this.scale(Math.min(this.width/ this.frameData.frameWidth(),this.height/ this.frameData.frameHeight()));
+                    this.scale(Math.min(this.width / this.frameData.frameWidth(), this.height / this.frameData.frameHeight()));
                     break;
                 case "visualDegree":
-                    var distToScreenInMM = this.parent.player.distanceTScreenInCM()*10; //500;
+                    var distToScreenInMM = this.parent.player.distanceTScreenInCM() * 10; //500;
                     var designUnitsPerDegree = task.visualDegreeToUnit();
                     var mmPerDegree = 2 * Math.PI * distToScreenInMM / 360; // at the center of the screen in mm/deg
                     var pxPerDeg = this.parent.player.PixelDensityPerMM * mmPerDegree;
@@ -223,7 +223,7 @@ FrameView.prototype.recalcScale = function() {
     }
 };
 
-FrameView.prototype.setupBackground= function() {
+FrameView.prototype.setupBackground = function () {
     var self = this;
     this.backgroundDiv = document.createElement('div');
     this.backgroundDiv.id = "background";
@@ -236,12 +236,12 @@ FrameView.prototype.setupBackground= function() {
         "background-color": self.frameData.bgColor()
     });
 
-    if (this.colorSubscription ){
+    if (this.colorSubscription) {
         this.colorSubscription.dispose();
     }
-    this.colorSubscription = this.frameData.bgColor.subscribe(function(val){
+    this.colorSubscription = this.frameData.bgColor.subscribe(function (val) {
         $(self.backgroundDiv).css({
-            "background-color":val
+            "background-color": val
         });
     });
 
@@ -249,46 +249,46 @@ FrameView.prototype.setupBackground= function() {
     $(this.divContainer).append(this.backgroundDiv);
 };
 
-FrameView.prototype.setupGrid = function() {
+FrameView.prototype.setupGrid = function () {
     // first clean up old element (if exists):
     if (this.bgElement) {
         this.bgElement.dispose();
     }
-    var bgFrameElement = new BgFrameElement(this.frameData,this);
+    var bgFrameElement = new BgFrameElement(this.frameData, this);
     this.bgElement = bgFrameElement;
     $(this.divContainer).append(bgFrameElement.div);
 };
 
-FrameView.prototype.setSize = function(size) {
+FrameView.prototype.setSize = function (size) {
     this.width = size[0];
     this.height = size[1];
     this.recalcScale();
 };
 
-FrameView.prototype.setDiv= function(div) {
+FrameView.prototype.setDiv = function (div) {
     this.divContainer = div;
 };
 
-FrameView.prototype.resize = function(size) {
-    console.log('set FrameView size to '+size);
+FrameView.prototype.resize = function (size) {
+    console.log('set FrameView size to ' + size);
     this.setSize(size);
     this.updateElements();
 };
 
-FrameView.prototype.renderElements = function() {
+FrameView.prototype.renderElements = function () {
     console.log("renderElements on this frame...");
-    var i,len;
+    var i, len;
 
     // dispose all previous view elements (removing ko components and other clean up):
     var viewElements = this.viewElements();
-    for (i= 0, len=viewElements.length; i<len; i++) {
+    for (i = 0, len = viewElements.length; i < len; i++) {
         viewElements[i].dispose();
     }
 
     $(this.divContainer).children().remove();
     this.viewElements([]);
 
-    if (this.type== "editorView") {
+    if (this.type == "editorView") {
         this.setupBackground();
         this.setupGrid();
     }
@@ -296,39 +296,39 @@ FrameView.prototype.renderElements = function() {
         this.setupBackground();
     }
 
-    var elements =this.frameData.elements();
-    for (i= 0, len=elements.length; i<len; i++) {
+    var elements = this.frameData.elements();
+    for (i = 0, len = elements.length; i < len; i++) {
         var elem = elements[i];
-        this.addElem(elem,i);
+        this.addElem(elem, i);
     }
 
     this.updateElements();
 };
 
 
-FrameView.prototype.removeElemFromView = function(elementData,index) {
+FrameView.prototype.removeElemFromView = function (elementData, index) {
 
-    console.log("this.viewElements().length = "+this.viewElements().length);
+    console.log("this.viewElements().length = " + this.viewElements().length);
     var elemDiv = this.viewElements()[index].div;
 
     // remove div from DOM:
     $(elemDiv).remove();
 
     // remove from viewElements:
-    this.viewElements.splice(index,1);
+    this.viewElements.splice(index, 1);
 };
 
-FrameView.prototype.addElem = function(elementData,index) {
+FrameView.prototype.addElem = function (elementData, index) {
 
     var elemView = new FrameElementView(elementData, this);
 
     if (this.type == "editorView") {
-       var cbs =  new EditorCallbacks(elemView, this,'editor',true,true,true);
+        var cbs = new EditorCallbacks(elemView, this, 'editor', true, true, true);
         elemView.editorCallbacks = cbs;
     }
     else if (this.type == "playerView") {
-        if ( elementData.canBeResized() || elementData.canBeDragged() || elementData.canBeSelected()){
-            var cbs = new EditorCallbacks(elemView, this,'player',elementData.canBeResized(),elementData.canBeDragged(),elementData.canBeSelected());
+        if (elementData.canBeResized() || elementData.canBeDragged() || elementData.canBeSelected()) {
+            var cbs = new EditorCallbacks(elemView, this, 'player', elementData.canBeResized(), elementData.canBeDragged(), elementData.canBeSelected());
             elemView.editorCallbacks = cbs;
         }
 
@@ -338,16 +338,16 @@ FrameView.prototype.addElem = function(elementData,index) {
     $(this.divContainer).append(elemView.div);
 };
 
-FrameView.prototype.updateElements = function() {
+FrameView.prototype.updateElements = function () {
     var elements = this.viewElements();
-    for (var i = 0; i< elements.length; i++){
-        elements[i].update(true,true);
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].update(true, true);
     }
 };
 
-FrameView.prototype.updateStages = function() {
-    for (var i = 0; i< this.viewElements().length; i++){
-        if (this.viewElements()[i].hasOwnProperty("stage")){
+FrameView.prototype.updateStages = function () {
+    for (var i = 0; i < this.viewElements().length; i++) {
+        if (this.viewElements()[i].hasOwnProperty("stage")) {
             this.viewElements()[i].stage.update();
         }
     }
@@ -356,14 +356,14 @@ FrameView.prototype.updateStages = function() {
     }
 };
 
-FrameView.prototype.getSelectedElementObject = function() {
+FrameView.prototype.getSelectedElementObject = function () {
     var found = false;
-    var i= 0;
+    var i = 0;
     var elem = null;
-    while(found==false && i<this.viewElements().length){
-        if(this.viewElements()[i].isSelected()){
-            elem  = this.viewElements()[i];
-            found= true;
+    while (found == false && i < this.viewElements().length) {
+        if (this.viewElements()[i].isSelected()) {
+            elem = this.viewElements()[i];
+            found = true;
         }
         i++;
     }
@@ -371,7 +371,7 @@ FrameView.prototype.getSelectedElementObject = function() {
 
 };
 
-FrameView.prototype.setSelectedElement = function(elem) {
+FrameView.prototype.setSelectedElement = function (elem) {
 
     if (!this.frameData) {
         return;
@@ -379,10 +379,10 @@ FrameView.prototype.setSelectedElement = function(elem) {
 
     // change selection state of previously selected canvas element:
     var prevSelectedElem = this.frameData.currSelectedElement();
-    if (prevSelectedElem){
-         if (!(prevSelectedElem instanceof ExpEvent || prevSelectedElem instanceof GlobalVar )){
-             this.viewElements.byId[prevSelectedElem.id()].isSelected(false);
-         }
+    if (prevSelectedElem) {
+        if (!(prevSelectedElem instanceof ExpEvent || prevSelectedElem instanceof GlobalVar)) {
+            this.viewElements.byId[prevSelectedElem.id()].isSelected(false);
+        }
     }
 
     if (elem) {

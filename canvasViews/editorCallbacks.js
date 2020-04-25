@@ -1,5 +1,5 @@
 
-var EditorCallbacks = function(frameElementView,frameView,editorOrPlayer, resize,drag,select) {
+var EditorCallbacks = function (frameElementView, frameView, editorOrPlayer, resize, drag, select) {
 
 
     var self = this;
@@ -12,35 +12,35 @@ var EditorCallbacks = function(frameElementView,frameView,editorOrPlayer, resize
     this.dataModel = this.frameElementView.dataModel;
     this.frameView = frameView;
 
-    this.handles  = null;
+    this.handles = null;
     this.isSelectedSubscription = null;
     this.keepAspectRatioSubscription = null;
 
-    this.clickEventListener = function() {
+    this.clickEventListener = function () {
         self.frameView.parent.selectElement(self.dataModel);
         if (self.editorOrPlayer == 'player') {
             self.frameView.subElemSelected = true;
             setTimeout(function () {
                 self.frameView.subElemSelected = false;
-            },100)
+            }, 100)
         }
     };
 
-   this.addHandles();
-   this.addCallbacks();
+    this.addHandles();
+    this.addCallbacks();
 
-   this.frameElementView.callbacks = this;
+    this.frameElementView.callbacks = this;
 };
 
-EditorCallbacks.prototype.addHandles = function() {
+EditorCallbacks.prototype.addHandles = function () {
 
-    this.handles =  document.createElement('div');
+    this.handles = document.createElement('div');
     $(this.handles).css({
         "display": "block"
     });
 
     // draggable handles:
-    if (this.drag){
+    if (this.drag) {
         this.handleN = document.createElement('div');
         $(this.handleN).addClass('draggableHandleN draggableHandle');
         $(this.handleN).appendTo(this.handles);
@@ -59,7 +59,7 @@ EditorCallbacks.prototype.addHandles = function() {
     }
 
     // resizable handles:
-    if (this.resize){
+    if (this.resize) {
         this.handleResizeNW = document.createElement('div');
         $(this.handleResizeNW).addClass('ui-resizable-handle ui-resizable-nw resizableHandleNW resizableHandle');
         $(this.handleResizeNW).appendTo(this.handles);
@@ -95,40 +95,40 @@ EditorCallbacks.prototype.addHandles = function() {
     $(this.handles).appendTo(this.div);
 };
 
-EditorCallbacks.prototype.addCallbacks = function() {
+EditorCallbacks.prototype.addCallbacks = function () {
     var self2 = this;
 
-    if (this.select){
+    if (this.select) {
         this.div.addEventListener('click', this.clickEventListener, false);
     }
 
-    if (this.drag){
+    if (this.drag) {
         // Draggable On Frame in Editor View:
         $(this.div).draggable({
             handle: '.draggableHandle',
             distance: 10,
-            cancel : '.notDraggable',
-            drag : function(event, ui) {
+            cancel: '.notDraggable',
+            drag: function (event, ui) {
                 self2.frameElementView.setCoord(ui.position.left * (1 / self2.frameView.scale()), ui.position.top * (1 / self2.frameView.scale()));
             },
-            start: function(event, ui) {
+            start: function (event, ui) {
 
-                if (self2.editorOrPlayer == 'player'){
-                    if (self2.select){
+                if (self2.editorOrPlayer == 'player') {
+                    if (self2.select) {
                         self2.frameView.setSelectedElement(self2.dataModel);
                     }
                 }
 
-                if (self2.editorOrPlayer == 'editor'){
+                if (self2.editorOrPlayer == 'editor') {
                     self2.frameView.setSelectedElement(self2.dataModel);
                     // temporarily disable autosaving during dragging:
                     self2.dataModel.expData.parentExperiment.tempDisableAutosave = true;
                 }
 
             },
-            stop: function(event, ui) {
+            stop: function (event, ui) {
                 self2.frameElementView.setCoord(ui.position.left * (1 / self2.frameView.scale()), ui.position.top * (1 / self2.frameView.scale()));
-                if (self2.editorOrPlayer == 'editor'){
+                if (self2.editorOrPlayer == 'editor') {
                     self2.dataModel.expData.parentExperiment.tempDisableAutosave = false;
                     self2.dataModel.expData.notifyChanged();
                 }
@@ -138,13 +138,13 @@ EditorCallbacks.prototype.addCallbacks = function() {
     }
 
 
-    if (this.resize){
+    if (this.resize) {
         // Make resizable:
         this.addResize();
         if (this.keepAspectRatioSubscription) {
             this.keepAspectRatioSubscription.dispose();
         }
-        this.keepAspectRatioSubscription = this.dataModel.keepAspectRatio.subscribe(function(newVal) {
+        this.keepAspectRatioSubscription = this.dataModel.keepAspectRatio.subscribe(function (newVal) {
             self2.addResize();
             self2.frameView.parent.selectElement(self2.dataModel);
         });
@@ -153,10 +153,10 @@ EditorCallbacks.prototype.addCallbacks = function() {
         if (this.isSelectedSubscription) {
             this.isSelectedSubscription.dispose();
         }
-        this.isSelectedSubscription = this.frameElementView.isSelected.subscribe(function(newVal){
+        this.isSelectedSubscription = this.frameElementView.isSelected.subscribe(function (newVal) {
             if (newVal) {
                 $(self2.div).resizable("enable");
-                $(self2.div).draggable( "option", "distance", 0 );
+                $(self2.div).draggable("option", "distance", 0);
                 $(self2.handles).css({
                     "display": "block"
                 });
@@ -164,13 +164,13 @@ EditorCallbacks.prototype.addCallbacks = function() {
             }
             else {
                 $(self2.div).resizable("disable");
-                $(self2.div).draggable( "option", "distance", 10 );
+                $(self2.div).draggable("option", "distance", 10);
                 $(self2.handles).css({
                     "display": "none"
                 });
             }
         });
-        if (self2.editorOrPlayer == 'editor'){
+        if (self2.editorOrPlayer == 'editor') {
             $(self2.div).resizable("disable");
         }
 
@@ -179,12 +179,12 @@ EditorCallbacks.prototype.addCallbacks = function() {
 };
 
 
-EditorCallbacks.prototype.addResize = function() {
+EditorCallbacks.prototype.addResize = function () {
     var self2 = this;
 
     // destroy previously initialized resize element if it exists:
-    if ($(self2.div).resizable( "instance" )) {
-        $(self2.div).resizable( "destroy" );
+    if ($(self2.div).resizable("instance")) {
+        $(self2.div).resizable("destroy");
         $(self2.handles).remove();
         self2.addHandles();
     }
@@ -202,13 +202,13 @@ EditorCallbacks.prototype.addResize = function() {
             self2.frameElementView.setCoord(left, top);
         },
         aspectRatio: self2.dataModel.keepAspectRatio(),
-        start: function(event, ui) {
+        start: function (event, ui) {
             if (self2.editorOrPlayer == 'editor') {
                 // temporarily disable autosaving during dragging:
                 self2.dataModel.expData.parentExperiment.tempDisableAutosave = true;
             }
         },
-        stop: function(event, ui) {
+        stop: function (event, ui) {
             if (self2.editorOrPlayer == 'editor') {
                 // remove the temporary disabled autosaving:
                 self2.dataModel.expData.parentExperiment.tempDisableAutosave = false;
@@ -217,41 +217,41 @@ EditorCallbacks.prototype.addResize = function() {
         },
         handles:
 
-            {
-                'nw':  $(self2.handleResizeNW),
-                'ne': $(self2.handleResizeNE),
-                'sw': $(self2.handleResizeSW),
-                'se': $(self2.handleResizeSE),
-                'n':  $(self2.handleResizeN),
-                'e':  $(self2.handleResizeE),
-                's':  $(self2.handleResizeS),
-                'w':  $(self2.handleResizeW)
-            }
+        {
+            'nw': $(self2.handleResizeNW),
+            'ne': $(self2.handleResizeNE),
+            'sw': $(self2.handleResizeSW),
+            'se': $(self2.handleResizeSE),
+            'n': $(self2.handleResizeN),
+            'e': $(self2.handleResizeE),
+            's': $(self2.handleResizeS),
+            'w': $(self2.handleResizeW)
+        }
     });
 
 };
 
 
-EditorCallbacks.prototype.dispose = function() {
+EditorCallbacks.prototype.dispose = function () {
     if (this.keepAspectRatioSubscription) {
         this.keepAspectRatioSubscription.dispose();
     }
     if (this.isSelectedSubscription) {
         this.isSelectedSubscription.dispose();
     }
-    this.div.removeEventListener('resize', this.resizeEventListener , false);
+    this.div.removeEventListener('resize', this.resizeEventListener, false);
     this.resizeEventListener = null;
 
-    if (this.select){
+    if (this.select) {
         this.div.removeEventListener('click', this.clickEventListener);
     }
 
-    if ($(this.div).resizable( "instance" )) {
-        $(this.div).resizable( "destroy" );
+    if ($(this.div).resizable("instance")) {
+        $(this.div).resizable("destroy");
     }
 
-    if ($(this.div).draggable( "instance" )) {
-        $(this.div).draggable( "destroy" );
+    if ($(this.div).draggable("instance")) {
+        $(this.div).draggable("destroy");
     }
     $(this.handles).remove();
 

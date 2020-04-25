@@ -1,7 +1,7 @@
 
-var VideoElement= function(expData) {
+var VideoElement = function (expData) {
 
-    var self = this; 
+    var self = this;
     this.expData = expData;
     this.parent = null;
 
@@ -14,8 +14,8 @@ var VideoElement= function(expData) {
     this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
     this.currentTimePercentage = ko.observable(0);
 
-    this.shortName = ko.computed(function() {
-        if (self.file_orig_name()){
+    this.shortName = ko.computed(function () {
+        if (self.file_orig_name()) {
             return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
         }
         else return '';
@@ -24,7 +24,7 @@ var VideoElement= function(expData) {
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
-    this.vidSource = ko.computed( function() {
+    this.vidSource = ko.computed(function () {
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
             var file_route = "/files/";
             if (typeof player !== 'undefined') {
@@ -47,30 +47,30 @@ var VideoElement= function(expData) {
 
 VideoElement.prototype.label = "Video";
 VideoElement.prototype.iconPath = "/resources/icons/tools/tool_video.svg";
-VideoElement.prototype.dataType =      ["string", "string","file"];
-VideoElement.prototype.modifiableProp = ["file_id","file_orig_name","file"];
+VideoElement.prototype.dataType = ["string", "string", "file"];
+VideoElement.prototype.modifiableProp = ["file_id", "file_orig_name", "file"];
 VideoElement.prototype.numVarNamesRequired = 0;
 
-VideoElement.prototype.switchPlayState = function() {
+VideoElement.prototype.switchPlayState = function () {
     this.currentlyPlaying(!this.currentlyPlaying());
 };
 
 
-VideoElement.prototype.dispose = function() {
+VideoElement.prototype.dispose = function () {
     console.log("disposing VideoEditViewModel");
 };
 
-VideoElement.prototype.jumpToByFraction = function(fraction) {
-    console.log("jump to fraction "+fraction);
-    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
-        this.subscribersForJumpEvents[i]({jumpToFraction: fraction});
+VideoElement.prototype.jumpToByFraction = function (fraction) {
+    console.log("jump to fraction " + fraction);
+    for (var i = 0; i < this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({ jumpToFraction: fraction });
     }
 };
 
-VideoElement.prototype.jumpToByTime = function(time) {
-    console.log("jump to time "+time);
-    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
-        this.subscribersForJumpEvents[i]({jumpToTime: time});
+VideoElement.prototype.jumpToByTime = function (time) {
+    console.log("jump to time " + time);
+    for (var i = 0; i < this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({ jumpToTime: time });
     }
 };
 
@@ -78,23 +78,23 @@ VideoElement.prototype.jumpToByTime = function(time) {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-VideoElement.prototype.getAllModifiers = function(modifiersArr) {
+VideoElement.prototype.getAllModifiers = function (modifiersArr) {
     modifiersArr.push(this.modifier());
 };
 
-VideoElement.prototype.setPointers = function(entitiesArr) {
+VideoElement.prototype.setPointers = function (entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 };
 
-VideoElement.prototype.reAddEntities = function(entitiesArr) {
+VideoElement.prototype.reAddEntities = function (entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 };
 
-VideoElement.prototype.selectTrialType = function(selectionSpec) {
+VideoElement.prototype.selectTrialType = function (selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
-VideoElement.prototype.fromJS = function(data) {
+VideoElement.prototype.fromJS = function (data) {
     var self = this;
     this.type = data.type;
     this.dataType = data.dataType;
@@ -109,7 +109,7 @@ VideoElement.prototype.fromJS = function(data) {
     return this;
 };
 
-VideoElement.prototype.toJS = function() {
+VideoElement.prototype.toJS = function () {
     return {
         type: this.type,
         dataType: this.dataType,
@@ -125,22 +125,22 @@ VideoElement.prototype.toJS = function() {
 /******************* View Model for Properties ***********************/
 
 
-var VideoEditViewModel = function(dataModel, componentInfo){
+var VideoEditViewModel = function (dataModel, componentInfo) {
     var self = this;
 
     this.element = componentInfo.element;
     this.dataModel = dataModel;
     var seekBar = $(this.element).find('.seek-bar')[0];
-    seekBar.addEventListener("change", function() {
+    seekBar.addEventListener("change", function () {
         dataModel.jumpToByFraction(seekBar.value / 100);
     });
 
-    this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function(percentage) {
+    this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
         seekBar.value = percentage;
     });
     seekBar.value = this.dataModel.currentTimePercentage();
 };
-VideoEditViewModel.prototype.dispose = function() {
+VideoEditViewModel.prototype.dispose = function () {
     console.log("disposing VideoEditViewModel");
     this.subscriberTimePercentage.dispose();
 };
@@ -150,15 +150,15 @@ function getBlobURL(url, mime, callback) {
     xhr.open("get", url);
     xhr.responseType = "arraybuffer";
 
-    xhr.addEventListener("load", function() {
+    xhr.addEventListener("load", function () {
 
-        var arrayBufferView = new Uint8Array( this.response );
-        var blob = new Blob( [ arrayBufferView ], { type: mime } );
+        var arrayBufferView = new Uint8Array(this.response);
+        var blob = new Blob([arrayBufferView], { type: mime });
         var url = null;
 
-        if ( window.URL ) {
+        if (window.URL) {
             url = window.URL.createObjectURL(blob);
-        } else if ( window.URL && window.URL.createObjectURL ) {
+        } else if (window.URL && window.URL.createObjectURL) {
             url = window.URL.createObjectURL(blob);
         }
 
@@ -169,7 +169,7 @@ function getBlobURL(url, mime, callback) {
 
 /******************* View Model for Preview and for Player ***********************/
 
-var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
+var VideoPreviewAndPlayerViewModel = function (dataModel, componentInfo) {
     var self = this;
     this.element = componentInfo.element;
     this.dataModel = dataModel;
@@ -179,7 +179,7 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
     var myPreloadedVideoSource = $(this.element).find('.videoSource')[0];
     if (myPreloadedVideoSource) {
         this.updateVideoSource = function () {
-            if(!self.dataModel.vidSource()){
+            if (!self.dataModel.vidSource()) {
                 return;
             }
             // check if we have it preloaded:
@@ -196,7 +196,7 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
                 $(self.element).find('video')[0].load();
             }
             else {
-                getBlobURL(self.dataModel.vidSource(), "video/mp4", function(url, blob) {
+                getBlobURL(self.dataModel.vidSource(), "video/mp4", function (url, blob) {
                     myPreloadedVideoSource.src = url;
                     $(self.element).find('video')[0].load();
                 });
@@ -205,7 +205,7 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
         };
         this.updateVideoSource();
         //TODO updateVideoSource is called twice because vidSource changes once for file_id and once for file_orig_name
-        self.dataModel.vidSource.subscribe(function() {
+        self.dataModel.vidSource.subscribe(function () {
             self.updateVideoSource();
         });
     }
@@ -218,7 +218,7 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
 
         seekBar.addEventListener("click", function (param1) {
             var widthClicked = param1.pageX - $(this).offset().left;
-            var totalWidth =  $(this)[0].getBoundingClientRect().width;
+            var totalWidth = $(this)[0].getBoundingClientRect().width;
             var fractionClicked = widthClicked / totalWidth;
             dataModel.jumpToByFraction(fractionClicked);
         });
@@ -257,7 +257,7 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
         myVideo.addEventListener("timeupdate", this.timeUpdateListener);
 
         // on ended listener:
-        this.onEndedListener = function() {
+        this.onEndedListener = function () {
             self.dataModel.currentlyPlaying(false);
         };
         myVideo.addEventListener("ended", this.onEndedListener);
@@ -267,13 +267,13 @@ var VideoPreviewAndPlayerViewModel = function(dataModel, componentInfo){
         });
     }
 
-    this.dataModel.vidSource.subscribe(function() {
+    this.dataModel.vidSource.subscribe(function () {
         var myVideo = $(self.element).find('video')[0];
         myVideo.load();
     });
 };
 
-VideoPreviewAndPlayerViewModel.prototype.dispose = function() {
+VideoPreviewAndPlayerViewModel.prototype.dispose = function () {
     console.log("disposing VideoPreviewAndPlayerViewModel");
     // remove subscriber to be notified when the video should jump to specific time:
     var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
@@ -299,25 +299,25 @@ function createVideoComponents() {
                 return new VideoEditViewModel(dataModel, componentInfo);
             }
         },
-        template: {element: 'video-editview-template'}
+        template: { element: 'video-editview-template' }
     });
 
-    ko.components.register('video-preview',{
+    ko.components.register('video-preview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function (dataModel, componentInfo) {
                 return new VideoPreviewAndPlayerViewModel(dataModel, componentInfo);
             }
         },
         template: { element: 'video-preview-template' }
     });
 
-    ko.components.register('video-playerview',{
+    ko.components.register('video-playerview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function (dataModel, componentInfo) {
                 return new VideoPreviewAndPlayerViewModel(dataModel, componentInfo);
             }
         },
-        template: {element: 'video-playerview-template'}
+        template: { element: 'video-playerview-template' }
     });
 }
 

@@ -4,11 +4,11 @@
  * @param {ContentElement} contentElement - the content element (i.e. CheckBoxElement)
  * @constructor
  */
-function ContentElementPreviewViewModel (contentElement) {
+function ContentElementPreviewViewModel(contentElement) {
     this.contentElement = contentElement;
     this.isSelected = ko.observable(false);
 }
-ContentElementPreviewViewModel.prototype.dispose = function() {
+ContentElementPreviewViewModel.prototype.dispose = function () {
     //console.log("disposing ContentElementPreviewViewModel");
 };
 
@@ -98,10 +98,10 @@ ko.components.register('contentElementPreview', {
  * @param {ContentElement} contentElement - the content element (i.e. CheckBoxElement)
  * @constructor
  */
-function ContentElementPlayerViewModel (contentElement) {
+function ContentElementPlayerViewModel(contentElement) {
     this.contentElement = contentElement;
 }
-ContentElementPlayerViewModel.prototype.dispose = function() {
+ContentElementPlayerViewModel.prototype.dispose = function () {
     //console.log("disposing ContentElementPlayerViewModel");
 };
 
@@ -191,10 +191,10 @@ ko.components.register('contentElementPlayerview', {
  * @param {ContentElement} contentElement - the content element (i.e. CheckBoxElement)
  * @constructor
  */
-function ContentElementEditViewModel (contentElement) {
+function ContentElementEditViewModel(contentElement) {
     this.contentElement = contentElement;
 }
-ContentElementEditViewModel.prototype.dispose = function() {
+ContentElementEditViewModel.prototype.dispose = function () {
     //console.log("disposing ContentElementEditViewModel");
 };
 

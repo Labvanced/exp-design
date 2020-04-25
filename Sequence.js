@@ -16,15 +16,15 @@ var Sequence = function (expData) {
     this.id = ko.observable(guid());
     this.type = "Sequence";
     this.name = ko.observable("Sequence");
-    this.workspaceVars = ko.observableArray([]).extend({sortById: null});
+    this.workspaceVars = ko.observableArray([]).extend({ sortById: null });
 
     // sub-Structures (serialized below)
-    this.elements = ko.observableArray().extend({sortById: null});
+    this.elements = ko.observableArray().extend({ sortById: null });
 
 };
 
-Sequence.prototype.dispose = function() {
-    this.elements().forEach(function (elem){
+Sequence.prototype.dispose = function () {
+    this.elements().forEach(function (elem) {
         elem.dispose();
     });
 };
@@ -39,9 +39,9 @@ Sequence.prototype.dispose = function() {
  * { type: 'condition', condition: condition_obj }
  * { type: 'trialVariation', trialVariation: trialVariation_obj }
  */
-Sequence.prototype.selectTrialType = function(selectionSpec) {
+Sequence.prototype.selectTrialType = function (selectionSpec) {
     var elements = this.elements();
-    for (var i=0; i<elements.length; i++){
+    for (var i = 0; i < elements.length; i++) {
         if (typeof elements[i].selectTrialType === 'function') {
             elements[i].selectTrialType(selectionSpec);
         }
@@ -49,16 +49,16 @@ Sequence.prototype.selectTrialType = function(selectionSpec) {
 };
 
 
-Sequence.prototype.getDeepCopyForPlayer = function() {
+Sequence.prototype.getDeepCopyForPlayer = function () {
     var self = this;
 
-    var entitiesArr = ko.observableArray([]).extend({sortById: null});
+    var entitiesArr = ko.observableArray([]).extend({ sortById: null });
     this.reAddEntities(entitiesArr);
     entitiesArr.push(this);
 
     // loop through array and create deep copies
     var entitiesArrCopy = jQuery.map(entitiesArr(), function (entity) {
-        if ( entity instanceof GlobalVar || entity instanceof Factor) { // no deep copy of global variables so that we can keep state across frames.
+        if (entity instanceof GlobalVar || entity instanceof Factor) { // no deep copy of global variables so that we can keep state across frames.
             return entity;
         }
         else {
@@ -66,16 +66,16 @@ Sequence.prototype.getDeepCopyForPlayer = function() {
             return entityFactory(entityJson, self.expData);
         }
     });
-    var entitiesArrCopyObs = ko.observableArray([]).extend({sortById: null});
+    var entitiesArrCopyObs = ko.observableArray([]).extend({ sortById: null });
     entitiesArrCopyObs(entitiesArrCopy);
-    jQuery.each( entitiesArrCopy, function( index, elem ) {
-        if ( elem instanceof GlobalVar || elem instanceof Factor) {
+    jQuery.each(entitiesArrCopy, function (index, elem) {
+        if (elem instanceof GlobalVar || elem instanceof Factor) {
             // skip because was not copied
         }
         else {
             elem.setPointers(entitiesArrCopyObs);
         }
-    } );
+    });
 
     // find this frame:
     var deepCopy = entitiesArrCopyObs.byId[this.id()];
@@ -88,28 +88,28 @@ Sequence.prototype.getDeepCopyForPlayer = function() {
 /**
  * sets the factor group:
  */
-Sequence.prototype.setFactorGroup = function(factorGroup) {
+Sequence.prototype.setFactorGroup = function (factorGroup) {
     this.factorGroup = factorGroup;
 };
 
-Sequence.prototype.selectFirstElement = function() {
+Sequence.prototype.selectFirstElement = function () {
     this.currSelectedElement(this.elements()[0]);
 };
 
-Sequence.prototype.selectPreviousElement = function() {
+Sequence.prototype.selectPreviousElement = function () {
 
     var elements = this.elements();
     var nextElement;
 
-    if (!this.currSelectedElement()){
+    if (!this.currSelectedElement()) {
         nextElement = elements[0];
     }
     else {
         var index = elements.indexOf(this.currSelectedElement());
-        if (index >0){
-            nextElement = elements[index-1];
+        if (index > 0) {
+            nextElement = elements[index - 1];
         }
-        else{
+        else {
             nextElement = elements[index];
         }
     }
@@ -118,7 +118,7 @@ Sequence.prototype.selectPreviousElement = function() {
     return nextElement;
 };
 
-Sequence.prototype.selectCustomElement = function(frame) {
+Sequence.prototype.selectCustomElement = function (frame) {
 
     this.currSelectedElement(frame);
     return frame;
@@ -126,22 +126,22 @@ Sequence.prototype.selectCustomElement = function(frame) {
 
 
 
-Sequence.prototype.selectNextElement = function() {
+Sequence.prototype.selectNextElement = function () {
 
     var elements = this.elements();
     var nextElement;
 
-    if (!this.currSelectedElement()){
+    if (!this.currSelectedElement()) {
         nextElement = elements[0];
     }
     else {
         var index = elements.indexOf(this.currSelectedElement());
-        nextElement = elements[index+1];
+        nextElement = elements[index + 1];
     }
 
     if (nextElement === undefined) {
         nextElement = {
-            type:"EndOfSequence"
+            type: "EndOfSequence"
         };
     }
 
@@ -149,7 +149,7 @@ Sequence.prototype.selectNextElement = function() {
     return nextElement;
 };
 
-Sequence.prototype.addNewSubElement = function(elem) {
+Sequence.prototype.addNewSubElement = function (elem) {
     elem.parent = this;
     this.elements.push(elem);
     this.expData.entities.insertIfNotExist(elem);
@@ -159,20 +159,20 @@ Sequence.prototype.addNewSubElement = function(elem) {
     }
 };
 
-Sequence.prototype.getElementById = function(id) {
-    return  this.elements.byId[id];
+Sequence.prototype.getElementById = function (id) {
+    return this.elements.byId[id];
 };
 
 /**
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-Sequence.prototype.getAllModifiers = function(modifiersArr) {
-    jQuery.each( this.elements(), function( index, elem ) {
+Sequence.prototype.getAllModifiers = function (modifiersArr) {
+    jQuery.each(this.elements(), function (index, elem) {
         if (elem.getAllModifiers) {
             elem.getAllModifiers(modifiersArr);
         }
-    } );
+    });
 };
 
 /**
@@ -182,53 +182,53 @@ Sequence.prototype.getAllModifiers = function(modifiersArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-Sequence.prototype.setPointers = function(entitiesArr) {
+Sequence.prototype.setPointers = function (entitiesArr) {
     var self = this;
 
     // convert ids to actual pointers:
-    this.elements(jQuery.map( this.elements(), function( id ) {
+    this.elements(jQuery.map(this.elements(), function (id) {
         var elem = entitiesArr.byId[id];
         elem.parent = self;
         return elem;
-    } ));
+    }));
 
 
     // convert ids to actual pointers:
-    this.workspaceVars(jQuery.map( this.workspaceVars(), function( id ) {
+    this.workspaceVars(jQuery.map(this.workspaceVars(), function (id) {
         return entitiesArr.byId[id];
-    } ));
+    }));
 
     // converter to add all old existing factors to workspace only in editor
-   //if(window.uc!==undefined){
-   //    this.addAllRemainingFactorToWorkspace();
-   //}
+    //if(window.uc!==undefined){
+    //    this.addAllRemainingFactorToWorkspace();
+    //}
 
 
 };
 
-Sequence.prototype.onFinishedLoading = function() {
+Sequence.prototype.onFinishedLoading = function () {
     this.addAllRemainingFactorToWorkspace();
 };
 
-Sequence.prototype.addVariableToWorkspace = function(variable) {
+Sequence.prototype.addVariableToWorkspace = function (variable) {
     var isExisting = this.workspaceVars.byId[variable.id()];
     if (!isExisting) {
         this.workspaceVars.push(variable);
     }
 };
 
-Sequence.prototype.removeVariableFromWorkspace = function(variable) {
+Sequence.prototype.removeVariableFromWorkspace = function (variable) {
     var isExisting = this.workspaceVars.byId[variable.id()];
     if (isExisting) {
         var idx = this.workspaceVars.indexOf(variable);
-        this.workspaceVars().splice(idx,1);
+        this.workspaceVars().splice(idx, 1);
     }
 
 };
 
-Sequence.prototype.addAllRemainingFactorToWorkspace = function() {
+Sequence.prototype.addAllRemainingFactorToWorkspace = function () {
     var self = this;
-    if (this.factorGroup){
+    if (this.factorGroup) {
         this.factorGroup.factors().forEach(function (factor) {
             self.workspaceVars.insertIfNotExist(factor.globalVar());
         })
@@ -242,22 +242,22 @@ Sequence.prototype.addAllRemainingFactorToWorkspace = function() {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-Sequence.prototype.reAddEntities = function(entitiesArr) {
+Sequence.prototype.reAddEntities = function (entitiesArr) {
     var self = this;
 
     // add the direct child nodes:
-    jQuery.each( this.elements(), function( index, elem ) {
+    jQuery.each(this.elements(), function (index, elem) {
         entitiesArr.insertIfNotExist(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
             elem.reAddEntities(entitiesArr);
-    } );
+    });
 
     // add the direct child nodes:
-    jQuery.each( this.workspaceVars(), function( index, elem ) {
+    jQuery.each(this.workspaceVars(), function (index, elem) {
         entitiesArr.insertIfNotExist(elem);
-    } );
+    });
 
     this.factorGroup.reAddEntities(entitiesArr);
 
@@ -268,7 +268,7 @@ Sequence.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {Sequence}
  */
-Sequence.prototype.fromJS = function(data) {
+Sequence.prototype.fromJS = function (data) {
     this.id(data.id);
     this.name(data.name);
     this.elements(data.elements);
@@ -282,12 +282,12 @@ Sequence.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-Sequence.prototype.toJS = function() {
+Sequence.prototype.toJS = function () {
     return {
         id: this.id(),
         type: this.type,
         name: this.name(),
-        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } ),
-        workspaceVars: jQuery.map( this.workspaceVars(), function( variable ) { return variable.id(); } )
+        elements: jQuery.map(this.elements(), function (elem) { return elem.id(); }),
+        workspaceVars: jQuery.map(this.workspaceVars(), function (variable) { return variable.id(); })
     };
 };

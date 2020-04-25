@@ -1,21 +1,21 @@
-var LikertElement= function(expData) {
+var LikertElement = function (expData) {
     this.expData = expData;
     this.parent = null;
 
     //serialized
-    this.type= "LikertElement";
+    this.type = "LikertElement";
     this.questionText = ko.observable(null); // EditableTextElement
-    this.startChoice= ko.observable(1);
-    this.endChoice= ko.observable(5);
+    this.startChoice = ko.observable(1);
+    this.endChoice = ko.observable(5);
     this.startLabel = ko.observable(null); // EditableTextElement
     this.endLabel = ko.observable(null); // EditableTextElement
-    this.choices= ko.observableArray([1,2,3,4,5]);
+    this.choices = ko.observableArray([1, 2, 3, 4, 5]);
     this.reshuffleElements = ko.observable(false);
 
 
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
-    this.enableTitle= ko.observable(true);
+    this.enableTitle = ko.observable(true);
 
     this.showNums = ko.observable(true);
     this.margin = ko.observable(2);
@@ -29,13 +29,13 @@ var LikertElement= function(expData) {
 
 LikertElement.prototype.label = "Likert";
 LikertElement.prototype.iconPath = "/resources/icons/tools/tool_rating.svg";
-LikertElement.prototype.dataType =      [ ];
-LikertElement.prototype.modifiableProp = [ ];
+LikertElement.prototype.dataType = [];
+LikertElement.prototype.modifiableProp = [];
 LikertElement.prototype.numVarNamesRequired = 1;
 LikertElement.prototype.initWidth = 350;
 LikertElement.prototype.initHeight = 120;
 
-LikertElement.prototype.init = function(variableName) {
+LikertElement.prototype.init = function (variableName) {
 
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
@@ -58,9 +58,9 @@ LikertElement.prototype.init = function(variableName) {
     this.setVariableBackRef();
 };
 
-LikertElement.prototype.setVariableBackRef = function() {
+LikertElement.prototype.setVariableBackRef = function () {
     if (this.variable()) {
-        if (this.variable() instanceof GlobalVar){
+        if (this.variable() instanceof GlobalVar) {
             this.variable().addBackRef(this, this.parent, true, true, 'Likert');
         }
 
@@ -69,18 +69,18 @@ LikertElement.prototype.setVariableBackRef = function() {
 
 
 
-LikertElement.prototype.doReshuffle = function() {
-   var randi =  Math.random();
-   if (randi >0.5){
-       this.valuesInverted = true;
-       var startLabel = this.startLabel();
-       var endLabel = this.endLabel();
-       var choices = this.choices().reverse();
+LikertElement.prototype.doReshuffle = function () {
+    var randi = Math.random();
+    if (randi > 0.5) {
+        this.valuesInverted = true;
+        var startLabel = this.startLabel();
+        var endLabel = this.endLabel();
+        var choices = this.choices().reverse();
 
-       this.startLabel(endLabel);
-       this.endLabel(startLabel);
-       this.choices(choices);
-   }
+        this.startLabel(endLabel);
+        this.endLabel(startLabel);
+        this.choices(choices);
+    }
 };
 
 
@@ -89,13 +89,13 @@ LikertElement.prototype.doReshuffle = function() {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-LikertElement.prototype.getAllModifiers = function(modifiersArr) {
+LikertElement.prototype.getAllModifiers = function (modifiersArr) {
     this.questionText().getAllModifiers(modifiersArr);
     this.startLabel().getAllModifiers(modifiersArr);
     this.endLabel().getAllModifiers(modifiersArr);
 };
 
-LikertElement.prototype.setPointers = function(entitiesArr) {
+LikertElement.prototype.setPointers = function (entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
         this.setVariableBackRef();
@@ -105,8 +105,8 @@ LikertElement.prototype.setPointers = function(entitiesArr) {
     this.endLabel().setPointers(entitiesArr);
 };
 
-LikertElement.prototype.reAddEntities = function(entitiesArr) {
-    if (this.variable() instanceof GlobalVar){
+LikertElement.prototype.reAddEntities = function (entitiesArr) {
+    if (this.variable() instanceof GlobalVar) {
         if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
             entitiesArr.push(this.variable());
         }
@@ -117,23 +117,23 @@ LikertElement.prototype.reAddEntities = function(entitiesArr) {
     this.endLabel().reAddEntities(entitiesArr);
 };
 
-LikertElement.prototype.selectTrialType = function(selectionSpec) {
+LikertElement.prototype.selectTrialType = function (selectionSpec) {
     this.questionText().selectTrialType(selectionSpec);
     this.startLabel().selectTrialType(selectionSpec);
     this.endLabel().selectTrialType(selectionSpec);
 };
 
 LikertElement.prototype.dispose = function () {
-  this.questionText().dispose();
-  this.startLabel().dispose();
-  this.endLabel().dispose();
-    if (this.variable() instanceof GlobalVar){
+    this.questionText().dispose();
+    this.startLabel().dispose();
+    this.endLabel().dispose();
+    if (this.variable() instanceof GlobalVar) {
         this.variable().removeBackRef(this);
     }
 
 };
 
-LikertElement.prototype.getTextRefs = function(textArr, label){
+LikertElement.prototype.getTextRefs = function (textArr, label) {
     var questlabel = label + '.Question';
     this.questionText().getTextRefs(textArr, questlabel);
     var startlabel = label + '.Start';
@@ -143,24 +143,24 @@ LikertElement.prototype.getTextRefs = function(textArr, label){
     return textArr;
 };
 
-LikertElement.prototype.isInputValid = function() {
+LikertElement.prototype.isInputValid = function () {
     this.triedToSubmit(true);
-    if (this.isRequired()==false){
+    if (this.isRequired() == false) {
         this.dataIsValid(true);
         return true
     }
-    else{
-        if (this.variable() instanceof GlobalVar){
-            if (this.variable().value().value() == this.variable().startValue().value()){
+    else {
+        if (this.variable() instanceof GlobalVar) {
+            if (this.variable().value().value() == this.variable().startValue().value()) {
                 this.dataIsValid(false);
                 return false;
             }
-            else{
+            else {
                 this.dataIsValid(true);
                 return true
             }
         }
-        else{
+        else {
             return true
         }
 
@@ -169,9 +169,9 @@ LikertElement.prototype.isInputValid = function() {
 
 
 
-LikertElement.prototype.toJS = function() {
+LikertElement.prototype.toJS = function () {
     var variableId = null;
-    if (this.variable() &&  this.variable() instanceof GlobalVar) {
+    if (this.variable() && this.variable() instanceof GlobalVar) {
         variableId = this.variable().id();
     }
 
@@ -185,16 +185,16 @@ LikertElement.prototype.toJS = function() {
         choices: this.choices(),
         variable: variableId,
         isRequired: this.isRequired(),
-        enableTitle:this.enableTitle(),
-        showNums:this.showNums(),
-        reshuffleElements:this.reshuffleElements(),
-        margin:this.margin()
+        enableTitle: this.enableTitle(),
+        showNums: this.showNums(),
+        reshuffleElements: this.reshuffleElements(),
+        margin: this.margin()
     };
 };
 
-LikertElement.prototype.fromJS = function(data) {
-    this.type=data.type;
-    if(data.questionText.hasOwnProperty('rawText')) {
+LikertElement.prototype.fromJS = function (data) {
+    this.type = data.type;
+    if (data.questionText.hasOwnProperty('rawText')) {
         this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);
         this.startLabel(new EditableTextElement(this.expData, this, ''));
@@ -202,7 +202,7 @@ LikertElement.prototype.fromJS = function(data) {
         this.endLabel(new EditableTextElement(this.expData, this, ''));
         this.endLabel().fromJS(data.endLabel);
     }
-    else{
+    else {
         this.questionText(new EditableTextElement(this.expData, this, data.questionText));
         this.startLabel(new EditableTextElement(this.expData, this, data.startLabel));
         this.endLabel(new EditableTextElement(this.expData, this, data.endLabel));
@@ -211,19 +211,19 @@ LikertElement.prototype.fromJS = function(data) {
     this.endChoice(data.endChoice);
     this.choices(data.choices);
     this.variable(data.variable);
-    if(data.hasOwnProperty('isRequired')) {
+    if (data.hasOwnProperty('isRequired')) {
         this.isRequired(data.isRequired)
     }
-    if(data.hasOwnProperty('enableTitle')){
+    if (data.hasOwnProperty('enableTitle')) {
         this.enableTitle(data.enableTitle);
     }
-    if(data.hasOwnProperty('showNums')){
+    if (data.hasOwnProperty('showNums')) {
         this.showNums(data.showNums);
     }
-    if(data.hasOwnProperty('reshuffleElements')){
+    if (data.hasOwnProperty('reshuffleElements')) {
         this.reshuffleElements(data.reshuffleElements);
     }
-    if(data.hasOwnProperty('margin')){
+    if (data.hasOwnProperty('margin')) {
         this.margin(data.margin);
     }
 
@@ -233,9 +233,9 @@ LikertElement.prototype.fromJS = function(data) {
 function createLikertElementComponents() {
     ko.components.register('likert-editview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function (dataModel, componentInfo) {
 
-                var viewModel = function(dataModel){
+                var viewModel = function (dataModel) {
 
                     var self = this;
 
@@ -246,22 +246,22 @@ function createLikertElementComponents() {
                     this.endChoice = dataModel.endChoice;
                     this.startLabel = dataModel.startLabel;
                     this.endLabel = dataModel.endLabel;
-                    this.values = [1,2,3,4,5,6,7,8,9,10,11,12];
+                    this.values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
                     this.showNums = dataModel.showNums;
                     this.margin = dataModel.margin;
 
-                    this.finish = function() {
+                    this.finish = function () {
                         self.choices([]);
-                        for (var i = self.startChoice();i<=self.endChoice();i++){
+                        for (var i = self.startChoice(); i <= self.endChoice(); i++) {
                             self.choices.push(i);
                         }
                     };
 
-                    this.relinkCallback = function() {
+                    this.relinkCallback = function () {
                         var frameData = self.dataModel.parent.parent;
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
-                            if (self.dataModel.variable()){
+                            if (self.dataModel.variable()) {
                                 self.dataModel.variable().removeBackRef(self.dataModel);
                             }
                             self.dataModel.variable(newVariable);
@@ -275,14 +275,14 @@ function createLikertElementComponents() {
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'likert-editview-template'}
+        template: { element: 'likert-editview-template' }
 
     });
 
-    ko.components.register('likert-preview',{
+    ko.components.register('likert-preview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
-                var viewModel = function(dataModel){
+            createViewModel: function (dataModel, componentInfo) {
+                var viewModel = function (dataModel) {
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     this.margin = dataModel.margin;
@@ -295,12 +295,12 @@ function createLikertElementComponents() {
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'likert-preview-template'}
+        template: { element: 'likert-preview-template' }
     });
 
-    ko.components.register('likert-playerview',{
+    ko.components.register('likert-playerview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function (dataModel) {
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
@@ -316,6 +316,6 @@ function createLikertElementComponents() {
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'likert-playerview-template'}
+        template: { element: 'likert-playerview-template' }
     });
 };

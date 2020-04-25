@@ -1,5 +1,5 @@
 
-var AudioElement= function(expData) {
+var AudioElement = function (expData) {
 
     var self = this;
     this.expData = expData;
@@ -11,8 +11,8 @@ var AudioElement= function(expData) {
     this.file_orig_name = ko.observable(null);
     this.showMediaControls = ko.observable(true);
 
-    this.shortName = ko.computed(function() {
-        if (self.file_orig_name()){
+    this.shortName = ko.computed(function () {
+        if (self.file_orig_name()) {
             return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
         }
         else return '';
@@ -23,7 +23,7 @@ var AudioElement= function(expData) {
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
 
-    this.audioSource = ko.computed( function() {
+    this.audioSource = ko.computed(function () {
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
             var file_route = "/files/";
             if (typeof player !== 'undefined') {
@@ -49,32 +49,32 @@ var AudioElement= function(expData) {
 
 AudioElement.prototype.label = "Audio";
 AudioElement.prototype.iconPath = "/resources/icons/tools/tool_sound.svg";
-AudioElement.prototype.dataType =      [ "string", "string","file"];
-AudioElement.prototype.modifiableProp = ["file_id","file_orig_name","file"];
+AudioElement.prototype.dataType = ["string", "string", "file"];
+AudioElement.prototype.modifiableProp = ["file_id", "file_orig_name", "file"];
 AudioElement.prototype.numVarNamesRequired = 0;
-AudioElement.prototype.actionTypes = ["StartPlayback","StopPlayback"];
-AudioElement.prototype.triggerTypes = ["PlaybackStarted","PlaybackStopped"];
+AudioElement.prototype.actionTypes = ["StartPlayback", "StopPlayback"];
+AudioElement.prototype.triggerTypes = ["PlaybackStarted", "PlaybackStopped"];
 
-AudioElement.prototype.switchPlayState = function() {
+AudioElement.prototype.switchPlayState = function () {
     this.currentlyPlaying(!this.currentlyPlaying());
 };
 
-AudioElement.prototype.getActionTypes = function() {
+AudioElement.prototype.getActionTypes = function () {
     return AudioElement.prototype.actionTypes;
 };
 
-AudioElement.prototype.getTriggerTypes = function() {
+AudioElement.prototype.getTriggerTypes = function () {
     return AudioElement.prototype.triggerTypes;
 };
 
-AudioElement.prototype.executeAction = function(actionType) {
-    if (actionType=="StartPlayback") {
+AudioElement.prototype.executeAction = function (actionType) {
+    if (actionType == "StartPlayback") {
         console.log("StartPlayback");
         if (!this.currentlyPlaying()) {
             this.currentlyPlaying(true);
         }
     }
-    else if (actionType=="StopPlayback") {
+    else if (actionType == "StopPlayback") {
         console.log("StopPlayback");
         if (this.currentlyPlaying()) {
             this.currentlyPlaying(false);
@@ -82,21 +82,21 @@ AudioElement.prototype.executeAction = function(actionType) {
     }
 };
 
-AudioElement.prototype.jumpToByFraction = function(fraction) {
-    console.log("jump to fraction "+fraction);
-    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
-        this.subscribersForJumpEvents[i]({jumpToFraction: fraction});
+AudioElement.prototype.jumpToByFraction = function (fraction) {
+    console.log("jump to fraction " + fraction);
+    for (var i = 0; i < this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({ jumpToFraction: fraction });
     }
 };
 
-AudioElement.prototype.jumpToByTime = function(time) {
-    console.log("jump to time "+time);
-    for (var i =0; i<this.subscribersForJumpEvents.length; i++) {
-        this.subscribersForJumpEvents[i]({jumpToTime: time});
+AudioElement.prototype.jumpToByTime = function (time) {
+    console.log("jump to time " + time);
+    for (var i = 0; i < this.subscribersForJumpEvents.length; i++) {
+        this.subscribersForJumpEvents[i]({ jumpToTime: time });
     }
 };
 
-AudioElement.prototype.dispose = function() {
+AudioElement.prototype.dispose = function () {
 
 };
 
@@ -104,23 +104,23 @@ AudioElement.prototype.dispose = function() {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-AudioElement.prototype.getAllModifiers = function(modifiersArr) {
+AudioElement.prototype.getAllModifiers = function (modifiersArr) {
     modifiersArr.push(this.modifier());
 };
 
-AudioElement.prototype.setPointers = function(entitiesArr) {
+AudioElement.prototype.setPointers = function (entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 };
 
-AudioElement.prototype.reAddEntities = function(entitiesArr) {
+AudioElement.prototype.reAddEntities = function (entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 };
 
-AudioElement.prototype.selectTrialType = function(selectionSpec) {
+AudioElement.prototype.selectTrialType = function (selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
-AudioElement.prototype.fromJS = function(data) {
+AudioElement.prototype.fromJS = function (data) {
     var self = this;
     this.type = data.type;
     this.dataType = data.dataType;
@@ -135,7 +135,7 @@ AudioElement.prototype.fromJS = function(data) {
     return this;
 };
 
-AudioElement.prototype.toJS = function() {
+AudioElement.prototype.toJS = function () {
     return {
         type: this.type,
         dataType: this.dataType,
@@ -150,23 +150,23 @@ AudioElement.prototype.toJS = function() {
 
 function createAudioComponents() {
 
-    var AudioEditViewModel = function(dataModel, componentInfo){
+    var AudioEditViewModel = function (dataModel, componentInfo) {
         var self = this;
 
         this.element = componentInfo.element;
         this.dataModel = dataModel;
         var seekBar = $(this.element).find('.seek-bar')[0];
-        this.changeListener = function() {
+        this.changeListener = function () {
             dataModel.jumpToByFraction(seekBar.value / 100);
         };
         seekBar.addEventListener("change", this.changeListener);
 
-        this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function(percentage) {
+        this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
             seekBar.value = percentage;
         });
         seekBar.value = this.dataModel.currentTimePercentage();
     };
-    AudioEditViewModel.prototype.dispose = function() {
+    AudioEditViewModel.prototype.dispose = function () {
         console.log("disposing AudioEditViewModel");
         this.subscriberTimePercentage.dispose();
         var seekBar = $(this.element).find('.seek-bar')[0];
@@ -179,11 +179,11 @@ function createAudioComponents() {
                 return new AudioEditViewModel(dataModel, componentInfo);
             }
         },
-        template: {element: 'audio-editview-template'}
+        template: { element: 'audio-editview-template' }
     });
 
 
-    var AudioPreviewAndPlayerViewModel = function(dataModel, componentInfo){
+    var AudioPreviewAndPlayerViewModel = function (dataModel, componentInfo) {
         var self = this;
         this.element = componentInfo.element;
         this.dataModel = dataModel;
@@ -209,7 +209,7 @@ function createAudioComponents() {
                 $(this.element).find('audio')[0].load();
             };
             this.updateAudioSource();
-            this.subscriberFileId = self.dataModel.modifier().selectedTrialView.file_id.subscribe(function() {
+            this.subscriberFileId = self.dataModel.modifier().selectedTrialView.file_id.subscribe(function () {
                 self.updateAudioSource();
             });
         }
@@ -222,7 +222,7 @@ function createAudioComponents() {
 
             $(seekBar).on("click", function (param1) {
                 var widthClicked = param1.pageX - $(this).offset().left;
-                var totalWidth =  $(this)[0].getBoundingClientRect().width;
+                var totalWidth = $(this)[0].getBoundingClientRect().width;
                 var fractionClicked = widthClicked / totalWidth;
                 dataModel.jumpToByFraction(fractionClicked);
             });
@@ -263,7 +263,7 @@ function createAudioComponents() {
             myAudio.addEventListener("timeupdate", this.timeUpdateListener);
 
             // on ended listener:
-            this.onEndedListener = function() {
+            this.onEndedListener = function () {
                 self.dataModel.currentlyPlaying(false);
             };
             myAudio.addEventListener("ended", this.onEndedListener);
@@ -273,12 +273,12 @@ function createAudioComponents() {
             });
         }
 
-        this.subscriberAudioSource = this.dataModel.audioSource.subscribe(function() {
+        this.subscriberAudioSource = this.dataModel.audioSource.subscribe(function () {
             var myAudio = $(self.element).find('audio')[0];
             myAudio.load();
         });
     };
-    AudioPreviewAndPlayerViewModel.prototype.dispose = function() {
+    AudioPreviewAndPlayerViewModel.prototype.dispose = function () {
         console.log("disposing AudioPreviewAndPlayerViewModel");
         // remove subscriber to be notified when the audio should jump to specific time:
         var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
@@ -307,21 +307,21 @@ function createAudioComponents() {
         $(seekBar).off("click");
     };
 
-    ko.components.register('audio-preview',{
+    ko.components.register('audio-preview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function (dataModel, componentInfo) {
                 return new AudioPreviewAndPlayerViewModel(dataModel, componentInfo);
             }
         },
         template: { element: 'audio-preview-template' }
     });
 
-    ko.components.register('audio-playerview',{
+    ko.components.register('audio-playerview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function (dataModel, componentInfo) {
                 return new AudioPreviewAndPlayerViewModel(dataModel, componentInfo);
             }
         },
-        template: {element: 'audio-playerview-template'}
+        template: { element: 'audio-playerview-template' }
     });
 }

@@ -1,5 +1,5 @@
 
-var SelectionElement = function(expData) {
+var SelectionElement = function (expData) {
     var self = this;
     this.expData = expData;
     this.parent = null;
@@ -11,11 +11,11 @@ var SelectionElement = function(expData) {
     this.elements = ko.observableArray([]);
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
-    this.enableTitle= ko.observable(true);
+    this.enableTitle = ko.observable(true);
 
 
     this.listType = ko.observable('selfCreation');
-    this.predefinedListOptions =  ko.observableArray(['countryList','languageList']);
+    this.predefinedListOptions = ko.observableArray(['countryList', 'languageList']);
     this.selectedPredefinedOption = ko.observable('countryList');
 
 
@@ -24,11 +24,11 @@ var SelectionElement = function(expData) {
     this.triedToSubmit = ko.observable(false);
     this.dataIsValid = ko.observable(false);
 
-    this.predefinedData = ko.computed(function() {
-        if (self.selectedPredefinedOption()=='countryList'){
+    this.predefinedData = ko.computed(function () {
+        if (self.selectedPredefinedOption() == 'countryList') {
             return globalCountryData();
         }
-        else if (self.selectedPredefinedOption()=='languageList'){
+        else if (self.selectedPredefinedOption() == 'languageList') {
             return globalLanguageData();
         }
     });
@@ -36,38 +36,38 @@ var SelectionElement = function(expData) {
 
 SelectionElement.prototype.label = "Selection";
 SelectionElement.prototype.iconPath = "/resources/icons/tools/selection.svg";
-SelectionElement.prototype.dataType =      [ ];
-SelectionElement.prototype.modifiableProp = [ ];
+SelectionElement.prototype.dataType = [];
+SelectionElement.prototype.modifiableProp = [];
 SelectionElement.prototype.initWidth = 300;
 SelectionElement.prototype.initHeight = 100;
 SelectionElement.prototype.numVarNamesRequired = 1;
 
 
-SelectionElement.prototype.addEntry = function(newName) {
+SelectionElement.prototype.addEntry = function (newName) {
     var entry = new SelectionEntry(this);
     entry.selectionText(newName);
     entry.selectionValue(newName);
     this.elements.push(entry);
 };
 
-SelectionElement.prototype.removeEntry = function(idx) {
-    this.elements.splice(idx,1);
+SelectionElement.prototype.removeEntry = function (idx) {
+    this.elements.splice(idx, 1);
 };
 
 
-SelectionElement.prototype.dispose = function() {
+SelectionElement.prototype.dispose = function () {
     this.questionText().dispose();
     if (this.variable() instanceof GlobalVar) {
         this.variable().removeBackRef(this);
     }
 
-    jQuery.each( this.elements(), function( index, elem ) {
+    jQuery.each(this.elements(), function (index, elem) {
         elem.dispose();
-    } );
+    });
 };
 
 
-SelectionElement.prototype.init = function(variableName) {
+SelectionElement.prototype.init = function (variableName) {
 
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
@@ -87,8 +87,8 @@ SelectionElement.prototype.init = function(variableName) {
 
 };
 
-SelectionElement.prototype.setVariableBackRef = function() {
-    if (this.variable() instanceof GlobalVar){
+SelectionElement.prototype.setVariableBackRef = function () {
+    if (this.variable() instanceof GlobalVar) {
         this.variable().addBackRef(this, this.parent, true, true, 'Selection');
     }
 };
@@ -97,36 +97,36 @@ SelectionElement.prototype.setVariableBackRef = function() {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-SelectionElement.prototype.getAllModifiers = function(modifiersArr) {
-    jQuery.each( this.elements(), function( index, elem ) {
+SelectionElement.prototype.getAllModifiers = function (modifiersArr) {
+    jQuery.each(this.elements(), function (index, elem) {
         elem.getAllModifiers(modifiersArr);
-    } );
+    });
     this.questionText().getAllModifiers(modifiersArr);
 };
 
-SelectionElement.prototype.setPointers = function(entitiesArr) {
+SelectionElement.prototype.setPointers = function (entitiesArr) {
     var self = this;
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
         this.setVariableBackRef();
     }
-    jQuery.each( this.elements(), function( index, elem ) {
+    jQuery.each(this.elements(), function (index, elem) {
         elem.setPointers(entitiesArr);
-    } );
+    });
     if (this.variable() && this.variable().dataType() == "categorical") {
         // convert to string type:
-        jQuery.each( this.variable().levels(), function( index, elem ) {
+        jQuery.each(this.variable().levels(), function (index, elem) {
             var entry = new SelectionEntry(this);
             entry.selectionText(elem.name());
             entry.selectionValue(elem.name());
             self.elements.push(entry);
-        } );
+        });
         this.variable().changeDataType("string");
     }
     this.questionText().setPointers(entitiesArr);
 };
 
-SelectionElement.prototype.reAddEntities = function(entitiesArr) {
+SelectionElement.prototype.reAddEntities = function (entitiesArr) {
     if (this.variable() instanceof GlobalVar) {
         if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
             entitiesArr.push(this.variable());
@@ -136,32 +136,32 @@ SelectionElement.prototype.reAddEntities = function(entitiesArr) {
     this.questionText().reAddEntities(entitiesArr);
 };
 
-SelectionElement.prototype.selectTrialType = function(selectionSpec) {
-    jQuery.each( this.elements(), function( index, elem ) {
+SelectionElement.prototype.selectTrialType = function (selectionSpec) {
+    jQuery.each(this.elements(), function (index, elem) {
         elem.selectTrialType(selectionSpec);
-    } );
+    });
     this.questionText().selectTrialType(selectionSpec);
 };
 
-SelectionElement.prototype.getTextRefs = function(textArr, label){
+SelectionElement.prototype.getTextRefs = function (textArr, label) {
     var questlabel = label + '.Question';
     this.questionText().getTextRefs(textArr, questlabel);
     return textArr;
 };
 
 
-SelectionElement.prototype.isInputValid = function() {
+SelectionElement.prototype.isInputValid = function () {
     this.triedToSubmit(true);
-    if (this.isRequired()==false){
+    if (this.isRequired() == false) {
         this.dataIsValid(true);
         return true
     }
-    else{
-        if (this.variable().value().value()==null || this.variable().value().value()=='' ||this.variable().value().value() == this.variable().startValue().value()){
+    else {
+        if (this.variable().value().value() == null || this.variable().value().value() == '' || this.variable().value().value() == this.variable().startValue().value()) {
             this.dataIsValid(false);
             return false;
         }
-        else{
+        else {
             this.dataIsValid(true);
             return true
         }
@@ -169,7 +169,7 @@ SelectionElement.prototype.isInputValid = function() {
 };
 
 
-SelectionElement.prototype.toJS = function() {
+SelectionElement.prototype.toJS = function () {
     var variableId = null;
     if (this.variable()) {
         variableId = this.variable().id();
@@ -179,25 +179,25 @@ SelectionElement.prototype.toJS = function() {
         type: this.type,
         questionText: this.questionText().toJS(),
         variable: variableId,
-        isRequired:this.isRequired(),
-        elements: jQuery.map( this.elements(), function( elem ) {
+        isRequired: this.isRequired(),
+        elements: jQuery.map(this.elements(), function (elem) {
             return elem.toJS();
         }),
-        enableTitle:this.enableTitle(),
-        listType:this.listType(),
-        predefinedListOptions:this.predefinedListOptions(),
-        selectedPredefinedOption:this.selectedPredefinedOption()
+        enableTitle: this.enableTitle(),
+        listType: this.listType(),
+        predefinedListOptions: this.predefinedListOptions(),
+        selectedPredefinedOption: this.selectedPredefinedOption()
     };
 };
 
-SelectionElement.prototype.fromJS = function(data) {
+SelectionElement.prototype.fromJS = function (data) {
     var self = this;
-    this.type=data.type;
-    if(data.questionText.hasOwnProperty('rawText')) {
+    this.type = data.type;
+    if (data.questionText.hasOwnProperty('rawText')) {
         this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);
     }
-    else{
+    else {
         this.questionText(new EditableTextElement(this.expData, this, data.questionText));
     }
     this.variable(data.variable);
@@ -207,18 +207,18 @@ SelectionElement.prototype.fromJS = function(data) {
         }));
     }
     if (data.hasOwnProperty('isRequired')) {
-       this.isRequired(data.isRequired);
+        this.isRequired(data.isRequired);
     }
-    if(data.hasOwnProperty('enableTitle')){
+    if (data.hasOwnProperty('enableTitle')) {
         this.enableTitle(data.enableTitle);
     }
-    if(data.hasOwnProperty('listType')){
+    if (data.hasOwnProperty('listType')) {
         this.listType(data.listType);
     }
-    if(data.hasOwnProperty('predefinedListOptions')){
+    if (data.hasOwnProperty('predefinedListOptions')) {
         this.predefinedListOptions(data.predefinedListOptions);
     }
-    if(data.hasOwnProperty('selectedPredefinedOption')){
+    if (data.hasOwnProperty('selectedPredefinedOption')) {
         this.selectedPredefinedOption(data.selectedPredefinedOption);
     }
 
@@ -234,7 +234,7 @@ SelectionElement.prototype.fromJS = function(data) {
 //////////////////////////////////////////////
 
 
-var SelectionEntry= function(selectionParent) {
+var SelectionEntry = function (selectionParent) {
     this.selectionParent = selectionParent;
 
     this.selectionText = ko.observable(null);
@@ -242,11 +242,11 @@ var SelectionEntry= function(selectionParent) {
 
 };
 
-SelectionEntry.prototype.getIndex = function() {
+SelectionEntry.prototype.getIndex = function () {
     return this.selectionParent.elements.indexOf(this);
 };
 
-SelectionEntry.prototype.dispose = function() {
+SelectionEntry.prototype.dispose = function () {
 
 };
 
@@ -254,24 +254,24 @@ SelectionEntry.prototype.dispose = function() {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-SelectionEntry.prototype.getAllModifiers = function(modifiersArr) {
-   // this.selectionText().getAllModifiers(modifiersArr);
+SelectionEntry.prototype.getAllModifiers = function (modifiersArr) {
+    // this.selectionText().getAllModifiers(modifiersArr);
 };
 
-SelectionEntry.prototype.selectTrialType = function(selectionSpec) {
-  //  this.selectionText().selectTrialType(selectionSpec);
+SelectionEntry.prototype.selectTrialType = function (selectionSpec) {
+    //  this.selectionText().selectTrialType(selectionSpec);
 };
 
-SelectionEntry.prototype.setPointers = function(entitiesArr) {
+SelectionEntry.prototype.setPointers = function (entitiesArr) {
     if (this.selectionValue() == null) {
         // convert from old categorical format to string format:
         var nr = this.selectionParent.elements().indexOf(this);
-        this.selectionValue( 'option_' +nr );
+        this.selectionValue('option_' + nr);
     }
- //   this.selectionText().setPointers(entitiesArr);
+    //   this.selectionText().setPointers(entitiesArr);
 };
 
-SelectionEntry.prototype.fromJS = function(data) {
+SelectionEntry.prototype.fromJS = function (data) {
     this.selectionText(data.selectionText);
     if (data.hasOwnProperty('selectionValue')) {
         this.selectionValue(data.selectionValue);
@@ -279,9 +279,9 @@ SelectionEntry.prototype.fromJS = function(data) {
     return this;
 };
 
-SelectionEntry.prototype.toJS = function() {
+SelectionEntry.prototype.toJS = function () {
     return {
-        selectionText:  this.selectionText(),
+        selectionText: this.selectionText(),
         selectionValue: this.selectionValue()
     };
 };
@@ -292,16 +292,16 @@ function createSelectionElementComponents() {
     ko.components.register('selection-editview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
-                var viewModel = function(dataModel){
+                var viewModel = function (dataModel) {
                     var self = this;
                     this.dataModel = dataModel;
                     this.currentEntry = ko.observable('');
 
-                    this.relinkCallback = function() {
+                    this.relinkCallback = function () {
                         var frameData = self.dataModel.parent.parent;
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
-                            if (self.dataModel.variable()){
+                            if (self.dataModel.variable()) {
                                 self.dataModel.variable().removeBackRef(self.dataModel);
                             }
                             self.dataModel.variable(newVariable);
@@ -311,11 +311,11 @@ function createSelectionElementComponents() {
                     };
                 };
 
-                viewModel.prototype.addEntry = function() {
-                  this.dataModel.addEntry(this.currentEntry());
-                  this.currentEntry('');
+                viewModel.prototype.addEntry = function () {
+                    this.dataModel.addEntry(this.currentEntry());
+                    this.currentEntry('');
                 };
-                viewModel.prototype.removeEntry = function(idx) {
+                viewModel.prototype.removeEntry = function (idx) {
                     this.dataModel.removeEntry(idx);
                 };
 
@@ -323,14 +323,14 @@ function createSelectionElementComponents() {
             }
 
         },
-        template: {element: 'selection-editview-template'}
+        template: { element: 'selection-editview-template' }
     });
 
 
-    ko.components.register('selection-preview',{
+    ko.components.register('selection-preview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
-                var viewModel = function(dataModel){
+            createViewModel: function (dataModel, componentInfo) {
+                var viewModel = function (dataModel) {
                     this.dataModel = dataModel;
                 };
 
@@ -341,17 +341,17 @@ function createSelectionElementComponents() {
     });
 
 
-    ko.components.register('selection-playerview',{
+    ko.components.register('selection-playerview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
-                var viewModel = function(dataModel){
+            createViewModel: function (dataModel, componentInfo) {
+                var viewModel = function (dataModel) {
                     this.dataModel = dataModel;
                 };
 
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'selection-playerview-template'}
+        template: { element: 'selection-playerview-template' }
     });
 }
 

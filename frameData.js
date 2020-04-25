@@ -5,7 +5,7 @@
  * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
  * @constructor
  */
-var FrameData = function(expData) {
+var FrameData = function (expData) {
     var self = this;
     this.expData = expData;
     this.currSelectedElement = ko.observable(null);
@@ -18,9 +18,9 @@ var FrameData = function(expData) {
     this.offset = ko.observable(5000).extend({ numeric: 0 });
     this.offsetEnabled = ko.observable(false);
     this.bgColor = ko.observable("#ffffff"); // hex color as string, i.e. "#ffffff"
-    this.elements = ko.observableArray([]).extend({sortById: null});
+    this.elements = ko.observableArray([]).extend({ sortById: null });
     this.events = ko.observableArray([]);
-    this.localWorkspaceVars = ko.observableArray([]).extend({sortById: null});
+    this.localWorkspaceVars = ko.observableArray([]).extend({ sortById: null });
     this.hideMouse = ko.observable(false);
     this.nrOfTrackMousemove = ko.observable(0);
 
@@ -43,21 +43,21 @@ var FrameData = function(expData) {
     this.playerFrame = null; // pointer to the playerFrame if running in player.
 };
 
-FrameData.prototype.modifiableProp = ["name","offset","offsetEnabled","frameWidth","frameHeight","zoomMode","emotionEnabled","emotionFeedbackEnabled","emotionOffset","hideMouse", "syncFrame"];
+FrameData.prototype.modifiableProp = ["name", "offset", "offsetEnabled", "frameWidth", "frameHeight", "zoomMode", "emotionEnabled", "emotionFeedbackEnabled", "emotionOffset", "hideMouse", "syncFrame"];
 
 
 
-FrameData.prototype.dispose = function() {
+FrameData.prototype.dispose = function () {
     var self = this;
-    this.elements().forEach(function (elem){
+    this.elements().forEach(function (elem) {
         self.deleteChildEntity(elem)
     });
-    jQuery.each( this.localWorkspaceVars(), function( index, entity ) {
+    jQuery.each(this.localWorkspaceVars(), function (index, entity) {
         entity.removeBackRef(self);
-    } );
+    });
 };
 
-FrameData.prototype.deleteChildEntity = function(entity) {
+FrameData.prototype.deleteChildEntity = function (entity) {
     var self = this;
     if (entity instanceof ExpEvent) {
         this.events.remove(entity);
@@ -69,7 +69,7 @@ FrameData.prototype.deleteChildEntity = function(entity) {
     }
     else {
         this.elements.remove(entity);
-        if (typeof entity.dispose === 'function'){
+        if (typeof entity.dispose === 'function') {
             entity.dispose();
         }
         self.expData.entities.remove(entity);
@@ -81,15 +81,15 @@ FrameData.prototype.deleteChildEntity = function(entity) {
     }
 };
 
-FrameData.prototype.getTextRefs = function(textArrOuter, label){
-    jQuery.each( this.elements(), function( index, elem ) {
+FrameData.prototype.getTextRefs = function (textArrOuter, label) {
+    jQuery.each(this.elements(), function (index, elem) {
         var textArr = [];
         elem.getTextRefs(textArr, label + '.' + elem.name());
         textArrOuter.push({
             namedEntity: elem,
             textArr: textArr
         })
-    } );
+    });
     return textArrOuter;
 };
 
@@ -98,7 +98,7 @@ FrameData.prototype.getTextRefs = function(textArrOuter, label){
  *
  * @param {GlobalVar} variable - the variable to add.
  */
-FrameData.prototype.addVariableToLocalWorkspace = function(variable) {
+FrameData.prototype.addVariableToLocalWorkspace = function (variable) {
     var isExisting = this.localWorkspaceVars.byId[variable.id()];
     if (!isExisting && !variable.isFactor()) {
         this.localWorkspaceVars.push(variable);
@@ -106,9 +106,9 @@ FrameData.prototype.addVariableToLocalWorkspace = function(variable) {
     }
 };
 
-FrameData.prototype.setVarBackRef = function(variable) {
+FrameData.prototype.setVarBackRef = function (variable) {
     var self = this;
-    variable.addBackRef(this, this, false, false, 'local workspace', function(globalVar) {
+    variable.addBackRef(this, this, false, false, 'local workspace', function (globalVar) {
         self.deleteChildEntity(globalVar);
     });
 };
@@ -117,15 +117,15 @@ FrameData.prototype.setVarBackRef = function(variable) {
  * add a new frame element to this frame.
  * @param {FrameElement} elem - the new element
  */
-FrameData.prototype.addNewSubElement = function(elem) {
+FrameData.prototype.addNewSubElement = function (elem) {
     this.elements.push(elem);
     this.expData.entities.insertIfNotExist(elem);
     elem.parent = this;
 };
 
-FrameData.prototype.selectTrialType = function(selectionSpec) {
+FrameData.prototype.selectTrialType = function (selectionSpec) {
     var elements = this.elements();
-    for (var i=0; i<elements.length; i++){
+    for (var i = 0; i < elements.length; i++) {
         if (typeof elements[i].selectTrialType === 'function') {
             elements[i].selectTrialType(selectionSpec);
         }
@@ -137,7 +137,7 @@ FrameData.prototype.selectTrialType = function(selectionSpec) {
  * @param id
  * @returns {*}
  */
-FrameData.prototype.getElementById = function(id) {
+FrameData.prototype.getElementById = function (id) {
     return this.elements.byId[id];
 };
 
@@ -145,11 +145,11 @@ FrameData.prototype.getElementById = function(id) {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-FrameData.prototype.getAllModifiers = function(modifiersArr) {
+FrameData.prototype.getAllModifiers = function (modifiersArr) {
     modifiersArr.push(this.modifier());
-    jQuery.each( this.elements(), function( index, elem ) {
+    jQuery.each(this.elements(), function (index, elem) {
         elem.getAllModifiers(modifiersArr);
-    } );
+    });
 };
 
 /**
@@ -159,11 +159,11 @@ FrameData.prototype.getAllModifiers = function(modifiersArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-FrameData.prototype.setPointers = function(entitiesArr) {
+FrameData.prototype.setPointers = function (entitiesArr) {
     var self = this;
 
     // convert ids to actual pointers:
-    this.elements(jQuery.map( this.elements(), function( id ) {
+    this.elements(jQuery.map(this.elements(), function (id) {
         var elem = entitiesArr.byId[id];
         if (elem) {
             elem.parent = self;
@@ -172,35 +172,35 @@ FrameData.prototype.setPointers = function(entitiesArr) {
         else {
             return null;
         }
-    } ));
+    }));
 
     // convert ids to actual pointers:
-    this.localWorkspaceVars(jQuery.map( this.localWorkspaceVars(), function( id ) {
+    this.localWorkspaceVars(jQuery.map(this.localWorkspaceVars(), function (id) {
         var localVar = entitiesArr.byId[id];
         if (localVar) {
             self.setVarBackRef(localVar);
         }
         return localVar;
-    } ));
+    }));
 
-    jQuery.each( this.events(), function( idx, event ) {
+    jQuery.each(this.events(), function (idx, event) {
         event.setPointers(entitiesArr);
-    } );
+    });
 };
 
 /**
  * this function is automatically called after all setPointers have been executed.
  */
-FrameData.prototype.onFinishedLoading = function() {
+FrameData.prototype.onFinishedLoading = function () {
     this.reAddLocalWorkspace();
 };
 
-FrameData.prototype.reAddLocalWorkspace = function() {
-    var self= this;
-    var tmpEntities = ko.observableArray([]).extend({sortById: null});
+FrameData.prototype.reAddLocalWorkspace = function () {
+    var self = this;
+    var tmpEntities = ko.observableArray([]).extend({ sortById: null });
     this.reAddEntities(tmpEntities);
     jQuery.each(tmpEntities(), function (idx, entity) {
-        if ( entity instanceof GlobalVar) {
+        if (entity instanceof GlobalVar) {
             if (!self.localWorkspaceVars.byId.hasOwnProperty(entity.id())) {
                 self.localWorkspaceVars.push(entity);
             }
@@ -213,9 +213,9 @@ FrameData.prototype.reAddLocalWorkspace = function() {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-FrameData.prototype.reAddEntities = function(entitiesArr) {
+FrameData.prototype.reAddEntities = function (entitiesArr) {
     // add the direct child nodes:
-    jQuery.each( this.elements(), function( index, elem ) {
+    jQuery.each(this.elements(), function (index, elem) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
             entitiesArr.push(elem);
@@ -225,23 +225,23 @@ FrameData.prototype.reAddEntities = function(entitiesArr) {
         if (elem.reAddEntities) {
             elem.reAddEntities(entitiesArr);
         }
-    } );
+    });
 
     // add the direct child nodes:
-    jQuery.each( this.events(), function( index, evt ) {
+    jQuery.each(this.events(), function (index, evt) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (evt.reAddEntities) {
             evt.reAddEntities(entitiesArr);
         }
-    } );
+    });
 
     // add the direct child nodes:
-    jQuery.each( this.localWorkspaceVars(), function( index, elem ) {
+    jQuery.each(this.localWorkspaceVars(), function (index, elem) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
             entitiesArr.push(elem);
         }
-    } );
+    });
 
 };
 
@@ -250,7 +250,7 @@ FrameData.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {FrameData}
  */
-FrameData.prototype.fromJS = function(data) {
+FrameData.prototype.fromJS = function (data) {
     var self = this;
 
     this.id(data.id);
@@ -277,9 +277,9 @@ FrameData.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("syncFrame")) {
         this.syncFrame(data.syncFrame);
     }
-    this.events(jQuery.map( data.events, function( eventData ) {
+    this.events(jQuery.map(data.events, function (eventData) {
         return (new ExpEvent(self)).fromJS(eventData);
-    } ));
+    }));
     if (data.hasOwnProperty("nrOfTrackMousemove")) {
         this.nrOfTrackMousemove(data.nrOfTrackMousemove);
     }
@@ -292,11 +292,11 @@ FrameData.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-FrameData.prototype.toJS = function() {
+FrameData.prototype.toJS = function () {
     return {
         id: this.id(),
         type: this.type,
-        name:  this.name(),
+        name: this.name(),
         offset: this.offset(),
         offsetEnabled: this.offsetEnabled(),
         bgColor: this.bgColor(),
@@ -308,12 +308,12 @@ FrameData.prototype.toJS = function() {
         syncFrame: this.syncFrame(),
         emotionFeedbackEnabled: this.emotionFeedbackEnabled(),
         emotionOffset: this.emotionOffset(),
-        events: jQuery.map( this.events(), function( event ) {
+        events: jQuery.map(this.events(), function (event) {
             return event.toJS();
-        } ),
-        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } ),
-        localWorkspaceVars: jQuery.map( this.localWorkspaceVars(), function( variable ) { return variable.id(); } ),
-        nrOfTrackMousemove:this.nrOfTrackMousemove()
+        }),
+        elements: jQuery.map(this.elements(), function (elem) { return elem.id(); }),
+        localWorkspaceVars: jQuery.map(this.localWorkspaceVars(), function (variable) { return variable.id(); }),
+        nrOfTrackMousemove: this.nrOfTrackMousemove()
 
     };
 };

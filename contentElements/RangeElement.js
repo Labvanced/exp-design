@@ -1,18 +1,18 @@
 
-var RangeElement= function(expData) {
+var RangeElement = function (expData) {
     this.expData = expData;
     this.parent = null;
 
     //serialized
-    this.type= "RangeElement";
+    this.type = "RangeElement";
     this.questionText = ko.observable(null); // EditableTextElement
-    this.minChoice= ko.observable(1);
-    this.maxChoice= ko.observable(5);
+    this.minChoice = ko.observable(1);
+    this.maxChoice = ko.observable(5);
     this.startLabel = ko.observable(null); // EditableTextElement
     this.endLabel = ko.observable(null); // EditableTextElement
     this.showNumber = ko.observable(true);
     this.variable = ko.observable();
-    this.enableTitle= ko.observable(true);
+    this.enableTitle = ko.observable(true);
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -21,13 +21,13 @@ var RangeElement= function(expData) {
 
 RangeElement.prototype.label = "Range";
 RangeElement.prototype.iconPath = "/resources/icons/tools/tool_slider.svg";
-RangeElement.prototype.dataType =      [ ];
-RangeElement.prototype.modifiableProp = [ ];
+RangeElement.prototype.dataType = [];
+RangeElement.prototype.modifiableProp = [];
 RangeElement.prototype.initWidth = 500;
 RangeElement.prototype.initHeight = 200;
 RangeElement.prototype.numVarNamesRequired = 1;
 
-RangeElement.prototype.init = function(variableName) {
+RangeElement.prototype.init = function (variableName) {
 
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
@@ -55,8 +55,8 @@ RangeElement.prototype.init = function(variableName) {
 
 
 
-RangeElement.prototype.setVariableBackRef = function() {
-    if (this.variable() instanceof GlobalVar){
+RangeElement.prototype.setVariableBackRef = function () {
+    if (this.variable() instanceof GlobalVar) {
         this.variable().addBackRef(this, this.parent, true, true, 'Range');
     }
 };
@@ -65,13 +65,13 @@ RangeElement.prototype.setVariableBackRef = function() {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-RangeElement.prototype.getAllModifiers = function(modifiersArr) {
+RangeElement.prototype.getAllModifiers = function (modifiersArr) {
     this.questionText().getAllModifiers(modifiersArr);
     this.startLabel().getAllModifiers(modifiersArr);
     this.endLabel().getAllModifiers(modifiersArr);
 };
 
-RangeElement.prototype.setPointers = function(entitiesArr) {
+RangeElement.prototype.setPointers = function (entitiesArr) {
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
         this.setVariableBackRef();
@@ -81,7 +81,7 @@ RangeElement.prototype.setPointers = function(entitiesArr) {
     this.endLabel().setPointers(entitiesArr);
 };
 
-RangeElement.prototype.reAddEntities = function(entitiesArr) {
+RangeElement.prototype.reAddEntities = function (entitiesArr) {
     if (this.variable() instanceof GlobalVar) {
         if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
             entitiesArr.push(this.variable());
@@ -93,7 +93,7 @@ RangeElement.prototype.reAddEntities = function(entitiesArr) {
     this.endLabel().reAddEntities(entitiesArr);
 };
 
-RangeElement.prototype.selectTrialType = function(selectionSpec) {
+RangeElement.prototype.selectTrialType = function (selectionSpec) {
     this.questionText().selectTrialType(selectionSpec);
     this.startLabel().selectTrialType(selectionSpec);
     this.endLabel().selectTrialType(selectionSpec);
@@ -110,7 +110,7 @@ RangeElement.prototype.dispose = function () {
 
 };
 
-RangeElement.prototype.getTextRefs = function(textArr, label){
+RangeElement.prototype.getTextRefs = function (textArr, label) {
     var questlabel = label + '.Question';
     this.questionText().getTextRefs(textArr, questlabel);
     var startlabel = label + '.Start';
@@ -120,7 +120,7 @@ RangeElement.prototype.getTextRefs = function(textArr, label){
     return textArr;
 };
 
-RangeElement.prototype.toJS = function() {
+RangeElement.prototype.toJS = function () {
     var variableId = null;
     if (this.variable()) {
         variableId = this.variable().id();
@@ -135,13 +135,13 @@ RangeElement.prototype.toJS = function() {
         endLabel: this.endLabel().toJS(),
         showNumber: this.showNumber(),
         variable: variableId,
-        enableTitle:this.enableTitle()
+        enableTitle: this.enableTitle()
     };
 };
 
-RangeElement.prototype.fromJS = function(data) {
-    this.type=data.type;
-    if(data.questionText.hasOwnProperty('rawText')) {
+RangeElement.prototype.fromJS = function (data) {
+    this.type = data.type;
+    if (data.questionText.hasOwnProperty('rawText')) {
         this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);
         this.startLabel(new EditableTextElement(this.expData, this, ''));
@@ -149,7 +149,7 @@ RangeElement.prototype.fromJS = function(data) {
         this.endLabel(new EditableTextElement(this.expData, this, ''));
         this.endLabel().fromJS(data.endLabel);
     }
-    else{
+    else {
         this.questionText(new EditableTextElement(this.expData, this, data.questionText));
         this.startLabel(new EditableTextElement(this.expData, this, data.startLabel));
         this.endLabel(new EditableTextElement(this.expData, this, data.endLabel));
@@ -160,7 +160,7 @@ RangeElement.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("showNumber")) {
         this.showNumber(data.showNumber);
     }
-    if(data.hasOwnProperty('enableTitle')){
+    if (data.hasOwnProperty('enableTitle')) {
         this.enableTitle(data.enableTitle);
     }
 };
@@ -169,9 +169,9 @@ RangeElement.prototype.fromJS = function(data) {
 function createRangeComponents() {
     ko.components.register('range-editview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function (dataModel, componentInfo) {
 
-                var viewModel = function(dataModel){
+                var viewModel = function (dataModel) {
 
                     var self = this;
 
@@ -182,11 +182,11 @@ function createRangeComponents() {
                     this.startLabel = dataModel.startLabel;
                     this.endLabel = dataModel.endLabel;
 
-                    this.relinkCallback = function() {
+                    this.relinkCallback = function () {
                         var frameData = self.dataModel.parent.parent;
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
-                            if (self.dataModel.variable()){
+                            if (self.dataModel.variable()) {
                                 self.dataModel.variable().removeBackRef(self.dataModel);
                             }
                             self.dataModel.variable(newVariable);
@@ -194,25 +194,25 @@ function createRangeComponents() {
                         }, frameData);
                         variableDialog.show();
                     };
-                    
+
                 };
 
                 return new viewModel(dataModel)
             }
         },
-        template: {element: 'range-editview-template'}
+        template: { element: 'range-editview-template' }
     });
 
-    ko.components.register('range-preview',{
+    ko.components.register('range-preview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function (dataModel, componentInfo) {
 
-                var viewModel = function(dataModel){
+                var viewModel = function (dataModel) {
 
                     var self = this;
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
-                    this.sliderValue =  ko.observable(this.dataModel.variable().startValue().value());
+                    this.sliderValue = ko.observable(this.dataModel.variable().startValue().value());
 
                     this.minChoice = dataModel.minChoice;
                     this.maxChoice = dataModel.maxChoice;
@@ -224,12 +224,12 @@ function createRangeComponents() {
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'range-preview-template'}
+        template: { element: 'range-preview-template' }
     });
 
-    ko.components.register('range-playerview',{
+    ko.components.register('range-playerview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function (dataModel, componentInfo) {
 
                 var viewModel = function (dataModel) {
                     this.dataModel = dataModel;
@@ -243,6 +243,6 @@ function createRangeComponents() {
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'range-playerview-template'}
+        template: { element: 'range-playerview-template' }
     });
 };

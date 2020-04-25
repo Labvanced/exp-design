@@ -14,7 +14,7 @@ var ModifierTrialType = function (expData, objToModify) {
     this.propIsModified = {};
 
     var modifiableProp = objToModify.modifiableProp;
-    for (var i=0; i<modifiableProp.length; i++) {
+    for (var i = 0; i < modifiableProp.length; i++) {
         var propName = modifiableProp[i];
         this.propIsModified[propName] = ko.observable(false);
     }
@@ -27,7 +27,7 @@ var ModifierTrialType = function (expData, objToModify) {
  * @param {string} propName - the name of the property
  * @param {number | string} val - the value of the property
  */
-ModifierTrialType.prototype.setModification = function(propName, val) {
+ModifierTrialType.prototype.setModification = function (propName, val) {
     if (!this.propIsModified[propName]()) {
         this.modifiedProp[propName] = ko.observable(val);
         this.propIsModified[propName](true);
@@ -42,7 +42,7 @@ ModifierTrialType.prototype.setModification = function(propName, val) {
  *
  * @param {string} propName - the name of the property
  */
-ModifierTrialType.prototype.removeModification = function(propName) {
+ModifierTrialType.prototype.removeModification = function (propName) {
     this.propIsModified[propName](false);
     delete this.modifiedProp[propName];
 };
@@ -52,7 +52,7 @@ ModifierTrialType.prototype.removeModification = function(propName) {
  *
  * @returns {ModifierTrialType}
  */
-ModifierTrialType.prototype.deepCopy = function() {
+ModifierTrialType.prototype.deepCopy = function () {
     var newObj = new ModifierTrialType(this.expData, this.objToModify);
 
     // deep copy of observables:
@@ -73,9 +73,9 @@ ModifierTrialType.prototype.deepCopy = function() {
  * @param {object} data - the json description of the states.
  * @returns {ModifierTrialType}
  */
-ModifierTrialType.prototype.fromJS = function(data) {
+ModifierTrialType.prototype.fromJS = function (data) {
     var modifiedProp = {};
-    for (var prop in data.modifiedProp){
+    for (var prop in data.modifiedProp) {
         if (this.propIsModified.hasOwnProperty(prop)) {
             modifiedProp[prop] = ko.observable(data.modifiedProp[prop]);
             this.propIsModified[prop](true);
@@ -92,10 +92,10 @@ ModifierTrialType.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ModifierTrialType.prototype.toJS = function() {
+ModifierTrialType.prototype.toJS = function () {
     var modifiedPropData = {};
     var modifiedPropKo = this.modifiedProp;
-    for (var prop in modifiedPropKo){
+    for (var prop in modifiedPropKo) {
         modifiedPropData[prop] = modifiedPropKo[prop]();
     }
     return {

@@ -1,10 +1,10 @@
 
-var NaviElement = function(expData) {
+var NaviElement = function (expData) {
     this.expData = expData;
     this.parent = null;
 
     //serialized
-    this.type= "NaviElement";
+    this.type = "NaviElement";
     this.id = ko.observable(guid());
     this.bgColorDefault = ko.observable('#99cc66');
     this.bgColorHover = ko.observable('#99de50');
@@ -26,21 +26,21 @@ var NaviElement = function(expData) {
 NaviElement.prototype.label = "Navigation";
 NaviElement.prototype.iconPath = "/resources/icons/tools/tool_navigation.svg";
 NaviElement.prototype.modifiableProp = [];
-NaviElement.prototype.dataType =      [];
+NaviElement.prototype.dataType = [];
 
 NaviElement.prototype.initWidth = 400;
 NaviElement.prototype.initHeight = 50;
 NaviElement.prototype.numVarNamesRequired = 0;
 
-NaviElement.prototype.init = function() {
+NaviElement.prototype.init = function () {
 
     var button1 = new ButtonEntry(this);
     var button2 = new ButtonEntry(this);
-     button1.init();
-     button1.buttonText().rawText('<p style="text-align: center"><span style="font-size:16px;">Back</span></p>');
-     button2.init();
-     button2.buttonText().rawText('<p style="text-align: center"><span style="font-size:16px;">Next</span></p>');
-    this.buttonEntries([button1,button2]);
+    button1.init();
+    button1.buttonText().rawText('<p style="text-align: center"><span style="font-size:16px;">Back</span></p>');
+    button2.init();
+    button2.buttonText().rawText('<p style="text-align: center"><span style="font-size:16px;">Next</span></p>');
+    this.buttonEntries([button1, button2]);
 
     var event = new ExpEvent(this.parent.parent);
     event.trigger(new TriggerButtonClick(event));
@@ -64,7 +64,7 @@ NaviElement.prototype.init = function() {
     this.parent.parent.events.push(event2);
 };
 
-NaviElement.prototype.addButton = function() {
+NaviElement.prototype.addButton = function () {
     var button = new ButtonEntry(this);
     button.init();
 
@@ -72,38 +72,38 @@ NaviElement.prototype.addButton = function() {
 };
 
 
-NaviElement.prototype.getTextRefs = function(textArr, label){
-    jQuery.each( this.buttonEntries(), function( index, elem ) {
+NaviElement.prototype.getTextRefs = function (textArr, label) {
+    jQuery.each(this.buttonEntries(), function (index, elem) {
         var ind = index + 1;
         elem.getTextRefs(textArr, label + '.Entry' + ind);
-    } );
+    });
     return textArr;
 };
 
 
 
-NaviElement.prototype.deleteButton = function() {
+NaviElement.prototype.deleteButton = function () {
     var self = this;
-    this.buttonEntries.splice(0,1);
+    this.buttonEntries.splice(0, 1);
 
-    if (this.buttonEntries().length = 1){
+    if (this.buttonEntries().length = 1) {
         var events = this.parent.parent.events();
-        events.forEach(function(elem,index){
-            if (elem.name()=='Go Backward'){
+        events.forEach(function (elem, index) {
+            if (elem.name() == 'Go Backward') {
                 self.parent.parent.deleteChildEntity(elem)
             }
         });
-        events.forEach(function(elem,index){
-            if (elem.name()=='Go Forward'){
-                elem.trigger().buttonIdx( elem.trigger().buttonIdx()-1);
+        events.forEach(function (elem, index) {
+            if (elem.name() == 'Go Forward') {
+                elem.trigger().buttonIdx(elem.trigger().buttonIdx() - 1);
             }
         });
 
     }
 };
 
-NaviElement.prototype.enableHighlight = function(elem) {
-    var self= this;
+NaviElement.prototype.enableHighlight = function (elem) {
+    var self = this;
     $(elem).css({
         'backgroundColor': self.bgColorHover(),
         'cursor': 'pointer'
@@ -112,8 +112,8 @@ NaviElement.prototype.enableHighlight = function(elem) {
 };
 
 
-NaviElement.prototype.disableHighlight = function(elem) {
-    var self= this;
+NaviElement.prototype.disableHighlight = function (elem) {
+    var self = this;
     $(elem).css({
         'backgroundColor': self.bgColorDefault(),
         'cursor': 'default'
@@ -121,7 +121,7 @@ NaviElement.prototype.disableHighlight = function(elem) {
 };
 
 
-NaviElement.prototype.initColorPicker = function() {
+NaviElement.prototype.initColorPicker = function () {
 
     var self = this;
     $("#bgColorPickerDefault").spectrum({
@@ -137,7 +137,7 @@ NaviElement.prototype.initColorPicker = function() {
     if (this.bg1Subsciption) {
         this.bg1Subsciption.dispose();
     }
-    this.bg1Subsciption = this.bgColorDefault.subscribe(function(val){
+    this.bg1Subsciption = this.bgColorDefault.subscribe(function (val) {
         $("#bgColorPickerDefault").spectrum("set", val);
     });
 
@@ -156,7 +156,7 @@ NaviElement.prototype.initColorPicker = function() {
     if (this.bg2Subsciption) {
         this.bg2Subsciption.dispose();
     }
-    this.bg2Subsciption = this.bgColorHover.subscribe(function(val){
+    this.bg2Subsciption = this.bgColorHover.subscribe(function (val) {
         $("#bgColorPickerHover").spectrum("set", val);
     });
 
@@ -170,40 +170,40 @@ NaviElement.prototype.initColorPicker = function() {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-NaviElement.prototype.getAllModifiers = function(modifiersArr) {
+NaviElement.prototype.getAllModifiers = function (modifiersArr) {
     modifiersArr.push(this.modifier());
 };
 
-NaviElement.prototype.setPointers = function(entitiesArr) {
+NaviElement.prototype.setPointers = function (entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 };
 
-NaviElement.prototype.dispose = function() {
+NaviElement.prototype.dispose = function () {
     var self = this;
     var events = this.parent.parent.events();
-    events.forEach(function(elem,index){
-        if (elem.name()=='Go Backward' || elem.name()=='Go Forward'){
+    events.forEach(function (elem, index) {
+        if (elem.name() == 'Go Backward' || elem.name() == 'Go Forward') {
             self.parent.parent.deleteChildEntity(elem)
         }
     });
-    events.forEach(function(elem,index){
-        if (elem.name()=='Go Backward' || elem.name()=='Go Forward'){
+    events.forEach(function (elem, index) {
+        if (elem.name() == 'Go Backward' || elem.name() == 'Go Forward') {
             self.parent.parent.deleteChildEntity(elem)
         }
     });
 };
 
-NaviElement.prototype.reAddEntities = function(entitiesArr) {
+NaviElement.prototype.reAddEntities = function (entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 };
 
-NaviElement.prototype.selectTrialType = function(selectionSpec) {
+NaviElement.prototype.selectTrialType = function (selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
-NaviElement.prototype.toJS = function() {
+NaviElement.prototype.toJS = function () {
     var buttonEntries = [];
-    for (var i=0; i<this.buttonEntries().length; i++) {
+    for (var i = 0; i < this.buttonEntries().length; i++) {
         buttonEntries.push(this.buttonEntries()[i].toJS());
     }
     return {
@@ -211,13 +211,13 @@ NaviElement.prototype.toJS = function() {
         id: this.id(),
         buttonEntries: buttonEntries,
         bgColorDefault: this.bgColorDefault(),
-        bgColorHover:this.bgColorHover(),
+        bgColorHover: this.bgColorHover(),
         modifier: this.modifier().toJS()
     };
 };
 
-NaviElement.prototype.fromJS = function(data) {
-    this.type=data.type;
+NaviElement.prototype.fromJS = function (data) {
+    this.type = data.type;
     this.id(data.id);
     var buttonEntries = [];
     if (data.hasOwnProperty('buttonText1')) {
@@ -237,7 +237,7 @@ NaviElement.prototype.fromJS = function(data) {
         buttonEntries.push(entry2);
     }
     else {
-        for (var i=0; i<data.buttonEntries.length; i++) {
+        for (var i = 0; i < data.buttonEntries.length; i++) {
             var buttonEntry = new ButtonEntry(this);
             buttonEntry.init();
             buttonEntry.fromJS(data.buttonEntries[i]);
@@ -269,20 +269,20 @@ function createNaviElementComponents() {
                     this.dataModel.initColorPicker();
                 };
 
-                viewModel.prototype.addButton = function() {
+                viewModel.prototype.addButton = function () {
                     this.dataModel.addButton();
                 };
-                viewModel.prototype.deleteButton = function() {
+                viewModel.prototype.deleteButton = function () {
                     this.dataModel.deleteButton();
                 };
 
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'navigation-editview-template'}
+        template: { element: 'navigation-editview-template' }
     });
 
-    ko.components.register('navigation-preview',{
+    ko.components.register('navigation-preview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
 
@@ -293,11 +293,11 @@ function createNaviElementComponents() {
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'navigation-preview-template'}
+        template: { element: 'navigation-preview-template' }
     });
 
 
-    ko.components.register('navigation-playerview',{
+    ko.components.register('navigation-playerview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
 
@@ -308,7 +308,7 @@ function createNaviElementComponents() {
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'navigation-playerview-template'}
+        template: { element: 'navigation-playerview-template' }
     });
 }
 

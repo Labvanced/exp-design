@@ -1,7 +1,7 @@
 
-var ImageElement= function(expData) {
+var ImageElement = function (expData) {
 
-    var self = this; 
+    var self = this;
     this.expData = expData;
     this.parent = null;
 
@@ -13,16 +13,16 @@ var ImageElement= function(expData) {
 
 
 
-    this.stimulusInformation  = ko.observable(null);
-    
-    this.shortName = ko.computed(function() {
-        if (self.file_orig_name()){
+    this.stimulusInformation = ko.observable(null);
+
+    this.shortName = ko.computed(function () {
+        if (self.file_orig_name()) {
             return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
         }
         else return ''
 
     });
-    
+
     this.stretchImageToFitBoundingBox = ko.observable(false);
 
     // modifier:
@@ -31,7 +31,7 @@ var ImageElement= function(expData) {
     // not serialized
     this.file = ko.observable(null);
 
-    this.imgSource = ko.computed( function() {
+    this.imgSource = ko.computed(function () {
 
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
             var file_route = "/files/";
@@ -58,8 +58,8 @@ var ImageElement= function(expData) {
 
 ImageElement.prototype.label = "Image";
 ImageElement.prototype.iconPath = "/resources/icons/tools/tool_image.svg";
-ImageElement.prototype.dataType =      [ "string", "string", "file", "boolean", "string"];
-ImageElement.prototype.modifiableProp = ["file_id","file_orig_name","file", "stretchImageToFitBoundingBox","stimulusInformation" ];
+ImageElement.prototype.dataType = ["string", "string", "file", "boolean", "string"];
+ImageElement.prototype.modifiableProp = ["file_id", "file_orig_name", "file", "stretchImageToFitBoundingBox", "stimulusInformation"];
 ImageElement.prototype.initWidth = 300;
 ImageElement.prototype.initHeight = 200;
 ImageElement.prototype.numVarNamesRequired = 0;
@@ -68,32 +68,32 @@ ImageElement.prototype.numVarNamesRequired = 0;
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-ImageElement.prototype.getAllModifiers = function(modifiersArr) {
+ImageElement.prototype.getAllModifiers = function (modifiersArr) {
     modifiersArr.push(this.modifier());
 };
 
-ImageElement.prototype.setPointers = function(entitiesArr) {
+ImageElement.prototype.setPointers = function (entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 };
 
-ImageElement.prototype.reAddEntities = function(entitiesArr) {
+ImageElement.prototype.reAddEntities = function (entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 };
 
-ImageElement.prototype.selectTrialType = function(selectionSpec) {
+ImageElement.prototype.selectTrialType = function (selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
-ImageElement.prototype.dispose = function() {
+ImageElement.prototype.dispose = function () {
 
 };
 
 
-ImageElement.prototype.fromJS = function(data) {
+ImageElement.prototype.fromJS = function (data) {
     var self = this;
     this.type = data.type;
     this.dataType = data.dataType;
-    if (data.hasOwnProperty('stimulusInformation')){
+    if (data.hasOwnProperty('stimulusInformation')) {
         this.stimulusInformation(data.stimulusInformation);
     }
     this.file_id(data.file_id);
@@ -106,7 +106,7 @@ ImageElement.prototype.fromJS = function(data) {
     return this;
 };
 
-ImageElement.prototype.toJS = function() {
+ImageElement.prototype.toJS = function () {
 
     return {
         type: this.type,

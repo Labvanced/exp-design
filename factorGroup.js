@@ -7,7 +7,7 @@
  * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
  * @constructor
  */
-var FactorGroup= function(expData,expTrialLoop) {
+var FactorGroup = function (expData, expTrialLoop) {
     var self = this;
 
     this.expData = expData;
@@ -19,51 +19,51 @@ var FactorGroup= function(expData,expTrialLoop) {
     this.conditions = ko.observableArray([]); // multidimensional array
 
     // not serialized
-   // this.editName =  ko.observable(false);
+    // this.editName =  ko.observable(false);
 
 
-    this.trialOffset = ko.computed(function() {
-      var idx =  self.expTrialLoop.factorGroups().indexOf(self);
-      if (idx>0){
-          var l = 0;
-          for (var i = 0; i<idx; i++){
-              var facGroup = self.expTrialLoop.factorGroups()[i];
-              for (var k = 0; k<facGroup.conditionsLinear().length; k++){
-                  l = l+ facGroup.conditionsLinear()[k].trials().length;
-              }
-          }
-          return l
-      }
-      else{
-          return 0
-      }
+    this.trialOffset = ko.computed(function () {
+        var idx = self.expTrialLoop.factorGroups().indexOf(self);
+        if (idx > 0) {
+            var l = 0;
+            for (var i = 0; i < idx; i++) {
+                var facGroup = self.expTrialLoop.factorGroups()[i];
+                for (var k = 0; k < facGroup.conditionsLinear().length; k++) {
+                    l = l + facGroup.conditionsLinear()[k].trials().length;
+                }
+            }
+            return l
+        }
+        else {
+            return 0
+        }
     }, this);
 
 
-    this.hasOnlyOneFixedFactor = ko.computed(function() {
+    this.hasOnlyOneFixedFactor = ko.computed(function () {
         var nrFixed = 0;
-        for (var i = 0; i<self.factors().length; i++){
-            if (self.factors()[i] instanceof Factor){
-                if (self.factors()[i].factorType()=="fixed"){
+        for (var i = 0; i < self.factors().length; i++) {
+            if (self.factors()[i] instanceof Factor) {
+                if (self.factors()[i].factorType() == "fixed") {
                     nrFixed++;
                 }
             }
 
         }
 
-        if (nrFixed==1){
+        if (nrFixed == 1) {
             return true
         }
-        else{
+        else {
             return false
         }
     }, this);
 
-    this.hasRandomFactor = ko.computed(function() {
+    this.hasRandomFactor = ko.computed(function () {
         var out = false;
-        for (var i = 0; i<self.factors().length; i++){
-            if (self.factors()[i] instanceof Factor){
-                if (self.factors()[i].factorType()=="random"){
+        for (var i = 0; i < self.factors().length; i++) {
+            if (self.factors()[i] instanceof Factor) {
+                if (self.factors()[i].factorType() == "random") {
                     out = true;
                 }
             }
@@ -75,12 +75,12 @@ var FactorGroup= function(expData,expTrialLoop) {
 
 
 
-    this.conditionsLinear = ko.computed(function() {
+    this.conditionsLinear = ko.computed(function () {
         var linearArray = [];
         var conditions = self.conditions();
         var trialStartIdx = 1;
 
-        function deepDive(arr, numNewLevels){
+        function deepDive(arr, numNewLevels) {
 
             if (arr[0].constructor === Array) {
                 // recursive call:
@@ -94,14 +94,14 @@ var FactorGroup= function(expData,expTrialLoop) {
                     var existingCond = arr[t];
                     existingCond.trialStartIdx(trialStartIdx);
                     trialStartIdx += existingCond.trials().length;
-                    existingCond.conditionIdx(linearArray.length+1);
+                    existingCond.conditionIdx(linearArray.length + 1);
                     linearArray.push(existingCond);
                 }
             }
         }
 
         // one more dimension of interacting trialTypes with all combinations:
-        if (conditions.length>0){
+        if (conditions.length > 0) {
             deepDive(conditions, conditions.length);
         }
 
@@ -113,7 +113,7 @@ var FactorGroup= function(expData,expTrialLoop) {
     this.updateCondGroups();
 
 
-    this.conditionsLinear.subscribe(function(newVal) {
+    this.conditionsLinear.subscribe(function (newVal) {
         self.updateCondGroups();
     });
 
@@ -122,7 +122,7 @@ var FactorGroup= function(expData,expTrialLoop) {
 
 
 
-FactorGroup.prototype.getFixedFactorConditions = function() {
+FactorGroup.prototype.getFixedFactorConditions = function () {
 
     var conditions = this.conditionsLinear();
     var factors = this.factors();
@@ -130,7 +130,7 @@ FactorGroup.prototype.getFixedFactorConditions = function() {
     // get factor type values (random or fixed)
     var type = [];
     for (var i = 0; i < factors.length; i++) {
-        if (factors[i].factorType){
+        if (factors[i].factorType) {
             type.push(factors[i].factorType());
         }
 
@@ -145,10 +145,10 @@ FactorGroup.prototype.getFixedFactorConditions = function() {
         var levels = conditions[i].factorLevels();
         for (var k = 0; k < levels.length; k++) {
             if (type[k] == "fixed") {
-                if (levels[k]){
+                if (levels[k]) {
                     factorLevels[i].push(levels[k].name());
                 }
-                else{
+                else {
                     var catchi = 1;
                 }
 
@@ -185,14 +185,14 @@ FactorGroup.prototype.getFixedFactorConditions = function() {
 
 
 
-FactorGroup.prototype.updateCondGroups = function() {
+FactorGroup.prototype.updateCondGroups = function () {
     var condGroups = this.getFixedFactorConditions();
     this.conditionsLinear().forEach(function (condition) {
         condition.setCondGroup(condGroups);
     })
 };
 
-FactorGroup.prototype.getFixedFactorLevels = function() {
+FactorGroup.prototype.getFixedFactorLevels = function () {
     var conditions = this.conditionsLinear();
     var factors = this.factors();
     var factorNames = [];
@@ -215,10 +215,10 @@ FactorGroup.prototype.getFixedFactorLevels = function() {
         var levels = conditions[i].factorLevels();
         for (var k = 0; k < levels.length; k++) {
             if (type[k] == "fixed") {
-                if (levels[k]){
+                if (levels[k]) {
                     factorLevels[i].push(levels[k].name());
                 }
-                else{
+                else {
                     var catchi = 1;
                 }
 
@@ -226,7 +226,7 @@ FactorGroup.prototype.getFixedFactorLevels = function() {
         }
     }
 
-    return [factorLevels,factorNames];
+    return [factorLevels, factorNames];
 };
 
 
@@ -238,16 +238,16 @@ FactorGroup.prototype.getFixedFactorLevels = function() {
  * adds a new factor to the tree.
  * @param {Factor} factor - the new factor
  */
-FactorGroup.prototype.addFactorToCondition = function(factor) {
+FactorGroup.prototype.addFactorToCondition = function (factor) {
 
     var factors = this.factors();
     var levels = factor.globalVar().levels();
     var conditionArray = this.conditions();
 
     // for first factor only
-    if (factors.length> 1) {
+    if (factors.length > 1) {
         var self = this;
-        function deepClone(arr){
+        function deepClone(arr) {
 
             if (arr[0].constructor === Array) {
                 // recursive call:
@@ -263,7 +263,7 @@ FactorGroup.prototype.addFactorToCondition = function(factor) {
                     // add all levels of this new interacting factor:
                     var nrLevels = levels.length;
                     var conditions = [];
-                    var tmpObj=existingCond.toJS();
+                    var tmpObj = existingCond.toJS();
 
                     for (var l = 0; l < nrLevels; l++) {
                         // deepCopy
@@ -282,12 +282,12 @@ FactorGroup.prototype.addFactorToCondition = function(factor) {
         // one more dimension of interacting trialTypes with all combinations:
         deepClone(conditionArray, levels.length);
     }
-    else{
+    else {
         for (var l = 0; l < levels.length; l++) {
 
             var condi = new Condition(this);
             condi.initNewInstance();
-           // condi.factorLevelNames.push(condi.levels()[l].name());
+            // condi.factorLevelNames.push(condi.levels()[l].name());
             condi.factorLevels.push(levels[l]);
             conditionArray.push(condi);
         }
@@ -299,11 +299,11 @@ FactorGroup.prototype.addFactorToCondition = function(factor) {
 /**
  * updates the multi dimensional array with all new levels.
  */
-FactorGroup.prototype.addLevelToCondition = function() {
+FactorGroup.prototype.addLevelToCondition = function () {
 
     var self = this;
 
-    function deepCopyOfSubArrays(arrOrCondition, factorToModify, newLevel){
+    function deepCopyOfSubArrays(arrOrCondition, factorToModify, newLevel) {
 
         var clonedArrOrCondition = null;
 
@@ -335,7 +335,7 @@ FactorGroup.prototype.addLevelToCondition = function() {
     function addLevels(subarr, factorVars) {
 
         // go into all existing levels of this factor (factorVars[0]) and make sure that all sub-factors (factorVars[1...]) have their levels:
-        if (factorVars.length>1) {
+        if (factorVars.length > 1) {
             for (var i = 0; i < subarr.length; i++) {
                 addLevels(subarr[i], factorVars.slice(1)); // recursively add levels within this level
             }
@@ -343,8 +343,8 @@ FactorGroup.prototype.addLevelToCondition = function() {
 
         // make sure that this factor (factorVars[0]) has all it's levels:
         var desired_len = factorVars[0].globalVar().levels().length;
-        for (var i = subarr.length; i<desired_len; i++) {
-            subarr[i] = deepCopyOfSubArrays(subarr[subarr.length-1], factorVars[0], factorVars[0].globalVar().levels()[i]); // adding new level with all sub-levels here
+        for (var i = subarr.length; i < desired_len; i++) {
+            subarr[i] = deepCopyOfSubArrays(subarr[subarr.length - 1], factorVars[0], factorVars[0].globalVar().levels()[i]); // adding new level with all sub-levels here
         }
     }
 
@@ -355,21 +355,21 @@ FactorGroup.prototype.addLevelToCondition = function() {
 
 };
 
-FactorGroup.prototype.getSequence = function() {
+FactorGroup.prototype.getSequence = function () {
     // returns the sequence of this factor group
-   var sequences = this.expTrialLoop.subSequencePerFactorGroup();
-   var i = 0;
-   var found = false;
-   var out = null;
-   while (!found && i < sequences.length){
-      if (this === sequences[i].factorGroup){
-          found = true;
-          out = sequences[i];
-      }
-      else{
-          i++;
-      }
-   }
+    var sequences = this.expTrialLoop.subSequencePerFactorGroup();
+    var i = 0;
+    var found = false;
+    var out = null;
+    while (!found && i < sequences.length) {
+        if (this === sequences[i].factorGroup) {
+            found = true;
+            out = sequences[i];
+        }
+        else {
+            i++;
+        }
+    }
     return out;
 };
 
@@ -379,57 +379,57 @@ FactorGroup.prototype.getSequence = function() {
 /**
  * updates the multi dimensional array with all new levels.
  */
-FactorGroup.prototype.removeLevelFromFactor = function(factor, lvlIdx) {
+FactorGroup.prototype.removeLevelFromFactor = function (factor, lvlIdx) {
 
     var factors = this.factors();
-    var facIdx =  factors.indexOf(factor);
+    var facIdx = factors.indexOf(factor);
 
     // update modifiers:
-    var factorGroupIdx = this.expTrialLoop.factorGroups().indexOf( this );
+    var factorGroupIdx = this.expTrialLoop.factorGroups().indexOf(this);
     var subSequence = this.expTrialLoop.subSequencePerFactorGroup()[factorGroupIdx];
     var allModifiers = [];
-    if (subSequence){
+    if (subSequence) {
         subSequence.getAllModifiers(allModifiers);
-        for (var i=0; i<allModifiers.length; i++) {
+        for (var i = 0; i < allModifiers.length; i++) {
             allModifiers[i].removeLevelFromFactor(factor, lvlIdx);
         }
     }
-    else{
+    else {
         console.log("error: sequence of factor group not found.")
     }
 
 
     // Update conditions table:
-    function removeLevels(lvlIdx,requiredDepth,currentDepth,arr) {
+    function removeLevels(lvlIdx, requiredDepth, currentDepth, arr) {
         if (currentDepth == requiredDepth) {
-            arr.splice(lvlIdx,1);
+            arr.splice(lvlIdx, 1);
         }
-        else{
+        else {
             for (var t = 0; t < arr.length; t++) {
-                removeLevels(lvlIdx,requiredDepth,currentDepth+1,arr[t]);
+                removeLevels(lvlIdx, requiredDepth, currentDepth + 1, arr[t]);
             }
         }
     }
-    var conditions =  this.conditions();
-    if (factors.length>1){
-        removeLevels(lvlIdx,facIdx,0,conditions);
+    var conditions = this.conditions();
+    if (factors.length > 1) {
+        removeLevels(lvlIdx, facIdx, 0, conditions);
     }
-    else{
-        conditions.splice(lvlIdx,1);
+    else {
+        conditions.splice(lvlIdx, 1);
     }
 
     this.conditions(conditions);
 
 
     // Now really remove the level from the categorical variable:
-   // factors[facIdx].globalVar().removeLevel(lvlIdx);
+    // factors[facIdx].globalVar().removeLevel(lvlIdx);
 };
 
 /**
  * add a new factor to the tree.
  * @param {Factor} factor - the new factor
  */
-FactorGroup.prototype.addFactor = function(factor) {
+FactorGroup.prototype.addFactor = function (factor) {
 
     this.expData.entities.insertIfNotExist(factor.globalVar());
     this.expData.entities.insertIfNotExist(factor);
@@ -437,7 +437,7 @@ FactorGroup.prototype.addFactor = function(factor) {
     this.factors.push(factor);
     this.addFactorToCondition(factor);
 
-    for (var i = 0; i<this.factors().length; i++){
+    for (var i = 0; i < this.factors().length; i++) {
         this.factors()[i].addFactorDependency(factor);
     }
     //not serialized
@@ -448,7 +448,7 @@ FactorGroup.prototype.addFactor = function(factor) {
  * remove the factor from the tree and remove the corresponding conditions.
  * @param {Factor} factor - the factor to remove
  */
-FactorGroup.prototype.removeFactor = function(factor) {
+FactorGroup.prototype.removeFactor = function (factor) {
 
     var idx = this.factors().indexOf(factor);
 
@@ -456,30 +456,30 @@ FactorGroup.prototype.removeFactor = function(factor) {
         factor.globalVar().removeBackRef(factor);
     }
 
-    function deepRemove(arrMultiDim,subIndex,depth) {
+    function deepRemove(arrMultiDim, subIndex, depth) {
         var t;
         if (depth == idx) {
             arrMultiDim[subIndex] = arrMultiDim[subIndex][0];
         }
         else {
             for (t = 0; t < arrMultiDim[subIndex].length; t++) {
-                deepRemove(arrMultiDim[subIndex], t, depth+1);
+                deepRemove(arrMultiDim[subIndex], t, depth + 1);
             }
         }
     }
 
     // update modifiers:
-    var factorGroupIdx = this.expTrialLoop.factorGroups().indexOf( this );
+    var factorGroupIdx = this.expTrialLoop.factorGroups().indexOf(this);
     var subSequence = this.expTrialLoop.subSequencePerFactorGroup()[factorGroupIdx];
     var allModifiers = [];
     subSequence.getAllModifiers(allModifiers);
-    for (var i=0; i<allModifiers.length; i++) {
+    for (var i = 0; i < allModifiers.length; i++) {
         allModifiers[i].removeFactorDependency(factor);
     }
 
     // update conditions array:
     var arrMultiDim = this.conditions();
-    if (idx==0) {
+    if (idx == 0) {
         arrMultiDim = arrMultiDim[0];
     }
     else {
@@ -489,15 +489,15 @@ FactorGroup.prototype.removeFactor = function(factor) {
     }
     this.conditions(arrMultiDim);
 
-    jQuery.each( this.conditionsLinear(), function(index, cond) {
-        cond.factorLevels.splice(idx,1);
-    } );
+    jQuery.each(this.conditionsLinear(), function (index, cond) {
+        cond.factorLevels.splice(idx, 1);
+    });
 
-    for (var i = 0; i<this.factors().length; i++){
+    for (var i = 0; i < this.factors().length; i++) {
         this.factors()[i].removeFactorDependency(idx);
     }
 
-    this.factors.splice(idx,1);
+    this.factors.splice(idx, 1);
     this.updateCondGroups();
 };
 
@@ -517,14 +517,14 @@ FactorGroup.prototype.setPointers = function (entitiesArr) {
         return factor;
     }));
 
-    jQuery.each( this.conditionsLinear(), function( index, elem ) {
+    jQuery.each(this.conditionsLinear(), function (index, elem) {
         elem.setPointers(entitiesArr);
-    } );
+    });
 
 
 };
 
-FactorGroup.prototype.onFinishedLoading = function() {
+FactorGroup.prototype.onFinishedLoading = function () {
 
     var self = this;
 
@@ -536,22 +536,22 @@ FactorGroup.prototype.onFinishedLoading = function() {
 
     var condMultiDim = this.conditions();
 
-    function deepDive(condMultiDim, factors, levels, depth){
+    function deepDive(condMultiDim, factors, levels, depth) {
         var t;
         if (condMultiDim.constructor === Array) {
             // recursive call:
             for (t = 0; t < condMultiDim.length; t++) {
                 var globalVar = factors[depth].globalVar();
-                if (!(globalVar instanceof GlobalVar)){
+                if (!(globalVar instanceof GlobalVar)) {
                     globalVar = self.expData.entities.byId[globalVar];
                 }
                 levels[depth] = globalVar.levels()[t];
                 // HACK to fix experiments  with diverging global var level structure vs. condition structure.
-                if  (globalVar.levels()[t] === undefined){
+                if (globalVar.levels()[t] === undefined) {
                     console.log("error: level not in globalVar but it should be, creating new Level to avoid corrupted file structure...");
                     levels[depth] = globalVar.addLevel();
                 }
-                deepDive(condMultiDim[t], factors, levels, depth+1);
+                deepDive(condMultiDim[t], factors, levels, depth + 1);
             }
         }
         else {
@@ -569,9 +569,9 @@ FactorGroup.prototype.onFinishedLoading = function() {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-FactorGroup.prototype.reAddEntities = function(entitiesArr) {
+FactorGroup.prototype.reAddEntities = function (entitiesArr) {
     // add the direct child nodes:
-    jQuery.each( this.factors(), function( index, factor ) {
+    jQuery.each(this.factors(), function (index, factor) {
         if (!entitiesArr.byId.hasOwnProperty(factor.id())) {
             entitiesArr.push(factor);
         }
@@ -579,7 +579,7 @@ FactorGroup.prototype.reAddEntities = function(entitiesArr) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (factor.reAddEntities)
             factor.reAddEntities(entitiesArr);
-    } );
+    });
 
 };
 
@@ -588,17 +588,17 @@ FactorGroup.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {FactorGroup}
  */
-FactorGroup.prototype.fromJS = function(data) {
+FactorGroup.prototype.fromJS = function (data) {
     var self = this;
     this.name(data.name);
     this.factors(data.factors);
 
-    function deepLoadConditions(condMultiDimData){
+    function deepLoadConditions(condMultiDimData) {
         if (condMultiDimData.constructor === Array) {
             // recursive call:
             var condObj = [];
             for (var t = 0; t < condMultiDimData.length; t++) {
-                condObj.push( deepLoadConditions(condMultiDimData[t]) );
+                condObj.push(deepLoadConditions(condMultiDimData[t]));
             }
             return condObj;
         }
@@ -609,7 +609,7 @@ FactorGroup.prototype.fromJS = function(data) {
         }
     }
 
-    this.conditions(deepLoadConditions( data.conditions));
+    this.conditions(deepLoadConditions(data.conditions));
     return this;
 };
 
@@ -617,9 +617,9 @@ FactorGroup.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-FactorGroup.prototype.toJS = function() {
+FactorGroup.prototype.toJS = function () {
 
-    function deepSaveConditions(condMultiDim){
+    function deepSaveConditions(condMultiDim) {
         if (condMultiDim.constructor === Array) {
             // recursive call:
             var savedJson = [];
@@ -635,7 +635,7 @@ FactorGroup.prototype.toJS = function() {
 
     return {
         name: this.name(),
-        factors: jQuery.map( this.factors(), function( factor ) {
+        factors: jQuery.map(this.factors(), function (factor) {
             return factor.id();
         }),
         conditions: deepSaveConditions(this.conditions())

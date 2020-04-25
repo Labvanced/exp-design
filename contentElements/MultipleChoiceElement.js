@@ -1,20 +1,20 @@
 
-var MultipleChoiceElement = function(expData) {
+var MultipleChoiceElement = function (expData) {
     var self = this;
     this.expData = expData;
     this.parent = null;
 
     //serialized
-    this.type= "MultipleChoiceElement";
+    this.type = "MultipleChoiceElement";
     this.questionText = ko.observable(null); // EditableTextElement
     this.isRequired = ko.observable(false);
 
     this.altAnswerActive = ko.observable(false);
     this.altAnswerOnlyWhenLastSelected = ko.observable(false);
-    this.enableTitle= ko.observable(true);
+    this.enableTitle = ko.observable(true);
     this.reshuffleElements = ko.observable(false);
 
-   // this.openQuestion=  ko.observable(false);
+    // this.openQuestion=  ko.observable(false);
 
     // content
     this.elements = ko.observableArray([]);
@@ -30,8 +30,8 @@ var MultipleChoiceElement = function(expData) {
     this.dataIsValid = ko.observable(false);
     this.altAnswer = ko.observable('');
     // update variable
-    this.altAnswer.subscribe(function(val) {
-     self.variable().value().value(val)
+    this.altAnswer.subscribe(function (val) {
+        self.variable().value().value(val)
     });
 
 
@@ -40,15 +40,15 @@ var MultipleChoiceElement = function(expData) {
 
 MultipleChoiceElement.prototype.label = "Multiple Choice";
 MultipleChoiceElement.prototype.iconPath = "/resources/icons/tools/tool_multiplechoice.svg";
-MultipleChoiceElement.prototype.dataType =      [ ];
-MultipleChoiceElement.prototype.modifiableProp = [ ];
+MultipleChoiceElement.prototype.dataType = [];
+MultipleChoiceElement.prototype.modifiableProp = [];
 MultipleChoiceElement.prototype.initWidth = 180;
 MultipleChoiceElement.prototype.initHeight = 120;
 MultipleChoiceElement.prototype.numVarNamesRequired = 1;
 
 
 
-MultipleChoiceElement.prototype.init = function(variableName) {
+MultipleChoiceElement.prototype.init = function (variableName) {
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
 
@@ -70,26 +70,26 @@ MultipleChoiceElement.prototype.init = function(variableName) {
     this.addSubscriptions();
 };
 
-MultipleChoiceElement.prototype.addEntry = function() {
+MultipleChoiceElement.prototype.addEntry = function () {
     var multChoice = new MultipleChoiceEntry(this);
     multChoice.init();
     this.elements.push(multChoice);
 };
 
-MultipleChoiceElement.prototype.removeEntry = function() {
-    var idx = this.elements().length-1;
-    this.elements.splice(idx,1);
+MultipleChoiceElement.prototype.removeEntry = function () {
+    var idx = this.elements().length - 1;
+    this.elements.splice(idx, 1);
 };
 
-MultipleChoiceElement.prototype.setVariableBackRef = function() {
-    if (this.variable() instanceof GlobalVar){
+MultipleChoiceElement.prototype.setVariableBackRef = function () {
+    if (this.variable() instanceof GlobalVar) {
         this.variable().addBackRef(this, this.parent, true, true, 'multipleChoice');
     }
 
 };
 
 
-MultipleChoiceElement.prototype.doReshuffle = function() {
+MultipleChoiceElement.prototype.doReshuffle = function () {
     var elemCopy = this.elements().slice();
     var reshuffledArray = ExpTrialLoop.prototype.reshuffle(elemCopy);
     this.elements(reshuffledArray);
@@ -99,31 +99,31 @@ MultipleChoiceElement.prototype.doReshuffle = function() {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-MultipleChoiceElement.prototype.getAllModifiers = function(modifiersArr) {
-    jQuery.each( this.elements(), function( index, elem ) {
+MultipleChoiceElement.prototype.getAllModifiers = function (modifiersArr) {
+    jQuery.each(this.elements(), function (index, elem) {
         elem.getAllModifiers(modifiersArr);
-    } );
+    });
     this.questionText().getAllModifiers(modifiersArr);
 };
 
-MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
+MultipleChoiceElement.prototype.setPointers = function (entitiesArr) {
     var self = this;
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
         this.setVariableBackRef();
     }
-    jQuery.each( this.elements(), function( index, elem ) {
+    jQuery.each(this.elements(), function (index, elem) {
         elem.setPointers(entitiesArr);
-    } );
+    });
 
-    if (this.variable()){
+    if (this.variable()) {
         if (this.variable().dataType() == "categorical") {
             this.variable().changeDataType("string");
         }
     }
 
     this.questionText().setPointers(entitiesArr);
-    if ( this.subInputElement()){
+    if (this.subInputElement()) {
         this.subInputElement().setPointers(entitiesArr);
         this.subInputElement().parent = self.parent;
     }
@@ -133,13 +133,13 @@ MultipleChoiceElement.prototype.setPointers = function(entitiesArr) {
 
 
 
-MultipleChoiceElement.prototype.addSubscriptions = function() {
+MultipleChoiceElement.prototype.addSubscriptions = function () {
     var self = this;
-    if (this.activateAltSubscription){
+    if (this.activateAltSubscription) {
         this.activateAltSubscription.dispose();
     }
-    this.activateAltSubscription = this.altAnswerActive.subscribe(function(val) {
-        if (val){
+    this.activateAltSubscription = this.altAnswerActive.subscribe(function (val) {
+        if (val) {
 
             var cb = function (varName) {
                 var newElem = new InputElement(self.expData);
@@ -160,23 +160,23 @@ MultipleChoiceElement.prototype.addSubscriptions = function() {
             var revertCB = function (varName) {
                 self.altAnswerActive(false)
             };
-            var nameDialog = new AddVarUniqueName(self.expData,cb,revertCB);
+            var nameDialog = new AddVarUniqueName(self.expData, cb, revertCB);
             nameDialog.start();
 
         }
-        else{
-            if ( self.subInputElement()){
+        else {
+            if (self.subInputElement()) {
                 var vari = self.subInputElement().variable();
-                if(vari.backRefs().length==2 && vari.backRefs()[1].refLabel == 'Input' ){
-                    if (self.expData.entities.byId[vari.id()]){
+                if (vari.backRefs().length == 2 && vari.backRefs()[1].refLabel == 'Input') {
+                    if (self.expData.entities.byId[vari.id()]) {
                         vari.backRefs()[0].entity.deleteChildEntity(vari);
                         self.expData.deleteGlobalVar(vari);
                     }
-                    else{
+                    else {
                         console.log('error deleting variable')
                     }
                 }
-                else{
+                else {
                     console.log('variable not deleted, other backrefs exist')
                 }
                 self.subInputElement(null);
@@ -186,39 +186,39 @@ MultipleChoiceElement.prototype.addSubscriptions = function() {
     });
 };
 
-MultipleChoiceElement.prototype.reAddEntities = function(entitiesArr) {
+MultipleChoiceElement.prototype.reAddEntities = function (entitiesArr) {
     if (this.variable() instanceof GlobalVar) {
         if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
             entitiesArr.push(this.variable());
         }
     }
 
-    jQuery.each( this.elements(), function( index, elem ) {
+    jQuery.each(this.elements(), function (index, elem) {
         elem.reAddEntities(entitiesArr);
-    } );
+    });
     this.questionText().reAddEntities(entitiesArr);
-    if ( this.subInputElement()){
+    if (this.subInputElement()) {
         this.subInputElement().reAddEntities(entitiesArr);
     }
 
 };
 
-MultipleChoiceElement.prototype.selectTrialType = function(selectionSpec) {
-    jQuery.each( this.elements(), function( index, elem ) {
+MultipleChoiceElement.prototype.selectTrialType = function (selectionSpec) {
+    jQuery.each(this.elements(), function (index, elem) {
         elem.selectTrialType(selectionSpec);
-    } );
+    });
     this.questionText().selectTrialType(selectionSpec);
 };
 
 MultipleChoiceElement.prototype.dispose = function () {
     this.questionText().dispose();
-    if (this.subInputElement()){
+    if (this.subInputElement()) {
         this.subInputElement().dispose();
     }
 
-    jQuery.each( this.elements(), function( index, elem ) {
+    jQuery.each(this.elements(), function (index, elem) {
         elem.dispose();
-    } );
+    });
 
     if (this.variable() instanceof GlobalVar) {
         this.variable().removeBackRef(this);
@@ -226,23 +226,23 @@ MultipleChoiceElement.prototype.dispose = function () {
 
 };
 
-MultipleChoiceElement.prototype.getTextRefs = function(textArr, label){
+MultipleChoiceElement.prototype.getTextRefs = function (textArr, label) {
     var questlabel = label + '.Question';
     this.questionText().getTextRefs(textArr, questlabel);
-    jQuery.each( this.elements(), function( index, elem ) {
+    jQuery.each(this.elements(), function (index, elem) {
         var ind = index + 1;
         elem.getTextRefs(textArr, label + '.Entry' + ind);
-    } );
+    });
     return textArr;
 };
 
 
-MultipleChoiceElement.prototype.isInputValid = function() {
+MultipleChoiceElement.prototype.isInputValid = function () {
     this.triedToSubmit(true);
 
     var isValid = true;
-    if (this.isRequired()){
-        if (this.variable().value().value() === this.variable().startValue().value()){
+    if (this.isRequired()) {
+        if (this.variable().value().value() === this.variable().startValue().value()) {
             isValid = false;
         }
     }
@@ -251,7 +251,7 @@ MultipleChoiceElement.prototype.isInputValid = function() {
     this.dataIsValid(isValid);
 
     // now also check the sub element validity if it is active:
-    if (this.altAnswerActive()){
+    if (this.altAnswerActive()) {
         var allElem = this.elements();
         var lastOptionValue = allElem[allElem.length - 1].multChoiceValue();
         // only check validity if the last option selected:
@@ -266,7 +266,7 @@ MultipleChoiceElement.prototype.isInputValid = function() {
 };
 
 
-MultipleChoiceElement.prototype.toJS = function() {
+MultipleChoiceElement.prototype.toJS = function () {
 
     var variableId = null;
     if (this.variable()) {
@@ -281,7 +281,7 @@ MultipleChoiceElement.prototype.toJS = function() {
         type: this.type,
         questionText: this.questionText().toJS(),
         variable: variableId,
-        elements: jQuery.map( this.elements(), function( elem ) {
+        elements: jQuery.map(this.elements(), function (elem) {
             return elem.toJS();
         }),
         isRequired: this.isRequired(),
@@ -289,18 +289,18 @@ MultipleChoiceElement.prototype.toJS = function() {
         altAnswerOnlyWhenLastSelected: this.altAnswerOnlyWhenLastSelected(),
         enableTitle: this.enableTitle(),
         subInputElement: subInputElement,
-        reshuffleElements:this.reshuffleElements()
+        reshuffleElements: this.reshuffleElements()
     };
 };
 
-MultipleChoiceElement.prototype.fromJS = function(data) {
+MultipleChoiceElement.prototype.fromJS = function (data) {
     var self = this;
-    this.type=data.type;
-    if(data.questionText.hasOwnProperty('rawText')){
+    this.type = data.type;
+    if (data.questionText.hasOwnProperty('rawText')) {
         this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);
     }
-    else{
+    else {
         this.questionText(new EditableTextElement(this.expData, this, data.questionText));
     }
     this.variable(data.variable);
@@ -310,27 +310,27 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
             return (new MultipleChoiceEntry(self)).fromJS(elemData);
         }));
     }
-    if(data.hasOwnProperty('isRequired')){
+    if (data.hasOwnProperty('isRequired')) {
         this.isRequired(data.isRequired);
     }
-    if(data.hasOwnProperty('altAnswerActive')){
+    if (data.hasOwnProperty('altAnswerActive')) {
         this.altAnswerActive(data.altAnswerActive);
     }
-    if(data.hasOwnProperty('altAnswerOnlyWhenLastSelected')){
+    if (data.hasOwnProperty('altAnswerOnlyWhenLastSelected')) {
         this.altAnswerOnlyWhenLastSelected(data.altAnswerOnlyWhenLastSelected);
     }
-    if(data.hasOwnProperty('enableTitle')){
+    if (data.hasOwnProperty('enableTitle')) {
         this.enableTitle(data.enableTitle);
     }
 
-    if(data.hasOwnProperty('subInputElement')){
-        if (data.subInputElement){
-            var elem =  new InputElement(self.expData);
+    if (data.hasOwnProperty('subInputElement')) {
+        if (data.subInputElement) {
+            var elem = new InputElement(self.expData);
             elem.fromJS(data.subInputElement);
             this.subInputElement(elem);
         }
     }
-    if(data.hasOwnProperty('reshuffleElements')){
+    if (data.hasOwnProperty('reshuffleElements')) {
         this.reshuffleElements(data.reshuffleElements);
     }
 
@@ -345,7 +345,7 @@ MultipleChoiceElement.prototype.fromJS = function(data) {
 //////////////////////////////////////////////
 
 
-var MultipleChoiceEntry= function(multChoiceParent) {
+var MultipleChoiceEntry = function (multChoiceParent) {
     this.parent = multChoiceParent;
 
     this.multChoiceText = ko.observable(null); // EditableTextElement
@@ -355,41 +355,41 @@ var MultipleChoiceEntry= function(multChoiceParent) {
 
 
 
-MultipleChoiceEntry.prototype.getIndex = function() {
-   return this.parent.elements.indexOf(this);
+MultipleChoiceEntry.prototype.getIndex = function () {
+    return this.parent.elements.indexOf(this);
 };
-MultipleChoiceEntry.prototype.nrElems = function() {
-    return this.parent.elements().length-1;
+MultipleChoiceEntry.prototype.nrElems = function () {
+    return this.parent.elements().length - 1;
 };
 
 /**
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-MultipleChoiceEntry.prototype.getAllModifiers = function(modifiersArr) {
+MultipleChoiceEntry.prototype.getAllModifiers = function (modifiersArr) {
     this.multChoiceText().getAllModifiers(modifiersArr);
 };
 
-MultipleChoiceEntry.prototype.selectTrialType = function(selectionSpec) {
+MultipleChoiceEntry.prototype.selectTrialType = function (selectionSpec) {
     this.multChoiceText().selectTrialType(selectionSpec);
 };
 
-MultipleChoiceEntry.prototype.init = function() {
+MultipleChoiceEntry.prototype.init = function () {
     var nr = this.parent.elements().length;
-    this.multChoiceText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">option_' +nr+'</span></p>'));
+    this.multChoiceText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">option_' + nr + '</span></p>'));
     this.multChoiceText().init();
-    this.multChoiceValue( 'option_' +nr );
+    this.multChoiceValue('option_' + nr);
 };
 
 MultipleChoiceEntry.prototype.reAddEntities = function (entitiesArr) {
     this.multChoiceText().reAddEntities(entitiesArr);
 };
 
-MultipleChoiceEntry.prototype.setPointers = function(entitiesArr) {
+MultipleChoiceEntry.prototype.setPointers = function (entitiesArr) {
     if (this.multChoiceValue() == null) {
         // convert from old categorical format to string format:
         var nr = this.parent.elements().indexOf(this);
-        this.multChoiceValue( $($.parseHTML(this.multChoiceText())).text() );
+        this.multChoiceValue($($.parseHTML(this.multChoiceText())).text());
     }
     this.multChoiceText().setPointers(entitiesArr);
 };
@@ -398,16 +398,16 @@ MultipleChoiceEntry.prototype.dispose = function () {
     this.multChoiceText().dispose();
 };
 
-MultipleChoiceEntry.prototype.getTextRefs = function(textArr, label){
+MultipleChoiceEntry.prototype.getTextRefs = function (textArr, label) {
     this.multChoiceText().getTextRefs(textArr, label);
 };
 
-MultipleChoiceEntry.prototype.fromJS = function(data) {
-    if(data.multChoiceText.hasOwnProperty('rawText')) {
+MultipleChoiceEntry.prototype.fromJS = function (data) {
+    if (data.multChoiceText.hasOwnProperty('rawText')) {
         this.multChoiceText(new EditableTextElement(this.parent.expData, this.parent, ''));
         this.multChoiceText().fromJS(data.multChoiceText);
     }
-    else{
+    else {
         this.multChoiceText(new EditableTextElement(this.parent.expData, this.parent, data.multChoiceText));
     }
     if (data.hasOwnProperty('multChoiceValue')) {
@@ -416,9 +416,9 @@ MultipleChoiceEntry.prototype.fromJS = function(data) {
     return this;
 };
 
-MultipleChoiceEntry.prototype.toJS = function() {
+MultipleChoiceEntry.prototype.toJS = function () {
     return {
-        multChoiceText:  this.multChoiceText().toJS(),
+        multChoiceText: this.multChoiceText().toJS(),
         multChoiceValue: this.multChoiceValue()
     };
 };
@@ -427,9 +427,9 @@ MultipleChoiceEntry.prototype.toJS = function() {
 function createMultipleChoiceComponents() {
     ko.components.register('choice-editview', {
         viewModel: {
-            createViewModel: function(multipleChoiceElement, componentInfo){
+            createViewModel: function (multipleChoiceElement, componentInfo) {
 
-                var viewModel = function(multipleChoiceElement){
+                var viewModel = function (multipleChoiceElement) {
                     var self = this;
 
                     this.multipleChoiceElement = multipleChoiceElement;
@@ -437,19 +437,19 @@ function createMultipleChoiceComponents() {
                     this.margin = multipleChoiceElement.margin;
 
 
-                    this.addChoice = function() {
+                    this.addChoice = function () {
                         self.multipleChoiceElement.addEntry();
                     };
 
-                    this.removeChoice = function() {
+                    this.removeChoice = function () {
                         self.multipleChoiceElement.removeEntry();
                     };
 
-                    this.relinkCallback = function() {
+                    this.relinkCallback = function () {
                         var frameData = self.multipleChoiceElement.parent.parent;
                         var variableDialog = new AddNewVariable(self.multipleChoiceElement.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
-                            if (self.multipleChoiceElement.variable()){
+                            if (self.multipleChoiceElement.variable()) {
                                 self.multipleChoiceElement.variable().removeBackRef(self.multipleChoiceElement);
                             }
                             self.multipleChoiceElement.variable(newVariable);
@@ -464,31 +464,31 @@ function createMultipleChoiceComponents() {
                 return new viewModel(multipleChoiceElement);
             }
         },
-        template: {element: 'choice-editview-template'}
+        template: { element: 'choice-editview-template' }
     });
 
-    ko.components.register('choice-preview',{
+    ko.components.register('choice-preview', {
         viewModel: {
-            createViewModel: function(multipleChoiceElement, componentInfo){
-                var viewModel = function(multipleChoiceElement){
+            createViewModel: function (multipleChoiceElement, componentInfo) {
+                var viewModel = function (multipleChoiceElement) {
                     var self = this;
 
                     this.multipleChoiceElement = multipleChoiceElement;
                     this.questionText = multipleChoiceElement.questionText;
                     this.margin = multipleChoiceElement.margin;
 
-                    this.altAnswerVisible = ko.computed(function() {
-                        if (!self.multipleChoiceElement.altAnswerActive()){
+                    this.altAnswerVisible = ko.computed(function () {
+                        if (!self.multipleChoiceElement.altAnswerActive()) {
                             return false;
                         }
 
-                        if (!self.multipleChoiceElement.altAnswerOnlyWhenLastSelected()){
+                        if (!self.multipleChoiceElement.altAnswerOnlyWhenLastSelected()) {
                             return true;
                         }
 
                         var allElem = self.multipleChoiceElement.elements();
                         var lastOptionValue = allElem[allElem.length - 1].multChoiceValue();
-                        if (self.multipleChoiceElement.variable().startValue().value() === lastOptionValue){
+                        if (self.multipleChoiceElement.variable().startValue().value() === lastOptionValue) {
                             return true;
                         }
                         return false;
@@ -497,12 +497,12 @@ function createMultipleChoiceComponents() {
                 return new viewModel(multipleChoiceElement);
             }
         },
-        template: {element: 'choice-preview-template'}
+        template: { element: 'choice-preview-template' }
     });
 
     ko.components.register('choice-playerview', {
         viewModel: {
-            createViewModel: function(multipleChoiceElement, componentInfo){
+            createViewModel: function (multipleChoiceElement, componentInfo) {
 
                 var viewModel = function (multipleChoiceElement) {
                     var self = this;
@@ -511,18 +511,18 @@ function createMultipleChoiceComponents() {
                     this.questionText = multipleChoiceElement.questionText;
                     this.margin = multipleChoiceElement.margin;
 
-                    this.altAnswerVisible = ko.computed(function() {
-                        if (!self.multipleChoiceElement.altAnswerActive()){
+                    this.altAnswerVisible = ko.computed(function () {
+                        if (!self.multipleChoiceElement.altAnswerActive()) {
                             return false;
                         }
 
-                        if (!self.multipleChoiceElement.altAnswerOnlyWhenLastSelected()){
+                        if (!self.multipleChoiceElement.altAnswerOnlyWhenLastSelected()) {
                             return true;
                         }
 
                         var allElem = self.multipleChoiceElement.elements();
                         var lastOptionValue = allElem[allElem.length - 1].multChoiceValue();
-                        if (self.multipleChoiceElement.variable().value().value() === lastOptionValue){
+                        if (self.multipleChoiceElement.variable().value().value() === lastOptionValue) {
                             return true;
                         }
                         return false;
@@ -531,6 +531,6 @@ function createMultipleChoiceComponents() {
                 return new viewModel(multipleChoiceElement);
             }
         },
-        template: {element: 'choice-playerview-template'}
+        template: { element: 'choice-playerview-template' }
     });
 };

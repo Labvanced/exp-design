@@ -50,10 +50,10 @@ var Experiment = function () {
     /////////////////////////////////////////////////////////////////
 
     var self = this;
-    this.total_num_recordings = ko.computed(function() {
+    this.total_num_recordings = ko.computed(function () {
         if (self.exp_server_data()) {
             var d = self.exp_server_data();
-            return d.numSubjectsRecordedCrowd + d.numSubjectsRecordedExternal +d.numSubjectsRecordedLibrary + d.numSubjectsRecordedSmart;
+            return d.numSubjectsRecordedCrowd + d.numSubjectsRecordedExternal + d.numSubjectsRecordedLibrary + d.numSubjectsRecordedSmart;
         }
         else {
             return 0;
@@ -61,15 +61,15 @@ var Experiment = function () {
     });
 
     this.canBeModifiedOrDeleted = ko.computed(function () {
-        if (this.status() == "create"){
+        if (this.status() == "create") {
             return true;
         }
-        else{
+        else {
             return false;
         }
     }, this);
 
-    this.exp_name.subscribe(function(value) {
+    this.exp_name.subscribe(function (value) {
         self.publishing_data.exp_name(value)
     });
 };
@@ -77,16 +77,16 @@ var Experiment = function () {
 
 
 
-Experiment.prototype.editExp = function() {
-    page("/page/editors/experimentView/"+this.exp_id());
-  //  page("/page/editors/mainExperimentPage/"+this.exp_id());
+Experiment.prototype.editExp = function () {
+    page("/page/editors/experimentView/" + this.exp_id());
+    //  page("/page/editors/mainExperimentPage/"+this.exp_id());
 };
 
-Experiment.prototype.viewRecordings = function() {
-    page("/page/recordingsPage/"+this.exp_id());
+Experiment.prototype.viewRecordings = function () {
+    page("/page/recordingsPage/" + this.exp_id());
 };
 
-Experiment.prototype.stopPublishExp = function(cb) {
+Experiment.prototype.stopPublishExp = function (cb) {
     var self = this;
 
     if (this.exp_server_data().activeLicense) {
@@ -125,9 +125,9 @@ Experiment.prototype.stopPublishExp = function(cb) {
     }
 };
 
-Experiment.prototype.refreshStatusFromServer = function(cb) {
+Experiment.prototype.refreshStatusFromServer = function (cb) {
     var self = this;
-    uc.socket.emit('getPublishingStates', {exp_id: self.exp_id()}, function(response){
+    uc.socket.emit('getPublishingStates', { exp_id: self.exp_id() }, function (response) {
         if (response.success) {
             var exp = response.exp;
 
@@ -145,14 +145,14 @@ Experiment.prototype.refreshStatusFromServer = function(cb) {
     });
 };
 
-Experiment.prototype.switchToCreateState = function(cb) {
+Experiment.prototype.switchToCreateState = function (cb) {
     var self = this;
 
     // need to disable all recruiting options first:
     this.stopPublishExp(function (success) {
         if (success) {
             // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
-            uc.socket.emit('deleteAllRecsOfExpAndSwitchToCreate', {exp_id: self.exp_id()}, function (response) {
+            uc.socket.emit('deleteAllRecsOfExpAndSwitchToCreate', { exp_id: self.exp_id() }, function (response) {
                 if (response.success) {
                     self.status("create");
                     self.saveExpData(cb);
@@ -166,15 +166,15 @@ Experiment.prototype.switchToCreateState = function(cb) {
 
 };
 
-Experiment.prototype.switchToRecordState = function(cb){
+Experiment.prototype.switchToRecordState = function (cb) {
     this.status('record');
     this.saveMetaData(cb);
 };
 
-Experiment.prototype.switchToAnalyzeState = function(cb) {
+Experiment.prototype.switchToAnalyzeState = function (cb) {
     var self = this;
     // need to disable all recruiting options first:
-    this.stopPublishExp(function(success) {
+    this.stopPublishExp(function (success) {
         if (success) {
             // this is an async callback because we need to wait for the confirmation by server that experiment is unpublished
             self.status('analyze');
@@ -186,7 +186,7 @@ Experiment.prototype.switchToAnalyzeState = function(cb) {
 /**
  * should be called by the ui classes after a change was made to some sub datamodels of this expData.
  */
-Experiment.prototype.notifyChanged = function() {
+Experiment.prototype.notifyChanged = function () {
     this.hasLocalChanges = true;
 
     if (!this.tempDisableAutosave) {
@@ -203,7 +203,7 @@ Experiment.prototype.notifyChanged = function() {
     }
 };
 
-Experiment.prototype.addToHistory = function(serializedExp) {
+Experiment.prototype.addToHistory = function (serializedExp) {
     this.lastSavedJsons.push(serializedExp);
     if (this.lastSavedJsons.length > 4) {
         this.lastSavedJsons.shift();
@@ -215,19 +215,19 @@ Experiment.prototype.addToHistory = function(serializedExp) {
  * This function is deprecated! Use saveExpData or savePublishingData or saveAnalysisData instead!
  * @deprecated
  */
-Experiment.prototype.save = function() {
+Experiment.prototype.save = function () {
     this.saveExpData();
 };
 
 /**
  * save this experiment and send to server
  */
-Experiment.prototype.saveExpData = function(cb, force) {
+Experiment.prototype.saveExpData = function (cb, force) {
     var self = this;
 
     force = typeof force !== 'undefined' ? force : false;
 
-    if (this.status() == "create" || force){
+    if (this.status() == "create" || force) {
         console.log("save experiment " + this.exp_name() + " and send to server...");
         try {
             var serializedExp = this.toJS();
@@ -236,8 +236,8 @@ Experiment.prototype.saveExpData = function(cb, force) {
             }
             this.changesInTransit = true;
             this.hasLocalChanges = false;
-            uc.socket.emit('updateExperiment', {exp: serializedExp}, function(response){
-                if (response.success){
+            uc.socket.emit('updateExperiment', { exp: serializedExp }, function (response) {
+                if (response.success) {
                     self.changesInTransit = false;
                     console.log("saved experiment success");
                     if (cb) {
@@ -249,14 +249,14 @@ Experiment.prototype.saveExpData = function(cb, force) {
                     }
                 }
                 else {
-                    console.log("error: could not transmit experiment to server. Error Msg: "+response.error_msg);
-                    $('<div><p>Error message:</p><p class="error text-danger">'+response.error_msg+'</p></div>').dialog();
+                    console.log("error: could not transmit experiment to server. Error Msg: " + response.error_msg);
+                    $('<div><p>Error message:</p><p class="error text-danger">' + response.error_msg + '</p></div>').dialog();
                 }
             });
         }
         catch (err) {
 
-            var tempDialog = $('<div><p>Error message:</p><p class="error text-danger">'+err.message+'</p><button data-toggle="collapse" data-target="#errorDetails">Show Details</button><div id="errorDetails" style="max-height: 250px; overflow: auto;" class="collapse">'+err.stack+'</div></div>');
+            var tempDialog = $('<div><p>Error message:</p><p class="error text-danger">' + err.message + '</p><button data-toggle="collapse" data-target="#errorDetails">Show Details</button><div id="errorDetails" style="max-height: 250px; overflow: auto;" class="collapse">' + err.stack + '</div></div>');
             tempDialog.dialog({
                 modal: true,
                 title: "Error Saving Experiment",
@@ -273,7 +273,7 @@ Experiment.prototype.saveExpData = function(cb, force) {
                         text: "Reload from Server",
                         click: function () {
                             window.location.reload(false);
-                            $( this ).dialog( "close" );
+                            $(this).dialog("close");
                         }
                     }
                 ]
@@ -286,8 +286,8 @@ Experiment.prototype.saveExpData = function(cb, force) {
 };
 
 
-Experiment.prototype.startLockingDialog = function() {
-    var self= this;
+Experiment.prototype.startLockingDialog = function () {
+    var self = this;
     var tempDialog = $('<div><p>Editing this experiment is not recommended, because it is not in "create" state. In order to keep the specification of the experiment and the recorded data synchronized, it is advised to create a copy of this study if you want to change the specification. You have four options: </p><ul><li>You can delete all recordings and switch this experiment back to "create" mode.</li><li>Cancel the editing and keep everything as it is.</li><li>Force saving the experiment anyway (only if you know the risks).</li><li>You can copy this experiment and then edit the new instance.</li></ul></div>');
 
     var buttons = [];
@@ -295,32 +295,32 @@ Experiment.prototype.startLockingDialog = function() {
         buttons.push({
             text: "DELETE all recorded data, disable recordings and publishing",
             click: function () {
-                self.switchToCreateState(function() {
+                self.switchToCreateState(function () {
                     console.log("successfully switched experiment to create state.");
-                    tempDialog.dialog( "close" );
+                    tempDialog.dialog("close");
                 });
             }
         });
     }
 
     buttons.push({
-            text: "Cancel editing and reload from server",
-            click: function () {
-                window.location.reload(false);
-                $( this ).dialog( "close" );
-            }
-        });
+        text: "Cancel editing and reload from server",
+        click: function () {
+            window.location.reload(false);
+            $(this).dialog("close");
+        }
+    });
 
     buttons.push({
-            text: "I know what I am doing and save anyway",
-            click: function () {
-                var force = true;
-                self.saveExpData(function() {
+        text: "I know what I am doing and save anyway",
+        click: function () {
+            var force = true;
+            self.saveExpData(function () {
 
-                }, force);
-                $( this ).dialog( "close" );
-            }
-        });
+            }, force);
+            $(this).dialog("close");
+        }
+    });
 
     tempDialog.dialog({
         modal: true,
@@ -333,8 +333,8 @@ Experiment.prototype.startLockingDialog = function() {
 
 
 
-Experiment.prototype.startLockingDialog2 = function() {
-    var self= this;
+Experiment.prototype.startLockingDialog2 = function () {
+    var self = this;
     var tempDialog = $('<div><p><b>WARNING!</b> In order to keep the specification of the experiment and the recorded data synchronized all existing data recordings will be deleted before re-enabling experiment editing! Futhermore, in case your study is currently published, it will be unpublished. Do you really want to continue? <br><br><b>Suggestion: Download all existing data before proceeding!</b> </div>');
 
     var buttons = [];
@@ -342,9 +342,9 @@ Experiment.prototype.startLockingDialog2 = function() {
         buttons.push({
             text: "YES, DELETE ALL RECORDED DATA and disable publishing.",
             click: function () {
-                self.switchToCreateState(function() {
+                self.switchToCreateState(function () {
                     console.log("successfully switched experiment to create state.");
-                    tempDialog.dialog( "close" );
+                    tempDialog.dialog("close");
                 });
             }
         });
@@ -353,7 +353,7 @@ Experiment.prototype.startLockingDialog2 = function() {
     buttons.push({
         text: "Cancel",
         click: function () {
-            $( this ).dialog( "close" );
+            $(this).dialog("close");
         }
     });
 
@@ -367,15 +367,15 @@ Experiment.prototype.startLockingDialog2 = function() {
     });
 };
 
-Experiment.prototype.saveMetaData = function(cb) {
+Experiment.prototype.saveMetaData = function (cb) {
     var saveData = {
         exp_id: this.exp_id(),
         exp_name: this.exp_name(),
         version: this.version(),
         status: this.status()
     };
-    uc.socket.emit('updateExperiment', {exp: saveData}, function(response){
-        if (response.success){
+    uc.socket.emit('updateExperiment', { exp: saveData }, function (response) {
+        if (response.success) {
             console.log("saved experiment meta data to server.");
             if (cb) {
                 cb();
@@ -387,14 +387,14 @@ Experiment.prototype.saveMetaData = function(cb) {
     });
 };
 
-Experiment.prototype.savePublishingData = function(cb) {
-    if (this.publishing_data instanceof PublishingData){
+Experiment.prototype.savePublishingData = function (cb) {
+    if (this.publishing_data instanceof PublishingData) {
         var saveData = {
             exp_id: this.exp_id(),
             publishing_data: this.publishing_data.toJS()
         };
-        uc.socket.emit('updateExperiment', {exp: saveData}, function(response){
-            if (response.success){
+        uc.socket.emit('updateExperiment', { exp: saveData }, function (response) {
+            if (response.success) {
                 console.log("saved experiment publishing data to server.");
                 if (cb) {
                     cb();
@@ -407,14 +407,14 @@ Experiment.prototype.savePublishingData = function(cb) {
     }
 };
 
-Experiment.prototype.saveAnalysisData = function(cb) {
-    if (this.analysis_data instanceof AnalysisData){
+Experiment.prototype.saveAnalysisData = function (cb) {
+    if (this.analysis_data instanceof AnalysisData) {
         var saveData = {
             exp_id: this.exp_id(),
             analysis_data: this.analysis_data().toJS()
         };
-        uc.socket.emit('updateExperiment', {exp: saveData}, function(response){
-            if (response.success){
+        uc.socket.emit('updateExperiment', { exp: saveData }, function (response) {
+            if (response.success) {
                 console.log("saved experiment analysis data to server.");
                 if (cb) {
                     cb();
@@ -427,14 +427,14 @@ Experiment.prototype.saveAnalysisData = function(cb) {
     }
 };
 
-Experiment.prototype.savePrivateData = function(cb) {
-    if (this.private_data instanceof PrivateData){
+Experiment.prototype.savePrivateData = function (cb) {
+    if (this.private_data instanceof PrivateData) {
         var saveData = {
             exp_id: this.exp_id(),
             private_data: this.private_data.toJS()
         };
-        uc.socket.emit('updateExperiment', {exp: saveData}, function(response){
-            if (response.success){
+        uc.socket.emit('updateExperiment', { exp: saveData }, function (response) {
+            if (response.success) {
                 console.log("saved experiment private data to server.");
                 if (cb) {
                     cb();
@@ -450,7 +450,7 @@ Experiment.prototype.savePrivateData = function(cb) {
 /**
  * revert last step
  */
-Experiment.prototype.revertLastSave = function() {
+Experiment.prototype.revertLastSave = function () {
     if (uc.userdata.accountSettingsData.ctrlZenabled() && this.lastSavedJsons.length > 1) {
         console.log("revert last step");
         if (uc.currentEditorView instanceof TrialEditor) {
@@ -483,7 +483,7 @@ Experiment.prototype.revertLastSave = function() {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-Experiment.prototype.setPointers = function() {
+Experiment.prototype.setPointers = function () {
     if (this.exp_data instanceof ExpData) {
         this.exp_data.setPointers();
     }
@@ -495,7 +495,7 @@ Experiment.prototype.setPointers = function() {
  * @param {object} data - the json description of the states.
  * @returns {Experiment}
  */
-Experiment.prototype.fromJS = function(data) {
+Experiment.prototype.fromJS = function (data) {
     var self = this;
 
     this.guid(data.guid);
@@ -510,7 +510,7 @@ Experiment.prototype.fromJS = function(data) {
     if (data.hasOwnProperty("modified_time")) {
         this.modified_time(data.modified_time);
     }
-    if (data.hasOwnProperty("exp_data")){
+    if (data.hasOwnProperty("exp_data")) {
         this.exp_data = new ExpData(this);
         this.exp_data.fromJS(data.exp_data);
     }
@@ -518,27 +518,27 @@ Experiment.prototype.fromJS = function(data) {
         this.exp_data = "not loaded";
     }
 
-    if (data.hasOwnProperty("publishing_data") && data.publishing_data != null){
+    if (data.hasOwnProperty("publishing_data") && data.publishing_data != null) {
         this.publishing_data.fromJS(data.publishing_data);
     }
 
-    if (data.hasOwnProperty("exp_run_data") && data.exp_run_data != null){
+    if (data.hasOwnProperty("exp_run_data") && data.exp_run_data != null) {
         this.exp_run_data().fromJS(data.exp_run_data);
     }
 
-    if (data.hasOwnProperty("analysis_data") && data.analysis_data != null){
+    if (data.hasOwnProperty("analysis_data") && data.analysis_data != null) {
         this.analysis_data.fromJS(data.analysis_data);
     }
 
-    if (data.hasOwnProperty("private_data") && data.private_data != null){
+    if (data.hasOwnProperty("private_data") && data.private_data != null) {
         this.private_data.fromJS(data.private_data);
     }
 
-    if (data.hasOwnProperty("exp_server_data")){
+    if (data.hasOwnProperty("exp_server_data")) {
         this.exp_server_data(data.exp_server_data);
     }
 
-    if (data.hasOwnProperty("study_settings")){
+    if (data.hasOwnProperty("study_settings")) {
         this.study_settings(data.study_settings);
     }
 
@@ -557,9 +557,9 @@ Experiment.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-Experiment.prototype.toJS = function() {
+Experiment.prototype.toJS = function () {
 
-    if (this.exp_data instanceof ExpData){
+    if (this.exp_data instanceof ExpData) {
         var exp_data_serialized = this.exp_data.toJS();
         var study_settings = exp_data_serialized.studySettings; // this is copied to have faster top level access from db.
     }
@@ -567,34 +567,34 @@ Experiment.prototype.toJS = function() {
         throw Error("cannot save exp data");
     }
 
-    if (this.publishing_data instanceof PublishingData){
+    if (this.publishing_data instanceof PublishingData) {
         var publishing_data_serialized = this.publishing_data.toJS();
     }
     else {
         throw Error("cannot save publishing_data");
     }
 
-    if (this.exp_run_data() instanceof ExpRunData){
+    if (this.exp_run_data() instanceof ExpRunData) {
         var exp_run_data_serialized = this.exp_run_data().toJS();
     }
     else {
         throw Error("cannot save exp_run_data");
     }
 
-    if (this.analysis_data instanceof AnalysisData){
+    if (this.analysis_data instanceof AnalysisData) {
         var analysisData_serialized = this.analysis_data.toJS();
     }
     else {
         throw Error("cannot save analysis_data");
     }
 
-    if (this.private_data instanceof PrivateData){
+    if (this.private_data instanceof PrivateData) {
         var private_data_serialized = this.private_data.toJS();
     }
     else {
         throw Error("cannot save private_data");
     }
-    
+
     return {
         guid: this.guid(),
         exp_id: this.exp_id(),

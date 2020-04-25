@@ -129,7 +129,7 @@ function entityFactory(entityJson, expData) {
             entity.fromJS(entityJson);
             break;
         case 'Factor':
-            entity = new Factor(expData,null);
+            entity = new Factor(expData, null);
             entity.fromJS(entityJson);
             break;
         case 'SessionTimeSettings':

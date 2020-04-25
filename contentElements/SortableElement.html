@@ -1,15 +1,21 @@
 <template id='sortable-editview-template'>
-    <div class="panel-body" style="height: 100%; margin-top: -10px">
+    <div class="panel-body"
+         style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Sortable</div>
 
         <div>
             <span>Show Question Header:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element"
+                   style="display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
         </div>
 
         <div>
             <label>Activate Sorting / Disable Text-Editing: </label>
-            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;" type="checkbox" data-bind="checked: dataModel.activeSorting">
+            <input style="margin-top: inherit; margin-bottom: inherit; display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: dataModel.activeSorting">
         </div>
         <hr>
 
@@ -20,13 +26,20 @@
 
 
         <div>Add Element:
-            <span> Name:</span><input style="width: 120px; margin-left:3px; display: inline-block" type="text" class="form-control" data-bind="value:currentEntry">  <span style="cursor: pointer" data-bind="click:addElem"><img width="20" height="20" src="/resources/icons/add.svg"/></span></span>
+            <span> Name:</span><input style="width: 120px; margin-left:3px; display: inline-block"
+                   type="text"
+                   class="form-control"
+                   data-bind="value:currentEntry"> <span style="cursor: pointer"
+                  data-bind="click:addElem"><img width="20"
+                     height="20"
+                     src="/resources/icons/add.svg" /></span></span>
         </div>
 
 
         <label>
             Linked Variable:
-            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback,allowedFormats: ['array'] }}"></span>
+            <span
+                  data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback,allowedFormats: ['array'] }}"></span>
         </label>
 
 
@@ -36,23 +49,39 @@
             <div><span>Index:</span> <span style="margin-left: 30px">Element Names:</span></div>
             <!-- ko with: (dataModel.variable().startValue())  -->
             <div data-bind="foreach: value">
-                <div class="hoverAreaOuter" style="display: block; width: 100%">
+                <div class="hoverAreaOuter"
+                     style="display: block; width: 100%">
                     <span>
-                        <span style="display: inline-block; margin-left: 10px;"  data-bind="text:$index()+1"></span>
+                        <span style="display: inline-block; margin-left: 10px;"
+                              data-bind="text:$index()+1"></span>
 
                         <span>
                             <!-- ko if: editVal-->
-                            <input style="display: inline-block; margin-left: 50px" type="text" data-bind="value: value, hasFocus: editVal, valueUpdate: 'afterkeydown'">
+                            <input style="display: inline-block; margin-left: 50px"
+                                   type="text"
+                                   data-bind="value: value, hasFocus: editVal, valueUpdate: 'afterkeydown'">
                             <!-- /ko -->
 
                             <!-- ko ifnot: editVal-->
                             <span>
-                                <span style="display: inline-block; margin-left: 50px"  data-bind="text: value"></span>
-                                <span class="hover-btn ftAdd" style="margin-top:-5px" data-bind="click: function(data,event) {editEntry()}" data-toggle="tooltip" title="Rename Entry">
-                                    <img width="14" height="14" src="/resources/shapes/dark/edit.svg">
+                                <span style="display: inline-block; margin-left: 50px"
+                                      data-bind="text: value"></span>
+                                <span class="hover-btn ftAdd"
+                                      style="margin-top:-5px"
+                                      data-bind="click: function(data,event) {editEntry()}"
+                                      data-toggle="tooltip"
+                                      title="Rename Entry">
+                                    <img width="14"
+                                         height="14"
+                                         src="/resources/shapes/dark/edit.svg">
                                 </span>
-                                <span class="hover-btn ftAdd" style="margin:0; margin-left: 20px; line-height: 14px;" data-bind="event: {click: function(data,event) {$parentContext.$parent.removeElem($index())}}"  title="Delete Entry">
-                                    <img width="14" height="14" src="/resources/shapes/dark/delete.svg">
+                                <span class="hover-btn ftAdd"
+                                      style="margin:0; margin-left: 20px; line-height: 14px;"
+                                      data-bind="event: {click: function(data,event) {$parentContext.$parent.removeElem($index())}}"
+                                      title="Delete Entry">
+                                    <img width="14"
+                                         height="14"
+                                         src="/resources/shapes/dark/delete.svg">
                                 </span>
                             </span>
                             <!-- /ko -->
@@ -75,7 +104,8 @@
     <!-- /ko -->
 
     <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
-        <ul class="sortableElement sortableOuter" id="sortableElementPrev" >
+        <ul class="sortableElement sortableOuter"
+            id="sortableElementPrev">
             <!-- ko foreach: dataModel.elements -->
             <li style="margin: 15px;
                 padding: 10px 5px;
@@ -83,8 +113,12 @@
                 min-height: 25px;
                 background-color: #fff;
                 border-radius: 5px;
-                border: 1px solid lightgray;" class="sortableInner ui-state-default" data-bind="style: {cursor: $parent.dataModel.activeSorting() ? 'pointer': 'default'}">
-                <div style="display: inline-block" data-bind="component: {name : 'editable-text-element-preview', params : sortableText},style: {cursor: $parent.dataModel.activeSorting() ? 'pointer': 'default'}"></div>
+                border: 1px solid lightgray;"
+                class="sortableInner ui-state-default"
+                data-bind="style: {cursor: $parent.dataModel.activeSorting() ? 'pointer': 'default'}">
+                <div style="display: inline-block"
+                     data-bind="component: {name : 'editable-text-element-preview', params : sortableText},style: {cursor: $parent.dataModel.activeSorting() ? 'pointer': 'default'}">
+                </div>
             </li>
             <!-- /ko -->
         </ul>
@@ -100,7 +134,9 @@
     <!-- /ko -->
 
     <div data-bind="style: {marginLeft: dataModel.margin, marginRight: dataModel.margin}">
-        <ul class="sortableElement sortableOuter" id="sortableElementPlayer" data-bind="style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
+        <ul class="sortableElement sortableOuter"
+            id="sortableElementPlayer"
+            data-bind="style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
             <!-- ko foreach: dataModel.elements -->
             <li style="margin: 15px;
                 padding: 10px 5px;
@@ -112,7 +148,9 @@
                 cursor: pointer"
                 class="sortableInner ui-state-default"
                 data-bind="style:{'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
-                <div style="display: inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : sortableText, style:{'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}}"></div>
+                <div style="display: inline-block"
+                     data-bind="component: {name : 'editable-text-element-playerview', params : sortableText, style:{'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}}">
+                </div>
             </li>
             <!-- /ko -->
         </ul>

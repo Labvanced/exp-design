@@ -1,25 +1,27 @@
 <template id="display-text-editview-template">
-    <div class="panel-body" style="height: 100%; margin-top: -10px">
+    <div class="panel-body"
+         style="height: 100%; margin-top: -10px">
 
         <div class="taskeditor-header">Text</div>
 
         <div>
             <table>
                 <thead>
-                <tr>
-                    <th style="width: 50px;">Entry</th>
-                    <th>Linked Variables</th>
-                </tr>
+                    <tr>
+                        <th style="width: 50px;">Entry</th>
+                        <th>Linked Variables</th>
+                    </tr>
                 </thead>
                 <tbody data-bind="foreach: dataModel.variablesInText">
-                <tr>
-                    <td>
-                        <div data-bind="text: $index()+1"></div>
-                    </td>
-                    <td>
-                        <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: $rawData, allowedDatatypes: ['string','numeric','boolean','categorical','datetime','time','timer'],  allowedFormats: ['scalar','array'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            <div data-bind="text: $index()+1"></div>
+                        </td>
+                        <td>
+                            <span
+                                  data-bind="component: {name: 'LinkedVariableView', params: {variableObs: $rawData, allowedDatatypes: ['string','numeric','boolean','categorical','datetime','time','timer'],  allowedFormats: ['scalar','array'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -30,9 +32,11 @@
 
 
 <template id="display-text-element-preview-template">
-    <div style='height: 100%' data-bind="component: {name : 'editable-text-element-preview', params : text}"></div>
+    <div style='height: 100%'
+         data-bind="component: {name : 'editable-text-element-preview', params : text}"></div>
 </template>
 
 <template id="display-text-element-playerview-template">
-    <div style='height: 100%' data-bind="component: {name : 'editable-text-element-playerview', params : text}"></div>
+    <div style='height: 100%'
+         data-bind="component: {name : 'editable-text-element-playerview', params : text}"></div>
 </template>

@@ -3,7 +3,7 @@
  * @param condition
  * @constructor
  */
-var TrialVariation= function(condition) {
+var TrialVariation = function (condition) {
     var self = this;
     this.condition = condition;
 
@@ -12,9 +12,9 @@ var TrialVariation= function(condition) {
     this.trialIdx = ko.observable(0);
 
 
-    this.uniqueId = ko.computed(function() {
+    this.uniqueId = ko.computed(function () {
         var offset = condition.factorGroup.trialOffset();
-        return self.condition.trialStartIdx()+self.nr() +offset;
+        return self.condition.trialStartIdx() + self.nr() + offset;
     }, this);
 
 };
@@ -24,7 +24,7 @@ var TrialVariation= function(condition) {
  * @param {object} data - the json description of the states.
  * @returns {TrialVariation}
  */
-TrialVariation.prototype.fromJS= function(data) {
+TrialVariation.prototype.fromJS = function (data) {
     return this;
 };
 
@@ -32,6 +32,6 @@ TrialVariation.prototype.fromJS= function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TrialVariation.prototype.toJS= function() {
+TrialVariation.prototype.toJS = function () {
     return {};
 };

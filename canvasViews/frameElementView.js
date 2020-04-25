@@ -1,5 +1,5 @@
 
-var FrameElementView = function(dataModel, parentView) {
+var FrameElementView = function (dataModel, parentView) {
 
     var self = this;
     this.dataModel = dataModel;
@@ -20,53 +20,53 @@ var FrameElementView = function(dataModel, parentView) {
     this.div = document.createElement('div');
     $(this.div).css({
         "position": "absolute"
-       // "opacity": this.selectedTrialView.visibility()
+        // "opacity": this.selectedTrialView.visibility()
     });
 
     this.divContent = document.createElement('div');
-    this.border = ko.computed(function() {
-        var border = self.dataModel.modifier().selectedTrialView.borderSize() + "px solid "+  self.dataModel.borderColor();
+    this.border = ko.computed(function () {
+        var border = self.dataModel.modifier().selectedTrialView.borderSize() + "px solid " + self.dataModel.borderColor();
         $(self.divContent).css({
-            "border":  border
+            "border": border
         });
-    },this);
+    }, this);
 
-    this.backgroundColor = ko.computed(function() {
-        var backgroundColor =  self.dataModel.modifier().selectedTrialView.backgroundColor();
+    this.backgroundColor = ko.computed(function () {
+        var backgroundColor = self.dataModel.modifier().selectedTrialView.backgroundColor();
         $(self.divContent).css({
-            "background-color":  backgroundColor
+            "background-color": backgroundColor
         });
-    },this);
+    }, this);
 
-    this.roundness = ko.computed(function() {
-        var roundness =  self.dataModel.roundness();
-        roundness = (roundness /2 *100)+'%';
+    this.roundness = ko.computed(function () {
+        var roundness = self.dataModel.roundness();
+        roundness = (roundness / 2 * 100) + '%';
         $(self.divContent).css({
-            "border-radius":  roundness
+            "border-radius": roundness
         });
-    },this);
+    }, this);
 
 
-    this.overflowX = ko.computed(function() {
+    this.overflowX = ko.computed(function () {
         var overflowX = self.dataModel.overflowX();
         $(self.divContent).css({
-            "overflow-x":  overflowX
+            "overflow-x": overflowX
         });
-    },this);
+    }, this);
 
-    this.overflowY = ko.computed(function() {
-        var overflowY =  self.dataModel.overflowY();
+    this.overflowY = ko.computed(function () {
+        var overflowY = self.dataModel.overflowY();
         $(self.divContent).css({
-            "overflow-Y":  overflowY
+            "overflow-Y": overflowY
         });
-    },this);
+    }, this);
 
     $(this.divContent).css({
         "position": "absolute",
         "overflow-x": this.overflowX(),
-        "overflow-y ":this.overflowY(),
+        "overflow-y ": this.overflowY(),
         "opacity": this.selectedTrialView.visibility(),
-        "border":  this.border(),
+        "border": this.border(),
         "background-color": this.backgroundColor(),
         "border-radius": this.roundness()
 
@@ -79,44 +79,44 @@ var FrameElementView = function(dataModel, parentView) {
 };
 
 
-FrameElementView.prototype.setupSubscriber = function() {
+FrameElementView.prototype.setupSubscriber = function () {
     var self = this;
 
-    this.scale = ko.computed(function() {
+    this.scale = ko.computed(function () {
         return this.parentView.scale();
     }, this);
 
     if (this.dataModel.content().hasOwnProperty('stretchImageToFitBoundingBox')) {
-        this.disposables.push(this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox.subscribe(function(newVal) {
+        this.disposables.push(this.dataModel.content().modifier().selectedTrialView.stretchImageToFitBoundingBox.subscribe(function (newVal) {
             self.update(true, false);
         }));
     }
 
-    this.disposables.push(this.scale.subscribe(function() {
-        self.update(true,true);
+    this.disposables.push(this.scale.subscribe(function () {
+        self.update(true, true);
     }));
 
-    this.disposables.push(this.selectedTrialView.editorX.subscribe(function(x) {
-        self.update(false,true);
+    this.disposables.push(this.selectedTrialView.editorX.subscribe(function (x) {
+        self.update(false, true);
     }));
 
-    this.disposables.push(this.selectedTrialView.editorY.subscribe(function(y) {
-        self.update(false,true);
+    this.disposables.push(this.selectedTrialView.editorY.subscribe(function (y) {
+        self.update(false, true);
     }));
 
-    this.disposables.push(this.selectedTrialView.visibility.subscribe(function(a) {
+    this.disposables.push(this.selectedTrialView.visibility.subscribe(function (a) {
         $(self.divContent).css({
             "opacity": self.selectedTrialView.visibility()
         });
     }));
 
-    this.disposables.push(this.selectedTrialView.editorWidth.subscribe(function(w) {
-        self.update(true,false);
+    this.disposables.push(this.selectedTrialView.editorWidth.subscribe(function (w) {
+        self.update(true, false);
     }));
 
-    this.disposables.push(this.selectedTrialView.editorHeight.subscribe(function(h) {
-        self.update(true,false);
-        if (self.dataModel.content() instanceof MultiLineInputElement){
+    this.disposables.push(this.selectedTrialView.editorHeight.subscribe(function (h) {
+        self.update(true, false);
+        if (self.dataModel.content() instanceof MultiLineInputElement) {
             self.dataModel.content().recalcHeight()
         }
     }));
@@ -124,23 +124,23 @@ FrameElementView.prototype.setupSubscriber = function() {
 
 
 
-    this.disposables.push(this.selectedTrialView.contentScaling.subscribe(function(newValue){
-        self.update(true,false);
+    this.disposables.push(this.selectedTrialView.contentScaling.subscribe(function (newValue) {
+        self.update(true, false);
     }));
 
-    this.disposables.push(this.selectedTrialView.contentRotation.subscribe(function(newValue){
-        self.update(true,false);
+    this.disposables.push(this.selectedTrialView.contentRotation.subscribe(function (newValue) {
+        self.update(true, false);
     }));
 
-    this.disposables.push(this.dataModel.anchorPointX.subscribe(function(newVal) {
-        self.update(false,true);
+    this.disposables.push(this.dataModel.anchorPointX.subscribe(function (newVal) {
+        self.update(false, true);
     }));
 
-    this.disposables.push(this.dataModel.anchorPointY.subscribe(function(newVal) {
-        self.update(false,true);
+    this.disposables.push(this.dataModel.anchorPointY.subscribe(function (newVal) {
+        self.update(false, true);
     }));
 
-    this.disposables.push(this.isSelected.subscribe(function(newVal){
+    this.disposables.push(this.isSelected.subscribe(function (newVal) {
         if (newVal) {
             $(self.div).css({
                 "outline": "3px #74c9d6 solid"
@@ -153,22 +153,22 @@ FrameElementView.prototype.setupSubscriber = function() {
         }
     }));
 
-    this.disposables.push(this.dataModel.content.subscribe(function(newValue){
+    this.disposables.push(this.dataModel.content.subscribe(function (newValue) {
         self.renderContent(newValue);
     }));
 
-    if(this.dataModel.content().imgSource) {
-        this.disposables.push(this.dataModel.content().imgSource.subscribe(function(imgSource) {
+    if (this.dataModel.content().imgSource) {
+        this.disposables.push(this.dataModel.content().imgSource.subscribe(function (imgSource) {
             self.renderContent(self.dataModel.content);
         }));
     }
 };
 
-FrameElementView.prototype.update = function(size, position){
+FrameElementView.prototype.update = function (size, position) {
 
     var self = this;
 
-    if (size){
+    if (size) {
 
         $(this.div).css({
             "width": self.selectedTrialView.editorWidth() * self.scale(),
@@ -223,7 +223,7 @@ FrameElementView.prototype.update = function(size, position){
             "height": self.selectedTrialView.editorHeight() * self.scale()
         });
 
-        if (this.dataModel.content().type == "ImageElement"){
+        if (this.dataModel.content().type == "ImageElement") {
             var image = this.divContentInside;
 
 
@@ -240,8 +240,8 @@ FrameElementView.prototype.update = function(size, position){
                         "width": w,
                         "height": h,
                         "position": 'absolute',
-                        "left": (self.selectedTrialView.editorWidth() * self.scale() - w)/2,
-                        "top": (self.selectedTrialView.editorHeight() * self.scale() - h)/2,
+                        "left": (self.selectedTrialView.editorWidth() * self.scale() - w) / 2,
+                        "top": (self.selectedTrialView.editorHeight() * self.scale() - h) / 2,
                         "-webkit-user-drag": 'none',
                         "-khtml-user-drag": 'none',
                         "-moz-user-drag": 'none',
@@ -279,28 +279,28 @@ FrameElementView.prototype.update = function(size, position){
 
     }
 
-    if (position || size){
+    if (position || size) {
 
         var left = 0;
-        if (this.dataModel.anchorPointX() == 'low'){
+        if (this.dataModel.anchorPointX() == 'low') {
             left = self.selectedTrialView.editorX();
         }
-        else if(this.dataModel.anchorPointX() == 'high'){
+        else if (this.dataModel.anchorPointX() == 'high') {
             left = self.selectedTrialView.editorX() - self.selectedTrialView.editorWidth();
         }
         else { // center
-            left = self.selectedTrialView.editorX() - self.selectedTrialView.editorWidth()/2;
+            left = self.selectedTrialView.editorX() - self.selectedTrialView.editorWidth() / 2;
         }
 
         var top = 0;
-        if (this.dataModel.anchorPointY() == 'low'){
+        if (this.dataModel.anchorPointY() == 'low') {
             top = self.selectedTrialView.editorY();
         }
-        else if(this.dataModel.anchorPointY() == 'high'){
+        else if (this.dataModel.anchorPointY() == 'high') {
             top = self.selectedTrialView.editorY() - self.selectedTrialView.editorHeight();
         }
         else { // center
-            top = self.selectedTrialView.editorY() - self.selectedTrialView.editorHeight()/2;
+            top = self.selectedTrialView.editorY() - self.selectedTrialView.editorHeight() / 2;
         }
 
 
@@ -315,65 +315,65 @@ FrameElementView.prototype.update = function(size, position){
 };
 
 
-FrameElementView.prototype.setTransformOrigin = function() {
+FrameElementView.prototype.setTransformOrigin = function () {
 
-    if (this.dataModel.anchorPointX() == 'low' && this.dataModel.anchorPointY() == 'low'){
+    if (this.dataModel.anchorPointX() == 'low' && this.dataModel.anchorPointY() == 'low') {
         $(this.div).css({
-        "-ms-transform-origin": "left top", /* IE 9 */
-        "-webkit-transform-origin": "left top", /* Chrome, Safari, Opera */
-        "transform-origin": "left top"
+            "-ms-transform-origin": "left top", /* IE 9 */
+            "-webkit-transform-origin": "left top", /* Chrome, Safari, Opera */
+            "transform-origin": "left top"
         })
     }
-    else if(this.dataModel.anchorPointX() == 'low' && this.dataModel.anchorPointY() == 'center'){
+    else if (this.dataModel.anchorPointX() == 'low' && this.dataModel.anchorPointY() == 'center') {
         $(this.div).css({
             "-ms-transform-origin": "left center", /* IE 9 */
             "-webkit-transform-origin": "left center", /* Chrome, Safari, Opera */
             "transform-origin": "left center"
         })
     }
-    else if (this.dataModel.anchorPointX() == 'low'  && this.dataModel.anchorPointY() == 'high'){
+    else if (this.dataModel.anchorPointX() == 'low' && this.dataModel.anchorPointY() == 'high') {
         $(this.div).css({
             "-ms-transform-origin": "left bottom", /* IE 9 */
             "-webkit-transform-origin": "left bottom", /* Chrome, Safari, Opera */
             "transform-origin": "left bottom"
         })
     }
-    else if (this.dataModel.anchorPointX() == 'center' && this.dataModel.anchorPointY() == 'low'){
+    else if (this.dataModel.anchorPointX() == 'center' && this.dataModel.anchorPointY() == 'low') {
         $(this.div).css({
             "-ms-transform-origin": "center top", /* IE 9 */
             "-webkit-transform-origin": "center top", /* Chrome, Safari, Opera */
             "transform-origin": "center top"
         })
     }
-    else if (this.dataModel.anchorPointX() == 'center' && this.dataModel.anchorPointY() == 'center'){
+    else if (this.dataModel.anchorPointX() == 'center' && this.dataModel.anchorPointY() == 'center') {
         $(this.div).css({
             "-ms-transform-origin": "center center", /* IE 9 */
             "-webkit-transform-origin": "center center", /* Chrome, Safari, Opera */
             "transform-origin": "center center"
         })
     }
-    else if (this.dataModel.anchorPointX() == 'center' && this.dataModel.anchorPointY() == 'high'){
+    else if (this.dataModel.anchorPointX() == 'center' && this.dataModel.anchorPointY() == 'high') {
         $(this.div).css({
             "-ms-transform-origin": "center bottom", /* IE 9 */
             "-webkit-transform-origin": "center bottom", /* Chrome, Safari, Opera */
             "transform-origin": "center bottom"
         })
     }
-    else if (this.dataModel.anchorPointX() == 'high' && this.dataModel.anchorPointY() == 'low'){
+    else if (this.dataModel.anchorPointX() == 'high' && this.dataModel.anchorPointY() == 'low') {
         $(this.div).css({
             "-ms-transform-origin": "right top", /* IE 9 */
             "-webkit-transform-origin": "right top", /* Chrome, Safari, Opera */
             "transform-origin": "right top"
         })
     }
-    else if (this.dataModel.anchorPointX() == 'high' && this.dataModel.anchorPointY() == 'center'){
+    else if (this.dataModel.anchorPointX() == 'high' && this.dataModel.anchorPointY() == 'center') {
         $(this.div).css({
             "-ms-transform-origin": "right center", /* IE 9 */
             "-webkit-transform-origin": "right center", /* Chrome, Safari, Opera */
             "transform-origin": "right center"
         })
     }
-    else if (this.dataModel.anchorPointX() == 'high' && this.dataModel.anchorPointY() == 'high'){
+    else if (this.dataModel.anchorPointX() == 'high' && this.dataModel.anchorPointY() == 'high') {
         $(this.div).css({
             "-ms-transform-origin": "right bottom", /* IE 9 */
             "-webkit-transform-origin": "right bottom", /* Chrome, Safari, Opera */
@@ -383,7 +383,7 @@ FrameElementView.prototype.setTransformOrigin = function() {
 
 };
 
-FrameElementView.prototype.setWidthAndHeight = function(w, h) {
+FrameElementView.prototype.setWidthAndHeight = function (w, h) {
 
     if (this.dataModel.hasOwnProperty('modifier')) {
         this.selectedTrialView.editorWidth(w);
@@ -396,28 +396,28 @@ FrameElementView.prototype.setWidthAndHeight = function(w, h) {
 
 };
 
-FrameElementView.prototype.setCoord = function(left, top) {
+FrameElementView.prototype.setCoord = function (left, top) {
 
     var x = 0;
-    if (this.dataModel.anchorPointX() == 'low'){
+    if (this.dataModel.anchorPointX() == 'low') {
         x = left;
     }
-    else if(this.dataModel.anchorPointX() == 'high'){
+    else if (this.dataModel.anchorPointX() == 'high') {
         x = left + this.selectedTrialView.editorWidth();
     }
     else { // center
-        x = left + this.selectedTrialView.editorWidth()/2;
+        x = left + this.selectedTrialView.editorWidth() / 2;
     }
 
     var y = 0;
-    if (this.dataModel.anchorPointY() == 'low'){
+    if (this.dataModel.anchorPointY() == 'low') {
         y = top;
     }
-    else if(this.dataModel.anchorPointY() == 'high'){
+    else if (this.dataModel.anchorPointY() == 'high') {
         y = top + this.selectedTrialView.editorHeight();
     }
     else { // center
-        y = top + this.selectedTrialView.editorHeight()/2;
+        y = top + this.selectedTrialView.editorHeight() / 2;
     }
 
     if (this.dataModel.hasOwnProperty('modifier')) {
@@ -433,27 +433,27 @@ FrameElementView.prototype.setCoord = function(left, top) {
 };
 
 
-FrameElementView.prototype.setNaturalImageSize = function(naturalWidth, naturalHeight) {
+FrameElementView.prototype.setNaturalImageSize = function (naturalWidth, naturalHeight) {
     console.log("initialize original size");
     // initialize original size:
     this.fullWidth(naturalWidth);
     this.fullHeight(naturalHeight);
-    this.update(true,true);
+    this.update(true, true);
 };
 
-FrameElementView.prototype.renderContent = function(data) {
+FrameElementView.prototype.renderContent = function (data) {
     var self = this;
-    if (ko.isObservable(data)){
+    if (ko.isObservable(data)) {
         data = data();
     }
 
     if (data.type == "ImageElement") {
-        if (data.imgSource()){
+        if (data.imgSource()) {
 
             // check if we have it preloaded:
             var imgElem;
             var htmlObjectUrl;
-            if (typeof player !== 'undefined'){
+            if (typeof player !== 'undefined') {
                 if (typeof player.playerPreloader.queue !== 'undefined') {
                     var file_id = data.modifier().selectedTrialView.file_id();
                     htmlObjectUrl = player.playerPreloader.preloadedObjectUrlsById[file_id];
@@ -513,8 +513,8 @@ FrameElementView.prototype.renderContent = function(data) {
     }
 };
 
-FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function() {
-    if (typeof player == 'undefined'){
+FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function () {
+    if (typeof player == 'undefined') {
         var self = this;
         $(this.divContent).children().remove();
 
@@ -525,23 +525,23 @@ FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function() {
             "border": " 1px solid black"
         });
         $(this.text).text(this.dataModel.name());
-        this.disposables.push(this.dataModel.name.subscribe(function(newName) {
+        this.disposables.push(this.dataModel.name.subscribe(function (newName) {
             $(self.text).text(newName);
         }));
 
         $(this.divContent).append($(this.text));
-        this.update(true,true);
+        this.update(true, true);
     }
 
 };
 
-FrameElementView.prototype.resizeBoundingBox = function(){
-    if (this.divContentInside[0]){
-        var height =  $(this.divContentInside[0]).find(".innerObjectContent").height() * (1 / this.scale());
-        var width =  $(this.divContentInside[0]).find(".innerObjectContent").width() * (1 / this.scale());
+FrameElementView.prototype.resizeBoundingBox = function () {
+    if (this.divContentInside[0]) {
+        var height = $(this.divContentInside[0]).find(".innerObjectContent").height() * (1 / this.scale());
+        var width = $(this.divContentInside[0]).find(".innerObjectContent").width() * (1 / this.scale());
     }
 
-    else{
+    else {
         var width = this.divContentInside.width * (1 / this.scale());
         var height = this.divContentInside.height * (1 / this.scale());
     }
@@ -552,7 +552,7 @@ FrameElementView.prototype.resizeBoundingBox = function(){
 /**
  * dispose ko component and remove dom div...
  */
-FrameElementView.prototype.dispose = function() {
+FrameElementView.prototype.dispose = function () {
     ko.cleanNode($(this.divContent)[0]);
     $(this.div).remove();
 
@@ -568,7 +568,7 @@ FrameElementView.prototype.dispose = function() {
     this.roundness.dispose();
     this.backgroundColor.dispose();
 
-    if (this.editorCallbacks){
+    if (this.editorCallbacks) {
         this.editorCallbacks.dispose();
     }
     delete this.parentView.viewElements.byId[this.dataModel.id()];

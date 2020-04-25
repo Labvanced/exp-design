@@ -1,26 +1,37 @@
 <template id="likert-editview-template">
-    <div class="panel-body" style="height: 100%; margin-top: -10px">
+    <div class="panel-body"
+         style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Likert</div>
 
 
         <div>
             <span>Show Question Header:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element"
+                   style="display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
         </div>
 
         <div>
             <span>Show numbers</span>
-            <input type="checkbox" data-bind="checked: dataModel.showNums">
+            <input type="checkbox"
+                   data-bind="checked: dataModel.showNums">
         </div>
 
         <div>
             <span>Required:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element"
+                   style="display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false">
         </div>
 
         <div>
             <span>Balance Label Sides:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.reshuffleElements,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element"
+                   style="display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: dataModel.reshuffleElements,click:function(){return true},clickBubble: false">
         </div>
 
         <hr>
@@ -35,13 +46,17 @@
 
 
         <div>
-            Inner Margin: <input style="display: inline-block; width: 50px" type="number" min="0" data-bind="value:margin,valueUpdate:'input'"> pt
+            Inner Margin: <input style="display: inline-block; width: 50px"
+                   type="number"
+                   min="0"
+                   data-bind="value:margin,valueUpdate:'input'"> pt
         </div>
 
 
         <label>
             Linked Variable:
-            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['numeric'], relinkCallback: relinkCallback } }"></span>
+            <span
+                  data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['numeric'], relinkCallback: relinkCallback } }"></span>
         </label>
 
 
@@ -53,33 +68,50 @@
 <template id="likert-preview-template">
     <div>
         <!-- ko if: (dataModel.enableTitle())  -->
-            <span data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></span>
+        <span data-bind="component: {name : 'editable-text-element-preview', params : questionText}"></span>
         <!-- /ko -->
 
         <!-- ko if: dataModel.isRequired() -->
-            <span class="required-question-icon"   data-bind=" tooltip:'.requiredInfoEditor'">
-                <img width="20" height="20" src="/resources/icons/exmark.svg"/>
-            </span>
+        <span class="required-question-icon"
+              data-bind=" tooltip:'.requiredInfoEditor'">
+            <img width="20"
+                 height="20"
+                 src="/resources/icons/exmark.svg" />
+        </span>
         <!-- /ko -->
     </div>
     <br>
 
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
-        <span class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.startLabel}"></span>
-        <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
-            <div style="display: inline-block; margin-left: inherit; margin-right: inherit" data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+        <span class="notDraggable"
+              style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle"
+              data-bind="component: {name : 'editable-text-element-preview', params : dataModel.startLabel}"></span>
+        <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom"
+              data-bind="foreach: choices">
+            <div style="display: inline-block; margin-left: inherit; margin-right: inherit"
+                 data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
                 <!-- ko if: $parent.dataModel.showNums -->
-                 <span style="display:block; margin-left: 5px;  margin-right: 5px" data-bind="text: $data"></span>
+                <span style="display:block; margin-left: 5px;  margin-right: 5px"
+                      data-bind="text: $data"></span>
                 <!-- /ko -->
                 <!-- removing white space
-                --><label  class="scale-right-entry scalebutton" style="display: inline-block; width: 16px; height: 16px">
-                        <input class="radiobutton-element" style="display:block; margin-left: 5px; margin-right: 5px; cursor: pointer" type="radio" data-bind="attr:{value:$data}, checked: $parent.dataModel.variable().startValue().value, click: function(){return true}, clickBubble: false, enable: $parent.dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
-                        <div class="radiobutton-img" data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
-                    </label><!-- removing white space
+                --><label class="scale-right-entry scalebutton"
+                       style="display: inline-block; width: 16px; height: 16px">
+                    <input class="radiobutton-element"
+                           style="display:block; margin-left: 5px; margin-right: 5px; cursor: pointer"
+                           type="radio"
+                           data-bind="attr:{value:$data}, checked: $parent.dataModel.variable().startValue().value, click: function(){return true}, clickBubble: false, enable: $parent.dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
+                    <div class="radiobutton-img"
+                         data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+                    </div>
+                </label>
+                <!-- removing white space
                 -->
             </div>
         </span>
-        <span class="notDraggable" style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-preview', params : dataModel.endLabel}"></span>
+        <span class="notDraggable"
+              style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle"
+              data-bind="component: {name : 'editable-text-element-preview', params : dataModel.endLabel}"></span>
     </div>
     <br>
 </template>
@@ -87,37 +119,54 @@
 <template id="likert-playerview-template">
     <div>
         <!-- ko if: (dataModel.enableTitle())  -->
-            <span style="display:inline-block" data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
+        <span style="display:inline-block"
+              data-bind="component: {name : 'editable-text-element-playerview', params : questionText}"></span>
         <!-- /ko -->
 
         <!-- ko if: dataModel.triedToSubmit() -->
         <!-- ko ifnot: dataModel.dataIsValid() -->
-            <span class="required-question-icon"   data-bind=" tooltip:'.requiredInfo'">
-                <img width="20" height="20" src="/resources/icons/exmark.svg"/>
-            </span>
+        <span class="required-question-icon"
+              data-bind=" tooltip:'.requiredInfo'">
+            <img width="20"
+                 height="20"
+                 src="/resources/icons/exmark.svg" />
+        </span>
         <!-- /ko -->
         <!-- /ko -->
     </div>
     <br>
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
-        <span style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.startLabel}"></span>
-        <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom" data-bind="foreach: choices">
-            <div style="display: inline-block; margin-left: inherit; margin-right: inherit" data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }" >
+        <span style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle"
+              data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.startLabel}"></span>
+        <span style="display: inline-block; margin-left: inherit; vertical-align: text-bottom"
+              data-bind="foreach: choices">
+            <div style="display: inline-block; margin-left: inherit; margin-right: inherit"
+                 data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
 
 
                 <!-- ko if: $parent.dataModel.showNums -->
-                 <span style="display:block; margin-left: 5px;  margin-right: 5px" data-bind="text: $data"></span>
+                <span style="display:block; margin-left: 5px;  margin-right: 5px"
+                      data-bind="text: $data"></span>
                 <!-- /ko -->
 
                 <!-- removing white space
-                --><label  class="scale-right-entry scalebutton"  style="display: inline-block; width: 16px;  height: 16px">
-                        <input class="radiobutton-element" style="display:block; margin-left: 5px; margin-right: 5px;" type="radio" value="$data" data-bind="attr: {value:$data}, checked: $parent.variable().value().value, click: function(){return true}, clickBubble: false, enable: $parent.dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
-                        <div class="radiobutton-img" data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
-                    </label><!-- removing white space
+                --><label class="scale-right-entry scalebutton"
+                       style="display: inline-block; width: 16px;  height: 16px">
+                    <input class="radiobutton-element"
+                           style="display:block; margin-left: 5px; margin-right: 5px;"
+                           type="radio"
+                           value="$data"
+                           data-bind="attr: {value:$data}, checked: $parent.variable().value().value, click: function(){return true}, clickBubble: false, enable: $parent.dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
+                    <div class="radiobutton-img"
+                         data-bind="style: { 'cursor': $parent.dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+                    </div>
+                </label>
+                <!-- removing white space
                 -->
             </div>
         </span>
-        <span style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle" data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.endLabel}"></span>
+        <span style="display: inline-block; margin-left: inherit;  margin-right: inherit; vertical-align: middle"
+              data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.endLabel}"></span>
     </div>
     <br>
 </template>

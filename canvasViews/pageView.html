@@ -1,25 +1,34 @@
-
 <template id="page-preview-template">
-    <div class="pageOuterDiv" data-bind="with: pageView">
-        <div class="pageInnerDiv" data-bind="style: { backgroundColor: pageDataObs().bgColor, maxWidth: pageDataObs().maxWidth()+'px' }">
+    <div class="pageOuterDiv"
+         data-bind="with: pageView">
+        <div class="pageInnerDiv"
+             data-bind="style: { backgroundColor: pageDataObs().bgColor, maxWidth: pageDataObs().maxWidth()+'px' }">
             <!-- ko if: pageDataObs() -->
 
-                <!-- ko ifnot: parent.previewPlayerView() -->
-                <div class="pageElementsList" data-bind="sortable: {data: pageDataObs().elements, options: {handle: '.pageElementHandle'}} ">
-                    <div class="pageElementOuterBorder" data-bind="style:{marginBottom: $parent.pageDataObs().marginBetweenElems()+'px', borderBottom: $parent.pageDataObs().borderSizeBottom()+'px #EDEDED solid'}, css: {selectedPageElement: $parent.pageDataObs().currSelectedElement()==$data}, click: function(){$parent.setSelectedElement($data)}">
-                        <div class="pageElement" data-bind='component: {name : "pageElement-preview-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
+            <!-- ko ifnot: parent.previewPlayerView() -->
+            <div class="pageElementsList"
+                 data-bind="sortable: {data: pageDataObs().elements, options: {handle: '.pageElementHandle'}} ">
+                <div class="pageElementOuterBorder"
+                     data-bind="style:{marginBottom: $parent.pageDataObs().marginBetweenElems()+'px', borderBottom: $parent.pageDataObs().borderSizeBottom()+'px #EDEDED solid'}, css: {selectedPageElement: $parent.pageDataObs().currSelectedElement()==$data}, click: function(){$parent.setSelectedElement($data)}">
+                    <div class="pageElement"
+                         data-bind='component: {name : "pageElement-preview-component", params: {dataModel: $data, parentViewModel: $parent}}'>
                     </div>
                 </div>
-                <!-- /ko -->
+            </div>
+            <!-- /ko -->
 
-                <!-- ko if: parent.previewPlayerView() -->
-                    <div class="pageElementsList" data-bind="foreach: pageDataObs().elements">
-                        <div class="pageElementOuterBorder" data-bind="style: { display: modifier().selectedTrialView.isVisible() ? 'block' : 'none', marginBottom: $parent.pageDataObs().marginBetweenElems()+'px', borderBottom: $parent.pageDataObs().borderSizeBottom()+'px #EDEDED solid'}">
-                            <div class="pageElement" data-bind='component: {name : "pageElement-player-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
-                        </div>
+            <!-- ko if: parent.previewPlayerView() -->
+            <div class="pageElementsList"
+                 data-bind="foreach: pageDataObs().elements">
+                <div class="pageElementOuterBorder"
+                     data-bind="style: { display: modifier().selectedTrialView.isVisible() ? 'block' : 'none', marginBottom: $parent.pageDataObs().marginBetweenElems()+'px', borderBottom: $parent.pageDataObs().borderSizeBottom()+'px #EDEDED solid'}">
+                    <div class="pageElement"
+                         data-bind='component: {name : "pageElement-player-component", params: {dataModel: $data, parentViewModel: $parent}}'>
                     </div>
+                </div>
+            </div>
 
-                <!-- /ko -->
+            <!-- /ko -->
 
             <!-- /ko -->
         </div>
@@ -28,12 +37,18 @@
 
 
 <template id="page-playerview-template">
-    <div class="pageOuterDiv" data-bind="with: pageView">
-        <div class="pageInnerDiv" data-bind="style: { backgroundColor: pageDataObs().bgColor, maxWidth: pageDataObs().maxWidth()+'px' }">
+    <div class="pageOuterDiv"
+         data-bind="with: pageView">
+        <div class="pageInnerDiv"
+             data-bind="style: { backgroundColor: pageDataObs().bgColor, maxWidth: pageDataObs().maxWidth()+'px' }">
             <!-- ko if: pageDataObs() -->
-            <div class="pageElementsList" data-bind="foreach: pageDataObs().elements">
-                <div class="pageElementOuterBorder" data-bind="style: { display: modifier().selectedTrialView.isVisible() ? 'block' : 'none', marginBottom: $parent.pageDataObs().marginBetweenElems()+'px', borderBottom: $parent.pageDataObs().borderSizeBottom()+'px #EDEDED solid'}">
-                    <div class="pageElement" data-bind='component: {name : "pageElement-player-component", params: {dataModel: $data, parentViewModel: $parent}}'></div>
+            <div class="pageElementsList"
+                 data-bind="foreach: pageDataObs().elements">
+                <div class="pageElementOuterBorder"
+                     data-bind="style: { display: modifier().selectedTrialView.isVisible() ? 'block' : 'none', marginBottom: $parent.pageDataObs().marginBetweenElems()+'px', borderBottom: $parent.pageDataObs().borderSizeBottom()+'px #EDEDED solid'}">
+                    <div class="pageElement"
+                         data-bind='component: {name : "pageElement-player-component", params: {dataModel: $data, parentViewModel: $parent}}'>
+                    </div>
                 </div>
             </div>
             <!-- /ko -->
@@ -41,10 +56,12 @@
     </div>
 </template>
 
-<div class="requiredInfo" style="display: none">
+<div class="requiredInfo"
+     style="display: none">
     <span>Required Field</span>
 </div>>
 
-<div class="requiredInfoEditor" style="display: none">
+<div class="requiredInfoEditor"
+     style="display: none">
     <span>Required Field <br>(will only be displayed after validation failed)</span>
 </div>

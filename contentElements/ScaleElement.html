@@ -1,15 +1,22 @@
 <template id="scale-editview-template">
-    <div class="panel-body" style="height: 100%; margin-top: -10px">
+    <div class="panel-body"
+         style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Matrix</div>
 
         <div>
             <span>Randomize Item Order:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.reshuffleElements,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element"
+                   style="display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: dataModel.reshuffleElements,click:function(){return true},clickBubble: false">
         </div>
 
         <div>
             <span>Show Question Header:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element"
+                   style="display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false">
         </div>
         <hr>
 
@@ -17,50 +24,77 @@
         <div>
             <label>Nr of Choices: </label>
             <span data-bind="text: dataModel.nrChoices"></span>
-            <span style="cursor: pointer" data-bind="click:addColumn"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
-            <span style="cursor: pointer" data-bind="click:removeColumn"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
+            <span style="cursor: pointer"
+                  data-bind="click:addColumn"><img width="20"
+                     height="20"
+                     src="/resources/icons/add.svg" /></span>
+            <span style="cursor: pointer"
+                  data-bind="click:removeColumn"><img width="20"
+                     height="20"
+                     src="/resources/icons/delete_dark.svg" /></span>
         </div>
         <label>Insert / Delete from: </label>
-        <select style="width: 40px" class="taskeditor-input" data-bind="options: ScaleElement.prototype.addDeleteOptionsCol, value:dataModel.addDeleteFromCol"></select>
-        <select style="width: 40px" class="taskeditor-input" data-bind="options: ScaleElement.prototype.addDeleteOptionsRow, value:dataModel.addDeleteFromRow"></select>
+        <select style="width: 40px"
+                class="taskeditor-input"
+                data-bind="options: ScaleElement.prototype.addDeleteOptionsCol, value:dataModel.addDeleteFromCol"></select>
+        <select style="width: 40px"
+                class="taskeditor-input"
+                data-bind="options: ScaleElement.prototype.addDeleteOptionsRow, value:dataModel.addDeleteFromRow"></select>
 
         <div>
             <label>Nr of Questions: </label>
             <span data-bind="text: dataModel.nrRows"></span>
-            <span style="cursor: pointer" data-bind="click:addRow"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
-            <span style="cursor: pointer" data-bind="click:removeRow"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
+            <span style="cursor: pointer"
+                  data-bind="click:addRow"><img width="20"
+                     height="20"
+                     src="/resources/icons/add.svg" /></span>
+            <span style="cursor: pointer"
+                  data-bind="click:removeRow"><img width="20"
+                     height="20"
+                     src="/resources/icons/delete_dark.svg" /></span>
         </div>
 
         <table>
             <thead>
-            <tr>
-                <th style="width: 50px;">Entry</th>
-                <th>Linked Variables</th>
-                <th>Required</th>
-            </tr>
+                <tr>
+                    <th style="width: 50px;">Entry</th>
+                    <th>Linked Variables</th>
+                    <th>Required</th>
+                </tr>
             </thead>
             <tbody data-bind="foreach: dataModel.elements">
-            <tr>
-                <td>
-                    <div data-bind="text: $index()+1"></div>
-                </td>
-                <td>
-                    <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: variable, allowedDatatypes: ['numeric'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
-                </td>
-                <td>
-                    <input class="checkbox-element" style="margin-top: inherit; margin-bottom: inherit; display: inline-block; margin-left:45%" type="checkbox" data-bind="checked: isRequired,click:function(){return true},clickBubble: false">
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <div data-bind="text: $index()+1"></div>
+                    </td>
+                    <td>
+                        <span
+                              data-bind="component: {name: 'LinkedVariableView', params: {variableObs: variable, allowedDatatypes: ['numeric'], relinkCallback: function() { $parent.relinkCallback($index()) } } }"></span>
+                    </td>
+                    <td>
+                        <input class="checkbox-element"
+                               style="margin-top: inherit; margin-bottom: inherit; display: inline-block; margin-left:45%"
+                               type="checkbox"
+                               data-bind="checked: isRequired,click:function(){return true},clickBubble: false">
+                    </td>
+                </tr>
             </tbody>
         </table>
 
         <div>Style:</div>
         <div>
-            Left-Right Ratio: <input style="display: inline-block; width: 50px" type="number" min="0"  max="100" data-bind="value: dataModel.leftRightRatio,valueUpdate:'input'"> %
+            Left-Right Ratio: <input style="display: inline-block; width: 50px"
+                   type="number"
+                   min="0"
+                   max="100"
+                   data-bind="value: dataModel.leftRightRatio,valueUpdate:'input'"> %
         </div>
 
         <div>
-            Outer Margin: <input style="display: inline-block; width: 50px" type="number" min="0" data-bind="value: dataModel.margin,valueUpdate:'input'">
+            Outer Margin: <input style="display: inline-block; width: 50px"
+                   type="number"
+                   min="0"
+                   data-bind="value: dataModel.margin,valueUpdate:'input'">
         </div>
     </div>
 </template>
@@ -75,25 +109,45 @@
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
         <div>
             <div class="scale-wrapper">
-                <span class="scale-left-text" data-bind="style:{width:100-dataModel.leftRightRatio()+'%'}" >&nbsp;</span>
-                <span class="scale-right-side" data-bind="foreach: dataModel.labels, style:{width: dataModel.leftRightRatio()-1+'%'}"><!-- removing white space
-                --><div class="scale-right-entry notDraggable" data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-preview', params : labelText}"></div><!-- removing white space
-                --></span>
+                <span class="scale-left-text"
+                      data-bind="style:{width:100-dataModel.leftRightRatio()+'%'}">&nbsp;</span>
+                <span class="scale-right-side"
+                      data-bind="foreach: dataModel.labels, style:{width: dataModel.leftRightRatio()-1+'%'}">
+                    <!-- removing white space
+                -->
+                    <div class="scale-right-entry notDraggable"
+                         data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-preview', params : labelText}">
+                    </div>
+                    <!-- removing white space
+                -->
+                </span>
             </div>
         </div>
         <div data-bind="foreach: dataModel.elements">
             <div class="scale-wrapper">
-                <span class="scale-left-text notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : rowText}, style:{width:100-$parent.dataModel.leftRightRatio()+'%'}" ></span>
-                <span class="scale-right-side" data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-1+'%'}"><!-- removing white space
-                --><label class="scale-right-entry scalebutton" data-bind="style:{width:$parent.parent.calculateWidth()}">
-                        <input class="scalebutton-element" type="radio" data-bind="attr: {value:$index()+1}, checked: $parent.variable().startValue().value,enable: $parent.parent.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
-                        <div class="scalebutton-img" data-bind="style: { 'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
-                    </label><!-- removing white space
+                <span class="scale-left-text notDraggable"
+                      data-bind="component: {name : 'editable-text-element-preview', params : rowText}, style:{width:100-$parent.dataModel.leftRightRatio()+'%'}"></span>
+                <span class="scale-right-side"
+                      data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-1+'%'}">
+                    <!-- removing white space
+                --><label class="scale-right-entry scalebutton"
+                           data-bind="style:{width:$parent.parent.calculateWidth()}">
+                        <input class="scalebutton-element"
+                               type="radio"
+                               data-bind="attr: {value:$index()+1}, checked: $parent.variable().startValue().value,enable: $parent.parent.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
+                        <div class="scalebutton-img"
+                             data-bind="style: { 'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+                        </div>
+                    </label>
+                    <!-- removing white space
                 --></span>
 
                 <!-- ko if: isRequired() -->
-                <span class="required-question-icon"  data-bind="tooltip:'.requiredInfoEditor'">
-                   <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+                <span class="required-question-icon"
+                      data-bind="tooltip:'.requiredInfoEditor'">
+                    <img width="20"
+                         height="20"
+                         src="/resources/icons/exmark.svg" />
                 </span>
                 <!-- /ko -->
             </div>
@@ -114,27 +168,48 @@
     <div data-bind="style: {marginLeft: dataModel.margin()+'pt', marginRight: dataModel.margin()+'pt'}">
         <div>
             <div class="scale-wrapper">
-                <span class="scale-left-text" data-bind="style:{width:100-dataModel.leftRightRatio()+'%'}" >&nbsp;</span>
-                <span class="scale-right-side" data-bind="foreach: dataModel.labels, style:{width: dataModel.leftRightRatio()-1+'%'}"><!-- removing white space
-                --><div class="scale-right-entry notDraggable" data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-playerview', params : labelText}"></div><!-- removing white space
-                --></span>
+                <span class="scale-left-text"
+                      data-bind="style:{width:100-dataModel.leftRightRatio()+'%'}">&nbsp;</span>
+                <span class="scale-right-side"
+                      data-bind="foreach: dataModel.labels, style:{width: dataModel.leftRightRatio()-1+'%'}">
+                    <!-- removing white space
+                -->
+                    <div class="scale-right-entry notDraggable"
+                         data-bind="style:{width:$parent.dataModel.calculateWidth()}, component: {name : 'editable-text-element-playerview', params : labelText}">
+                    </div>
+                    <!-- removing white space
+                -->
+                </span>
             </div>
         </div>
         <div data-bind="foreach: dataModel.elements">
             <div class="scale-wrapper">
-                <div class="scale-left-text notDraggable" data-bind="component: {name : 'editable-text-element-playerview', params : rowText},style:{width:100-$parent.dataModel.leftRightRatio()+'%'}" ></div>
+                <div class="scale-left-text notDraggable"
+                     data-bind="component: {name : 'editable-text-element-playerview', params : rowText},style:{width:100-$parent.dataModel.leftRightRatio()+'%'}">
+                </div>
 
-                <span class="scale-right-side" data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-1+'%'}"><!-- removing white space
-                --><label class="scale-right-entry scalebutton" data-bind="style:{width:$parent.parent.calculateWidth()}">
-                        <input class="scalebutton-element" type="radio" data-bind="attr: {value:$index()+1}, checked: $parent.variable().value().value, enable: $parent.parent.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
-                        <div class="scalebutton-img" data-bind="style: { 'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
-                    </label><!-- removing white space
+                <span class="scale-right-side"
+                      data-bind="foreach: parent.labels, style:{width: $parent.dataModel.leftRightRatio()-1+'%'}">
+                    <!-- removing white space
+                --><label class="scale-right-entry scalebutton"
+                           data-bind="style:{width:$parent.parent.calculateWidth()}">
+                        <input class="scalebutton-element"
+                               type="radio"
+                               data-bind="attr: {value:$index()+1}, checked: $parent.variable().value().value, enable: $parent.parent.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
+                        <div class="scalebutton-img"
+                             data-bind="style: { 'cursor': $parent.parent.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+                        </div>
+                    </label>
+                    <!-- removing white space
                 --></span>
 
                 <!-- ko if: triedToSubmit() -->
                 <!-- ko ifnot: dataIsValid() -->
-                <span class="required-question-icon"  data-bind=" tooltip:'.requiredInfo'">
-                   <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+                <span class="required-question-icon"
+                      data-bind=" tooltip:'.requiredInfo'">
+                    <img width="20"
+                         height="20"
+                         src="/resources/icons/exmark.svg" />
                 </span>
                 <!-- /ko -->
                 <!-- /ko -->

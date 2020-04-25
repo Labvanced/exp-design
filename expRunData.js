@@ -5,7 +5,7 @@ if (node) {
 
 (function (exports) {
 
-    var ExpRunData = function() {
+    var ExpRunData = function () {
         // this class is also used on server, so don't use knockout here:
         this.subjCounterGlobal = 0;
         this.subjCounterPerGroup = [0];
@@ -17,12 +17,12 @@ if (node) {
 
     };
 
-    ExpRunData.prototype.fromJS = function(data) {
+    ExpRunData.prototype.fromJS = function (data) {
         this.subjCounterGlobal = data.subjCounterGlobal;
         this.subjCounterPerGroup = data.subjCounterPerGroup;
     };
 
-    ExpRunData.prototype.toJS = function() {
+    ExpRunData.prototype.toJS = function () {
         return {
             subjCounterGlobal: this.subjCounterGlobal,
             subjCounterPerGroup: this.subjCounterPerGroup

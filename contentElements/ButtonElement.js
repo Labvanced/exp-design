@@ -1,12 +1,12 @@
 
-var ButtonElement = function(expData) {
+var ButtonElement = function (expData) {
 
     var self = this;
     this.expData = expData;
     this.parent = null;
 
     // serialized:
-    this.type= "ButtonElement";
+    this.type = "ButtonElement";
     this.id = ko.observable(guid());
     this.bgColorDefault = ko.observable('#99cc66');
     this.bgColorHover = ko.observable('#99de50');
@@ -26,57 +26,57 @@ var ButtonElement = function(expData) {
 ButtonElement.prototype.label = "Button";
 ButtonElement.prototype.iconPath = "/resources/icons/tools/tool_button.svg";
 ButtonElement.prototype.modifiableProp = [];
-ButtonElement.prototype.dataType =      [];
+ButtonElement.prototype.dataType = [];
 ButtonElement.prototype.numVarNamesRequired = 0;
 
 ButtonElement.prototype.initWidth = 120;
 ButtonElement.prototype.initHeight = 40;
 
 
-ButtonElement.prototype.addButton = function() {
+ButtonElement.prototype.addButton = function () {
     var button = new ButtonEntry(this);
     button.init();
-   // button.buttonText('<div style="text-align: center;">Button</div>');
+    // button.buttonText('<div style="text-align: center;">Button</div>');
     this.buttonEntries.push(button);
 };
 
-ButtonElement.prototype.getTextRefs = function(textArr, label){
-    jQuery.each( this.buttonEntries(), function( index, elem ) {
+ButtonElement.prototype.getTextRefs = function (textArr, label) {
+    jQuery.each(this.buttonEntries(), function (index, elem) {
         var ind = index + 1;
         elem.getTextRefs(textArr, label + '.Entry' + ind);
-    } );
+    });
     return textArr;
 };
 
 
-ButtonElement.prototype.deleteButton = function() {
+ButtonElement.prototype.deleteButton = function () {
     var self = this;
-    this.buttonEntries.splice(0,1);
+    this.buttonEntries.splice(0, 1);
 };
 
-ButtonElement.prototype.init = function() {
+ButtonElement.prototype.init = function () {
     this.addButton();
 };
 /**
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-ButtonElement.prototype.getAllModifiers = function(modifiersArr) {
-    jQuery.each( this.buttonEntries(), function( index, elem ) {
+ButtonElement.prototype.getAllModifiers = function (modifiersArr) {
+    jQuery.each(this.buttonEntries(), function (index, elem) {
         elem.getAllModifiers(modifiersArr);
-    } );
+    });
     modifiersArr.push(this.modifier());
 };
 
-ButtonElement.prototype.setPointers = function(entitiesArr) {
-    for (var i=0; i<this.buttonEntries().length; i++) {
+ButtonElement.prototype.setPointers = function (entitiesArr) {
+    for (var i = 0; i < this.buttonEntries().length; i++) {
         this.buttonEntries()[i].setPointers(entitiesArr);
     }
     this.modifier().setPointers(entitiesArr);
 };
 
-ButtonElement.prototype.enableHighlight = function(elem) {
-    var self= this;
+ButtonElement.prototype.enableHighlight = function (elem) {
+    var self = this;
     $(elem).css({
         'backgroundColor': self.bgColorHover(),
         'cursor': 'pointer'
@@ -84,15 +84,15 @@ ButtonElement.prototype.enableHighlight = function(elem) {
     });
 };
 
-ButtonElement.prototype.dispose = function() {
-    jQuery.each( this.buttonEntries(), function( index, elem ) {
+ButtonElement.prototype.dispose = function () {
+    jQuery.each(this.buttonEntries(), function (index, elem) {
         elem.dispose();
-    } );
+    });
 };
 
 
-ButtonElement.prototype.disableHighlight = function(elem) {
-    var self= this;
+ButtonElement.prototype.disableHighlight = function (elem) {
+    var self = this;
     $(elem).css({
         'backgroundColor': self.bgColorDefault(),
         'cursor': 'default'
@@ -100,7 +100,7 @@ ButtonElement.prototype.disableHighlight = function(elem) {
 };
 
 
-ButtonElement.prototype.initColorPicker = function() {
+ButtonElement.prototype.initColorPicker = function () {
 
     var self = this;
     $("#bgColorPickerDefault").spectrum({
@@ -116,7 +116,7 @@ ButtonElement.prototype.initColorPicker = function() {
     if (this.bg1Subsciption) {
         this.bg1Subsciption.dispose();
     }
-    this.bg1Subsciption = this.bgColorDefault.subscribe(function(val){
+    this.bg1Subsciption = this.bgColorDefault.subscribe(function (val) {
         $("#bgColorPickerDefault").spectrum("set", val);
     });
 
@@ -135,26 +135,26 @@ ButtonElement.prototype.initColorPicker = function() {
     if (this.bg2Subsciption) {
         this.bg2Subsciption.dispose();
     }
-    this.bg2Subsciption = this.bgColorHover.subscribe(function(val){
+    this.bg2Subsciption = this.bgColorHover.subscribe(function (val) {
         $("#bgColorPickerHover").spectrum("set", val);
     });
 
 };
 
-ButtonElement.prototype.reAddEntities = function(entitiesArr) {
-    jQuery.each( this.buttonEntries(), function( index, elem ) {
+ButtonElement.prototype.reAddEntities = function (entitiesArr) {
+    jQuery.each(this.buttonEntries(), function (index, elem) {
         elem.reAddEntities(entitiesArr);
-    } );
+    });
     this.modifier().reAddEntities(entitiesArr);
 };
 
-ButtonElement.prototype.selectTrialType = function(selectionSpec) {
+ButtonElement.prototype.selectTrialType = function (selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
-ButtonElement.prototype.toJS = function() {
+ButtonElement.prototype.toJS = function () {
     var buttonEntries = [];
-    for (var i=0; i<this.buttonEntries().length; i++) {
+    for (var i = 0; i < this.buttonEntries().length; i++) {
         buttonEntries.push(this.buttonEntries()[i].toJS());
     }
     return {
@@ -162,13 +162,13 @@ ButtonElement.prototype.toJS = function() {
         id: this.id(),
         buttonEntries: buttonEntries,
         bgColorDefault: this.bgColorDefault(),
-        bgColorHover:this.bgColorHover(),
+        bgColorHover: this.bgColorHover(),
         modifier: this.modifier().toJS()
     };
 };
 
-ButtonElement.prototype.fromJS = function(data) {
-    this.type=data.type;
+ButtonElement.prototype.fromJS = function (data) {
+    this.type = data.type;
     this.id(data.id);
 
     var buttonEntries = [];
@@ -182,7 +182,7 @@ ButtonElement.prototype.fromJS = function(data) {
         buttonEntries.push(entry);
     }
     else {
-        for (var i=0; i<data.buttonEntries.length; i++) {
+        for (var i = 0; i < data.buttonEntries.length; i++) {
             var buttonEntry = new ButtonEntry(this);
             buttonEntry.fromJS(data.buttonEntries[i]);
             buttonEntries.push(buttonEntry);
@@ -205,20 +205,20 @@ ButtonElement.prototype.fromJS = function(data) {
 
 
 
-var ButtonEntry= function(parent, initText) {
+var ButtonEntry = function (parent, initText) {
     this.parent = parent;
     this.buttonText = ko.observable(null);
 };
 
 ButtonEntry.prototype.modifiableProp = ["buttonText"];
-ButtonEntry.prototype.dataType =[ "string"];
+ButtonEntry.prototype.dataType = ["string"];
 
-ButtonEntry.prototype.init = function() {
+ButtonEntry.prototype.init = function () {
     this.buttonText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">Button</span></p>'));
     this.buttonText().init();
 };
 
-ButtonEntry.prototype.getAllModifiers = function(modifiersArr) {
+ButtonEntry.prototype.getAllModifiers = function (modifiersArr) {
     this.buttonText().getAllModifiers(modifiersArr);
 };
 
@@ -226,11 +226,11 @@ ButtonEntry.prototype.dispose = function () {
     this.buttonText().dispose();
 };
 
-ButtonEntry.prototype.selectTrialType = function(selectionSpec) {
+ButtonEntry.prototype.selectTrialType = function (selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
 };
 
-ButtonEntry.prototype.getTextRefs = function(textArr, label){
+ButtonEntry.prototype.getTextRefs = function (textArr, label) {
     this.buttonText().getTextRefs(textArr, label);
 };
 
@@ -239,32 +239,32 @@ ButtonEntry.prototype.getTextRefs = function(textArr, label){
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-ButtonEntry.prototype.getAllModifiers = function(modifiersArr) {
+ButtonEntry.prototype.getAllModifiers = function (modifiersArr) {
 };
 
-ButtonEntry.prototype.setPointers = function(entitiesArr) {
+ButtonEntry.prototype.setPointers = function (entitiesArr) {
     this.buttonText().setPointers(entitiesArr);
 };
 
-ButtonEntry.prototype.reAddEntities = function(entitiesArr) {
+ButtonEntry.prototype.reAddEntities = function (entitiesArr) {
     this.buttonText().reAddEntities(entitiesArr);
 };
 
-ButtonEntry.prototype.fromJS = function(data) {
-    if(data.buttonText.hasOwnProperty('rawText')){
+ButtonEntry.prototype.fromJS = function (data) {
+    if (data.buttonText.hasOwnProperty('rawText')) {
         this.buttonText(new EditableTextElement(this.parent.expData, this.parent, ''));
         this.buttonText().fromJS(data.buttonText);
     }
-    else{
+    else {
         this.buttonText(new EditableTextElement(this.parent.expData, this.parent, data.buttonText));
     }
 
     return this;
 };
 
-ButtonEntry.prototype.toJS = function() {
+ButtonEntry.prototype.toJS = function () {
     return {
-        buttonText:  this.buttonText().toJS()
+        buttonText: this.buttonText().toJS()
     };
 };
 
@@ -280,10 +280,10 @@ function createButtonElementComponents() {
                     this.dataModel.initColorPicker();
                 };
 
-                viewModel.prototype.addButton = function() {
+                viewModel.prototype.addButton = function () {
                     this.dataModel.addButton();
                 };
-                viewModel.prototype.deleteButton = function() {
+                viewModel.prototype.deleteButton = function () {
                     this.dataModel.deleteButton();
                 };
 
@@ -291,10 +291,10 @@ function createButtonElementComponents() {
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'button-editview-template'}
+        template: { element: 'button-editview-template' }
     });
 
-    ko.components.register('button-preview',{
+    ko.components.register('button-preview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
 
@@ -305,11 +305,11 @@ function createButtonElementComponents() {
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'button-preview-template'}
+        template: { element: 'button-preview-template' }
     });
 
 
-    ko.components.register('button-playerview',{
+    ko.components.register('button-playerview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
 
@@ -320,7 +320,7 @@ function createButtonElementComponents() {
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'button-playerview-template'}
+        template: { element: 'button-playerview-template' }
     });
 }
 

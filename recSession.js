@@ -3,7 +3,7 @@
  * this class stores the data that should be recorded.
  * @constructor
  */
-var RecSession = function(parentExperiment) {
+var RecSession = function (parentExperiment) {
     this.parentExperiment = parentExperiment;
 
     this.user_id = null;
@@ -28,7 +28,7 @@ var RecSession = function(parentExperiment) {
  * @param {object} data - the json description of the states.
  * @returns {RecSession}
  */
-RecSession.prototype.fromJS = function(data) {
+RecSession.prototype.fromJS = function (data) {
     this.user_id = data.user_id;
     this.group_nr = data.group_nr;
     this.rec_session_id = data.rec_session_id;
@@ -41,7 +41,7 @@ RecSession.prototype.fromJS = function(data) {
     this.survey_data = data.survey_data;
     this.var_data = new RecSessionVarData(this);
     if (data.hasOwnProperty("recquotaexceeded")) {
-        this.recQuotaExceeded =  data.recquotaexceeded;
+        this.recQuotaExceeded = data.recquotaexceeded;
     }
 
     if (data.var_data) {

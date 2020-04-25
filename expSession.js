@@ -15,18 +15,18 @@ var ExpSession = function (expData) {
     this.blockRandomization = ko.observable('fixed');
 
     // the following array is extended with sortById to fix a bug with ko-sortable when adding new sub items in a newly created item:
-    this.blocks = ko.observableArray([]).extend({sortById: {do_not_warn_when_double_entries: true}});
+    this.blocks = ko.observableArray([]).extend({ sortById: { do_not_warn_when_double_entries: true } });
 };
 
-ExpSession.prototype.addBlock = function(block) {
+ExpSession.prototype.addBlock = function (block) {
     this.blocks.push(block);
 };
 
-ExpSession.prototype.removeBlock = function(data,event) {
+ExpSession.prototype.removeBlock = function (data, event) {
     var idx = this.blocks().indexOf(data);
-    while (idx > -1){
+    while (idx > -1) {
         var tmpArr = this.blocks();
-        tmpArr.splice(idx,1);
+        tmpArr.splice(idx, 1);
         this.blocks(tmpArr);
         idx = this.blocks().indexOf(data); // check for more in loop
     }
@@ -39,11 +39,11 @@ ExpSession.prototype.removeBlock = function(data,event) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ExpSession.prototype.setPointers = function(entitiesArr) {
+ExpSession.prototype.setPointers = function (entitiesArr) {
     // convert ids to actual pointers:
-    this.blocks(jQuery.map( this.blocks(), function( id ) {
+    this.blocks(jQuery.map(this.blocks(), function (id) {
         return entitiesArr.byId[id];
-    } ));
+    }));
 };
 
 /**
@@ -51,16 +51,16 @@ ExpSession.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ExpSession.prototype.reAddEntities = function(entitiesArr) {
+ExpSession.prototype.reAddEntities = function (entitiesArr) {
     // add the direct child nodes:
-    jQuery.each( this.blocks(), function( index, elem ) {
+    jQuery.each(this.blocks(), function (index, elem) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(elem.id()))
             entitiesArr.push(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
         elem.reAddEntities(entitiesArr);
-    } );
+    });
 };
 
 /**
@@ -68,7 +68,7 @@ ExpSession.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ExpSession}
  */
-ExpSession.prototype.fromJS = function(data) {
+ExpSession.prototype.fromJS = function (data) {
     this.id(data.id);
     this.name(data.name);
     this.blocks(data.blocks);
@@ -80,14 +80,14 @@ ExpSession.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ExpSession.prototype.toJS = function() {
+ExpSession.prototype.toJS = function () {
 
     return {
         id: this.id(),
         name: this.name(),
         type: this.type,
-        blockRandomization:this.blockRandomization(),
-        blocks: jQuery.map( this.blocks(), function( elem ) { return elem.id(); } )
+        blockRandomization: this.blockRandomization(),
+        blocks: jQuery.map(this.blocks(), function (elem) { return elem.id(); })
     };
 
 };

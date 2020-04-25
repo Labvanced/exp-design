@@ -1,12 +1,20 @@
 <template id='audio-editview-template'>
-    <div class="panel-body" style="height: 100%; margin-top: -10px">
+    <div class="panel-body"
+         style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Audio</div>
 
-        <label class="property-description" for="imgFile3">Filename: </label>
+        <label class="property-description"
+               for="imgFile3">Filename: </label>
         <span style="width: 180px;">
-            <span id="imgFile3" class="taskeditor-input" style="display: inline-flex;margin-top: 8px; overflow: hidden" data-bind="{text: dataModel.modifier().selectedTrialView.file_orig_name, css: { 'modified-prop': !( dataModel.file_orig_name()=== dataModel.modifier().selectedTrialView.file_orig_name()) }}" ></span>
-            <span class="file-button"  data-bind="click: function() { uc.currentEditorView.mediaEditor.openFileManager(true)}" style="cursor: pointer">
-                <img  src="/resources/icons/openFile.svg" style="width: 20px;"/>
+            <span id="imgFile3"
+                  class="taskeditor-input"
+                  style="display: inline-flex;margin-top: 8px; overflow: hidden"
+                  data-bind="{text: dataModel.modifier().selectedTrialView.file_orig_name, css: { 'modified-prop': !( dataModel.file_orig_name()=== dataModel.modifier().selectedTrialView.file_orig_name()) }}"></span>
+            <span class="file-button"
+                  data-bind="click: function() { uc.currentEditorView.mediaEditor.openFileManager(true)}"
+                  style="cursor: pointer">
+                <img src="/resources/icons/openFile.svg"
+                     style="width: 20px;" />
             </span>
         </span>
 
@@ -16,28 +24,50 @@
 
         <span class="property-description">
             Show Media Controls:
-            <input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showMediaControls">
+            <input class="taskeditor-checkbox"
+                   type="checkbox"
+                   data-bind="checked: dataModel.showMediaControls">
         </span>
         <br>
         <span class="media-controls">
-            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
-            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
-            <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+            <span data-bind="if: dataModel.currentlyPlaying"><button type="button"
+                        data-bind="click: function() {dataModel.switchPlayState();}"><img width="16"
+                         height="16"
+                         src="/resources/icons/player/pause-button.svg" /></button></span>
+            <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button"
+                        data-bind="click: function() {dataModel.switchPlayState();}"><img width="16"
+                         height="16"
+                         src="/resources/icons/player/play-button.svg" /></button></span>
+            <span class="progessbar"><progress class='seek-bar'
+                          min='0'
+                          max='100'
+                          value='0'></progress></span>
         </span>
     </div>
 </template>
 
-<template  id='audio-preview-template'>
-        <audio data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}" preload="auto">
-            <source data-bind="attr: {src: dataModel.audioSource()}">
-            Your browser does not support HTML5 audio.
-        </audio>
+<template id='audio-preview-template'>
+    <audio data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}"
+           preload="auto">
+        <source data-bind="attr: {src: dataModel.audioSource()}">
+        Your browser does not support HTML5 audio.
+    </audio>
 
-        <span data-bind="if: dataModel.showMediaControls" class="media-controls">
-            <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
-            <span data-bind="ifnot: dataModel.currentlyPlaying"><button  type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
-            <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
-        </span>
+    <span data-bind="if: dataModel.showMediaControls"
+          class="media-controls">
+        <span data-bind="if: dataModel.currentlyPlaying"><button type="button"
+                    data-bind="click: function() {dataModel.switchPlayState();}"><img width="16"
+                     height="16"
+                     src="/resources/icons/player/pause-button.svg" /></button></span>
+        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button"
+                    data-bind="click: function() {dataModel.switchPlayState();}"><img width="16"
+                     height="16"
+                     src="/resources/icons/player/play-button.svg" /></button></span>
+        <span class="progessbar"><progress class='seek-bar'
+                      min='0'
+                      max='100'
+                      value='0'></progress></span>
+    </span>
 </template>
 
 <template id='audio-playerview-template'>
@@ -46,9 +76,19 @@
         <source data-bind="attr: {src: dataModel.audioSource()}">
         Your browser does not support HTML5 audio.
     </audio>
-    <span data-bind="if: dataModel.showMediaControls" class="media-controls">
-        <span data-bind="if: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/pause-button.svg"/></button></span>
-        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button" data-bind="click: function() {dataModel.switchPlayState();}"><img width="16" height="16" src="/resources/icons/player/play-button.svg"/></button></span>
-        <span class="progessbar"><progress class='seek-bar' min='0' max='100' value='0'></progress></span>
+    <span data-bind="if: dataModel.showMediaControls"
+          class="media-controls">
+        <span data-bind="if: dataModel.currentlyPlaying"><button type="button"
+                    data-bind="click: function() {dataModel.switchPlayState();}"><img width="16"
+                     height="16"
+                     src="/resources/icons/player/pause-button.svg" /></button></span>
+        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button"
+                    data-bind="click: function() {dataModel.switchPlayState();}"><img width="16"
+                     height="16"
+                     src="/resources/icons/player/play-button.svg" /></button></span>
+        <span class="progessbar"><progress class='seek-bar'
+                      min='0'
+                      max='100'
+                      value='0'></progress></span>
     </span>
 </template>

@@ -9,10 +9,10 @@
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionRecord = function(event) {
+var ActionRecord = function (event) {
     this.event = event;
     this.specialRecs = this.event.trigger().getParameterSpec();
-    this.selectedRecordings =  ko.observableArray([]);
+    this.selectedRecordings = ko.observableArray([]);
 };
 
 ActionRecord.prototype.type = "ActionRecord";
@@ -22,7 +22,7 @@ ActionRecord.prototype.label = "Save Response or Property";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionRecord.prototype.isValid = function(){
+ActionRecord.prototype.isValid = function () {
     return true;
 };
 
@@ -30,7 +30,7 @@ ActionRecord.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionRecord.prototype.setVariableBackRef = function(variable){
+ActionRecord.prototype.setVariableBackRef = function (variable) {
     variable.addBackRef(this, this.event, true, false, 'recording variable');
 };
 
@@ -38,20 +38,20 @@ ActionRecord.prototype.setVariableBackRef = function(variable){
  * add a new recording to the list.
  * @param {string} type - the type of the recording, such as "elementTag" or "reactionTime"
  */
-ActionRecord.prototype.addRecording = function(type){
+ActionRecord.prototype.addRecording = function (type) {
     var self = this;
-    var newRec={
+    var newRec = {
         recType: type,
-        variable :ko.observable({
+        variable: ko.observable({
             isRecorded: ko.observable(true)
         }),
         tmpRecState: null
     };
-    newRec.variable.subscribe(function(oldValue) {
+    newRec.variable.subscribe(function (oldValue) {
         newRec.tmpRecState = oldValue.isRecorded();
     }, null, "beforeChange");
 
-    newRec.variable.subscribe(function(oldValue) {
+    newRec.variable.subscribe(function (oldValue) {
         oldValue.isRecorded(newRec.tmpRecState);
     }, this);
 
@@ -65,7 +65,7 @@ ActionRecord.prototype.addRecording = function(type){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionRecord.prototype.run = function(triggerParams) {
+ActionRecord.prototype.run = function (triggerParams) {
     var self = this;
     var selectedRecs = this.selectedRecordings();
     for (i = 0; i < selectedRecs.length; i++) {
@@ -126,7 +126,7 @@ ActionRecord.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionRecord.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionRecord.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -136,12 +136,12 @@ ActionRecord.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionRecord.prototype.setPointers = function(entitiesArr) {
+ActionRecord.prototype.setPointers = function (entitiesArr) {
     var i;
     var globVar;
 
     var selectedRecordings = this.selectedRecordings();
-    for (i = 0; i<selectedRecordings.length; i++){
+    for (i = 0; i < selectedRecordings.length; i++) {
         if (selectedRecordings[i].variable()) {
             globVar = entitiesArr.byId[selectedRecordings[i].variable()];
             selectedRecordings[i].variable(globVar);
@@ -155,11 +155,11 @@ ActionRecord.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionRecord.prototype.reAddEntities = function(entitiesArr) {
+ActionRecord.prototype.reAddEntities = function (entitiesArr) {
 
     var i;
     var selectedRec = this.selectedRecordings();
-    for (i = 0; i<selectedRec.length; i++){
+    for (i = 0; i < selectedRec.length; i++) {
         if (selectedRec[i].variable()) {
             if (!entitiesArr.byId.hasOwnProperty(selectedRec[i].variable().id())) {
                 entitiesArr.push(selectedRec[i].variable());
@@ -173,7 +173,7 @@ ActionRecord.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionRecord}
  */
-ActionRecord.prototype.fromJS = function(data) {
+ActionRecord.prototype.fromJS = function (data) {
 
     var i, tmp;
 
@@ -194,13 +194,13 @@ ActionRecord.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionRecord.prototype.toJS = function() {
+ActionRecord.prototype.toJS = function () {
     var rec, varId, i;
 
 
     var selectedRecordings = [];
     var selectedRec = this.selectedRecordings();
-    for (i = 0; i<selectedRec.length; i++){
+    for (i = 0; i < selectedRec.length; i++) {
         rec = selectedRec[i];
         varId = null;
         if (rec.variable()) {
@@ -208,7 +208,7 @@ ActionRecord.prototype.toJS = function() {
         }
         selectedRecordings.push({
             recType: rec.recType,
-            variable:  varId
+            variable: varId
         });
     }
 
@@ -226,12 +226,12 @@ ActionRecord.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionSetElementProp = function(event) {
+var ActionSetElementProp = function (event) {
     this.event = event;
     this.target = ko.observable(null);
     this.changes = ko.observableArray([]);
     this.animate = ko.observable(false);
-    this.animationTime=ko.observable(0);
+    this.animationTime = ko.observable(0);
 };
 
 
@@ -242,14 +242,14 @@ ActionSetElementProp.prototype.label = "Set Stimulus Property";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionSetElementProp.prototype.isValid = function(){
+ActionSetElementProp.prototype.isValid = function () {
     return true;
 };
 
 /**
  * adds a new property that shall be changed.
  */
-ActionSetElementProp.prototype.addProperty = function() {
+ActionSetElementProp.prototype.addProperty = function () {
     var newChange = new ActionSetElementPropChange(this);
     this.changes.push(newChange);
 };
@@ -258,7 +258,7 @@ ActionSetElementProp.prototype.addProperty = function() {
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionSetElementProp.prototype.setVariableBackRef = function(variable){
+ActionSetElementProp.prototype.setVariableBackRef = function (variable) {
     variable.addBackRef(this, this.event, false, true, 'Action Set Element Prop');
 };
 
@@ -269,55 +269,55 @@ ActionSetElementProp.prototype.setVariableBackRef = function(variable){
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 
-ActionSetElementProp.prototype.run = function(triggerParams) {
+ActionSetElementProp.prototype.run = function (triggerParams) {
 
     var changes = this.changes();
     var target = this.target();
-    for (var i = 0; i <changes.length; i++){
-        var property =  changes[i].property();
-        var operatorType =  changes[i].operatorType();
-        var changeType =  changes[i].changeType();
+    for (var i = 0; i < changes.length; i++) {
+        var property = changes[i].property();
+        var operatorType = changes[i].operatorType();
+        var changeType = changes[i].changeType();
         var variable = changes[i].variable();
 
         // make sure to calculate on numeric
-        var value =  changes[i].value();
+        var value = changes[i].value();
 
         //var oldValue = target[property]();
         var oldValue = target.modifier().selectedTrialView[property]();
 
-        if (typeof oldValue  === 'string'){
+        if (typeof oldValue === 'string') {
             oldValue = Number(oldValue);
         }
-        if (typeof value  === 'string'){
+        if (typeof value === 'string') {
             value = Number(value);
         }
 
         var newValue;
         var changeValue;
 
-        if (changeType == 'value'){
+        if (changeType == 'value') {
             changeValue = value;
         }
-        else if (changeType == '%'){
-            changeValue = (oldValue * (value/100));
+        else if (changeType == '%') {
+            changeValue = (oldValue * (value / 100));
         }
-        else if (changeType == 'variable'){
+        else if (changeType == 'variable') {
             changeValue = parseFloat(variable.value().value());
         }
 
-        if (operatorType== '='){
+        if (operatorType == '=') {
             newValue = changeValue;
         }
-        else if (operatorType== '+'){
+        else if (operatorType == '+') {
             newValue = oldValue + changeValue;
         }
-        else if (operatorType== '-'){
+        else if (operatorType == '-') {
             newValue = oldValue - changeValue;
         }
-        else if (operatorType== '*'){
+        else if (operatorType == '*') {
             newValue = oldValue * changeValue;
         }
-        else if (operatorType== '/'){
+        else if (operatorType == '/') {
             newValue = oldValue / changeValue;
         }
 
@@ -330,7 +330,7 @@ ActionSetElementProp.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionSetElementProp.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionSetElementProp.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -340,15 +340,15 @@ ActionSetElementProp.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
-    if (this.target()){
+ActionSetElementProp.prototype.setPointers = function (entitiesArr) {
+    if (this.target()) {
         var target = entitiesArr.byId[this.target()];
         this.target(target);
     }
 
 
     var changes = this.changes();
-    for (var i=0; i<changes.length; i++) {
+    for (var i = 0; i < changes.length; i++) {
         changes[i].setPointers(entitiesArr);
     }
 };
@@ -358,9 +358,9 @@ ActionSetElementProp.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSetElementProp.prototype.reAddEntities = function(entitiesArr) {
+ActionSetElementProp.prototype.reAddEntities = function (entitiesArr) {
     var changes = this.changes();
-    for (var i = 0; i <changes.length; i++) {
+    for (var i = 0; i < changes.length; i++) {
         var variable = changes[i].variable();
         if (variable) {
             if (!entitiesArr.byId.hasOwnProperty(variable.id())) {
@@ -375,13 +375,13 @@ ActionSetElementProp.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionSetElementProp}
  */
-ActionSetElementProp.prototype.fromJS = function(data) {
+ActionSetElementProp.prototype.fromJS = function (data) {
     this.animate(data.animate);
     this.animationTime(data.animationTime);
     this.target(data.target);
 
     var changes = [];
-    for (var i = 0 ;i <data.changes.length;i++){
+    for (var i = 0; i < data.changes.length; i++) {
         var tmp = data.changes[i];
         var obj = new ActionSetElementPropChange(this);
         obj.fromJS(tmp);
@@ -396,11 +396,11 @@ ActionSetElementProp.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionSetElementProp.prototype.toJS = function() {
+ActionSetElementProp.prototype.toJS = function () {
 
-    var changes= [];
+    var changes = [];
     var origChanges = this.changes();
-    for (var i = 0; i<origChanges.length; i++){
+    for (var i = 0; i < origChanges.length; i++) {
         var obj = origChanges[i].toJS();
         changes.push(obj);
     }
@@ -414,7 +414,7 @@ ActionSetElementProp.prototype.toJS = function() {
         type: this.type,
         target: targetId,
         animate: this.animate(),
-        animationTime:this.animationTime,
+        animationTime: this.animationTime,
         changes: changes
     };
 };
@@ -422,7 +422,7 @@ ActionSetElementProp.prototype.toJS = function() {
 
 ////////////////////////////////////////  ActionSetElementPropChange  ///////////////////////////////////////////////////
 
-var ActionSetElementPropChange = function(parentAction) {
+var ActionSetElementPropChange = function (parentAction) {
     this.parentAction = parentAction;
 
     this.property = ko.observable(null);
@@ -433,16 +433,16 @@ var ActionSetElementPropChange = function(parentAction) {
 };
 
 ActionSetElementPropChange.prototype.operatorTypes = ["=", "+", "-", "*", "/"];
-ActionSetElementPropChange.prototype.changeTypes =  ["value", "%", "variable"];
+ActionSetElementPropChange.prototype.changeTypes = ["value", "%", "variable"];
 
 /**
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionSetElementPropChange.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionSetElementPropChange.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
-ActionSetElementPropChange.prototype.setPointers = function(entitiesArr) {
+ActionSetElementPropChange.prototype.setPointers = function (entitiesArr) {
     if (this.changeType() == "variable") {
         var varId = this.variable();
         var globVar = entitiesArr.byId[varId];
@@ -464,11 +464,11 @@ ActionSetElementPropChange.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSetElementPropChange.prototype.reAddEntities = function(entitiesArr) {
+ActionSetElementPropChange.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
-ActionSetElementPropChange.prototype.fromJS = function(data) {
+ActionSetElementPropChange.prototype.fromJS = function (data) {
     this.property(data.property);
     this.operatorType(data.operatorType);
     this.changeType(data.changeType);
@@ -478,7 +478,7 @@ ActionSetElementPropChange.prototype.fromJS = function(data) {
     }
 };
 
-ActionSetElementPropChange.prototype.toJS = function() {
+ActionSetElementPropChange.prototype.toJS = function () {
     var variable = this.variable();
     if (variable) {
         variable = variable.id();
@@ -498,7 +498,7 @@ ActionSetElementPropChange.prototype.toJS = function() {
 
 ////////////////////////////////////////  ActionSetProp (new version) ///////////////////////////////////////////////////
 
-var ActionSetProp = function(event) {
+var ActionSetProp = function (event) {
     this.event = event;
 
     // serialized
@@ -509,14 +509,14 @@ var ActionSetProp = function(event) {
 ActionSetProp.prototype.type = "ActionSetProp";
 ActionSetProp.prototype.label = "Set Object Property";
 
-ActionSetProp.prototype.isValid = function(){
+ActionSetProp.prototype.isValid = function () {
     return true;
 };
 
 /**
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  */
-ActionSetProp.prototype.setVariableBackRef = function(){
+ActionSetProp.prototype.setVariableBackRef = function () {
 };
 
 /**
@@ -525,7 +525,7 @@ ActionSetProp.prototype.setVariableBackRef = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionSetProp.prototype.run = function(triggerParams) {
+ActionSetProp.prototype.run = function (triggerParams) {
     var rValue = this.operand.getValue(triggerParams);
     this.refToObjectProperty.setValue(rValue);
 };
@@ -534,7 +534,7 @@ ActionSetProp.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionSetProp.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionSetProp.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -544,7 +544,7 @@ ActionSetProp.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSetProp.prototype.setPointers = function(entitiesArr) {
+ActionSetProp.prototype.setPointers = function (entitiesArr) {
     this.refToObjectProperty.setPointers(entitiesArr);
     this.operand.setPointers(entitiesArr);
 };
@@ -554,7 +554,7 @@ ActionSetProp.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSetProp.prototype.reAddEntities = function(entitiesArr) {
+ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
     if (this.operand && this.operand.reAddEntities) {
         this.operand.reAddEntities(entitiesArr);
     }
@@ -568,7 +568,7 @@ ActionSetProp.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionSetProp}
  */
-ActionSetProp.prototype.fromJS = function(data) {
+ActionSetProp.prototype.fromJS = function (data) {
     this.refToObjectProperty.fromJS(data.refToObjectProperty);
     this.operand.fromJS(data.operand);
     return this;
@@ -578,7 +578,7 @@ ActionSetProp.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionSetProp.prototype.toJS = function() {
+ActionSetProp.prototype.toJS = function () {
     return {
         type: this.type,
         refToObjectProperty: this.refToObjectProperty.toJS(),
@@ -597,14 +597,14 @@ ActionSetProp.prototype.toJS = function() {
 
 ////////////////////////////////////////  ActionRecordData ///////////////////////////////////////////////////
 
-var ActionRecordData = function(event) {
+var ActionRecordData = function (event) {
     this.event = event;
 };
 
 ActionRecordData.prototype.type = "ActionRecordData";
 ActionRecordData.prototype.label = "Record Variables Instantly";
 
-ActionRecordData.prototype.isValid = function(){
+ActionRecordData.prototype.isValid = function () {
     return true;
 };
 
@@ -615,7 +615,7 @@ ActionRecordData.prototype.isValid = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionRecordData.prototype.run = function(triggerParams) {
+ActionRecordData.prototype.run = function (triggerParams) {
     player.recordData()
 };
 
@@ -623,7 +623,7 @@ ActionRecordData.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionRecordData.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionRecordData.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -633,7 +633,7 @@ ActionRecordData.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionRecordData.prototype.setPointers = function(entitiesArr) {
+ActionRecordData.prototype.setPointers = function (entitiesArr) {
 };
 
 /**
@@ -641,7 +641,7 @@ ActionRecordData.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionRecordData.prototype.reAddEntities = function(entitiesArr) {
+ActionRecordData.prototype.reAddEntities = function (entitiesArr) {
 };
 
 /**
@@ -649,7 +649,7 @@ ActionRecordData.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionRecordData}
  */
-ActionRecordData.prototype.fromJS = function(data) {
+ActionRecordData.prototype.fromJS = function (data) {
     return this;
 };
 
@@ -657,8 +657,8 @@ ActionRecordData.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionRecordData.prototype.toJS = function() {
-    return { type: this.type};
+ActionRecordData.prototype.toJS = function () {
+    return { type: this.type };
 };
 
 
@@ -667,7 +667,7 @@ ActionRecordData.prototype.toJS = function() {
 
 ////////////////////////////////////////  ActionSelectFromArray ///////////////////////////////////////////////////
 
-var ActionSelectFromArray = function(event) {
+var ActionSelectFromArray = function (event) {
     this.event = event;
 
     // serialized
@@ -681,7 +681,7 @@ var ActionSelectFromArray = function(event) {
 ActionSelectFromArray.prototype.type = "ActionSelectFromArray";
 ActionSelectFromArray.prototype.label = "Select From Array (Read)";
 
-ActionSelectFromArray.prototype.isValid = function(){
+ActionSelectFromArray.prototype.isValid = function () {
     return true;
 };
 
@@ -689,7 +689,7 @@ ActionSelectFromArray.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionSelectFromArray.prototype.setInVarArrBackRef = function(){
+ActionSelectFromArray.prototype.setInVarArrBackRef = function () {
     this.inVarArr().addBackRef(this, this.event, false, true, 'array to select from');
 };
 
@@ -697,7 +697,7 @@ ActionSelectFromArray.prototype.setInVarArrBackRef = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionSelectFromArray.prototype.setInVarIndexBackRef = function(){
+ActionSelectFromArray.prototype.setInVarIndexBackRef = function () {
     this.inVarIndex().addBackRef(this, this.event, false, true, 'as index');
 };
 
@@ -705,19 +705,19 @@ ActionSelectFromArray.prototype.setInVarIndexBackRef = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionSelectFromArray.prototype.setOutVarBackRef = function(){
+ActionSelectFromArray.prototype.setOutVarBackRef = function () {
     this.outVar().addBackRef(this, this.event, true, false, 'selected from array');
 };
 
-ActionSelectFromArray.prototype.removeInArrVariable = function(){
+ActionSelectFromArray.prototype.removeInArrVariable = function () {
     this.inVarArr(null);
 };
 
-ActionSelectFromArray.prototype.removeInVariable = function(){
+ActionSelectFromArray.prototype.removeInVariable = function () {
     this.inVarIndex(null);
 };
 
-ActionSelectFromArray.prototype.removeOutVariable = function(){
+ActionSelectFromArray.prototype.removeOutVariable = function () {
     this.outVar(null);
 };
 
@@ -727,15 +727,15 @@ ActionSelectFromArray.prototype.removeOutVariable = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionSelectFromArray.prototype.run = function(triggerParams) {
-    if (this.InsertOption()=='fixed') {
-        var index = parseInt(this.indexFixedVal())-1;
+ActionSelectFromArray.prototype.run = function (triggerParams) {
+    if (this.InsertOption() == 'fixed') {
+        var index = parseInt(this.indexFixedVal()) - 1;
     }
-    else if (this.InsertOption()=='end'){
-        var index = this.inVarArr().value().value().length-1;
+    else if (this.InsertOption() == 'end') {
+        var index = this.inVarArr().value().value().length - 1;
     }
     else {
-        var index = parseInt(this.inVarIndex().value().value())-1;
+        var index = parseInt(this.inVarIndex().value().value()) - 1;
     }
 
     var value = this.inVarArr().value().getValueAt(index);
@@ -748,7 +748,7 @@ ActionSelectFromArray.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionSelectFromArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionSelectFromArray.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -758,25 +758,25 @@ ActionSelectFromArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSelectFromArray.prototype.setPointers = function(entitiesArr) {
-    if (this.inVarArr()){
+ActionSelectFromArray.prototype.setPointers = function (entitiesArr) {
+    if (this.inVarArr()) {
         var inVarArr = entitiesArr.byId[this.inVarArr()];
-        if (inVarArr){
+        if (inVarArr) {
             this.inVarArr(inVarArr);
             this.setInVarArrBackRef();
         }
     }
 
-    if (this.inVarIndex()){
+    if (this.inVarIndex()) {
         var inVarIndex = entitiesArr.byId[this.inVarIndex()];
-        if (inVarIndex){
+        if (inVarIndex) {
             this.inVarIndex(inVarIndex);
             this.setInVarIndexBackRef();
         }
     }
-    if (this.outVar()){
+    if (this.outVar()) {
         var outVar = entitiesArr.byId[this.outVar()];
-        if (outVar){
+        if (outVar) {
             this.outVar(outVar);
             this.setOutVarBackRef();
         }
@@ -789,7 +789,7 @@ ActionSelectFromArray.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSelectFromArray.prototype.reAddEntities = function(entitiesArr) {
+ActionSelectFromArray.prototype.reAddEntities = function (entitiesArr) {
     if (this.inVarArr()) {
         if (!entitiesArr.byId.hasOwnProperty(this.inVarArr().id())) {
             entitiesArr.push(this.inVarArr());
@@ -812,14 +812,14 @@ ActionSelectFromArray.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionSelectFromArray}
  */
-ActionSelectFromArray.prototype.fromJS = function(data) {
+ActionSelectFromArray.prototype.fromJS = function (data) {
     this.inVarArr(data.inVarArr);
     this.inVarIndex(data.inVarIndex);
     this.outVar(data.outVar);
-    if (data.hasOwnProperty('InsertOption')){
-      this.InsertOption(data.InsertOption)
+    if (data.hasOwnProperty('InsertOption')) {
+        this.InsertOption(data.InsertOption)
     }
-    if (data.hasOwnProperty('indexFixedVal')){
+    if (data.hasOwnProperty('indexFixedVal')) {
         this.indexFixedVal(data.indexFixedVal)
     }
 
@@ -830,7 +830,7 @@ ActionSelectFromArray.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionSelectFromArray.prototype.toJS = function() {
+ActionSelectFromArray.prototype.toJS = function () {
     var inVarArr = null;
     if (this.inVarArr()) {
         if (typeof this.inVarArr().id == 'function') {
@@ -854,8 +854,8 @@ ActionSelectFromArray.prototype.toJS = function() {
         inVarArr: inVarArr,
         inVarIndex: inVarIndex,
         outVar: outVar,
-        InsertOption:this.InsertOption(),
-        indexFixedVal:this.indexFixedVal()
+        InsertOption: this.InsertOption(),
+        indexFixedVal: this.indexFixedVal()
     };
 };
 
@@ -863,7 +863,7 @@ ActionSelectFromArray.prototype.toJS = function() {
 
 ////////////////////////////////////////  ActionWriteToArray ///////////////////////////////////////////////////
 
-var ActionWriteToArray = function(event) {
+var ActionWriteToArray = function (event) {
     this.event = event;
 
     // serialized
@@ -877,7 +877,7 @@ var ActionWriteToArray = function(event) {
 ActionWriteToArray.prototype.type = "ActionWriteToArray";
 ActionWriteToArray.prototype.label = "Change Array Entry (Replace)";
 
-ActionWriteToArray.prototype.isValid = function(){
+ActionWriteToArray.prototype.isValid = function () {
     return true;
 };
 
@@ -885,7 +885,7 @@ ActionWriteToArray.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionWriteToArray.prototype.setInVarArrBackRef = function(){
+ActionWriteToArray.prototype.setInVarArrBackRef = function () {
     this.inVarArr().addBackRef(this, this.event, false, true, 'write to array');
 };
 
@@ -893,7 +893,7 @@ ActionWriteToArray.prototype.setInVarArrBackRef = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionWriteToArray.prototype.setInVarIndexBackRef = function(){
+ActionWriteToArray.prototype.setInVarIndexBackRef = function () {
     this.inVarIndex().addBackRef(this, this.event, false, true, 'as index');
 };
 
@@ -901,19 +901,19 @@ ActionWriteToArray.prototype.setInVarIndexBackRef = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionWriteToArray.prototype.setInVarBackRef = function(){
+ActionWriteToArray.prototype.setInVarBackRef = function () {
     this.inVar().addBackRef(this, this.event, true, false, 'selected from array');
 };
 
-ActionWriteToArray.prototype.removeInArrVariable = function(){
+ActionWriteToArray.prototype.removeInArrVariable = function () {
     this.inVarArr(null);
 };
 
-ActionWriteToArray.prototype.removeIndexVariable = function(){
+ActionWriteToArray.prototype.removeIndexVariable = function () {
     this.inVarIndex(null);
 };
 
-ActionWriteToArray.prototype.removeInVariable = function(){
+ActionWriteToArray.prototype.removeInVariable = function () {
     this.inVar(null);
 };
 
@@ -923,24 +923,24 @@ ActionWriteToArray.prototype.removeInVariable = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionWriteToArray.prototype.run = function(triggerParams) {
-    if (this.InsertOption()=='fixed') {
-        var index = parseInt(this.indexFixedVal())-1;
+ActionWriteToArray.prototype.run = function (triggerParams) {
+    if (this.InsertOption() == 'fixed') {
+        var index = parseInt(this.indexFixedVal()) - 1;
     }
-    else if (this.InsertOption()=='end'){
-        var index = this.inVarArr().value().value().length-1;
+    else if (this.InsertOption() == 'end') {
+        var index = this.inVarArr().value().value().length - 1;
     }
     else {
-        var index = parseInt(this.inVarIndex().value().value())-1;
+        var index = parseInt(this.inVarIndex().value().value()) - 1;
     }
 
-    if (index<0){
+    if (index < 0) {
         index = 0;
     }
 
     var value = this.inVar().value().value();
     if (this.inVarArr) {
-        this.inVarArr().value().setValueAt(index,value);
+        this.inVarArr().value().setValueAt(index, value);
     }
 };
 
@@ -948,7 +948,7 @@ ActionWriteToArray.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionWriteToArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionWriteToArray.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -958,10 +958,10 @@ ActionWriteToArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionWriteToArray.prototype.setPointers = function(entitiesArr) {
-    if (this.inVarArr()){
+ActionWriteToArray.prototype.setPointers = function (entitiesArr) {
+    if (this.inVarArr()) {
         var inVarArr = entitiesArr.byId[this.inVarArr()];
-        if (inVarArr){
+        if (inVarArr) {
             this.inVarArr(inVarArr);
             this.setInVarArrBackRef();
         }
@@ -989,7 +989,7 @@ ActionWriteToArray.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionWriteToArray.prototype.reAddEntities = function(entitiesArr) {
+ActionWriteToArray.prototype.reAddEntities = function (entitiesArr) {
     if (this.inVarArr()) {
         if (!entitiesArr.byId.hasOwnProperty(this.inVarArr().id())) {
             entitiesArr.push(this.inVarArr());
@@ -1012,7 +1012,7 @@ ActionWriteToArray.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionWriteToArray}
  */
-ActionWriteToArray.prototype.fromJS = function(data) {
+ActionWriteToArray.prototype.fromJS = function (data) {
     this.inVarArr(data.inVarArr);
     this.inVarIndex(data.inVarIndex);
     this.inVar(data.inVar);
@@ -1025,7 +1025,7 @@ ActionWriteToArray.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionWriteToArray.prototype.toJS = function() {
+ActionWriteToArray.prototype.toJS = function () {
     var inVarArr = null;
     if (this.inVarArr()) {
         if (typeof this.inVarArr().id == 'function') {
@@ -1049,8 +1049,8 @@ ActionWriteToArray.prototype.toJS = function() {
         inVarArr: inVarArr,
         inVarIndex: inVarIndex,
         inVar: inVar,
-        InsertOption:this.InsertOption(),
-        indexFixedVal:this.indexFixedVal()
+        InsertOption: this.InsertOption(),
+        indexFixedVal: this.indexFixedVal()
     };
 };
 
@@ -1063,7 +1063,7 @@ ActionWriteToArray.prototype.toJS = function() {
 
 ////////////////////////////////////////  ActionModifyArray ///////////////////////////////////////////////////
 
-var ActionModifyArray = function(event) {
+var ActionModifyArray = function (event) {
     this.event = event;
 
     // serialized
@@ -1079,7 +1079,7 @@ var ActionModifyArray = function(event) {
 ActionModifyArray.prototype.type = "ActionModifyArray";
 ActionModifyArray.prototype.label = "Add / Remove Array Entries";
 
-ActionModifyArray.prototype.isValid = function(){
+ActionModifyArray.prototype.isValid = function () {
     return true;
 };
 
@@ -1087,7 +1087,7 @@ ActionModifyArray.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionModifyArray.prototype.setInVarArrBackRef = function(){
+ActionModifyArray.prototype.setInVarArrBackRef = function () {
     this.inVarArr().addBackRef(this, this.event, false, true, 'modify to array');
 };
 
@@ -1095,7 +1095,7 @@ ActionModifyArray.prototype.setInVarArrBackRef = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionModifyArray.prototype.setInVarIndexBackRef = function(){
+ActionModifyArray.prototype.setInVarIndexBackRef = function () {
     this.inVarIndex().addBackRef(this, this.event, false, true, 'as index');
 };
 
@@ -1104,27 +1104,27 @@ ActionModifyArray.prototype.setInVarIndexBackRef = function(){
  * @param {GlobalVar} variable - the variable which is recorded.
  */
 
-ActionModifyArray.prototype.setOutVarBackRefForOne = function(newVar){
+ActionModifyArray.prototype.setOutVarBackRefForOne = function (newVar) {
 
     newVar.addBackRef(this, this.event, true, false, 'modify array');
 };
 
-ActionModifyArray.prototype.setOutVarBackRef = function(){
+ActionModifyArray.prototype.setOutVarBackRef = function () {
     var list = this.insertVarList();
-    for (var i = 0; i<list.length; i++){
+    for (var i = 0; i < list.length; i++) {
         list[i].addBackRef(this, this.event, true, false, 'modify array');
     }
 };
 
-ActionModifyArray.prototype.removeInArrVariable = function(){
+ActionModifyArray.prototype.removeInArrVariable = function () {
     this.inVarArr(null);
 };
 
-ActionModifyArray.prototype.removeInVariable = function(){
+ActionModifyArray.prototype.removeInVariable = function () {
     this.inVarIndex(null);
 };
 
-ActionModifyArray.prototype.removeOutVariable = function(){
+ActionModifyArray.prototype.removeOutVariable = function () {
     this.insertVarList([]);
 };
 
@@ -1134,34 +1134,34 @@ ActionModifyArray.prototype.removeOutVariable = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionModifyArray.prototype.run = function(triggerParams) {
-    if (this.InsertOption()=='fixed') {
-        var index = parseInt(this.indexFixedVal())-1;
+ActionModifyArray.prototype.run = function (triggerParams) {
+    if (this.InsertOption() == 'fixed') {
+        var index = parseInt(this.indexFixedVal()) - 1;
     }
-    else if (this.InsertOption()=='end'){
-        var index = this.inVarArr().value().value().length-1;
+    else if (this.InsertOption() == 'end') {
+        var index = this.inVarArr().value().value().length - 1;
     }
     else {
-        var index = parseInt(this.inVarIndex().value().value())-1;
+        var index = parseInt(this.inVarIndex().value().value()) - 1;
     }
 
-    if (index<0){
+    if (index < 0) {
         index = 0;
     }
 
     var valueList = [];
-    for (var i = 0; i<this.insertVarList().length;i++){
+    for (var i = 0; i < this.insertVarList().length; i++) {
         // if value is linked put the variable inside
-        if (this.insertVarLinkedOrNew()[i]()){
+        if (this.insertVarLinkedOrNew()[i]()) {
             valueList.push(this.insertVarList()[i].value());
         }
         // if if should not be linked add a new variable inside
-        else{
+        else {
             var newVar = new GlobalVar(this.insertVarList()[i].expData).fromJS(this.insertVarList()[i].toJS());
-            if (this.insertVarList()[i].value() instanceof GlobalVarValueFile){
+            if (this.insertVarList()[i].value() instanceof GlobalVarValueFile) {
                 newVar.value().value(this.insertVarList()[i].value().convert(this.insertVarList()[i].value().toJS()));
             }
-            else{
+            else {
                 newVar.value().value(this.insertVarList()[i].value().toJS());
             }
             valueList.push(newVar.value());
@@ -1170,13 +1170,13 @@ ActionModifyArray.prototype.run = function(triggerParams) {
     }
 
     if (this.inVarArr()) {
-        this.inVarArr().value().value.splice(index,parseInt(this.nrOfDeletions()));
-        for (var i = 0; i<valueList.length; i++){
-            if (this.InsertOption()=='end'){
-                this.inVarArr().value().value.splice(index+1,0,valueList[i]);
+        this.inVarArr().value().value.splice(index, parseInt(this.nrOfDeletions()));
+        for (var i = 0; i < valueList.length; i++) {
+            if (this.InsertOption() == 'end') {
+                this.inVarArr().value().value.splice(index + 1, 0, valueList[i]);
             }
-            else{
-                this.inVarArr().value().value.splice(index,0,valueList[i]);
+            else {
+                this.inVarArr().value().value.splice(index, 0, valueList[i]);
             }
 
         }
@@ -1188,7 +1188,7 @@ ActionModifyArray.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionModifyArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionModifyArray.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -1198,10 +1198,10 @@ ActionModifyArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionModifyArray.prototype.setPointers = function(entitiesArr) {
-    if (this.inVarArr()){
+ActionModifyArray.prototype.setPointers = function (entitiesArr) {
+    if (this.inVarArr()) {
         var inVarArr = entitiesArr.byId[this.inVarArr()];
-        if (inVarArr){
+        if (inVarArr) {
             this.inVarArr(inVarArr);
             this.setInVarArrBackRef();
         }
@@ -1218,14 +1218,14 @@ ActionModifyArray.prototype.setPointers = function(entitiesArr) {
 
     var list = this.insertVarList();
     var newList = [];
-    for (var i = 0; i<list.length; i++){
+    for (var i = 0; i < list.length; i++) {
         newList.push(entitiesArr.byId[list[i]]);
     }
     this.insertVarList(newList);
     this.setOutVarBackRef();
 
     var insertVarLinkedOrNew = [];
-    for (var i = 0; i<this.insertVarLinkedOrNew().length; i++){
+    for (var i = 0; i < this.insertVarLinkedOrNew().length; i++) {
         insertVarLinkedOrNew.push(ko.observable(this.insertVarLinkedOrNew()[i]));
     }
     this.insertVarLinkedOrNew(insertVarLinkedOrNew);
@@ -1234,13 +1234,13 @@ ActionModifyArray.prototype.setPointers = function(entitiesArr) {
 
 };
 
-ActionModifyArray.prototype.optionConverter = function() {
-   if (this.insertVarLinkedOrNew().length==0) {
-      var l =  this.insertVarList().length;
-      for (var i = 0;i <l; i++){
-          this.insertVarLinkedOrNew.push(ko.observable(true));
-      }
-   }
+ActionModifyArray.prototype.optionConverter = function () {
+    if (this.insertVarLinkedOrNew().length == 0) {
+        var l = this.insertVarList().length;
+        for (var i = 0; i < l; i++) {
+            this.insertVarLinkedOrNew.push(ko.observable(true));
+        }
+    }
 };
 
 /**
@@ -1248,7 +1248,7 @@ ActionModifyArray.prototype.optionConverter = function() {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionModifyArray.prototype.reAddEntities = function(entitiesArr) {
+ActionModifyArray.prototype.reAddEntities = function (entitiesArr) {
     if (this.inVarArr()) {
         if (!entitiesArr.byId.hasOwnProperty(this.inVarArr().id())) {
             entitiesArr.push(this.inVarArr());
@@ -1260,7 +1260,7 @@ ActionModifyArray.prototype.reAddEntities = function(entitiesArr) {
         }
     }
     var list = this.insertVarList();
-    for (var i = 0; i<list.length; i++){
+    for (var i = 0; i < list.length; i++) {
         if (!entitiesArr.byId.hasOwnProperty(list[i].id())) {
             entitiesArr.push(list[i]);
         }
@@ -1272,7 +1272,7 @@ ActionModifyArray.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionModifyArray}
  */
-ActionModifyArray.prototype.fromJS = function(data) {
+ActionModifyArray.prototype.fromJS = function (data) {
     this.inVarArr(data.inVarArr);
     this.inVarIndex(data.inVarIndex);
     this.insertVarList(data.insertVarList);
@@ -1292,7 +1292,7 @@ ActionModifyArray.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionModifyArray.prototype.toJS = function() {
+ActionModifyArray.prototype.toJS = function () {
     var inVarArr = null;
     if (this.inVarArr()) {
         if (typeof this.inVarArr().id == 'function') {
@@ -1309,13 +1309,13 @@ ActionModifyArray.prototype.toJS = function() {
     if (this.insertVarList()) {
         var list = this.insertVarList();
         var insertVarList = [];
-        for (var i = 0; i<list.length; i++){
+        for (var i = 0; i < list.length; i++) {
             insertVarList.push(list[i].id());
         }
     }
 
     var insertVarLinkedOrNew = [];
-    for (var i = 0; i<this.insertVarLinkedOrNew().length; i++){
+    for (var i = 0; i < this.insertVarLinkedOrNew().length; i++) {
         insertVarLinkedOrNew.push(this.insertVarLinkedOrNew()[i]());
     }
 
@@ -1324,10 +1324,10 @@ ActionModifyArray.prototype.toJS = function() {
         inVarArr: inVarArr,
         inVarIndex: inVarIndex,
         insertVarList: insertVarList,
-        nrOfDeletions:this.nrOfDeletions(),
-        InsertOption:this.InsertOption(),
-        indexFixedVal:this.indexFixedVal(),
-        insertVarLinkedOrNew:insertVarLinkedOrNew
+        nrOfDeletions: this.nrOfDeletions(),
+        InsertOption: this.InsertOption(),
+        indexFixedVal: this.indexFixedVal(),
+        insertVarLinkedOrNew: insertVarLinkedOrNew
 
     };
 };
@@ -1340,7 +1340,7 @@ ActionModifyArray.prototype.toJS = function() {
 
 ////////////////////////////////////////  ActionShuffleArray ///////////////////////////////////////////////////
 
-var ActionShuffleArray = function(event) {
+var ActionShuffleArray = function (event) {
     this.event = event;
     // serialized
     this.inVarArr = ko.observable(null);
@@ -1349,7 +1349,7 @@ var ActionShuffleArray = function(event) {
 ActionShuffleArray.prototype.type = "ActionShuffleArray";
 ActionShuffleArray.prototype.label = "Shuffle Array Entries";
 
-ActionShuffleArray.prototype.isValid = function(){
+ActionShuffleArray.prototype.isValid = function () {
     return true;
 };
 
@@ -1357,12 +1357,12 @@ ActionShuffleArray.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionShuffleArray.prototype.setInVarArrBackRef = function(){
+ActionShuffleArray.prototype.setInVarArrBackRef = function () {
     this.inVarArr().addBackRef(this, this.event, false, true, 'shuffle array');
 };
 
 
-ActionShuffleArray.prototype.removeInArrVariable = function(){
+ActionShuffleArray.prototype.removeInArrVariable = function () {
     this.inVarArr(null);
 };
 
@@ -1372,7 +1372,7 @@ ActionShuffleArray.prototype.removeInArrVariable = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionShuffleArray.prototype.run = function(triggerParams) {
+ActionShuffleArray.prototype.run = function (triggerParams) {
 
     if (this.inVarArr()) {
         this.inVarArr().value().setValue(ExpTrialLoop.prototype.reshuffle(this.inVarArr().value().value()));
@@ -1383,7 +1383,7 @@ ActionShuffleArray.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionShuffleArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionShuffleArray.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -1393,11 +1393,11 @@ ActionShuffleArray.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionShuffleArray.prototype.setPointers = function(entitiesArr) {
+ActionShuffleArray.prototype.setPointers = function (entitiesArr) {
 
-    if (this.inVarArr()){
+    if (this.inVarArr()) {
         var inVarArr = entitiesArr.byId[this.inVarArr()];
-        if (inVarArr){
+        if (inVarArr) {
             this.inVarArr(inVarArr);
             this.setInVarArrBackRef();
         }
@@ -1410,7 +1410,7 @@ ActionShuffleArray.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionShuffleArray.prototype.reAddEntities = function(entitiesArr) {
+ActionShuffleArray.prototype.reAddEntities = function (entitiesArr) {
     if (this.inVarArr()) {
         if (!entitiesArr.byId.hasOwnProperty(this.inVarArr().id())) {
             entitiesArr.push(this.inVarArr());
@@ -1424,7 +1424,7 @@ ActionShuffleArray.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionModifyArray}
  */
-ActionShuffleArray.prototype.fromJS = function(data) {
+ActionShuffleArray.prototype.fromJS = function (data) {
     this.inVarArr(data.inVarArr);
     return this;
 };
@@ -1433,7 +1433,7 @@ ActionShuffleArray.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionShuffleArray.prototype.toJS = function() {
+ActionShuffleArray.prototype.toJS = function () {
     var inVarArr = null;
     if (this.inVarArr()) {
         if (typeof this.inVarArr().id == 'function') {
@@ -1456,7 +1456,7 @@ ActionShuffleArray.prototype.toJS = function() {
 
 ////////////////////////////////////////  ActionLoadFileIds ///////////////////////////////////////////////////
 
-var ActionLoadFileIds = function(event) {
+var ActionLoadFileIds = function (event) {
     this.event = event;
 
     // serialized
@@ -1468,7 +1468,7 @@ var ActionLoadFileIds = function(event) {
 ActionLoadFileIds.prototype.type = "ActionLoadFileIds";
 ActionLoadFileIds.prototype.label = "Load File Ids";
 
-ActionLoadFileIds.prototype.isValid = function(){
+ActionLoadFileIds.prototype.isValid = function () {
     return true;
 };
 
@@ -1476,18 +1476,18 @@ ActionLoadFileIds.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionLoadFileIds.prototype.setOutVarBackRef = function(){
+ActionLoadFileIds.prototype.setOutVarBackRef = function () {
     this.outVarFileIds().addBackRef(this, this.event, true, false, 'set file ids');
 };
-ActionLoadFileIds.prototype.setOutVarFileNamesBackRef = function(){
+ActionLoadFileIds.prototype.setOutVarFileNamesBackRef = function () {
     this.outVarFileNames().addBackRef(this, this.event, true, false, 'set file names');
 };
 
-ActionLoadFileIds.prototype.removeOutVariable = function(){
+ActionLoadFileIds.prototype.removeOutVariable = function () {
     this.outVarFileIds(null);
 };
 
-ActionLoadFileIds.prototype.removeOutVariableFileNames = function(){
+ActionLoadFileIds.prototype.removeOutVariableFileNames = function () {
     this.outVarFileIds(null);
 };
 
@@ -1497,7 +1497,7 @@ ActionLoadFileIds.prototype.removeOutVariableFileNames = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionLoadFileIds.prototype.run = function(triggerParams) {
+ActionLoadFileIds.prototype.run = function (triggerParams) {
     if (this.outVarFileIds()) {
         // clear array:
         var arrVarValue = this.outVarFileIds().value();
@@ -1524,7 +1524,7 @@ ActionLoadFileIds.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionLoadFileIds.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionLoadFileIds.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -1534,14 +1534,14 @@ ActionLoadFileIds.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionLoadFileIds.prototype.setPointers = function(entitiesArr) {
+ActionLoadFileIds.prototype.setPointers = function (entitiesArr) {
     var outVarFileIds = entitiesArr.byId[this.outVarFileIds()];
-    if (outVarFileIds){
+    if (outVarFileIds) {
         this.outVarFileIds(outVarFileIds);
         this.setOutVarBackRef();
     }
     var outVarFileNames = entitiesArr.byId[this.outVarFileNames()];
-    if (outVarFileNames){
+    if (outVarFileNames) {
         this.outVarFileNames(outVarFileNames);
         this.setOutVarFileNamesBackRef();
     }
@@ -1552,7 +1552,7 @@ ActionLoadFileIds.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionLoadFileIds.prototype.reAddEntities = function(entitiesArr) {
+ActionLoadFileIds.prototype.reAddEntities = function (entitiesArr) {
     if (this.outVarFileIds()) {
         if (!entitiesArr.byId.hasOwnProperty(this.outVarFileIds().id())) {
             entitiesArr.push(this.outVarFileIds());
@@ -1570,7 +1570,7 @@ ActionLoadFileIds.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionLoadFileIds}
  */
-ActionLoadFileIds.prototype.fromJS = function(data) {
+ActionLoadFileIds.prototype.fromJS = function (data) {
     this.files(data.files);
     this.outVarFileIds(data.outVarFileIds);
     if (data.hasOwnProperty('outVarFileNames')) {
@@ -1583,7 +1583,7 @@ ActionLoadFileIds.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionLoadFileIds.prototype.toJS = function() {
+ActionLoadFileIds.prototype.toJS = function () {
     var outVarFileIds = null;
     if (this.outVarFileIds()) {
         if (typeof this.outVarFileIds().id == 'function') {
@@ -1613,15 +1613,15 @@ ActionLoadFileIds.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionJumpTo = function(event) {
+var ActionJumpTo = function (event) {
     this.event = event;
     this.jumpType = ko.observable(null);
-    this.frameToJump= ko.observable(null);
-    this.taskToJumpId= ko.observable(null);
-    this.trialToJumpId= ko.observable(null);
-    this.blockToJumpId= ko.observable(null);
+    this.frameToJump = ko.observable(null);
+    this.taskToJumpId = ko.observable(null);
+    this.trialToJumpId = ko.observable(null);
+    this.blockToJumpId = ko.observable(null);
     this.conditionGroupIdx = ko.observable(null);
-    this.checkRequired= ko.observable(null);
+    this.checkRequired = ko.observable(null);
 
     this.alreadyTriggered = false;
 };
@@ -1633,7 +1633,7 @@ ActionJumpTo.prototype.label = "Jump To";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionJumpTo.prototype.isValid = function(){
+ActionJumpTo.prototype.isValid = function () {
     return true;
 };
 
@@ -1643,7 +1643,7 @@ ActionJumpTo.prototype.isValid = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionJumpTo.prototype.run = function(triggerParams) {
+ActionJumpTo.prototype.run = function (triggerParams) {
 
     if (this.alreadyTriggered) {
         // Prevent Bug due to double clicking leading to duplicate execution and jumping over trials etc.
@@ -1651,20 +1651,20 @@ ActionJumpTo.prototype.run = function(triggerParams) {
     }
 
     // check validity only if the jump is to next frame
-    if (this.checkRequired()){
+    if (this.checkRequired()) {
         var isValid = true;
         var elements = player.currentFrame.frameData.elements();
-        elements.forEach(function(element) {
-            if (typeof element.content().isInputValid == "function"){
-                if (!element.content().isInputValid()){
+        elements.forEach(function (element) {
+            if (typeof element.content().isInputValid == "function") {
+                if (!element.content().isInputValid()) {
                     isValid = false;
                 }
             }
         });
         // now display error message at navigation element
         var elements = player.currentFrame.frameData.elements();
-        elements.forEach(function(element) {
-            if(element.content() instanceof NaviElement){
+        elements.forEach(function (element) {
+            if (element.content() instanceof NaviElement) {
                 element.content().showSubmitError(!isValid);
             }
         });
@@ -1673,64 +1673,64 @@ ActionJumpTo.prototype.run = function(triggerParams) {
     if (isValid || !this.checkRequired()) {
         this.alreadyTriggered = true;
 
-        if (this.jumpType() == "previousFrame"){
+        if (this.jumpType() == "previousFrame") {
             player.currentFrame.endFrameAndGoBack();
         }
-        else if (this.jumpType() == "nextFrame"){
+        else if (this.jumpType() == "nextFrame") {
             player.currentFrame.endFrame();
         }
-        else if (this.jumpType() == "nextTrial"){
+        else if (this.jumpType() == "nextTrial") {
             player.currentFrame.finishFrame();
             player.startNextTrial(player.trialIndex + 1)
         }
-        else if (this.jumpType() == "nextTask"){
+        else if (this.jumpType() == "nextTask") {
             player.currentFrame.finishFrame();
             player.recordData();
             player.jumpToNextTask();
         }
-        else if (this.jumpType() == "nextBlock"){
+        else if (this.jumpType() == "nextBlock") {
             player.currentFrame.finishFrame();
             player.recordData();
             player.startNextBlock();
         }
 
-        else if (this.jumpType() == "specificFrame"){
+        else if (this.jumpType() == "specificFrame") {
             player.currentFrame.goToCustomFrame(this.frameToJump());
         }
-        else if (this.jumpType() == "specificTrial"){
+        else if (this.jumpType() == "specificTrial") {
             player.currentFrame.finishFrame();
             player.recordData();
 
             var trialIds = [];
-            for (var j = 0; j< player.randomizedTrials.length; j++){
-                trialIds.push( player.randomizedTrials[j].trialVariation.uniqueId());
+            for (var j = 0; j < player.randomizedTrials.length; j++) {
+                trialIds.push(player.randomizedTrials[j].trialVariation.uniqueId());
             }
             var indexOfNewTrial = trialIds.indexOf(parseInt(this.trialToJumpId()));
-            if (indexOfNewTrial instanceof Array){
-                var trialIndex  = indexOfNewTrial[0];
+            if (indexOfNewTrial instanceof Array) {
+                var trialIndex = indexOfNewTrial[0];
             }
-            else if (indexOfNewTrial >=0){
-                var trialIndex  = indexOfNewTrial;
+            else if (indexOfNewTrial >= 0) {
+                var trialIndex = indexOfNewTrial;
             }
             else {
-                var trialIndex  = player.trialIter+1;
+                var trialIndex = player.trialIter + 1;
             }
 
             player.startNextTrial(trialIndex);
         }
-        else if (this.jumpType() == "specificTask"){
+        else if (this.jumpType() == "specificTask") {
             player.currentFrame.finishFrame();
             player.recordData();
             player.jumpToSpecificTask(this.taskToJumpId());
         }
-        else if (this.jumpType() == "specificBlock"){
+        else if (this.jumpType() == "specificBlock") {
             player.currentFrame.finishFrame();
             player.recordData();
             player.jumpToSpecificBlock(this.blockToJumpId());
         }
 
-        else if (this.jumpType() == "conditionGroup"){
-           // Todo
+        else if (this.jumpType() == "conditionGroup") {
+            // Todo
         }
     }
 
@@ -1741,7 +1741,7 @@ ActionJumpTo.prototype.run = function(triggerParams) {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-ActionJumpTo.prototype.setupOnPlayerFrame = function(playerFrame) {
+ActionJumpTo.prototype.setupOnPlayerFrame = function (playerFrame) {
     this.alreadyTriggered = false;
 };
 
@@ -1749,10 +1749,10 @@ ActionJumpTo.prototype.setupOnPlayerFrame = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionJumpTo.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionJumpTo.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
-ActionJumpTo.prototype.reAddEntities = function(entitiesArr) {
+ActionJumpTo.prototype.reAddEntities = function (entitiesArr) {
     if (this.jumpType() == "specificFrame") {
         if (this.frameToJump()) {
             if (!entitiesArr.byId.hasOwnProperty(this.frameToJump().id())) {
@@ -1769,13 +1769,13 @@ ActionJumpTo.prototype.reAddEntities = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionJumpTo.prototype.setPointers = function(entitiesArr) {
-    if (this.frameToJump()){
+ActionJumpTo.prototype.setPointers = function (entitiesArr) {
+    if (this.frameToJump()) {
         var frame = entitiesArr.byId[this.frameToJump()];
         this.frameToJump(frame);
     }
     // converter for old studies
-    if (this.checkRequired()=== null && this.jumpType() == "nextFrame"){
+    if (this.checkRequired() === null && this.jumpType() == "nextFrame") {
         this.checkRequired(true);
     }
 };
@@ -1785,23 +1785,23 @@ ActionJumpTo.prototype.setPointers = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionJumpTo}
  */
-ActionJumpTo.prototype.fromJS = function(data) {
+ActionJumpTo.prototype.fromJS = function (data) {
     this.jumpType(data.jumpType);
     this.frameToJump(data.frameToJump);
-    if (data.hasOwnProperty('taskToJumpId')){
+    if (data.hasOwnProperty('taskToJumpId')) {
         this.taskToJumpId(data.taskToJumpId);
     }
-    if (data.hasOwnProperty('trialToJumpId')){
+    if (data.hasOwnProperty('trialToJumpId')) {
         this.trialToJumpId(data.trialToJumpId);
     }
-    if (data.hasOwnProperty('conditionGroupIdx')){
+    if (data.hasOwnProperty('conditionGroupIdx')) {
         this.conditionGroupIdx(data.conditionGroupIdx);
     }
-    if (data.hasOwnProperty('blockToJumpId')){
+    if (data.hasOwnProperty('blockToJumpId')) {
         this.blockToJumpId(data.blockToJumpId);
     }
 
-    if (data.hasOwnProperty('checkRequired')){
+    if (data.hasOwnProperty('checkRequired')) {
         this.checkRequired(data.checkRequired);
     }
 
@@ -1813,9 +1813,9 @@ ActionJumpTo.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionJumpTo.prototype.toJS = function() {
+ActionJumpTo.prototype.toJS = function () {
     var frameToJump;
-    if (this.frameToJump()){
+    if (this.frameToJump()) {
         frameToJump = this.frameToJump().id();
     }
     else {
@@ -1827,11 +1827,11 @@ ActionJumpTo.prototype.toJS = function() {
         type: this.type,
         jumpType: this.jumpType(),
         frameToJump: frameToJump,
-        taskToJumpId:this.taskToJumpId(),
-        trialToJumpId:this.trialToJumpId(),
-        conditionGroupIdx:this.conditionGroupIdx(),
-        blockToJumpId:this.blockToJumpId(),
-        checkRequired:this.checkRequired()
+        taskToJumpId: this.taskToJumpId(),
+        trialToJumpId: this.trialToJumpId(),
+        conditionGroupIdx: this.conditionGroupIdx(),
+        blockToJumpId: this.blockToJumpId(),
+        checkRequired: this.checkRequired()
 
     };
 };
@@ -1849,18 +1849,18 @@ function PausableSetTimeout(callback, delay) {
     this.resume();
 }
 
-PausableSetTimeout.prototype.pause = function() {
+PausableSetTimeout.prototype.pause = function () {
     if (this.timerId) {
         window.clearTimeout(this.timerId);
         this.remainingTime -= new Date() - this.startTime;
         this.timerId = null;
         this.startTime = null;
-        console.log("paused PausableSetTimeout with remainingTime="+this.remainingTime);
+        console.log("paused PausableSetTimeout with remainingTime=" + this.remainingTime);
     }
 };
 
-PausableSetTimeout.prototype.stop = function() {
-    console.log("stopping PausableSetTimeout with remainingTime="+this.remainingTime);
+PausableSetTimeout.prototype.stop = function () {
+    console.log("stopping PausableSetTimeout with remainingTime=" + this.remainingTime);
     if (this.timerId) {
         window.clearTimeout(this.timerId);
     }
@@ -1870,12 +1870,12 @@ PausableSetTimeout.prototype.stop = function() {
     this.remainingTime = null;
 };
 
-PausableSetTimeout.prototype.resume = function() {
+PausableSetTimeout.prototype.resume = function () {
     var self = this;
     if (!this.timerId) {
-        console.log("resuming PausableSetTimeout with remainingTime="+this.remainingTime);
+        console.log("resuming PausableSetTimeout with remainingTime=" + this.remainingTime);
         this.startTime = new Date();
-        this.timerId = window.setTimeout(function() {
+        this.timerId = window.setTimeout(function () {
             self.callback();
             self.stop();
         }, this.remainingTime);
@@ -1891,7 +1891,7 @@ PausableSetTimeout.prototype.resume = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionDelayedActions = function(event) {
+var ActionDelayedActions = function (event) {
     this.event = event;
     this.pausableTimeouts = [];
 
@@ -1906,12 +1906,12 @@ var ActionDelayedActions = function(event) {
 ActionDelayedActions.prototype.type = "ActionDelayedActions";
 ActionDelayedActions.prototype.label = "Delayed Actions (Time Callback)";
 
-ActionDelayedActions.prototype.setVariableBackRef = function(variable){
+ActionDelayedActions.prototype.setVariableBackRef = function (variable) {
     variable.addBackRef(this, this.event, true, false, 'Delayed Action');
 };
 
 
-ActionDelayedActions.prototype.removeVariable = function(){
+ActionDelayedActions.prototype.removeVariable = function () {
     this.variable(null);
 };
 
@@ -1919,9 +1919,9 @@ ActionDelayedActions.prototype.removeVariable = function(){
 /**
  * recursively fill arr with all nested sub actions
  */
-ActionDelayedActions.prototype.getAllActions = function(arr) {
+ActionDelayedActions.prototype.getAllActions = function (arr) {
     var actions = this.subActions();
-    for (var i=0; i<actions.length; i++) {
+    for (var i = 0; i < actions.length; i++) {
         arr.push(actions[i]);
         if (typeof actions[i].getAllActions === "function") {
             actions[i].getAllActions(arr);
@@ -1933,7 +1933,7 @@ ActionDelayedActions.prototype.getAllActions = function(arr) {
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionDelayedActions.prototype.isValid = function(){
+ActionDelayedActions.prototype.isValid = function () {
     return true;
 };
 
@@ -1943,28 +1943,28 @@ ActionDelayedActions.prototype.isValid = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionDelayedActions.prototype.run = function(triggerParams) {
+ActionDelayedActions.prototype.run = function (triggerParams) {
     var self = this;
-    if (this.delayType() =='variable'){
+    if (this.delayType() == 'variable') {
         var delayInMs = parseInt(this.variable().getValue(triggerParams));
     }
-    else{
-        var delayInMs =   parseInt(this.delayInMs());
+    else {
+        var delayInMs = parseInt(this.delayInMs());
     }
 
-    var pausableTimeout = new PausableSetTimeout(function() {
+    var pausableTimeout = new PausableSetTimeout(function () {
         var idx = self.pausableTimeouts.indexOf(pausableTimeout);
         if (idx > -1) {
             self.pausableTimeouts.splice(idx, 1);
         }
         self.delayedRun(triggerParams);
-    },delayInMs);
+    }, delayInMs);
     this.pausableTimeouts.push(pausableTimeout);
 };
 
-ActionDelayedActions.prototype.delayedRun = function(triggerParams) {
+ActionDelayedActions.prototype.delayedRun = function (triggerParams) {
     var actions = this.subActions();
-    for (var i=0; i<actions.length; i++) {
+    for (var i = 0; i < actions.length; i++) {
         actions[i].run(triggerParams);
     }
 };
@@ -1974,22 +1974,22 @@ ActionDelayedActions.prototype.delayedRun = function(triggerParams) {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-ActionDelayedActions.prototype.setupOnPlayerFrame = function(playerFrame) {
-    jQuery.each( this.subActions(), function( index, action ) {
+ActionDelayedActions.prototype.setupOnPlayerFrame = function (playerFrame) {
+    jQuery.each(this.subActions(), function (index, action) {
         if (typeof action.setupOnPlayerFrame === "function") {
             action.setupOnPlayerFrame(playerFrame);
         }
-    } );
+    });
 };
 
-ActionDelayedActions.prototype.startPause = function(playerFrame) {
-    for (var i=0; i<this.pausableTimeouts.length; i++) {
+ActionDelayedActions.prototype.startPause = function (playerFrame) {
+    for (var i = 0; i < this.pausableTimeouts.length; i++) {
         this.pausableTimeouts[i].pause();
     }
 };
 
-ActionDelayedActions.prototype.stopPause = function(playerFrame) {
-    for (var i=0; i<this.pausableTimeouts.length; i++) {
+ActionDelayedActions.prototype.stopPause = function (playerFrame) {
+    for (var i = 0; i < this.pausableTimeouts.length; i++) {
         this.pausableTimeouts[i].resume();
     }
 };
@@ -1998,14 +1998,14 @@ ActionDelayedActions.prototype.stopPause = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionDelayedActions.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    jQuery.each( this.pausableTimeouts, function( index, pausableTimeout ) {
+ActionDelayedActions.prototype.destroyOnPlayerFrame = function (playerFrame) {
+    jQuery.each(this.pausableTimeouts, function (index, pausableTimeout) {
         pausableTimeout.stop();
-    } );
+    });
     this.pausableTimeouts = [];
-    jQuery.each( this.subActions(), function( index, action ) {
+    jQuery.each(this.subActions(), function (index, action) {
         action.destroyOnPlayerFrame(playerFrame);
-    } );
+    });
 };
 
 /**
@@ -2015,20 +2015,20 @@ ActionDelayedActions.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionDelayedActions.prototype.setPointers = function(entitiesArr) {
+ActionDelayedActions.prototype.setPointers = function (entitiesArr) {
 
-    if (this.variable()){
+    if (this.variable()) {
         var varToSet = entitiesArr.byId[this.variable()];
-        if (varToSet){
+        if (varToSet) {
             this.variable(varToSet);
             this.setVariableBackRef(varToSet);
         }
     }
 
 
-    jQuery.each( this.subActions(), function( index, elem ) {
+    jQuery.each(this.subActions(), function (index, elem) {
         elem.setPointers(entitiesArr);
-    } );
+    });
 };
 
 
@@ -2037,12 +2037,12 @@ ActionDelayedActions.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionDelayedActions.prototype.reAddEntities = function(entitiesArr) {
-    jQuery.each( this.subActions(), function( index, elem ) {
+ActionDelayedActions.prototype.reAddEntities = function (entitiesArr) {
+    jQuery.each(this.subActions(), function (index, elem) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
             elem.reAddEntities(entitiesArr);
-    } );
+    });
 };
 
 /**
@@ -2050,21 +2050,21 @@ ActionDelayedActions.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionDelayedActions}
  */
-ActionDelayedActions.prototype.fromJS = function(data) {
+ActionDelayedActions.prototype.fromJS = function (data) {
     this.delayInMs(parseInt(data.delayInMs));
 
     var subActions = [];
-    for (var i=0; i<data.subActions.length; i++) {
+    for (var i = 0; i < data.subActions.length; i++) {
         var subAction = actionFactory(this.event, data.subActions[i].type);
         subAction.fromJS(data.subActions[i]);
         subActions.push(subAction);
     }
     this.subActions(subActions);
 
-    if (data.hasOwnProperty("variable")){
+    if (data.hasOwnProperty("variable")) {
         this.variable(data.variable);
     }
-    if (data.hasOwnProperty("delayType")){
+    if (data.hasOwnProperty("delayType")) {
         this.delayType(data.delayType);
     }
 
@@ -2076,10 +2076,10 @@ ActionDelayedActions.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionDelayedActions.prototype.toJS = function() {
+ActionDelayedActions.prototype.toJS = function () {
     var subActions = this.subActions();
     var subActionsData = [];
-    for (var i=0; i<subActions.length; i++) {
+    for (var i = 0; i < subActions.length; i++) {
         subActionsData.push(subActions[i].toJS());
     }
 
@@ -2095,7 +2095,7 @@ ActionDelayedActions.prototype.toJS = function() {
         delayInMs: parseInt(this.delayInMs()),
         subActions: subActionsData,
         variable: varId,
-        delayType:this.delayType()
+        delayType: this.delayType()
     };
 };
 
@@ -2111,7 +2111,7 @@ ActionDelayedActions.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionStartRepeatedActions = function(event) {
+var ActionStartRepeatedActions = function (event) {
     this.event = event;
     this.pausableTimeouts = [];
 
@@ -2132,9 +2132,9 @@ ActionStartRepeatedActions.prototype.label = "Repeated Actions (While Loop)";
 /**
  * recursively fill arr with all nested sub actions
  */
-ActionStartRepeatedActions.prototype.getAllActions = function(arr) {
+ActionStartRepeatedActions.prototype.getAllActions = function (arr) {
     var actions = this.subActions();
-    for (var i=0; i<actions.length; i++) {
+    for (var i = 0; i < actions.length; i++) {
         arr.push(actions[i]);
         if (typeof actions[i].getAllActions === "function") {
             actions[i].getAllActions(arr);
@@ -2146,7 +2146,7 @@ ActionStartRepeatedActions.prototype.getAllActions = function(arr) {
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionStartRepeatedActions.prototype.isValid = function(){
+ActionStartRepeatedActions.prototype.isValid = function () {
     return true;
 };
 
@@ -2156,10 +2156,10 @@ ActionStartRepeatedActions.prototype.isValid = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionStartRepeatedActions.prototype.run = function(triggerParams) {
+ActionStartRepeatedActions.prototype.run = function (triggerParams) {
 
 
-    if (this.executionType() =='time'){
+    if (this.executionType() == 'time') {
         var self = this;
         var start = new Date().getTime();
         var nextAt = start;
@@ -2174,7 +2174,7 @@ ActionStartRepeatedActions.prototype.run = function(triggerParams) {
 
         this.pausableTimeouts.push(null);
 
-        var scheduleNextRepetition = function() {
+        var scheduleNextRepetition = function () {
 
             // calculate time when next repetition should be scheduled:
             nextAt += self.delayInMs();
@@ -2183,7 +2183,7 @@ ActionStartRepeatedActions.prototype.run = function(triggerParams) {
             self.pausableTimeouts[timeoutIdx] = new PausableSetTimeout(runRepetition, waitingTime);
 
             if (waitingTime < 0) {
-                console.warn("warning: ActionStartRepeatedActions cannot keep up with the desired delayInMs ("+self.delayInMs()+")")
+                console.warn("warning: ActionStartRepeatedActions cannot keep up with the desired delayInMs (" + self.delayInMs() + ")")
             }
 
             // var drift = (currTime - start) % self.delayInMs();
@@ -2191,7 +2191,7 @@ ActionStartRepeatedActions.prototype.run = function(triggerParams) {
 
         };
 
-        var runRepetition = function() {
+        var runRepetition = function () {
 
             // check stopCondition.
             if (self.stopConditionEnabled()) {
@@ -2202,7 +2202,7 @@ ActionStartRepeatedActions.prototype.run = function(triggerParams) {
 
             // run all subActions:
             var actions = self.subActions();
-            for (var i=0; i<actions.length; i++) {
+            for (var i = 0; i < actions.length; i++) {
                 actions[i].run(triggerParams);
             }
 
@@ -2218,11 +2218,11 @@ ActionStartRepeatedActions.prototype.run = function(triggerParams) {
             scheduleNextRepetition();
         }
     }
-    else{
-        var stopping =  this.stopCondition().checkIfTrue(triggerParams);
+    else {
+        var stopping = this.stopCondition().checkIfTrue(triggerParams);
         var actions = this.subActions();
-        while (!stopping){
-            for (var i=0; i<actions.length; i++) {
+        while (!stopping) {
+            for (var i = 0; i < actions.length; i++) {
                 actions[i].run(triggerParams);
             }
             stopping = this.stopCondition().checkIfTrue(triggerParams)
@@ -2238,22 +2238,22 @@ ActionStartRepeatedActions.prototype.run = function(triggerParams) {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-ActionStartRepeatedActions.prototype.setupOnPlayerFrame = function(playerFrame) {
-    jQuery.each( this.subActions(), function( index, action ) {
+ActionStartRepeatedActions.prototype.setupOnPlayerFrame = function (playerFrame) {
+    jQuery.each(this.subActions(), function (index, action) {
         if (typeof action.setupOnPlayerFrame === "function") {
             action.setupOnPlayerFrame(playerFrame);
         }
-    } );
+    });
 };
 
-ActionStartRepeatedActions.prototype.startPause = function(playerFrame) {
-    for (var i=0; i<this.pausableTimeouts.length; i++) {
+ActionStartRepeatedActions.prototype.startPause = function (playerFrame) {
+    for (var i = 0; i < this.pausableTimeouts.length; i++) {
         this.pausableTimeouts[i].pause();
     }
 };
 
-ActionStartRepeatedActions.prototype.stopPause = function(playerFrame) {
-    for (var i=0; i<this.pausableTimeouts.length; i++) {
+ActionStartRepeatedActions.prototype.stopPause = function (playerFrame) {
+    for (var i = 0; i < this.pausableTimeouts.length; i++) {
         this.pausableTimeouts[i].resume();
     }
 };
@@ -2262,14 +2262,14 @@ ActionStartRepeatedActions.prototype.stopPause = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionStartRepeatedActions.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    jQuery.each( this.pausableTimeouts, function( index, pausableTimeout ) {
+ActionStartRepeatedActions.prototype.destroyOnPlayerFrame = function (playerFrame) {
+    jQuery.each(this.pausableTimeouts, function (index, pausableTimeout) {
         pausableTimeout.stop();
-    } );
+    });
     this.pausableTimeouts = [];
-    jQuery.each( this.subActions(), function( index, action ) {
+    jQuery.each(this.subActions(), function (index, action) {
         action.destroyOnPlayerFrame(playerFrame);
-    } );
+    });
 };
 
 /**
@@ -2279,10 +2279,10 @@ ActionStartRepeatedActions.prototype.destroyOnPlayerFrame = function(playerFrame
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionStartRepeatedActions.prototype.setPointers = function(entitiesArr) {
-    jQuery.each( this.subActions(), function( index, elem ) {
+ActionStartRepeatedActions.prototype.setPointers = function (entitiesArr) {
+    jQuery.each(this.subActions(), function (index, elem) {
         elem.setPointers(entitiesArr);
-    } );
+    });
 
     if (this.stopCondition()) {
         this.stopCondition().setPointers(entitiesArr);
@@ -2295,12 +2295,12 @@ ActionStartRepeatedActions.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionStartRepeatedActions.prototype.reAddEntities = function(entitiesArr) {
-    jQuery.each( this.subActions(), function( index, elem ) {
+ActionStartRepeatedActions.prototype.reAddEntities = function (entitiesArr) {
+    jQuery.each(this.subActions(), function (index, elem) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
             elem.reAddEntities(entitiesArr);
-    } );
+    });
 
     if (this.stopCondition()) {
         this.stopCondition().reAddEntities(entitiesArr);
@@ -2312,7 +2312,7 @@ ActionStartRepeatedActions.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionStartRepeatedActions}
  */
-ActionStartRepeatedActions.prototype.fromJS = function(data) {
+ActionStartRepeatedActions.prototype.fromJS = function (data) {
     this.allowMultiple(data.allowMultiple);
     this.startWithoutDelay(data.startWithoutDelay);
     this.stopConditionEnabled(data.stopConditionEnabled);
@@ -2326,14 +2326,14 @@ ActionStartRepeatedActions.prototype.fromJS = function(data) {
     this.delayInMs(parseInt(data.delayInMs));
 
     var subActions = [];
-    for (var i=0; i<data.subActions.length; i++) {
+    for (var i = 0; i < data.subActions.length; i++) {
         var subAction = actionFactory(this.event, data.subActions[i].type);
         subAction.fromJS(data.subActions[i]);
         subActions.push(subAction);
     }
     this.subActions(subActions);
 
-    if(data.hasOwnProperty('executionType')) {
+    if (data.hasOwnProperty('executionType')) {
         this.executionType(data.executionType);
     }
 
@@ -2344,10 +2344,10 @@ ActionStartRepeatedActions.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionStartRepeatedActions.prototype.toJS = function() {
+ActionStartRepeatedActions.prototype.toJS = function () {
     var subActions = this.subActions();
     var subActionsData = [];
-    for (var i=0; i<subActions.length; i++) {
+    for (var i = 0; i < subActions.length; i++) {
         subActionsData.push(subActions[i].toJS());
     }
 
@@ -2364,7 +2364,7 @@ ActionStartRepeatedActions.prototype.toJS = function() {
         stopCondition: stopCondition,
         delayInMs: parseInt(this.delayInMs()),
         subActions: subActionsData,
-        executionType:this.executionType()
+        executionType: this.executionType()
     };
 };
 
@@ -2384,12 +2384,12 @@ ActionStartRepeatedActions.prototype.toJS = function() {
 
 
 
-var ActionConditional = function(event) {
+var ActionConditional = function (event) {
     this.event = event;
 
     // serialized:
     this.ifElseConditions = ko.observableArray([new ActionIfCondition(this.event)]);
-    this.defaultSubActions =  ko.observableArray([]);
+    this.defaultSubActions = ko.observableArray([]);
     this.defaultConditionActive = ko.observable(false);
 
 };
@@ -2401,27 +2401,27 @@ ActionConditional.prototype.label = "Requirement Actions (If...Then)";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionConditional.prototype.isValid = function(){
+ActionConditional.prototype.isValid = function () {
     return true;
 };
 
-ActionConditional.prototype.deleteIfCondition = function(index){
-   this.ifElseConditions.splice(index,1);
+ActionConditional.prototype.deleteIfCondition = function (index) {
+    this.ifElseConditions.splice(index, 1);
 };
 
 
-ActionConditional.prototype.copyIfCondition = function(index){
-   var copyData =  this.ifElseConditions()[index].toJS();
-   var newCondition = new ActionIfCondition(this.event);
-   newCondition.fromJS(copyData);
-   var entiriesArr = this.event.parent.expData.entities;
-   newCondition.setPointers(entiriesArr);
-   this.ifElseConditions.push(newCondition);
+ActionConditional.prototype.copyIfCondition = function (index) {
+    var copyData = this.ifElseConditions()[index].toJS();
+    var newCondition = new ActionIfCondition(this.event);
+    newCondition.fromJS(copyData);
+    var entiriesArr = this.event.parent.expData.entities;
+    newCondition.setPointers(entiriesArr);
+    this.ifElseConditions.push(newCondition);
 };
 
 
 
-ActionConditional.prototype.addIfCondition = function(){
+ActionConditional.prototype.addIfCondition = function () {
     this.ifElseConditions.push(new ActionIfCondition(this.event));
 };
 
@@ -2431,24 +2431,24 @@ ActionConditional.prototype.addIfCondition = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionConditional.prototype.run = function(triggerParams) {
+ActionConditional.prototype.run = function (triggerParams) {
     var ifElseConditions = this.ifElseConditions();
     var foundTrueCase = false;
     var caseIndex = 0;
-    while (foundTrueCase ==false && caseIndex<ifElseConditions.length){
+    while (foundTrueCase == false && caseIndex < ifElseConditions.length) {
         var requirement = ifElseConditions[caseIndex].requirement();
         var actionList = ifElseConditions[caseIndex].subActions();
-        if (requirement==null || requirement.checkIfTrue(triggerParams)) {
+        if (requirement == null || requirement.checkIfTrue(triggerParams)) {
             foundTrueCase = true;
-            for (var j=0; j<actionList.length; j++) {
+            for (var j = 0; j < actionList.length; j++) {
                 actionList[j].run(triggerParams);
             }
         }
-        caseIndex ++;
+        caseIndex++;
     }
-    if (foundTrueCase==false && this.defaultConditionActive()){
+    if (foundTrueCase == false && this.defaultConditionActive()) {
         var actionList = this.defaultSubActions();
-        for (var j=0; j<actionList.length; j++) {
+        for (var j = 0; j < actionList.length; j++) {
             actionList[j].run(triggerParams);
         }
     }
@@ -2459,30 +2459,30 @@ ActionConditional.prototype.run = function(triggerParams) {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-ActionConditional.prototype.setupOnPlayerFrame = function(playerFrame) {
-    jQuery.each( this.defaultSubActions(), function( index, action ) {
+ActionConditional.prototype.setupOnPlayerFrame = function (playerFrame) {
+    jQuery.each(this.defaultSubActions(), function (index, action) {
         if (typeof action.setupOnPlayerFrame === "function") {
             action.setupOnPlayerFrame(playerFrame);
         }
-    } );
-    jQuery.each( this.ifElseConditions(), function( index, condition ) {
+    });
+    jQuery.each(this.ifElseConditions(), function (index, condition) {
         if (typeof condition.setupOnPlayerFrame === "function") {
             condition.setupOnPlayerFrame(playerFrame);
         }
-    } );
+    });
 };
 
 /**
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionConditional.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    jQuery.each( this.defaultSubActions(), function( index, action ) {
+ActionConditional.prototype.destroyOnPlayerFrame = function (playerFrame) {
+    jQuery.each(this.defaultSubActions(), function (index, action) {
         action.destroyOnPlayerFrame(playerFrame);
-    } );
-    jQuery.each( this.ifElseConditions(), function( index, ifElseCond ) {
+    });
+    jQuery.each(this.ifElseConditions(), function (index, ifElseCond) {
         ifElseCond.destroyOnPlayerFrame(playerFrame);
-    } );
+    });
 };
 
 /**
@@ -2492,13 +2492,13 @@ ActionConditional.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionConditional.prototype.setPointers = function(entitiesArr) {
-    jQuery.each( this.defaultSubActions(), function( index, elem ) {
+ActionConditional.prototype.setPointers = function (entitiesArr) {
+    jQuery.each(this.defaultSubActions(), function (index, elem) {
         elem.setPointers(entitiesArr);
-    } );
-    jQuery.each( this.ifElseConditions(), function( index, elem ) {
+    });
+    jQuery.each(this.ifElseConditions(), function (index, elem) {
         elem.setPointers(entitiesArr);
-    } );
+    });
 };
 
 
@@ -2507,17 +2507,17 @@ ActionConditional.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionConditional.prototype.reAddEntities = function(entitiesArr) {
-    jQuery.each( this.defaultSubActions(), function( index, elem ) {
+ActionConditional.prototype.reAddEntities = function (entitiesArr) {
+    jQuery.each(this.defaultSubActions(), function (index, elem) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
             elem.reAddEntities(entitiesArr);
-    } );
-    jQuery.each( this.ifElseConditions(), function( index, elem ) {
+    });
+    jQuery.each(this.ifElseConditions(), function (index, elem) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
             elem.reAddEntities(entitiesArr);
-    } );
+    });
 };
 
 /**
@@ -2525,10 +2525,10 @@ ActionConditional.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionConditional}
  */
-ActionConditional.prototype.fromJS = function(data) {
+ActionConditional.prototype.fromJS = function (data) {
 
     var defaultSubActions = [];
-    for (var i=0; i<data.defaultSubActions.length; i++) {
+    for (var i = 0; i < data.defaultSubActions.length; i++) {
         var subAction = actionFactory(this.event, data.defaultSubActions[i].type);
         subAction.fromJS(data.defaultSubActions[i]);
         defaultSubActions.push(subAction);
@@ -2536,7 +2536,7 @@ ActionConditional.prototype.fromJS = function(data) {
     this.defaultSubActions(defaultSubActions);
 
     var ifElseConditions = [];
-    for (var i=0; i<data.ifElseConditions.length; i++) {
+    for (var i = 0; i < data.ifElseConditions.length; i++) {
         var ifCondition = new ActionIfCondition(this.event);
         ifCondition.fromJS(data.ifElseConditions[i]);
         ifElseConditions.push(ifCondition);
@@ -2554,15 +2554,15 @@ ActionConditional.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionConditional.prototype.toJS = function() {
+ActionConditional.prototype.toJS = function () {
     var defaultSubActions = this.defaultSubActions();
     var defSubActions = [];
-    for (var i=0; i<defaultSubActions.length; i++) {
+    for (var i = 0; i < defaultSubActions.length; i++) {
         defSubActions.push(defaultSubActions[i].toJS());
     }
     var ifElseConditions = this.ifElseConditions();
     var ifConditions = [];
-    for (var i=0; i<ifElseConditions.length; i++) {
+    for (var i = 0; i < ifElseConditions.length; i++) {
         ifConditions.push(ifElseConditions[i].toJS());
     }
 
@@ -2588,7 +2588,7 @@ ActionConditional.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionIfCondition = function(event) {
+var ActionIfCondition = function (event) {
     this.event = event;
     this.requirement = ko.observable(new RequirementAND(this.event));
     this.requirement().setParent(this);
@@ -2601,9 +2601,9 @@ ActionIfCondition.prototype.label = "If Condition";
 /**
  * recursively fill arr with all nested sub actions
  */
-ActionIfCondition.prototype.getAllActions = function(arr) {
+ActionIfCondition.prototype.getAllActions = function (arr) {
     var actions = this.subActions();
-    for (var i=0; i<actions.length; i++) {
+    for (var i = 0; i < actions.length; i++) {
         arr.push(actions[i]);
         if (typeof actions[i].getAllActions === "function") {
             actions[i].getAllActions(arr);
@@ -2615,7 +2615,7 @@ ActionIfCondition.prototype.getAllActions = function(arr) {
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionIfCondition.prototype.isValid = function(){
+ActionIfCondition.prototype.isValid = function () {
     return true;
 };
 
@@ -2623,7 +2623,7 @@ ActionIfCondition.prototype.isValid = function(){
 /**
  * deletes all requirements.
  */
-ActionIfCondition.prototype.deleteRequirement = function() {
+ActionIfCondition.prototype.deleteRequirement = function () {
     this.requirement(new RequirementAND(this));
 };
 
@@ -2633,7 +2633,7 @@ ActionIfCondition.prototype.deleteRequirement = function() {
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionIfCondition.prototype.run = function(triggerParams) {
+ActionIfCondition.prototype.run = function (triggerParams) {
     var self = this;
 };
 
@@ -2642,22 +2642,22 @@ ActionIfCondition.prototype.run = function(triggerParams) {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-ActionIfCondition.prototype.setupOnPlayerFrame = function(playerFrame) {
-    jQuery.each( this.subActions(), function( index, action ) {
+ActionIfCondition.prototype.setupOnPlayerFrame = function (playerFrame) {
+    jQuery.each(this.subActions(), function (index, action) {
         if (typeof action.setupOnPlayerFrame === "function") {
             action.setupOnPlayerFrame(playerFrame);
         }
-    } );
+    });
 };
 
 /**
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionIfCondition.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    jQuery.each( this.subActions(), function( index, action ) {
+ActionIfCondition.prototype.destroyOnPlayerFrame = function (playerFrame) {
+    jQuery.each(this.subActions(), function (index, action) {
         action.destroyOnPlayerFrame(playerFrame);
-    } );
+    });
 };
 
 /**
@@ -2667,10 +2667,10 @@ ActionIfCondition.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionIfCondition.prototype.setPointers = function(entitiesArr) {
-    jQuery.each( this.subActions(), function( index, elem ) {
+ActionIfCondition.prototype.setPointers = function (entitiesArr) {
+    jQuery.each(this.subActions(), function (index, elem) {
         elem.setPointers(entitiesArr);
-    } );
+    });
     this.requirement().setPointers(entitiesArr);
 };
 
@@ -2680,12 +2680,12 @@ ActionIfCondition.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionIfCondition.prototype.reAddEntities = function(entitiesArr) {
-    jQuery.each( this.subActions(), function( index, elem ) {
+ActionIfCondition.prototype.reAddEntities = function (entitiesArr) {
+    jQuery.each(this.subActions(), function (index, elem) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
             elem.reAddEntities(entitiesArr);
-    } );
+    });
     this.requirement().reAddEntities(entitiesArr);
 };
 
@@ -2694,7 +2694,7 @@ ActionIfCondition.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionIfCondition}
  */
-ActionIfCondition.prototype.fromJS = function(data) {
+ActionIfCondition.prototype.fromJS = function (data) {
 
     var requirement = requirementFactory(this.event, data.requirement.type);
     requirement.fromJS(data.requirement);
@@ -2702,7 +2702,7 @@ ActionIfCondition.prototype.fromJS = function(data) {
     this.requirement().setParent(this);
 
     var subActions = [];
-    for (var i=0; i<data.subActions.length; i++) {
+    for (var i = 0; i < data.subActions.length; i++) {
         var subAction = actionFactory(this.event, data.subActions[i].type);
         subAction.fromJS(data.subActions[i]);
         subActions.push(subAction);
@@ -2716,10 +2716,10 @@ ActionIfCondition.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionIfCondition.prototype.toJS = function() {
+ActionIfCondition.prototype.toJS = function () {
     var subActions = this.subActions();
     var subActionsData = [];
-    for (var i=0; i<subActions.length; i++) {
+    for (var i = 0; i < subActions.length; i++) {
         subActionsData.push(subActions[i].toJS());
     }
 
@@ -2749,7 +2749,7 @@ ActionIfCondition.prototype.toJS = function() {
  * @constructor
  */
 
-var ActionSetVariable = function(event) {
+var ActionSetVariable = function (event) {
     this.event = event;
 
     // serialized
@@ -2763,7 +2763,7 @@ ActionSetVariable.prototype.label = "Set / Record Variable";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionSetVariable.prototype.isValid = function(){
+ActionSetVariable.prototype.isValid = function () {
     return true;
 };
 
@@ -2771,14 +2771,14 @@ ActionSetVariable.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionSetVariable.prototype.setVariableBackRef = function(variable){
+ActionSetVariable.prototype.setVariableBackRef = function (variable) {
     var self = this;
-    variable.addBackRef(this, this.event, true, false, 'set variable', function(globalVar) {
+    variable.addBackRef(this, this.event, true, false, 'set variable', function (globalVar) {
         self.removeVariable();
     });
 };
 
-ActionSetVariable.prototype.removeVariable = function(){
+ActionSetVariable.prototype.removeVariable = function () {
     this.variable(null);
 };
 
@@ -2788,7 +2788,7 @@ ActionSetVariable.prototype.removeVariable = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionSetVariable.prototype.run = function(triggerParams) {
+ActionSetVariable.prototype.run = function (triggerParams) {
     var rValue = this.operand().getValue(triggerParams);
     if (this.variable()) {
         this.variable().setValue(rValue);
@@ -2799,7 +2799,7 @@ ActionSetVariable.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionSetVariable.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionSetVariable.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -2809,7 +2809,7 @@ ActionSetVariable.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSetVariable.prototype.setPointers = function(entitiesArr) {
+ActionSetVariable.prototype.setPointers = function (entitiesArr) {
     if (this.variable()) {
         var varToSet = entitiesArr.byId[this.variable()];
         if (varToSet) {
@@ -2830,7 +2830,7 @@ ActionSetVariable.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionSetVariable.prototype.reAddEntities = function(entitiesArr) {
+ActionSetVariable.prototype.reAddEntities = function (entitiesArr) {
     if (this.variable()) {
         if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
             entitiesArr.push(this.variable());
@@ -2846,7 +2846,7 @@ ActionSetVariable.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionSetVariable}
  */
-ActionSetVariable.prototype.fromJS = function(data) {
+ActionSetVariable.prototype.fromJS = function (data) {
     this.variable(data.variable);
     var operand = new OperandVariable(this.event);
     operand.fromJS(data.operand);
@@ -2858,7 +2858,7 @@ ActionSetVariable.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionSetVariable.prototype.toJS = function() {
+ActionSetVariable.prototype.toJS = function () {
     var varId = null;
     if (this.variable()) {
         if (typeof this.variable().id == 'function') {
@@ -2883,7 +2883,7 @@ ActionSetVariable.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionMovingAvgFilter = function(event) {
+var ActionMovingAvgFilter = function (event) {
     this.event = event;
 
     // serialized
@@ -2917,7 +2917,7 @@ ActionMovingAvgFilter.prototype.filterTypes = [
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionMovingAvgFilter.prototype.isValid = function(){
+ActionMovingAvgFilter.prototype.isValid = function () {
     return true;
 };
 
@@ -2925,7 +2925,7 @@ ActionMovingAvgFilter.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionMovingAvgFilter.prototype.setVariableBackRef = function(variable){
+ActionMovingAvgFilter.prototype.setVariableBackRef = function (variable) {
     if (variable) {
         variable.addBackRef(this, this.event, true, false, 'Moving Avg Filter');
     }
@@ -2937,7 +2937,7 @@ ActionMovingAvgFilter.prototype.setVariableBackRef = function(variable){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionMovingAvgFilter.prototype.run = function(triggerParams) {
+ActionMovingAvgFilter.prototype.run = function (triggerParams) {
 
     if (this.variable()) {
         var rValue = this.operand().getValue(triggerParams);
@@ -2947,7 +2947,7 @@ ActionMovingAvgFilter.prototype.run = function(triggerParams) {
                 this.hist_samples.shift();
             }
             var sum = 0;
-            for (var k=0; k<this.hist_samples.length; k++) {
+            for (var k = 0; k < this.hist_samples.length; k++) {
                 sum += this.hist_samples[k];
             }
             this.current_output = sum / this.hist_samples.length;
@@ -2959,19 +2959,19 @@ ActionMovingAvgFilter.prototype.run = function(triggerParams) {
             }
             var weighted_sum = 0;
             var total_weights = 0;
-            for (var k=0; k<this.hist_samples.length; k++) {
-                weighted_sum += this.hist_samples[k] * (k+1);
-                total_weights += (k+1);
+            for (var k = 0; k < this.hist_samples.length; k++) {
+                weighted_sum += this.hist_samples[k] * (k + 1);
+                total_weights += (k + 1);
             }
             this.current_output = weighted_sum / total_weights;
         }
         else if (this.filterType() == "ema") {
-            if (this.current_output=="uninitialized") {
+            if (this.current_output == "uninitialized") {
                 // initialize filter:
                 this.current_output = rValue;
             }
             else {
-                this.current_output = this.current_output * (1-this.emaAlpha()) + rValue * this.emaAlpha();
+                this.current_output = this.current_output * (1 - this.emaAlpha()) + rValue * this.emaAlpha();
             }
         }
         this.variable().setValue(this.current_output);
@@ -2982,7 +2982,7 @@ ActionMovingAvgFilter.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionMovingAvgFilter.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionMovingAvgFilter.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -2992,7 +2992,7 @@ ActionMovingAvgFilter.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionMovingAvgFilter.prototype.setPointers = function(entitiesArr) {
+ActionMovingAvgFilter.prototype.setPointers = function (entitiesArr) {
     if (this.variable()) {
         var varToSet = entitiesArr.byId[this.variable()];
         if (varToSet) {
@@ -3013,7 +3013,7 @@ ActionMovingAvgFilter.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionMovingAvgFilter.prototype.reAddEntities = function(entitiesArr) {
+ActionMovingAvgFilter.prototype.reAddEntities = function (entitiesArr) {
     if (this.variable()) {
         if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
             entitiesArr.push(this.variable());
@@ -3029,7 +3029,7 @@ ActionMovingAvgFilter.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionMovingAvgFilter}
  */
-ActionMovingAvgFilter.prototype.fromJS = function(data) {
+ActionMovingAvgFilter.prototype.fromJS = function (data) {
     this.variable(data.variable);
     var operand = new OperandVariable(this.event);
     operand.fromJS(data.operand);
@@ -3044,7 +3044,7 @@ ActionMovingAvgFilter.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionMovingAvgFilter.prototype.toJS = function() {
+ActionMovingAvgFilter.prototype.toJS = function () {
     var varId = null;
     if (this.variable()) {
         if (typeof this.variable().id == 'function') {
@@ -3074,7 +3074,7 @@ ActionMovingAvgFilter.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionModifyVariable = function(event) {
+var ActionModifyVariable = function (event) {
     this.event = event;
 
     this.variable = ko.observable(null);
@@ -3082,12 +3082,12 @@ var ActionModifyVariable = function(event) {
     this.changeType = ko.observable(null);
     this.value = ko.observable(null);
     this.operatorTypes = ko.observableArray(["=", "+", "-", "*", "/"]);
-    this.changeTypes =  ko.observableArray(["value", "%","variable"]);
+    this.changeTypes = ko.observableArray(["value", "%", "variable"]);
 
-    var self= this;
+    var self = this;
 
-    this.variable.subscribe(function(newVal) {
-        if (self.variable() != newVal){
+    this.variable.subscribe(function (newVal) {
+        if (self.variable() != newVal) {
             self.operatorType(null);
             self.changeType(null);
             self.value(null);
@@ -3096,7 +3096,7 @@ var ActionModifyVariable = function(event) {
 
 
 
-    this.operatorType.subscribe(function(newVal) {
+    this.operatorType.subscribe(function (newVal) {
         if (newVal == "=") {
             self.changeTypes(["value", "%", "variable"]);
             if (self.variable() && self.variable() instanceof GlobalVar) {
@@ -3107,18 +3107,18 @@ var ActionModifyVariable = function(event) {
             self.changeTypes(["value", "variable"]);
             self.value(1);
         }
-        else if (newVal){
-            self.changeTypes(["value","%", "variable"]);
+        else if (newVal) {
+            self.changeTypes(["value", "%", "variable"]);
             self.value(0);
         }
 
     });
 
-    this.changeType.subscribe(function(newVal) {
-        if (newVal == "%" && self.operatorType()=="=") {
+    this.changeType.subscribe(function (newVal) {
+        if (newVal == "%" && self.operatorType() == "=") {
             self.value(100);
         }
-        else if (newVal == "value" && self.operatorType()=="=") {
+        else if (newVal == "value" && self.operatorType() == "=") {
             if (self.variable() && self.variable() instanceof GlobalVar) {
                 self.value(self.variable().startValue().value());
             }
@@ -3133,7 +3133,7 @@ ActionModifyVariable.prototype.label = "Modify Variable";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionModifyVariable.prototype.isValid = function(){
+ActionModifyVariable.prototype.isValid = function () {
     return true;
 };
 
@@ -3141,7 +3141,7 @@ ActionModifyVariable.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionModifyVariable.prototype.setVariableBackRef = function(variable){
+ActionModifyVariable.prototype.setVariableBackRef = function (variable) {
     variable.addBackRef(this, this.event, true, false, 'modify variable');
 };
 
@@ -3151,76 +3151,76 @@ ActionModifyVariable.prototype.setVariableBackRef = function(variable){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionModifyVariable.prototype.run = function(triggerParams) {
+ActionModifyVariable.prototype.run = function (triggerParams) {
 
 
-    var operatorType =  this.operatorType();
-    var changeType =  this.changeType();
+    var operatorType = this.operatorType();
+    var changeType = this.changeType();
     // make sure to calculate on numeric
-    var value =  this.value();
+    var value = this.value();
 
     // make sure to calculate on numeric
     var oldValue = this.variable().value();
-    if (typeof oldValue  === 'string'){
+    if (typeof oldValue === 'string') {
         oldValue = Number(oldValue);
     }
-    if (typeof value  === 'string'){
+    if (typeof value === 'string') {
         value = Number(value);
     }
     var newValue;
 
-    if (operatorType== '='){
-        if (changeType== 'value'){
+    if (operatorType == '=') {
+        if (changeType == 'value') {
             newValue = value;
         }
-        else if (operatorType== '%'){
-            newValue = oldValue * (value/100);
+        else if (operatorType == '%') {
+            newValue = oldValue * (value / 100);
         }
-        else if (operatorType== 'variable'){
+        else if (operatorType == 'variable') {
             newValue = parseFloat(value.value());
         }
     }
-    else if (operatorType== '+'){
-        if (changeType== 'value'){
+    else if (operatorType == '+') {
+        if (changeType == 'value') {
             newValue = oldValue + value;
         }
-        else if (operatorType== '%'){
-            newValue = oldValue + (oldValue * (value/100));
+        else if (operatorType == '%') {
+            newValue = oldValue + (oldValue * (value / 100));
         }
-        else if (operatorType== 'variable'){
+        else if (operatorType == 'variable') {
             newValue = oldValue + parseFloat(value.value());
         }
     }
-    else if (operatorType== '-'){
-        if (changeType== 'value'){
+    else if (operatorType == '-') {
+        if (changeType == 'value') {
             newValue = oldValue - value;
         }
-        else if (operatorType== '%'){
-            newValue = oldValue - (oldValue * (value/100));
+        else if (operatorType == '%') {
+            newValue = oldValue - (oldValue * (value / 100));
         }
-        else if (operatorType== 'variable'){
+        else if (operatorType == 'variable') {
             newValue = oldValue - parseFloat(value.value());
         }
     }
-    else if (operatorType== '*'){
-        if (changeType== 'value'){
+    else if (operatorType == '*') {
+        if (changeType == 'value') {
             newValue = oldValue * value;
         }
-        else if (operatorType== '%'){
-            newValue = oldValue * (oldValue * (value/100));
+        else if (operatorType == '%') {
+            newValue = oldValue * (oldValue * (value / 100));
         }
-        else if (operatorType== 'variable'){
+        else if (operatorType == 'variable') {
             newValue = oldValue * parseFloat(value.value());
         }
     }
-    else if (operatorType== '/'){
-        if (changeType== 'value'){
+    else if (operatorType == '/') {
+        if (changeType == 'value') {
             newValue = oldValue / value;
         }
-        else if (operatorType== '%'){
-            newValue = oldValue / (oldValue * (value/100));
+        else if (operatorType == '%') {
+            newValue = oldValue / (oldValue * (value / 100));
         }
-        else if (operatorType== 'variable'){
+        else if (operatorType == 'variable') {
             newValue = oldValue / parseFloat(value.value());
         }
     }
@@ -3231,7 +3231,7 @@ ActionModifyVariable.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionModifyVariable.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionModifyVariable.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -3241,15 +3241,15 @@ ActionModifyVariable.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionModifyVariable.prototype.setPointers = function(entitiesArr) {
+ActionModifyVariable.prototype.setPointers = function (entitiesArr) {
 
-    if (this.variable()){
+    if (this.variable()) {
         var mainVariable = entitiesArr.byId[this.variable()];
         this.variable(mainVariable);
     }
 
 
-    if (entitiesArr.byId[this.value()]){
+    if (entitiesArr.byId[this.value()]) {
         var valueVariable = entitiesArr.byId[this.value()];
         this.value(valueVariable);
     }
@@ -3260,7 +3260,7 @@ ActionModifyVariable.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionModifyVariable.prototype.reAddEntities = function(entitiesArr) {
+ActionModifyVariable.prototype.reAddEntities = function (entitiesArr) {
     if (this.variable()) {
         if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
             entitiesArr.push(this.variable());
@@ -3278,7 +3278,7 @@ ActionModifyVariable.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionModifyVariable}
  */
-ActionModifyVariable.prototype.fromJS = function(data) {
+ActionModifyVariable.prototype.fromJS = function (data) {
 
     this.variable(data.variable);
     this.operatorType(data.operatorType);
@@ -3293,9 +3293,9 @@ ActionModifyVariable.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionModifyVariable.prototype.toJS = function() {
+ActionModifyVariable.prototype.toJS = function () {
     var value = null;
-    if (this.value() && this.value().hasOwnProperty("id")){
+    if (this.value() && this.value().hasOwnProperty("id")) {
         value = this.value.id();
     }
     else {
@@ -3325,7 +3325,7 @@ ActionModifyVariable.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionDrawRandomNumber = function(event) {
+var ActionDrawRandomNumber = function (event) {
     this.event = event;
 
     // serialized
@@ -3350,7 +3350,7 @@ ActionDrawRandomNumber.prototype.discreteDistributions = ["Uniform"];
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionDrawRandomNumber.prototype.run = function(triggerParams) {
+ActionDrawRandomNumber.prototype.run = function (triggerParams) {
     var value;
     if (this.discrete()) { // draw from discrete distribution
 
@@ -3365,7 +3365,7 @@ ActionDrawRandomNumber.prototype.run = function(triggerParams) {
                         var min = this.distributionParam1();
                         var max = this.distributionParam2();
                         max += 1;
-                        value = Math.floor( Math.random() * (max - min) + min );
+                        value = Math.floor(Math.random() * (max - min) + min);
                         if (value > max) {
                             value = max;
                         }
@@ -3404,7 +3404,7 @@ ActionDrawRandomNumber.prototype.run = function(triggerParams) {
                 var min = this.distributionParam1();
                 var max = this.distributionParam2();
                 max += 1;
-                value = Math.floor( Math.random() * (max - min) + min );
+                value = Math.floor(Math.random() * (max - min) + min);
                 if (value > max) {
                     value = max;
                 }
@@ -3434,7 +3434,7 @@ ActionDrawRandomNumber.prototype.run = function(triggerParams) {
  * draw a single value from a continous distribution.
  * @returns {*}
  */
-ActionDrawRandomNumber.prototype.drawFromContinous = function(){
+ActionDrawRandomNumber.prototype.drawFromContinous = function () {
     var value = null;
     if (this.distribution() == "Uniform") {
         var min = this.distributionParam1();
@@ -3453,7 +3453,7 @@ ActionDrawRandomNumber.prototype.drawFromContinous = function(){
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionDrawRandomNumber.prototype.isValid = function(){
+ActionDrawRandomNumber.prototype.isValid = function () {
     return true;
 };
 
@@ -3461,7 +3461,7 @@ ActionDrawRandomNumber.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionDrawRandomNumber.prototype.setVariableBackRef = function(variable){
+ActionDrawRandomNumber.prototype.setVariableBackRef = function (variable) {
     if (variable) {
         variable.addBackRef(this, this.event, true, false, 'Save Random Num');
     }
@@ -3475,7 +3475,7 @@ ActionDrawRandomNumber.prototype.setVariableBackRef = function(variable){
 function randn_bm() {
     var u = 1 - Math.random(); // Subtraction to flip [0, 1) to (0, 1].
     var v = 1 - Math.random();
-    return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
 }
 
 /**
@@ -3483,7 +3483,7 @@ function randn_bm() {
  *
  * randn_marsaglia_polar is a function that generates and returns new randn numbers.
  */
-var randn_marsaglia_polar = (function() {
+var randn_marsaglia_polar = (function () {
     var y2;
     var isSpareReady = false;
 
@@ -3494,7 +3494,7 @@ var randn_marsaglia_polar = (function() {
      */
     function randn_mp() {
         var y1;
-        if(isSpareReady) {
+        if (isSpareReady) {
             y1 = y2;
             isSpareReady = false;
         }
@@ -3503,9 +3503,9 @@ var randn_marsaglia_polar = (function() {
             do {
                 x1 = 2.0 * Math.random() - 1.0;
                 x2 = 2.0 * Math.random() - 1.0;
-                w  = x1 * x1 + x2 * x2;
-            } while( w >= 1.0);
-            w = Math.sqrt((-2.0 * Math.log(w))/w);
+                w = x1 * x1 + x2 * x2;
+            } while (w >= 1.0);
+            w = Math.sqrt((-2.0 * Math.log(w)) / w);
             y1 = x1 * w;
             y2 = x2 * w;
             isSpareReady = true;
@@ -3520,7 +3520,7 @@ var randn_marsaglia_polar = (function() {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionDrawRandomNumber.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionDrawRandomNumber.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -3530,8 +3530,8 @@ ActionDrawRandomNumber.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionDrawRandomNumber.prototype.setPointers = function(entitiesArr) {
-    if (this.variable()){
+ActionDrawRandomNumber.prototype.setPointers = function (entitiesArr) {
+    if (this.variable()) {
         var globVar = entitiesArr.byId[this.variable()];
         this.variable(globVar);
         this.setVariableBackRef(globVar);
@@ -3543,7 +3543,7 @@ ActionDrawRandomNumber.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionDrawRandomNumber.prototype.reAddEntities = function(entitiesArr) {
+ActionDrawRandomNumber.prototype.reAddEntities = function (entitiesArr) {
     if (this.variable()) {
         if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
             entitiesArr.push(this.variable());
@@ -3556,18 +3556,18 @@ ActionDrawRandomNumber.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionDrawRandomNumber}
  */
-ActionDrawRandomNumber.prototype.fromJS = function(data) {
+ActionDrawRandomNumber.prototype.fromJS = function (data) {
     this.variable(data.variable);
-    if(data.hasOwnProperty('discrete')) {
+    if (data.hasOwnProperty('discrete')) {
         this.discrete(data.discrete);
     }
-    if(data.hasOwnProperty('multiple')) {
+    if (data.hasOwnProperty('multiple')) {
         this.multiple(data.multiple);
     }
-    if(data.hasOwnProperty('replacement')) {
+    if (data.hasOwnProperty('replacement')) {
         this.replacement(data.replacement);
     }
-    if(data.hasOwnProperty('numDraws')) {
+    if (data.hasOwnProperty('numDraws')) {
         this.numDraws(data.numDraws);
     }
     this.distribution(data.distribution);
@@ -3580,7 +3580,7 @@ ActionDrawRandomNumber.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionDrawRandomNumber.prototype.toJS = function() {
+ActionDrawRandomNumber.prototype.toJS = function () {
     var variableId = null;
     if (this.variable()) {
         variableId = this.variable().id();
@@ -3609,7 +3609,7 @@ ActionDrawRandomNumber.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionControlWebGazer = function(event) {
+var ActionControlWebGazer = function (event) {
     this.event = event;
 
     // serialized
@@ -3620,7 +3620,7 @@ var ActionControlWebGazer = function(event) {
 
 ActionControlWebGazer.prototype.type = "ActionControlWebGazer";
 ActionControlWebGazer.prototype.label = "Control Eyetracking";
-ActionControlWebGazer.prototype.actionTypes = ["start","pause","end","clear"];
+ActionControlWebGazer.prototype.actionTypes = ["start", "pause", "end", "clear"];
 
 
 
@@ -3628,7 +3628,7 @@ ActionControlWebGazer.prototype.actionTypes = ["start","pause","end","clear"];
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionControlWebGazer.prototype.isValid = function(){
+ActionControlWebGazer.prototype.isValid = function () {
     return true;
 };
 
@@ -3638,7 +3638,7 @@ ActionControlWebGazer.prototype.isValid = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionControlWebGazer.prototype.run = function(triggerParams) {
+ActionControlWebGazer.prototype.run = function (triggerParams) {
 
     if (this.actionType() == 'start') {
         if (!player.eyetrackerLoaded) {
@@ -3655,7 +3655,7 @@ ActionControlWebGazer.prototype.run = function(triggerParams) {
                 webgazer.addRegressionModule("ridgeNoMouse", ridgeNoMouseReg);
                 webgazer.setRegression('ridgeNoMouse') /* currently must set regression and tracker   use ridge or weightedRidge*/
                     .setTracker('clmtrackr')
-                    .setGazeListener(function(data, clock) {
+                    .setGazeListener(function (data, clock) {
                         if (data) {
                             player.currentFrame.triggerEyetracking(data);
                         }
@@ -3698,7 +3698,7 @@ ActionControlWebGazer.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionControlWebGazer.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionControlWebGazer.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -3708,7 +3708,7 @@ ActionControlWebGazer.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionControlWebGazer.prototype.setPointers = function(entitiesArr) {
+ActionControlWebGazer.prototype.setPointers = function (entitiesArr) {
 };
 
 /**
@@ -3716,7 +3716,7 @@ ActionControlWebGazer.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionControlWebGazer.prototype.reAddEntities = function(entitiesArr) {
+ActionControlWebGazer.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -3725,7 +3725,7 @@ ActionControlWebGazer.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionControlWebGazer}
  */
-ActionControlWebGazer.prototype.fromJS = function(data) {
+ActionControlWebGazer.prototype.fromJS = function (data) {
     this.actionType(data.actionType);
     return this;
 };
@@ -3734,7 +3734,7 @@ ActionControlWebGazer.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionControlWebGazer.prototype.toJS = function() {
+ActionControlWebGazer.prototype.toJS = function () {
     return {
         type: this.type,
         actionType: this.actionType()
@@ -3756,7 +3756,7 @@ ActionControlWebGazer.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionControlAV = function(event) {
+var ActionControlAV = function (event) {
     this.event = event;
 
     // serialized
@@ -3768,7 +3768,7 @@ var ActionControlAV = function(event) {
 
 ActionControlAV.prototype.type = "ActionControlAV";
 ActionControlAV.prototype.label = "Control Audio/Video Obj";
-ActionControlAV.prototype.actionTypes = ["start","pause","end"];
+ActionControlAV.prototype.actionTypes = ["start", "pause", "end"];
 
 
 
@@ -3776,7 +3776,7 @@ ActionControlAV.prototype.actionTypes = ["start","pause","end"];
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionControlAV.prototype.isValid = function(){
+ActionControlAV.prototype.isValid = function () {
     return true;
 };
 
@@ -3786,7 +3786,7 @@ ActionControlAV.prototype.isValid = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionControlAV.prototype.run = function(triggerParams) {
+ActionControlAV.prototype.run = function (triggerParams) {
     if (this.target()) {
         if (this.actionType() == 'start') {
             this.target().content().currentlyPlaying(true);
@@ -3809,7 +3809,7 @@ ActionControlAV.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionControlAV.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionControlAV.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -3819,8 +3819,8 @@ ActionControlAV.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionControlAV.prototype.setPointers = function(entitiesArr) {
-    if (this.target()){
+ActionControlAV.prototype.setPointers = function (entitiesArr) {
+    if (this.target()) {
         this.target(entitiesArr.byId[this.target()]);
     }
 
@@ -3831,7 +3831,7 @@ ActionControlAV.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionControlAV.prototype.reAddEntities = function(entitiesArr) {
+ActionControlAV.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -3840,7 +3840,7 @@ ActionControlAV.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionControlAV}
  */
-ActionControlAV.prototype.fromJS = function(data) {
+ActionControlAV.prototype.fromJS = function (data) {
     this.target(data.target);
     this.actionType(data.actionType);
     return this;
@@ -3850,7 +3850,7 @@ ActionControlAV.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionControlAV.prototype.toJS = function() {
+ActionControlAV.prototype.toJS = function () {
     var targetId = null;
     if (this.target()) {
         targetId = this.target().id();
@@ -3873,7 +3873,7 @@ ActionControlAV.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionControlElement = function(event) {
+var ActionControlElement = function (event) {
     this.event = event;
 
     // serialized
@@ -3890,7 +3890,7 @@ ActionControlElement.prototype.label = "Control Upload/Recording Obj";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionControlElement.prototype.isValid = function(){
+ActionControlElement.prototype.isValid = function () {
     return true;
 };
 
@@ -3900,7 +3900,7 @@ ActionControlElement.prototype.isValid = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionControlElement.prototype.run = function(triggerParams) {
+ActionControlElement.prototype.run = function (triggerParams) {
     if (this.target()) {
         var viewElem = player.currentFrame.frameView.viewElements.byId[this.target().id()];
         if (viewElem) {
@@ -3913,7 +3913,7 @@ ActionControlElement.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionControlElement.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionControlElement.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -3923,8 +3923,8 @@ ActionControlElement.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionControlElement.prototype.setPointers = function(entitiesArr) {
-    if (this.target()){
+ActionControlElement.prototype.setPointers = function (entitiesArr) {
+    if (this.target()) {
         this.target(entitiesArr.byId[this.target()]);
     }
 
@@ -3935,7 +3935,7 @@ ActionControlElement.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionControlElement.prototype.reAddEntities = function(entitiesArr) {
+ActionControlElement.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -3944,7 +3944,7 @@ ActionControlElement.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionControlElement}
  */
-ActionControlElement.prototype.fromJS = function(data) {
+ActionControlElement.prototype.fromJS = function (data) {
     this.target(data.target);
     this.actionType(data.actionType);
     return this;
@@ -3954,7 +3954,7 @@ ActionControlElement.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionControlElement.prototype.toJS = function() {
+ActionControlElement.prototype.toJS = function () {
     var targetId = null;
     if (this.target()) {
         targetId = this.target().id();
@@ -3980,13 +3980,13 @@ ActionControlElement.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionControlTimer = function(event) {
+var ActionControlTimer = function (event) {
     this.event = event;
 
     // serialized
     this.timerVar = ko.observable(null);
     this.actionType = ko.observable(null);
-    this.updateRate =  ko.observable(50);// in milli seconds
+    this.updateRate = ko.observable(50);// in milli seconds
     this.updateValue = ko.observable(null);
 
     // not serialized
@@ -3997,7 +3997,7 @@ var ActionControlTimer = function(event) {
 
 ActionControlTimer.prototype.type = "ActionControlTimer";
 ActionControlTimer.prototype.label = "Control Timer";
-ActionControlTimer.prototype.actionTypes = ["countUp","countDown","set","pause"];
+ActionControlTimer.prototype.actionTypes = ["countUp", "countDown", "set", "pause"];
 
 
 
@@ -4005,16 +4005,16 @@ ActionControlTimer.prototype.actionTypes = ["countUp","countDown","set","pause"]
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionControlTimer.prototype.isValid = function(){
+ActionControlTimer.prototype.isValid = function () {
     return true;
 };
 
-ActionControlTimer.prototype.setVariableBackRef = function(variable){
+ActionControlTimer.prototype.setVariableBackRef = function (variable) {
     variable.addBackRef(this, this.event, true, false, 'control timer');
 };
 
 
-ActionControlTimer.prototype.removeVariable = function(){
+ActionControlTimer.prototype.removeVariable = function () {
     this.timerVar(null);
 };
 
@@ -4024,7 +4024,7 @@ ActionControlTimer.prototype.removeVariable = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionControlTimer.prototype.run = function(triggerParams) {
+ActionControlTimer.prototype.run = function (triggerParams) {
     if (this.timerVar()) {
         if (this.actionType() == 'countUp') {
             this.timerVar().value().startCountup();
@@ -4046,7 +4046,7 @@ ActionControlTimer.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionControlTimer.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionControlTimer.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -4056,10 +4056,10 @@ ActionControlTimer.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionControlTimer.prototype.setPointers = function(entitiesArr) {
-    if (this.timerVar()){
+ActionControlTimer.prototype.setPointers = function (entitiesArr) {
+    if (this.timerVar()) {
         var timerVar = entitiesArr.byId[this.timerVar()];
-        if (timerVar){
+        if (timerVar) {
             this.timerVar(timerVar);
             this.setVariableBackRef(timerVar);
         }
@@ -4072,7 +4072,7 @@ ActionControlTimer.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionControlTimer.prototype.reAddEntities = function(entitiesArr) {
+ActionControlTimer.prototype.reAddEntities = function (entitiesArr) {
     if (this.timerVar()) {
         if (!entitiesArr.byId.hasOwnProperty(this.timerVar().id())) {
             entitiesArr.push(this.timerVar());
@@ -4085,7 +4085,7 @@ ActionControlTimer.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionControlTimer}
  */
-ActionControlTimer.prototype.fromJS = function(data) {
+ActionControlTimer.prototype.fromJS = function (data) {
     this.timerVar(data.timerVar);
     this.actionType(data.actionType);
     this.updateValue(data.updateValue);
@@ -4096,7 +4096,7 @@ ActionControlTimer.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionControlTimer.prototype.toJS = function() {
+ActionControlTimer.prototype.toJS = function () {
     var timerVar = null;
     if (this.timerVar()) {
         timerVar = this.timerVar().id();
@@ -4122,10 +4122,10 @@ ActionControlTimer.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionEndSession = function(event) {
+var ActionEndSession = function (event) {
     this.event = event;
     this.showEndPage = ko.observable(true);
-    this.recordDataBeforeFinish =  ko.observable(true);
+    this.recordDataBeforeFinish = ko.observable(true);
 
 };
 ActionEndSession.prototype.type = "ActionEndSession";
@@ -4137,7 +4137,7 @@ ActionEndSession.prototype.label = "End Session";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionEndSession.prototype.isValid = function(){
+ActionEndSession.prototype.isValid = function () {
     return true;
 };
 
@@ -4147,8 +4147,8 @@ ActionEndSession.prototype.isValid = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionEndSession.prototype.run = function(triggerParams) {
-    if(this.recordDataBeforeFinish){
+ActionEndSession.prototype.run = function (triggerParams) {
+    if (this.recordDataBeforeFinish) {
         player.recordData();
     }
     player.finishSession(this.showEndPage());
@@ -4158,7 +4158,7 @@ ActionEndSession.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionEndSession.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionEndSession.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -4168,7 +4168,7 @@ ActionEndSession.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionEndSession.prototype.setPointers = function(entitiesArr) {
+ActionEndSession.prototype.setPointers = function (entitiesArr) {
 
 };
 
@@ -4177,7 +4177,7 @@ ActionEndSession.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionEndSession.prototype.reAddEntities = function(entitiesArr) {
+ActionEndSession.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -4186,9 +4186,9 @@ ActionEndSession.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionRecordQuestionaireResponse}
  */
-ActionEndSession.prototype.fromJS = function(data) {
+ActionEndSession.prototype.fromJS = function (data) {
     this.showEndPage(data.showEndPage);
-    if(data.hasOwnProperty('recordDataBeforeFinish')) {
+    if (data.hasOwnProperty('recordDataBeforeFinish')) {
         this.recordDataBeforeFinish(data.recordDataBeforeFinish);
     }
     return this;
@@ -4198,11 +4198,11 @@ ActionEndSession.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionEndSession.prototype.toJS = function() {
+ActionEndSession.prototype.toJS = function () {
     return {
         type: this.type,
         showEndPage: this.showEndPage(),
-        recordDataBeforeFinish:this.recordDataBeforeFinish()
+        recordDataBeforeFinish: this.recordDataBeforeFinish()
     };
 };
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4219,7 +4219,7 @@ ActionEndSession.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionRecordQuestionaireResponse = function(event) {
+var ActionRecordQuestionaireResponse = function (event) {
     this.event = event;
 
     // serialized
@@ -4234,7 +4234,7 @@ ActionRecordQuestionaireResponse.prototype.label = "Record Questionaire Answer";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-ActionRecordQuestionaireResponse.prototype.isValid = function(){
+ActionRecordQuestionaireResponse.prototype.isValid = function () {
     return true;
 };
 
@@ -4244,20 +4244,20 @@ ActionRecordQuestionaireResponse.prototype.isValid = function(){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionRecordQuestionaireResponse.prototype.run = function(triggerParams) {
+ActionRecordQuestionaireResponse.prototype.run = function (triggerParams) {
     var blockId = player.getBlockId();
     var trialId = player.getTrialId();
     var resp = triggerParams.questionElement.content.answer;
     var recData = new RecData();
     recData.addRecording(this.variable);
-    player.addRecording(blockId,trialId,recData.toJS());
+    player.addRecording(blockId, trialId, recData.toJS());
 };
 
 /**
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionRecordQuestionaireResponse.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionRecordQuestionaireResponse.prototype.destroyOnPlayerFrame = function (playerFrame) {
 };
 
 /**
@@ -4267,7 +4267,7 @@ ActionRecordQuestionaireResponse.prototype.destroyOnPlayerFrame = function(playe
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionRecordQuestionaireResponse.prototype.setPointers = function(entitiesArr) {
+ActionRecordQuestionaireResponse.prototype.setPointers = function (entitiesArr) {
 
 };
 
@@ -4276,7 +4276,7 @@ ActionRecordQuestionaireResponse.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionRecordQuestionaireResponse.prototype.reAddEntities = function(entitiesArr) {
+ActionRecordQuestionaireResponse.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -4285,7 +4285,7 @@ ActionRecordQuestionaireResponse.prototype.reAddEntities = function(entitiesArr)
  * @param {object} data - the json description of the states.
  * @returns {ActionRecordQuestionaireResponse}
  */
-ActionRecordQuestionaireResponse.prototype.fromJS = function(data) {
+ActionRecordQuestionaireResponse.prototype.fromJS = function (data) {
     this.variableId(data.variableId);
     return this;
 };
@@ -4294,7 +4294,7 @@ ActionRecordQuestionaireResponse.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionRecordQuestionaireResponse.prototype.toJS = function() {
+ActionRecordQuestionaireResponse.prototype.toJS = function () {
     return {
         type: this.type,
         variableId: this.variableId()
@@ -4313,7 +4313,7 @@ ActionRecordQuestionaireResponse.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionDistributeVariable = function(event) {
+var ActionDistributeVariable = function (event) {
     var self = this;
 
     this.event = event;
@@ -4335,56 +4335,56 @@ ActionDistributeVariable.prototype.label = "Distribute Variable";
  * If an array is passed to this function, it is assumed to contain only playerIds of players who are selected (for fromJS)
  * @param playerArray
  */
-ActionDistributeVariable.prototype.initPlayersToDistributeTo = function(playerArray) {
+ActionDistributeVariable.prototype.initPlayersToDistributeTo = function (playerArray) {
 
     var observableArray = ko.observableArray([]);
 
-    for(var i=0; i<this.event.parent.expData.numPartOfJointExp(); i++){
+    for (var i = 0; i < this.event.parent.expData.numPartOfJointExp(); i++) {
         var isSelected;
-        if(!playerArray || playerArray.indexOf(i) > -1){
+        if (!playerArray || playerArray.indexOf(i) > -1) {
             isSelected = true;
-        } else{
+        } else {
             isSelected = false;
         }
         observableArray.push({
-            playerId: i+1,
+            playerId: i + 1,
             isSelected: ko.observable(isSelected)
         });
     }
     return observableArray;
 };
 
-ActionDistributeVariable.prototype.isValid = function(){
+ActionDistributeVariable.prototype.isValid = function () {
     return true;
 };
 
-ActionDistributeVariable.prototype.setVariableBackRef = function(variable){
+ActionDistributeVariable.prototype.setVariableBackRef = function (variable) {
     variable.addBackRef(this, this.event, true, false, 'dist variable');
 };
 
 // like ActionSetVariable
-ActionDistributeVariable.prototype.fromJS = function(data) {
+ActionDistributeVariable.prototype.fromJS = function (data) {
     this.variable(data.variable);
     this.operand(null);
     this.playersToDistributeTo(null);
     this.playersToDistributeToMode(null);
     this.blockVarUntilDone(null);
 
-    if(data.operand){
+    if (data.operand) {
         var operand = new OperandVariable(this.event);
         operand.fromJS(data.operand);
         this.operand(operand);
     }
 
-    if(data.playersToDistributeTo){
+    if (data.playersToDistributeTo) {
         this.playersToDistributeTo = this.initPlayersToDistributeTo(data.playersToDistributeTo);
     }
 
-    if(data.playersToDistributeToMode){
+    if (data.playersToDistributeToMode) {
         this.playersToDistributeToMode(data.playersToDistributeToMode);
     }
 
-    if(data.hasOwnProperty('blockVarUntilDone')) { // because of boolean value
+    if (data.hasOwnProperty('blockVarUntilDone')) { // because of boolean value
         this.blockVarUntilDone(data.blockVarUntilDone);
     }
 
@@ -4392,7 +4392,7 @@ ActionDistributeVariable.prototype.fromJS = function(data) {
 };
 
 // like ActionSetVariable
-ActionDistributeVariable.prototype.toJS = function(data) {
+ActionDistributeVariable.prototype.toJS = function (data) {
     var varId = null;
     var operand = null;
     var playersToDistributeTo = null;
@@ -4403,26 +4403,26 @@ ActionDistributeVariable.prototype.toJS = function(data) {
         varId = this.variable().id();
     }
 
-    if (this.operand()){
+    if (this.operand()) {
         operand = this.operand().toJS();
     }
 
-    if (this.playersToDistributeTo()){
+    if (this.playersToDistributeTo()) {
         var playersToDistributeToArray = [];
         // jQuery mapping?
-        for(var i=0; i<this.playersToDistributeTo().length;i++){
-            if(this.playersToDistributeTo()[i].isSelected()){
+        for (var i = 0; i < this.playersToDistributeTo().length; i++) {
+            if (this.playersToDistributeTo()[i].isSelected()) {
                 playersToDistributeToArray.push(i);
             }
         }
         playersToDistributeTo = playersToDistributeToArray;
     }
 
-    if(this.playersToDistributeToMode()){
+    if (this.playersToDistributeToMode()) {
         playersToDistributeToMode = this.playersToDistributeToMode();
     }
 
-    if(this.hasOwnProperty('blockVarUntilDone')) { // because of boolean value
+    if (this.hasOwnProperty('blockVarUntilDone')) { // because of boolean value
         blockVarUntilDone = this.blockVarUntilDone();
     }
 
@@ -4436,19 +4436,19 @@ ActionDistributeVariable.prototype.toJS = function(data) {
     };
 };
 
-ActionDistributeVariable.prototype.setPointers = function(entitiesArr){
-    if (this.variable()){
+ActionDistributeVariable.prototype.setPointers = function (entitiesArr) {
+    if (this.variable()) {
         var varToSet = entitiesArr.byId[this.variable()];
-        if (varToSet){
+        if (varToSet) {
             this.variable(varToSet);
         }
     }
     this.operand().setPointers(entitiesArr);
 };
 
-ActionDistributeVariable.prototype.reAddEntities = function(entitiesArr) {
+ActionDistributeVariable.prototype.reAddEntities = function (entitiesArr) {
     // add operand:
-    if (this.operand() && this.operand().reAddEntities){
+    if (this.operand() && this.operand().reAddEntities) {
         this.operand().reAddEntities(entitiesArr);
     }
 
@@ -4460,18 +4460,18 @@ ActionDistributeVariable.prototype.reAddEntities = function(entitiesArr) {
     }
 };
 
-ActionDistributeVariable.prototype.run = function(triggerParams) {
+ActionDistributeVariable.prototype.run = function (triggerParams) {
     var self = this;
 
     var operandValueToSend = null;
-    if(self.operand){
+    if (self.operand) {
         operandValueToSend = self.operand().getValue();
     }
 
     // jQuery mapping?
     var playersToDistributeToArray = [];
-    for(var i=0; i<self.playersToDistributeTo().length;i++){
-        if(self.playersToDistributeToMode()=="All" || self.playersToDistributeTo()[i].isSelected()){
+    for (var i = 0; i < self.playersToDistributeTo().length; i++) {
+        if (self.playersToDistributeToMode() == "All" || self.playersToDistributeTo()[i].isSelected()) {
             playersToDistributeToArray.push(self.playersToDistributeTo()[i].playerId);
         }
     }
@@ -4482,7 +4482,7 @@ ActionDistributeVariable.prototype.run = function(triggerParams) {
 
 };
 
-ActionDistributeVariable.prototype.destroyOnPlayerFrame = function() {
+ActionDistributeVariable.prototype.destroyOnPlayerFrame = function () {
 };
 
 
@@ -4498,7 +4498,7 @@ ActionDistributeVariable.prototype.destroyOnPlayerFrame = function() {
  * @param {ExpEvent} event - the parent event
  * @constructor
  */
-var ActionSendExternalTrigger = function(event) {
+var ActionSendExternalTrigger = function (event) {
     var self = this;
 
     this.event = event;
@@ -4511,23 +4511,23 @@ ActionSendExternalTrigger.prototype.type = "ActionSendExternalTrigger";
 ActionSendExternalTrigger.prototype.label = "Send External Trigger";
 
 
-ActionSendExternalTrigger.prototype.isValid = function(){
+ActionSendExternalTrigger.prototype.isValid = function () {
     return true;
 };
 
-ActionSendExternalTrigger.prototype.setVariableBackRef = function(variable){
+ActionSendExternalTrigger.prototype.setVariableBackRef = function (variable) {
     variable.addBackRef(this, this.event, true, false, 'dist variable');
 };
 
 // like ActionSetVariable
-ActionSendExternalTrigger.prototype.fromJS = function(data) {
+ActionSendExternalTrigger.prototype.fromJS = function (data) {
     this.variable(data.variable);
     this.message(data.message);
     return this;
 };
 
 // like ActionSetVariable
-ActionSendExternalTrigger.prototype.toJS = function(data) {
+ActionSendExternalTrigger.prototype.toJS = function (data) {
     var varId = null;
     if (this.variable()) {
         varId = this.variable().id();
@@ -4539,16 +4539,16 @@ ActionSendExternalTrigger.prototype.toJS = function(data) {
     };
 };
 
-ActionSendExternalTrigger.prototype.setPointers = function(entitiesArr){
-    if (this.variable()){
+ActionSendExternalTrigger.prototype.setPointers = function (entitiesArr) {
+    if (this.variable()) {
         var varToSet = entitiesArr.byId[this.variable()];
-        if (varToSet){
+        if (varToSet) {
             this.variable(varToSet);
         }
     }
 };
 
-ActionSendExternalTrigger.prototype.reAddEntities = function(entitiesArr) {
+ActionSendExternalTrigger.prototype.reAddEntities = function (entitiesArr) {
 
     // add variable:
     if (this.variable()) {
@@ -4558,12 +4558,12 @@ ActionSendExternalTrigger.prototype.reAddEntities = function(entitiesArr) {
     }
 };
 
-ActionSendExternalTrigger.prototype.run = function(triggerParams) {
-   var value = null;
-   if (this.variable()){
-       value = this.variable().getValue();
-   }
-    var data  = {
+ActionSendExternalTrigger.prototype.run = function (triggerParams) {
+    var value = null;
+    if (this.variable()) {
+        value = this.variable().getValue();
+    }
+    var data = {
         msg: this.message(),
         value: value
     };
@@ -4571,7 +4571,7 @@ ActionSendExternalTrigger.prototype.run = function(triggerParams) {
 
 };
 
-ActionSendExternalTrigger.prototype.destroyOnPlayerFrame = function() {
+ActionSendExternalTrigger.prototype.destroyOnPlayerFrame = function () {
 };
 
 
@@ -4584,7 +4584,7 @@ ActionSendExternalTrigger.prototype.destroyOnPlayerFrame = function() {
 
 ////////////////////////////////////////  ActionMathAndStats ///////////////////////////////////////////////////
 
-var ActionMathAndStats = function(event) {
+var ActionMathAndStats = function (event) {
     var self = this;
     this.event = event;
 
@@ -4595,46 +4595,46 @@ var ActionMathAndStats = function(event) {
     this.functionKey = ko.observable(ActionMathAndStats.prototype.arrayOperations[9].key); // sum as start value
 
     // computed
-    this.currentFunctions = ko.computed(function(){
-        if (self.operationType()== "Array Operations"){
+    this.currentFunctions = ko.computed(function () {
+        if (self.operationType() == "Array Operations") {
             return ActionMathAndStats.prototype.arrayOperations;
         }
-        else if(self.operationType()== "Linear Algebra"){
+        else if (self.operationType() == "Linear Algebra") {
             return ActionMathAndStats.prototype.algebraOerations;
         }
-        else if(self.operationType()== "Statistical Tests"){
+        else if (self.operationType() == "Statistical Tests") {
             return ActionMathAndStats.prototype.statisticalOerations;
         }
     });
 
     // not serialized
     this.backRefsIn = {};
-    this.backRefsOut ={};
+    this.backRefsOut = {};
 
     this.resetValues();
     this.testOutcome = ko.observable(null);
 
 };
 
-ActionMathAndStats.prototype.resetValues = function(){
+ActionMathAndStats.prototype.resetValues = function () {
     var self = this;
 
     // remove old variable references
-    this.inputs().forEach(function (entry,idx) {
-        if (entry() instanceof GlobalVar){
+    this.inputs().forEach(function (entry, idx) {
+        if (entry() instanceof GlobalVar) {
             self.removeInVariable(idx);
         }
     });
 
-    this.outputs().forEach(function (entry,idx) {
-        if (entry() instanceof GlobalVar){
+    this.outputs().forEach(function (entry, idx) {
+        if (entry() instanceof GlobalVar) {
             self.removeOutVariable(idx);
         }
     });
 
     // reset values
     var function_spec = this.getFcnSpec();
-    if (function_spec){
+    if (function_spec) {
         var inp = [];
         function_spec.inputs.forEach(function (entry) {
             inp.push(ko.observable(entry.value));
@@ -4647,14 +4647,14 @@ ActionMathAndStats.prototype.resetValues = function(){
         });
         this.outputs(out);
     }
-    else{
+    else {
         this.inputs([]);
         this.outputs([]);
     }
 
 };
 
-ActionMathAndStats.prototype.isValid = function(){
+ActionMathAndStats.prototype.isValid = function () {
     return true;
 };
 
@@ -4662,8 +4662,8 @@ ActionMathAndStats.prototype.isValid = function(){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionMathAndStats.prototype.setInVarBackRef = function(idx){
-    if (this.inputs()[idx] instanceof GlobalVar){
+ActionMathAndStats.prototype.setInVarBackRef = function (idx) {
+    if (this.inputs()[idx] instanceof GlobalVar) {
         this.backRefsIn[idx] = this.inputs()[idx].addBackRef(this, this.event, false, true, 'math & statistics');
     }
 };
@@ -4672,21 +4672,21 @@ ActionMathAndStats.prototype.setInVarBackRef = function(idx){
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-ActionMathAndStats.prototype.setOutVarBackRef = function(idx){
-    if (this.outputs()[idx] instanceof GlobalVar){
+ActionMathAndStats.prototype.setOutVarBackRef = function (idx) {
+    if (this.outputs()[idx] instanceof GlobalVar) {
         this.backRefsOut[idx] = this.outputs()[idx].addBackRef(this, this.event, true, false, 'math & statistics');
     }
 };
 
-ActionMathAndStats.prototype.removeInVariable = function(idx){
-    if (this.inputs()[idx] instanceof GlobalVar && this.backRefsIn[idx]){
+ActionMathAndStats.prototype.removeInVariable = function (idx) {
+    if (this.inputs()[idx] instanceof GlobalVar && this.backRefsIn[idx]) {
         this.inputs()[idx].removeBackRef(this.backRefsIn[idx]);
         delete this.backRefsIn[idx]
     }
 };
 
-ActionMathAndStats.prototype.removeOutVariable = function(idx){
-    if (this.outputs()[idx] instanceof GlobalVar && this.backRefsOut[idx]){
+ActionMathAndStats.prototype.removeOutVariable = function (idx) {
+    if (this.outputs()[idx] instanceof GlobalVar && this.backRefsOut[idx]) {
         this.outputs()[idx].removeBackRef(this.backRefsOut[idx]);
         delete this.backRefsOut[idx]
     }
@@ -4698,28 +4698,28 @@ ActionMathAndStats.prototype.removeOutVariable = function(idx){
  *
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
-ActionMathAndStats.prototype.run = function(triggerParams) {
+ActionMathAndStats.prototype.run = function (triggerParams) {
     var self = this;
     var func_spec = this.getFcnSpec();
-    if (func_spec){
+    if (func_spec) {
         var inputData = [];
         this.inputs().forEach(function (input) {
             var inp = input();
-            if (inp instanceof GlobalVar){
+            if (inp instanceof GlobalVar) {
                 inp = inp.getValueAsJS();
             }
-            if ($.isNumeric(inp)){
+            if ($.isNumeric(inp)) {
                 inp = parseFloat(inp);
             }
             inputData.push(inp);
         });
-        if (inputData.length>0){
+        if (inputData.length > 0) {
             var globalVarOutput = self.outputs()[0]();// ToDo  change outcome to more variables in the future
-            var outcome =  func_spec.operation.apply(self, inputData);
+            var outcome = func_spec.operation.apply(self, inputData);
             globalVarOutput.setValue(outcome);
             self.testOutcome(globalVarOutput.getValueAsJS());
         }
-        else{
+        else {
             console.log("Warning: No input data specified for Math & Stats Action")
         }
     }
@@ -4730,11 +4730,11 @@ ActionMathAndStats.prototype.run = function(triggerParams) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-ActionMathAndStats.prototype.destroyOnPlayerFrame = function(playerFrame) {
+ActionMathAndStats.prototype.destroyOnPlayerFrame = function (playerFrame) {
 
 };
 
-ActionMathAndStats.prototype.getFcnSpec = function() {
+ActionMathAndStats.prototype.getFcnSpec = function () {
     return ActionMathAndStats.prototype.allOperationsByKey[this.functionKey()];
 };
 
@@ -4745,13 +4745,13 @@ ActionMathAndStats.prototype.getFcnSpec = function() {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
+ActionMathAndStats.prototype.setPointers = function (entitiesArr) {
 
     var self = this;
 
     // reset values
     var function_spec = this.getFcnSpec();
-    if (function_spec){
+    if (function_spec) {
         var inputs_orig = self.inputs();
         function_spec.inputs.forEach(function (entry, idx) {
             var inputObs = inputs_orig[idx];
@@ -4761,7 +4761,7 @@ ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
             }
         });
         this.inputs().forEach(function (entry, idx) {
-            if (entry instanceof GlobalVar){
+            if (entry instanceof GlobalVar) {
                 self.setInVarBackRef(idx);
             }
         });
@@ -4775,12 +4775,12 @@ ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
             }
         });
         this.outputs().forEach(function (entry, idx) {
-            if (entry instanceof GlobalVar){
+            if (entry instanceof GlobalVar) {
                 self.setOutVarBackRef(idx);
             }
         });
     }
-    else{
+    else {
         this.inputs([]);
         this.outputs([]);
     }
@@ -4791,7 +4791,7 @@ ActionMathAndStats.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ActionMathAndStats.prototype.reAddEntities = function(entitiesArr) {
+ActionMathAndStats.prototype.reAddEntities = function (entitiesArr) {
 
     this.inputs().forEach(function (entry) {
         if (entry instanceof GlobalVar) {
@@ -4816,11 +4816,11 @@ ActionMathAndStats.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {ActionModifyArray}
  */
-ActionMathAndStats.prototype.fromJS = function(data) {
-    this.inputs(jQuery.map( data.inputs, function( val ) {
+ActionMathAndStats.prototype.fromJS = function (data) {
+    this.inputs(jQuery.map(data.inputs, function (val) {
         return ko.observable(val);
     }));
-    this.outputs(jQuery.map( data.outputs, function( val ) {
+    this.outputs(jQuery.map(data.outputs, function (val) {
         return ko.observable(val);
     }));
     this.operationType(data.operationType);
@@ -4833,7 +4833,7 @@ ActionMathAndStats.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ActionMathAndStats.prototype.toJS = function() {
+ActionMathAndStats.prototype.toJS = function () {
     var inputs = [];
     this.inputs().forEach(function (entry) {
         if (entry() instanceof GlobalVar) {
@@ -6258,7 +6258,7 @@ ActionMathAndStats.prototype.arrayOperations = [
         outputs: [
             {
                 name: "output",
-                dataFormats: ["scalar","array"],
+                dataFormats: ["scalar", "array"],
                 dataTypes: ["numeric"],
                 relationGlobalVar: "mustBeVariable",
                 required: true,
@@ -6570,7 +6570,7 @@ ActionMathAndStats.prototype.allOperations = ActionMathAndStats.prototype.statis
     ActionMathAndStats.prototype.arrayOperations);
 
 ActionMathAndStats.prototype.allOperationsByKey = {};
-for (var i=0; i<ActionMathAndStats.prototype.allOperations.length; i++) {
+for (var i = 0; i < ActionMathAndStats.prototype.allOperations.length; i++) {
     var op = ActionMathAndStats.prototype.allOperations[i]
     ActionMathAndStats.prototype.allOperationsByKey[op.key] = op;
 }
@@ -6586,7 +6586,7 @@ for (var i=0; i<ActionMathAndStats.prototype.allOperations.length; i++) {
  * @param {string} type - the type of the Action (i.e. "ActionRecordQuestionaireResponse")
  * @returns {Action}
  */
-function actionFactory(event,type) {
+function actionFactory(event, type) {
     var action = new window[type](event);
     return action;
 }

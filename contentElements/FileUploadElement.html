@@ -1,27 +1,41 @@
 <template id='fileupload-editview-template'>
-    <div class="panel-body" style="height: 100%; margin-top: -10px">
+    <div class="panel-body"
+         style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">File Upload</div>
 
         <div>
-            <label style="cursor: pointer">Show Question Header: <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false"></label>
+            <label style="cursor: pointer">Show Question Header: <input class="checkbox-element"
+                       style="display: inline-block;"
+                       type="checkbox"
+                       data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false"></label>
         </div>
 
         <div>
-            <label style="cursor: pointer">Required:<input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false"></label>
+            <label style="cursor: pointer">Required:<input class="checkbox-element"
+                       style="display: inline-block;"
+                       type="checkbox"
+                       data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false"></label>
 
         </div>
         <hr>
 
         <label>
             Linked Variable:
-            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['file'], relinkCallback: relinkCallback } }"></span>
+            <span
+                  data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['file'], relinkCallback: relinkCallback } }"></span>
         </label>
 
         <br>
 
-        <span class="property-description"><label><input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showSelectedFilename">Show Selected Filename</label></span><br>
-        <span class="property-description"><label><input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showBrowseButton">Show Browse Button</label></span><br>
-        <span class="property-description"><label><input class="taskeditor-checkbox" type="checkbox" data-bind="checked: dataModel.showUploadButton">Show Upload Button</label></span><br>
+        <span class="property-description"><label><input class="taskeditor-checkbox"
+                       type="checkbox"
+                       data-bind="checked: dataModel.showSelectedFilename">Show Selected Filename</label></span><br>
+        <span class="property-description"><label><input class="taskeditor-checkbox"
+                       type="checkbox"
+                       data-bind="checked: dataModel.showBrowseButton">Show Browse Button</label></span><br>
+        <span class="property-description"><label><input class="taskeditor-checkbox"
+                       type="checkbox"
+                       data-bind="checked: dataModel.showUploadButton">Show Upload Button</label></span><br>
 
     </div>
 </template>
@@ -36,23 +50,42 @@
     <!-- /ko -->
     <div>
 
-        <input type="file" class="playerFileUploadInput" accept="*/*" style="display: none;" />
+        <input type="file"
+               class="playerFileUploadInput"
+               accept="*/*"
+               style="display: none;" />
 
-        <span data-bind="if: dataModel.showSelectedFilename" class="media-controls">
-            <span class="upload-filename" style="overflow: hidden" data-bind="text: dataModel.selectedFilename" data-bind="click: function() {dataModel.executeAction('ChooseFile');}"></span>
+        <span data-bind="if: dataModel.showSelectedFilename"
+              class="media-controls">
+            <span class="upload-filename"
+                  style="overflow: hidden"
+                  data-bind="text: dataModel.selectedFilename"
+                  data-bind="click: function() {dataModel.executeAction('ChooseFile');}"></span>
         </span>
 
-        <span data-bind="if: dataModel.showBrowseButton" class="media-controls">
-            <span title="Browse"><button type="button" data-bind="click: function() {dataModel.executeAction('ChooseFile');}"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/openFile.svg"/></button></span>
+        <span data-bind="if: dataModel.showBrowseButton"
+              class="media-controls">
+            <span title="Browse"><button type="button"
+                        data-bind="click: function() {dataModel.executeAction('ChooseFile');}"><img width="16"
+                         height="16"
+                         style="margin-top: -4px;"
+                         src="/resources/icons/openFile.svg" /></button></span>
         </span>
 
-        <span data-bind="if: dataModel.showUploadButton" class="media-controls">
-            <span title="Upload"><button type="button"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/upload.svg"/></button></span>
+        <span data-bind="if: dataModel.showUploadButton"
+              class="media-controls">
+            <span title="Upload"><button type="button"><img width="16"
+                         height="16"
+                         style="margin-top: -4px;"
+                         src="/resources/icons/upload.svg" /></button></span>
         </span>
 
         <!-- ko if: dataModel.isRequired() -->
-        <span class="required-question-icon"  data-bind="tooltip:'.requiredInfoEditor'">
-            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+        <span class="required-question-icon"
+              data-bind="tooltip:'.requiredInfoEditor'">
+            <img width="20"
+                 height="20"
+                 src="/resources/icons/exmark.svg" />
         </span>
         <!-- /ko -->
     </div>
@@ -67,26 +100,48 @@
     <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
     <br>
     <!-- /ko -->
-    <div data-bind="template: { afterRender: function(callbackTarget, callbackArgs) { callbackArgs.afterRenderInit($element); } }">
+    <div
+         data-bind="template: { afterRender: function(callbackTarget, callbackArgs) { callbackArgs.afterRenderInit($element); } }">
 
-        <input type="file" data-bind="event: { change: function() { fileSelected($element.files[0]) } }" class="playerFileUploadInput" accept="*/*" style="display: none;" />
+        <input type="file"
+               data-bind="event: { change: function() { fileSelected($element.files[0]) } }"
+               class="playerFileUploadInput"
+               accept="*/*"
+               style="display: none;" />
 
-        <span data-bind="if: dataModel.showSelectedFilename" class="media-controls">
-            <span class="upload-filename" style="overflow: hidden" data-bind="text: dataModel.selectedFilename" data-bind="click: function() {dataModel.executeAction('ChooseFile');}"></span>
+        <span data-bind="if: dataModel.showSelectedFilename"
+              class="media-controls">
+            <span class="upload-filename"
+                  style="overflow: hidden"
+                  data-bind="text: dataModel.selectedFilename"
+                  data-bind="click: function() {dataModel.executeAction('ChooseFile');}"></span>
         </span>
 
-        <span data-bind="if: dataModel.showBrowseButton" class="media-controls">
-            <span title="Browse"><button type="button" data-bind="click: function() {dataModel.executeAction('ChooseFile');}"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/openFile.svg"/></button></span>
+        <span data-bind="if: dataModel.showBrowseButton"
+              class="media-controls">
+            <span title="Browse"><button type="button"
+                        data-bind="click: function() {dataModel.executeAction('ChooseFile');}"><img width="16"
+                         height="16"
+                         style="margin-top: -4px;"
+                         src="/resources/icons/openFile.svg" /></button></span>
         </span>
 
-        <span data-bind="if: dataModel.showUploadButton" class="media-controls">
-            <span title="Upload"><button type="button" data-bind="click: function() {dataModel.executeAction('StartUpload');}"><img width="16" height="16" style="margin-top: -4px;" src="/resources/icons/upload.svg"/></button></span>
+        <span data-bind="if: dataModel.showUploadButton"
+              class="media-controls">
+            <span title="Upload"><button type="button"
+                        data-bind="click: function() {dataModel.executeAction('StartUpload');}"><img width="16"
+                         height="16"
+                         style="margin-top: -4px;"
+                         src="/resources/icons/upload.svg" /></button></span>
         </span>
 
         <!-- ko if: dataModel.triedToSubmit() -->
         <!-- ko ifnot: dataModel.dataIsValid() -->
-        <span class="required-question-icon"  data-bind="tooltip:'.requiredInfo'">
-            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+        <span class="required-question-icon"
+              data-bind="tooltip:'.requiredInfo'">
+            <img width="20"
+                 height="20"
+                 src="/resources/icons/exmark.svg" />
         </span>
         <!-- /ko -->
         <!-- /ko -->

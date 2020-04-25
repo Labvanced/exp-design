@@ -4,7 +4,7 @@
  * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
  * @constructor
  */
-var FrameElement= function(expData) {
+var FrameElement = function (expData) {
 
     var self = this;
     this.expData = expData;
@@ -23,13 +23,13 @@ var FrameElement= function(expData) {
     this.keepAspectRatio = ko.observable(false);
 
     // new
-    this.stimulusInformation  = ko.observable(null);
-    this.iFrameUrl  = ko.observable("");
+    this.stimulusInformation = ko.observable(null);
+    this.iFrameUrl = ko.observable("");
 
     // special to frame element
     this.canBeSelected = ko.observable(false);
-    this.canBeDragged= ko.observable(false);
-    this.canBeResized= ko.observable(false);
+    this.canBeDragged = ko.observable(false);
+    this.canBeResized = ko.observable(false);
     this.borderSize = ko.observable(0);
     this.borderColor = ko.observable("#000000");
     this.backgroundColor = ko.observable("transparent");
@@ -43,8 +43,8 @@ var FrameElement= function(expData) {
     this.isActive = ko.observable(true);
     this.content = ko.observable();
 
-    this.shortName = ko.pureComputed(function() {
-        if (self.name()){
+    this.shortName = ko.pureComputed(function () {
+        if (self.name()) {
             return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
         }
         else return ''
@@ -52,20 +52,20 @@ var FrameElement= function(expData) {
     });
 
     // not serialized
-    this.activeOptions = ko.observableArray([false,true]);
-    this.scrollOptions = ko.observableArray(["hidden","visible","auto"]);
+    this.activeOptions = ko.observableArray([false, true]);
+    this.scrollOptions = ko.observableArray(["hidden", "visible", "auto"]);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
 };
 
-FrameElement.prototype.dispose = function() {
-    if (this.content()){
+FrameElement.prototype.dispose = function () {
+    if (this.content()) {
         this.content().dispose();
     }
 };
 
-FrameElement.prototype.addContent = function(element){
+FrameElement.prototype.addContent = function (element) {
     this.content(element);
     if (element.initWidth) {
         this.editorWidth(element.initWidth);
@@ -77,19 +77,19 @@ FrameElement.prototype.addContent = function(element){
 };
 
 
-FrameElement.prototype.dataType =      [ "numeric","boolean", "numeric", "numeric", "numeric","numeric","boolean","numeric","numeric","boolean","boolean","boolean","numeric","string","string","numeric"];
-FrameElement.prototype.modifiableProp = ["visibility","isActive","editorX", "editorY", "editorWidth","editorHeight","keepAspectRatio","contentScaling","contentRotation","canBeSelected","canBeDragged","canBeResized", "borderSize","borderColor","backgroundColor","roundness"];
+FrameElement.prototype.dataType = ["numeric", "boolean", "numeric", "numeric", "numeric", "numeric", "boolean", "numeric", "numeric", "boolean", "boolean", "boolean", "numeric", "string", "string", "numeric"];
+FrameElement.prototype.modifiableProp = ["visibility", "isActive", "editorX", "editorY", "editorWidth", "editorHeight", "keepAspectRatio", "contentScaling", "contentRotation", "canBeSelected", "canBeDragged", "canBeResized", "borderSize", "borderColor", "backgroundColor", "roundness"];
 FrameElement.prototype.subElementProp = ["content"];
 
-FrameElement.prototype.setAnchorPoint = function(horizontal, vertical) {
+FrameElement.prototype.setAnchorPoint = function (horizontal, vertical) {
     this.anchorPointX(horizontal);
     this.anchorPointY(vertical);
     // TODO: convert old x and y coordinates to new coordinates such that the element does not move when switching modes.
 };
 
-FrameElement.prototype.selectTrialType = function(selectionSpec) {
+FrameElement.prototype.selectTrialType = function (selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
-    if  (typeof this.content().selectTrialType === "function"){
+    if (typeof this.content().selectTrialType === "function") {
         this.content().selectTrialType(selectionSpec);
     }
 
@@ -99,26 +99,26 @@ FrameElement.prototype.selectTrialType = function(selectionSpec) {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-FrameElement.prototype.getAllModifiers = function(modifiersArr) {
+FrameElement.prototype.getAllModifiers = function (modifiersArr) {
     modifiersArr.push(this.modifier());
-    if(this.content() && this.content().getAllModifiers){
+    if (this.content() && this.content().getAllModifiers) {
         this.content().getAllModifiers(modifiersArr);
     }
 };
 
-FrameElement.prototype.getActionTypes = function() {
+FrameElement.prototype.getActionTypes = function () {
     if (this.content().getActionTypes) {
         return this.content().getActionTypes();
     }
 };
 
-FrameElement.prototype.getTriggerTypes = function() {
+FrameElement.prototype.getTriggerTypes = function () {
     if (this.content().getTriggerTypes) {
         return this.content().getTriggerTypes();
     }
 };
 
-FrameElement.prototype.executeAction = function(actionType) {
+FrameElement.prototype.executeAction = function (actionType) {
     if (this.content().executeAction) {
         this.content().executeAction(actionType)
     }
@@ -131,10 +131,10 @@ FrameElement.prototype.executeAction = function(actionType) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-FrameElement.prototype.setPointers = function(entitiesArr) {
+FrameElement.prototype.setPointers = function (entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 
-    if(this.content() && this.content().setPointers){
+    if (this.content() && this.content().setPointers) {
         this.content().setPointers(entitiesArr);
     }
 
@@ -145,10 +145,10 @@ FrameElement.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-FrameElement.prototype.reAddEntities = function(entitiesArr) {
+FrameElement.prototype.reAddEntities = function (entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 
-    if(this.content().reAddEntities){
+    if (this.content().reAddEntities) {
         this.content().reAddEntities(entitiesArr);
     }
 };
@@ -160,7 +160,7 @@ FrameElement.prototype.reAddEntities = function(entitiesArr) {
  * @param {String} label - to be added to the path
  * @returns textArr on highes level
  */
-FrameElement.prototype.getTextRefs = function(textArr, label){
+FrameElement.prototype.getTextRefs = function (textArr, label) {
     var content = this.content();
     if (content.getTextRefs instanceof Function) {
         content.getTextRefs(textArr, this.name());
@@ -173,7 +173,7 @@ FrameElement.prototype.getTextRefs = function(textArr, label){
  * @param {object} data - the json description of the states.
  * @returns {FrameElement}
  */
-FrameElement.prototype.fromJS = function(data) {
+FrameElement.prototype.fromJS = function (data) {
     var self = this;
     this.id(data.id);
     this.type = data.type;
@@ -185,62 +185,62 @@ FrameElement.prototype.fromJS = function(data) {
     this.editorY(data.editorY);
     this.editorWidth(data.editorWidth);
     this.editorHeight(data.editorHeight);
-    if(data.hasOwnProperty('contentScaling')) {
+    if (data.hasOwnProperty('contentScaling')) {
         this.contentScaling(data.contentScaling);
     }
     if (data.hasOwnProperty('contentRotation')) {
         this.contentRotation(data.contentRotation);
     }
-    if(data.hasOwnProperty('anchorPointX')) {
+    if (data.hasOwnProperty('anchorPointX')) {
         this.anchorPointX(data.anchorPointX);
     }
-    if(data.hasOwnProperty('anchorPointY')) {
+    if (data.hasOwnProperty('anchorPointY')) {
         this.anchorPointY(data.anchorPointY);
     }
-    if(data.hasOwnProperty('visibility')) {
+    if (data.hasOwnProperty('visibility')) {
         this.visibility(data.visibility);
     }
-    if(data.hasOwnProperty('stimulusInformation')) {
+    if (data.hasOwnProperty('stimulusInformation')) {
         this.stimulusInformation(data.stimulusInformation);
     }
-    if(data.hasOwnProperty('iFrameUrl')) {
+    if (data.hasOwnProperty('iFrameUrl')) {
         this.iFrameUrl(data.iFrameUrl);
     }
-    if(data.hasOwnProperty('canBeSelected')) {
+    if (data.hasOwnProperty('canBeSelected')) {
         this.canBeSelected(data.canBeSelected);
     }
-    if(data.hasOwnProperty('canBeDragged')) {
+    if (data.hasOwnProperty('canBeDragged')) {
         this.canBeDragged(data.canBeDragged);
     }
-    if(data.hasOwnProperty('canBeResized')) {
+    if (data.hasOwnProperty('canBeResized')) {
         this.canBeResized(data.canBeResized);
     }
-    if(data.hasOwnProperty('borderSize')) {
+    if (data.hasOwnProperty('borderSize')) {
         this.borderSize(data.borderSize);
     }
-    if(data.hasOwnProperty('borderColor')) {
+    if (data.hasOwnProperty('borderColor')) {
         this.borderColor(data.borderColor);
     }
-    if(data.hasOwnProperty('overflowX')) {
+    if (data.hasOwnProperty('overflowX')) {
         this.overflowX(data.overflowX);
     }
-    if(data.hasOwnProperty('overflowY')) {
+    if (data.hasOwnProperty('overflowY')) {
         this.overflowY(data.overflowY);
     }
-    if(data.hasOwnProperty('backgroundColor')) {
+    if (data.hasOwnProperty('backgroundColor')) {
         this.backgroundColor(data.backgroundColor);
     }
-    if(data.hasOwnProperty('roundness')) {
+    if (data.hasOwnProperty('roundness')) {
         this.roundness(data.roundness);
     }
 
 
     this.isActive(data.isActive);
     this.keepAspectRatio(data.keepAspectRatio);
-    if(data.content){
+    if (data.content) {
         var classObj = window[data.content.type];
         if (!classObj) {
-            console.log('error: type does not exist: '+data.content.type);
+            console.log('error: type does not exist: ' + data.content.type);
             if (data.content.type == "TextInputElement") {
                 // convert type name:
                 data.content.type = "InputElement";
@@ -263,11 +263,11 @@ FrameElement.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-FrameElement.prototype.toJS = function() {
-    if(this.content()){
+FrameElement.prototype.toJS = function () {
+    if (this.content()) {
         var contentData = this.content().toJS();
     }
-    else{
+    else {
         contentData = null;
     }
     return {
@@ -275,8 +275,8 @@ FrameElement.prototype.toJS = function() {
         type: this.type,
         name: this.name(),
         modifier: this.modifier().toJS(),
-        editorX:  this.editorX(),
-        editorY:  this.editorY(),
+        editorX: this.editorX(),
+        editorY: this.editorY(),
         editorWidth: this.editorWidth(),
         editorHeight: this.editorHeight(),
         contentScaling: this.contentScaling(),
@@ -284,19 +284,19 @@ FrameElement.prototype.toJS = function() {
         anchorPointX: this.anchorPointX(),
         anchorPointY: this.anchorPointY(),
         visibility: this.visibility(),
-        isActive:  this.isActive(),
+        isActive: this.isActive(),
         keepAspectRatio: this.keepAspectRatio(),
         stimulusInformation: this.stimulusInformation(),
         iFrameUrl: this.iFrameUrl(),
         content: contentData,
-        canBeSelected:this.canBeSelected(),
-        canBeDragged:this.canBeDragged(),
-        canBeResized:this.canBeResized(),
-        borderSize:this.borderSize(),
-        borderColor:this.borderColor(),
-        overflowX:this.overflowX(),
-        overflowY :this.overflowY(),
-        backgroundColor:this.backgroundColor(),
-        roundness:this.roundness()
+        canBeSelected: this.canBeSelected(),
+        canBeDragged: this.canBeDragged(),
+        canBeResized: this.canBeResized(),
+        borderSize: this.borderSize(),
+        borderColor: this.borderColor(),
+        overflowX: this.overflowX(),
+        overflowY: this.overflowY(),
+        backgroundColor: this.backgroundColor(),
+        roundness: this.roundness()
     };
 };

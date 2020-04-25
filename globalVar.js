@@ -22,8 +22,8 @@ var GlobalVar = function (expData) {
     this.dataFormat = ko.observable("scalar");
     this.description = ko.observable('');
 
-    this.isFactor =  ko.observable(false);
-    this.isObjectVar =  ko.observable(false);
+    this.isFactor = ko.observable(false);
+    this.isObjectVar = ko.observable(false);
     this.isInteracting = ko.observable(false); // TODO: remove
     this.levels = ko.observableArray([]);
 
@@ -44,22 +44,22 @@ var GlobalVar = function (expData) {
     this.isDataTypeEditable = true; // this is set to false for variables that are created by our platform
 
     // not serialized:
-    this.editName =  ko.observable(false);
+    this.editName = ko.observable(false);
     this.subLevelEdit = ko.observable(false);
     this.value = ko.observable(null);
-    this.backRefs = ko.observableArray([]).extend({sortById: null});
+    this.backRefs = ko.observableArray([]).extend({ sortById: null });
     this.recValue = null; // takes care of buffering
 
 
-    this.shortName = ko.computed(function() {
-        if (self.name()){
+    this.shortName = ko.computed(function () {
+        if (self.name()) {
             return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
         }
         else return '';
 
     });
 
-    this.unused =  ko.observable(true);
+    this.unused = ko.observable(true);
     this.calcUnused();
 
     // only for display in editor list:
@@ -70,10 +70,10 @@ var GlobalVar = function (expData) {
 
 
 // enum definitions:
-GlobalVar.scales = ['nominal', 'ordinal', 'interval', 'ratio','undefined'];
-GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'time','timer', 'file', 'structure','undefined'];
-GlobalVar.scopes = ['subject','session','task','trial','undefined'];
-GlobalVar.dataFormats = ['scalar','array'];
+GlobalVar.scales = ['nominal', 'ordinal', 'interval', 'ratio', 'undefined'];
+GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'time', 'timer', 'file', 'structure', 'undefined'];
+GlobalVar.scopes = ['subject', 'session', 'task', 'trial', 'undefined'];
+GlobalVar.dataFormats = ['scalar', 'array'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];
@@ -81,25 +81,25 @@ GlobalVar.recTypes = ['overwrite', 'timeseries']; // open to discussion
 
 // definition of what scales allowed for each datatype:
 GlobalVar.allowedScalePerDataType = {
-    'undefined': ['nominal', 'ordinal', 'interval', 'ratio','undefined'],
-    'string': ['nominal', 'ordinal','undefined'],
-    'numeric': ['ordinal', 'interval', 'ratio','undefined'],
-    'boolean': ['nominal','undefined'],
-    'categorical': ['nominal','undefined'],
-    'datetime': ['ordinal', 'interval', 'ratio','undefined'],
-    'time': ['ordinal', 'interval', 'ratio','undefined'],
-    'timer': ['interval', 'ratio','undefined'],
+    'undefined': ['nominal', 'ordinal', 'interval', 'ratio', 'undefined'],
+    'string': ['nominal', 'ordinal', 'undefined'],
+    'numeric': ['ordinal', 'interval', 'ratio', 'undefined'],
+    'boolean': ['nominal', 'undefined'],
+    'categorical': ['nominal', 'undefined'],
+    'datetime': ['ordinal', 'interval', 'ratio', 'undefined'],
+    'time': ['ordinal', 'interval', 'ratio', 'undefined'],
+    'timer': ['interval', 'ratio', 'undefined'],
     'file': ['nominal', 'undefined'],
     'structure': ['undefined']
 };
 
 // now create the inverted mapping:
 GlobalVar.allowedDataTypePerScale = {
-    'undefined': ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime','time', 'timer','file', 'structure'],
+    'undefined': ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime', 'time', 'timer', 'file', 'structure'],
     'nominal': ['string', 'boolean', 'categorical', 'file'],
-    'ordinal': ['string', 'numeric', 'datetime','time'],
-    'interval': ['numeric', 'datetime','time', 'timer'],
-    'ratio': ['numeric', 'datetime', 'time','timer']
+    'ordinal': ['string', 'numeric', 'datetime', 'time'],
+    'interval': ['numeric', 'datetime', 'time', 'timer'],
+    'ratio': ['numeric', 'datetime', 'time', 'timer']
 };
 
 // definition of icons for each datatype:
@@ -129,21 +129,21 @@ GlobalVar.iconArrayPerDataType = {
     'structure': "/resources/icons/variables/array/structure.svg"
 };
 
-GlobalVar.prototype.refactorDataTypes= function() {
+GlobalVar.prototype.refactorDataTypes = function () {
     var names = GlobalVar.dataTypes;
     var out = [];
-    $.each(names,function (idx,value) {
-        if (value == "datetime" ){
+    $.each(names, function (idx, value) {
+        if (value == "datetime") {
             var obj = {
-                name:value,
+                name: value,
                 viewName: "date"
             };
             out.push(obj)
         }
 
-        else if (value !="timer" && value !="structure") {
+        else if (value != "timer" && value != "structure") {
             var obj = {
-                name:value,
+                name: value,
                 viewName: value
             };
             out.push(obj)
@@ -153,7 +153,7 @@ GlobalVar.prototype.refactorDataTypes= function() {
     return out;
 };
 
-GlobalVar.prototype.getIconPath = function() {
+GlobalVar.prototype.getIconPath = function () {
     if (this.dataFormat() === "array") {
         return GlobalVar.iconArrayPerDataType[this.dataType()];
     }
@@ -162,7 +162,7 @@ GlobalVar.prototype.getIconPath = function() {
     }
 };
 
-GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
+GlobalVar.prototype.initProperties = function (dataType, scope, scale, name) {
     this.dataType(dataType);
     this.scope(scope);
     this.scale(scale);
@@ -170,11 +170,11 @@ GlobalVar.prototype.initProperties = function(dataType, scope, scale, name) {
     return this;
 };
 
-GlobalVar.prototype.setDescription= function(description) {
+GlobalVar.prototype.setDescription = function (description) {
     this.description(description);
 };
 
-GlobalVar.prototype.changeDataType = function(dataType) {
+GlobalVar.prototype.changeDataType = function (dataType) {
     this.dataType(dataType);
 
     // convert old value to new value:
@@ -183,26 +183,26 @@ GlobalVar.prototype.changeDataType = function(dataType) {
     this.resetStartValue();
 };
 
-GlobalVar.prototype.initValue = function() {
+GlobalVar.prototype.initValue = function () {
     this.value(this.createValueFromDataType());
     this.resetValueToStartValue();
 };
 
-GlobalVar.prototype.getValueAsJS = function() {
+GlobalVar.prototype.getValueAsJS = function () {
     return this.value().getValue();
 };
 
-GlobalVar.prototype.resetValueToStartValue = function() {
+GlobalVar.prototype.resetValueToStartValue = function () {
     this.value().fromJS(this.startValue().toJS());
 };
 
-GlobalVar.prototype.resetStartValue = function() {
+GlobalVar.prototype.resetStartValue = function () {
     var startValue = this.createValueFromDataType();
     this.startValue(startValue);
     this.initValue();
 };
 
-GlobalVar.prototype.createScalarValueFromDataType = function() {
+GlobalVar.prototype.createScalarValueFromDataType = function () {
     switch (this.dataType()) {
         case 'string':
             return new GlobalVarValueString(this);
@@ -227,7 +227,7 @@ GlobalVar.prototype.createScalarValueFromDataType = function() {
     }
 };
 
-GlobalVar.prototype.createValueFromDataType = function() {
+GlobalVar.prototype.createValueFromDataType = function () {
     if (this.dataFormat() == "array") {
         var val = new GlobalVarValueArray(this);
         // add a first element to the empty array:
@@ -240,20 +240,20 @@ GlobalVar.prototype.createValueFromDataType = function() {
 };
 
 GlobalVarRef = function (entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback) {
-    this.entity =  entity;
-    this.parentNamedEntity =  parentNamedEntity;
-    this.isWritten =  isWritten;
+    this.entity = entity;
+    this.parentNamedEntity = parentNamedEntity;
+    this.isWritten = isWritten;
     this.isRead = isRead;
     this.refLabel = refLabel;
     this.onDeleteCallback = onDeleteCallback;
 };
 
-GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback) {
+GlobalVar.prototype.addBackRef = function (entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback) {
     if (!onDeleteCallback) {
         onDeleteCallback = null;
     }
     // only add back references in editor for variables view:
-    if (window.uc!==undefined && (uc instanceof Client) && entity) {
+    if (window.uc !== undefined && (uc instanceof Client) && entity) {
         var obj = new GlobalVarRef(entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback);
         this.backRefs.push(obj);
         this.calcUnused();
@@ -262,9 +262,9 @@ GlobalVar.prototype.addBackRef = function(entity, parentNamedEntity, isWritten, 
 
 };
 
-GlobalVar.prototype.removeBackRef = function(entity) {
+GlobalVar.prototype.removeBackRef = function (entity) {
     var backRefs = this.backRefs();
-    if(entity instanceof GlobalVarRef){
+    if (entity instanceof GlobalVarRef) {
         var idx = backRefs.indexOf(entity);
         if (idx >= 0) {
             this.backRefs.splice(idx, 1);
@@ -290,26 +290,26 @@ GlobalVar.prototype.removeBackRef = function(entity) {
 
 };
 
-GlobalVar.prototype.isSystemVar = function() {
-  return this.expData.isSystemVar(this);
+GlobalVar.prototype.isSystemVar = function () {
+    return this.expData.isSystemVar(this);
 };
 
-GlobalVar.prototype.calcUnused = function() {
-    if (this.backRefs().length>0){
-        if (this.backRefs().length==1 && this.backRefs()[0].refLabel=="local workspace"){
+GlobalVar.prototype.calcUnused = function () {
+    if (this.backRefs().length > 0) {
+        if (this.backRefs().length == 1 && this.backRefs()[0].refLabel == "local workspace") {
             this.unused(true);
         }
-        else{
+        else {
             var unused = true;
-            this.backRefs().forEach(function(backRef){
-                if (backRef.refLabel!="local workspace"){
+            this.backRefs().forEach(function (backRef) {
+                if (backRef.refLabel != "local workspace") {
                     unused = false;
                 }
             });
             this.unused(unused);
         }
     }
-    else{
+    else {
         this.unused(true);
     }
 };
@@ -318,9 +318,9 @@ GlobalVar.prototype.calcUnused = function() {
  * this function needs to be called in the player always when the value changes so that recordings are made.
  * @param val
  */
-GlobalVar.prototype.notifyValueChanged = function() {
+GlobalVar.prototype.notifyValueChanged = function () {
     if (this.value()) {
-        if (this.recType()=='timeseries') {
+        if (this.recType() == 'timeseries') {
             if (!this.recValue) {
                 this.recValue = [];
             }
@@ -335,17 +335,17 @@ GlobalVar.prototype.notifyValueChanged = function() {
 /**
  * This is used by the player to retireve the recording at the end of a trial
  */
-GlobalVar.prototype.getRecAtEndOfTrial = function() {
-    if(this.recType()=='overwrite'){
+GlobalVar.prototype.getRecAtEndOfTrial = function () {
+    if (this.recType() == 'overwrite') {
         return this.value().toJS();
-    } else if(this.recType()=='timeseries'){
+    } else if (this.recType() == 'timeseries') {
         var recValue = this.recValue;
         this.recValue = [];
         return recValue;
     }
 };
 
-GlobalVar.prototype.getValue = function() {
+GlobalVar.prototype.getValue = function () {
     // TODO: check datatypes and maybe convert here...
     return this.value().value();
 };
@@ -354,30 +354,30 @@ GlobalVar.prototype.getValue = function() {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param valueObj
  */
-GlobalVar.prototype.setValue = function(valueObj) {
+GlobalVar.prototype.setValue = function (valueObj) {
     this.value().setValue(valueObj);
 };
 
-GlobalVar.prototype.addLevel = function() {
+GlobalVar.prototype.addLevel = function () {
     var level = new Level(this);
-    level.name("level_"+(this.levels().length+1));
+    level.name("level_" + (this.levels().length + 1));
     level.levelIdx = this.levels().length;
     this.levels.push(level);
     return level;
 };
 
-GlobalVar.prototype.removeLevel = function(idx) {
-    this.levels.splice(idx,1);
+GlobalVar.prototype.removeLevel = function (idx) {
+    this.levels.splice(idx, 1);
 };
 
 
-GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
+GlobalVar.prototype.renameLevel = function (idxLevel, flag) {
 
-    if (flag == "true"){
+    if (flag == "true") {
         this.levels()[idxLevel].editName(true);
         this.subLevelEdit(true);
     }
-    else if (flag == "false"){
+    else if (flag == "false") {
         this.levels()[idxLevel].editName(false);
         this.subLevelEdit(false);
     }
@@ -391,7 +391,7 @@ GlobalVar.prototype.renameLevel = function(idxLevel,flag) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-GlobalVar.prototype.setPointers = function(entitiesArr) {
+GlobalVar.prototype.setPointers = function (entitiesArr) {
     this.calcUnused();
     if (this.isFactor()) {
         this.isRecorded(true);
@@ -406,7 +406,7 @@ GlobalVar.prototype.setPointers = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVar.prototype.fromJS = function(data) {
+GlobalVar.prototype.fromJS = function (data) {
     var self = this;
     this.id(data.id);
     this.name(data.name);
@@ -456,12 +456,12 @@ GlobalVar.prototype.fromJS = function(data) {
         this.description(data.description);
     }
 
-    this.levels(jQuery.map( data.levels, function( lvlData, index ) {
+    this.levels(jQuery.map(data.levels, function (lvlData, index) {
         var lvl = new Level(self);
         lvl.levelIdx = index;
         lvl.fromJS(lvlData);
         return lvl;
-    } ));
+    }));
     return this;
 };
 
@@ -469,9 +469,9 @@ GlobalVar.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVar.prototype.toJS = function() {
+GlobalVar.prototype.toJS = function () {
     var startValue = null;
-    if (this.startValue()){
+    if (this.startValue()) {
         startValue = this.startValue().toJS();
     }
     return {
@@ -483,18 +483,18 @@ GlobalVar.prototype.toJS = function() {
         dataFormat: this.dataFormat(),
         isFactor: this.isFactor(),
         isInteracting: this.isInteracting(),
-        description:this.description(),
+        description: this.description(),
         isObjectVar: this.isObjectVar(),
 
         resetAtTrialStart: this.resetAtTrialStart(),
         recordAtTrialEnd: this.recordAtTrialEnd(),
         startValue: startValue,
-        isRecorded:this.isRecorded(),
+        isRecorded: this.isRecorded(),
         recType: this.recType(),
         isHidden: this.isHidden(),
 
         type: this.type,
-        levels: jQuery.map( this.levels(), function( lvl ) { return lvl.toJS(); } )
+        levels: jQuery.map(this.levels(), function (lvl) { return lvl.toJS(); })
     };
 };
 

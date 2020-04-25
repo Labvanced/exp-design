@@ -6,7 +6,7 @@
  * @param {number} factorGroupIdx - The index of the factor group for the factor that is being created.
  * @constructor
  */
-var InitialSurveyDialog= function(expData) {
+var InitialSurveyDialog = function (expData) {
     this.expData = ko.observable(expData);
     this.divContainer = null;
 
@@ -29,7 +29,7 @@ var InitialSurveyDialog= function(expData) {
 
     // calculate required survey fields (it is required if the field is enabled in any group):
     var availableGroups = expData.availableGroups();
-    for (var i=0; i<availableGroups.length; i++) {
+    for (var i = 0; i < availableGroups.length; i++) {
         if (availableGroups[i].enabledGender()) {
             this.requiredGender(true);
         }
@@ -50,7 +50,7 @@ var InitialSurveyDialog= function(expData) {
         }
     }
 
-    this.errorString = ko.computed(function() {
+    this.errorString = ko.computed(function () {
         var errorString = "";
 
         // validate if all required fields are filled:
@@ -81,7 +81,7 @@ var InitialSurveyDialog= function(expData) {
         }
 
         // remove last comma:
-        if (errorString!="") {
+        if (errorString != "") {
             errorString = errorString.substring(0, errorString.length - 2);
         }
         return errorString;
@@ -131,13 +131,13 @@ InitialSurveyDialog.prototype.start = function (cb) {
     this.divContainer = jQuery('<div/>');
     var self = this;
     this.divContainer.load("/html_views/InitialSurveyDialog.html?FILE_VERSION_PLACEHOLDER", function () {
-        ko.applyBindings(self,self.divContainer[0]);
+        ko.applyBindings(self, self.divContainer[0]);
         self.divContainer.dialog({
             modal: true,
             width: 500,
             title: "Initial Survey",
             closeOnEscape: false,
-            open: function(event, ui) {
+            open: function (event, ui) {
                 $(".ui-dialog-titlebar-close").hide();
             },
             close: function () {

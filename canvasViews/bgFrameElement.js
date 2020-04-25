@@ -1,6 +1,6 @@
-var BgFrameElement = function(frameData,editor) {
+var BgFrameElement = function (frameData, editor) {
 
-    var self=this;
+    var self = this;
     this.div = document.createElement('div');
     $(this.div).css({
         "position": "absolute",
@@ -17,33 +17,33 @@ var BgFrameElement = function(frameData,editor) {
     this.bgImgSubgrid5 = new Image();
     this.bgImgSubgrid5.src = '/resources/bgGridSubgrid5.png';
 
-    this.dataModel= frameData;
+    this.dataModel = frameData;
     this.editor = editor;
-    this.width= this.dataModel.frameWidth;
-    this.height= this.dataModel.frameHeight;
-    this.x= ko.observable(0);
-    this.y= ko.observable(0);
+    this.width = this.dataModel.frameWidth;
+    this.height = this.dataModel.frameHeight;
+    this.x = ko.observable(0);
+    this.y = ko.observable(0);
 
-    this.scale = ko.pureComputed(function() {
+    this.scale = ko.pureComputed(function () {
         return self.editor.scale();
     });
 
-    if (this.gridSubscription ){
+    if (this.gridSubscription) {
         this.gridSubscription.dispose();
     }
-    this.gridSubscription = this.editor.parent.showGrid.subscribe(function(val){
-        if (val){
+    this.gridSubscription = this.editor.parent.showGrid.subscribe(function (val) {
+        if (val) {
             self.addGridToDOM();
         }
-        else{
+        else {
             $($(self.div).children()).remove();
         }
     });
 
-    if (this.scaleSubscription ){
+    if (this.scaleSubscription) {
         this.scaleSubscription.dispose();
     }
-    this.scaleSubscription = this.scale.subscribe(function() {
+    this.scaleSubscription = this.scale.subscribe(function () {
         self.update();
     });
 
@@ -52,7 +52,7 @@ var BgFrameElement = function(frameData,editor) {
 
     this.drawBg();
 
-    this.bgImgOnLoadCallback = function() {
+    this.bgImgOnLoadCallback = function () {
         self.drawBg();
     };
     this.bgImgSubgrid10.addEventListener('load', this.bgImgOnLoadCallback);
@@ -65,24 +65,24 @@ var BgFrameElement = function(frameData,editor) {
 
     this.addCallback();
 
-    if (this.editor.parent.showGrid()){
+    if (this.editor.parent.showGrid()) {
         self.addGridToDOM();
     }
 };
 
-BgFrameElement.prototype.addGridToDOM = function() {
+BgFrameElement.prototype.addGridToDOM = function () {
     $(this.div).append(this.canvas);
 };
 
-BgFrameElement.prototype.update = function() {
+BgFrameElement.prototype.update = function () {
 
     var self = this;
 
-    this.canvas.height = this.height()* this.scale();
-    this.canvas.width = this.width()* this.scale();
+    this.canvas.height = this.height() * this.scale();
+    this.canvas.width = this.width() * this.scale();
 
     $(this.div).css({
-        "width":this.width() * self.scale(),
+        "width": this.width() * self.scale(),
         "height": this.height() * self.scale()
     });
 
@@ -90,7 +90,7 @@ BgFrameElement.prototype.update = function() {
 
 };
 
-BgFrameElement.prototype.drawBg = function() {
+BgFrameElement.prototype.drawBg = function () {
 
     if (this.bgImgSubgrid10.complete && this.bgImgSubgrid5.complete && this.bgImgSubgrid2.complete) {
 
@@ -158,10 +158,10 @@ BgFrameElement.prototype.drawBg = function() {
     }
 };
 
-BgFrameElement.prototype.addCallback = function() {
+BgFrameElement.prototype.addCallback = function () {
 
     var self = this;
-    $(this.div).click(function() {
+    $(this.div).click(function () {
         var instance = CKEDITOR.currentInstance;
         if (instance) {
             // TODO: try to find other method to really remove focus from previously selected ckeditor instance:
@@ -172,11 +172,11 @@ BgFrameElement.prototype.addCallback = function() {
 
 };
 
-BgFrameElement.prototype.dispose = function() {
-    if (this.gridSubscription ){
+BgFrameElement.prototype.dispose = function () {
+    if (this.gridSubscription) {
         this.gridSubscription.dispose();
     }
-    if (this.scaleSubscription ){
+    if (this.scaleSubscription) {
         this.scaleSubscription.dispose();
     }
 

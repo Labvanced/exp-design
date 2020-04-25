@@ -1530,11 +1530,11 @@ var country_codes = [
 ];
 
 var countries_by_code = {};
-for (var i = 0; i<country_codes.length; i++) {
+for (var i = 0; i < country_codes.length; i++) {
     countries_by_code[country_codes[i].code] = country_codes[i];
 }
 
 var languages_by_code = {};
-for (var i = 0; i<language_codes.length; i++) {
+for (var i = 0; i < language_codes.length; i++) {
     languages_by_code[language_codes[i].code] = language_codes[i];
 }

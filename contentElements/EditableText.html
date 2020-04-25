@@ -1,14 +1,19 @@
-
 <template id="editable-text-element-preview-template">
     <div style="width: 100%; height: 100%; overflow: hidden;">
         <!-- ko if: dataModel.isEditingText -->
-        <div style="margin: auto;" class="notDraggable" data-bind="wysiwyg: text, selectAll: true, valueUpdate: 'afterkeydown'"></div>
+        <div style="margin: auto;"
+             class="notDraggable"
+             data-bind="wysiwyg: text, selectAll: true, valueUpdate: 'afterkeydown'"></div>
         <!-- /ko -->
         <!-- ko ifnot: dataModel.isEditingText -->
         <!-- ko if: previewText()=="" -->
-        <div style="margin: auto; color: lightgrey;" data-bind="click: function(data,event) {uc.currentEditorView.checkDblClick(data,event,function(){ dataModel.isEditingText(true) },['true'])}">text</div>
+        <div style="margin: auto; color: lightgrey;"
+             data-bind="click: function(data,event) {uc.currentEditorView.checkDblClick(data,event,function(){ dataModel.isEditingText(true) },['true'])}">
+            text</div>
         <!-- /ko -->
-        <div style="margin: auto;" data-bind="html: previewText, click: function(data,event) {uc.currentEditorView.checkDblClick(data,event,function(){ dataModel.isEditingText(true) },['true'])}"></div>
+        <div style="margin: auto;"
+             data-bind="html: previewText, click: function(data,event) {uc.currentEditorView.checkDblClick(data,event,function(){ dataModel.isEditingText(true) },['true'])}">
+        </div>
         <!-- /ko -->
     </div>
 </template>
@@ -16,6 +21,7 @@
 
 <template id="editable-text-element-playerview-template">
     <div style="width: 100%; height: 100%; overflow: hidden;">
-        <div style="margin: auto;" data-bind="html: playerText"></div>
+        <div style="margin: auto;"
+             data-bind="html: playerText"></div>
     </div>
 </template>

@@ -7,7 +7,7 @@
  * @param option -
  * @returns {*}
  */
-ko.extenders.sortById = function(target, option) {
+ko.extenders.sortById = function (target, option) {
     target.byId = {};
 
     /**
@@ -15,7 +15,7 @@ ko.extenders.sortById = function(target, option) {
      * @param entity
      * @returns true if it was inserted:
      */
-    target.insertIfNotExist = function(entity) {
+    target.insertIfNotExist = function (entity) {
         if (option && option.hasOwnProperty("id_field")) {
             var id = entity[option.id_field];
         }
@@ -34,10 +34,10 @@ ko.extenders.sortById = function(target, option) {
         }
     };
 
-    target.subscribe(function(changes) {
+    target.subscribe(function (changes) {
         var id;
-        for (var i= 0, len=changes.length; i<len; i++) {
-            if (changes[i].hasOwnProperty('moved')){
+        for (var i = 0, len = changes.length; i < len; i++) {
+            if (changes[i].hasOwnProperty('moved')) {
                 // ignore moves in the unsorted array:
                 continue;
             }
@@ -52,7 +52,7 @@ ko.extenders.sortById = function(target, option) {
             if (ko.isObservable(id)) {
                 id = id();
             }
-            if (status == 'added'){
+            if (status == 'added') {
                 if (id && target.byId.hasOwnProperty(id)) {
                     if (option && option.hasOwnProperty("do_not_warn_when_double_entries") && option["do_not_warn_when_double_entries"]) {
                         // warning is not issued.
@@ -63,7 +63,7 @@ ko.extenders.sortById = function(target, option) {
                 }
                 target.byId[id] = entity;
             }
-            else if (status == 'deleted'){
+            else if (status == 'deleted') {
                 delete target.byId[id];
             }
         }
@@ -85,11 +85,11 @@ ko.extenders.sortById = function(target, option) {
  * @param {ko.observable} target - the observable where this is applied
  * @param {number} precision - the number of floating point digits
  */
-ko.extenders.numeric = function(target, precision) {
+ko.extenders.numeric = function (target, precision) {
     //create a writable computed observable to intercept writes to our observable
     var result = ko.pureComputed({
         read: target,  //always return the original observables value
-        write: function(newValue) {
+        write: function (newValue) {
             var current = target(),
                 roundingMultiplier = Math.pow(10, precision),
                 newValueAsNum = isNaN(newValue) ? 0 : parseFloat(+newValue),
@@ -124,14 +124,14 @@ ko.bindingHandlers.tooltip = {
                 items: 'span',
                 track: true,
                 content: function () {
-                    return   contElem.html();
+                    return contElem.html();
                 }
             });
         }
     },
-    update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext){
+    update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
         if ($(element) != undefined) {
-            $(element).tooltip( "destroy" );
+            $(element).tooltip("destroy");
             var contElem = $(valueAccessor());
             $(element).tooltip({
                 items: 'span',
@@ -147,7 +147,7 @@ ko.bindingHandlers.tooltip = {
 
 
 ko.bindingHandlers.disableOptionsCaption = {
-    init: function (element,valueAccessor, allBindingsAccessor, viewModel) {
+    init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
 
         ko.applyBindingsToNode(element, {
             options: viewModel.items,
@@ -166,12 +166,12 @@ ko.bindingHandlers.disableOptionsCaption = {
 // CKEDITOR is not defined in player:
 if (typeof CKEDITOR !== 'undefined') {
 
-    CKEDITOR.on( 'currentInstance', function() {
+    CKEDITOR.on('currentInstance', function () {
         var instance = CKEDITOR.currentInstance;
-        if (instance!=null) {
+        if (instance != null) {
             $("#editorToolbar").show();
         }
-    } );
+    });
 
     // disable auto inline editing for CKeditor, because the custom binding below is doing this manually:
     CKEDITOR.disableAutoInline = true;
@@ -193,7 +193,7 @@ if (typeof CKEDITOR !== 'undefined') {
                         ckEditorValue(instance.getData());
                         ignoreChanges = false;
                     },
-                    instanceReady: function() {
+                    instanceReady: function () {
                         if (selectAll) {
                             //instance.execCommand( 'selectAll' );
                         }
@@ -203,7 +203,7 @@ if (typeof CKEDITOR !== 'undefined') {
 
             instance.parentViewModel = viewModel;
 
-            instance.on('blur',function( e ){
+            instance.on('blur', function (e) {
                 $("#editorToolbar").hide();
                 if (viewModel.hasOwnProperty('dataModel') && viewModel.dataModel.hasOwnProperty("editText")) {
                     // This snippet is needed, so that clicking somewhere else will disable the edit and reediting requires a new double click.
@@ -233,25 +233,25 @@ if (typeof CKEDITOR !== 'undefined') {
 
 
 ko.bindingHandlers.selected = {
-    update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+    update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
         var selected = ko.utils.unwrapObservable(valueAccessor());
         if (selected) element.select();
     }
 };
 
 
-ko.bindingHandlers.singleClick= {
-    init: function(element, valueAccessor) {
+ko.bindingHandlers.singleClick = {
+    init: function (element, valueAccessor) {
         var handler = valueAccessor(),
             delay = 200,
             clickTimeout = false;
 
-        $(element).click(function() {
-            if(clickTimeout !== false) {
+        $(element).click(function () {
+            if (clickTimeout !== false) {
                 clearTimeout(clickTimeout);
                 clickTimeout = false;
             } else {
-                clickTimeout = setTimeout(function() {
+                clickTimeout = setTimeout(function () {
                     clickTimeout = false;
                     handler();
                 }, delay);
@@ -270,24 +270,24 @@ function pgFormatDate(date) {
     var timeZoneOffsetInHours = date.getTimezoneOffset() / 60;
     var dayString = [date.getUTCFullYear(), zeroPad(date.getMonth() + 1), zeroPad(date.getDate())].join("-");
     var timeString = [zeroPad(date.getHours()), zeroPad(date.getMinutes()), zeroPad(date.getSeconds())].join(":");
-    if (timeZoneOffsetInHours>0) {
+    if (timeZoneOffsetInHours > 0) {
         // WARNING: according to javascript spec's, the timezone has inverted sign, so we invert + to - and - to +
         timeZoneRemainingMinutes = timeZoneOffsetInHours % 1;
-        timeZoneOffsetInHours = "-"+zeroPad(Math.floor(timeZoneOffsetInHours));
+        timeZoneOffsetInHours = "-" + zeroPad(Math.floor(timeZoneOffsetInHours));
     }
-    else if (timeZoneOffsetInHours<0) {
+    else if (timeZoneOffsetInHours < 0) {
         timeZoneOffsetInHours = -timeZoneOffsetInHours;
         timeZoneRemainingMinutes = timeZoneOffsetInHours % 1;
-        timeZoneOffsetInHours = "+"+zeroPad(Math.floor(timeZoneOffsetInHours));
+        timeZoneOffsetInHours = "+" + zeroPad(Math.floor(timeZoneOffsetInHours));
     }
     else {
         timeZoneRemainingMinutes = 0;
         timeZoneOffsetInHours = "+00";
     }
     if (timeZoneRemainingMinutes != 0) {
-        timeZoneOffsetInHours = timeZoneOffsetInHours + ":" + zeroPad(Math.floor(timeZoneRemainingMinutes*60));
+        timeZoneOffsetInHours = timeZoneOffsetInHours + ":" + zeroPad(Math.floor(timeZoneRemainingMinutes * 60));
     }
-    return dayString+" "+timeString+timeZoneOffsetInHours;
+    return dayString + " " + timeString + timeZoneOffsetInHours;
 }
 
 ko.unapplyBindings = function ($node, remove) {

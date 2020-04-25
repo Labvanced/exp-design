@@ -9,7 +9,7 @@
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var TriggerMouse = function(event) {
+var TriggerMouse = function (event) {
     this.event = event;
 
     // serialized
@@ -31,11 +31,11 @@ TriggerMouse.prototype.interactionTypes = ["Click", "PressDown", "PressUp", "Hov
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-TriggerMouse.prototype.isValid = function() {
-    if (this.event.trigger() && this.targets().length>0){
+TriggerMouse.prototype.isValid = function () {
+    if (this.event.trigger() && this.targets().length > 0) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 };
@@ -45,7 +45,7 @@ TriggerMouse.prototype.isValid = function() {
  *
  * @returns {string[]}
  */
-TriggerMouse.prototype.getParameterSpec = function() {
+TriggerMouse.prototype.getParameterSpec = function () {
     return [
         'Stimulus Name',
         'Time From Frame Onset',
@@ -60,11 +60,11 @@ TriggerMouse.prototype.getParameterSpec = function() {
  * @param playerFrame
  * @param target
  */
-TriggerMouse.prototype.triggerOnTarget = function(playerFrame, target, ev) {
-    if (target.modifier().selectedTrialView.isActive()){
+TriggerMouse.prototype.triggerOnTarget = function (playerFrame, target, ev) {
+    if (target.modifier().selectedTrialView.isActive()) {
         var stimulusInformation = null;
-        if (target.content().hasOwnProperty("stimulusInformation")){
-            stimulusInformation =  target.content().modifier().selectedTrialView.stimulusInformation();
+        if (target.content().hasOwnProperty("stimulusInformation")) {
+            stimulusInformation = target.content().modifier().selectedTrialView.stimulusInformation();
         }
 
         var mouseX = ev.clientX;
@@ -72,7 +72,7 @@ TriggerMouse.prototype.triggerOnTarget = function(playerFrame, target, ev) {
 
         // convert to frame coordinates if this is not a page:
         //var playerFrame = player.currentFrame;
-        if(playerFrame.frameData instanceof FrameData) {
+        if (playerFrame.frameData instanceof FrameData) {
             var scale = playerFrame.frameView.scale();
             var offX = (window.innerWidth - playerFrame.frameData.frameWidth() * scale) / 2;
             var offY = (window.innerHeight - playerFrame.frameData.frameHeight() * scale) / 2;
@@ -95,7 +95,7 @@ TriggerMouse.prototype.triggerOnTarget = function(playerFrame, target, ev) {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerMouse.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
 
     function createEventListener(target) {
@@ -107,56 +107,56 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
             cb: null
         };
 
-        switch (self.interactionType()){
+        switch (self.interactionType()) {
 
             case "Click":
-                if (self.buttonType() === "Left"){
+                if (self.buttonType() === "Left") {
                     eventHandle.eventName = 'click';
-                    eventHandle.cb = function(ev) {
-                        self.triggerOnTarget(playerFrame,target,ev);
+                    eventHandle.cb = function (ev) {
+                        self.triggerOnTarget(playerFrame, target, ev);
                     };
                 }
-                else if (self.buttonType() === "Right"){
+                else if (self.buttonType() === "Right") {
                     eventHandle.eventName = 'contextmenu';
-                    eventHandle.cb = function(ev) {
-                        self.triggerOnTarget(playerFrame,target,ev);
+                    eventHandle.cb = function (ev) {
+                        self.triggerOnTarget(playerFrame, target, ev);
                     };
                 }
                 break;
 
             case "PressDown":
                 eventHandle.eventName = 'mousedown';
-                eventHandle.cb = function(ev) {
-                    if ((self.buttonType() === "Left" && ev.button==0) || (self.buttonType() === "Right" && ev.button==2)){
-                        self.triggerOnTarget(playerFrame,target,ev);
+                eventHandle.cb = function (ev) {
+                    if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2)) {
+                        self.triggerOnTarget(playerFrame, target, ev);
                     }
                 };
                 break;
 
             case "PressUp":
                 eventHandle.eventName = 'mouseup';
-                eventHandle.cb = function(ev) {
-                    if ((self.buttonType() === "Left" && ev.button==0) || (self.buttonType() === "Right" && ev.button==2)){
-                        self.triggerOnTarget(playerFrame,target,ev);
+                eventHandle.cb = function (ev) {
+                    if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2)) {
+                        self.triggerOnTarget(playerFrame, target, ev);
                     }
                 };
                 break;
 
             case "Hover":
                 eventHandle.eventName = 'mouseover';
-                eventHandle.cb = function(ev) {
-                    self.triggerOnTarget(playerFrame,target,ev);
+                eventHandle.cb = function (ev) {
+                    self.triggerOnTarget(playerFrame, target, ev);
                 };
                 break;
 
         }
 
         self.eventHandlesForCleanUp.push(eventHandle);
-        eventHandle.elem.on(eventHandle.eventName,eventHandle.cb);
+        eventHandle.elem.on(eventHandle.eventName, eventHandle.cb);
     }
 
 
-    for (var i = 0; i<this.targets().length;i++){
+    for (var i = 0; i < this.targets().length; i++) {
         createEventListener(this.targets()[i]);
     }
 
@@ -166,8 +166,8 @@ TriggerMouse.prototype.setupOnPlayerFrame = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-TriggerMouse.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    for (var i=0; i<this.eventHandlesForCleanUp.length; i++) {
+TriggerMouse.prototype.destroyOnPlayerFrame = function (playerFrame) {
+    for (var i = 0; i < this.eventHandlesForCleanUp.length; i++) {
         var handle = this.eventHandlesForCleanUp[i];
         handle.elem.off(handle.eventName, handle.cb);
     }
@@ -181,10 +181,10 @@ TriggerMouse.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerMouse.prototype.setPointers = function(entitiesArr) {
-    this.targets(jQuery.map( this.targets(), function( id ) {
+TriggerMouse.prototype.setPointers = function (entitiesArr) {
+    this.targets(jQuery.map(this.targets(), function (id) {
         return entitiesArr.byId[id];
-    } ));
+    }));
 };
 
 /**
@@ -192,7 +192,7 @@ TriggerMouse.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerMouse.prototype.reAddEntities = function(entitiesArr) {
+TriggerMouse.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -201,7 +201,7 @@ TriggerMouse.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {TriggerMouse}
  */
-TriggerMouse.prototype.fromJS = function(data) {
+TriggerMouse.prototype.fromJS = function (data) {
     this.buttonType(data.buttonType);
     this.interactionType(data.interactionType);
     this.targets(data.targets);
@@ -212,12 +212,12 @@ TriggerMouse.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TriggerMouse.prototype.toJS = function() {
+TriggerMouse.prototype.toJS = function () {
     return {
         type: this.type,
         buttonType: this.buttonType(),
         interactionType: this.interactionType(),
-        targets: jQuery.map( this.targets(), function( element ) { return element.id(); } )
+        targets: jQuery.map(this.targets(), function (element) { return element.id(); })
     };
 };
 
@@ -232,7 +232,7 @@ TriggerMouse.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var TriggerEyetracking = function(event) {
+var TriggerEyetracking = function (event) {
     this.event = event;
 
     // serialized
@@ -251,11 +251,11 @@ TriggerEyetracking.prototype.label = "Eyetracking Trigger";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-TriggerEyetracking.prototype.isValid = function() {
-    if (this.event.trigger()){
+TriggerEyetracking.prototype.isValid = function () {
+    if (this.event.trigger()) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 };
@@ -265,7 +265,7 @@ TriggerEyetracking.prototype.isValid = function() {
  *
  * @returns {string[]}
  */
-TriggerEyetracking.prototype.getParameterSpec = function() {
+TriggerEyetracking.prototype.getParameterSpec = function () {
     return [
         'Coordinate X',
         'Coordinate Y',
@@ -280,15 +280,15 @@ TriggerEyetracking.prototype.getParameterSpec = function() {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-TriggerEyetracking.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerEyetracking.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
 
-    this.eventHandleForCleanUp = function(coordX, coordY) {
+    this.eventHandleForCleanUp = function (coordX, coordY) {
         if (self.limitToTargets()) {
             var allTargets = self.targets();
-            for (var i = 0; i<allTargets.length;i++){
+            for (var i = 0; i < allTargets.length; i++) {
                 var target = allTargets[i];
-                if (target.modifier().selectedTrialView.isActive()){
+                if (target.modifier().selectedTrialView.isActive()) {
 
                     var elemX = target.modifier().selectedTrialView.editorX();
                     var elemY = target.modifier().selectedTrialView.editorY();
@@ -296,7 +296,7 @@ TriggerEyetracking.prototype.setupOnPlayerFrame = function(playerFrame) {
                     var elemWidth = target.modifier().selectedTrialView.editorWidth();
                     var elemHeight = target.modifier().selectedTrialView.editorHeight();
 
-                    if (elemX < coordX && elemX+elemWidth > coordX && elemY < coordY && elemY+elemHeight > coordY) {
+                    if (elemX < coordX && elemX + elemWidth > coordX && elemY < coordY && elemY + elemHeight > coordY) {
                         var stimulusInformation = null;
                         if (target.content().hasOwnProperty("stimulusInformation")) {
                             stimulusInformation = target.content().modifier().selectedTrialView.stimulusInformation();
@@ -331,7 +331,7 @@ TriggerEyetracking.prototype.setupOnPlayerFrame = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-TriggerEyetracking.prototype.destroyOnPlayerFrame = function(playerFrame) {
+TriggerEyetracking.prototype.destroyOnPlayerFrame = function (playerFrame) {
     if (this.eventHandleForCleanUp) {
         var index = playerFrame.onEyetrackingCoords.indexOf(this.eventHandleForCleanUp);
         if (index > -1) {
@@ -348,10 +348,10 @@ TriggerEyetracking.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerEyetracking.prototype.setPointers = function(entitiesArr) {
-    this.targets(jQuery.map( this.targets(), function( id ) {
+TriggerEyetracking.prototype.setPointers = function (entitiesArr) {
+    this.targets(jQuery.map(this.targets(), function (id) {
         return entitiesArr.byId[id];
-    } ));
+    }));
 };
 
 /**
@@ -359,7 +359,7 @@ TriggerEyetracking.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerEyetracking.prototype.reAddEntities = function(entitiesArr) {
+TriggerEyetracking.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -368,7 +368,7 @@ TriggerEyetracking.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {TriggerEyetracking}
  */
-TriggerEyetracking.prototype.fromJS = function(data) {
+TriggerEyetracking.prototype.fromJS = function (data) {
     this.limitToTargets(data.limitToTargets);
     this.targets(data.targets);
     return this;
@@ -378,11 +378,11 @@ TriggerEyetracking.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TriggerEyetracking.prototype.toJS = function() {
+TriggerEyetracking.prototype.toJS = function () {
     return {
         type: this.type,
         limitToTargets: this.limitToTargets(),
-        targets: jQuery.map( this.targets(), function( element ) { return element.id(); } )
+        targets: jQuery.map(this.targets(), function (element) { return element.id(); })
     };
 };
 
@@ -397,7 +397,7 @@ TriggerEyetracking.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var TriggerButtonClick = function(event) {
+var TriggerButtonClick = function (event) {
     this.event = event;
 
     // serialized
@@ -416,11 +416,11 @@ TriggerButtonClick.prototype.label = "Button Bar Trigger";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-TriggerButtonClick.prototype.isValid = function() {
-    if (this.event.trigger() && this.target()){
+TriggerButtonClick.prototype.isValid = function () {
+    if (this.event.trigger() && this.target()) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 };
@@ -430,7 +430,7 @@ TriggerButtonClick.prototype.isValid = function() {
  *
  * @returns {string[]}
  */
-TriggerButtonClick.prototype.getParameterSpec = function() {
+TriggerButtonClick.prototype.getParameterSpec = function () {
     return [
         'Stimulus Name',
         'Time From Frame Onset',
@@ -443,7 +443,7 @@ TriggerButtonClick.prototype.getParameterSpec = function() {
  * @param playerFrame
  * @param target
  */
-TriggerButtonClick.prototype.triggerOnTarget = function(playerFrame,target) {
+TriggerButtonClick.prototype.triggerOnTarget = function (playerFrame, target) {
     if (target.modifier().selectedTrialView.isActive()) {
         var stimulusInformation = null;
         if (target.content().hasOwnProperty("stimulusInformation")) {
@@ -462,7 +462,7 @@ TriggerButtonClick.prototype.triggerOnTarget = function(playerFrame,target) {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-TriggerButtonClick.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerButtonClick.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
     var target = this.target();
     if (target) {
@@ -483,7 +483,7 @@ TriggerButtonClick.prototype.setupOnPlayerFrame = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-TriggerButtonClick.prototype.destroyOnPlayerFrame = function(playerFrame) {
+TriggerButtonClick.prototype.destroyOnPlayerFrame = function (playerFrame) {
     var target = this.target();
     if (target) {
         var targetViewElem = playerFrame.frameView.viewElements.byId[target.id()];
@@ -503,7 +503,7 @@ TriggerButtonClick.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerButtonClick.prototype.setPointers = function(entitiesArr) {
+TriggerButtonClick.prototype.setPointers = function (entitiesArr) {
     this.target(entitiesArr.byId[this.target()]);
 };
 
@@ -512,7 +512,7 @@ TriggerButtonClick.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerButtonClick.prototype.reAddEntities = function(entitiesArr) {
+TriggerButtonClick.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -521,7 +521,7 @@ TriggerButtonClick.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {TriggerButtonClick}
  */
-TriggerButtonClick.prototype.fromJS = function(data) {
+TriggerButtonClick.prototype.fromJS = function (data) {
     this.buttonIdx(data.buttonIdx);
     this.target(data.target);
     return this;
@@ -531,7 +531,7 @@ TriggerButtonClick.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TriggerButtonClick.prototype.toJS = function() {
+TriggerButtonClick.prototype.toJS = function () {
     var targetId = null;
     if (this.target()) {
         targetId = this.target().id();
@@ -552,7 +552,7 @@ TriggerButtonClick.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var TriggerKeyboard = function(event) {
+var TriggerKeyboard = function (event) {
     var self = this;
     this.event = event;
 
@@ -562,7 +562,7 @@ var TriggerKeyboard = function(event) {
     this.alphaNumericEnabled = ko.observable(false); // if true, then disable fullscreen in safari
 
     // not serialized:
-    this.validKeyCodes = ko.computed(function() {
+    this.validKeyCodes = ko.computed(function () {
         return self.getValidKeyCodes();
     });
     this.eventHandleForCleanUp = null;
@@ -574,16 +574,16 @@ TriggerKeyboard.prototype.label = "Keyboard Trigger";
 TriggerKeyboard.prototype.interactionTypes = ["PressDown", "PressUp"];
 
 TriggerKeyboard.prototype.buttonTypesArrows = ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"];
-TriggerKeyboard.prototype.buttonTypesNumbers = ["0","1", "2", "3", "4", "5", "6", "7", "8", "9"];
+TriggerKeyboard.prototype.buttonTypesNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 TriggerKeyboard.prototype.buttonTypesLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-TriggerKeyboard.prototype.buttonTypesSpecial= ["Space","Enter","Ctrl","Tab","Shift"];
-TriggerKeyboard.prototype.buttonTypesFkeys= ["F1","F2","F3","F4","F5","F6","F7","F8","F9","F10"];
+TriggerKeyboard.prototype.buttonTypesSpecial = ["Space", "Enter", "Ctrl", "Tab", "Shift"];
+TriggerKeyboard.prototype.buttonTypesFkeys = ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10"];
 
-TriggerKeyboard.prototype.buttonTypesArrowsCode = [37,38,39,40];
-TriggerKeyboard.prototype.buttonTypesNumbersCode = [48,49,50,51,52,53,54,55,56,57];
-TriggerKeyboard.prototype.buttonTypesLettersCode = [65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90];
-TriggerKeyboard.prototype.buttonTypesSpecialCode= [32,13,17,9,16];
-TriggerKeyboard.prototype.buttonTypesFkeysCode= [112,113,114,115,116,117,118,119,120,121];
+TriggerKeyboard.prototype.buttonTypesArrowsCode = [37, 38, 39, 40];
+TriggerKeyboard.prototype.buttonTypesNumbersCode = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
+TriggerKeyboard.prototype.buttonTypesLettersCode = [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90];
+TriggerKeyboard.prototype.buttonTypesSpecialCode = [32, 13, 17, 9, 16];
+TriggerKeyboard.prototype.buttonTypesFkeysCode = [112, 113, 114, 115, 116, 117, 118, 119, 120, 121];
 
 TriggerKeyboard.prototype.allKeys = TriggerKeyboard.prototype.buttonTypesFkeys.concat(TriggerKeyboard.prototype.buttonTypesSpecial.concat(TriggerKeyboard.prototype.buttonTypesLetters.concat(TriggerKeyboard.prototype.buttonTypesArrows.concat(TriggerKeyboard.prototype.buttonTypesNumbers))));
 TriggerKeyboard.prototype.allKeysCode = TriggerKeyboard.prototype.buttonTypesFkeysCode.concat(TriggerKeyboard.prototype.buttonTypesSpecialCode.concat(TriggerKeyboard.prototype.buttonTypesLettersCode.concat(TriggerKeyboard.prototype.buttonTypesArrowsCode.concat(TriggerKeyboard.prototype.buttonTypesNumbersCode))));
@@ -593,11 +593,11 @@ TriggerKeyboard.prototype.allKeysCode = TriggerKeyboard.prototype.buttonTypesFke
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-TriggerKeyboard.prototype.isValid = function() {
-    if (this.event.trigger() && this.buttons().length>0){
+TriggerKeyboard.prototype.isValid = function () {
+    if (this.event.trigger() && this.buttons().length > 0) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 };
@@ -607,12 +607,12 @@ TriggerKeyboard.prototype.isValid = function() {
  *
  * @returns {string[]}
  */
-TriggerKeyboard.prototype.getValidKeyCodes = function() {
+TriggerKeyboard.prototype.getValidKeyCodes = function () {
 
     var validKeyCodes = [];
     var validKeys = this.buttons();
-    for (var i = 0; i<this.buttons().length; i++) {
-        var index =  TriggerKeyboard.prototype.allKeys.indexOf(validKeys[i]);
+    for (var i = 0; i < this.buttons().length; i++) {
+        var index = TriggerKeyboard.prototype.allKeys.indexOf(validKeys[i]);
         validKeyCodes.push(TriggerKeyboard.prototype.allKeysCode[index]);
     }
 
@@ -624,7 +624,7 @@ TriggerKeyboard.prototype.getValidKeyCodes = function() {
  *
  * @returns {string[]}
  */
-TriggerKeyboard.prototype.getParameterSpec = function() {
+TriggerKeyboard.prototype.getParameterSpec = function () {
     return [
         'Id of Key'
     ];
@@ -635,23 +635,23 @@ TriggerKeyboard.prototype.getParameterSpec = function() {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerKeyboard.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
     var validKeyCodes = this.validKeyCodes();
 
-    this.eventHandleForCleanUp = function (ev){
+    this.eventHandleForCleanUp = function (ev) {
         var keyIdx = validKeyCodes.indexOf(ev.keyCode);
         var anyAllowed = self.buttons().indexOf("any");
-        if (keyIdx>=0 || anyAllowed>=0){
+        if (keyIdx >= 0 || anyAllowed >= 0) {
             if (self.buttonTypesFkeysCode.indexOf(ev.keyCode) >= 0) {
                 // only prevent default for F keys:
                 ev.preventDefault();
             }
-            if (anyAllowed>=0){
-                self.event.triggerActions([ev.key.toUpperCase(),playerFrame.getFrameTime()]);
+            if (anyAllowed >= 0) {
+                self.event.triggerActions([ev.key.toUpperCase(), playerFrame.getFrameTime()]);
             }
-            else{
-                self.event.triggerActions([self.buttons()[keyIdx],playerFrame.getFrameTime()]);
+            else {
+                self.event.triggerActions([self.buttons()[keyIdx], playerFrame.getFrameTime()]);
             }
 
             ev.preventDefault();
@@ -659,7 +659,7 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
         }
     };
 
-    if (this.interactionType() === "PressDown"){
+    if (this.interactionType() === "PressDown") {
         $(document).on("keydown", this.eventHandleForCleanUp);
     }
     else { // PressUp
@@ -671,8 +671,8 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-TriggerKeyboard.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    if (this.interactionType() === "PressDown"){
+TriggerKeyboard.prototype.destroyOnPlayerFrame = function (playerFrame) {
+    if (this.interactionType() === "PressDown") {
         $(document).off("keydown", this.eventHandleForCleanUp);
     }
     else { // PressUp
@@ -688,7 +688,7 @@ TriggerKeyboard.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerKeyboard.prototype.setPointers = function(entitiesArr) {
+TriggerKeyboard.prototype.setPointers = function (entitiesArr) {
 
 };
 
@@ -697,7 +697,7 @@ TriggerKeyboard.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerKeyboard.prototype.reAddEntities = function(entitiesArr) {
+TriggerKeyboard.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -706,7 +706,7 @@ TriggerKeyboard.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {TriggerKeyboard}
  */
-TriggerKeyboard.prototype.fromJS = function(data) {
+TriggerKeyboard.prototype.fromJS = function (data) {
     this.buttons(data.buttons);
     this.interactionType(data.interactionType);
     if (data.hasOwnProperty("alphaNumericEnabled")) {
@@ -715,15 +715,15 @@ TriggerKeyboard.prototype.fromJS = function(data) {
     else {
         // check if alpha numeric is used:
         var alphaNumericEnabled = false;
-        $.each(this.buttons(), function(idx, buttonName) {
+        $.each(this.buttons(), function (idx, buttonName) {
             var keyIdx = TriggerKeyboard.prototype.buttonTypesNumbers.indexOf(buttonName);
-            if (keyIdx>=0){
+            if (keyIdx >= 0) {
                 alphaNumericEnabled = true;
             }
         });
-        $.each(this.buttons(), function(idx, buttonName) {
+        $.each(this.buttons(), function (idx, buttonName) {
             var keyIdx = TriggerKeyboard.prototype.buttonTypesLetters.indexOf(buttonName);
-            if (keyIdx>=0){
+            if (keyIdx >= 0) {
                 alphaNumericEnabled = true;
             }
         });
@@ -736,7 +736,7 @@ TriggerKeyboard.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TriggerKeyboard.prototype.toJS = function() {
+TriggerKeyboard.prototype.toJS = function () {
     return {
         type: this.type,
         buttons: this.buttons().slice(0),
@@ -762,7 +762,7 @@ TriggerKeyboard.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var TriggerEnterOnInput = function(event) {
+var TriggerEnterOnInput = function (event) {
     var self = this;
     this.event = event;
     // serialized
@@ -777,24 +777,24 @@ TriggerEnterOnInput.prototype.label = "Enter On Input";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-TriggerEnterOnInput.prototype.isValid = function() {
-    if (this.event.trigger()&& this.targets().length>0){
+TriggerEnterOnInput.prototype.isValid = function () {
+    if (this.event.trigger() && this.targets().length > 0) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 };
 
 
 
-TriggerEnterOnInput.prototype.trigger = function(ev) {
+TriggerEnterOnInput.prototype.trigger = function (ev) {
     if (ev.key) {
         this.event.triggerActions([ev.key.toUpperCase(), player.currentFrame.getFrameTime()]);
     }
 };
 
-TriggerEnterOnInput.prototype.getParameterSpec = function() {
+TriggerEnterOnInput.prototype.getParameterSpec = function () {
     return [
         'Id of Key'
     ];
@@ -805,7 +805,7 @@ TriggerEnterOnInput.prototype.getParameterSpec = function() {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-TriggerEnterOnInput.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerEnterOnInput.prototype.setupOnPlayerFrame = function (playerFrame) {
     var returnKeyCode = 13;
     var self = this;
     this.targets().forEach(function (target) {
@@ -818,7 +818,7 @@ TriggerEnterOnInput.prototype.setupOnPlayerFrame = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-TriggerEnterOnInput.prototype.destroyOnPlayerFrame = function(playerFrame) {
+TriggerEnterOnInput.prototype.destroyOnPlayerFrame = function (playerFrame) {
     this.targets().forEach(function (target) {
         target.content().executeByKeyCode([]);
         target.content().triggerRefernce = null;
@@ -832,10 +832,10 @@ TriggerEnterOnInput.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerEnterOnInput.prototype.setPointers = function(entitiesArr) {
-    this.targets(jQuery.map( this.targets(), function( id ) {
+TriggerEnterOnInput.prototype.setPointers = function (entitiesArr) {
+    this.targets(jQuery.map(this.targets(), function (id) {
         return entitiesArr.byId[id];
-    } ));
+    }));
 };
 
 /**
@@ -843,7 +843,7 @@ TriggerEnterOnInput.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerEnterOnInput.prototype.reAddEntities = function(entitiesArr) {
+TriggerEnterOnInput.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -852,7 +852,7 @@ TriggerEnterOnInput.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {TriggerMouse}
  */
-TriggerEnterOnInput.prototype.fromJS = function(data) {
+TriggerEnterOnInput.prototype.fromJS = function (data) {
     this.targets(data.targets);
     return this;
 };
@@ -861,10 +861,10 @@ TriggerEnterOnInput.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TriggerEnterOnInput.prototype.toJS = function() {
+TriggerEnterOnInput.prototype.toJS = function () {
     return {
         type: this.type,
-        targets: jQuery.map( this.targets(), function( element ) { return element.id(); } )
+        targets: jQuery.map(this.targets(), function (element) { return element.id(); })
     };
 };
 
@@ -881,7 +881,7 @@ TriggerEnterOnInput.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var TriggerOnFrameStart = function(event) {
+var TriggerOnFrameStart = function (event) {
     this.event = event;
 
     // not serialized
@@ -896,7 +896,7 @@ TriggerOnFrameStart.prototype.label = "On Frame Start Trigger";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-TriggerOnFrameStart.prototype.isValid = function() {
+TriggerOnFrameStart.prototype.isValid = function () {
     return true;
 };
 
@@ -905,7 +905,7 @@ TriggerOnFrameStart.prototype.isValid = function() {
  *
  * @returns {string[]}
  */
-TriggerOnFrameStart.prototype.getParameterSpec = function() {
+TriggerOnFrameStart.prototype.getParameterSpec = function () {
     return [
     ];
 };
@@ -915,9 +915,9 @@ TriggerOnFrameStart.prototype.getParameterSpec = function() {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-TriggerOnFrameStart.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerOnFrameStart.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
-    this.callbackForCleanUp = function(){
+    this.callbackForCleanUp = function () {
         self.event.triggerActions([]);
     };
     playerFrame.onFrameStartCallbacks.push(this.callbackForCleanUp);
@@ -927,7 +927,7 @@ TriggerOnFrameStart.prototype.setupOnPlayerFrame = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-TriggerOnFrameStart.prototype.destroyOnPlayerFrame = function(playerFrame) {
+TriggerOnFrameStart.prototype.destroyOnPlayerFrame = function (playerFrame) {
     var index = playerFrame.onFrameStartCallbacks.indexOf(this.callbackForCleanUp);
     if (index > -1) {
         playerFrame.onFrameStartCallbacks.splice(index, 1);
@@ -941,7 +941,7 @@ TriggerOnFrameStart.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerOnFrameStart.prototype.setPointers = function(entitiesArr) {
+TriggerOnFrameStart.prototype.setPointers = function (entitiesArr) {
 
 };
 
@@ -950,7 +950,7 @@ TriggerOnFrameStart.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerOnFrameStart.prototype.reAddEntities = function(entitiesArr) {
+TriggerOnFrameStart.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -959,7 +959,7 @@ TriggerOnFrameStart.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {TriggerOnFrameStart}
  */
-TriggerOnFrameStart.prototype.fromJS = function(data) {
+TriggerOnFrameStart.prototype.fromJS = function (data) {
     return this;
 };
 
@@ -967,7 +967,7 @@ TriggerOnFrameStart.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TriggerOnFrameStart.prototype.toJS = function() {
+TriggerOnFrameStart.prototype.toJS = function () {
     return {
         type: this.type,
     };
@@ -990,7 +990,7 @@ TriggerOnFrameStart.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var TriggerWebsocket = function(event) {
+var TriggerWebsocket = function (event) {
     this.event = event;
     this.msg = ko.observable("");
 
@@ -1007,7 +1007,7 @@ TriggerWebsocket.prototype.label = "External Trigger";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-TriggerWebsocket.prototype.isValid = function() {
+TriggerWebsocket.prototype.isValid = function () {
     return true;
 };
 
@@ -1016,7 +1016,7 @@ TriggerWebsocket.prototype.isValid = function() {
  *
  * @returns {string[]}
  */
-TriggerWebsocket.prototype.getParameterSpec = function() {
+TriggerWebsocket.prototype.getParameterSpec = function () {
     return [
         "Message",
         "Data"
@@ -1029,14 +1029,14 @@ TriggerWebsocket.prototype.getParameterSpec = function() {
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
 
-TriggerWebsocket.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerWebsocket.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
-    this.callbackForCleanUp = function(msg,data){
+    this.callbackForCleanUp = function (msg, data) {
         self.data = data;
         self.msg(msg);
-        self.event.triggerActions([msg,data]);
+        self.event.triggerActions([msg, data]);
     };
-    if (playerFrame.websocketTriggerCallbacks[this.msg()]){
+    if (playerFrame.websocketTriggerCallbacks[this.msg()]) {
         playerFrame.websocketTriggerCallbacks[this.msg()].push(this.callbackForCleanUp)
     }
     else {
@@ -1049,9 +1049,9 @@ TriggerWebsocket.prototype.setupOnPlayerFrame = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-TriggerWebsocket.prototype.destroyOnPlayerFrame = function(playerFrame) {
+TriggerWebsocket.prototype.destroyOnPlayerFrame = function (playerFrame) {
     var allCBs = playerFrame.websocketTriggerCallbacks;
-    for (var member in allCBs){
+    for (var member in allCBs) {
         delete allCBs[member];
     }
 };
@@ -1063,7 +1063,7 @@ TriggerWebsocket.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerWebsocket.prototype.setPointers = function(entitiesArr) {
+TriggerWebsocket.prototype.setPointers = function (entitiesArr) {
 
 };
 
@@ -1072,7 +1072,7 @@ TriggerWebsocket.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerWebsocket.prototype.reAddEntities = function(entitiesArr) {
+TriggerWebsocket.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -1081,7 +1081,7 @@ TriggerWebsocket.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {TriggerOnFrameStart}
  */
-TriggerWebsocket.prototype.fromJS = function(data) {
+TriggerWebsocket.prototype.fromJS = function (data) {
     this.msg(data.msg);
     return this;
 };
@@ -1090,7 +1090,7 @@ TriggerWebsocket.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TriggerWebsocket.prototype.toJS = function() {
+TriggerWebsocket.prototype.toJS = function () {
     return {
         type: this.type,
         msg: this.msg()
@@ -1115,7 +1115,7 @@ TriggerWebsocket.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var TriggerOnFrameEnd = function(event) {
+var TriggerOnFrameEnd = function (event) {
     this.event = event;
 
     // not serialized
@@ -1130,7 +1130,7 @@ TriggerOnFrameEnd.prototype.label = "On Frame End Trigger";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-TriggerOnFrameEnd.prototype.isValid = function() {
+TriggerOnFrameEnd.prototype.isValid = function () {
     return true;
 };
 
@@ -1139,7 +1139,7 @@ TriggerOnFrameEnd.prototype.isValid = function() {
  *
  * @returns {string[]}
  */
-TriggerOnFrameEnd.prototype.getParameterSpec = function() {
+TriggerOnFrameEnd.prototype.getParameterSpec = function () {
     return [
         "totalFrameTime"
     ];
@@ -1150,9 +1150,9 @@ TriggerOnFrameEnd.prototype.getParameterSpec = function() {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-TriggerOnFrameEnd.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerOnFrameEnd.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
-    this.callbackForCleanUp = function(){
+    this.callbackForCleanUp = function () {
         self.event.triggerActions([playerFrame.getFrameTime()]);
     };
     playerFrame.onFrameEndCallbacks.push(this.callbackForCleanUp);
@@ -1162,7 +1162,7 @@ TriggerOnFrameEnd.prototype.setupOnPlayerFrame = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-TriggerOnFrameEnd.prototype.destroyOnPlayerFrame = function(playerFrame) {
+TriggerOnFrameEnd.prototype.destroyOnPlayerFrame = function (playerFrame) {
     var index = playerFrame.onFrameEndCallbacks.indexOf(this.callbackForCleanUp);
     if (index > -1) {
         playerFrame.onFrameEndCallbacks.splice(index, 1);
@@ -1176,7 +1176,7 @@ TriggerOnFrameEnd.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerOnFrameEnd.prototype.setPointers = function(entitiesArr) {
+TriggerOnFrameEnd.prototype.setPointers = function (entitiesArr) {
 
 };
 
@@ -1185,7 +1185,7 @@ TriggerOnFrameEnd.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerOnFrameEnd.prototype.reAddEntities = function(entitiesArr) {
+TriggerOnFrameEnd.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -1194,7 +1194,7 @@ TriggerOnFrameEnd.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {TriggerOnFrameEnd}
  */
-TriggerOnFrameEnd.prototype.fromJS = function(data) {
+TriggerOnFrameEnd.prototype.fromJS = function (data) {
     return this;
 };
 
@@ -1202,7 +1202,7 @@ TriggerOnFrameEnd.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TriggerOnFrameEnd.prototype.toJS = function() {
+TriggerOnFrameEnd.prototype.toJS = function () {
     return {
         type: this.type
     };
@@ -1220,7 +1220,7 @@ TriggerOnFrameEnd.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var TriggerOnGlobalEvent = function(event) {
+var TriggerOnGlobalEvent = function (event) {
     this.event = event;
 
     this.evtSubType = ko.observable(null);
@@ -1247,7 +1247,7 @@ TriggerOnGlobalEvent.prototype.triggerSubTypes = [
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-TriggerOnGlobalEvent.prototype.isValid = function() {
+TriggerOnGlobalEvent.prototype.isValid = function () {
     return true;
 };
 
@@ -1256,7 +1256,7 @@ TriggerOnGlobalEvent.prototype.isValid = function() {
  *
  * @returns {string[]}
  */
-TriggerOnGlobalEvent.prototype.getParameterSpec = function() {
+TriggerOnGlobalEvent.prototype.getParameterSpec = function () {
     return [
         "totalFrameTime"
     ];
@@ -1267,9 +1267,9 @@ TriggerOnGlobalEvent.prototype.getParameterSpec = function() {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-TriggerOnGlobalEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerOnGlobalEvent.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
-    this.callbackForCleanUp = function(evtSubType){
+    this.callbackForCleanUp = function (evtSubType) {
         if (self.evtSubType() == evtSubType) {
             self.event.triggerActions([playerFrame.getFrameTime()]);
         }
@@ -1281,7 +1281,7 @@ TriggerOnGlobalEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-TriggerOnGlobalEvent.prototype.destroyOnPlayerFrame = function(playerFrame) {
+TriggerOnGlobalEvent.prototype.destroyOnPlayerFrame = function (playerFrame) {
     var index = playerFrame.onGlobalEventCallbacks.indexOf(this.callbackForCleanUp);
     if (index > -1) {
         playerFrame.onGlobalEventCallbacks.splice(index, 1);
@@ -1295,7 +1295,7 @@ TriggerOnGlobalEvent.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerOnGlobalEvent.prototype.setPointers = function(entitiesArr) {
+TriggerOnGlobalEvent.prototype.setPointers = function (entitiesArr) {
 
 };
 
@@ -1304,7 +1304,7 @@ TriggerOnGlobalEvent.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerOnGlobalEvent.prototype.reAddEntities = function(entitiesArr) {
+TriggerOnGlobalEvent.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -1313,7 +1313,7 @@ TriggerOnGlobalEvent.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {TriggerOnGlobalEvent}
  */
-TriggerOnGlobalEvent.prototype.fromJS = function(data) {
+TriggerOnGlobalEvent.prototype.fromJS = function (data) {
     this.evtSubType(data.evtSubType);
     return this;
 };
@@ -1322,7 +1322,7 @@ TriggerOnGlobalEvent.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TriggerOnGlobalEvent.prototype.toJS = function() {
+TriggerOnGlobalEvent.prototype.toJS = function () {
     return {
         type: this.type,
         evtSubType: this.evtSubType()
@@ -1338,7 +1338,7 @@ TriggerOnGlobalEvent.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var TriggerTimerReached = function(event) {
+var TriggerTimerReached = function (event) {
     this.event = event;
 
     // serialized
@@ -1357,17 +1357,17 @@ TriggerTimerReached.prototype.label = "Timer Reached Trigger";
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-TriggerTimerReached.prototype.isValid = function() {
-    if (this.event.trigger() && !(this.timerVar()===null)){
+TriggerTimerReached.prototype.isValid = function () {
+    if (this.event.trigger() && !(this.timerVar() === null)) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 };
 
 
-TriggerTimerReached.prototype.setVariableBackRef = function(variable){
+TriggerTimerReached.prototype.setVariableBackRef = function (variable) {
     variable.addBackRef(this, this.event, true, false, 'timer trigger');
 };
 
@@ -1376,7 +1376,7 @@ TriggerTimerReached.prototype.setVariableBackRef = function(variable){
  *
  * @returns {string[]}
  */
-TriggerTimerReached.prototype.getParameterSpec = function() {
+TriggerTimerReached.prototype.getParameterSpec = function () {
     return [
     ];
 };
@@ -1386,9 +1386,9 @@ TriggerTimerReached.prototype.getParameterSpec = function() {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-TriggerTimerReached.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerTimerReached.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
-    this.triggerCallback = function() {
+    this.triggerCallback = function () {
         console.log("timer reached");
         self.event.triggerActions([]);
     };
@@ -1400,7 +1400,7 @@ TriggerTimerReached.prototype.setupOnPlayerFrame = function(playerFrame) {
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-TriggerTimerReached.prototype.destroyOnPlayerFrame = function(playerFrame) {
+TriggerTimerReached.prototype.destroyOnPlayerFrame = function (playerFrame) {
     if (this.triggerCallback) {
         this.timerVar().value().removeTriggerCallback(this.triggerCallback);
     }
@@ -1413,9 +1413,9 @@ TriggerTimerReached.prototype.destroyOnPlayerFrame = function(playerFrame) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerTimerReached.prototype.setPointers = function(entitiesArr) {
+TriggerTimerReached.prototype.setPointers = function (entitiesArr) {
     var timerVar = entitiesArr.byId[this.timerVar()];
-    if (timerVar){
+    if (timerVar) {
         this.timerVar(timerVar);
     }
     else {
@@ -1428,7 +1428,7 @@ TriggerTimerReached.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerTimerReached.prototype.reAddEntities = function(entitiesArr) {
+TriggerTimerReached.prototype.reAddEntities = function (entitiesArr) {
     if (this.timerVar()) {
         if (!entitiesArr.byId.hasOwnProperty(this.timerVar().id())) {
             entitiesArr.push(this.timerVar());
@@ -1441,7 +1441,7 @@ TriggerTimerReached.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {TriggerTimerReached}
  */
-TriggerTimerReached.prototype.fromJS = function(data) {
+TriggerTimerReached.prototype.fromJS = function (data) {
     this.timerVar(data.timerVar);
     this.timeInMs(data.timeInMs);
     return this;
@@ -1451,7 +1451,7 @@ TriggerTimerReached.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TriggerTimerReached.prototype.toJS = function() {
+TriggerTimerReached.prototype.toJS = function () {
     var timerVarId = null;
     if (this.timerVar()) {
         timerVarId = this.timerVar().id();
@@ -1474,7 +1474,7 @@ TriggerTimerReached.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var TriggerVariableValueChanged = function(event) {
+var TriggerVariableValueChanged = function (event) {
     this.event = event;
 
     // serialized
@@ -1487,9 +1487,9 @@ var TriggerVariableValueChanged = function(event) {
 TriggerVariableValueChanged.prototype.type = "TriggerVariableValueChanged";
 TriggerVariableValueChanged.prototype.label = "Variable Value Changed Trigger";
 
-TriggerVariableValueChanged.prototype.setVariableBackRef = function(variable){
+TriggerVariableValueChanged.prototype.setVariableBackRef = function (variable) {
     var self = this;
-    variable.addBackRef(this, this.event, false, true, 'Trigger On Variable Change', function(globalVar)  {
+    variable.addBackRef(this, this.event, false, true, 'Trigger On Variable Change', function (globalVar) {
         self.removeVariable(globalVar);
     });
 };
@@ -1497,7 +1497,7 @@ TriggerVariableValueChanged.prototype.setVariableBackRef = function(variable){
 
 
 
-TriggerVariableValueChanged.prototype.removeVariable = function(variable) {
+TriggerVariableValueChanged.prototype.removeVariable = function (variable) {
     this.variables.remove(variable);
 };
 
@@ -1505,11 +1505,11 @@ TriggerVariableValueChanged.prototype.removeVariable = function(variable) {
  * returns true if all settings are valid (used in the editor).
  * @returns {boolean}
  */
-TriggerVariableValueChanged.prototype.isValid = function() {
-    if (this.event.trigger() && this.variables().length>0){
+TriggerVariableValueChanged.prototype.isValid = function () {
+    if (this.event.trigger() && this.variables().length > 0) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 };
@@ -1519,7 +1519,7 @@ TriggerVariableValueChanged.prototype.isValid = function() {
  *
  * @returns {string[]}
  */
-TriggerVariableValueChanged.prototype.getParameterSpec = function() {
+TriggerVariableValueChanged.prototype.getParameterSpec = function () {
     return [
         "newValue"
     ];
@@ -1530,11 +1530,11 @@ TriggerVariableValueChanged.prototype.getParameterSpec = function() {
  *
  * @param {PlayerFrame} playerFrame - the corresponding playerFrame
  */
-TriggerVariableValueChanged.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerVariableValueChanged.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
     var variables = this.variables();
-    for (var i=0; i<variables.length; i++) {
-        var subscribeHandle = variables[i].value().value.subscribe(function(newVal){
+    for (var i = 0; i < variables.length; i++) {
+        var subscribeHandle = variables[i].value().value.subscribe(function (newVal) {
             self.event.triggerActions([newVal]);
         });
         this.subscriberHandles.push(subscribeHandle);
@@ -1545,8 +1545,8 @@ TriggerVariableValueChanged.prototype.setupOnPlayerFrame = function(playerFrame)
  * cleans up the subscribers and callbacks in the player when the frame ended.
  * @param playerFrame
  */
-TriggerVariableValueChanged.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    for (var i=0; i<this.subscriberHandles.length; i++) {
+TriggerVariableValueChanged.prototype.destroyOnPlayerFrame = function (playerFrame) {
+    for (var i = 0; i < this.subscriberHandles.length; i++) {
         this.subscriberHandles[i].dispose();
     }
     this.subscriberHandles = [];
@@ -1559,10 +1559,10 @@ TriggerVariableValueChanged.prototype.destroyOnPlayerFrame = function(playerFram
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerVariableValueChanged.prototype.setPointers = function(entitiesArr) {
+TriggerVariableValueChanged.prototype.setPointers = function (entitiesArr) {
     var variableIds = this.variables();
     var variables = [];
-    for (var i=0; i<variableIds.length; i++) {
+    for (var i = 0; i < variableIds.length; i++) {
         var globVar = entitiesArr.byId[variableIds[i]];
         if (globVar) {
             variables.push(globVar);
@@ -1577,12 +1577,12 @@ TriggerVariableValueChanged.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerVariableValueChanged.prototype.reAddEntities = function(entitiesArr) {
-    jQuery.each( this.variables(), function( index, elem ) {
+TriggerVariableValueChanged.prototype.reAddEntities = function (entitiesArr) {
+    jQuery.each(this.variables(), function (index, elem) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(elem.id()))
             entitiesArr.push(elem);
-    } );
+    });
 };
 
 /**
@@ -1590,7 +1590,7 @@ TriggerVariableValueChanged.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {TriggerVariableValueChanged}
  */
-TriggerVariableValueChanged.prototype.fromJS = function(data) {
+TriggerVariableValueChanged.prototype.fromJS = function (data) {
     this.variables(data.variables);
     return this;
 };
@@ -1599,10 +1599,10 @@ TriggerVariableValueChanged.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-TriggerVariableValueChanged.prototype.toJS = function() {
+TriggerVariableValueChanged.prototype.toJS = function () {
     var variableIds = [];
     var variables = this.variables();
-    for (var i=0; i<variables.length; i++) {
+    for (var i = 0; i < variables.length; i++) {
         variableIds.push(variables[i].id());
     }
 
@@ -1615,7 +1615,7 @@ TriggerVariableValueChanged.prototype.toJS = function() {
 ///////////////////////////
 
 
-var TriggerOnContentElement = function(event) {
+var TriggerOnContentElement = function (event) {
     this.event = event;
 
     // serialized
@@ -1629,21 +1629,21 @@ var TriggerOnContentElement = function(event) {
 TriggerOnContentElement.prototype.type = "TriggerOnContentElement";
 TriggerOnContentElement.prototype.label = "Content Element Triggers";
 
-TriggerOnContentElement.prototype.getParameterSpec = function() {
+TriggerOnContentElement.prototype.getParameterSpec = function () {
     return [
     ];
 };
 
-TriggerOnContentElement.prototype.isValid = function() {
-    if (this.event.trigger() && !(this.target()===null)){
+TriggerOnContentElement.prototype.isValid = function () {
+    if (this.event.trigger() && !(this.target() === null)) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 };
 
-TriggerOnContentElement.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerOnContentElement.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
     this.cb = function () {
         self.event.triggerActions([]);
@@ -1652,13 +1652,13 @@ TriggerOnContentElement.prototype.setupOnPlayerFrame = function(playerFrame) {
 };
 
 
-TriggerOnContentElement.prototype.destroyOnPlayerFrame = function(playerFrame) {
+TriggerOnContentElement.prototype.destroyOnPlayerFrame = function (playerFrame) {
     $(this.target()).off(this.triggerType(), this.cb);
     this.cb = null;
 };
 
 
-TriggerOnContentElement.prototype.setPointers = function(entitiesArr) {
+TriggerOnContentElement.prototype.setPointers = function (entitiesArr) {
     this.target(entitiesArr.byId[this.target()]);
 };
 
@@ -1668,17 +1668,17 @@ TriggerOnContentElement.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerOnContentElement.prototype.reAddEntities = function(entitiesArr) {
+TriggerOnContentElement.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
-TriggerOnContentElement.prototype.fromJS = function(data) {
+TriggerOnContentElement.prototype.fromJS = function (data) {
     this.target(data.target);
     this.triggerType(data.triggerType);
     return this;
 };
 
-TriggerOnContentElement.prototype.toJS = function() {
+TriggerOnContentElement.prototype.toJS = function () {
     var targetId = null;
     if (this.target()) {
         targetId = this.target().id();
@@ -1698,7 +1698,7 @@ TriggerOnContentElement.prototype.toJS = function() {
 ///////////////////////////
 
 
-var TriggerOnUserLeave = function(event) {
+var TriggerOnUserLeave = function (event) {
     this.event = event;
     this.subscription = null
 
@@ -1707,21 +1707,21 @@ var TriggerOnUserLeave = function(event) {
 TriggerOnUserLeave.prototype.type = "TriggerOnUserLeave";
 TriggerOnUserLeave.prototype.label = "User Leaves Experiment";
 
-TriggerOnUserLeave.prototype.getParameterSpec = function() {
+TriggerOnUserLeave.prototype.getParameterSpec = function () {
     return [
         "remainingNrParticipants"
     ];
 };
 
-TriggerOnUserLeave.prototype.isValid = function() {
+TriggerOnUserLeave.prototype.isValid = function () {
     return true;
 };
 
-TriggerOnUserLeave.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerOnUserLeave.prototype.setupOnPlayerFrame = function (playerFrame) {
 
     var self = this;
-    if (!this.subscription){
-        this.subscription = playerFrame.player.currentNumberParticipants.subscribe(function(newVal) {
+    if (!this.subscription) {
+        this.subscription = playerFrame.player.currentNumberParticipants.subscribe(function (newVal) {
             self.event.triggerActions([newVal]);
         });
     }
@@ -1729,12 +1729,12 @@ TriggerOnUserLeave.prototype.setupOnPlayerFrame = function(playerFrame) {
 };
 
 
-TriggerOnUserLeave.prototype.destroyOnPlayerFrame = function(playerFrame) {
+TriggerOnUserLeave.prototype.destroyOnPlayerFrame = function (playerFrame) {
     this.subscription.dispose();
 };
 
 
-TriggerOnUserLeave.prototype.setPointers = function(entitiesArr) {
+TriggerOnUserLeave.prototype.setPointers = function (entitiesArr) {
 
 };
 
@@ -1744,15 +1744,15 @@ TriggerOnUserLeave.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerOnUserLeave.prototype.reAddEntities = function(entitiesArr) {
+TriggerOnUserLeave.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
-TriggerOnUserLeave.prototype.fromJS = function(data) {
+TriggerOnUserLeave.prototype.fromJS = function (data) {
     return this;
 };
 
-TriggerOnUserLeave.prototype.toJS = function() {
+TriggerOnUserLeave.prototype.toJS = function () {
     return {
         type: this.type
     };
@@ -1762,7 +1762,7 @@ TriggerOnUserLeave.prototype.toJS = function() {
 
 
 
-var TriggerAudioVideoEvent= function(event) {
+var TriggerAudioVideoEvent = function (event) {
     this.event = event;
 
     // serialized
@@ -1776,29 +1776,29 @@ var TriggerAudioVideoEvent= function(event) {
 
 TriggerAudioVideoEvent.prototype.type = "TriggerAudioVideoEvent";
 TriggerAudioVideoEvent.prototype.label = "Audio / Video Event Trigger";
-TriggerAudioVideoEvent.prototype.triggerTypes = ["started","paused", "ended"];
+TriggerAudioVideoEvent.prototype.triggerTypes = ["started", "paused", "ended"];
 
 
-TriggerAudioVideoEvent.prototype.getParameterSpec = function() {
+TriggerAudioVideoEvent.prototype.getParameterSpec = function () {
     return [
         "timeOfAudioVideo"
     ];
 };
 
-TriggerAudioVideoEvent.prototype.isValid = function() {
-    if (this.event.trigger() && !(this.target()===null)){
+TriggerAudioVideoEvent.prototype.isValid = function () {
+    if (this.event.trigger() && !(this.target() === null)) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 };
 
-TriggerAudioVideoEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
+TriggerAudioVideoEvent.prototype.setupOnPlayerFrame = function (playerFrame) {
 
     var self = this;
     var cb;
-    var elem =  $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
+    var elem = $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
     if (elem.length > 0) {
         switch (this.triggerType()) {
             case "started":
@@ -1830,9 +1830,9 @@ TriggerAudioVideoEvent.prototype.setupOnPlayerFrame = function(playerFrame) {
 };
 
 
-TriggerAudioVideoEvent.prototype.destroyOnPlayerFrame = function(playerFrame) {
-    var elem =  $(playerFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
-    for (var i=0; i<this.eventHandlesForCleanUp.length; i++) {
+TriggerAudioVideoEvent.prototype.destroyOnPlayerFrame = function (playerFrame) {
+    var elem = $(playerFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
+    for (var i = 0; i < this.eventHandlesForCleanUp.length; i++) {
         switch (this.triggerType()) {
             case "started":
                 elem.off("play", this.eventHandlesForCleanUp[i]);
@@ -1849,7 +1849,7 @@ TriggerAudioVideoEvent.prototype.destroyOnPlayerFrame = function(playerFrame) {
 };
 
 
-TriggerAudioVideoEvent.prototype.setPointers = function(entitiesArr) {
+TriggerAudioVideoEvent.prototype.setPointers = function (entitiesArr) {
     this.target(entitiesArr.byId[this.target()]);
 };
 
@@ -1859,17 +1859,17 @@ TriggerAudioVideoEvent.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-TriggerAudioVideoEvent.prototype.reAddEntities = function(entitiesArr) {
+TriggerAudioVideoEvent.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
-TriggerAudioVideoEvent.prototype.fromJS = function(data) {
+TriggerAudioVideoEvent.prototype.fromJS = function (data) {
     this.target(data.target);
     this.triggerType(data.triggerType);
     return this;
 };
 
-TriggerAudioVideoEvent.prototype.toJS = function() {
+TriggerAudioVideoEvent.prototype.toJS = function () {
 
     var targetId = null;
     if (this.target()) {
@@ -1892,7 +1892,7 @@ TriggerAudioVideoEvent.prototype.toJS = function() {
  * @param {string} type - the type of the Trigger (i.e. "TriggerVariableValueChanged")
  * @returns {Trigger}
  */
-function triggerFactory(event,type) {
+function triggerFactory(event, type) {
     var trigger = new window[type](event);
     return trigger;
 }

@@ -1,5 +1,5 @@
 
-var SectionElement = function(expData) {
+var SectionElement = function (expData) {
     this.expData = expData;
     this.parent = null;
     this.label = "Section";
@@ -8,7 +8,7 @@ var SectionElement = function(expData) {
     this.id = ko.observable(guid());
     this.type = "SectionElement";
     this.selected = ko.observable(false);
-    this.elements =  ko.observableArray([]).extend({sortById: null});
+    this.elements = ko.observableArray([]).extend({ sortById: null });
 
     ///// not serialized
     this.selected = ko.observable(false);
@@ -16,7 +16,7 @@ var SectionElement = function(expData) {
 };
 
 SectionElement.prototype.addElem = function (elem) {
-    
+
     this.elements.push(elem);
 };
 
@@ -24,20 +24,20 @@ SectionElement.prototype.addElem = function (elem) {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-SectionElement.prototype.getAllModifiers = function(modifiersArr) {
+SectionElement.prototype.getAllModifiers = function (modifiersArr) {
     modifiersArr.push(this.modifier());
 };
 
-SectionElement.prototype.setPointers = function(entitiesArr) {
+SectionElement.prototype.setPointers = function (entitiesArr) {
 
     var self = this;
 
     // convert ids to actual pointers:
-    this.elements(jQuery.map( this.elements(), function( id ) {
+    this.elements(jQuery.map(this.elements(), function (id) {
         var elem = entitiesArr.byId[id];
         elem.parent = self;
         return elem;
-    } ));
+    }));
 };
 
 /**
@@ -45,9 +45,9 @@ SectionElement.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-SectionElement.prototype.reAddEntities = function(entitiesArr) {
+SectionElement.prototype.reAddEntities = function (entitiesArr) {
     // add the direct child nodes:
-    jQuery.each( this.elements(), function( index, elem ) {
+    jQuery.each(this.elements(), function (index, elem) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(elem.id()))
             entitiesArr.push(elem);
@@ -55,7 +55,7 @@ SectionElement.prototype.reAddEntities = function(entitiesArr) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities)
             elem.reAddEntities(entitiesArr);
-    } );
+    });
 };
 
 /**
@@ -63,7 +63,7 @@ SectionElement.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {PageData}
  */
-SectionElement.prototype.fromJS = function(data) {
+SectionElement.prototype.fromJS = function (data) {
     this.id(data.id);
     this.type = data.type;
     this.elements(data.elements);
@@ -74,11 +74,11 @@ SectionElement.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-SectionElement.prototype.toJS = function() {
+SectionElement.prototype.toJS = function () {
     return {
         id: this.id(),
         type: this.type,
-        elements: jQuery.map( this.elements(), function( elem ) { return elem.id(); } )
+        elements: jQuery.map(this.elements(), function (elem) { return elem.id(); })
     };
 };
 
@@ -90,7 +90,7 @@ function createSectionElementComponents() {
     ko.components.register('section-editview', {
         viewModel: {
             createViewModel: function (section, componentInfo) {
-                var viewModel = function(section){
+                var viewModel = function (section) {
                     this.section = section;
                 };
 
@@ -98,14 +98,14 @@ function createSectionElementComponents() {
             }
 
         },
-        template: {element: 'section-editview-template'}
+        template: { element: 'section-editview-template' }
     });
 
 
-    ko.components.register('section-preview',{
+    ko.components.register('section-preview', {
         viewModel: {
-            createViewModel: function(section, componentInfo){
-                var viewModel = function(section){
+            createViewModel: function (section, componentInfo) {
+                var viewModel = function (section) {
                     this.section = section;
                 };
 
@@ -116,17 +116,17 @@ function createSectionElementComponents() {
     });
 
 
-    ko.components.register('section-playerview',{
+    ko.components.register('section-playerview', {
         viewModel: {
-            createViewModel: function(section, componentInfo){
-                var viewModel = function(section){
+            createViewModel: function (section, componentInfo) {
+                var viewModel = function (section) {
                     this.section = section;
                 };
 
                 return new viewModel(section);
             }
         },
-        template: {element: 'section-playerview-template'}
+        template: { element: 'section-playerview-template' }
     });
 }
 

@@ -6,7 +6,7 @@
  * @param {number} factorGroupIdx - The index of the factor group for the factor that is being created.
  * @constructor
  */
-var InitialSubjectDialog = function(expData) {
+var InitialSubjectDialog = function (expData) {
     var self = this;
 
     this.expData = ko.observable(expData);
@@ -33,13 +33,13 @@ var InitialSubjectDialog = function(expData) {
     this.selectedSessionNr = ko.observable(1);
     this.subjectCode = ko.observable("");
 
-    this.sessionsInGroup = ko.computed(function() {
+    this.sessionsInGroup = ko.computed(function () {
         var arr = [];
         var subjGroups = self.selectedSubjectGroup();
         if (subjGroups) {
             for (var i = 0; i < subjGroups.sessions().length; i++) {
                 arr.push({
-                    nr: i+1, // using 1-based indexing
+                    nr: i + 1, // using 1-based indexing
                     name: subjGroups.sessions()[i].name
                 });
             }
@@ -74,12 +74,12 @@ InitialSubjectDialog.prototype.start = function (cb) {
     this.divContainer = jQuery('<div/>');
     var self = this;
     this.divContainer.load("/html_views/InitialSubjectDialog.html?FILE_VERSION_PLACEHOLDER", function () {
-        ko.applyBindings(self,self.divContainer[0]);
+        ko.applyBindings(self, self.divContainer[0]);
         self.divContainer.dialog({
             modal: true,
             width: 500,
             title: "Experiment Session",
-            open: function(event, ui) {
+            open: function (event, ui) {
             },
             close: function () {
                 self.closeDialog();

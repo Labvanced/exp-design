@@ -1,19 +1,29 @@
 <template id='choice-editview-template'>
-    <div class="panel-body" style="height: 100%; margin-top: -10px">
+    <div class="panel-body"
+         style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Multiple Choice</div>
 
         <div>
             <span>Randomize Item Order:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.reshuffleElements,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element"
+                   style="display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: multipleChoiceElement.reshuffleElements,click:function(){return true},clickBubble: false">
         </div>
         <div>
             <span>Show Question Header:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.enableTitle,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element"
+                   style="display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: multipleChoiceElement.enableTitle,click:function(){return true},clickBubble: false">
         </div>
 
         <div>
             <span>Required:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.isRequired,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element"
+                   style="display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: multipleChoiceElement.isRequired,click:function(){return true},clickBubble: false">
         </div>
         <hr>
 
@@ -21,34 +31,43 @@
 
         <div>
             <span>Add Option</span>
-            <span style="cursor: pointer" data-bind="click:addChoice"><img width="20" height="20" src="/resources/icons/add.svg"/></span>
+            <span style="cursor: pointer"
+                  data-bind="click:addChoice"><img width="20"
+                     height="20"
+                     src="/resources/icons/add.svg" /></span>
         </div>
         <div>
             <span>Delete Option</span>
-            <span style="cursor: pointer" data-bind="click:removeChoice"><img width="20" height="20" src="/resources/icons/delete_dark.svg"/></span>
+            <span style="cursor: pointer"
+                  data-bind="click:removeChoice"><img width="20"
+                     height="20"
+                     src="/resources/icons/delete_dark.svg" /></span>
         </div>
         <label>
             Linked Variable:
-            <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: multipleChoiceElement.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
+            <span
+                  data-bind="component: {name: 'LinkedVariableView', params: {variableObs: multipleChoiceElement.variable, allowedDatatypes: ['string'], relinkCallback: relinkCallback } }"></span>
         </label>
 
         <table>
             <thead>
-            <tr>
-                <th style="width: 50px;">Entry</th>
-                <th>Variable Value</th>
+                <tr>
+                    <th style="width: 50px;">Entry</th>
+                    <th>Variable Value</th>
 
-            </tr>
+                </tr>
             </thead>
             <tbody data-bind="foreach: multipleChoiceElement.elements">
-            <tr>
-                <td>
-                    <div data-bind="text: $index()+1"></div>
-                </td>
-                <td>
-                    <input class="taskeditor-input" type="text" data-bind="textInput: multChoiceValue">
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <div data-bind="text: $index()+1"></div>
+                    </td>
+                    <td>
+                        <input class="taskeditor-input"
+                               type="text"
+                               data-bind="textInput: multChoiceValue">
+                    </td>
+                </tr>
             </tbody>
         </table>
         <hr>
@@ -56,16 +75,23 @@
 
         <div>
             <span>Allow Custom Answer:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.altAnswerActive,click:function(){return true},clickBubble: false">
+            <input class="checkbox-element"
+                   style="display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: multipleChoiceElement.altAnswerActive,click:function(){return true},clickBubble: false">
 
             <!-- ko if: (multipleChoiceElement.altAnswerActive())  -->
             <br>
             <div class="taskeditor-header">Custom Answer</div>
             <span>Show only if last option selected:</span>
-            <input class="checkbox-element" style="display: inline-block;" type="checkbox" data-bind="checked: multipleChoiceElement.altAnswerOnlyWhenLastSelected, click:function(){return true},clickBubble: false">
+            <input class="checkbox-element"
+                   style="display: inline-block;"
+                   type="checkbox"
+                   data-bind="checked: multipleChoiceElement.altAnswerOnlyWhenLastSelected, click:function(){return true},clickBubble: false">
 
             <span>
-                <div data-bind='component: {name : "input-editview", params: multipleChoiceElement.subInputElement()}'></div>
+                <div data-bind='component: {name : "input-editview", params: multipleChoiceElement.subInputElement()}'>
+                </div>
             </span>
             <!-- /ko -->
         </div>
@@ -81,20 +107,30 @@
         <!-- /ko -->
 
         <!-- ko if: multipleChoiceElement.isRequired() -->
-        <span class="required-question-icon" data-bind="tooltip:'.requiredInfoEditor'">
-            <img width="20" height="20" src="/resources/icons/exmark.svg"/>
+        <span class="required-question-icon"
+              data-bind="tooltip:'.requiredInfoEditor'">
+            <img width="20"
+                 height="20"
+                 src="/resources/icons/exmark.svg" />
         </span>
         <!-- /ko -->
     </div>
 
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
-        <div class="radiobutton-wrapper"  style="display: block" data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+        <div class="radiobutton-wrapper"
+             style="display: block"
+             data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
             <!-- LABEL NEEDS TO BE INSIDE DIV IN EDITOR VIEW, OTHERWISE IT COLLIDES WITH CKEDITOR!!! -->
             <label class="radiobutton-left">
-                <input class="radiobutton-element" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue().value, click:function(){return true}, clickBubble: false, enable: $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
-                <div class="radiobutton-img" data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
+                <input class="radiobutton-element"
+                       type="radio"
+                       data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().startValue().value, click:function(){return true}, clickBubble: false, enable: $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive,style:{'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}">
+                <div class="radiobutton-img"
+                     data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+                </div>
             </label>
-            <div class="radiobutton-text notDraggable" data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
+            <div class="radiobutton-text notDraggable"
+                 data-bind="component: {name : 'editable-text-element-preview', params : multChoiceText}"></div>
         </div>
     </div>
     <!-- ko if: altAnswerVisible -->
@@ -114,20 +150,30 @@
 
         <!-- ko if: multipleChoiceElement.triedToSubmit() -->
         <!-- ko ifnot: multipleChoiceElement.dataIsValid() -->
-            <span class="required-question-icon"  data-bind=" tooltip:'.requiredInfo'">
-                <img width="20" height="20" src="/resources/icons/exmark.svg"/>
-            </span>
+        <span class="required-question-icon"
+              data-bind=" tooltip:'.requiredInfo'">
+            <img width="20"
+                 height="20"
+                 src="/resources/icons/exmark.svg" />
+        </span>
         <!-- /ko -->
         <!-- /ko -->
     </div>
 
     <div data-bind="foreach: multipleChoiceElement.elements, style: {marginTop: margin, marginBottom: margin}">
-        <label class="radiobutton-wrapper" style="display: block" data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+        <label class="radiobutton-wrapper"
+               style="display: block"
+               data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
             <div class="radiobutton-left">
-                <input class="radiobutton-element" type="radio" data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false, enable: $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive, style:{ 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
-                <div class="radiobutton-img" data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }"></div>
+                <input class="radiobutton-element"
+                       type="radio"
+                       data-bind="checkedValue: multChoiceValue, checked: $parent.multipleChoiceElement.variable().value().value, click: function(){return true}, clickBubble: false, enable: $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive, style:{ 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+                <div class="radiobutton-img"
+                     data-bind="style: { 'cursor': $parent.multipleChoiceElement.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed' }">
+                </div>
             </div>
-            <div class="radiobutton-text" data-bind="component: {name : 'editable-text-element-playerview', params : multChoiceText}"></div>
+            <div class="radiobutton-text"
+                 data-bind="component: {name : 'editable-text-element-playerview', params : multChoiceText}"></div>
         </label>
     </div>
     <!-- ko if: altAnswerVisible -->

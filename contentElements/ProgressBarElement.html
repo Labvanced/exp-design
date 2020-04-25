@@ -1,22 +1,33 @@
 <template id="progress-bar-editview-template">
-    <div class="panel-body" style="height: 100%; margin-top: -10px">
+    <div class="panel-body"
+         style="height: 100%; margin-top: -10px">
         <div class="taskeditor-header">Progress Bar</div>
 
         <div>
             <div>
                 <span>Progress Type:</span>
-                <label><span style="margin-left: 5px">Use Fixed:</span><input name="progressType" type="radio" value="fixed" data-bind="checked: dataModel().progressType"></label>
-                <label><span style="margin-left: 10px">Use Variable:</span><input name="progressType" type="radio" value="variable" data-bind="checked: dataModel().progressType"></label>
+                <label><span style="margin-left: 5px">Use Fixed:</span><input name="progressType"
+                           type="radio"
+                           value="fixed"
+                           data-bind="checked: dataModel().progressType"></label>
+                <label><span style="margin-left: 10px">Use Variable:</span><input name="progressType"
+                           type="radio"
+                           value="variable"
+                           data-bind="checked: dataModel().progressType"></label>
             </div>
             <!-- ko if: dataModel().progressType()=="fixed" -->
-                Progress: <input type="number" min="0" max="100" data-bind="textInput: dataModel().progressValue">%<br>
+            Progress: <input type="number"
+                   min="0"
+                   max="100"
+                   data-bind="textInput: dataModel().progressValue">%<br>
             <!-- /ko -->
 
             <!-- ko if: dataModel().progressType()=="variable" -->
             <label>
                 Linked Variable<br>
                 (value should be between 0 and 100):
-                <span data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel().variable, allowedDatatypes: ['numeric'], relinkCallback: relinkCallback } }"></span>
+                <span
+                      data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel().variable, allowedDatatypes: ['numeric'], relinkCallback: relinkCallback } }"></span>
             </label>
             <!-- /ko -->
 
@@ -26,12 +37,14 @@
 
 <template id="progress-bar-preview-template">
     <div class="myProgress">
-        <div class="myBar" data-bind="style: {'width': progress()+'%'}"><span data-bind="text: progress()+'%'"></span></div>
+        <div class="myBar"
+             data-bind="style: {'width': progress()+'%'}"><span data-bind="text: progress()+'%'"></span></div>
     </div>
 </template>
 
 <template id="progress-bar-playerview-template">
     <div class="myProgress">
-        <div class="myBar" data-bind="style: {'width': progress()+'%'}"><span data-bind="text: progress()+'%'"></span></div>
+        <div class="myBar"
+             data-bind="style: {'width': progress()+'%'}"><span data-bind="text: progress()+'%'"></span></div>
     </div>
 </template>

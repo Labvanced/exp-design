@@ -9,9 +9,9 @@
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var RequirementOR = function(event) {
+var RequirementOR = function (event) {
     this.event = event;
-    this.parent= ko.observable(null);
+    this.parent = ko.observable(null);
 
     // serialized
     this.childRequirements = ko.observableArray([]);
@@ -26,10 +26,10 @@ RequirementOR.prototype.label = "OR";
  * @param {object} parameters - the parameters passed by the trigger.
  * @returns {boolean}
  */
-RequirementOR.prototype.checkIfTrue = function(parameters) {
+RequirementOR.prototype.checkIfTrue = function (parameters) {
     var childRequirements = this.childRequirements();
-    for (var i=0; i<childRequirements.length; i++) {
-        if (childRequirements[i].checkIfTrue(parameters)){
+    for (var i = 0; i < childRequirements.length; i++) {
+        if (childRequirements[i].checkIfTrue(parameters)) {
             return true;
         }
     }
@@ -43,22 +43,22 @@ RequirementOR.prototype.checkIfTrue = function(parameters) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-RequirementOR.prototype.setPointers = function(entitiesArr) {
-    jQuery.each( this.childRequirements(), function( index, elem ) {
+RequirementOR.prototype.setPointers = function (entitiesArr) {
+    jQuery.each(this.childRequirements(), function (index, elem) {
         elem.setPointers(entitiesArr);
         elem.setParent(self);
-    } );
+    });
 };
 
 
-RequirementOR.prototype.setParent = function(parent) {
-    if (parent){
+RequirementOR.prototype.setParent = function (parent) {
+    if (parent) {
         this.parent(parent);
     }
-    var self= this;
-    jQuery.each( this.childRequirements(), function( index, elem ) {
+    var self = this;
+    jQuery.each(this.childRequirements(), function (index, elem) {
         elem.setParent(self);
-    } );
+    });
 };
 
 /**
@@ -66,12 +66,12 @@ RequirementOR.prototype.setParent = function(parent) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-RequirementOR.prototype.reAddEntities = function(entitiesArr) {
-    jQuery.each( this.childRequirements(), function( index, req ) {
+RequirementOR.prototype.reAddEntities = function (entitiesArr) {
+    jQuery.each(this.childRequirements(), function (index, req) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (req.reAddEntities)
             req.reAddEntities(entitiesArr);
-    } );
+    });
 };
 
 /**
@@ -79,9 +79,9 @@ RequirementOR.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {RequirementOR}
  */
-RequirementOR.prototype.fromJS = function(data) {
+RequirementOR.prototype.fromJS = function (data) {
     var childRequirements = [];
-    for (var i=0; i<data.childRequirements.length; i++) {
+    for (var i = 0; i < data.childRequirements.length; i++) {
         var requirement = requirementFactory(this.event, data.childRequirements[i].type);
         requirement.fromJS(data.childRequirements[i]);
         childRequirements.push(requirement);
@@ -94,10 +94,10 @@ RequirementOR.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-RequirementOR.prototype.toJS = function() {
+RequirementOR.prototype.toJS = function () {
     var data = {
         type: this.type,
-        childRequirements: jQuery.map( this.childRequirements(), function( req ) { return req.toJS(); } )
+        childRequirements: jQuery.map(this.childRequirements(), function (req) { return req.toJS(); })
     };
     return data;
 };
@@ -112,9 +112,9 @@ RequirementOR.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var RequirementAND = function(event) {
+var RequirementAND = function (event) {
     this.event = event;
-    this.parent= ko.observable(null);
+    this.parent = ko.observable(null);
 
     // serialized
     this.childRequirements = ko.observableArray([]);
@@ -129,10 +129,10 @@ RequirementAND.prototype.label = "AND";
  * @param {object} parameters - the parameters passed by the trigger.
  * @returns {boolean}
  */
-RequirementAND.prototype.checkIfTrue = function(parameters) {
+RequirementAND.prototype.checkIfTrue = function (parameters) {
     var childRequirements = this.childRequirements();
-    for (var i=0; i<childRequirements.length; i++) {
-        if (!childRequirements[i].checkIfTrue(parameters)){
+    for (var i = 0; i < childRequirements.length; i++) {
+        if (!childRequirements[i].checkIfTrue(parameters)) {
             return false;
         }
     }
@@ -146,23 +146,23 @@ RequirementAND.prototype.checkIfTrue = function(parameters) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-RequirementAND.prototype.setPointers = function(entitiesArr) {
+RequirementAND.prototype.setPointers = function (entitiesArr) {
     var self = this;
-    jQuery.each( this.childRequirements(), function( index, elem ) {
+    jQuery.each(this.childRequirements(), function (index, elem) {
         elem.setPointers(entitiesArr);
         elem.setParent(self);
-    } );
+    });
 };
 
-RequirementAND.prototype.setParent = function(parent) {
-    if (parent){
+RequirementAND.prototype.setParent = function (parent) {
+    if (parent) {
         this.parent(parent);
     }
 
-    var self= this;
-    jQuery.each( this.childRequirements(), function( index, elem ) {
+    var self = this;
+    jQuery.each(this.childRequirements(), function (index, elem) {
         elem.setParent(self);
-    } );
+    });
 };
 
 
@@ -171,12 +171,12 @@ RequirementAND.prototype.setParent = function(parent) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-RequirementAND.prototype.reAddEntities = function(entitiesArr) {
-    jQuery.each( this.childRequirements(), function( index, req ) {
+RequirementAND.prototype.reAddEntities = function (entitiesArr) {
+    jQuery.each(this.childRequirements(), function (index, req) {
         // recursively make sure that all deep tree nodes are in the entities list:
         if (req.reAddEntities)
             req.reAddEntities(entitiesArr);
-    } );
+    });
 };
 
 /**
@@ -184,9 +184,9 @@ RequirementAND.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {RequirementAND}
  */
-RequirementAND.prototype.fromJS = function(data) {
+RequirementAND.prototype.fromJS = function (data) {
     var childRequirements = [];
-    for (var i=0; i<data.childRequirements.length; i++) {
+    for (var i = 0; i < data.childRequirements.length; i++) {
         var requirement = requirementFactory(this.event, data.childRequirements[i].type);
         requirement.fromJS(data.childRequirements[i]);
         childRequirements.push(requirement);
@@ -199,10 +199,10 @@ RequirementAND.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-RequirementAND.prototype.toJS = function() {
+RequirementAND.prototype.toJS = function () {
     var data = {
         type: this.type,
-        childRequirements: jQuery.map( this.childRequirements(), function( req ) { return req.toJS(); } )
+        childRequirements: jQuery.map(this.childRequirements(), function (req) { return req.toJS(); })
     };
     return data;
 };
@@ -218,7 +218,7 @@ RequirementAND.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var RequirementVariableHasValue = function(event) {
+var RequirementVariableHasValue = function (event) {
     this.event = event;
     this.parent = ko.observable(null);
 
@@ -238,20 +238,20 @@ RequirementVariableHasValue.prototype.comparisonTypes = ["==", "!=", ">", "<", "
  * @param {object} parameters - the parameters passed by the trigger.
  * @returns {boolean}
  */
-RequirementVariableHasValue.prototype.checkIfTrue = function(parameters) {
+RequirementVariableHasValue.prototype.checkIfTrue = function (parameters) {
 
     var operandLeftValue = this.operandLeft().getValue(parameters);
     var operandRightValue = this.operandRight().getValue(parameters);
 
-    if ($.isNumeric(operandLeftValue)){
-        operandLeftValue= parseFloat(operandLeftValue);
+    if ($.isNumeric(operandLeftValue)) {
+        operandLeftValue = parseFloat(operandLeftValue);
     }
-    if ($.isNumeric(operandRightValue)){
+    if ($.isNumeric(operandRightValue)) {
         operandRightValue = parseFloat(operandRightValue);
     }
 
 
-    switch(this.comparisonType()) {
+    switch (this.comparisonType()) {
         case "==":
             return (operandLeftValue == operandRightValue);
         case "!=":
@@ -275,16 +275,16 @@ RequirementVariableHasValue.prototype.checkIfTrue = function(parameters) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-RequirementVariableHasValue.prototype.setPointers = function(entitiesArr) {
-    if (this.operandLeft()){
+RequirementVariableHasValue.prototype.setPointers = function (entitiesArr) {
+    if (this.operandLeft()) {
         this.operandLeft().setPointers(entitiesArr);
     }
-    if (this.operandRight()){
+    if (this.operandRight()) {
         this.operandRight().setPointers(entitiesArr);
     }
 };
 
-RequirementVariableHasValue.prototype.setParent = function(parent) {
+RequirementVariableHasValue.prototype.setParent = function (parent) {
     this.parent(parent);
 };
 
@@ -293,11 +293,11 @@ RequirementVariableHasValue.prototype.setParent = function(parent) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-RequirementVariableHasValue.prototype.reAddEntities = function(entitiesArr) {
-    if (this.operandLeft() && this.operandLeft().reAddEntities){
+RequirementVariableHasValue.prototype.reAddEntities = function (entitiesArr) {
+    if (this.operandLeft() && this.operandLeft().reAddEntities) {
         this.operandLeft().reAddEntities(entitiesArr);
     }
-    if (this.operandRight() && this.operandRight().reAddEntities){
+    if (this.operandRight() && this.operandRight().reAddEntities) {
         this.operandRight().reAddEntities(entitiesArr);
     }
 };
@@ -307,7 +307,7 @@ RequirementVariableHasValue.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {RequirementVariableHasValue}
  */
-RequirementVariableHasValue.prototype.fromJS = function(data) {
+RequirementVariableHasValue.prototype.fromJS = function (data) {
     this.comparisonType(data.comparisonType);
     if (data.operandLeft) {
         this.operandLeft(new OperandVariable(this.event));
@@ -324,7 +324,7 @@ RequirementVariableHasValue.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-RequirementVariableHasValue.prototype.toJS = function() {
+RequirementVariableHasValue.prototype.toJS = function () {
     var data = {
         type: this.type,
         comparisonType: this.comparisonType(),
@@ -332,10 +332,10 @@ RequirementVariableHasValue.prototype.toJS = function() {
         operandRight: this.operandRight()
     };
 
-    if (data.operandLeft){
+    if (data.operandLeft) {
         data.operandLeft = data.operandLeft.toJS();
     }
-    if (data.operandRight){
+    if (data.operandRight) {
         data.operandRight = data.operandRight.toJS();
     }
 
@@ -352,7 +352,7 @@ RequirementVariableHasValue.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this requirements is used.
  * @constructor
  */
-var OperandVariable = function(event) {
+var OperandVariable = function (event) {
     this.event = event;
 
     // serialized
@@ -364,8 +364,8 @@ var OperandVariable = function(event) {
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
 
-OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean","constantDate","constantTime","constantCategorical", "constantColor"];
-OperandVariable.prototype.unaryOperandTypes = ["abs","round0decimal","round1decimal","round2decimals","round3decimals","floor","ceil","sqrt","toLowercase","toUppercase","removeSpaces","trimSpaces"];
+OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean", "constantDate", "constantTime", "constantCategorical", "constantColor"];
+OperandVariable.prototype.unaryOperandTypes = ["abs", "round0decimal", "round1decimal", "round2decimals", "round3decimals", "floor", "ceil", "sqrt", "toLowercase", "toUppercase", "removeSpaces", "trimSpaces"];
 OperandVariable.prototype.binaryOperandTypes = ["arithmetic"];
 OperandVariable.prototype.ternaryOperandTypes = ["strReplace"];
 OperandVariable.prototype.operandTypes = OperandVariable.prototype.nullaryOperandTypes.concat(OperandVariable.prototype.unaryOperandTypes, OperandVariable.prototype.binaryOperandTypes, OperandVariable.prototype.ternaryOperandTypes);
@@ -377,9 +377,9 @@ OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
  * This function is used to associate a global variable with this operand, so that the variable knows where it is used.
  * @param {GlobalVar} variable - the variable which is recorded.
  */
-OperandVariable.prototype.setVariableBackRef = function(variable){
+OperandVariable.prototype.setVariableBackRef = function (variable) {
     var self = this;
-    variable.addBackRef(this, this.event, false, true, 'In Equation', function(globalVar) {
+    variable.addBackRef(this, this.event, false, true, 'In Equation', function (globalVar) {
         self.removeVariable(globalVar);
     });
 };
@@ -390,11 +390,11 @@ OperandVariable.prototype.setVariableBackRef = function(variable){
  * @param {object} parameters - the values that are passed by the trigger.
  * @returns {number | string}
  */
-OperandVariable.prototype.getValue = function(parameters) {
+OperandVariable.prototype.getValue = function (parameters) {
 
     var value = this.operandValueOrObject();
 
-    switch(this.operandType()) {
+    switch (this.operandType()) {
         case "undefined":
             console.error("operand is undefined");
             return null;
@@ -403,44 +403,44 @@ OperandVariable.prototype.getValue = function(parameters) {
             var right = value.right.getValue(parameters);
 
             // convert to value if these are GlobalVarValueInstances:
-             if (left!=null){
-                 if (left.hasOwnProperty('parentVar')){
-                     left = left.toJS();
-                 }
-             }
-            if (right!=null){
-                if (right.hasOwnProperty('parentVar')){
+            if (left != null) {
+                if (left.hasOwnProperty('parentVar')) {
+                    left = left.toJS();
+                }
+            }
+            if (right != null) {
+                if (right.hasOwnProperty('parentVar')) {
                     right = right.toJS();
                 }
 
             }
 
-            if ($.isNumeric(right)){
-                right= parseFloat(right);
+            if ($.isNumeric(right)) {
+                right = parseFloat(right);
             }
-            if ($.isNumeric(left)){
+            if ($.isNumeric(left)) {
                 left = parseFloat(left);
             }
 
-            if (value.op=="+") {
+            if (value.op == "+") {
                 return left + right;
             }
-            else if (value.op=="-") {
+            else if (value.op == "-") {
                 return left - right;
             }
-            else if (value.op=="*") {
+            else if (value.op == "*") {
                 return left * right;
             }
-            else if (value.op=="/") {
-                if (right ==0){  // in oder to avoid NaN
+            else if (value.op == "/") {
+                if (right == 0) {  // in oder to avoid NaN
                     return right;
                 }
-                else{
+                else {
                     return left / right;
                 }
 
             }
-            else if (value.op=="%") {
+            else if (value.op == "%") {
                 return left % right;
             }
             return null;
@@ -496,7 +496,7 @@ OperandVariable.prototype.getValue = function(parameters) {
 
         case "constantTime":
             var indSep = value.split(":");
-            if (!(indSep.length==2 && parseInt(indSep[0])>=0 && parseInt(indSep[0])<=23 && parseInt(indSep[1])>=0 && parseInt(indSep[1])<=59 )){
+            if (!(indSep.length == 2 && parseInt(indSep[0]) >= 0 && parseInt(indSep[0]) <= 23 && parseInt(indSep[1]) >= 0 && parseInt(indSep[1]) <= 59)) {
                 console.error("operand is not a Time");
             }
             return value;
@@ -524,7 +524,7 @@ OperandVariable.prototype.getValue = function(parameters) {
         case "removeSpaces":
             var inputStrValue = value.left.getValue(parameters);
             if (typeof inputStrValue === 'string' || inputStrValue instanceof String) {
-                return inputStrValue.replace(/\s/g,'')
+                return inputStrValue.replace(/\s/g, '')
             }
             else {
                 return "";
@@ -556,13 +556,13 @@ OperandVariable.prototype.getValue = function(parameters) {
             return Math.round(value.left.getValue(parameters));
 
         case "round1decimal":
-            return Math.round( value.left.getValue(parameters)*10)/10;
+            return Math.round(value.left.getValue(parameters) * 10) / 10;
 
         case "round2decimals":
-            return Math.round( value.left.getValue(parameters)*100)/100;
+            return Math.round(value.left.getValue(parameters) * 100) / 100;
 
         case "round3decimals":
-            return Math.round( value.left.getValue(parameters)*1000)/1000;
+            return Math.round(value.left.getValue(parameters) * 1000) / 1000;
 
         case "floor":
             return Math.floor(value.left.getValue(parameters));
@@ -580,7 +580,7 @@ OperandVariable.prototype.getValue = function(parameters) {
 
 
 
-OperandVariable.prototype.removeVariable = function(globalVar) {
+OperandVariable.prototype.removeVariable = function (globalVar) {
     if (this.operandType() === "variable") {
         this.operandValueOrObject(null);
     }
@@ -595,8 +595,8 @@ OperandVariable.prototype.removeVariable = function(globalVar) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-OperandVariable.prototype.setPointers = function(entitiesArr) {
-    if (this.operandType() == "variable" || this.operandType()=="constantCategorical"){
+OperandVariable.prototype.setPointers = function (entitiesArr) {
+    if (this.operandType() == "variable" || this.operandType() == "constantCategorical") {
         if (this.operandValueOrObject()) {
             var globVar = entitiesArr.byId[this.operandValueOrObject()];
             if (globVar) {
@@ -630,15 +630,15 @@ OperandVariable.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-OperandVariable.prototype.reAddEntities = function(entitiesArr) {
-    if (this.operandType() == "variable" || this.operandType()=="constantCategorical"){
+OperandVariable.prototype.reAddEntities = function (entitiesArr) {
+    if (this.operandType() == "variable" || this.operandType() == "constantCategorical") {
         if (this.operandValueOrObject()) {
             if (!entitiesArr.byId.hasOwnProperty(this.operandValueOrObject().id())) {
                 entitiesArr.push(this.operandValueOrObject());
             }
         }
     }
-    if (this.operandType() == "arithmetic"){
+    if (this.operandType() == "arithmetic") {
         this.operandValueOrObject().left.reAddEntities(entitiesArr);
         this.operandValueOrObject().right.reAddEntities(entitiesArr);
     }
@@ -657,7 +657,7 @@ OperandVariable.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {OperandVariable}
  */
-OperandVariable.prototype.fromJS = function(data) {
+OperandVariable.prototype.fromJS = function (data) {
     this.operandType(data.operandType);
     if (data.operandType == "objProperty") {
         var refToObjectProperty = new RefToObjectProperty(this.event);
@@ -702,7 +702,7 @@ OperandVariable.prototype.fromJS = function(data) {
     else {
         this.operandValueOrObject(data.operandValueOrObject);
     }
-    if (data.hasOwnProperty("subParam")){
+    if (data.hasOwnProperty("subParam")) {
         this.subParam(data.subParam);
     }
     return this;
@@ -712,7 +712,7 @@ OperandVariable.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-OperandVariable.prototype.toJS = function() {
+OperandVariable.prototype.toJS = function () {
     var data = {
         type: this.type,
         operandType: this.operandType(),
@@ -762,7 +762,7 @@ OperandVariable.prototype.toJS = function() {
  * @param {ExpEvent} event - the parent event where this is used.
  * @constructor
  */
-var RefToObjectProperty = function(event) {
+var RefToObjectProperty = function (event) {
     this.event = event;
 
     // serialized
@@ -775,7 +775,7 @@ var RefToObjectProperty = function(event) {
  *
  * @returns {number | string}
  */
-RefToObjectProperty.prototype.getValue = function() {
+RefToObjectProperty.prototype.getValue = function () {
 
 
     var target = this.target();
@@ -783,7 +783,7 @@ RefToObjectProperty.prototype.getValue = function() {
         if (this.property() == "content.file") {
             var fileID = target.content().modifier().selectedTrialView["file_id"]();
             var name = target.content().modifier().selectedTrialView["file_orig_name"]();
-            var obj = {id: fileID, name: name};
+            var obj = { id: fileID, name: name };
             return obj
         }
         else {
@@ -806,7 +806,7 @@ RefToObjectProperty.prototype.getValue = function() {
 /**
  * set the value of the object property
  */
-RefToObjectProperty.prototype.setValue = function(newVal) {
+RefToObjectProperty.prototype.setValue = function (newVal) {
 
     var target = this.target();
     if (target) {
@@ -834,7 +834,7 @@ RefToObjectProperty.prototype.setValue = function(newVal) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-RefToObjectProperty.prototype.setPointers = function(entitiesArr) {
+RefToObjectProperty.prototype.setPointers = function (entitiesArr) {
     if (this.target()) {
         var target = entitiesArr.byId[this.target()];
         this.target(target);
@@ -846,7 +846,7 @@ RefToObjectProperty.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-RefToObjectProperty.prototype.reAddEntities = function(entitiesArr) {
+RefToObjectProperty.prototype.reAddEntities = function (entitiesArr) {
 
 };
 
@@ -855,7 +855,7 @@ RefToObjectProperty.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {RefToObjectProperty}
  */
-RefToObjectProperty.prototype.fromJS = function(data) {
+RefToObjectProperty.prototype.fromJS = function (data) {
     this.target(data.target);
     this.property(data.property);
     return this;
@@ -865,7 +865,7 @@ RefToObjectProperty.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-RefToObjectProperty.prototype.toJS = function() {
+RefToObjectProperty.prototype.toJS = function () {
     var target = this.target();
     if (target) { // convert to id if target is set
         target = target.id();
@@ -885,7 +885,7 @@ RefToObjectProperty.prototype.toJS = function() {
  * @param {string} type - the type of the Requirement (i.e. "RequirementOR")
  * @returns {Requirement}
  */
-function requirementFactory(event,type) {
+function requirementFactory(event, type) {
     var requirement = new window[type](event);
     return requirement;
 }

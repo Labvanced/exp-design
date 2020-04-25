@@ -19,30 +19,30 @@ function guid() {
 function getCurrentDate(offset) {
     var today = new Date();
     var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
+    var mm = today.getMonth() + 1; //January is 0!
     var yyyy = today.getFullYear();
-    if (offset){
-        var hh = today.getHours()+offset;
+    if (offset) {
+        var hh = today.getHours() + offset;
     }
-    else{
+    else {
         var hh = today.getHours();
     }
-    if (hh<0){
-        dd --;
-        hh = 24-hh;
+    if (hh < 0) {
+        dd--;
+        hh = 24 - hh;
     }
-    else if (hh>23){
+    else if (hh > 23) {
         dd++;
-        hh=hh-24
+        hh = hh - 24
     }
 
-    if(dd<10){
-        dd='0'+dd;
+    if (dd < 10) {
+        dd = '0' + dd;
     }
-    if(mm<10){
-        mm='0'+mm;
+    if (mm < 10) {
+        mm = '0' + mm;
     }
-    var today = yyyy+'/'+mm+'/'+dd;
+    var today = yyyy + '/' + mm + '/' + dd;
     return today
 };
 
@@ -50,32 +50,32 @@ function getCurrentDate(offset) {
 function getCurrentDateModified(offset) {
     var today = new Date();
     var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
+    var mm = today.getMonth() + 1; //January is 0!
     var yyyy = today.getFullYear();
-    var hh = today.getHours()+offset;
-    if (hh<0){
-        dd --;
-        hh = 24-hh;
+    var hh = today.getHours() + offset;
+    if (hh < 0) {
+        dd--;
+        hh = 24 - hh;
     }
-    else if (hh>23){
+    else if (hh > 23) {
         dd++;
-        hh=hh-24
+        hh = hh - 24
     }
     var min = today.getMinutes();
 
-    if(dd<10){
-        dd='0'+dd;
+    if (dd < 10) {
+        dd = '0' + dd;
     }
-    if(mm<10){
-        mm='0'+mm;
+    if (mm < 10) {
+        mm = '0' + mm;
     }
-    var date = yyyy+"-"+mm+"-"+dd ;
-    var time = hh+":"+min;
+    var date = yyyy + "-" + mm + "-" + dd;
+    var time = hh + ":" + min;
 
     var obj = {
         date: date,
         time: time,
-        data: [yyyy,parseInt(mm),parseInt(dd),hh,min]
+        data: [yyyy, parseInt(mm), parseInt(dd), hh, min]
     };
     return obj;
 
@@ -83,7 +83,7 @@ function getCurrentDateModified(offset) {
 
 
 function copyTarget(elemId) {
-    var elem  =   $('#'+elemId)[0];
+    var elem = $('#' + elemId)[0];
     // create hidden text element, if it doesn't already exist
     var targetId = "_hiddenCopyText_";
     var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
@@ -115,7 +115,7 @@ function copyTarget(elemId) {
     var succeed;
     try {
         succeed = document.execCommand("copy");
-    } catch(e) {
+    } catch (e) {
         succeed = false;
     }
     // restore original focus

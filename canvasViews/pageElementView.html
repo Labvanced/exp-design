@@ -1,19 +1,23 @@
 <template id="pageElement-preview-template">
-        <div class="pageElementHandle">
-            <div >
-                <img class="pageElementHandleUp" src="/resources/shapes/gray/up-arrow-2.svg">
-                <img class="pageElementHandleDown" src="/resources/shapes/gray/down-arrow-2.svg">
-            </div>
+    <div class="pageElementHandle">
+        <div>
+            <img class="pageElementHandleUp"
+                 src="/resources/shapes/gray/up-arrow-2.svg">
+            <img class="pageElementHandleDown"
+                 src="/resources/shapes/gray/down-arrow-2.svg">
         </div>
-        <div class="questionnaireElement" data-bind='component: {name : "contentElementPreview", params : dataModel.content()}'></div>
+    </div>
+    <div class="questionnaireElement"
+         data-bind='component: {name : "contentElementPreview", params : dataModel.content()}'></div>
 </template>
 
 <template id="pageElement-playerview-template">
-        <!--
+    <!--
         <div class="pageElementHandle">
             <div style="position:absolute; top: 50%; margin-top: -20px; display: flex; flex-direction: column; justify-content: space-between; height: 40px">
             </div>
         </div>
         -->
-        <div class="questionnaireElement" data-bind='component: {name : "contentElementPlayerview", params : dataModel.content()}'></div>
+    <div class="questionnaireElement"
+         data-bind='component: {name : "contentElementPlayerview", params : dataModel.content()}'></div>
 </template>

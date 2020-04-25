@@ -11,7 +11,7 @@ var Level = function (globalVar) {
     this.name = ko.observable("");
 
     // not serialized
-    this.editName =  ko.observable(false);
+    this.editName = ko.observable(false);
     this.globalVar = globalVar;
 };
 
@@ -22,7 +22,7 @@ var Level = function (globalVar) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-Level.prototype.setPointers = function(entitiesArr) {
+Level.prototype.setPointers = function (entitiesArr) {
 
 };
 
@@ -31,7 +31,7 @@ Level.prototype.setPointers = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {Level}
  */
-Level.prototype.fromJS = function(data) {
+Level.prototype.fromJS = function (data) {
     this.name(data.name);
     this.type = data.type;
     return this;
@@ -41,7 +41,7 @@ Level.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-Level.prototype.toJS = function() {
+Level.prototype.toJS = function () {
     return {
         name: this.name(),
         type: this.type

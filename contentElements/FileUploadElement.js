@@ -1,5 +1,5 @@
 
-var FileUploadElement = function(expData) {
+var FileUploadElement = function (expData) {
     var self = this;
     this.expData = expData;
     this.parent = null;
@@ -31,15 +31,15 @@ var FileUploadElement = function(expData) {
 
 FileUploadElement.prototype.label = "File Upload";
 FileUploadElement.prototype.iconPath = "/resources/icons/upload.svg";
-FileUploadElement.prototype.dataType =      [ ];
-FileUploadElement.prototype.modifiableProp = [ ];
+FileUploadElement.prototype.dataType = [];
+FileUploadElement.prototype.modifiableProp = [];
 FileUploadElement.prototype.initWidth = 300;
 FileUploadElement.prototype.initHeight = 100;
 FileUploadElement.prototype.numVarNamesRequired = 1;
-FileUploadElement.prototype.actionTypes = ["StartUpload","ClearFile","ChooseFile"];
-FileUploadElement.prototype.triggerTypes = ["FileSelected","UploadComplete"];
+FileUploadElement.prototype.actionTypes = ["StartUpload", "ClearFile", "ChooseFile"];
+FileUploadElement.prototype.triggerTypes = ["FileSelected", "UploadComplete"];
 
-FileUploadElement.prototype.dispose = function() {
+FileUploadElement.prototype.dispose = function () {
     this.questionText().dispose();
     this.buttonText().dispose();
     if (this.variable() instanceof GlobalVar) {
@@ -47,7 +47,7 @@ FileUploadElement.prototype.dispose = function() {
     }
 };
 
-FileUploadElement.prototype.init = function(variableName) {
+FileUploadElement.prototype.init = function (variableName) {
 
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
@@ -71,21 +71,21 @@ FileUploadElement.prototype.init = function(variableName) {
     this.setVariableBackRef();
 };
 
-FileUploadElement.prototype.setVariableBackRef = function() {
+FileUploadElement.prototype.setVariableBackRef = function () {
     if (this.variable() instanceof GlobalVar) {
         this.variable().addBackRef(this, this.parent, true, true, 'File Upload');
     }
 };
 
-FileUploadElement.prototype.enableHighlight = function(elem) {
-    var self= this;
+FileUploadElement.prototype.enableHighlight = function (elem) {
+    var self = this;
     $(elem).css({
         'backgroundColor': self.bgColorHover(),
         'cursor': 'pointer'
     });
 };
 
-FileUploadElement.prototype.initColorPicker = function() {
+FileUploadElement.prototype.initColorPicker = function () {
 
     var self = this;
     $("#bgColorPickerDefault").spectrum({
@@ -101,7 +101,7 @@ FileUploadElement.prototype.initColorPicker = function() {
     if (this.bg1Subsciption) {
         this.bg1Subsciption.dispose();
     }
-    this.bg1Subsciption = this.bgColorDefault.subscribe(function(val){
+    this.bg1Subsciption = this.bgColorDefault.subscribe(function (val) {
         $("#bgColorPickerDefault").spectrum("set", val);
     });
 
@@ -120,14 +120,14 @@ FileUploadElement.prototype.initColorPicker = function() {
     if (this.bg2Subsciption) {
         this.bg2Subsciption.dispose();
     }
-    this.bg2Subsciption = this.bgColorHover.subscribe(function(val){
+    this.bg2Subsciption = this.bgColorHover.subscribe(function (val) {
         $("#bgColorPickerHover").spectrum("set", val);
     });
 
 };
 
-FileUploadElement.prototype.disableHighlight = function(elem) {
-    var self= this;
+FileUploadElement.prototype.disableHighlight = function (elem) {
+    var self = this;
     $(elem).css({
         'backgroundColor': self.bgColorDefault(),
         'cursor': 'default'
@@ -138,22 +138,22 @@ FileUploadElement.prototype.disableHighlight = function(elem) {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-FileUploadElement.prototype.getAllModifiers = function(modifiersArr) {
+FileUploadElement.prototype.getAllModifiers = function (modifiersArr) {
     this.questionText().getAllModifiers(modifiersArr);
     this.buttonText().getAllModifiers(modifiersArr);
 };
 
-FileUploadElement.prototype.getActionTypes = function() {
+FileUploadElement.prototype.getActionTypes = function () {
     return FileUploadElement.prototype.actionTypes;
 };
 
-FileUploadElement.prototype.getTriggerTypes = function() {
+FileUploadElement.prototype.getTriggerTypes = function () {
     return FileUploadElement.prototype.triggerTypes;
 };
 
-FileUploadElement.prototype.executeAction = function(actionType) {
+FileUploadElement.prototype.executeAction = function (actionType) {
     var self = this;
-    if (actionType=="StartUpload") {
+    if (actionType == "StartUpload") {
         var file = this.selectedFile();
         if (file) {
             console.log("StartUpload");
@@ -193,11 +193,11 @@ FileUploadElement.prototype.executeAction = function(actionType) {
         }
         player.playerFileUploader.addToAjaxUploadQueue(this.selectedFile(), newFileName, this.variable(), callbackWhenFinished);
     }
-    else if (actionType=="ClearFile") {
+    else if (actionType == "ClearFile") {
         console.log("ClearFile");
         this.selectedFile(null);
     }
-    else if (actionType=="ChooseFile") {
+    else if (actionType == "ChooseFile") {
         console.log("ChooseFile");
         if (this.fileUploadElem) {
             this.fileUploadElem.click()
@@ -205,7 +205,7 @@ FileUploadElement.prototype.executeAction = function(actionType) {
     }
 };
 
-FileUploadElement.prototype.setPointers = function(entitiesArr) {
+FileUploadElement.prototype.setPointers = function (entitiesArr) {
     var self = this;
     if (this.variable()) {
         this.variable(entitiesArr.byId[this.variable()]);
@@ -215,7 +215,7 @@ FileUploadElement.prototype.setPointers = function(entitiesArr) {
     this.buttonText().setPointers(entitiesArr);
 };
 
-FileUploadElement.prototype.reAddEntities = function(entitiesArr) {
+FileUploadElement.prototype.reAddEntities = function (entitiesArr) {
     if (this.variable() instanceof GlobalVar) {
         if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
             entitiesArr.push(this.variable());
@@ -225,12 +225,12 @@ FileUploadElement.prototype.reAddEntities = function(entitiesArr) {
     this.buttonText().reAddEntities(entitiesArr);
 };
 
-FileUploadElement.prototype.selectTrialType = function(selectionSpec) {
+FileUploadElement.prototype.selectTrialType = function (selectionSpec) {
     this.questionText().selectTrialType(selectionSpec);
     this.buttonText().selectTrialType(selectionSpec);
 };
 
-FileUploadElement.prototype.getTextRefs = function(textArr, label){
+FileUploadElement.prototype.getTextRefs = function (textArr, label) {
     var questlabel = label + '.Question';
     this.questionText().getTextRefs(textArr, questlabel);
     this.buttonText().getTextRefs(textArr, questlabel);
@@ -238,18 +238,18 @@ FileUploadElement.prototype.getTextRefs = function(textArr, label){
 };
 
 
-FileUploadElement.prototype.isInputValid = function() {
+FileUploadElement.prototype.isInputValid = function () {
     this.triedToSubmit(true);
-    if (this.isRequired()==false){
+    if (this.isRequired() == false) {
         this.dataIsValid(true);
         return true
     }
-    else{
-        if (this.fileUploaded()){
+    else {
+        if (this.fileUploaded()) {
             this.dataIsValid(true);
             return true;
         }
-        else{
+        else {
             this.dataIsValid(false);
             return false;
         }
@@ -257,7 +257,7 @@ FileUploadElement.prototype.isInputValid = function() {
 };
 
 
-FileUploadElement.prototype.toJS = function() {
+FileUploadElement.prototype.toJS = function () {
     var variableId = null;
     if (this.variable()) {
         variableId = this.variable().id();
@@ -267,7 +267,7 @@ FileUploadElement.prototype.toJS = function() {
         type: this.type,
         questionText: this.questionText().toJS(),
         variable: variableId,
-        isRequired:this.isRequired(),
+        isRequired: this.isRequired(),
         bgColorDefault: this.bgColorDefault(),
         bgColorHover: this.bgColorHover(),
         enableTitle: this.enableTitle(),
@@ -278,21 +278,21 @@ FileUploadElement.prototype.toJS = function() {
     };
 };
 
-FileUploadElement.prototype.fromJS = function(data) {
+FileUploadElement.prototype.fromJS = function (data) {
     var self = this;
-    this.type=data.type;
-    if(data.questionText.hasOwnProperty('rawText')) {
+    this.type = data.type;
+    if (data.questionText.hasOwnProperty('rawText')) {
         this.questionText(new EditableTextElement(this.expData, this, ''));
         this.questionText().fromJS(data.questionText);
     }
-    else{
+    else {
         this.questionText(new EditableTextElement(this.expData, this, data.questionText));
     }
-    if(data.buttonText.hasOwnProperty('rawText')) {
+    if (data.buttonText.hasOwnProperty('rawText')) {
         this.buttonText(new EditableTextElement(this.expData, this, ''));
         this.buttonText().fromJS(data.buttonText);
     }
-    else{
+    else {
         this.buttonText(new EditableTextElement(this.expData, this, data.buttonText));
     }
     this.showSelectedFilename(data.showSelectedFilename);
@@ -302,7 +302,7 @@ FileUploadElement.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('isRequired')) {
         this.isRequired(data.isRequired);
     }
-    if(data.hasOwnProperty('enableTitle')){
+    if (data.hasOwnProperty('enableTitle')) {
         this.enableTitle(data.enableTitle);
     }
     if (data.hasOwnProperty('bgColorDefault')) {
@@ -316,17 +316,17 @@ function createFileUploadElementComponents() {
     ko.components.register('fileupload-editview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
-                var viewModel = function(dataModel){
+                var viewModel = function (dataModel) {
                     var self = this;
                     this.dataModel = dataModel;
                     this.dataModel.initColorPicker();
                     this.currentEntry = ko.observable('');
 
-                    this.relinkCallback = function() {
+                    this.relinkCallback = function () {
                         var frameData = self.dataModel.parent.parent;
                         var variableDialog = new AddNewVariable(self.dataModel.expData, function (newVariable) {
                             frameData.addVariableToLocalWorkspace(newVariable);
-                            if (self.dataModel.variable()){
+                            if (self.dataModel.variable()) {
                                 self.dataModel.variable().removeBackRef(self.dataModel);
                             }
                             self.dataModel.variable(newVariable);
@@ -336,11 +336,11 @@ function createFileUploadElementComponents() {
                     };
                 };
 
-                viewModel.prototype.addEntry = function() {
+                viewModel.prototype.addEntry = function () {
                     this.dataModel.addEntry(this.currentEntry());
                     this.currentEntry('');
                 };
-                viewModel.prototype.removeEntry = function(idx) {
+                viewModel.prototype.removeEntry = function (idx) {
                     this.dataModel.removeEntry(idx);
                 };
 
@@ -348,14 +348,14 @@ function createFileUploadElementComponents() {
             }
 
         },
-        template: {element: 'fileupload-editview-template'}
+        template: { element: 'fileupload-editview-template' }
     });
 
 
-    ko.components.register('fileupload-preview',{
+    ko.components.register('fileupload-preview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
-                var viewModel = function(dataModel){
+            createViewModel: function (dataModel, componentInfo) {
+                var viewModel = function (dataModel) {
                     var self = this;
                     this.dataModel = dataModel;
                 };
@@ -367,15 +367,15 @@ function createFileUploadElementComponents() {
     });
 
 
-    ko.components.register('fileupload-playerview',{
+    ko.components.register('fileupload-playerview', {
         viewModel: {
-            createViewModel: function(dataModel, componentInfo){
+            createViewModel: function (dataModel, componentInfo) {
 
-                var viewModel = function(dataModel){
+                var viewModel = function (dataModel) {
                     var self = this;
                     this.dataModel = dataModel;
 
-                    this.fileSelected = function(file) {
+                    this.fileSelected = function (file) {
                         self.dataModel.selectedFile(file);
                         self.dataModel.selectedFilename(file.name);
                         $(self.dataModel.parent).trigger("FileSelected");
@@ -383,14 +383,14 @@ function createFileUploadElementComponents() {
 
                 };
 
-                viewModel.prototype.afterRenderInit = function(elem) {
+                viewModel.prototype.afterRenderInit = function (elem) {
                     this.dataModel.fileUploadElem = $(elem).find('.playerFileUploadInput')[0];
                 };
 
                 return new viewModel(dataModel);
             }
         },
-        template: {element: 'fileupload-playerview-template'}
+        template: { element: 'fileupload-playerview-template' }
     });
 }
 

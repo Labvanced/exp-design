@@ -11,13 +11,13 @@ var ExpData = function (parentExperiment) {
     this.expData = this; // self reference for consistency with other classes..
 
     // entities hold all instances that have an id field:
-    this.entities = ko.observableArray([]).extend({sortById: null});
+    this.entities = ko.observableArray([]).extend({ sortById: null });
 
-    this.availableTasks  = ko.observableArray([]);
+    this.availableTasks = ko.observableArray([]);
     this.availableBlocks = ko.observableArray([]);
     this.availableSessions = ko.observableArray([]);
     this.availableGroups = ko.observableArray([]);
-    this.availableVars = ko.observableArray([]).extend({sortById: null});
+    this.availableVars = ko.observableArray([]).extend({ sortById: null });
 
     this.isJointExp = ko.observable(false);    // needs to be placed before initialize studySettings!
     this.numPartOfJointExp = ko.observable(2); // needs to be placed before initialize studySettings!
@@ -30,7 +30,7 @@ var ExpData = function (parentExperiment) {
     this.translatedLanguages = ko.observableArray([]);
     this.languageTransferOption = ko.observable('empty');
 
-    this.translationsEnabled = ko.computed(function() {
+    this.translationsEnabled = ko.computed(function () {
         if (self.translations().length > 0) {
             return true;
         }
@@ -43,29 +43,29 @@ var ExpData = function (parentExperiment) {
     this.allVariables = {};
     this.staticStrings = ko.observable(ExpData.prototype.staticTranslations["English"]);
     this.currentLanguage = ko.observable(0);
-    this.currentLanguageSubscription = this.currentLanguage.subscribe(function(newLang) {
-            self.updateLanguage();
+    this.currentLanguageSubscription = this.currentLanguage.subscribe(function (newLang) {
+        self.updateLanguage();
     });
 
     this.variableSubscription = null;
 
     this.dateLastModified = ko.observable(getCurrentDate(this.studySettings.timeZoneOffset()));
 
-    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+    for (var i = 0; i < ExpData.prototype.fixedVarNames.length; i++) {
         this[ExpData.prototype.fixedVarNames[i]] = ko.observable();
     }
 
 
 
-    this.vars = ko.computed(function() {
+    this.vars = ko.computed(function () {
         var varArray = [];
-        for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
-            varArray.push( this[ExpData.prototype.fixedVarNames[i]]());
+        for (var i = 0; i < ExpData.prototype.fixedVarNames.length; i++) {
+            varArray.push(this[ExpData.prototype.fixedVarNames[i]]());
         }
         return varArray;
     }, this);
 
-    this.errorString = ko.computed(function() {
+    this.errorString = ko.computed(function () {
         var errorString = "";
         if (this.availableGroups().length == 0) {
             errorString += "No Group, ";
@@ -81,7 +81,7 @@ var ExpData = function (parentExperiment) {
         }
 
         // remove last comma:
-        if (errorString!="") {
+        if (errorString != "") {
             errorString = errorString.substring(0, errorString.length - 2);
         }
         return errorString;
@@ -161,34 +161,34 @@ ExpData.prototype.fixedVarNames = [
 
 
 ExpData.prototype.varDescriptions = {
-    'varSubjectCode':'The variable "Subject_Code" is a unique string for each subject / session across all experiments running on Labvanced. This can be used to uniquely identify each participant or session.',
-    'varSubjectNr':'The variable "Subject_Nr" is a global counter of participants in a study. This can be used to do custom between subject randomization and to infer the overall number of participants in a study.',
-    'varSubjectNrPerSubjGroup':'The variable "Subject_Nr_Per_Group" is a counter per subject group in a study. This can be used to do custom between subject randomization and to infer the current number of participants within each subject group.',
-    'varGroupName':'The variable "Group_Name" holds the value of the "subject group name" for each participant. This can be used to infer to which subject group each participant is assigned to.',
-    'varSessionTimeStamp':'The variable "Session_Start_Time" records the start time of the current participant session in UNIX time.',
-    'varSessionTimeStampEnd':'The variable "Session_End_Time" records the end time of the current participant session in UNIX time.',
-    'varSessionName':'The variable "Session_Name" holds the value of the "session name" for the current session. This can be used to infer which session is currently performed by the participant.',
-    'varSessionNr':'The variable "Session_Nr" holds the current value of the "session nr" for the current session. This can be used to infer whether the participant currently performs the first, second, third,(and so on) session.',
-    'varBlockName':'The variable "Block_Name" holds the current value of the "block name" for the current session. This can be used to infer which block is currently performed by the participant.',
-    'varBlockNr':'The variable "Bock_Nr" holds the current value of the "block nr" for the current session. This can be used to infer whether the participant currently performs the first, second, third,(and so on) block in this session.',
-    'varTaskName':'The variable "Task_Name" holds the current value of the "task name" for the current block. This can be used to infer which task is currently performed by the participant.',
-    'varTaskNr':'The variable "Task_Nr" holds the current value of the "task nr" for the current block. This can be used to infer whether the participant currently performs the first, second, third,(and so on) task in this block.',
-    'varTrialId':'The variable "Trial_Id" holds the current value of the "trial id" for the current task. This can be used to infer which Trial is currently performed by the participant.',
-    'varTrialNr':'The variable "Trial_Nr" holds the current value of the "trial nr" for the current task. This can be used to infer whether the participant currently performs the first, second, third,(and so on) trial in this task.',
-    'varRoleId':'The variable "Role_ID" is used for multi user/multi participant studies to refer uniquely to one of the participants of the study. This can be used to present different frames and roles to different participants within the same task/experiment.',
-    'varConditionId':'The variable "Condition_Id" holds the current value of the "condition id" for the current trial. This can be used to infer which condition is currently performed by the participant.',
-    'varBrowserSpec':'The variable "Browser_Spec" holds the value of the browser used by the participant to perform the experiment. This can be used to later analyze possible differences between browsers. Allowing/forbidding certain browsers can be done via the study settings.',
-    'varSystemSpec':'The variable "System_Spec" holds the value of the operating system/device used by the participant to perform the experiment. This can be used to later analyze possible differences between operating systems/devices. Allowing/forbidding certain operating systems/devices can be done via the study settings.',
-    'varAgentSpec':'The variable "Agent_Spec" holds the complete String of the "User-Agent-Browser-Specification". This can be used to get some more detailed information about the participants system specifications.',
-    'varTimeMeasureSpecMean':'The variable "TimeMeasure_Mean" provides an estimate of the mean value of how precise callback functions work on the participants device. Hence this is a measure of how precise stimuli are be presented temporally, but not a measure of reaction time reliability (which is usually better).',
-    'varTimeMeasureSpecStd':'The variable "TimeMeasure_Std" provides an estimate of the standard deviation of how precise callback functions work on the participants device. Hence this is a measure of how variable stimuli presentation is temporally.',
-    'varFullscreenSpec':'The variable "Always_Fullscreen", is a boolean value, which is true as long as the participant keeps the experiment running in fullscreen mode. This can be used to pause/quit the experiment when a participant leaves the fullscreen mode.',
-    'varBrowserVersionSpec':'The variable "BrowserVersion_Spec" holds the value of the browser version used by the participant to perform the experiment. This can be used to later analyze possible differences between browser versions.',
-    'varCrowdsourcingCode':'The variable "Crowdsourcing_Code" holds the value of the unique "crowdsourcing code", typically shown to the subject at end of the experiment to complete the crowdsourcing session and claim the payment.',
-    'varCrowdsourcingSubjId':'The variable "Crowdsourcing_SubjId" holds the value of the unique "identification code" for each crowdsourcing participant. This can be used to later on create a reference between crowdsourcing data on Labvanced and the external crowdsourcing service (e.g Mechanical Turk).',
-    'varGazeX':'The variable "GazeX" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in X coordinates. This value can be used for calibration and as a "fixation trigger".',
-    'varGazeY':'The variable "GazeY" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in Y coordinates. This value can be used for calibration and as a "fixation trigger".',
-    'varDisplayedLanguage':'The variable "Displayed Language" holds the value of the selected display language, only if there were 2 or more languages to select from. This value can be used to show different content, i.e. texts for different language settings.'
+    'varSubjectCode': 'The variable "Subject_Code" is a unique string for each subject / session across all experiments running on Labvanced. This can be used to uniquely identify each participant or session.',
+    'varSubjectNr': 'The variable "Subject_Nr" is a global counter of participants in a study. This can be used to do custom between subject randomization and to infer the overall number of participants in a study.',
+    'varSubjectNrPerSubjGroup': 'The variable "Subject_Nr_Per_Group" is a counter per subject group in a study. This can be used to do custom between subject randomization and to infer the current number of participants within each subject group.',
+    'varGroupName': 'The variable "Group_Name" holds the value of the "subject group name" for each participant. This can be used to infer to which subject group each participant is assigned to.',
+    'varSessionTimeStamp': 'The variable "Session_Start_Time" records the start time of the current participant session in UNIX time.',
+    'varSessionTimeStampEnd': 'The variable "Session_End_Time" records the end time of the current participant session in UNIX time.',
+    'varSessionName': 'The variable "Session_Name" holds the value of the "session name" for the current session. This can be used to infer which session is currently performed by the participant.',
+    'varSessionNr': 'The variable "Session_Nr" holds the current value of the "session nr" for the current session. This can be used to infer whether the participant currently performs the first, second, third,(and so on) session.',
+    'varBlockName': 'The variable "Block_Name" holds the current value of the "block name" for the current session. This can be used to infer which block is currently performed by the participant.',
+    'varBlockNr': 'The variable "Bock_Nr" holds the current value of the "block nr" for the current session. This can be used to infer whether the participant currently performs the first, second, third,(and so on) block in this session.',
+    'varTaskName': 'The variable "Task_Name" holds the current value of the "task name" for the current block. This can be used to infer which task is currently performed by the participant.',
+    'varTaskNr': 'The variable "Task_Nr" holds the current value of the "task nr" for the current block. This can be used to infer whether the participant currently performs the first, second, third,(and so on) task in this block.',
+    'varTrialId': 'The variable "Trial_Id" holds the current value of the "trial id" for the current task. This can be used to infer which Trial is currently performed by the participant.',
+    'varTrialNr': 'The variable "Trial_Nr" holds the current value of the "trial nr" for the current task. This can be used to infer whether the participant currently performs the first, second, third,(and so on) trial in this task.',
+    'varRoleId': 'The variable "Role_ID" is used for multi user/multi participant studies to refer uniquely to one of the participants of the study. This can be used to present different frames and roles to different participants within the same task/experiment.',
+    'varConditionId': 'The variable "Condition_Id" holds the current value of the "condition id" for the current trial. This can be used to infer which condition is currently performed by the participant.',
+    'varBrowserSpec': 'The variable "Browser_Spec" holds the value of the browser used by the participant to perform the experiment. This can be used to later analyze possible differences between browsers. Allowing/forbidding certain browsers can be done via the study settings.',
+    'varSystemSpec': 'The variable "System_Spec" holds the value of the operating system/device used by the participant to perform the experiment. This can be used to later analyze possible differences between operating systems/devices. Allowing/forbidding certain operating systems/devices can be done via the study settings.',
+    'varAgentSpec': 'The variable "Agent_Spec" holds the complete String of the "User-Agent-Browser-Specification". This can be used to get some more detailed information about the participants system specifications.',
+    'varTimeMeasureSpecMean': 'The variable "TimeMeasure_Mean" provides an estimate of the mean value of how precise callback functions work on the participants device. Hence this is a measure of how precise stimuli are be presented temporally, but not a measure of reaction time reliability (which is usually better).',
+    'varTimeMeasureSpecStd': 'The variable "TimeMeasure_Std" provides an estimate of the standard deviation of how precise callback functions work on the participants device. Hence this is a measure of how variable stimuli presentation is temporally.',
+    'varFullscreenSpec': 'The variable "Always_Fullscreen", is a boolean value, which is true as long as the participant keeps the experiment running in fullscreen mode. This can be used to pause/quit the experiment when a participant leaves the fullscreen mode.',
+    'varBrowserVersionSpec': 'The variable "BrowserVersion_Spec" holds the value of the browser version used by the participant to perform the experiment. This can be used to later analyze possible differences between browser versions.',
+    'varCrowdsourcingCode': 'The variable "Crowdsourcing_Code" holds the value of the unique "crowdsourcing code", typically shown to the subject at end of the experiment to complete the crowdsourcing session and claim the payment.',
+    'varCrowdsourcingSubjId': 'The variable "Crowdsourcing_SubjId" holds the value of the unique "identification code" for each crowdsourcing participant. This can be used to later on create a reference between crowdsourcing data on Labvanced and the external crowdsourcing service (e.g Mechanical Turk).',
+    'varGazeX': 'The variable "GazeX" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in X coordinates. This value can be used for calibration and as a "fixation trigger".',
+    'varGazeY': 'The variable "GazeY" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in Y coordinates. This value can be used for calibration and as a "fixation trigger".',
+    'varDisplayedLanguage': 'The variable "Displayed Language" holds the value of the selected display language, only if there were 2 or more languages to select from. This value can be used to show different content, i.e. texts for different language settings.'
 
     // {'varTimeMeasureSpecMax':''},
 };
@@ -237,12 +237,12 @@ ExpData.prototype.staticTranslations = {
         calibrateScreenSize: "Screen size (diagonal):",
         calibrateInches: "inches",
         calibrateMethod2: "Use a standardized ID card (85.60 × 53.98 mm) or any other card of the same size against the screen and try to match the size of the displayed card. " +
-        "You can change the size of the image by dragging the arrow. The calibration is correct if the image exactly matches the size of the card.",
+            "You can change the size of the image by dragging the arrow. The calibration is correct if the image exactly matches the size of the card.",
         endExpMsg: "Thank you! The experiment session is finished.",
         goToLib: "Go to experiment library",
         chooseSelection: "Please Choose...",
         answerPlaceholder: "Participant Answer...",
-        endExpMsgTest:  "The test recording of this task is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel.",
+        endExpMsgTest: "The test recording of this task is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel.",
         participationAgreement1: " I agree that all the personal data, which I provide here and all my responses will be recorded, and can be used for research purposes in a pseudonymised way. I also agree to the",
         participationAgreement2: "of the Scicovery GmbH for recording, storing, and handling, participant data.",
         multiUserExpLobby: "Multiple Participant Experiment",
@@ -264,7 +264,7 @@ ExpData.prototype.staticTranslations = {
         customRequirement: "Hereby I confirm that I accept the terms and conditions of this study and fulfill the following participation requirements as stated below:",
         askEmailConsent1: "Why do we ask for your Email: ",
         askEmailConsent2: "This is a longitudinal study, consisting of several participation sessions. Your email will only be recoded in order to invite/remind you to take part in the next session. Your Email will not be stored together with other kinds of data, and is accessible only internally to the Labvanced platform. We will not give away " +
-        "your email or use it for different purposes.",
+            "your email or use it for different purposes.",
         calibDistance1: "Your distance to the screen (in cm) is: ",
         calibDistance2: "centimeter"
 
@@ -311,12 +311,12 @@ ExpData.prototype.staticTranslations = {
         calibrateScreenSize: "Bildschirmgröße (Diagonal):",
         calibrateInches: "Inch",
         calibrateMethod2: "Halten Sie einen standardisierten Ausweis (85.60 × 53.98 mm) oder eine andere Karte der gleichen Größe gegen den Bildschirm und versuchen Sie, die Größe der angezeigten Karte anzupassen. " +
-        "Sie können die Größe des Bildes durch Ziehen des Pfeils ändern. Die Kalibrierung ist korrekt, wenn das Bild genau der Größe der Karte entspricht.",
+            "Sie können die Größe des Bildes durch Ziehen des Pfeils ändern. Die Kalibrierung ist korrekt, wenn das Bild genau der Größe der Karte entspricht.",
         endExpMsg: "Vielen Dank! Die Experimentssitzung ist beendet.",
         goToLib: "Gehe zur Experiment-Bibliothek",
         chooseSelection: "Bitte Auswählen...",
         answerPlaceholder: "Teilnehmer Antwort",
-        endExpMsgTest:  "Die Test-Aufnahme dieses Taks ist beendet. Um das ganze Experiment zu testen, oder um Daten aufzunehmen, starten Sie die Studie unter 'Run' in der Navigationsleite.",
+        endExpMsgTest: "Die Test-Aufnahme dieses Taks ist beendet. Um das ganze Experiment zu testen, oder um Daten aufzunehmen, starten Sie die Studie unter 'Run' in der Navigationsleite.",
         participationAgreement1: "Ich stimme zu, dass alle persönlichen Daten, die ich hier zur Verfügung stelle, und alle meine Antworten aufgezeichnet werden und zu Forschungszwecken pseudonymisiert verwendet werden dürfen. Zudem stimme ich den",
         participationAgreement2: "der Scicovery GmbH bzgl Datenaufnahme, Datenspeicherung, und Datenverwaltung von Teilnehmerdaten zu.",
         multiUserExpLobby: "Experiment mit mehreren Teilnehmern",
@@ -345,7 +345,7 @@ ExpData.prototype.staticTranslations = {
 };
 
 
-ExpData.prototype.updateLanguage = function() {
+ExpData.prototype.updateLanguage = function () {
     var langIdx = this.currentLanguage();
     var langStr = this.translatedLanguages()[langIdx];
 
@@ -358,12 +358,12 @@ ExpData.prototype.updateLanguage = function() {
     }
 };
 
-ExpData.prototype.markAllTextsTranslatable = function() {
-    $.each(this.availableTasks(), function(index, task) {
-        $.each(task.subSequence().elements(), function(index, frame) {
-            $.each(frame.elements(), function(index, elem) {
+ExpData.prototype.markAllTextsTranslatable = function () {
+    $.each(this.availableTasks(), function (index, task) {
+        $.each(task.subSequence().elements(), function (index, frame) {
+            $.each(frame.elements(), function (index, elem) {
                 var allTextRefs = elem.getTextRefs([], '');
-                $.each(allTextRefs, function(index, textRef) {
+                $.each(allTextRefs, function (index, textRef) {
                     textRef[2].markTranslatable();
                 });
             });
@@ -371,7 +371,7 @@ ExpData.prototype.markAllTextsTranslatable = function() {
     });
 };
 
-ExpData.prototype.disableTranslations = function() {
+ExpData.prototype.disableTranslations = function () {
     if (this.translationsEnabled()) {
         $.each(this.availableTasks(), function (index, task) {
             $.each(task.subSequence().elements(), function (index, frame) {
@@ -389,10 +389,10 @@ ExpData.prototype.disableTranslations = function() {
     }
 };
 
-ExpData.prototype.initVars = function() {
+ExpData.prototype.initVars = function () {
 
 
-    for (var i=0; i<ExpData.prototype.fixedVarNames.length; i++) {
+    for (var i = 0; i < ExpData.prototype.fixedVarNames.length; i++) {
 
         if (this[ExpData.prototype.fixedVarNames[i]]().startValue() == null) {
             this[ExpData.prototype.fixedVarNames[i]]().resetStartValue();
@@ -407,7 +407,7 @@ ExpData.prototype.initVars = function() {
  */
 
 
-ExpData.prototype.createVars = function() {
+ExpData.prototype.createVars = function () {
     if (!this.varSubjectCode()) {
         this.varSubjectCode((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Subject_Code'));
         this.varSubjectCode().setDescription(ExpData.prototype.varDescriptions["varSubjectCode"]);
@@ -514,11 +514,11 @@ ExpData.prototype.createVars = function() {
         this.varGazeY((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeY'));
         this.varGazeY().setDescription(ExpData.prototype.varDescriptions["varGazeY"]);
     }
-    if (!this.varRoleId()){
+    if (!this.varRoleId()) {
         this.varRoleId((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Role_Id'));
         this.varRoleId().setDescription(ExpData.prototype.varDescriptions["varRoleId"]);
     }
-    if (!this.varDisplayedLanguage()){
+    if (!this.varDisplayedLanguage()) {
         this.varDisplayedLanguage((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Displayed_Language'));
         this.varDisplayedLanguage().setDescription(ExpData.prototype.varDescriptions["varDisplayedLanguage"]);
     }
@@ -532,20 +532,20 @@ ExpData.prototype.createVars = function() {
 };
 
 
-ExpData.prototype.checkForUnusedTasks = function() {
+ExpData.prototype.checkForUnusedTasks = function () {
 
     var availableTasks = this.availableTasks();
     var taskByIds = {};
-    $.each(availableTasks, function(index, task) {
+    $.each(availableTasks, function (index, task) {
         taskByIds[task.id()] = task;
     });
 
     var unused_task_found = false;
     var entities = this.entities();
-    $.each(entities, function(index, entity) {
+    $.each(entities, function (index, entity) {
         if (entity instanceof ExpTrialLoop) {
             if (!taskByIds[entity.id()]) {
-                console.log("unused task "+entity.name());
+                console.log("unused task " + entity.name());
                 unused_task_found = true;
             }
         }
@@ -558,36 +558,36 @@ ExpData.prototype.checkForUnusedTasks = function() {
 };
 
 
-ExpData.prototype.deleteUnusedEntities = function() {
+ExpData.prototype.deleteUnusedEntities = function () {
     this.entities([]);
     this.reAddEntities();
 };
 
-ExpData.prototype.isSystemVar = function(globalVar) {
-    if (this.vars().indexOf(globalVar)>=0){
+ExpData.prototype.isSystemVar = function (globalVar) {
+    if (this.vars().indexOf(globalVar) >= 0) {
         return true;
     }
-    else{
+    else {
         return false;
     }
 };
 
 
-ExpData.prototype.deleteEntity = function(entity) {
+ExpData.prototype.deleteEntity = function (entity) {
     var idx = this.entities().indexOf(entity);
-    if (idx>=0){
-        this.entities.splice(idx,1);
+    if (idx >= 0) {
+        this.entities.splice(idx, 1);
     }
 };
 
-ExpData.prototype.deleteGlobalVar = function(globalVar) {
+ExpData.prototype.deleteGlobalVar = function (globalVar) {
     // allow deletion only if all back refs were removed:
     if (globalVar.backRefs().length == 0) {
         this.deleteEntity(globalVar);
     }
 };
 
-ExpData.prototype.addTranslation = function(translationEntry){
+ExpData.prototype.addTranslation = function (translationEntry) {
     this.translations.push(translationEntry);
 };
 
@@ -595,7 +595,7 @@ ExpData.prototype.addTranslation = function(translationEntry){
 /**
  * should be called by the ui classes after a change was made to some sub datamodels of this expData.
  */
-ExpData.prototype.notifyChanged = function() {
+ExpData.prototype.notifyChanged = function () {
     this.parentExperiment.notifyChanged();
 };
 
@@ -603,33 +603,33 @@ ExpData.prototype.notifyChanged = function() {
  * adds a new subject group to the experiment.
  * @param group
  */
-ExpData.prototype.addGroup = function(group) {
+ExpData.prototype.addGroup = function (group) {
     this.availableGroups.push(group);
     this.addEntity(group);
     this.notifyChanged();
 };
 
-ExpData.prototype.addEntity = function(entity) {
+ExpData.prototype.addEntity = function (entity) {
     this.entities.insertIfNotExist(entity);
     if (entity.hasOwnProperty("reAddEntities")) {
         entity.reAddEntities(this.entities);
     }
 };
 
-ExpData.prototype.addNewSubjGroup = function() {
+ExpData.prototype.addNewSubjGroup = function () {
     var group = new SubjectGroup(this);
-    var name = "group_" + (this.availableGroups().length+1);
+    var name = "group_" + (this.availableGroups().length + 1);
     group.name(name);
     this.addGroup(group);
 };
 
-ExpData.prototype.addTask = function(taskName,pageOrFrame,withFactor) {
+ExpData.prototype.addTask = function (taskName, pageOrFrame, withFactor) {
 
     var expTrialLoop = new ExpTrialLoop(this);
-    if (taskName){
+    if (taskName) {
         expTrialLoop.name(taskName);
     }
-    expTrialLoop.initNewInstance(pageOrFrame,withFactor);
+    expTrialLoop.initNewInstance(pageOrFrame, withFactor);
     expTrialLoop.isInitialized(true);
     this.availableTasks.push(expTrialLoop);
     this.addEntity(expTrialLoop);
@@ -637,22 +637,22 @@ ExpData.prototype.addTask = function(taskName,pageOrFrame,withFactor) {
 };
 
 
-ExpData.prototype.addNewBlock = function() {
-    
+ExpData.prototype.addNewBlock = function () {
+
     // add fixed instances of block into sequence
     var block = new ExpBlock(this);
-    var name= "block_"+(this.availableBlocks().length+1);
+    var name = "block_" + (this.availableBlocks().length + 1);
     block.name(name);
     this.availableBlocks.push(block);
     this.addEntity(block);
     this.notifyChanged();
 };
 
-ExpData.prototype.addNewSession = function() {
+ExpData.prototype.addNewSession = function () {
 
     // add fixed instances of block into sequence
     var session = new ExpSession(this);
-    var name= "session_"+(this.availableSessions().length+1);
+    var name = "session_" + (this.availableSessions().length + 1);
     session.name(name);
     this.availableSessions.push(session);
     this.addEntity(session);
@@ -666,25 +666,25 @@ ExpData.prototype.addNewSession = function() {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ExpData.prototype.setPointers = function() {
+ExpData.prototype.setPointers = function () {
     var self = this;
     var i;
     var allEntitiesArray = this.entities();
 
     // recursively call all setPointers:
-    jQuery.each( allEntitiesArray, function( index, elem ) {
+    jQuery.each(allEntitiesArray, function (index, elem) {
         elem.setPointers(self.entities);
-    } );
-    jQuery.each( allEntitiesArray, function( index, elem ) {
-         if (typeof elem.onFinishedLoading === "function"){
-             elem.onFinishedLoading();
-         }
-    } );
+    });
+    jQuery.each(allEntitiesArray, function (index, elem) {
+        if (typeof elem.onFinishedLoading === "function") {
+            elem.onFinishedLoading();
+        }
+    });
 
     // relink availableTasks:
     var availableTaskIds = this.availableTasks();
     var availableTasks = [];
-    for (i=0; i<availableTaskIds.length; i++) {
+    for (i = 0; i < availableTaskIds.length; i++) {
         availableTasks.push(this.entities.byId[availableTaskIds[i]]);
     }
     this.availableTasks(availableTasks);
@@ -692,7 +692,7 @@ ExpData.prototype.setPointers = function() {
     // relink availableBlocks:
     var availableBlockIds = this.availableBlocks();
     var availableBlocks = [];
-    for (i=0; i<availableBlockIds.length; i++) {
+    for (i = 0; i < availableBlockIds.length; i++) {
         availableBlocks.push(this.entities.byId[availableBlockIds[i]]);
     }
     this.availableBlocks(availableBlocks);
@@ -700,7 +700,7 @@ ExpData.prototype.setPointers = function() {
     // relink availableSessions:
     var availableSessionIds = this.availableSessions();
     var availableSessions = [];
-    for (i=0; i<availableSessionIds.length; i++) {
+    for (i = 0; i < availableSessionIds.length; i++) {
         availableSessions.push(this.entities.byId[availableSessionIds[i]]);
     }
     this.availableSessions(availableSessions);
@@ -708,7 +708,7 @@ ExpData.prototype.setPointers = function() {
     // relink availableGroups:
     var availableGroupIds = this.availableGroups();
     var availableGroups = [];
-    for (i=0; i<availableGroupIds.length; i++) {
+    for (i = 0; i < availableGroupIds.length; i++) {
         availableGroups.push(this.entities.byId[availableGroupIds[i]]);
     }
     this.availableGroups(availableGroups);
@@ -716,7 +716,7 @@ ExpData.prototype.setPointers = function() {
     // relink availableVars:
     var availableVarIds = this.availableVars();
     var availableVars = [];
-    for (i=0; i<availableVarIds.length; i++) {
+    for (i = 0; i < availableVarIds.length; i++) {
         var variable = this.entities.byId[availableVarIds[i]];
         if (variable) {
             availableVars.push(variable);
@@ -726,7 +726,7 @@ ExpData.prototype.setPointers = function() {
 
     // relink variables
     var missingVar = false;
-    for (i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+    for (i = 0; i < ExpData.prototype.fixedVarNames.length; i++) {
         var varId = this[ExpData.prototype.fixedVarNames[i]]();
         var description = ExpData.prototype.varDescriptions[ExpData.prototype.fixedVarNames[i]];
         if (varId) {
@@ -743,11 +743,11 @@ ExpData.prototype.setPointers = function() {
     }
 
     // relink translations:
-    jQuery.each( this.translations(), function( index, elem ) {
+    jQuery.each(this.translations(), function (index, elem) {
         if (elem instanceof TranslationEntry) {
             elem.setPointers(self.entities);
         }
-    } );
+    });
 
     // make sure that if translations are eneabled, that all text elements are in translation table:
     if (this.translationsEnabled()) {
@@ -758,39 +758,39 @@ ExpData.prototype.setPointers = function() {
 
     // update current variable List
     var allEntities = this.entities();
-    for (var i=0; i<allEntities.length; i++){
+    for (var i = 0; i < allEntities.length; i++) {
         if (allEntities[i].type == "GlobalVar") {
 
             this.availableVars.insertIfNotExist(allEntities[i]);
 
-            if (allEntities[i].name()){
-                if (!(this.allVariables.hasOwnProperty(allEntities[i].name().toLowerCase()))){
+            if (allEntities[i].name()) {
+                if (!(this.allVariables.hasOwnProperty(allEntities[i].name().toLowerCase()))) {
                     this.allVariables[allEntities[i].name().toLowerCase()] = allEntities[i];
                 }
-                else if (this.allVariables[allEntities[i].name().toLowerCase()] instanceof Array){
+                else if (this.allVariables[allEntities[i].name().toLowerCase()] instanceof Array) {
                     this.allVariables[allEntities[i].name().toLowerCase()].push(allEntities[i]);
                 }
-                else{
-                    var temp =  this.allVariables[allEntities[i].name().toLowerCase()];
-                    this.allVariables[allEntities[i].name().toLowerCase()] = [temp,allEntities[i]];
+                else {
+                    var temp = this.allVariables[allEntities[i].name().toLowerCase()];
+                    this.allVariables[allEntities[i].name().toLowerCase()] = [temp, allEntities[i]];
                 }
 
             }
 
         }
     }
-    if (this.variableSubscription){
+    if (this.variableSubscription) {
         this.variableSubscription.dispose();
     }
-    this.variableSubscription = this.entities.subscribe(function(changes) {
+    this.variableSubscription = this.entities.subscribe(function (changes) {
         ko.utils.arrayForEach(changes, function (change) {
-            if (change.value instanceof GlobalVar){
-                if (change.status =="added"){
+            if (change.value instanceof GlobalVar) {
+                if (change.status == "added") {
                     self.addVarToHashList(change.value);
                     self.availableVars.insertIfNotExist(change.value);
                 }
-                else if (change.status =="deleted"){
-                    self.deleteVarFromHashList(change.value,null);
+                else if (change.status == "deleted") {
+                    self.deleteVarFromHashList(change.value, null);
                 }
 
             }
@@ -800,8 +800,8 @@ ExpData.prototype.setPointers = function() {
 
     this.checkForUnusedTasks();
     // bugFix for event which are in entity list with undefined entry // TODO @ holger you might check this
-    if (this.entities.byId["undefined"] != undefined){
-       delete this.entities.byId["undefined"];
+    if (this.entities.byId["undefined"] != undefined) {
+        delete this.entities.byId["undefined"];
     }
 
     // bug fix for wrong trial id variable name:
@@ -812,20 +812,20 @@ ExpData.prototype.setPointers = function() {
 };
 
 
-ExpData.prototype.getAllFactorsVars = function() {
+ExpData.prototype.getAllFactorsVars = function () {
     var Gvs = [];
     var self = this;
-    Object.keys(this.allVariables).forEach(function(key,index){
+    Object.keys(this.allVariables).forEach(function (key, index) {
         var elem = self.allVariables[key];
-        if (elem instanceof Array){
-            elem.forEach(function(subElem){
-                if (subElem.isFactor() && Gvs.indexOf(subElem)==-1){
+        if (elem instanceof Array) {
+            elem.forEach(function (subElem) {
+                if (subElem.isFactor() && Gvs.indexOf(subElem) == -1) {
                     Gvs.push(subElem);
                 }
             })
         }
-        else{
-            if (elem.isFactor() && Gvs.indexOf(elem)==-1){
+        else {
+            if (elem.isFactor() && Gvs.indexOf(elem) == -1) {
                 Gvs.push(elem);
             }
 
@@ -834,24 +834,24 @@ ExpData.prototype.getAllFactorsVars = function() {
     return Gvs;
 };
 
-ExpData.prototype.addVarToHashList = function(variable) {
-    if (variable.name()){
-        if (!(this.allVariables.hasOwnProperty(variable.name().toLowerCase()))){
+ExpData.prototype.addVarToHashList = function (variable) {
+    if (variable.name()) {
+        if (!(this.allVariables.hasOwnProperty(variable.name().toLowerCase()))) {
             this.allVariables[variable.name().toLowerCase()] = variable;
         }
 
-        else if (this.allVariables[variable.name().toLowerCase()] instanceof Array){
+        else if (this.allVariables[variable.name().toLowerCase()] instanceof Array) {
             var idx = this.allVariables[variable.name().toLowerCase()].indexOf(variable);
-            if (idx==-1){
+            if (idx == -1) {
                 this.allVariables[variable.name().toLowerCase()].push(variable);
             }
 
         }
 
         else {
-            var temp =  this.allVariables[variable.name().toLowerCase()];
-            if (temp !==variable) {
-                this.allVariables[variable.name().toLowerCase()] =  [temp,variable];
+            var temp = this.allVariables[variable.name().toLowerCase()];
+            if (temp !== variable) {
+                this.allVariables[variable.name().toLowerCase()] = [temp, variable];
             }
 
         }
@@ -859,23 +859,23 @@ ExpData.prototype.addVarToHashList = function(variable) {
 
 };
 
-ExpData.prototype.deleteVarFromHashList = function(variable,oldName) {
-    if (oldName){
+ExpData.prototype.deleteVarFromHashList = function (variable, oldName) {
+    if (oldName) {
         var name = oldName;
     }
-    else{
+    else {
         var name = variable.name();
     }
-    if (name && name !=""){
-        if (this.allVariables.hasOwnProperty(name.toLowerCase())){
-            if (this.allVariables[name.toLowerCase()] instanceof Array){
+    if (name && name != "") {
+        if (this.allVariables.hasOwnProperty(name.toLowerCase())) {
+            if (this.allVariables[name.toLowerCase()] instanceof Array) {
                 var idx = this.allVariables[name.toLowerCase()].indexOf(variable);
-                if (idx >=0){
-                 this.allVariables[name.toLowerCase()].splice(idx,1);
+                if (idx >= 0) {
+                    this.allVariables[name.toLowerCase()].splice(idx, 1);
                 }
             }
-            else{
-             delete this.allVariables[name.toLowerCase()];
+            else {
+                delete this.allVariables[name.toLowerCase()];
             }
         }
     }
@@ -884,30 +884,30 @@ ExpData.prototype.deleteVarFromHashList = function(variable,oldName) {
 };
 
 
-ExpData.prototype.varNameValid = function(varName) {
-    if (varName=="" || this.allVariables.hasOwnProperty(varName)){
+ExpData.prototype.varNameValid = function (varName) {
+    if (varName == "" || this.allVariables.hasOwnProperty(varName)) {
         return false;
     }
-    else{
+    else {
         return true;
     }
 };
 
-ExpData.prototype.varNameValidExisting = function(varName) {
-    if (this.allVariables.hasOwnProperty(varName)){
-       if(this.allVariables[varName] instanceof Array){
-           if (this.allVariables[varName].length <=1){
-               return true
-           }
-           else{
-               return false;
-           }
-       }
-       else{
-           return true;
-       }
+ExpData.prototype.varNameValidExisting = function (varName) {
+    if (this.allVariables.hasOwnProperty(varName)) {
+        if (this.allVariables[varName] instanceof Array) {
+            if (this.allVariables[varName].length <= 1) {
+                return true
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
     }
-    else{
+    else {
         return true;
     }
 };
@@ -918,55 +918,55 @@ ExpData.prototype.varNameValidExisting = function(varName) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-ExpData.prototype.reAddEntities = function() {
+ExpData.prototype.reAddEntities = function () {
     var entitiesArr = this.entities;
 
-    jQuery.each( this.availableTasks(), function( index, task ) {
+    jQuery.each(this.availableTasks(), function (index, task) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(task.id())) {
             entitiesArr.push(task);
         }
         // recursively make sure that all deep tree nodes are in the entities list:
         task.reAddEntities(entitiesArr);
-    } );
+    });
 
-    jQuery.each( this.availableBlocks(), function( index, block ) {
+    jQuery.each(this.availableBlocks(), function (index, block) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(block.id())) {
             entitiesArr.push(block);
         }
         // recursively make sure that all deep tree nodes are in the entities list:
         block.reAddEntities(entitiesArr);
-    } );
+    });
 
-    jQuery.each( this.availableSessions(), function( index, session ) {
+    jQuery.each(this.availableSessions(), function (index, session) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(session.id())) {
             entitiesArr.push(session);
         }
         // recursively make sure that all deep tree nodes are in the entities list:
         session.reAddEntities(entitiesArr);
-    } );
+    });
 
-    jQuery.each( this.availableGroups(), function( index, group ) {
+    jQuery.each(this.availableGroups(), function (index, group) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(group.id()))
             entitiesArr.push(group);
 
         // recursively make sure that all deep tree nodes are in the entities list:
         group.reAddEntities(entitiesArr);
-    } );
+    });
 
-    jQuery.each( this.availableVars(), function( index, globVar ) {
+    jQuery.each(this.availableVars(), function (index, globVar) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(globVar.id()))
             entitiesArr.push(globVar);
 
         // recursively make sure that all deep tree nodes are in the entities list:
-      //  globVar.reAddEntities(entitiesArr);
-    } );
+        //  globVar.reAddEntities(entitiesArr);
+    });
 
-    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+    for (var i = 0; i < ExpData.prototype.fixedVarNames.length; i++) {
         var varInstance = this[ExpData.prototype.fixedVarNames[i]]();
         if (varInstance) {
             if (!entitiesArr.byId.hasOwnProperty(varInstance.id())) {
@@ -981,22 +981,22 @@ ExpData.prototype.reAddEntities = function() {
  * @param {object} data - the json description of the states.
  * @returns {ExpData}
  */
-ExpData.prototype.fromJS = function(data) {
+ExpData.prototype.fromJS = function (data) {
     var self = this;
 
     if (data.hasOwnProperty('dateLastModified')) {
         this.dateLastModified(data.dateLastModified);
     }
 
-    if(data.hasOwnProperty('isJointExp')) {
+    if (data.hasOwnProperty('isJointExp')) {
         this.isJointExp(data.isJointExp);
     }
 
-    if(data.hasOwnProperty('numPartOfJointExp')) {
+    if (data.hasOwnProperty('numPartOfJointExp')) {
         this.numPartOfJointExp(data.numPartOfJointExp);
     }
 
-    if(data.hasOwnProperty('jointOptionModified')){
+    if (data.hasOwnProperty('jointOptionModified')) {
         this.jointOptionModified(data.jointOptionModified);
     }
 
@@ -1009,7 +1009,7 @@ ExpData.prototype.fromJS = function(data) {
             }
         })
     }
-    
+
     if (data.studySettings) {
         this.studySettings = new StudySettings(this.expData);
         this.studySettings.fromJS(data.studySettings);
@@ -1024,9 +1024,9 @@ ExpData.prototype.fromJS = function(data) {
         this.availableVars(data.availableVars);
     }
 
-    if(data.hasOwnProperty('translations')){
+    if (data.hasOwnProperty('translations')) {
         this.translations(jQuery.map(data.translations, function (entryData) {
-            if (entryData=="removedEntry") {
+            if (entryData == "removedEntry") {
                 return "removedEntry";
             }
             else {
@@ -1048,9 +1048,9 @@ ExpData.prototype.fromJS = function(data) {
     }
 
 
-    for (var i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+    for (var i = 0; i < ExpData.prototype.fixedVarNames.length; i++) {
         var varName = ExpData.prototype.fixedVarNames[i];
-       // varTimeMeasureSpecMax
+        // varTimeMeasureSpecMax
         if (varName === undefined) {
             var oldVarName = ExpData.prototype.oldFixedVarNames[i];
             this[varName](data[oldVarName]);
@@ -1067,12 +1067,12 @@ ExpData.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-ExpData.prototype.toJS = function() {
+ExpData.prototype.toJS = function () {
     var i;
 
     var sessionsPerGroup = [];
     var groups = this.availableGroups();
-    for (i=0; i<groups.length; i++){
+    for (i = 0; i < groups.length; i++) {
         sessionsPerGroup.push(groups[i].sessions().length);
     }
 
@@ -1088,32 +1088,32 @@ ExpData.prototype.toJS = function() {
         isJointExp: this.isJointExp(),
         numPartOfJointExp: this.numPartOfJointExp(),
         jointOptionModified: this.jointOptionModified(),
-        availableTasks: jQuery.map( this.availableTasks(), function( task ) { return task.id(); }),
-        availableBlocks: jQuery.map( this.availableBlocks(), function( block ) { return block.id(); }),
-        availableSessions: jQuery.map( this.availableSessions(), function( session ) { return session.id(); }),
-        availableGroups: jQuery.map( this.availableGroups(), function( group ) { return group.id(); }),
-        availableVars: jQuery.map( this.availableVars(), function( globVar ) { return globVar.id(); }),
+        availableTasks: jQuery.map(this.availableTasks(), function (task) { return task.id(); }),
+        availableBlocks: jQuery.map(this.availableBlocks(), function (block) { return block.id(); }),
+        availableSessions: jQuery.map(this.availableSessions(), function (session) { return session.id(); }),
+        availableGroups: jQuery.map(this.availableGroups(), function (group) { return group.id(); }),
+        availableVars: jQuery.map(this.availableVars(), function (globVar) { return globVar.id(); }),
         numGroups: this.availableGroups().length,
         sessionsPerGroup: sessionsPerGroup,
-        translations: jQuery.map( this.translations(), function( entry ) {
-            if (entry==null || entry=="removedEntry") {
+        translations: jQuery.map(this.translations(), function (entry) {
+            if (entry == null || entry == "removedEntry") {
                 return "removedEntry";
             }
-            else if (typeof entry.namedEntity === 'undefined' ){
+            else if (typeof entry.namedEntity === 'undefined') {
                 return "removedEntry";
             }
-            else{
+            else {
                 return entry.toJS();
             }
         }),
         translatedLanguages: this.translatedLanguages(),
         languageTransferOption: this.languageTransferOption(),
-        studySettings:studySettings,
-        entities: jQuery.map( this.entities(), function( entity ) { return entity.toJS(); })
+        studySettings: studySettings,
+        entities: jQuery.map(this.entities(), function (entity) { return entity.toJS(); })
     };
 
     // add all variable ids:
-    for (i=0; i < ExpData.prototype.fixedVarNames.length; i++){
+    for (i = 0; i < ExpData.prototype.fixedVarNames.length; i++) {
         var varName = ExpData.prototype.fixedVarNames[i];
         data[varName] = this[varName]().id();
     }

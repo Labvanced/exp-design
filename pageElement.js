@@ -4,7 +4,7 @@
  * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
  * @constructor
  */
-var PageElement = function(expData) {
+var PageElement = function (expData) {
 
     var self = this;
     this.expData = expData;
@@ -14,9 +14,9 @@ var PageElement = function(expData) {
     this.name = ko.observable("pageElement");
     this.id = ko.observable(guid());
     this.selected = ko.observable(false);
-    this.includeInPageShuffle  = ko.observable(false);
+    this.includeInPageShuffle = ko.observable(false);
 
-    this.stimulusInformation  = ko.observable(null);
+    this.stimulusInformation = ko.observable(null);
     this.marginLeft = ko.observable(35);
     this.marginRight = ko.observable(35);
     this.marginTop = ko.observable(35);
@@ -30,8 +30,8 @@ var PageElement = function(expData) {
     this.isActive = ko.observable(true);
     this.isVisible = ko.observable(true);
 
-    this.shortName = ko.computed(function() {
-        if (self.name()){
+    this.shortName = ko.computed(function () {
+        if (self.name()) {
             return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
         }
         else return ''
@@ -39,61 +39,61 @@ var PageElement = function(expData) {
     });
 
     // not serialized
-    this.activeOptions = ko.observableArray([false,true]);
+    this.activeOptions = ko.observableArray([false, true]);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
 };
 
-PageElement.prototype.dispose = function() {
-    if (this.content()){
+PageElement.prototype.dispose = function () {
+    if (this.content()) {
         this.content().dispose();
     }
 };
 
 
-PageElement.prototype.addContent = function(element){
+PageElement.prototype.addContent = function (element) {
     this.content(element);
     element.parent = this;
 };
 
-PageElement.prototype.selectTrialType = function(selectionSpec) {
+PageElement.prototype.selectTrialType = function (selectionSpec) {
     this.modifier().selectTrialType(selectionSpec);
-    if  (typeof this.content().selectTrialType === "function"){
+    if (typeof this.content().selectTrialType === "function") {
         this.content().selectTrialType(selectionSpec);
     }
 };
 
 
-PageElement.prototype.modifiableProp = ["isVisible","isActive"];
-PageElement.prototype.dataType =    [ "boolean", "boolean"];
+PageElement.prototype.modifiableProp = ["isVisible", "isActive"];
+PageElement.prototype.dataType = ["boolean", "boolean"];
 PageElement.prototype.subElementProp = ["content"];
 
 /**
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-PageElement.prototype.getAllModifiers = function(modifiersArr) {
+PageElement.prototype.getAllModifiers = function (modifiersArr) {
     modifiersArr.push(this.modifier());
-    if(this.content() && this.content().getAllModifiers){
+    if (this.content() && this.content().getAllModifiers) {
         this.content().getAllModifiers(modifiersArr);
     }
 };
 
-PageElement.prototype.getActionTypes = function() {
+PageElement.prototype.getActionTypes = function () {
     if (this.content().getActionTypes) {
         return this.content().getActionTypes();
     }
 };
 
-PageElement.prototype.getTriggerTypes = function() {
+PageElement.prototype.getTriggerTypes = function () {
     if (this.content().getTriggerTypes) {
         return this.content().getTriggerTypes();
     }
 };
 
-PageElement.prototype.executeAction = function(actionType) {
+PageElement.prototype.executeAction = function (actionType) {
     if (this.content().executeAction) {
         this.content().executeAction(actionType)
     }
@@ -106,11 +106,11 @@ PageElement.prototype.executeAction = function(actionType) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-PageElement.prototype.setPointers = function(entitiesArr) {
+PageElement.prototype.setPointers = function (entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 
     this.content().parent = this;
-    if(this.content().setPointers){
+    if (this.content().setPointers) {
         this.content().setPointers(entitiesArr);
     }
 };
@@ -120,10 +120,10 @@ PageElement.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-PageElement.prototype.reAddEntities = function(entitiesArr) {
+PageElement.prototype.reAddEntities = function (entitiesArr) {
     this.modifier().reAddEntities(entitiesArr);
 
-    if(this.content().reAddEntities){
+    if (this.content().reAddEntities) {
         this.content().reAddEntities(entitiesArr);
     }
 };
@@ -134,7 +134,7 @@ PageElement.prototype.reAddEntities = function(entitiesArr) {
  * @param {String} label - to be added to the path
  * @returns textArr on highes level
  */
-PageElement.prototype.getTextRefs = function(textArr, label){
+PageElement.prototype.getTextRefs = function (textArr, label) {
     var content = this.content();
     if (content.getTextRefs instanceof Function) {
         content.getTextRefs(textArr, this.name());
@@ -148,7 +148,7 @@ PageElement.prototype.getTextRefs = function(textArr, label){
  * @param {object} data - the json description of the states.
  * @returns {PageElement}
  */
-PageElement.prototype.fromJS = function(data) {
+PageElement.prototype.fromJS = function (data) {
     this.id(data.id);
     this.type = data.type;
     this.name(data.name);
@@ -157,50 +157,50 @@ PageElement.prototype.fromJS = function(data) {
     if (data.hasOwnProperty('modifier')) {
         this.modifier().fromJS(data.modifier);
     }
-    if(data.hasOwnProperty('stimulusInformation')) {
+    if (data.hasOwnProperty('stimulusInformation')) {
         this.stimulusInformation(data.stimulusInformation);
     }
-    if(data.hasOwnProperty('includeInPageShuffle')) {
+    if (data.hasOwnProperty('includeInPageShuffle')) {
         this.includeInPageShuffle(data.includeInPageShuffle);
     }
-    if(data.hasOwnProperty('isActive')) {
+    if (data.hasOwnProperty('isActive')) {
         this.isActive(data.isActive);
     }
-    if(data.hasOwnProperty('isVisible')) {
+    if (data.hasOwnProperty('isVisible')) {
         this.isVisible(data.isVisible);
     }
 
-    if(data.hasOwnProperty('marginLeft')) {
+    if (data.hasOwnProperty('marginLeft')) {
         this.marginLeft(data.marginLeft);
     }
-    if(data.hasOwnProperty('marginRight')) {
+    if (data.hasOwnProperty('marginRight')) {
         this.marginRight(data.marginRight);
     }
-    if(data.hasOwnProperty('marginTop')) {
+    if (data.hasOwnProperty('marginTop')) {
         this.marginTop(data.marginTop);
     }
-    if(data.hasOwnProperty('marginBottom')) {
+    if (data.hasOwnProperty('marginBottom')) {
         this.marginBottom(data.marginBottom);
     }
 
-    if(data.hasOwnProperty('paddingLeft')) {
+    if (data.hasOwnProperty('paddingLeft')) {
         this.paddingLeft(data.paddingLeft);
     }
-    if(data.hasOwnProperty('paddingRight')) {
+    if (data.hasOwnProperty('paddingRight')) {
         this.paddingRight(data.paddingRight);
     }
-    if(data.hasOwnProperty('paddingTop')) {
+    if (data.hasOwnProperty('paddingTop')) {
         this.paddingTop(data.paddingTop);
     }
-    if(data.hasOwnProperty('paddingBottom')) {
+    if (data.hasOwnProperty('paddingBottom')) {
         this.paddingBottom(data.paddingBottom);
     }
 
 
-    if(data.content){
+    if (data.content) {
         var classObj = window[data.content.type];
         if (!classObj) {
-            console.log('error: type does not exist: '+data.content.type);
+            console.log('error: type does not exist: ' + data.content.type);
             if (data.content.type == "TextInputElement") {
                 // convert type name:
                 data.content.type = "InputElement";
@@ -223,11 +223,11 @@ PageElement.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-PageElement.prototype.toJS = function() {
-    if(this.content()){
+PageElement.prototype.toJS = function () {
+    if (this.content()) {
         var contentData = this.content().toJS();
     }
-    else{
+    else {
         contentData = null;
     }
     return {
@@ -238,17 +238,17 @@ PageElement.prototype.toJS = function() {
         modifier: this.modifier().toJS(),
         content: contentData,
         includeInPageShuffle: this.includeInPageShuffle(),
-        isActive:this.isActive(),
-        isVisible:this.isVisible(),
+        isActive: this.isActive(),
+        isVisible: this.isVisible(),
 
-        marginLeft:this.marginLeft(),
-        marginRight:this.marginRight(),
-        marginTop:this.marginTop(),
-        marginBottom:this.marginBottom(),
-        paddingLeft:this.paddingLeft(),
-        paddingRight:this.paddingRight(),
-        paddingTop:this.paddingTop(),
-        paddingBottom:this.paddingBottom()
+        marginLeft: this.marginLeft(),
+        marginRight: this.marginRight(),
+        marginTop: this.marginTop(),
+        marginBottom: this.marginBottom(),
+        paddingLeft: this.paddingLeft(),
+        paddingRight: this.paddingRight(),
+        paddingTop: this.paddingTop(),
+        paddingBottom: this.paddingBottom()
     };
 };
 

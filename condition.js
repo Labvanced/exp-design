@@ -4,7 +4,7 @@
  *
  * @constructor
  */
-var Condition = function(factorGroup) {
+var Condition = function (factorGroup) {
     var self = this;
 
     this.factorGroup = factorGroup;
@@ -18,20 +18,20 @@ var Condition = function(factorGroup) {
     this.trialStartIdx = ko.observable(0);
     this.conditionIdx = ko.observable();
 
-    this.trialStartIdx.subscribe(function(newTrialStartIdx) {
+    this.trialStartIdx.subscribe(function (newTrialStartIdx) {
         var trialVariations = self.trials();
-        for (var i=0; i<trialVariations.length; i++) {
-            trialVariations[i].trialIdx(newTrialStartIdx+i);
+        for (var i = 0; i < trialVariations.length; i++) {
+            trialVariations[i].trialIdx(newTrialStartIdx + i);
         }
     });
 
 
 
-    this.isDeactivated= ko.computed(function() {
-        if (self.trials().length>0){
+    this.isDeactivated = ko.computed(function () {
+        if (self.trials().length > 0) {
             return false;
         }
-        else{
+        else {
             return true;
         }
     }, this);
@@ -49,17 +49,17 @@ var Condition = function(factorGroup) {
 };
 
 
-Condition.prototype.getPartnerConditions = function(condGroups) {
-    var arr =   condGroups[this.getCondGroup(condGroups)-1];
+Condition.prototype.getPartnerConditions = function (condGroups) {
+    var arr = condGroups[this.getCondGroup(condGroups) - 1];
     var conds = [];
-    if (arr){
-        for (var i = 0; i< arr.length; i++){
-            if (this.factorGroup.conditionsLinear()[arr[i]]){
-                if (this.factorGroup.conditionsLinear()[arr[i]] !== this && this.factorGroup.conditionsLinear()[arr[i]].isDeactivated()==false){
+    if (arr) {
+        for (var i = 0; i < arr.length; i++) {
+            if (this.factorGroup.conditionsLinear()[arr[i]]) {
+                if (this.factorGroup.conditionsLinear()[arr[i]] !== this && this.factorGroup.conditionsLinear()[arr[i]].isDeactivated() == false) {
                     conds.push(this.factorGroup.conditionsLinear()[arr[i]])
                 }
             }
-            else{
+            else {
                 console.log("Warning: condition is not there")
             }
 
@@ -69,21 +69,21 @@ Condition.prototype.getPartnerConditions = function(condGroups) {
 };
 
 
-Condition.prototype.setCondGroup = function(condGroups) {
+Condition.prototype.setCondGroup = function (condGroups) {
     this.conditionGroup(this.getCondGroup(condGroups));
 };
 
-Condition.prototype.getCondGroup = function(condGroups) {
-    var groups =  condGroups;
+Condition.prototype.getCondGroup = function (condGroups) {
+    var groups = condGroups;
     var found = false;
     var idx = 0;
     var out = 1;
 
-    while (!found && idx < groups.length){
+    while (!found && idx < groups.length) {
         var currentGroup = groups[idx];
-        if (currentGroup.indexOf(this.conditionIdx()-1)>=0){
+        if (currentGroup.indexOf(this.conditionIdx() - 1) >= 0) {
             found = true;
-            out = idx+1;
+            out = idx + 1;
         }
         idx++;
     }
@@ -91,22 +91,22 @@ Condition.prototype.getCondGroup = function(condGroups) {
 };
 
 
-Condition.prototype.getCurrentValueOfFactor = function(idOfGlobalVar) {
+Condition.prototype.getCurrentValueOfFactor = function (idOfGlobalVar) {
 
     var levelValue = null;
     var levelNames = [];
-    for (var i=0; i<this.factorLevels().length; i++) {
+    for (var i = 0; i < this.factorLevels().length; i++) {
         levelNames.push(this.factorLevels()[i].name());
     }
 
-    var facIds= [];
-    for (var i=0; i<this.factorGroup.factors().length; i++) {
+    var facIds = [];
+    for (var i = 0; i < this.factorGroup.factors().length; i++) {
         facIds.push(this.factorGroup.factors()[i].globalVar().id());
     }
 
     var idx = facIds.indexOf(idOfGlobalVar);
-    if (idx>=0){
-        levelValue= levelNames[idx];
+    if (idx >= 0) {
+        levelValue = levelNames[idx];
     }
 
     return levelValue;
@@ -116,7 +116,7 @@ Condition.prototype.getCurrentValueOfFactor = function(idOfGlobalVar) {
  * Initializes a new instance with just one trial variation. This function is usually called after the constructor
  * created a new instance.
  */
-Condition.prototype.initNewInstance = function() {
+Condition.prototype.initNewInstance = function () {
     this.addTrial();
 };
 
@@ -127,7 +127,7 @@ Condition.prototype.initNewInstance = function() {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-Condition.prototype.setPointers = function(entitiesArr) {
+Condition.prototype.setPointers = function (entitiesArr) {
 
 };
 
@@ -140,7 +140,7 @@ Condition.prototype.setNumTrials = function (numTrialVariations) {
     var trialVariations = this.trials();
     var currentLength = trialVariations.length;
 
-    if (currentLength != lengthToBe){
+    if (currentLength != lengthToBe) {
 
         var diff, i;
         if (currentLength > lengthToBe) {
@@ -171,7 +171,7 @@ Condition.prototype.setNumTrials = function (numTrialVariations) {
 /**
  * adds a new trial to this condition.
  */
-Condition.prototype.addTrial = function() {
+Condition.prototype.addTrial = function () {
 
     var trialVariations = new TrialVariation(this);
     trialVariations.nr(this.trials().length);
@@ -181,7 +181,7 @@ Condition.prototype.addTrial = function() {
 /**
  * removes the last trial from this condition.
  */
-Condition.prototype.removeTrialVariation = function() {
+Condition.prototype.removeTrialVariation = function () {
 
     this.trials.pop();
 };
@@ -191,7 +191,7 @@ Condition.prototype.removeTrialVariation = function() {
  * @param {object} data - the json description of the states.
  * @returns {Condition}
  */
-Condition.prototype.fromJS = function(data) {
+Condition.prototype.fromJS = function (data) {
 
     var self = this;
 
@@ -201,7 +201,7 @@ Condition.prototype.fromJS = function(data) {
         trialVariation.nr(index);
         return trialVariation;
     }));
-    if (data.hasOwnProperty('relativePercentage')){
+    if (data.hasOwnProperty('relativePercentage')) {
         this.relativePercentage(data.relativePercentage);
     }
 
@@ -212,9 +212,9 @@ Condition.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {{trials: *}}
  */
-Condition.prototype.toJS = function() {
+Condition.prototype.toJS = function () {
     return {
-        trials: jQuery.map( this.trials(), function(trial ) { return trial.toJS(); }),
+        trials: jQuery.map(this.trials(), function (trial) { return trial.toJS(); }),
         relativePercentage: this.relativePercentage()
     };
 };

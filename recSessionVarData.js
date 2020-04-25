@@ -3,7 +3,7 @@
  * this class stores the data that should be recorded.
  * @constructor
  */
-var RecSessionVarData = function(recSession) {
+var RecSessionVarData = function (recSession) {
     this.recSession = recSession;
 
     this.browserSpec = ko.observable(null);
@@ -23,7 +23,7 @@ var RecSessionVarData = function(recSession) {
     this.subjCounterPerGroup = ko.observable(null);
 
     this.roleId = ko.observable(null);
-    this.displayedLanguage= ko.observable(null);
+    this.displayedLanguage = ko.observable(null);
 
 
 
@@ -36,62 +36,62 @@ var RecSessionVarData = function(recSession) {
  * @param {object} data - the json description of the states.
  * @returns {RecSessionVarData}
  */
-RecSessionVarData.prototype.fromJS = function(data) {
+RecSessionVarData.prototype.fromJS = function (data) {
 
-    if (data.hasOwnProperty('browserSpec')){
+    if (data.hasOwnProperty('browserSpec')) {
         this.browserSpec(data.browserSpec);
     }
-    if (data.hasOwnProperty('versionSpec')){
+    if (data.hasOwnProperty('versionSpec')) {
         this.versionSpec(data.versionSpec);
     }
-    if (data.hasOwnProperty('systemSpec')){
+    if (data.hasOwnProperty('systemSpec')) {
         this.systemSpec(data.systemSpec);
     }
-    if (data.hasOwnProperty('agentSpec')){
+    if (data.hasOwnProperty('agentSpec')) {
         this.agentSpec(data.agentSpec);
     }
-    if (data.hasOwnProperty('fullscreen')){
+    if (data.hasOwnProperty('fullscreen')) {
         this.fullscreen(data.fullscreen);
     }
-    if (data.hasOwnProperty('timeDelayMean')){
+    if (data.hasOwnProperty('timeDelayMean')) {
         this.timeDelayMean(data.timeDelayMean);
         var trimmed = Math.round(parseFloat(this.timeDelayMean()) * 10) / 10;
-        this.timeDelayMeanTrimed(""+trimmed+" ms");
+        this.timeDelayMeanTrimed("" + trimmed + " ms");
     }
-    if (data.hasOwnProperty('timeDelayMax')){
+    if (data.hasOwnProperty('timeDelayMax')) {
         this.timeDelayMax(data.timeDelayMax);
     }
 
-    if (data.hasOwnProperty('crowdsourcingCode')){
+    if (data.hasOwnProperty('crowdsourcingCode')) {
         this.crowdsourcingCode(data.crowdsourcingCode);
     }
-    if (data.hasOwnProperty('debugData')){
+    if (data.hasOwnProperty('debugData')) {
         var dati = '';
-        data.debugData.forEach(function(trialDat) {
-            dati = dati+ JSON.stringify(trialDat);
+        data.debugData.forEach(function (trialDat) {
+            dati = dati + JSON.stringify(trialDat);
         });
         this.debugData(dati);
     }
-    if (data.hasOwnProperty('serverResponseTimes')){
+    if (data.hasOwnProperty('serverResponseTimes')) {
         this.serverResponseTimes(JSON.stringify(data.serverResponseTimes));
     }
-    if (data.hasOwnProperty('crowdsourcinSubjId')){
+    if (data.hasOwnProperty('crowdsourcinSubjId')) {
         this.crowdsourcinSubjId(JSON.stringify(data.crowdsourcinSubjId));
     }
-    if (data.hasOwnProperty('timeDelayStd')){
+    if (data.hasOwnProperty('timeDelayStd')) {
         var shortend = Math.round(parseFloat(data.timeDelayStd) * 10) / 10;
-        this.timeDelayStd(shortend+" ms");
+        this.timeDelayStd(shortend + " ms");
     }
-    if (data.hasOwnProperty('subjCounterGlobal')){
+    if (data.hasOwnProperty('subjCounterGlobal')) {
         this.subjCounterGlobal(data.subjCounterGlobal);
     }
-    if (data.hasOwnProperty('subjCounterPerGroup')){
+    if (data.hasOwnProperty('subjCounterPerGroup')) {
         this.subjCounterPerGroup(data.subjCounterPerGroup);
     }
-    if (data.hasOwnProperty('roleId')){
+    if (data.hasOwnProperty('roleId')) {
         this.roleId(data.roleId);
     }
-    if (data.hasOwnProperty('displayedLanguage')){
+    if (data.hasOwnProperty('displayedLanguage')) {
         this.displayedLanguage(data.displayedLanguage);
     }
 

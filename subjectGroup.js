@@ -14,12 +14,12 @@ var SubjectGroup = function (expData) {
     this.type = "SubjectGroup";
 
     // the following array is extended with sortById to fix a bug with ko-sortable when adding new sub items in a newly created item:
-    this.sessions = ko.observableArray([]).extend({sortById: {do_not_warn_when_double_entries: true}});
-    this.sessionTimeData = ko.observableArray([]).extend({sortById: null});
-    this.editName =  ko.observable(false);
-    
+    this.sessions = ko.observableArray([]).extend({ sortById: { do_not_warn_when_double_entries: true } });
+    this.sessionTimeData = ko.observableArray([]).extend({ sortById: null });
+    this.editName = ko.observable(false);
+
     this.genderRequirement = ko.observable('all');
-    this.ageRequirement = ko.observableArray([0,120]); // min age, max age
+    this.ageRequirement = ko.observableArray([0, 120]); // min age, max age
     this.countryRequirement = ko.observableArray([]);
     this.languageRequirement = ko.observableArray([]);
     this.selfDefinedRequirements = ko.observableArray([]);
@@ -32,46 +32,46 @@ var SubjectGroup = function (expData) {
 };
 
 
-SubjectGroup.prototype.addSession = function(session) {
-    var sessionTimeSettings  = new SessionTimeData(this.expData);
+SubjectGroup.prototype.addSession = function (session) {
+    var sessionTimeSettings = new SessionTimeData(this.expData);
     this.sessionTimeData.push(sessionTimeSettings);
     this.sessions.push(session);
     this.expData.addEntity(sessionTimeSettings);
 };
 
-SubjectGroup.prototype.rename = function(idx,flag,data,event) {
+SubjectGroup.prototype.rename = function (idx, flag, data, event) {
     event.stopImmediatePropagation();
-    if (flag == "true"){
+    if (flag == "true") {
         this.editName(true);
     }
-    else if (flag == "false"){
+    else if (flag == "false") {
         this.editName(false);
     }
 };
 
-SubjectGroup.prototype.renameSession = function(idx,flag) {
+SubjectGroup.prototype.renameSession = function (idx, flag) {
 
-    if (flag == "true"){
+    if (flag == "true") {
         this.sessions()[idx].editName(true);
     }
-    else if (flag == "false"){
+    else if (flag == "false") {
         this.sessions()[idx].editName(false);
     }
 };
 
 
-SubjectGroup.prototype.removeAllSessionsByVal = function(session) {
+SubjectGroup.prototype.removeAllSessionsByVal = function (session) {
     var idx = this.sessions().indexOf(session);
-    while (idx > -1){
-        this.sessionTimeData.splice(idx,1);
-        this.sessions.splice(idx,1);
+    while (idx > -1) {
+        this.sessionTimeData.splice(idx, 1);
+        this.sessions.splice(idx, 1);
         idx = this.sessions().indexOf(session); // check for more in loop
     }
 };
 
-SubjectGroup.prototype.removeSession= function(idx) {
-    this.sessionTimeData.splice(idx,1);
-    this.sessions.splice(idx,1);
+SubjectGroup.prototype.removeSession = function (idx) {
+    this.sessionTimeData.splice(idx, 1);
+    this.sessions.splice(idx, 1);
 };
 
 /**
@@ -81,15 +81,15 @@ SubjectGroup.prototype.removeSession= function(idx) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-SubjectGroup.prototype.setPointers = function(entitiesArr) {
+SubjectGroup.prototype.setPointers = function (entitiesArr) {
     // convert ids to actual pointers:
-    this.sessions(jQuery.map( this.sessions(), function( id ) {
+    this.sessions(jQuery.map(this.sessions(), function (id) {
         return entitiesArr.byId[id];
-    } ));
+    }));
 
-    this.sessionTimeData(jQuery.map( this.sessionTimeData(), function( id ) {
+    this.sessionTimeData(jQuery.map(this.sessionTimeData(), function (id) {
         return entitiesArr.byId[id];
-    } ));
+    }));
 };
 
 /**
@@ -97,27 +97,27 @@ SubjectGroup.prototype.setPointers = function(entitiesArr) {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-SubjectGroup.prototype.reAddEntities = function(entitiesArr) {
+SubjectGroup.prototype.reAddEntities = function (entitiesArr) {
 
     // add the direct child nodes:
-    jQuery.each( this.sessions(), function( index, elem ) {
+    jQuery.each(this.sessions(), function (index, elem) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(elem.id()))
             entitiesArr.push(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
         elem.reAddEntities(entitiesArr);
-    } );
+    });
 
     // add the direct child nodes:
-    jQuery.each( this.sessionTimeData(), function( index, elem ) {
+    jQuery.each(this.sessionTimeData(), function (index, elem) {
         // check if they are not already in the list:
         if (!entitiesArr.byId.hasOwnProperty(elem.id()))
             entitiesArr.push(elem);
 
         // recursively make sure that all deep tree nodes are in the entities list:
         elem.reAddEntities(entitiesArr);
-    } );
+    });
 };
 
 /**
@@ -125,7 +125,7 @@ SubjectGroup.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {SubjectGroup}
  */
-SubjectGroup.prototype.fromJS = function(data) {
+SubjectGroup.prototype.fromJS = function (data) {
     this.id(data.id);
     this.name(data.name);
     this.sessions(data.sessions);
@@ -135,7 +135,7 @@ SubjectGroup.prototype.fromJS = function(data) {
     this.ageRequirement(data.ageRequirement);
 
     var countryRequirement = [];
-    for (var i=0; i<data.countryRequirement.length; i++) {
+    for (var i = 0; i < data.countryRequirement.length; i++) {
         var country = countries_by_code[data.countryRequirement[i]];
         if (country) {
             countryRequirement.push(country);
@@ -144,7 +144,7 @@ SubjectGroup.prototype.fromJS = function(data) {
     this.countryRequirement(countryRequirement);
 
     var languageRequirement = [];
-    for (var i=0; i<data.languageRequirement.length; i++) {
+    for (var i = 0; i < data.languageRequirement.length; i++) {
         var language = languages_by_code[data.languageRequirement[i]];
         if (language) {
             languageRequirement.push(language);
@@ -173,15 +173,15 @@ SubjectGroup.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-SubjectGroup.prototype.toJS = function() {
+SubjectGroup.prototype.toJS = function () {
 
     var countryRequirement = [];
-    for (var i=0; i<this.countryRequirement().length; i++) {
+    for (var i = 0; i < this.countryRequirement().length; i++) {
         countryRequirement.push(this.countryRequirement()[i].code);
     }
 
     var languageRequirement = [];
-    for (var i=0; i<this.languageRequirement().length; i++) {
+    for (var i = 0; i < this.languageRequirement().length; i++) {
         languageRequirement.push(this.languageRequirement()[i].code);
     }
 
@@ -190,7 +190,7 @@ SubjectGroup.prototype.toJS = function() {
         name: this.name(),
         type: this.type,
         genderRequirement: this.genderRequirement(),
-        ageRequirement:this.ageRequirement(),
+        ageRequirement: this.ageRequirement(),
         countryRequirement: countryRequirement,
         languageRequirement: languageRequirement,
         selfDefinedRequirements: this.selfDefinedRequirements(),
@@ -198,8 +198,8 @@ SubjectGroup.prototype.toJS = function() {
         enabledAge: this.enabledAge(),
         enabledCountry: this.enabledCountry(),
         enabledLanguage: this.enabledLanguage(),
-        sessions: jQuery.map( this.sessions(), function( elem ) { return elem.id(); } ),
-        sessionTimeData: jQuery.map( this.sessionTimeData(), function( elem ) { return elem.id(); } )
+        sessions: jQuery.map(this.sessions(), function (elem) { return elem.id(); }),
+        sessionTimeData: jQuery.map(this.sessionTimeData(), function (elem) { return elem.id(); })
     };
 };
 

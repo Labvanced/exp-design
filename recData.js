@@ -6,7 +6,7 @@
  * this class stores the data that should be recorded.
  * @constructor
  */
-var RecData = function() {
+var RecData = function () {
     this.data = {};
 };
 
@@ -15,7 +15,7 @@ var RecData = function() {
  * add the recording of a variable to data
  * @param {globalVar} globalVar - variable to be recorded
  */
-RecData.prototype.addRecording = function(globalVar){
+RecData.prototype.addRecording = function (globalVar) {
     this.data[globalVar.id()] = globalVar.getRecAtEndOfTrial();
 };
 
@@ -24,7 +24,7 @@ RecData.prototype.addRecording = function(globalVar){
  * @param {object} data - the json description of the states.
  * @returns {RecData}
  */
-RecData.prototype.fromJS = function(data) {
+RecData.prototype.fromJS = function (data) {
     this.data = data.data;
     return this;
 };
@@ -33,7 +33,7 @@ RecData.prototype.fromJS = function(data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-RecData.prototype.toJS = function() {
+RecData.prototype.toJS = function () {
     return {
         data: this.data
     };

@@ -6,7 +6,7 @@
  * @param {ExpData} expData - The global ExpData, where all instances can be retrieved by id.
  * @constructor
  */
-var Factor = function(expData, factorGroup) {
+var Factor = function (expData, factorGroup) {
     var self = this;
     this.expData = expData;
     this.factorGroup = factorGroup;
@@ -15,56 +15,56 @@ var Factor = function(expData, factorGroup) {
     this.type = "Factor";
     this.id = ko.observable(guid());
     this.globalVar = ko.observable(null);
-    this.factorType =  ko.observable('fixed');// either 'fixed' or 'random'
-    this.randomizationType =  ko.observable('unbalanced');
-    this.balancedInFactor =  ko.observable(null);
-    this.balancedInFactors =  ko.observableArray([]);
+    this.factorType = ko.observable('fixed');// either 'fixed' or 'random'
+    this.randomizationType = ko.observable('unbalanced');
+    this.balancedInFactor = ko.observable(null);
+    this.balancedInFactors = ko.observableArray([]);
 
     // or maybe better: either 'allFactorialInteractions' or 'redrawRandomPerTrial' or 'balancedBetweenSubjects'
 
 
 
     // not serialized:
-    this.nrLevels =  ko.observable(1);
+    this.nrLevels = ko.observable(1);
     this.editName = ko.observable(false);
     this.markedForDeletion = false;
 
 };
 
 
-Factor.prototype.addFactorDependency = function(factor) {
+Factor.prototype.addFactorDependency = function (factor) {
 
-    var obj ={
-        name:factor.globalVar().name(),
-        id:factor.id(),
-        hasDependency:  ko.observable(false)
+    var obj = {
+        name: factor.globalVar().name(),
+        id: factor.id(),
+        hasDependency: ko.observable(false)
     };
     this.balancedInFactors.push(obj);
 };
 
 
-Factor.prototype.removeFactorDependency = function(index) {
-    this.balancedInFactors.splice(index,1);
+Factor.prototype.removeFactorDependency = function (index) {
+    this.balancedInFactors.splice(index, 1);
 };
 
 
-Factor.prototype.init = function(name,globVar) {
+Factor.prototype.init = function (name, globVar) {
     var self = this;
 
-    for (var i = 0; i<this.factorGroup.factors().length; i++){
+    for (var i = 0; i < this.factorGroup.factors().length; i++) {
         var fac = this.factorGroup.factors()[i];
-        var obj ={
-            name:fac.globalVar().name(),
-            id:fac.id(),
-            hasDependency:  ko.observable(false)
+        var obj = {
+            name: fac.globalVar().name(),
+            id: fac.id(),
+            hasDependency: ko.observable(false)
         };
         this.balancedInFactors.push(obj);
     }
 
-    if (globVar){
+    if (globVar) {
         this.globalVar(globVar);
     }
-    else{
+    else {
         var globalVar = (new GlobalVar(this.expData)).initProperties('categorical', 'trial', 'nominal', name);
         globalVar.isFactor(true);
         globalVar.isInteracting(true);
@@ -83,33 +83,33 @@ Factor.prototype.init = function(name,globVar) {
     var found = false;
     var i = 0;
     var sequences = this.factorGroup.expTrialLoop.subSequencePerFactorGroup();
-    while (!found && i<sequences.length){
-        if (sequences[i].factorGroup.name() == name){
+    while (!found && i < sequences.length) {
+        if (sequences[i].factorGroup.name() == name) {
             found = true;
         }
-        else{
+        else {
             i++
         }
     }
-    if (found){
-       sequences[i].addVariableToWorkspace(this.globalVar());
+    if (found) {
+        sequences[i].addVariableToWorkspace(this.globalVar());
     }
     this.setVariableBackRef();
 
-    this.factorType.subscribe(function(val) {
+    this.factorType.subscribe(function (val) {
         self.factorGroup.updateCondGroups()
     });
 };
 
-Factor.prototype.removeBackRef = function() {
+Factor.prototype.removeBackRef = function () {
     this.globalVar().removeBackRef(this);
 };
 
 
-Factor.prototype.setVariableBackRef = function() {
+Factor.prototype.setVariableBackRef = function () {
     var self = this;
     if (this.globalVar() instanceof GlobalVar) {
-        this.globalVar().addBackRef(this, this.factorGroup, true, true, 'Factor', function(globalVar)  {
+        this.globalVar().addBackRef(this, this.factorGroup, true, true, 'Factor', function (globalVar) {
             // check if this factor is still beeing used:
             var still_in_use = true;
             if (!still_in_use) {
@@ -121,21 +121,21 @@ Factor.prototype.setVariableBackRef = function() {
 };
 
 
-Factor.prototype.updateLevels = function() {
+Factor.prototype.updateLevels = function () {
     this.globalVar().levels([]);
-   // var nrLevel = this.globalVar().levels().length >0 ? this.globalVar().levels().length : 1;
-    for(var i = 0;i<this.nrLevels();i++){
+    // var nrLevel = this.globalVar().levels().length >0 ? this.globalVar().levels().length : 1;
+    for (var i = 0; i < this.nrLevels(); i++) {
         this._addLevel();
     }
 };
 
-Factor.prototype.addLevel = function() {
+Factor.prototype.addLevel = function () {
     this._addLevel();
     if (this.factorGroup) {
         this.factorGroup.addLevelToCondition();
         this.factorGroup.updateCondGroups();
     }
-    if (this.factorGroup.expTrialLoop.subSequencePerFactorGroup().length>1){
+    if (this.factorGroup.expTrialLoop.subSequencePerFactorGroup().length > 1) {
         this.factorGroup.expTrialLoop.subSequencePerFactorGroup().forEach(function (sequence) {
             sequence.factorGroup.addLevelToCondition();
             sequence.factorGroup.updateCondGroups();
@@ -144,24 +144,24 @@ Factor.prototype.addLevel = function() {
 
 };
 
-Factor.prototype.removeLevel = function(lvlIdx) {
-    this.factorGroup.removeLevelFromFactor(this,lvlIdx);
+Factor.prototype.removeLevel = function (lvlIdx) {
+    this.factorGroup.removeLevelFromFactor(this, lvlIdx);
     this.globalVar().removeLevel(lvlIdx);
     this.factorGroup.updateCondGroups();
 
     // remove lvl form other task with same factor
     var self = this;
-    var refs =  this.globalVar().backRefs();
-    refs.forEach(function(ref){
-      if (ref.refLabel == 'Factor' && ref.entity.factorGroup !==self.factorGroup) {
-         ref.entity.factorGroup.removeLevelFromFactor(ref.entity,lvlIdx);
-         ref.entity.factorGroup.updateCondGroups();
-      }
+    var refs = this.globalVar().backRefs();
+    refs.forEach(function (ref) {
+        if (ref.refLabel == 'Factor' && ref.entity.factorGroup !== self.factorGroup) {
+            ref.entity.factorGroup.removeLevelFromFactor(ref.entity, lvlIdx);
+            ref.entity.factorGroup.updateCondGroups();
+        }
     });
 
 };
 
-Factor.prototype._addLevel = function() {
+Factor.prototype._addLevel = function () {
     this.globalVar().addLevel();
 };
 
@@ -172,23 +172,23 @@ Factor.prototype._addLevel = function() {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-Factor.prototype.setPointers = function(entitiesArr) {
+Factor.prototype.setPointers = function (entitiesArr) {
     var self = this;
     var globalVar = entitiesArr.byId[this.globalVar()];
-    if (globalVar instanceof GlobalVar){
+    if (globalVar instanceof GlobalVar) {
         this.globalVar(globalVar);
         var balancedInFactor = entitiesArr.byId[this.balancedInFactor()];
-        if (balancedInFactor){
+        if (balancedInFactor) {
             this.balancedInFactor(balancedInFactor);
         }
 
         var balancedInFactors = [];
-        jQuery.each( this.balancedInFactors(), function( index, elem ) {
-            if (entitiesArr.byId[elem.id] instanceof Factor){
+        jQuery.each(this.balancedInFactors(), function (index, elem) {
+            if (entitiesArr.byId[elem.id] instanceof Factor) {
                 var obj = {
-                    name:  elem.name,
-                    id:  elem.id,
-                    hasDependency:  ko.observable(elem.hasDependency)
+                    name: elem.name,
+                    id: elem.id,
+                    hasDependency: ko.observable(elem.hasDependency)
                 };
                 balancedInFactors.push(obj);
             }
@@ -198,7 +198,7 @@ Factor.prototype.setPointers = function(entitiesArr) {
 
         this.randomizationConverter();
     }
-    else{ // this should not happen, variable of factor no longer exits!
+    else { // this should not happen, variable of factor no longer exits!
         this.markedForDeletion = true;
     }
 
@@ -207,7 +207,7 @@ Factor.prototype.setPointers = function(entitiesArr) {
 /**
  * this function is automatically called after all setPointers have been executed.
  */
-Factor.prototype.onFinishedLoading = function() {
+Factor.prototype.onFinishedLoading = function () {
     if (this.markedForDeletion) {
         if (this.factorGroup) {
             this.factorGroup.removeFactor(this);
@@ -223,12 +223,12 @@ Factor.prototype.onFinishedLoading = function() {
  *
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
-Factor.prototype.reAddEntities = function(entitiesArr) {
-    if (this.globalVar() instanceof GlobalVar){
+Factor.prototype.reAddEntities = function (entitiesArr) {
+    if (this.globalVar() instanceof GlobalVar) {
         if (!entitiesArr.byId.hasOwnProperty(this.globalVar().id()))
             entitiesArr.push(this.globalVar());
 
-        if (this.randomizationType()=='balancedInFactor') {
+        if (this.randomizationType() == 'balancedInFactor') {
             if (this.balancedInFactor()) {
                 if (!entitiesArr.byId.hasOwnProperty(this.balancedInFactor().id()))
                     entitiesArr.push(this.balancedInFactor());
@@ -243,13 +243,13 @@ Factor.prototype.reAddEntities = function(entitiesArr) {
  * @param {object} data - the json description of the states.
  * @returns {Factor}
  */
-Factor.prototype.fromJS = function(data) {
+Factor.prototype.fromJS = function (data) {
     this.id(data.id);
     this.factorType(data.factorType);
-    if (data.hasOwnProperty('randomizationType')){
+    if (data.hasOwnProperty('randomizationType')) {
         this.randomizationType(data.randomizationType);
     }
-    if (data.hasOwnProperty('balancedInFactor')){
+    if (data.hasOwnProperty('balancedInFactor')) {
         this.balancedInFactor(data.balancedInFactor);
     }
     if (data.hasOwnProperty("balancedInFactors")) {
@@ -260,21 +260,21 @@ Factor.prototype.fromJS = function(data) {
     return this;
 };
 
-Factor.prototype.resetFactorDependencies = function() {
+Factor.prototype.resetFactorDependencies = function () {
     this.balancedInFactors([]);
-    if (this.factorGroup){
-        for (var i = 0; i<this.factorGroup.factors().length; i++){
+    if (this.factorGroup) {
+        for (var i = 0; i < this.factorGroup.factors().length; i++) {
             var fac = this.factorGroup.factors()[i];
-            if (fac instanceof Factor){
-                var globalV= fac.globalVar();
-                if (!(globalV instanceof GlobalVar)){
+            if (fac instanceof Factor) {
+                var globalV = fac.globalVar();
+                if (!(globalV instanceof GlobalVar)) {
                     globalV = this.expData.entities.byId[globalV];
                 }
-                if (globalV instanceof GlobalVar){
-                    var obj ={
-                        name:globalV.name(),
-                        id:fac.id(),
-                        hasDependency:  ko.observable(false)
+                if (globalV instanceof GlobalVar) {
+                    var obj = {
+                        name: globalV.name(),
+                        id: fac.id(),
+                        hasDependency: ko.observable(false)
                     };
                     this.balancedInFactors.push(obj);
                 }
@@ -286,16 +286,16 @@ Factor.prototype.resetFactorDependencies = function() {
 
 };
 
-Factor.prototype.randomizationConverter = function() {
+Factor.prototype.randomizationConverter = function () {
 
-    if (this.balancedInFactors().length==0){
-       this.resetFactorDependencies();
+    if (this.balancedInFactors().length == 0) {
+        this.resetFactorDependencies();
     }
 
-    if (this.randomizationType() == 'balancedInFactor'){
+    if (this.randomizationType() == 'balancedInFactor') {
         var varId = this.balancedInFactor();
-        for (var i=0; i < this.balancedInFactors().length; i++){
-            if (this.balancedInFactors()[i].id == varId){
+        for (var i = 0; i < this.balancedInFactors().length; i++) {
+            if (this.balancedInFactors()[i].id == varId) {
                 this.balancedInFactors()[i].hasDependency(true);
             }
         }
@@ -303,19 +303,19 @@ Factor.prototype.randomizationConverter = function() {
         this.balancedInFactor(null);
     }
 
-    else if (this.randomizationType() == 'balancedConditions'){
+    else if (this.randomizationType() == 'balancedConditions') {
         var varIds = [];
-        var allFactors  =  this.factorGroup.factors();
-        for (var i=0; i < allFactors.length; i++){
-            if (allFactors[i].factorType() == 'fixed'){
+        var allFactors = this.factorGroup.factors();
+        for (var i = 0; i < allFactors.length; i++) {
+            if (allFactors[i].factorType() == 'fixed') {
                 varIds.push(allFactors[i].id());
             }
         }
 
-        for (var i=0; i < this.balancedInFactors().length; i++){
-            for (var k=0; k < varIds.length; k++){
+        for (var i = 0; i < this.balancedInFactors().length; i++) {
+            for (var k = 0; k < varIds.length; k++) {
                 var varId = varIds[k];
-                if (this.balancedInFactors()[i].id == varId){
+                if (this.balancedInFactors()[i].id == varId) {
                     this.balancedInFactors()[i].hasDependency(true);
                 }
             }
@@ -332,28 +332,28 @@ Factor.prototype.randomizationConverter = function() {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-Factor.prototype.toJS = function() {
+Factor.prototype.toJS = function () {
     var balancedInFactorId = null;
-    if (this.randomizationType()=='balancedInFactor') {
+    if (this.randomizationType() == 'balancedInFactor') {
         if (this.balancedInFactor() instanceof Factor) {
             balancedInFactorId = this.balancedInFactor().id();
         }
     }
 
     var balancedInFactors = [];
-    for (var i=0; i < this.balancedInFactors().length; i++){
-        if (this.expData.entities.byId[this.balancedInFactors()[i].id] instanceof Factor){
+    for (var i = 0; i < this.balancedInFactors().length; i++) {
+        if (this.expData.entities.byId[this.balancedInFactors()[i].id] instanceof Factor) {
             var dep = null;
-             if (typeof this.balancedInFactors()[i].hasDependency === 'function'){
-                 dep = this.balancedInFactors()[i].hasDependency()
-             }
-             else{
-                 dep = this.balancedInFactors()[i].hasDependency;
-             }
+            if (typeof this.balancedInFactors()[i].hasDependency === 'function') {
+                dep = this.balancedInFactors()[i].hasDependency()
+            }
+            else {
+                dep = this.balancedInFactors()[i].hasDependency;
+            }
             var obj = {
-                name:  this.balancedInFactors()[i].name,
-                id:  this.balancedInFactors()[i].id,
-                hasDependency:  dep
+                name: this.balancedInFactors()[i].name,
+                id: this.balancedInFactors()[i].id,
+                hasDependency: dep
             };
             balancedInFactors.push(obj);
         }
@@ -368,7 +368,7 @@ Factor.prototype.toJS = function() {
         type: this.type,
         id: this.id(),
         factorType: this.factorType(),
-        randomizationType:this.randomizationType(),
+        randomizationType: this.randomizationType(),
         balancedInFactor: balancedInFactorId,
         balancedInFactors: balancedInFactors,
         globalVar: globalVarId
