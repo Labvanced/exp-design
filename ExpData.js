@@ -839,7 +839,6 @@ ExpData.prototype.addVarToHashList = function (variable) {
         if (!(this.allVariables.hasOwnProperty(variable.name().toLowerCase()))) {
             this.allVariables[variable.name().toLowerCase()] = variable;
         }
-
         else if (this.allVariables[variable.name().toLowerCase()] instanceof Array) {
             var idx = this.allVariables[variable.name().toLowerCase()].indexOf(variable);
             if (idx == -1) {
@@ -847,7 +846,6 @@ ExpData.prototype.addVarToHashList = function (variable) {
             }
 
         }
-
         else {
             var temp = this.allVariables[variable.name().toLowerCase()];
             if (temp !== variable) {
@@ -856,7 +854,35 @@ ExpData.prototype.addVarToHashList = function (variable) {
 
         }
     }
+};
 
+ExpData.prototype.getVarByName = function (varName) {
+    var nameCaseInsensitive = varName.toLowerCase();
+    var varCandidates = this.allVariables[nameCaseInsensitive];
+    if (!varCandidates) {
+        return null;
+    }
+    else if (varCandidates instanceof Array) {
+        // check for case sensitive perfect match:
+        var perfectMatches = varCandidates.filter(function (globVar) {
+            return (globVar.name() == varName);
+        });
+        if (perfectMatches.length > 0) {
+            // return the first found perfect match:
+            return perfectMatches[0];
+        }
+        else {
+            // no perfect match, so return first case insensitive match:
+            return varCandidates[0];
+        }
+    }
+    else if (varCandidates instanceof GlobalVar) {
+        return varCandidates;
+    }
+    else {
+        console.error("found invalid value in varName hashlist! return null...");
+        return null;
+    }
 };
 
 ExpData.prototype.deleteVarFromHashList = function (variable, oldName) {

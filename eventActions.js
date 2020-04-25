@@ -219,6 +219,181 @@ ActionRecord.prototype.toJS = function () {
 };
 
 
+/////////////////////////////////////////////////  ActionRunJavascript  /////////////////////////////////////////////////// // depreciated!
+
+/**
+ * This action can record values (i.e. elementTag or reactiontime) into variables and sends them to the server.
+ * @param {ExpEvent} event - the parent event
+ * @constructor
+ */
+var ActionRunJavascript = function (event) {
+    this.event = event;
+    this.jsCode = ko.observable(ActionRunJavascript.prototype.defaultCode);
+};
+
+ActionRunJavascript.prototype.type = "ActionRunJavascript";
+ActionRunJavascript.prototype.label = "Run JavaScript";
+ActionRunJavascript.prototype.defaultCode = "";
+ActionRunJavascript.prototype.defaultCode += 'var nr = getValue("Trial_Nr");\n';
+ActionRunJavascript.prototype.defaultCode += 'if (nr < 3) {\n';
+ActionRunJavascript.prototype.defaultCode += '    console.log("nr = " + nr);\n';
+ActionRunJavascript.prototype.defaultCode += '}';
+ActionRunJavascript.prototype.defaultCode += 'else {\n';
+ActionRunJavascript.prototype.defaultCode += '    setValue("VariableName", nr);\n';
+ActionRunJavascript.prototype.defaultCode += '}';
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionRunJavascript.prototype.isValid = function () {
+    return true;
+};
+
+/**
+ * this function is called in the player when the frame starts. It sets up the knockout subscribers at the globalVars.
+ *
+ * @param {PlayerFrame} playerFrame - the corresponding playerFrame
+ */
+ActionRunJavascript.prototype.setupOnPlayerFrame = function (playerFrame) {
+    if (!window.hasOwnProperty('Interpreter')) {
+        var script = document.createElement('script');
+        script.src = "assets/js/acorn_interpreter.js";
+        document.head.appendChild(script);
+    }
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It creates the RecData and
+ * sends them to the server.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionRunJavascript.prototype.run = function (triggerParams) {
+    var self = this;
+    if (window.hasOwnProperty('Interpreter')) {
+        console.log("************* starting custom js code *****************")
+        this.runInterpreter();
+        console.log("************* finished custom js code *****************")
+    }
+    else {
+        console.warn("need to wait until interpreter loading and parsing is finished...");
+        setTimeout(function () {
+            self.run();
+        }, 300);
+    }
+};
+
+ActionRunJavascript.prototype.runInterpreter = function () {
+    var self = this;
+
+    var code = "";
+    code += "function getValue(varName) { return JSON.parse(getValueWrapper(varName)); }\n";
+    code += "function setValue(varName, value) { setValueWrapper(varName, JSON.stringify(value)); }\n";
+    code += this.jsCode();
+
+    var myInterpreter = new Interpreter(code, function (interpreter, globalObject) {
+        self.interpreterInitFunc(interpreter, globalObject);
+    });
+    myInterpreter.run();
+}
+
+ActionRunJavascript.prototype.interpreterInitFunc = function (interpreter, globalObject) {
+    var self = this;
+
+    var getValueWrapper = function (varName) {
+        var myVariable = self.event.parent.expData.getVarByName(varName);
+        if (myVariable) {
+            var myValue;
+            if (myVariable.dataFormat() == "array") {
+                // need to use inner function such that scalar values within array are converted to primitive types:
+                myValue = myVariable.value().getValue();
+            }
+            else {
+                myValue = myVariable.getValue();
+            }
+            return JSON.stringify(myValue);
+        }
+        else {
+            console.warn("no variable with name was found! varName = " + varName)
+            return null;
+        }
+    };
+    interpreter.setProperty(globalObject, 'getValueWrapper', interpreter.createNativeFunction(getValueWrapper));
+
+    var setValueWrapper = function (varName, valueJSON) {
+        var value = JSON.parse(valueJSON);
+        var myVariable = self.event.parent.expData.getVarByName(varName);
+        if (myVariable) {
+            myVariable.setValue(value);
+        }
+        else {
+            console.warn("setValue was not able to find variable with name " + varName)
+        }
+    };
+    interpreter.setProperty(globalObject, 'setValueWrapper', interpreter.createNativeFunction(setValueWrapper));
+
+    // Create 'console' global object and methods log, warn, error.
+    var consoleObj = interpreter.nativeToPseudo({});
+    interpreter.setProperty(globalObject, 'console', consoleObj);
+    var consoleLog = function () {
+        for (var i = 0; i < arguments.length; i++) {
+            console.log("************* " + arguments[i]);
+        }
+    };
+    interpreter.setProperty(consoleObj, 'log', interpreter.createNativeFunction(consoleLog));
+    interpreter.setProperty(consoleObj, 'warn', interpreter.createNativeFunction(consoleLog));
+    interpreter.setProperty(consoleObj, 'error', interpreter.createNativeFunction(consoleLog));
+
+}
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionRunJavascript.prototype.destroyOnPlayerFrame = function (playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionRunJavascript.prototype.setPointers = function (entitiesArr) {
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionRunJavascript.prototype.reAddEntities = function (entitiesArr) {
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionRunJavascript}
+ */
+ActionRunJavascript.prototype.fromJS = function (data) {
+    this.jsCode(data.jsCode);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionRunJavascript.prototype.toJS = function () {
+    return {
+        type: this.type,
+        jsCode: this.jsCode()
+    };
+};
+
+
 ////////////////////////////////////////  ActionSetElementProp  ///////////////////////////////////////////////////
 
 /**
