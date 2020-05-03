@@ -135,7 +135,7 @@ ko.components.register('contentElementPlayerview', {
                 elem = $("<div data-bind='component: {name : \"display-text-element-playerview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof ButtonElement) {
-                elem = $("<div data-bind='component: {name : \"button-playerview\", params : $data.contentElement}'></div>");
+                elem = $("<div style='height: 100%' data-bind='component: {name : \"button-playerview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof InvisibleElement) {
                 elem = $("<div data-bind='component: {name : \"invisible-playerview\", params : $data.contentElement}'></div>");
@@ -150,7 +150,7 @@ ko.components.register('contentElementPlayerview', {
                 elem = $("<div data-bind='component: {name : \"audio-playerview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof NaviElement) {
-                elem = $("<div data-bind='component: {name : \"navigation-playerview\", params : $data.contentElement}'></div>");
+                elem = $("<div style='height: 100%' data-bind='component: {name : \"navigation-playerview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof LikertElement) {
                 elem = $("<div data-bind='component: {name : \"likert-playerview\", params : $data.contentElement}'></div>");

@@ -1,18 +1,43 @@
 <template id="button-editview-template">
     <div class="panel-body"
          style="height: 100%; margin-top: -10px">
-        <div class="taskeditor-header">Button</div>
+        <div class="taskeditor-header">Button Group</div>
         <span style="cursor: pointer"
-              data-bind="click: addButton"><img width="20"
+              data-bind="click: addButton">
+            <img width="20"
                  height="20"
                  src="/resources/icons/add.svg" /> Add Button</span>
+        <br>
         <span style="cursor: pointer"
-              data-bind="click: deleteButton"><img width="20"
+              data-bind="click: deleteButton">
+            <img width="20"
                  height="20"
                  src="/resources/icons/delete_dark.svg" /> Remove Button</span>
         <br>
-        <span>Default Color: </span><input id="bgColorPickerDefault">
-        <span>Hover Color: </span><input id="bgColorPickerHover">
+        <label class="property-description"
+               for="buttonColor">Button-Color:</label>
+        <input class="taskeditor-input"
+               id="buttonColor"
+               type="color"
+               data-bind="{valueUpdate: 'input', value: dataModel.modifier().selectedTrialView.bgColorDefault, css: { 'modified-prop': !(dataModel.bgColorDefault()==dataModel.modifier().selectedTrialView.bgColorDefault()) }}"
+               style="width: 60px; cursor: pointer" />
+        <br>
+        <label class="property-description"
+               for="hoverColor">Hover-Color:</label>
+        <input class="taskeditor-input"
+               id="hoverColor"
+               type="color"
+               data-bind="{valueUpdate: 'input', value: dataModel.modifier().selectedTrialView.bgColorHover, css: { 'modified-prop': !(dataModel.bgColorHover()==dataModel.modifier().selectedTrialView.bgColorHover()) }}"
+               style="width: 60px; cursor: pointer" />
+        <br>
+        <label class="property-description"
+               style="cursor: pointer"
+               for="fill-bounding-box">Fill Box:</label>
+        <input class="taskeditor-checkbox"
+               id="fill-bounding-box"
+               type="checkbox"
+               style="width: 60px;"
+               data-bind="checked: dataModel.fillVertical">
     </div>
 </template>
 
@@ -21,19 +46,18 @@
          data-bind="foreach: dataModel.buttonEntries">
         <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
             <div class="navi-button"
-                 data-bind="component: {name : 'editable-text-element-preview', params : $data.buttonText}, valueUpdate: afterkeydown, style:{backgroundColor: $data.currentColor()}, event:{ mouseover: function(data,event){$data.enableHighlight($element)}, mouseout: function(data,event){$data.disableHighlight()}}">
+                 data-bind="component: {name : 'editable-text-element-preview', params : $data.buttonText}, valueUpdate: afterkeydown, css: { 'button-fill-vertical': $data.parent.fillVertical() }, style:{backgroundColor: $data.currentColor()}, event:{ mouseover: function(data,event){$data.enableHighlight($element)}, mouseout: function(data,event){$data.disableHighlight()}}">
             </div>
-
         </div>
     </div>
 </template>
 
 <template id="button-playerview-template">
-    <div class="navigationWrapper"
+    <div class="navigationWrapper disabled-text-select"
          data-bind="foreach: dataModel.buttonEntries">
         <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
             <div class="navi-button"
-                 data-bind="component: {name : 'editable-text-element-playerview', params : $data.buttonText}, style:{backgroundColor: $data.currentColor()}, event:{ mouseover: function(data,event){$data.enableHighlight($element)}, mouseout: function(data,event){$data.disableHighlight()}}">
+                 data-bind="component: {name : 'editable-text-element-playerview', params : $data.buttonText}, css: { 'button-fill-vertical': $data.parent.fillVertical() }, style:{backgroundColor: $data.currentColor()}, event:{ mouseover: function(data,event){$data.enableHighlight($element)}, mouseout: function(data,event){$data.disableHighlight()}}">
             </div>
         </div>
     </div>

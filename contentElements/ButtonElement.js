@@ -11,9 +11,8 @@ var ButtonElement = function (expData) {
     this.bgColorDefault = ko.observable('#99cc66');
     this.bgColorHover = ko.observable('#99de50');
 
-
     this.buttonEntries = ko.observableArray([]);
-
+    this.fillVertical = ko.observable(true);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -81,6 +80,7 @@ ButtonElement.prototype.dispose = function () {
     });
 };
 
+/*
 ButtonElement.prototype.initColorPicker = function () {
 
     var self = this;
@@ -119,7 +119,7 @@ ButtonElement.prototype.initColorPicker = function () {
         $("#bgColorPickerHover").spectrum("set", val);
     });
 
-};
+};*/
 
 ButtonElement.prototype.reAddEntities = function (entitiesArr) {
     jQuery.each(this.buttonEntries(), function (index, elem) {
@@ -141,6 +141,7 @@ ButtonElement.prototype.toJS = function () {
         type: this.type,
         id: this.id(),
         buttonEntries: buttonEntries,
+        fillVertical: this.fillVertical(),
         bgColorDefault: this.bgColorDefault(),
         bgColorHover: this.bgColorHover(),
         modifier: this.modifier().toJS()
@@ -174,6 +175,15 @@ ButtonElement.prototype.fromJS = function (data) {
         this.bgColorDefault(data.bgColorDefault);
         this.bgColorHover(data.bgColorHover);
     }
+
+    if (data.hasOwnProperty("fillVertical")) {
+        this.fillVertical(data.fillVertical);
+    }
+    else {
+        // for backwards compatibility (old buttons added before may 2020 did not fill vertically):
+        this.fillVertical(false);
+    }
+
     this.modifier(new Modifier(this.expData, this));
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
@@ -276,7 +286,7 @@ function createButtonElementComponents() {
 
                 var viewModel = function (dataModel) {
                     this.dataModel = dataModel;
-                    this.dataModel.initColorPicker();
+                    //this.dataModel.initColorPicker();
                 };
 
                 viewModel.prototype.addButton = function () {

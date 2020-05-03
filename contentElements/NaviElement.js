@@ -10,6 +10,7 @@ var NaviElement = function (expData) {
     this.bgColorHover = ko.observable('#99de50');
 
     this.buttonEntries = ko.observableArray([]);
+    this.fillVertical = ko.observable(true);
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -29,7 +30,7 @@ NaviElement.prototype.modifiableProp = ["bgColorDefault", "bgColorHover"];
 NaviElement.prototype.dataType = ["string", "string"];
 
 NaviElement.prototype.initWidth = 400;
-NaviElement.prototype.initHeight = 50;
+NaviElement.prototype.initHeight = 40;
 NaviElement.prototype.numVarNamesRequired = 0;
 
 NaviElement.prototype.init = function () {
@@ -194,6 +195,7 @@ NaviElement.prototype.toJS = function () {
         type: this.type,
         id: this.id(),
         buttonEntries: buttonEntries,
+        fillVertical: this.fillVertical(),
         bgColorDefault: this.bgColorDefault(),
         bgColorHover: this.bgColorHover(),
         modifier: this.modifier().toJS()
@@ -233,6 +235,14 @@ NaviElement.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('bgColorDefault')) {
         this.bgColorDefault(data.bgColorDefault);
         this.bgColorHover(data.bgColorHover);
+    }
+
+    if (data.hasOwnProperty("fillVertical")) {
+        this.fillVertical(data.fillVertical);
+    }
+    else {
+        // for backwards compatibility (old buttons added before may 2020 did not fill vertically):
+        this.fillVertical(false);
     }
 
     this.modifier(new Modifier(this.expData, this));
