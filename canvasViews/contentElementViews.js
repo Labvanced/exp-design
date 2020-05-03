@@ -42,7 +42,7 @@ ko.components.register('contentElementPreview', {
                 elem = $("<div data-bind='component: {name : \"display-text-element-preview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof ButtonElement) {
-                elem = $("<div data-bind='component: {name : \"button-preview\", params : $data.contentElement}'></div>");
+                elem = $("<div style='height: 100%' data-bind='component: {name : \"button-preview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof InvisibleElement) {
                 elem = $("<div data-bind='component: {name : \"invisible-preview\", params : $data.contentElement}'></div>");
@@ -57,7 +57,7 @@ ko.components.register('contentElementPreview', {
                 elem = $("<div data-bind='component: {name : \"audio-preview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof NaviElement) {
-                elem = $("<div data-bind='component: {name : \"navigation-preview\", params : $data.contentElement}'></div>");
+                elem = $("<div style='height: 100%' data-bind='component: {name : \"navigation-preview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof LikertElement) {
                 elem = $("<div data-bind='component: {name : \"likert-preview\", params : $data.contentElement}'></div>");
