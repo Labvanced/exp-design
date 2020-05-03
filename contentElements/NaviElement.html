@@ -14,8 +14,6 @@
         <br>
         <span>Default Color: </span><input id="bgColorPickerDefault">
         <span>Hover Color: </span><input id="bgColorPickerHover">
-
-
     </div>
 </template>
 
@@ -24,7 +22,7 @@
          data-bind="foreach: dataModel.buttonEntries">
         <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
             <div class="navi-button"
-                 data-bind="component: {name : 'editable-text-element-preview', params : $data.buttonText}, valueUpdate: afterkeydown, style:{backgroundColor: $parent.dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){$parent.dataModel.enableHighlight($element)}, mouseout: function(data,event){$parent.dataModel.disableHighlight($element)}}">
+                 data-bind="component: {name : 'editable-text-element-preview', params : $data.buttonText}, valueUpdate: afterkeydown, style:{backgroundColor: $data.currentColor()}, event:{ mouseover: function(data,event){$data.enableHighlight($element)}, mouseout: function(data,event){$data.disableHighlight()}}">
             </div>
         </div>
     </div>
@@ -35,7 +33,7 @@
          data-bind="foreach: dataModel.buttonEntries">
         <div data-bind="style: { width: 100/$parent.dataModel.buttonEntries().length+'%' }">
             <div class="navi-button"
-                 data-bind="component: {name : 'editable-text-element-playerview', params : $data.buttonText}, style:{backgroundColor: $parent.dataModel.bgColorDefault()}, event:{ mouseover: function(data,event){$parent.dataModel.enableHighlight($element)}, mouseout: function(data,event){$parent.dataModel.disableHighlight($element)}}">
+                 data-bind="component: {name : 'editable-text-element-playerview', params : $data.buttonText}, style:{backgroundColor: $data.currentColor()}, event:{ mouseover: function(data,event){$data.enableHighlight($element)}, mouseout: function(data,event){$data.disableHighlight()}}">
             </div>
         </div>
     </div>

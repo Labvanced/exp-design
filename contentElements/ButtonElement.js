@@ -25,8 +25,8 @@ var ButtonElement = function (expData) {
 
 ButtonElement.prototype.label = "Button";
 ButtonElement.prototype.iconPath = "/resources/icons/tools/tool_button.svg";
-ButtonElement.prototype.modifiableProp = [];
-ButtonElement.prototype.dataType = [];
+ButtonElement.prototype.modifiableProp = ["bgColorDefault", "bgColorHover"];
+ButtonElement.prototype.dataType = ["string", "string"];
 ButtonElement.prototype.numVarNamesRequired = 0;
 
 ButtonElement.prototype.initWidth = 120;
@@ -75,48 +75,28 @@ ButtonElement.prototype.setPointers = function (entitiesArr) {
     this.modifier().setPointers(entitiesArr);
 };
 
-ButtonElement.prototype.enableHighlight = function (elem) {
-    var self = this;
-    $(elem).css({
-        'backgroundColor': self.bgColorHover(),
-        'cursor': 'pointer'
-
-    });
-};
-
 ButtonElement.prototype.dispose = function () {
     jQuery.each(this.buttonEntries(), function (index, elem) {
         elem.dispose();
     });
 };
 
-
-ButtonElement.prototype.disableHighlight = function (elem) {
-    var self = this;
-    $(elem).css({
-        'backgroundColor': self.bgColorDefault(),
-        'cursor': 'default'
-    });
-};
-
-
 ButtonElement.prototype.initColorPicker = function () {
 
     var self = this;
     $("#bgColorPickerDefault").spectrum({
-        color: self.bgColorDefault(),
+        color: self.modifier().selectedTrialView.bgColorDefault(),
         preferredFormat: "hex",
         showInput: true,
         change: function (color) {
             var colorStr = color.toHexString();
-            self.bgColorDefault(colorStr);
-
+            self.modifier().selectedTrialView.bgColorDefault(colorStr);
         }
     });
     if (this.bg1Subsciption) {
         this.bg1Subsciption.dispose();
     }
-    this.bg1Subsciption = this.bgColorDefault.subscribe(function (val) {
+    this.bg1Subsciption = this.modifier().selectedTrialView.bgColorDefault.subscribe(function (val) {
         $("#bgColorPickerDefault").spectrum("set", val);
     });
 
@@ -206,8 +186,20 @@ ButtonElement.prototype.fromJS = function (data) {
 
 
 var ButtonEntry = function (parent, initText) {
+    var self = this;
     this.parent = parent;
     this.buttonText = ko.observable(null);
+
+    this.isHovered = ko.observable(false);
+    this.currentColor = ko.computed(function () {
+        if (self.isHovered()) {
+            return self.parent.modifier().selectedTrialView.bgColorHover();
+        }
+        else {
+            return self.parent.modifier().selectedTrialView.bgColorDefault();
+        }
+    })
+
 };
 
 ButtonEntry.prototype.modifiableProp = ["buttonText"];
@@ -216,6 +208,13 @@ ButtonEntry.prototype.dataType = ["string"];
 ButtonEntry.prototype.init = function () {
     this.buttonText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">Button</span></p>'));
     this.buttonText().init();
+};
+
+ButtonEntry.prototype.enableHighlight = function () {
+    this.isHovered(true);
+};
+ButtonEntry.prototype.disableHighlight = function () {
+    this.isHovered(false);
 };
 
 ButtonEntry.prototype.getAllModifiers = function (modifiersArr) {

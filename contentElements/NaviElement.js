@@ -25,8 +25,8 @@ var NaviElement = function (expData) {
 
 NaviElement.prototype.label = "Navigation";
 NaviElement.prototype.iconPath = "/resources/icons/tools/tool_navigation.svg";
-NaviElement.prototype.modifiableProp = [];
-NaviElement.prototype.dataType = [];
+NaviElement.prototype.modifiableProp = ["bgColorDefault", "bgColorHover"];
+NaviElement.prototype.dataType = ["string", "string"];
 
 NaviElement.prototype.initWidth = 400;
 NaviElement.prototype.initHeight = 50;
@@ -102,53 +102,34 @@ NaviElement.prototype.deleteButton = function () {
     }
 };
 
-NaviElement.prototype.enableHighlight = function (elem) {
-    var self = this;
-    $(elem).css({
-        'backgroundColor': self.bgColorHover(),
-        'cursor': 'pointer'
-
-    });
-};
-
-
-NaviElement.prototype.disableHighlight = function (elem) {
-    var self = this;
-    $(elem).css({
-        'backgroundColor': self.bgColorDefault(),
-        'cursor': 'default'
-    });
-};
-
-
 NaviElement.prototype.initColorPicker = function () {
 
     var self = this;
     $("#bgColorPickerDefault").spectrum({
-        color: self.bgColorDefault(),
+        color: self.modifier().selectedTrialView.bgColorDefault(),
         preferredFormat: "hex",
         showInput: true,
         change: function (color) {
             var colorStr = color.toHexString();
-            self.bgColorDefault(colorStr);
+            self.modifier().selectedTrialView.bgColorDefault(colorStr);
 
         }
     });
     if (this.bg1Subsciption) {
         this.bg1Subsciption.dispose();
     }
-    this.bg1Subsciption = this.bgColorDefault.subscribe(function (val) {
+    this.bg1Subsciption = this.modifier().selectedTrialView.bgColorDefault.subscribe(function (val) {
         $("#bgColorPickerDefault").spectrum("set", val);
     });
 
 
     $("#bgColorPickerHover").spectrum({
-        color: self.bgColorHover(),
+        color: self.modifier().selectedTrialView.bgColorHover(),
         preferredFormat: "hex",
         showInput: true,
         change: function (color) {
             var colorStr = color.toHexString();
-            self.bgColorHover(colorStr);
+            self.modifier().selectedTrialView.bgColorHover(colorStr);
 
         }
     });
@@ -156,7 +137,7 @@ NaviElement.prototype.initColorPicker = function () {
     if (this.bg2Subsciption) {
         this.bg2Subsciption.dispose();
     }
-    this.bg2Subsciption = this.bgColorHover.subscribe(function (val) {
+    this.bg2Subsciption = this.modifier().selectedTrialView.bgColorHover.subscribe(function (val) {
         $("#bgColorPickerHover").spectrum("set", val);
     });
 
@@ -180,6 +161,9 @@ NaviElement.prototype.setPointers = function (entitiesArr) {
 
 NaviElement.prototype.dispose = function () {
     var self = this;
+    jQuery.each(this.buttonEntries(), function (index, elem) {
+        elem.dispose();
+    });
     var events = this.parent.parent.events();
     events.forEach(function (elem, index) {
         if (elem.name() == 'Go Backward' || elem.name() == 'Go Forward') {
