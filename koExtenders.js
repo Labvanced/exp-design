@@ -144,6 +144,27 @@ ko.bindingHandlers.tooltip = {
     }
 };
 
+ko.bindingHandlers.koFocus = {
+    init: function (element, valueAccessor) {
+        var value = valueAccessor();
+        var $element = $(element);
+        if (value()) {
+            $element.focus();
+        } else {
+            $element.blur();
+        }
+    },
+    update: function (element, valueAccessor) {
+        var value = valueAccessor();
+        var $element = $(element);
+        if (value()) {
+            $element.focus();
+        } else {
+            $element.blur();
+        }
+    }
+};
+
 
 
 ko.bindingHandlers.disableOptionsCaption = {

@@ -22,6 +22,9 @@
 
         <label>Input type:<select
                     data-bind="options: InputElement.prototype.typeOptions, value: inputType"></select></label>
+        <br>
+        <label>Focused:<select
+                    data-bind="options: [true,false], value: dataModel.modifier().selectedTrialView.isFocused"></select></label>
         <hr>
 
 
@@ -71,37 +74,37 @@
         <!-- ko if: (dataModel.inputType()=='number')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="number"
-                   data-bind="value: value, attr:{min: dataModel.minValue, max:dataModel.maxValue}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
+                   data-bind="koFocus:dataModel.isFocused, value: value, attr:{min: dataModel.minValue, max:dataModel.maxValue}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
         </div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='text')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="text"
-                   data-bind="text: value,attr:{maxlength: dataModel.maxNrChars}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
+                   data-bind="koFocus:dataModel.isFocused, text: value,attr:{maxlength: dataModel.maxNrChars}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
         </div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='date')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="date"
-                   data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
+                   data-bind="koFocus:dataModel.isFocused, value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
         </div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='week')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="week"
-                   data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
+                   data-bind="koFocus:dataModel.isFocused, value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
         </div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='time')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="time"
-                   data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
+                   data-bind="koFocus:dataModel.isFocused, value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
         </div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='color')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="color"
-                   data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
+                   data-bind="koFocus:dataModel.isFocused, value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
         </div>
         <!-- /ko -->
         <!-- ko if: dataModel.isRequired() -->
@@ -127,37 +130,37 @@
         <!-- ko if: (dataModel.inputType()=='number')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="number"
-                   data-bind="value: value, attr:{min: dataModel.minValue, max:dataModel.maxValue}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
+                   data-bind="koFocus:dataModel.modifier().selectedTrialView.isFocused, event: { blur: function(data,event) {changeFocus(false)}, focus: function(data,event) {changeFocus(true)}}, value: value, attr:{min: dataModel.minValue, max:dataModel.maxValue}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
         </div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='text')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="text"
-                   data-bind="value: value,attr:{maxlength: dataModel.maxNrChars}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
+                   data-bind="koFocus:dataModel.isFocused, event: { blur: function(data,event) {dataModel.changeFocus(false)}, focus: function(data,event) {dataModel.changeFocus(true)}}, value: value,attr:{maxlength: dataModel.maxNrChars}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
         </div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='date')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="date"
-                   data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
+                   data-bind="koFocus:dataModel.isFocused, event: { blur: function(data,event) {dataModel.changeFocus(false)}, focus: function(data,event) {dataModel.changeFocus(true)}}, value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
         </div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='week')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="week"
-                   data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
+                   data-bind="koFocus:dataModel.isFocused, event: { blur: function(data,event) {dataModel.changeFocus(false)}, focus: function(data,event) {dataModel.changeFocus(true)}}, value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
         </div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='time')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="time"
-                   data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
+                   data-bind="koFocus:dataModel.isFocused, event: { blur: function(data,event) {dataModel.changeFocus(false)}, focus: function(data,event) {dataModel.changeFocus(true)}}, value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
         </div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='color')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="color"
-                   data-bind="value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
+                   data-bind="koFocus:dataModel.isFocused, event: { blur: function(data,event) {dataModel.changeFocus(false)}, focus: function(data,event) {dataModel.changeFocus(true)}}, value: value, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel.onKeyPress(event); return true}}">
         </div>
         <!-- /ko -->
         <!-- ko if: dataModel.triedToSubmit() -->

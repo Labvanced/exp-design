@@ -7,6 +7,7 @@ var InputElement = function (expData) {
     this.type = "InputElement";
     this.questionText = ko.observable(null); // EditableTextElement
     this.inputType = ko.observable('number');
+    this.isFocused = ko.observable(false);
 
     this.variable = ko.observable(null);
     this.isRequired = ko.observable(false);
@@ -19,6 +20,8 @@ var InputElement = function (expData) {
 
     this.executeByKeyCode = ko.observableArray([]);
 
+    this.modifier = ko.observable(new Modifier(this.expData, this));
+
     ///// not serialized
     this.selected = ko.observable(false);
     this.triedToSubmit = ko.observable(false);
@@ -30,8 +33,8 @@ var InputElement = function (expData) {
 
 InputElement.prototype.label = "Input";
 InputElement.prototype.iconPath = "/resources/icons/tools/tool_input.svg";
-InputElement.prototype.dataType = [];
-InputElement.prototype.modifiableProp = [];
+InputElement.prototype.dataType = ["boolean"];
+InputElement.prototype.modifiableProp = ["isFocused"];
 InputElement.prototype.typeOptions = ["number", "text", "date", "time", "color"];
 InputElement.prototype.initWidth = 300;
 InputElement.prototype.initHeight = 100;
@@ -69,11 +72,20 @@ InputElement.prototype.setVariableBackRef = function () {
     }
 };
 
+
+
+
+
+
+
+
+
 /**
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
 InputElement.prototype.getAllModifiers = function (modifiersArr) {
+    modifiersArr.push(this.modifier());
     this.questionText().getAllModifiers(modifiersArr);
 };
 
@@ -82,6 +94,7 @@ InputElement.prototype.setPointers = function (entitiesArr) {
         this.variable(entitiesArr.byId[this.variable()]);
         this.setVariableBackRef();
     }
+    this.modifier().setPointers(entitiesArr);
     this.questionText().setPointers(entitiesArr);
 };
 
@@ -91,11 +104,12 @@ InputElement.prototype.reAddEntities = function (entitiesArr) {
             entitiesArr.push(this.variable());
         }
     }
-
+    this.modifier().reAddEntities(entitiesArr);
     this.questionText().reAddEntities(entitiesArr);
 };
 
 InputElement.prototype.selectTrialType = function (selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
     this.questionText().selectTrialType(selectionSpec);
 };
 
@@ -153,7 +167,9 @@ InputElement.prototype.toJS = function () {
         minValue: this.minValue(),
         maxValue: this.maxValue(),
         maxNrChars: this.maxNrChars(),
-        executeByKeyCode: this.executeByKeyCode()
+        executeByKeyCode: this.executeByKeyCode(),
+        isFocused: this.isFocused(),
+        modifier: this.modifier().toJS()
 
     };
 };
@@ -191,6 +207,14 @@ InputElement.prototype.fromJS = function (data) {
         this.executeByKeyCode(data.executeByKeyCode);
     }
 
+    if (data.hasOwnProperty('isFocused')) {
+        this.isFocused(data.isFocused);
+    }
+
+    if (data.hasOwnProperty('modifier')) {
+        this.modifier(new Modifier(this.expData, this));
+        this.modifier().fromJS(data.modifier);
+    }
 
 
 };
@@ -302,6 +326,13 @@ function createInputComponents() {
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
                     var self = this;
+
+                    this.changeFocus = function (newVal) {
+                        console.log("change by default");
+                        if (this.dataModel.modifier().selectedTrialView.isFocused() != newVal) {
+                            this.dataModel.modifier().selectedTrialView.isFocused(newVal);
+                        }
+                    };
                     this.value = ko.pureComputed({
                         read: function () {
                             if (self.dataModel.variable().value() instanceof GlobalVarValueDatetime) {
