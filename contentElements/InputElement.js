@@ -322,17 +322,20 @@ function createInputComponents() {
     ko.components.register('input-playerview', {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
+
                 var viewModel = function (dataModel) {
+                    var self = this;
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
-                    var self = this;
+                    this.hasFocus = ko.observable(this.dataModel.isFocused);
+                    if (typeof player != 'undefined') {
+                        this.focusSubscription = this.hasFocus.subscribe(function (newVal) {
+                            if (self.dataModel.modifier().selectedTrialView.isFocused() != newVal) {
+                                self.dataModel.modifier().selectedTrialView.isFocused(newVal);
+                            }
+                        });
+                    }
 
-                    this.changeFocus = function (newVal) {
-                        console.log("change by default");
-                        if (this.dataModel.modifier().selectedTrialView.isFocused() != newVal) {
-                            this.dataModel.modifier().selectedTrialView.isFocused(newVal);
-                        }
-                    };
                     this.value = ko.pureComputed({
                         read: function () {
                             if (self.dataModel.variable().value() instanceof GlobalVarValueDatetime) {
@@ -340,7 +343,7 @@ function createInputComponents() {
                                     return self.dataModel.variable().value().value().toISOString().substring(0, 10);
                                 }
                                 else {
-                                    return null
+                                    return null;
                                 }
                             }
                             else {
@@ -361,6 +364,16 @@ function createInputComponents() {
                         owner: this
                     });
                 };
+
+                viewModel.prototype.dispose = function () {
+                    if (typeof player != 'undefined') {
+                        if (this.focusSubscription) {
+                            this.focusSubscription.dispose();
+                        }
+                    }
+
+                };
+
                 return new viewModel(dataModel);
             }
         },
