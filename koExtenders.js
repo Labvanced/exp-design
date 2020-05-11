@@ -148,10 +148,15 @@ ko.bindingHandlers.koFocus = {
     init: function (element, valueAccessor) {
         var value = valueAccessor();
         var $element = $(element);
-        if (value()) {
-            $element.focus();
-        } else {
-            $element.blur();
+        if (value() && typeof player != 'undefined') {
+            var focusSetInterval = setInterval(function () {
+                if (player.currentFrame) {
+                    $element.focus();
+                    clearInterval(focusSetInterval);
+                }
+            }, 20);
+
+
         }
     },
     update: function (element, valueAccessor) {

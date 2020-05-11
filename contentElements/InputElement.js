@@ -330,11 +330,15 @@ function createInputComponents() {
                     var self = this;
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
-                    this.hasFocus = ko.observable(this.dataModel.isFocused);
+                    this.hasFocus = ko.observable(this.dataModel.modifier().selectedTrialView.isFocused());
+
                     if (typeof player != 'undefined') {
+
                         this.focusSubscription = this.hasFocus.subscribe(function (newVal) {
-                            if (self.dataModel.modifier().selectedTrialView.isFocused() != newVal) {
-                                self.dataModel.modifier().selectedTrialView.isFocused(newVal);
+                            if (player.trialIter != 'waitForStart') {
+                                if (self.dataModel.modifier().selectedTrialView.isFocused() != newVal) {
+                                    self.dataModel.modifier().selectedTrialView.isFocused(newVal);
+                                }
                             }
                         });
                     }
