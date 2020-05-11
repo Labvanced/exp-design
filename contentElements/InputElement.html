@@ -80,7 +80,7 @@
         <!-- ko if: (dataModel.inputType()=='text')  -->
         <div class="input-elem-div"><input class="input-elem-inner form-control"
                    type="text"
-                   data-bind="koFocus:dataModel.isFocused, text: value,attr:{maxlength: dataModel.maxNrChars}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
+                   data-bind="koFocus:dataModel.isFocused, value: value,attr:{maxlength: dataModel.maxNrChars}, enable: dataModel.parent.modifier().selectedTrialView.isActive,style:{'cursor': dataModel.parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'}, valueUpdate: 'afterkeydown'">
         </div>
         <!-- /ko -->
         <!-- ko if: (dataModel.inputType()=='date')  -->
