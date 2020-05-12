@@ -21,11 +21,7 @@ var FrameElement = function (expData) {
     this.anchorPointY = ko.observable('low');
     this.visibility = ko.observable(1).extend({ numeric: 2 });
     this.keepAspectRatio = ko.observable(false);
-
-    // new
     this.stimulusInformation = ko.observable(null);
-    this.iFrameUrl = ko.observable("");
-    this.isFocused = ko.observable(false);
 
     // special to frame element
     this.canBeSelected = ko.observable(false);
@@ -204,12 +200,6 @@ FrameElement.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('stimulusInformation')) {
         this.stimulusInformation(data.stimulusInformation);
     }
-    if (data.hasOwnProperty('iFrameUrl')) {
-        this.iFrameUrl(data.iFrameUrl);
-    }
-    if (data.hasOwnProperty('isFocused')) {
-        this.isFocused(data.isFocused);
-    }
     if (data.hasOwnProperty('canBeSelected')) {
         this.canBeSelected(data.canBeSelected);
     }
@@ -291,8 +281,6 @@ FrameElement.prototype.toJS = function () {
         isActive: this.isActive(),
         keepAspectRatio: this.keepAspectRatio(),
         stimulusInformation: this.stimulusInformation(),
-        iFrameUrl: this.iFrameUrl(),
-        isFocused: this.isFocused(),
         content: contentData,
         canBeSelected: this.canBeSelected(),
         canBeDragged: this.canBeDragged(),

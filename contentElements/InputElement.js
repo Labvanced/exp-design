@@ -326,22 +326,56 @@ function createInputComponents() {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
 
-                var viewModel = function (dataModel) {
+                var InputElementPlayerViewModel = function (dataModel) {
                     var self = this;
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
-                    this.hasFocus = ko.observable(this.dataModel.modifier().selectedTrialView.isFocused());
 
-                    if (typeof player != 'undefined') {
-
-                        this.focusSubscription = this.hasFocus.subscribe(function (newVal) {
-                            if (player.trialIter != 'waitForStart') {
-                                if (self.dataModel.modifier().selectedTrialView.isFocused() != newVal) {
-                                    self.dataModel.modifier().selectedTrialView.isFocused(newVal);
-                                }
-                            }
-                        });
+                    // find parent playerFrame:
+                    var parent = this.dataModel.parent;
+                    var playerFrame = null;
+                    for (var k = 0; k < 8; k++) {
+                        if (parent.hasOwnProperty("playerFrame")) {
+                            // found:
+                            playerFrame = parent.playerFrame;
+                            break;
+                        }
+                        else {
+                            parent = parent.parent;
+                        }
                     }
+
+                    if (!playerFrame) {
+                        console.log("could not find playerFrame in input-playerview component... do not set focus computed...");
+                    }
+
+                    // The computed isRenderedDeferred uses deferred update because hasFocus binding only works when element is already visible.
+                    this.isRenderedDeferred = ko.computed(function () {
+                        if (playerFrame && playerFrame.stateObs() == "displaying") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }).extend({ deferred: true }); // i.e. it is switched to true only AFTER the playerFrame was switch to "display: block"...
+
+                    // use pureComputed for two-way binding:
+                    this.isFocusedPure = ko.pureComputed({
+                        read: function () {
+                            if (self.isRenderedDeferred()) {
+                                return self.dataModel.modifier().selectedTrialView.isFocused();
+                            }
+                            else {
+                                return false;
+                            }
+                        },
+                        write: function (value) {
+                            if (self.isRenderedDeferred()) {
+                                self.dataModel.modifier().selectedTrialView.isFocused(value);
+                            }
+                        },
+                        owner: this
+                    });
 
                     this.value = ko.pureComputed({
                         read: function () {
@@ -375,16 +409,15 @@ function createInputComponents() {
                     });
                 };
 
-                viewModel.prototype.dispose = function () {
+                InputElementPlayerViewModel.prototype.dispose = function () {
                     if (typeof player != 'undefined') {
-                        if (this.focusSubscription) {
-                            this.focusSubscription.dispose();
+                        if (this.isRenderedDeferred) {
+                            this.isRenderedDeferred.dispose();
                         }
                     }
-
                 };
 
-                return new viewModel(dataModel);
+                return new InputElementPlayerViewModel(dataModel);
             }
         },
         template: { element: 'input-playerview-template' }
