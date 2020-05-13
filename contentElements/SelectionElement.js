@@ -38,6 +38,7 @@ SelectionElement.prototype.label = "Selection";
 SelectionElement.prototype.iconPath = "/resources/icons/tools/selection.svg";
 SelectionElement.prototype.dataType = [];
 SelectionElement.prototype.modifiableProp = [];
+SelectionElement.prototype.displayNames = [];
 SelectionElement.prototype.initWidth = 300;
 SelectionElement.prototype.initHeight = 100;
 SelectionElement.prototype.numVarNamesRequired = 1;

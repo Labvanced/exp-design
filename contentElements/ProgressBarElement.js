@@ -21,6 +21,7 @@ ProgressBarElement.prototype.label = "ProgressBar";
 ProgressBarElement.prototype.iconPath = "/resources/icons/tools/progressBar.svg";
 ProgressBarElement.prototype.modifiableProp = ["progressValue"];
 ProgressBarElement.prototype.dataType = ["numeric"];
+ProgressBarElement.prototype.displayNames = ["progressValue"];
 ProgressBarElement.prototype.initWidth = 500;
 ProgressBarElement.prototype.initHeight = 40;
 ProgressBarElement.prototype.numVarNamesRequired = 0;

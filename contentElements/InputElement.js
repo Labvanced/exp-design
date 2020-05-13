@@ -35,6 +35,7 @@ InputElement.prototype.label = "Input";
 InputElement.prototype.iconPath = "/resources/icons/tools/tool_input.svg";
 InputElement.prototype.dataType = ["boolean"];
 InputElement.prototype.modifiableProp = ["isFocused"];
+InputElement.prototype.displayNames = ["Focused"];
 InputElement.prototype.typeOptions = ["number", "text", "date", "time", "color"];
 InputElement.prototype.initWidth = 300;
 InputElement.prototype.initHeight = 100;

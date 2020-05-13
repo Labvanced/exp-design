@@ -15,6 +15,7 @@ EyetrackerVideoStream.prototype.label = "Eyetracking Calibration Screen";
 EyetrackerVideoStream.prototype.iconPath = "/resources/features/technology.svg";
 EyetrackerVideoStream.prototype.dataType = [];
 EyetrackerVideoStream.prototype.modifiableProp = [];
+EyetrackerVideoStream.prototype.displayNames = [];
 EyetrackerVideoStream.prototype.initWidth = 280;
 EyetrackerVideoStream.prototype.initHeight = 240;
 EyetrackerVideoStream.prototype.numVarNamesRequired = 0;

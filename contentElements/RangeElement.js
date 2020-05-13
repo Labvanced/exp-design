@@ -23,6 +23,7 @@ RangeElement.prototype.label = "Range";
 RangeElement.prototype.iconPath = "/resources/icons/tools/tool_slider.svg";
 RangeElement.prototype.dataType = [];
 RangeElement.prototype.modifiableProp = [];
+RangeElement.prototype.displayNames = [];
 RangeElement.prototype.initWidth = 500;
 RangeElement.prototype.initHeight = 200;
 RangeElement.prototype.numVarNamesRequired = 1;

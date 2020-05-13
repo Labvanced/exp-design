@@ -51,6 +51,7 @@ AudioElement.prototype.label = "Audio";
 AudioElement.prototype.iconPath = "/resources/icons/tools/tool_sound.svg";
 AudioElement.prototype.dataType = ["string", "string", "file"];
 AudioElement.prototype.modifiableProp = ["file_id", "file_orig_name", "file"];
+AudioElement.prototype.displayNames = ["file_id", "Filename", "Filedata"];
 AudioElement.prototype.numVarNamesRequired = 0;
 AudioElement.prototype.actionTypes = ["StartPlayback", "StopPlayback"];
 AudioElement.prototype.triggerTypes = ["PlaybackStarted", "PlaybackStopped"];

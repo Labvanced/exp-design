@@ -14,6 +14,7 @@ var InvisibleElement = function (expData) {
 InvisibleElement.prototype.label = "InvisibleElement";
 InvisibleElement.prototype.iconPath = "/resources/icons/tools/invisible.svg";
 InvisibleElement.prototype.modifiableProp = [];
+InvisibleElement.prototype.displayNames = [];
 InvisibleElement.prototype.numVarNamesRequired = 0;
 InvisibleElement.prototype.dataType = [];
 

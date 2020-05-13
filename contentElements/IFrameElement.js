@@ -31,6 +31,7 @@ IFrameElement.prototype.iconPath = "/resources/icons/tools/tool_iframe.svg";
 IFrameElement.prototype.numVarNamesRequired = 0;
 IFrameElement.prototype.dataType = ["string"];
 IFrameElement.prototype.modifiableProp = ["iFrameUrl"];
+IFrameElement.prototype.displayNames = ["I-Frame Url"];
 
 
 IFrameElement.prototype.init = function () {

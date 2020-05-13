@@ -38,6 +38,7 @@ ScaleElement.prototype.label = "Matrix";
 ScaleElement.prototype.iconPath = "/resources/icons/tools/matrix.svg";
 ScaleElement.prototype.dataType = [];
 ScaleElement.prototype.modifiableProp = [];
+ScaleElement.prototype.displayNames = [];
 ScaleElement.prototype.initWidth = 750;
 ScaleElement.prototype.initHeight = 170;
 ScaleElement.prototype.numVarNamesRequired = 1;

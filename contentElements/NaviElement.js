@@ -28,7 +28,7 @@ NaviElement.prototype.label = "Navigation";
 NaviElement.prototype.iconPath = "/resources/icons/tools/tool_navigation.svg";
 NaviElement.prototype.modifiableProp = ["bgColorDefault", "bgColorHover"];
 NaviElement.prototype.dataType = ["string", "string"];
-
+NaviElement.prototype.displayNames = ["Button Color Default", "Button Color Hover"];
 NaviElement.prototype.initWidth = 400;
 NaviElement.prototype.initHeight = 40;
 NaviElement.prototype.numVarNamesRequired = 0;

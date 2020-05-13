@@ -42,6 +42,7 @@ MultipleChoiceElement.prototype.label = "Multiple Choice";
 MultipleChoiceElement.prototype.iconPath = "/resources/icons/tools/tool_multiplechoice.svg";
 MultipleChoiceElement.prototype.dataType = [];
 MultipleChoiceElement.prototype.modifiableProp = [];
+MultipleChoiceElement.prototype.displayNames = [];
 MultipleChoiceElement.prototype.initWidth = 180;
 MultipleChoiceElement.prototype.initHeight = 120;
 MultipleChoiceElement.prototype.numVarNamesRequired = 1;

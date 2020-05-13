@@ -60,6 +60,7 @@ ImageElement.prototype.label = "Image";
 ImageElement.prototype.iconPath = "/resources/icons/tools/tool_image.svg";
 ImageElement.prototype.dataType = ["string", "string", "file", "boolean", "string"];
 ImageElement.prototype.modifiableProp = ["file_id", "file_orig_name", "file", "stretchImageToFitBoundingBox", "stimulusInformation"];
+ImageElement.prototype.displayNames = ["file_id", "Filename", "Filedata", "stretchImageToFitBoundingBox", "Stimulus Info"];
 ImageElement.prototype.initWidth = 300;
 ImageElement.prototype.initHeight = 200;
 ImageElement.prototype.numVarNamesRequired = 0;

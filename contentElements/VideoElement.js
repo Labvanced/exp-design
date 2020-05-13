@@ -49,6 +49,7 @@ VideoElement.prototype.label = "Video";
 VideoElement.prototype.iconPath = "/resources/icons/tools/tool_video.svg";
 VideoElement.prototype.dataType = ["string", "string", "file"];
 VideoElement.prototype.modifiableProp = ["file_id", "file_orig_name", "file"];
+VideoElement.prototype.displayNames = ["file_id", "Filename", "Filedata"];
 VideoElement.prototype.numVarNamesRequired = 0;
 
 VideoElement.prototype.switchPlayState = function () {

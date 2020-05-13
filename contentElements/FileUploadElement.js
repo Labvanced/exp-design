@@ -33,6 +33,7 @@ FileUploadElement.prototype.label = "File Upload";
 FileUploadElement.prototype.iconPath = "/resources/icons/upload.svg";
 FileUploadElement.prototype.dataType = [];
 FileUploadElement.prototype.modifiableProp = [];
+FileUploadElement.prototype.displayNames = [];
 FileUploadElement.prototype.initWidth = 300;
 FileUploadElement.prototype.initHeight = 100;
 FileUploadElement.prototype.numVarNamesRequired = 1;

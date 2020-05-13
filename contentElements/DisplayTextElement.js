@@ -20,6 +20,7 @@ DisplayTextElement.prototype.label = "DisplayText";
 DisplayTextElement.prototype.iconPath = "/resources/icons/tools/tool_text.svg";
 DisplayTextElement.prototype.dataType = [];
 DisplayTextElement.prototype.modifiableProp = [];
+DisplayTextElement.prototype.displayNames = [];
 DisplayTextElement.prototype.initWidth = 500;
 DisplayTextElement.prototype.initHeight = 80;
 DisplayTextElement.prototype.numVarNamesRequired = 0;

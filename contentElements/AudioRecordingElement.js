@@ -35,6 +35,7 @@ AudioRecordingElement.prototype.label = "Audio Recording";
 AudioRecordingElement.prototype.iconPath = "/resources/icons/microphone.svg";
 AudioRecordingElement.prototype.dataType = [];
 AudioRecordingElement.prototype.modifiableProp = [];
+AudioRecordingElement.prototype.displayNames = [];
 AudioRecordingElement.prototype.initWidth = 300;
 AudioRecordingElement.prototype.initHeight = 100;
 AudioRecordingElement.prototype.numVarNamesRequired = 1;

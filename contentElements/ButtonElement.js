@@ -26,6 +26,7 @@ ButtonElement.prototype.label = "Button";
 ButtonElement.prototype.iconPath = "/resources/icons/tools/tool_button.svg";
 ButtonElement.prototype.modifiableProp = ["bgColorDefault", "bgColorHover"];
 ButtonElement.prototype.dataType = ["string", "string"];
+ButtonElement.prototype.displayNames = ["Button Color Default", "Button Color Hover"];
 ButtonElement.prototype.numVarNamesRequired = 0;
 
 ButtonElement.prototype.initWidth = 120;
@@ -214,6 +215,7 @@ var ButtonEntry = function (parent, initText) {
 
 ButtonEntry.prototype.modifiableProp = ["buttonText"];
 ButtonEntry.prototype.dataType = ["string"];
+ButtonEntry.prototype.displayNames = ["buttonText"];
 
 ButtonEntry.prototype.init = function () {
     this.buttonText(new EditableTextElement(this.parent.expData, this.parent, '<p><span style="font-size:16px;">Button</span></p>'));

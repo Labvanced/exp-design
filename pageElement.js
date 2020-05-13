@@ -68,6 +68,7 @@ PageElement.prototype.selectTrialType = function (selectionSpec) {
 
 PageElement.prototype.modifiableProp = ["isVisible", "isActive"];
 PageElement.prototype.dataType = ["boolean", "boolean"];
+PageElement.prototype.displayNames = ["Visibility", "Active"];
 PageElement.prototype.subElementProp = ["content"];
 
 /**
