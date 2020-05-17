@@ -25,7 +25,7 @@ var TriggerMouse = function (event) {
 TriggerMouse.prototype.type = "TriggerMouse";
 TriggerMouse.prototype.label = "Mouse Trigger";
 TriggerMouse.prototype.buttonTypes = ["Left", "Right"];
-TriggerMouse.prototype.interactionTypes = ["Click", "PressDown", "PressUp", "Hover"];
+TriggerMouse.prototype.interactionTypes = ["Click", "PressDown", "PressUp", "Hover", "Leave"];
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -107,6 +107,8 @@ TriggerMouse.prototype.setupOnPlayerFrame = function (playerFrame) {
             cb: null
         };
 
+
+
         switch (self.interactionType()) {
 
             case "Click":
@@ -125,7 +127,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function (playerFrame) {
                 break;
 
             case "PressDown":
-                eventHandle.eventName = 'mousedown';
+                eventHandle.eventName = 'mousedown touchstart';
                 eventHandle.cb = function (ev) {
                     if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2)) {
                         self.triggerOnTarget(playerFrame, target, ev);
@@ -134,11 +136,18 @@ TriggerMouse.prototype.setupOnPlayerFrame = function (playerFrame) {
                 break;
 
             case "PressUp":
-                eventHandle.eventName = 'mouseup';
+                eventHandle.eventName = 'mouseup touchend';
                 eventHandle.cb = function (ev) {
                     if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2)) {
                         self.triggerOnTarget(playerFrame, target, ev);
                     }
+                };
+                break;
+
+            case "Leave":
+                eventHandle.eventName = 'mouseout';
+                eventHandle.cb = function (ev) {
+                    self.triggerOnTarget(playerFrame, target, ev);
                 };
                 break;
 
