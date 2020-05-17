@@ -145,7 +145,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function (playerFrame) {
                 break;
 
             case "Leave":
-                eventHandle.eventName = 'mouseout';
+                eventHandle.eventName = 'mouseleave';
                 eventHandle.cb = function (ev) {
                     self.triggerOnTarget(playerFrame, target, ev);
                 };
