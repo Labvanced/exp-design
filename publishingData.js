@@ -73,6 +73,9 @@ var PublishingData = function (experiment) {
     this.isFolder = ko.observable(false);
     this.filePath = ko.observable("/root");
 
+    // for library filter
+    this.isSelectedTempalte = ko.observable(false);
+    this.isSelectedFeature = ko.observable(false);
 
 
     // not serialized:
@@ -388,6 +391,12 @@ PublishingData.prototype.fromJS = function (data) {
     }
 
 
+    if (data.hasOwnProperty('isSelectedTempalte')) {
+        this.isSelectedTempalte(data.isSelectedTempalte);
+    }
+    if (data.hasOwnProperty('isSelectedFeature')) {
+        this.isSelectedFeature(data.isSelectedFeature);
+    }
     // After publication
     // After publication
     this.individualizedLinks(data.individualizedLinks);
@@ -580,8 +589,10 @@ PublishingData.prototype.toJS = function () {
 
         connectToExternalDevices: this.connectToExternalDevices(),
         connectToIP: this.connectToIP(),
-        connectToPort: this.connectToPort()
+        connectToPort: this.connectToPort(),
 
+        isSelectedTempalte: this.isSelectedTempalte(),
+        isSelectedFeature: this.isSelectedFeature(),
 
     };
 };
