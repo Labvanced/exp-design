@@ -74,7 +74,7 @@ var PublishingData = function (experiment) {
     this.filePath = ko.observable("/root");
 
     // for library filter
-    this.isSelectedTempalte = ko.observable(false);
+    this.isSelectedTemplate = ko.observable(false);
     this.isSelectedFeature = ko.observable(false);
 
 
@@ -391,8 +391,8 @@ PublishingData.prototype.fromJS = function (data) {
     }
 
 
-    if (data.hasOwnProperty('isSelectedTempalte')) {
-        this.isSelectedTempalte(data.isSelectedTempalte);
+    if (data.hasOwnProperty('isSelectedTemplate')) {
+        this.isSelectedTemplate(data.isSelectedTemplate);
     }
     if (data.hasOwnProperty('isSelectedFeature')) {
         this.isSelectedFeature(data.isSelectedFeature);
@@ -591,7 +591,7 @@ PublishingData.prototype.toJS = function () {
         connectToIP: this.connectToIP(),
         connectToPort: this.connectToPort(),
 
-        isSelectedTempalte: this.isSelectedTempalte(),
+        isSelectedTemplate: this.isSelectedTemplate(),
         isSelectedFeature: this.isSelectedFeature(),
 
     };
