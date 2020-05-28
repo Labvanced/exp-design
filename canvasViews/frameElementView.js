@@ -25,7 +25,7 @@ var FrameElementView = function (dataModel, parentView) {
 
     this.divContent = document.createElement('div');
     this.border = ko.computed(function () {
-        var border = self.dataModel.modifier().selectedTrialView.borderSize() + "px solid " + self.dataModel.borderColor();
+        var border = self.dataModel.modifier().selectedTrialView.borderSize() + "px solid " + self.dataModel.modifier().selectedTrialView.borderColor();
         $(self.divContent).css({
             "border": border
         });
@@ -67,7 +67,7 @@ var FrameElementView = function (dataModel, parentView) {
         "overflow-y ": this.overflowY(),
         "opacity": this.selectedTrialView.visibility(),
         "border": this.border(),
-        "background-color": this.backgroundColor(),
+        "background-color": this.selectedTrialView.backgroundColor(),
         "border-radius": this.roundness()
 
     });
