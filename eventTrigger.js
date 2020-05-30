@@ -569,6 +569,7 @@ var TriggerKeyboard = function (event) {
     this.buttons = ko.observableArray([]);
     this.interactionType = ko.observable("Pressed");
     this.alphaNumericEnabled = ko.observable(false); // if true, then disable fullscreen in safari
+    this.numpadEnabled = ko.observable(false);
 
     // not serialized:
     this.validKeyCodes = ko.computed(function () {
@@ -624,13 +625,14 @@ TriggerKeyboard.prototype.getValidKeyCodes = function () {
     for (var i = 0; i < this.buttons().length; i++) {
         var index = TriggerKeyboard.prototype.allKeys.indexOf(validKeys[i]);
         validKeyCodes.push(TriggerKeyboard.prototype.allKeysCode[index]);
-        // for numpad 
-        var number = parseInt(validKeys[i]);
-        if (Number.isInteger(number)) {
-            //var key = this.buttons()[i];
-            //this.buttons.push(key);
-            validKeyCodes.push(TriggerKeyboard.prototype.allKeysCode[index] + 48);
+        // for numpad
+        if (this.numpadEnabled()) {
+            var number = parseInt(validKeys[i]);
+            if (Number.isInteger(number)) {
+                validKeyCodes.push(TriggerKeyboard.prototype.allKeysCode[index] + 48);
+            }
         }
+
     }
 
     return validKeyCodes;
@@ -670,8 +672,10 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function (playerFrame) {
             else {
                 var pressedKey = self.buttons()[keyIdx];
                 // for numpad numbers
-                if (!pressedKey && TriggerKeyboard.prototype.buttonTypesNumbersNumpadCode.indexOf(ev.keyCode) >= 0) {
-                    pressedKey = String.fromCharCode(ev.keyCode - 48);
+                if (self.numpadEnabled()) {
+                    if (!pressedKey && TriggerKeyboard.prototype.buttonTypesNumbersNumpadCode.indexOf(ev.keyCode) >= 0) {
+                        pressedKey = String.fromCharCode(ev.keyCode - 48);
+                    }
                 }
                 self.event.triggerActions([pressedKey, playerFrame.getFrameTime()]);
             }
@@ -731,6 +735,9 @@ TriggerKeyboard.prototype.reAddEntities = function (entitiesArr) {
 TriggerKeyboard.prototype.fromJS = function (data) {
     this.buttons(data.buttons);
     this.interactionType(data.interactionType);
+    if (data.hasOwnProperty("numpadEnabled")) {
+        this.numpadEnabled(data.numpadEnabled);
+    }
     if (data.hasOwnProperty("alphaNumericEnabled")) {
         this.alphaNumericEnabled(data.alphaNumericEnabled);
     }
@@ -763,7 +770,8 @@ TriggerKeyboard.prototype.toJS = function () {
         type: this.type,
         buttons: this.buttons().slice(0),
         interactionType: this.interactionType(),
-        alphaNumericEnabled: this.alphaNumericEnabled()
+        alphaNumericEnabled: this.alphaNumericEnabled(),
+        numpadEnabled: this.numpadEnabled(),
     };
 };
 
