@@ -590,6 +590,7 @@ TriggerKeyboard.prototype.buttonTypesFkeys = ["F1", "F2", "F3", "F4", "F5", "F6"
 
 TriggerKeyboard.prototype.buttonTypesArrowsCode = [37, 38, 39, 40];
 TriggerKeyboard.prototype.buttonTypesNumbersCode = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
+TriggerKeyboard.prototype.buttonTypesNumbersNumpadCode = [96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
 TriggerKeyboard.prototype.buttonTypesLettersCode = [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90];
 TriggerKeyboard.prototype.buttonTypesSpecialCode = [32, 13, 17, 9, 16];
 TriggerKeyboard.prototype.buttonTypesFkeysCode = [112, 113, 114, 115, 116, 117, 118, 119, 120, 121];
@@ -623,6 +624,13 @@ TriggerKeyboard.prototype.getValidKeyCodes = function () {
     for (var i = 0; i < this.buttons().length; i++) {
         var index = TriggerKeyboard.prototype.allKeys.indexOf(validKeys[i]);
         validKeyCodes.push(TriggerKeyboard.prototype.allKeysCode[index]);
+        // for numpad 
+        var number = parseInt(validKeys[i]);
+        if (Number.isInteger(number)) {
+            //var key = this.buttons()[i];
+            //this.buttons.push(key);
+            validKeyCodes.push(TriggerKeyboard.prototype.allKeysCode[index] + 48);
+        }
     }
 
     return validKeyCodes;
@@ -660,7 +668,12 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function (playerFrame) {
                 self.event.triggerActions([ev.key.toUpperCase(), playerFrame.getFrameTime()]);
             }
             else {
-                self.event.triggerActions([self.buttons()[keyIdx], playerFrame.getFrameTime()]);
+                var pressedKey = self.buttons()[keyIdx];
+                // for numpad numbers
+                if (!pressedKey && TriggerKeyboard.prototype.buttonTypesNumbersNumpadCode.indexOf(ev.keyCode) >= 0) {
+                    pressedKey = String.fromCharCode(ev.keyCode - 48);
+                }
+                self.event.triggerActions([pressedKey, playerFrame.getFrameTime()]);
             }
 
             ev.preventDefault();
