@@ -29,6 +29,7 @@ var FrameElementView = function (dataModel, parentView) {
         $(self.divContent).css({
             "border": border
         });
+        return border;
     }, this);
 
     this.backgroundColor = ko.computed(function () {
@@ -36,6 +37,7 @@ var FrameElementView = function (dataModel, parentView) {
         $(self.divContent).css({
             "background-color": backgroundColor
         });
+        return backgroundColor;
     }, this);
 
     this.roundness = ko.computed(function () {
@@ -44,6 +46,7 @@ var FrameElementView = function (dataModel, parentView) {
         $(self.divContent).css({
             "border-radius": roundness
         });
+        return roundness;
     }, this);
 
 
@@ -52,6 +55,7 @@ var FrameElementView = function (dataModel, parentView) {
         $(self.divContent).css({
             "overflow-x": overflowX
         });
+        return overflowX;
     }, this);
 
     this.overflowY = ko.computed(function () {
@@ -59,6 +63,7 @@ var FrameElementView = function (dataModel, parentView) {
         $(self.divContent).css({
             "overflow-Y": overflowY
         });
+        return overflowY;
     }, this);
 
     $(this.divContent).css({
@@ -67,9 +72,8 @@ var FrameElementView = function (dataModel, parentView) {
         "overflow-y ": this.overflowY(),
         "opacity": this.selectedTrialView.visibility(),
         "border": this.border(),
-        "background-color": this.selectedTrialView.backgroundColor(),
+        "background-color": this.backgroundColor(),
         "border-radius": this.roundness()
-
     });
     $(this.div).append(this.divContent);
 
