@@ -453,6 +453,9 @@ OperandVariable.prototype.getValue = function (parameters) {
         case "frameTime":
             var playerFrame = this.event.parent.playerFrame;
             return playerFrame.getFrameTime();
+        case "frameName":
+            var playerFrame = this.event.parent.playerFrame;
+            return playerFrame.getFrameName();
         case "MouseX":
             var playerFrame = this.event.parent.playerFrame;
             return playerFrame.getMouseX();
