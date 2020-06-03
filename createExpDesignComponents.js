@@ -111,6 +111,10 @@ var createExpDesignComponents = (function () {
                     createCompFcn: createAudioRecordingComponents
                 },
                 {
+                    filepath: "/html_views/VideoRecordingElement.html?FILE_VERSION_PLACEHOLDER",
+                    createCompFcn: createVideoRecordingComponents
+                },
+                {
                     filepath: "/html_views/IFrameElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createIFrameElementComponents
                 },
