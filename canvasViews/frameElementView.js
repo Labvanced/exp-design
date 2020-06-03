@@ -493,6 +493,9 @@ FrameElementView.prototype.renderContent = function (data) {
                     self.setNaturalImageSize(this.naturalWidth, this.naturalHeight);
                 };
             }
+            if ($(this.divContent).is(":hidden")) {
+                $(this.divContent).show();
+            }
         }
         else {
             this.renderPlaceHolderBoxAndLabel();
@@ -535,6 +538,9 @@ FrameElementView.prototype.renderPlaceHolderBoxAndLabel = function () {
 
         $(this.divContent).append($(this.text));
         this.update(true, true);
+    }
+    else {
+        $(this.divContent).hide();
     }
 
 };
