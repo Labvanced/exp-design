@@ -2030,12 +2030,12 @@ PausableSetTimeout.prototype.pause = function () {
         this.remainingTime -= new Date() - this.startTime;
         this.timerId = null;
         this.startTime = null;
-        console.log("paused PausableSetTimeout with remainingTime=" + this.remainingTime);
+        //console.log("paused PausableSetTimeout with remainingTime=" + this.remainingTime);
     }
 };
 
 PausableSetTimeout.prototype.stop = function () {
-    console.log("stopping PausableSetTimeout with remainingTime=" + this.remainingTime);
+    //console.log("stopping PausableSetTimeout with remainingTime=" + this.remainingTime);
     if (this.timerId) {
         window.clearTimeout(this.timerId);
     }
@@ -2048,7 +2048,7 @@ PausableSetTimeout.prototype.stop = function () {
 PausableSetTimeout.prototype.resume = function () {
     var self = this;
     if (!this.timerId) {
-        console.log("resuming PausableSetTimeout with remainingTime=" + this.remainingTime);
+        //console.log("resuming PausableSetTimeout with remainingTime=" + this.remainingTime);
         this.startTime = new Date();
         this.timerId = window.setTimeout(function () {
             self.callback();
