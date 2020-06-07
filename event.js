@@ -144,7 +144,7 @@ ExpEvent.prototype.setPointers = function (entitiesArr) {
     if (this.trigger().type === 'TriggerMouse') {
         var targets = this.trigger().targets();
         if (targets.length > 0) {
-            if (targets[0].content() instanceof NaviElement) {
+            if (targets[0].content && targets[0].content() instanceof NaviElement) {
                 console.log("converting from trigger type TriggerMouse to trigger type TriggerButtonClick...");
                 var newTrigger = new TriggerButtonClick(this);
                 newTrigger.target(targets[0]);

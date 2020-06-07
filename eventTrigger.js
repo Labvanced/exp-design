@@ -25,7 +25,7 @@ var TriggerMouse = function (event) {
 TriggerMouse.prototype.type = "TriggerMouse";
 TriggerMouse.prototype.label = "Mouse Trigger";
 TriggerMouse.prototype.buttonTypes = ["Left", "Right"];
-TriggerMouse.prototype.interactionTypes = ["Click", "PressDown", "PressUp", "Hover", "Leave"];
+TriggerMouse.prototype.interactionTypes = ["Click", "PressDown", "PressUp", "Hover", "Leave", "Move"];
 
 /**
  * returns true if all settings are valid (used in the editor).
@@ -61,9 +61,13 @@ TriggerMouse.prototype.getParameterSpec = function () {
  * @param target
  */
 TriggerMouse.prototype.triggerOnTarget = function (playerFrame, target, ev) {
-    if (target.modifier().selectedTrialView.isActive()) {
+    var isActive = true;
+    if (target.modifier().selectedTrialView.isActive) {
+        isActive = target.modifier().selectedTrialView.isActive();
+    }
+    if (isActive) {
         var stimulusInformation = null;
-        if (target.content().hasOwnProperty("stimulusInformation")) {
+        if (target.content && target.content().hasOwnProperty("stimulusInformation")) {
             stimulusInformation = target.content().modifier().selectedTrialView.stimulusInformation();
         }
 
@@ -99,7 +103,18 @@ TriggerMouse.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
 
     function createEventListener(target) {
-        var targetElem = $(playerFrame.frameView.viewElements.byId[target.id()].div);
+
+        var targetElemView = playerFrame.frameView.viewElements.byId[target.id()];
+        if (targetElemView) {
+            var targetElem = $(targetElemView.div);
+        }
+        else if (playerFrame.frameData.id() == target.id()) {
+            console.log("add trigger on whole frame.");
+            var targetElem = $(playerFrame.frameDiv);
+        }
+        else {
+            return;
+        }
 
         var eventHandle = {
             elem: targetElem,
@@ -137,6 +152,15 @@ TriggerMouse.prototype.setupOnPlayerFrame = function (playerFrame) {
 
             case "PressUp":
                 eventHandle.eventName = 'mouseup touchend';
+                eventHandle.cb = function (ev) {
+                    if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2)) {
+                        self.triggerOnTarget(playerFrame, target, ev);
+                    }
+                };
+                break;
+
+            case "Move":
+                eventHandle.eventName = 'mousemove touchmove';
                 eventHandle.cb = function (ev) {
                     if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2)) {
                         self.triggerOnTarget(playerFrame, target, ev);
