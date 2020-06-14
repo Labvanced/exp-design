@@ -138,66 +138,73 @@
             <div id="videos-container"></div>
 
             <video preload="auto"
+                   width="100%"
+                   height="100%"
                    class="recordedVideoPlaybackElem">
                   <source class="recordedVideoPlaybackSource">
                   Your browser does not support HTML5 video.
             </video>
 
-            <span data-bind="if: dataModel.showRecordingButton"
-                  class="media-controls">
-                  <span title="StopRecording"
-                        data-bind="if: dataModel.currentlyRecording"><button type="button"
-                                data-bind="click: function() {dataModel.executeAction('StopRecording');}"><img
-                                   width="16"
-                                   height="16"
-                                   style="margin-top: -4px;"
-                                   src="/resources/icons/player/stop-button.svg" /></button></span>
-                  <span title="StartRecording"
-                        data-bind="ifnot: dataModel.currentlyRecording"><button type="button"
-                                data-bind="click: function() {dataModel.executeAction('StartRecording');}"><img
-                                   width="16"
-                                   height="16"
-                                   style="margin-top: -4px;"
-                                   src="/resources/icons/player/rec-button.svg" /></button></span>
-            </span>
-            <span data-bind="if: dataModel.showPlayButton"
-                  class="media-controls">
-                  <span title="StopPlayback"
-                        data-bind="if: dataModel.currentlyPlaying"><button type="button"
-                                data-bind="click: function() {dataModel.executeAction('StopPlayback');}"><img width="16"
-                                   height="16"
-                                   style="margin-top: -4px;"
-                                   src="/resources/icons/player/stop-button.svg" /></button></span>
-                  <span title="StartPlayback"
-                        data-bind="ifnot: dataModel.currentlyPlaying"><button type="button"
-                                data-bind="click: function() {dataModel.executeAction('StartPlayback');}"><img
-                                   width="16"
-                                   height="16"
-                                   style="margin-top: -4px;"
-                                   src="/resources/icons/player/play-button.svg" /></button></span>
-            </span>
-            <span data-bind="if: dataModel.showUploadButton"
-                  class="media-controls">
-                  <span title="Upload"
-                        data-bind="if: dataModel.recordedVideo"><button type="button"
-                                data-bind="click: function() {dataModel.executeAction('StartUpload');}"><img width="16"
-                                   height="16"
-                                   src="/resources/icons/upload.svg" /></button></span>
-                  <span title="Upload"
-                        data-bind="ifnot: dataModel.recordedVideo"><button type="button"
-                                data-bind=""
-                                style="cursor: not-allowed;"
-                                disabled><img width="16"
-                                   height="16"
-                                   src="/resources/icons/upload.svg" /></button></span>
-            </span>
-            <span data-bind="if: dataModel.showSeekbar"
-                  class="media-controls">
-                  <span class="progessbar"><progress class='seek-bar'
-                                  min='0'
-                                  max='100'
-                                  value='0'></progress></span>
-            </span>
+            <div style="width:200px; height:100px">
+                  <span data-bind="if: dataModel.showRecordingButton"
+                        class="media-controls">
+                        <span title="StopRecording"
+                              data-bind="if: dataModel.currentlyRecording"><button type="button"
+                                      data-bind="click: function() {dataModel.executeAction('StopRecording');}"><img
+                                         width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/stop-button.svg" /></button></span>
+                        <span title="StartRecording"
+                              data-bind="ifnot: dataModel.currentlyRecording"><button type="button"
+                                      data-bind="click: function() {dataModel.executeAction('StartRecording');}"><img
+                                         width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/rec-button.svg" /></button></span>
+                  </span>
+                  <span data-bind="if: dataModel.showPlayButton"
+                        class="media-controls">
+                        <span title="StopPlayback"
+                              data-bind="if: dataModel.currentlyPlaying"><button type="button"
+                                      data-bind="click: function() {dataModel.executeAction('StopPlayback');}"><img
+                                         width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/stop-button.svg" /></button></span>
+                        <span title="StartPlayback"
+                              data-bind="ifnot: dataModel.currentlyPlaying"><button type="button"
+                                      data-bind="click: function() {dataModel.executeAction('StartPlayback');}"><img
+                                         width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/play-button.svg" /></button></span>
+                  </span>
+                  <span data-bind="if: dataModel.showUploadButton"
+                        class="media-controls">
+                        <span title="Upload"
+                              data-bind="if: dataModel.recordedVideo"><button type="button"
+                                      data-bind="click: function() {dataModel.executeAction('StartUpload');}"><img
+                                         width="16"
+                                         height="16"
+                                         src="/resources/icons/upload.svg" /></button></span>
+                        <span title="Upload"
+                              data-bind="ifnot: dataModel.recordedVideo"><button type="button"
+                                      data-bind=""
+                                      style="cursor: not-allowed;"
+                                      disabled><img width="16"
+                                         height="16"
+                                         src="/resources/icons/upload.svg" /></button></span>
+                  </span>
+                  <span data-bind="if: dataModel.showSeekbar"
+                        class="media-controls">
+                        <span class="progessbar"><progress class='seek-bar'
+                                        min='0'
+                                        max='100'
+                                        value='0'></progress></span>
+                  </span>
+            </div>
+
 
       </div>
       <br>

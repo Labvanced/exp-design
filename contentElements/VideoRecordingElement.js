@@ -25,9 +25,7 @@ var VideoRecordingElement = function (expData) {
     this.recordedVideo = ko.observable(null);
     this.subscribersForJumpEvents = [];
 
-    this.use_mp3_recorder = true;
     this.recorder = null;
-    this.mp3Recorder = null;
 
 };
 
@@ -180,30 +178,20 @@ VideoRecordingElement.prototype.executeAction = function (actionType) {
     else if (actionType == "StartRecording") {
         console.log("StartRecording");
 
-        if (player.microphone_stream) {
+        if (player.video_stream) {
 
             if (!this.currentlyRecording() && !this.currentlyPlaying()) {
                 this.currentlyRecording(true);
-                if (this.use_mp3_recorder) {
-                    this.mp3Recorder = new MP3Recorder({
-                        bitRate: 128
-                    }, player.videoContext);
-                    this.mp3Recorder.beginRecording(player.microphone_stream);
-                }
-                else {
-                    self.recorder = new MediaRecorder(player.microphone_stream);
-
-                    // Set record to <video> when recording will be finished
-                    self.recorder.addEventListener('dataavailable', function (e) {
-                        console.log("data available");
-                        var blob = e.data;
-                        self.recordedVideo(blob);
-                    });
-
-                    // Start recording
-                    self.recorder.start()
-                }
-
+                var options = { mimeType: "video/webm; codecs=vp9" };
+                self.recorder = new MediaRecorder(player.video_stream, options);
+                // Set record to <video> when recording will be finished
+                self.recorder.addEventListener('dataavailable', function (e) {
+                    console.log("data available");
+                    var blob = e.data;
+                    self.recordedVideo(blob);
+                });
+                // Start recording
+                self.recorder.start();
             }
 
         }
@@ -215,23 +203,10 @@ VideoRecordingElement.prototype.executeAction = function (actionType) {
         // Stop recording
         if (this.currentlyRecording()) {
             this.currentlyRecording(false);
-            if (this.use_mp3_recorder) {
-                this.mp3Recorder.stop();
-                this.mp3Recorder.getMp3Blob(function (blob) {
-                    console.log("got mp3 blob");
-                    self.recordedVideo(blob);
+            if (self.recorder) {
+                if (self.recorder.state == "recording") {
+                    self.recorder.stop();
                     $(self.parent).trigger("VideoRecordingFinished");
-                }, function (e) {
-                    alert('We could not retrieve your message');
-                    console.log(e);
-                });
-            }
-            else {
-                if (self.recorder) {
-                    if (self.recorder.state == "recording") {
-                        self.recorder.stop();
-                        $(self.parent).trigger("VideoRecordingFinished");
-                    }
                 }
             }
         }
@@ -506,88 +481,70 @@ function createVideoRecordingComponents() {
 }
 
 
+
+function handleDataAvailable(event) {
+    console.log("data-available");
+    if (event.data.size > 0) {
+        recordedChunks.push(event.data);
+        download();
+    } else {
+        // ...
+    }
+}
+
+
+
+
+
 (function (exports) {
 
-    var MP3Recorder = function (config, videoContext) {
+    var VideoRecorder = function (config, videoContext) {
 
         var recorder = this;
 
         config = config || {};
 
-        var context;
-        if (videoContext) {
-            context = videoContext;
-        }
-        else {
-            context = new VideoContext();
-        }
+        this.recordedChunks = [];
 
-        var realTimeWorker = new Worker('/assets/js/worker-realtime.js');
-
-        // Initializes LAME so that we can record.
-        this.initialize = function () {
-            config.sampleRate = context.sampleRate;
-            realTimeWorker.postMessage({ cmd: 'init', config: config });
-        };
+        var options = { mimeType: "video/webm; codecs=vp9" };
+        this.mediaRecorder = new MediaRecorder(self.video_stream, options);
 
 
-        // This function finalizes LAME output and saves the MP3 data to a file.
-        var microphone, processor;
         // Function that handles getting video out of the browser's media API.
         this.beginRecording = function (stream) {
-            // Set up Web Video API to process data from the media stream (microphone).
-            microphone = context.createMediaStreamSource(stream);
-            // Settings a bufferSize of 0 instructs the browser to choose the best bufferSize
-            processor = context.createScriptProcessor(0, 1, 1);
-            // Add all buffers from LAME into an array.
-            processor.onvideoprocess = function (event) {
-                // Send microphone data to LAME for MP3 encoding while recording.
-                var array = event.inputBuffer.getChannelData(0);
-                //console.log('Buffer Received', array);
-                realTimeWorker.postMessage({ cmd: 'encode', buf: array })
-            };
+
+            function handleDataAvailable(event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+
+                } else {
+                    // ...
+                }
+            }
             // Begin retrieving microphone data.
-            microphone.connect(processor);
-            processor.connect(context.destination);
-            // Return a function which will stop recording and return all MP3 data.
+            recorder.ondataavailable = handleDataAvailable;
+            recorder.mediaRecorder.start();
         };
 
         this.stop = function () {
-            if (processor && microphone) {
-                // Clean up the Web Video API resources.
-                microphone.disconnect();
-                processor.disconnect();
-                processor.onvideoprocess = null;
-                // Return the buffers array. Note that there may be more buffers pending here.
-            }
+            function download() {
+                var blob = new Blob(recordedChunks, {
+                    type: "video/webm"
+                });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement("a");
+                document.body.appendChild(a);
+                a.style = "display: none";
+                a.href = url;
+                a.download = "test.webm";
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+            recorder.mediaRecorder.stop();
+            download();
         };
 
-        var mp3ReceiveSuccess, currentErrorCallback;
-        this.getMp3Blob = function (onSuccess, onError) {
-            currentErrorCallback = onError;
-            mp3ReceiveSuccess = onSuccess;
-            realTimeWorker.postMessage({ cmd: 'finish' });
-        };
-
-        realTimeWorker.onmessage = function (e) {
-            switch (e.data.cmd) {
-                case 'end':
-                    if (mp3ReceiveSuccess) {
-                        mp3ReceiveSuccess(new Blob(e.data.buf, { type: 'video/mp3' }));
-                    }
-                    console.log('MP3 data size', e.data.buf.length);
-                    break;
-                case 'error':
-                    if (currentErrorCallback) {
-                        currentErrorCallback(e.data.error);
-                    }
-                    break;
-                default:
-                    console.log('I just received a message I know not how to handle.', e.data);
-            }
-        };
-        this.initialize();
     };
 
-    exports.MP3Recorder = MP3Recorder;
+    exports.VideoRecorder = VideoRecorder;
 })(window);
