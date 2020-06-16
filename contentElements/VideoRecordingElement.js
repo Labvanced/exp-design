@@ -183,7 +183,7 @@ VideoRecordingElement.prototype.executeAction = function (actionType) {
 
             if (!this.currentlyRecording() && !this.currentlyPlaying()) {
                 this.currentlyRecording(true);
-                var browser = this.expData.varBrowserSpec().value().value;
+                var browser = this.expData.varBrowserSpec().value().value();
                 var specs = "";
                 if (browser.indexOf("Chrome") >= 0 || browser.indexOf("Opera") >= 0 || browser.indexOf("Edge") >= 0) {
                     specs = "video/webm; codecs=vp9";
