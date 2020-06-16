@@ -11,9 +11,10 @@ var VideoRecordingElement = function (expData) {
     this.showPlayButton = ko.observable(true);
     this.showUploadButton = ko.observable(true);
     this.showSeekbar = ko.observable(true);
+    this.showRecordedVideo = ko.observable(true);
     this.variable = ko.observable(null);
     this.isRequired = ko.observable(false);
-    this.enableTitle = ko.observable(true);
+    this.enableTitle = ko.observable(false);
 
     ///// not serialized
     this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
@@ -34,8 +35,8 @@ VideoRecordingElement.prototype.iconPath = "/resources/icons/microphone.svg";
 VideoRecordingElement.prototype.dataType = [];
 VideoRecordingElement.prototype.modifiableProp = [];
 VideoRecordingElement.prototype.displayNames = [];
-VideoRecordingElement.prototype.initWidth = 300;
-VideoRecordingElement.prototype.initHeight = 100;
+VideoRecordingElement.prototype.initWidth = 250;
+VideoRecordingElement.prototype.initHeight = 220;
 VideoRecordingElement.prototype.numVarNamesRequired = 1;
 VideoRecordingElement.prototype.actionTypes = ["StartRecording", "StopRecording", "StartUpload", "ClearRecording", "StartPlayback", "StopPlayback"];
 VideoRecordingElement.prototype.triggerTypes = ["VideoRecordingFinished", "UploadComplete"];
@@ -189,6 +190,7 @@ VideoRecordingElement.prototype.executeAction = function (actionType) {
                     console.log("data available");
                     var blob = e.data;
                     self.recordedVideo(blob);
+                    $(self.parent).trigger("VideoRecordingFinished");
                 });
                 // Start recording
                 self.recorder.start();
@@ -206,7 +208,6 @@ VideoRecordingElement.prototype.executeAction = function (actionType) {
             if (self.recorder) {
                 if (self.recorder.state == "recording") {
                     self.recorder.stop();
-                    $(self.parent).trigger("VideoRecordingFinished");
                 }
             }
         }
@@ -297,7 +298,8 @@ VideoRecordingElement.prototype.toJS = function () {
         showPlayButton: this.showPlayButton(),
         showUploadButton: this.showUploadButton(),
         showSeekbar: this.showSeekbar(),
-        enableTitle: this.enableTitle()
+        enableTitle: this.enableTitle(),
+        showRecordedVideo: this.showRecordedVideo()
     };
 };
 
@@ -309,6 +311,7 @@ VideoRecordingElement.prototype.fromJS = function (data) {
     this.showPlayButton(data.showPlayButton);
     this.showUploadButton(data.showUploadButton);
     this.showSeekbar(data.showSeekbar);
+    this.showRecordedVideo(data.showRecordedVideo);
 
     if (data.questionText.hasOwnProperty('rawText')) {
         this.questionText(new EditableTextElement(this.expData, this, ''));
@@ -324,6 +327,8 @@ VideoRecordingElement.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('enableTitle')) {
         this.enableTitle(data.enableTitle);
     }
+
+
 };
 
 
@@ -376,32 +381,35 @@ function createVideoRecordingComponents() {
 
         // only add playback functionality if not in sequence view:
         if ($(this.element).parents('#sequenceView').length == 0) {
-            this.dataModel.currentlyPlaying.subscribe(function (value) {
-                if (value) {
-                    self.myVideoElem.play();
-                }
-                else {
-                    self.myVideoElem.pause();
-                }
-            });
+            if (self.myVideoElem) {
+                this.dataModel.currentlyPlaying.subscribe(function (value) {
+                    if (value) {
+                        self.myVideoElem.play();
+                    }
+                    else {
+                        self.myVideoElem.pause();
+                    }
+                });
 
-            // add subscriber to be notified when the video should jump to specific time:
-            this.listenForJumpTo = function (evtParam) {
-                if (evtParam.jumpToFraction) {
-                    var time = self.myVideoElem.duration * evtParam.jumpToFraction;
-                    console.log("setting video time to " + time);
-                    self.myVideoElem.currentTime = time;
-                }
-            };
-            this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
+                // add subscriber to be notified when the video should jump to specific time:
+                this.listenForJumpTo = function (evtParam) {
+                    if (evtParam.jumpToFraction) {
+                        var time = self.myVideoElem.duration * evtParam.jumpToFraction;
+                        console.log("setting video time to " + time);
+                        self.myVideoElem.currentTime = time;
+                    }
+                };
+                this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
 
-            // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
-            this.timeUpdateListener = function () {
-                if (!isNaN(self.myVideoElem.duration)) {
-                    var percentage = Math.floor(100 * self.myVideoElem.currentTime / self.myVideoElem.duration);
-                    self.dataModel.currentTimePercentage(percentage);
-                }
-            };
+                // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
+                this.timeUpdateListener = function () {
+                    if (!isNaN(self.myVideoElem.duration)) {
+                        var percentage = Math.floor(100 * self.myVideoElem.currentTime / self.myVideoElem.duration);
+                        self.dataModel.currentTimePercentage(percentage);
+                    }
+                };
+            }
+
 
             // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
             this.onPlaybackEnded = function () {
@@ -414,14 +422,17 @@ function createVideoRecordingComponents() {
             });
         }
 
-        this.recordedVideoSubscriber = this.dataModel.recordedVideo.subscribe(function (blob) {
-            try {
-                self.myVideoElem.srcObject = blob;
-            } catch (error) {
-                self.myVideoElem.src = URL.createObjectURL(blob);
-            }
-            self.myVideoElem.load();
-        });
+        if (self.myVideoElem) {
+            this.recordedVideoSubscriber = this.dataModel.recordedVideo.subscribe(function (blob) {
+                try {
+                    self.myVideoElem.srcObject = blob;
+                } catch (error) {
+                    self.myVideoElem.src = URL.createObjectURL(blob);
+                }
+                self.myVideoElem.load();
+            });
+        }
+
     };
     VideoRecordingPreviewAndPlayerViewModel.prototype.afterRenderInit = function (elem) {
         var self = this;
@@ -437,8 +448,11 @@ function createVideoRecordingComponents() {
         }
 
         // Update the seek bar as the video plays
-        this.myVideoElem.addEventListener("timeupdate", this.timeUpdateListener);
-        this.myVideoElem.addEventListener("ended", this.onPlaybackEnded);
+        if (this.myVideoElem) {
+            this.myVideoElem.addEventListener("timeupdate", this.timeUpdateListener);
+            this.myVideoElem.addEventListener("ended", this.onPlaybackEnded);
+        }
+
     };
     VideoRecordingPreviewAndPlayerViewModel.prototype.dispose = function () {
         console.log("disposing VideoRecordingPreviewAndPlayerViewModel");
@@ -447,16 +461,23 @@ function createVideoRecordingComponents() {
         if (index > -1) {
             this.dataModel.subscribersForJumpEvents.splice(index, 1);
         }
-        if (this.subscriberTimePercentage) {
-            this.subscriberTimePercentage.dispose();
+        if (this.myVideoElem) {
+            if (this.subscriberTimePercentage) {
+                this.subscriberTimePercentage.dispose();
+            }
+            if (this.recordedVideoSubscriber) {
+                this.recordedVideoSubscriber.dispose();
+            }
         }
-        if (this.recordedVideoSubscriber) {
-            this.recordedVideoSubscriber.dispose();
-        }
+
         var myVideo = $(this.element).find('video')[0];
 
-        myVideo.removeEventListener("timeupdate", this.timeUpdateListener);
-        myVideo.removeEventListener("ended", this.onPlaybackEnded);
+        if (this.myVideo) {
+            myVideo.removeEventListener("timeupdate", this.timeUpdateListener);
+            myVideo.removeEventListener("ended", this.onPlaybackEnded);
+        }
+
+
         $(this.seekBar).off("change")
     };
 
@@ -480,71 +501,3 @@ function createVideoRecordingComponents() {
     });
 }
 
-
-
-function handleDataAvailable(event) {
-    console.log("data-available");
-    if (event.data.size > 0) {
-        recordedChunks.push(event.data);
-        download();
-    } else {
-        // ...
-    }
-}
-
-
-
-
-
-(function (exports) {
-
-    var VideoRecorder = function (config, videoContext) {
-
-        var recorder = this;
-
-        config = config || {};
-
-        this.recordedChunks = [];
-
-        var options = { mimeType: "video/webm; codecs=vp9" };
-        this.mediaRecorder = new MediaRecorder(self.video_stream, options);
-
-
-        // Function that handles getting video out of the browser's media API.
-        this.beginRecording = function (stream) {
-
-            function handleDataAvailable(event) {
-                if (event.data.size > 0) {
-                    recordedChunks.push(event.data);
-
-                } else {
-                    // ...
-                }
-            }
-            // Begin retrieving microphone data.
-            recorder.ondataavailable = handleDataAvailable;
-            recorder.mediaRecorder.start();
-        };
-
-        this.stop = function () {
-            function download() {
-                var blob = new Blob(recordedChunks, {
-                    type: "video/webm"
-                });
-                var url = URL.createObjectURL(blob);
-                var a = document.createElement("a");
-                document.body.appendChild(a);
-                a.style = "display: none";
-                a.href = url;
-                a.download = "test.webm";
-                a.click();
-                window.URL.revokeObjectURL(url);
-            };
-            recorder.mediaRecorder.stop();
-            download();
-        };
-
-    };
-
-    exports.VideoRecorder = VideoRecorder;
-})(window);
