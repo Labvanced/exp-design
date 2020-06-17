@@ -31,6 +31,10 @@
 
             <span class="property-description"><label><input class="taskeditor-checkbox"
                                type="checkbox"
+                               data-bind="checked: dataModel.showLiveVideo">Show Live Video</label></span>
+
+            <span class="property-description"><label><input class="taskeditor-checkbox"
+                               type="checkbox"
                                data-bind="checked: dataModel.showRecordingButton">Show Recording
                         Button</label></span><br>
             <span class="property-description"><label><input class="taskeditor-checkbox"
@@ -64,17 +68,14 @@
             </span>
             <!-- /ko -->
 
-            <!-- ko if: dataModel.showRecordedVideo() -->
+            <!-- ko if: dataModel.showRecordedVideo() || dataModel.showLiveVideo() -->
             <video preload="auto"
-                   width="200px"
-                   height="150px">
-                  <source data-bind="attr: {src: dataModel.recordedVideo()}">
+                   data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}">
                   Your browser does not support HTML5 video.
             </video>
             <!-- /ko -->
 
-            <div style="width:150px; height:50px">
-
+            <div class="media-controls-floating media-controls">
                   <span data-bind="if: dataModel.showRecordingButton"
                         class="media-controls">
                         <span data-bind="if: dataModel.currentlyRecording"><button type="button"><img width="16"
@@ -150,17 +151,16 @@
             <!-- /ko -->
             <!-- /ko -->
 
-            <!-- ko if: dataModel.showRecordedVideo() -->
-            <video preload="auto"
-                   width="200px"
-                   height="150px"
-                   class="recordedVideoPlaybackElem">
+            <!-- ko if: dataModel.showRecordedVideo() || dataModel.showLiveVideo() -->
+            <video data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}"
+                   class="recordedVideoPlaybackElem"
+                   preload="auto">
                   <source class="recordedVideoPlaybackSource">
                   Your browser does not support HTML5 video.
             </video>
             <!-- /ko -->
 
-            <div style="width:150px; height:50px">
+            <div class="media-controls-floating media-controls">
                   <span data-bind="if: dataModel.showRecordingButton"
                         class="media-controls">
                         <span title="StopRecording"
