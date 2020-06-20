@@ -35,6 +35,7 @@ var StudySettings = function (expData) {
 
     // special device requirements:
     this.isAudioRecEnabled = ko.observable(false);
+    this.isVideoRecEnabled = ko.observable(false);
     this.isWebcamEnabled = ko.observable(false);
     this.multiUserOnLeaveAction = ko.observable("Finish Study With Error");
     this.multiUserAllowInviteFriends = ko.observable(true);
@@ -150,6 +151,14 @@ StudySettings.prototype.enableAudioRec = function () {
 };
 
 
+StudySettings.prototype.enableVideoRec = function () {
+    if (!this.isVideoRecEnabled()) {
+        this.isVideoRecEnabled(true);
+    }
+    this.allowInternetExplorer(false);
+};
+
+
 
 
 StudySettings.prototype.fromJS = function (data) {
@@ -227,6 +236,9 @@ StudySettings.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('isAudioRecEnabled')) {
         this.isAudioRecEnabled(data.isAudioRecEnabled);
     }
+    if (data.hasOwnProperty('isVideoRecEnabled')) {
+        this.isVideoRecEnabled(data.isVideoRecEnabled);
+    }
     if (data.hasOwnProperty("participantConsent")) {
         this.participantConsent(data.participantConsent);
     }
@@ -303,6 +315,7 @@ StudySettings.prototype.toJS = function () {
         useOnlyCompletedSessionsForGroupRand: this.useOnlyCompletedSessionsForGroupRand(),
         disablePreloadingResources: this.disablePreloadingResources(),
         isAudioRecEnabled: this.isAudioRecEnabled(),
+        isVideoRecEnabled: this.isVideoRecEnabled(),
         participantConsent: this.participantConsent(),
         multiUserOnLeaveAction: this.multiUserOnLeaveAction(),
         multiUserAllowInviteFriends: this.multiUserAllowInviteFriends(),

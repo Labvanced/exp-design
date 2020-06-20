@@ -80,6 +80,9 @@ ko.components.register('contentElementPreview', {
             else if (contentElement instanceof AudioRecordingElement) {
                 elem = $("<div data-bind='component: {name : \"audiorecording-preview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof VideoRecordingElement) {
+                elem = $("<div data-bind='component: {name : \"videorecording-preview\", params : $data.contentElement}'></div>");
+            }
             if (contentElement instanceof IFrameElement) {
                 elem = $("<div style='width:100%; height:100%' data-bind='component: {name : \"iframe-preview\", params : $data.contentElement}'></div>");
             }
@@ -173,6 +176,9 @@ ko.components.register('contentElementPlayerview', {
             else if (contentElement instanceof AudioRecordingElement) {
                 elem = $("<div data-bind='component: {name : \"audiorecording-playerview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof VideoRecordingElement) {
+                elem = $("<div data-bind='component: {name : \"videorecording-playerview\", params : $data.contentElement}'></div>");
+            }
             else if (contentElement instanceof IFrameElement) {
                 elem = $("<div style='width:100%; height:100%' data-bind='component: {name : \"iframe-playerview\", params : $data.contentElement}'></div>");
             }
@@ -265,6 +271,9 @@ ko.components.register('contentElementEditview', {
             }
             else if (contentElement instanceof AudioRecordingElement) {
                 elem = $("<div data-bind='component: {name : \"audiorecording-editview\", params : $data.contentElement}'></div>");
+            }
+            else if (contentElement instanceof VideoRecordingElement) {
+                elem = $("<div data-bind='component: {name : \"videorecording-editview\", params : $data.contentElement}'></div>");
             }
             else if (contentElement instanceof IFrameElement) {
                 elem = $("<div data-bind='component: {name : \"iframe-editview\", params : $data.contentElement}'></div>");

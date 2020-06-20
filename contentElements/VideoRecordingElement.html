@@ -1,0 +1,227 @@
+<template id='videorecording-editview-template'>
+      <div class="panel-body"
+           style="height: 100%; margin-top: -10px">
+            <div class="taskeditor-header">Video Recording</div>
+
+            <div>
+                  <label style="cursor: pointer">Show Question Header: <input class="checkbox-element"
+                               style="display: inline-block;"
+                               type="checkbox"
+                               data-bind="checked: dataModel.enableTitle,click:function(){return true},clickBubble: false"></label>
+            </div>
+
+            <div>
+                  <label style="cursor: pointer">Required:<input class="checkbox-element"
+                               style="display: inline-block;"
+                               type="checkbox"
+                               data-bind="checked: dataModel.isRequired,click:function(){return true},clickBubble: false"></label>
+            </div>
+            <hr>
+
+            <label>
+                  Linked Variable:
+                  <span
+                        data-bind="component: {name: 'LinkedVariableView', params: {variableObs: dataModel.variable, allowedDatatypes: ['file'], relinkCallback: relinkCallback } }"></span>
+            </label>
+            <br>
+
+            <span class="property-description"><label><input class="taskeditor-checkbox"
+                               type="checkbox"
+                               data-bind="checked: dataModel.showRecordedVideo">Show Recorded Video</label></span>
+
+            <span class="property-description"><label><input class="taskeditor-checkbox"
+                               type="checkbox"
+                               data-bind="checked: dataModel.showLiveVideo">Show Live Video</label></span>
+
+            <span class="property-description"><label><input class="taskeditor-checkbox"
+                               type="checkbox"
+                               data-bind="checked: dataModel.showRecordingButton">Show Recording
+                        Button</label></span><br>
+            <span class="property-description"><label><input class="taskeditor-checkbox"
+                               type="checkbox"
+                               data-bind="checked: dataModel.showPlayButton">Show Play Button</label></span><br>
+            <span class="property-description"><label><input class="taskeditor-checkbox"
+                               type="checkbox"
+                               data-bind="checked: dataModel.showUploadButton">Show Upload Button</label></span><br>
+            <span class="property-description"><label><input class="taskeditor-checkbox"
+                               type="checkbox"
+                               data-bind="checked: dataModel.showSeekbar">Show Seekbar</label></span>
+
+      </div>
+</template>
+
+
+
+
+<template id='videorecording-preview-template'>
+      <!-- ko if: (dataModel.enableTitle())  -->
+      <div data-bind="component: {name : 'editable-text-element-preview', params : dataModel.questionText}"></div>
+      <!-- /ko -->
+      <div>
+
+            <!-- ko if: dataModel.isRequired() -->
+            <span class="required-question-icon"
+                  data-bind="tooltip:'.requiredInfoEditor'">
+                  <img width="20"
+                       height="20"
+                       src="/resources/icons/exmark.svg" />
+            </span>
+            <!-- /ko -->
+
+            <!-- ko if: dataModel.showRecordedVideo() || dataModel.showLiveVideo() -->
+            <video preload="auto"
+                   data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}">
+                  Your browser does not support HTML5 video.
+            </video>
+            <!-- /ko -->
+
+            <div class="media-controls-floating media-controls">
+                  <span data-bind="if: dataModel.showRecordingButton"
+                        class="media-controls">
+                        <span data-bind="if: dataModel.currentlyRecording"><button type="button"><img width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/stop-button.svg" /></button></span>
+                        <span data-bind="ifnot: dataModel.currentlyRecording"><button type="button"><img width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/rec-button.svg" /></button></span>
+                  </span>
+                  <span data-bind="if: dataModel.showPlayButton"
+                        class="media-controls">
+                        <span data-bind="if: dataModel.currentlyPlaying"><button type="button"><img width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/stop-button.svg" /></button></span>
+                        <span data-bind="ifnot: dataModel.currentlyPlaying"><button type="button"><img width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/play-button.svg" /></button></span>
+                  </span>
+                  <span data-bind="if: dataModel.showUploadButton"
+                        class="media-controls">
+                        <span data-bind="if: dataModel.recordedVideo"><button type="button"
+                                      data-bind="click: function() {dataModel.executeAction('StartUpload');}"><img
+                                         width="16"
+                                         height="16"
+                                         src="/resources/icons/upload.svg" /></button></span>
+                        <span data-bind="ifnot: dataModel.recordedVideo"><button type="button"
+                                      data-bind=""
+                                      style="cursor: not-allowed;"
+                                      disabled><img width="16"
+                                         height="16"
+                                         src="/resources/icons/upload.svg" /></button></span>
+                  </span>
+                  <span data-bind="if: dataModel.showSeekbar"
+                        class="media-controls">
+                        <span class="progessbar"><progress class='seek-bar'
+                                        min='0'
+                                        max='100'
+                                        value='0'></progress></span>
+                  </span>
+
+            </div>
+
+
+
+
+      </div>
+      <br>
+</template>
+
+
+
+
+<template id='videorecording-playerview-template'>
+      <!-- ko if: (dataModel.enableTitle())  -->
+      <div data-bind="component: {name : 'editable-text-element-playerview', params : dataModel.questionText}"></div>
+      <br>
+      <!-- /ko -->
+      <div
+           data-bind="template: { afterRender: function(callbackTarget, callbackArgs) { callbackArgs.afterRenderInit($element); } }">
+
+            <!-- ko if: dataModel.triedToSubmit() -->
+            <!-- ko ifnot: dataModel.dataIsValid() -->
+            <span class="required-question-icon"
+                  data-bind="tooltip:'.requiredInfo'">
+                  <img width="20"
+                       height="20"
+                       src="/resources/icons/exmark.svg" />
+            </span>
+            <!-- /ko -->
+            <!-- /ko -->
+
+            <!-- ko if: dataModel.showRecordedVideo() || dataModel.showLiveVideo() -->
+            <video data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}"
+                   class="recordedVideoPlaybackElem"
+                   preload="auto">
+                  <source class="recordedVideoPlaybackSource">
+                  Your browser does not support HTML5 video.
+            </video>
+            <!-- /ko -->
+
+            <div class="media-controls-floating media-controls">
+                  <span data-bind="if: dataModel.showRecordingButton"
+                        class="media-controls">
+                        <span title="StopRecording"
+                              data-bind="if: dataModel.currentlyRecording"><button type="button"
+                                      data-bind="click: function() {dataModel.executeAction('StopRecording');}"><img
+                                         width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/stop-button.svg" /></button></span>
+                        <span title="StartRecording"
+                              data-bind="ifnot: dataModel.currentlyRecording"><button type="button"
+                                      data-bind="click: function() {dataModel.executeAction('StartRecording');}"><img
+                                         width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/rec-button.svg" /></button></span>
+                  </span>
+                  <span data-bind="if: dataModel.showPlayButton"
+                        class="media-controls">
+                        <span title="StopPlayback"
+                              data-bind="if: dataModel.currentlyPlaying"><button type="button"
+                                      data-bind="click: function() {dataModel.executeAction('StopPlayback');}"><img
+                                         width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/stop-button.svg" /></button></span>
+                        <span title="StartPlayback"
+                              data-bind="ifnot: dataModel.currentlyPlaying"><button type="button"
+                                      data-bind="click: function() {dataModel.executeAction('StartPlayback');}"><img
+                                         width="16"
+                                         height="16"
+                                         style="margin-top: -4px;"
+                                         src="/resources/icons/player/play-button.svg" /></button></span>
+                  </span>
+                  <span data-bind="if: dataModel.showUploadButton"
+                        class="media-controls">
+                        <span title="Upload"
+                              data-bind="if: dataModel.recordedVideo"><button type="button"
+                                      data-bind="click: function() {dataModel.executeAction('StartUpload');}"><img
+                                         width="16"
+                                         height="16"
+                                         src="/resources/icons/upload.svg" /></button></span>
+                        <span title="Upload"
+                              data-bind="ifnot: dataModel.recordedVideo"><button type="button"
+                                      data-bind=""
+                                      style="cursor: not-allowed;"
+                                      disabled><img width="16"
+                                         height="16"
+                                         src="/resources/icons/upload.svg" /></button></span>
+                  </span>
+                  <span data-bind="if: dataModel.showSeekbar"
+                        class="media-controls">
+                        <span class="progessbar"><progress class='seek-bar'
+                                        min='0'
+                                        max='100'
+                                        value='0'></progress></span>
+                  </span>
+            </div>
+
+
+      </div>
+      <br>
+
+</template>
