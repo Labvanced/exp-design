@@ -431,6 +431,17 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function () {
         }
     }
 
+    if (os == "Mac/OS-X") {
+
+        if (/iPhone/.test(nAgt)) {
+            os = "iPhone";
+        }
+        else if (/iPad/.test(nAgt)) {
+            os = "iPad";
+        }
+
+
+    }
     if (this.allowedSystems().indexOf(os) >= 0) {
         this.osAllowed(true);
     }
