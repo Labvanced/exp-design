@@ -148,7 +148,7 @@ VideoRecordingElement.prototype.executeAction = function (actionType) {
             var trialNr = player.trialIter;
             var elemName = this.parent.name();
 
-            if (file.size > 10000000) {
+            if (file.size > 1024 * 1024 * 100) {
                 console.log("file too large. cannot upload");
                 return;
             }
