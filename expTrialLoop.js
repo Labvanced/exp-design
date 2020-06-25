@@ -1025,23 +1025,35 @@ ExpTrialLoop.prototype.checkConstraint = function (currentArray, ffConds) {
     var maxInterval = this.maxIntervalSameCondition();
     var constraint = null;
 
+
     if (currentArray.length >= maxInterval) {
-        var lastEntries = [];
-        for (var j = currentArray.length - maxInterval; j < currentArray.length; j++) {
-            lastEntries.push(currentArray[j].condition.conditionIdx() - 1);
+
+        if (maxInterval === 1) {
+            constraint = [currentArray[currentArray.length - 1].condition.conditionIdx()];
+        }
+        else {
+            var lastEntries = [];
+            for (var j = currentArray.length - maxInterval; j < currentArray.length; j++) {
+                lastEntries.push(currentArray[j].condition.conditionIdx());
+            }
+            var isSame = true;
+            var i = 1;
+            var condVal = lastEntries[0];
+            while (i < lastEntries.length && isSame) {
+                if (lastEntries[i] != condVal) {
+                    isSame = false;
+                }
+                i++;
+
+            }
+            if (isSame) {
+                constraint = [condVal]
+            }
+
         }
 
-        for (var cond = 0; cond < ffConds.length; cond++) {
-            var match = 0;
-            for (var t = 0; t < lastEntries.length; t++) {
-                if (ffConds[cond].indexOf(lastEntries[t]) >= 0) {
-                    match++;
-                }
-            }
-            if (match == maxInterval) {
-                constraint = ffConds[cond];
-            }
-        }
+
+
     }
 
     return constraint
