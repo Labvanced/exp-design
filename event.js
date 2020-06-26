@@ -39,6 +39,23 @@ ExpEvent.prototype.deleteAction = function (index) {
     this.actions.splice(index, 1);
 };
 
+/**
+ * delete the action at the specified index.
+ * @param {number} index
+ */
+// TODO: unused
+ExpEvent.prototype.hasUserGestureTrigger = function () {
+    if (this.trigger() instanceof TriggerMouse ||
+        this.trigger() instanceof TriggerButtonClick ||
+        this.trigger() instanceof TriggerKeyboard ||
+        this.trigger() instanceof TriggerEnterOnInput) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+
 
 ExpEvent.prototype.startPause = function (playerFrame) {
     this.isPaused = true;
