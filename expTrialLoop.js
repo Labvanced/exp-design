@@ -1003,6 +1003,12 @@ ExpTrialLoop.prototype.getTrialWithConstraint = function (trialArray, conditions
             }
             i++;
         }
+        if (!found) {
+            var randValue = Math.floor(Math.random() * n);
+            var trial = trialArray[randValue];
+            trial = trialArray.splice(randValue, 1)[0];
+            found = true;
+        }
     }
     else {
         var randValue = Math.floor(Math.random() * n);
