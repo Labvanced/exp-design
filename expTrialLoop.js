@@ -20,6 +20,7 @@ var ExpTrialLoop = function (expData) {
     this.id = ko.observable(guid());
     this.displayInitialCountdown = ko.observable(true);
     this.syncTaskStart = ko.observable(true);
+    this.useEyetrackingV2 = ko.observable(false);
 
     this.zoomMode = ko.observable('fullscreen'); // fullscreen or visualDegree or pixel or millimeter
     this.visualDegreeToUnit = ko.observable(20);
@@ -1562,6 +1563,9 @@ ExpTrialLoop.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('syncTaskStart')) {
         this.syncTaskStart(data.syncTaskStart);
     }
+    if (data.hasOwnProperty('useEyetrackingV2')) {
+        this.useEyetrackingV2(data.useEyetrackingV2);
+    }
 
     this.type = data.type;
 
@@ -1668,6 +1672,7 @@ ExpTrialLoop.prototype.toJS = function () {
         editorHeight: this.editorHeight(),
         displayInitialCountdown: this.displayInitialCountdown(),
         syncTaskStart: this.syncTaskStart(),
+        useEyetrackingV2: this.useEyetrackingV2(),
         type: this.type,
         factorGroups: jQuery.map(this.factorGroups(), function (factorGroup) { return factorGroup.toJS(); }),
         subSequencePerFactorGroup: jQuery.map(this.subSequencePerFactorGroup(), function (subSequence) { return subSequence.id(); }),
