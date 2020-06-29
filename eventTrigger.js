@@ -51,7 +51,8 @@ TriggerMouse.prototype.getParameterSpec = function () {
         'Time From Frame Onset',
         'Stimulus Info',
         'MouseX',
-        'MouseY'
+        'MouseY',
+        'Mouse [X,Y] Array',
     ];
 };
 
@@ -89,7 +90,8 @@ TriggerMouse.prototype.triggerOnTarget = function (playerFrame, target, ev) {
             playerFrame.getFrameTime(),
             stimulusInformation,
             mouseX,
-            mouseY
+            mouseY,
+            [mouseX, mouseY]
         ]);
     }
 };
@@ -302,6 +304,7 @@ TriggerEyetracking.prototype.getParameterSpec = function () {
     return [
         'Coordinate X',
         'Coordinate Y',
+        'Coordinate [X,Y] Array',
         'Time From Frame Onset',
         'Stimulus Name',
         'Stimulus Info'
@@ -349,6 +352,7 @@ TriggerEyetracking.prototype.setupOnPlayerFrame = function (playerFrame) {
             self.event.triggerActions([
                 coordX,
                 coordY,
+                [coordX, coordY],
                 playerFrame.getFrameTime(),
                 null,
                 null
