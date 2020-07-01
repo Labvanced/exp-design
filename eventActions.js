@@ -4740,6 +4740,7 @@ ActionSendExternalTrigger.prototype.reAddEntities = function (entitiesArr) {
     }
 };
 
+
 ActionSendExternalTrigger.prototype.run = function (triggerParams) {
     var value = null;
     if (this.variable()) {
