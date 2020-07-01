@@ -3967,8 +3967,7 @@ ActionControlAV.prototype.run = function (triggerParams) {
             if (!this.event.hasUserGestureTrigger() &&
                 this.target().content() instanceof VideoElement &&
                 (this.event.parent.expData.varBrowserSpec().value().value().indexOf("Safari") >= 0 ||
-                    this.event.parent.expData.varSystemSpec().value().value().indexOf("iOS") >= 0 ||
-                    this.event.parent.expData.varSystemSpec().value().value().indexOf("Mac OS") >= 0)) {
+                    this.event.parent.expData.varSystemSpec().value().value().indexOf("iOS") >= 0)) {
                 var elem = $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
                 elem[0].muted = true;
             }
