@@ -571,17 +571,34 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function () {
         selectedLanguage: this.selectedLanguage() ? this.selectedLanguage().code : null,
         selectedEmail: this.selectedEmail()
     };
+
+
+    var data_send = {
+        expSessionNr: player.expSessionNr,
+        expId: player.expId,
+        subject_code: player.subject_code,
+        token: player.token,
+        survey_data: survey_data,
+        isTestrun: player.isTestrun,
+        runOnlyGroupNr: player.runOnlyGroupNr,
+        runOnlySessionNr: player.runOnlySessionNr
+    };
+
+
+    if (this.experiment.publishing_data.sendRecordedDataToExternalServer()) {
+        if (player.exp_license === 'lab') {
+            playerAjaxPostExternal(
+                '/startFirstPlayerSession',
+                data_send,
+                null
+            );
+        } else {
+            console.error("external data storage is only supported for lab license holders");
+        }
+    }
+
     playerAjaxPost('/startFirstPlayerSession',
-        {
-            expSessionNr: player.expSessionNr,
-            expId: player.expId,
-            subject_code: player.subject_code,
-            token: player.token,
-            survey_data: survey_data,
-            isTestrun: player.isTestrun,
-            runOnlyGroupNr: player.runOnlyGroupNr,
-            runOnlySessionNr: player.runOnlySessionNr
-        },
+        data_send,
         function (data) {
             if (data.hasOwnProperty('success') && data.success == false) {
                 if (data.msg == "no matching subject group") {
@@ -600,6 +617,7 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function () {
             player.preloadAllContent();
             self.jumpToLoadingScreen();
         }
+
     );
 };
 
