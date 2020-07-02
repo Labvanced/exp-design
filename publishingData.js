@@ -63,7 +63,7 @@ var PublishingData = function (experiment) {
 
     this.connectToExternalDevices = ko.observable(false);
     this.sendRecordedDataToExternalServer = ko.observable(false);
-    this.disableLabvancedDataRecording = ko.observable(false);
+
     this.connectToIP = ko.observable('localhost');
     this.connectToPort = ko.observable(8081);
 
@@ -392,11 +392,6 @@ PublishingData.prototype.fromJS = function (data) {
         this.sendRecordedDataToExternalServer(data.sendRecordedDataToExternalServer);
     }
 
-    if (data.hasOwnProperty('disableLabvancedDataRecording')) {
-        this.disableLabvancedDataRecording(data.disableLabvancedDataRecording);
-    }
-
-
     if (data.hasOwnProperty('connectToIP')) {
         this.connectToIP(data.connectToIP);
     }
@@ -610,8 +605,6 @@ PublishingData.prototype.toJS = function () {
 
         connectToExternalDevices: this.connectToExternalDevices(),
         sendRecordedDataToExternalServer: this.sendRecordedDataToExternalServer(),
-
-        disableLabvancedDataRecording: this.disableLabvancedDataRecording(),
 
 
         connectToIP: this.connectToIP(),
