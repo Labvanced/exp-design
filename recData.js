@@ -19,6 +19,16 @@ RecData.prototype.addRecording = function (globalVar) {
     this.data[globalVar.id()] = globalVar.getRecAtEndOfTrial();
 };
 
+
+/**
+ * add the recording of a variable to data
+ * @param {globalVar} globalVar - variable to be recorded
+ * Warning: as names might not be unique data could be overwritten by this method
+ */
+RecData.prototype.addRecordingByName = function (globalVar) {
+    this.data[globalVar.name()] = globalVar.getRecAtEndOfTrial();
+};
+
 /**
  * load from a json object to deserialize the states.
  * @param {object} data - the json description of the states.

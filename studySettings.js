@@ -30,7 +30,7 @@ var StudySettings = function (expData) {
     this.minWidth = ko.observable(800);
     this.minHeight = ko.observable(600);
     this.pauseOnExitFullscreen = ko.observable(false);
-    this.useOnlyCompletedSessionsForGroupRand = ko.observable(false);
+    this.useOnlyCompletedSessionsForGroupRand = ko.observable(true);
     this.disablePreloadingResources = ko.observable(false);
 
     // special device requirements:
@@ -58,7 +58,7 @@ var StudySettings = function (expData) {
     this.assignSubjGroup = ko.observable("automatic");
     this.assignSession = ko.observable("automatic");
 
-    this.actionOnResourceError = ko.observable("continue experiment");
+    this.actionOnResourceError = ko.observable("abort experiment");
 
 
     var self = this;
