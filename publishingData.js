@@ -67,8 +67,9 @@ var PublishingData = function (experiment) {
     this.connectToIP = ko.observable('localhost');
     this.connectToPort = ko.observable(8081);
 
-    this.connectToIPExternalDataStorage = ko.observable('localhost');
-    this.connectToPortExternalDataStorage = ko.observable(8082);
+    this.connectToIPExternalDataStorage = ko.observable('');
+    this.connectToPortExternalDataStorage = ko.observable(null);
+    this.connectToNameSpaceExternalDataStorage = ko.observable('');
 
     //
     this.savedExternally = ko.observable(new SavedExternally(experiment));
@@ -407,6 +408,12 @@ PublishingData.prototype.fromJS = function (data) {
         this.connectToPortExternalDataStorage(data.connectToPortExternalDataStorage);
     }
 
+    if (data.hasOwnProperty('connectToNameSpaceExternalDataStorage')) {
+        this.connectToNameSpaceExternalDataStorage(data.connectToNameSpaceExternalDataStorage);
+    }
+
+
+
     if (data.hasOwnProperty('isSelectedTemplate')) {
         this.isSelectedTemplate(data.isSelectedTemplate);
     }
@@ -615,7 +622,7 @@ PublishingData.prototype.toJS = function () {
         connectToPortExternalDataStorage: this.connectToPortExternalDataStorage(),
 
 
-
+        connectToNameSpaceExternalDataStorage: this.connectToNameSpaceExternalDataStorage(),
 
 
         isSelectedTemplate: this.isSelectedTemplate(),
