@@ -144,7 +144,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function (playerFrame) {
             case "PressDown":
                 eventHandle.eventName = 'mousedown touchstart';
                 eventHandle.cb = function (ev) {
-                    if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2)) {
+                    if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2) || ev.type === 'touchstart') {
                         self.triggerOnTarget(playerFrame, target, ev);
                     }
                 };
@@ -153,7 +153,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function (playerFrame) {
             case "PressUp":
                 eventHandle.eventName = 'mouseup touchend';
                 eventHandle.cb = function (ev) {
-                    if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2)) {
+                    if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2) || ev.type === 'touchend') {
                         self.triggerOnTarget(playerFrame, target, ev);
                     }
                 };
@@ -162,7 +162,7 @@ TriggerMouse.prototype.setupOnPlayerFrame = function (playerFrame) {
             case "Move":
                 eventHandle.eventName = 'mousemove touchmove';
                 eventHandle.cb = function (ev) {
-                    if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2)) {
+                    if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2) || ev.type === 'touchmove') {
                         self.triggerOnTarget(playerFrame, target, ev);
                     }
                 };
