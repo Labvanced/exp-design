@@ -238,6 +238,21 @@ var ExperimentStartupScreen = function (experiment) {
         }
     }
 
+    navigator.permissions.query({ name: 'microphone' }).then(function (res) {
+        res.onchange = function (e) {
+            // detecting if the event is a change
+            if (e.type === 'change') {
+                // checking what the new permissionStatus state is
+                var newState = e.target.state;
+                if (newState === 'granted') {
+                    if (window.innerHeight !== screen.height) {
+                        player.startFullscreen();
+                    }
+
+                }
+            }
+        };
+    });
 
     navigator.permissions.query({ name: 'camera' }).then(function (res) {
         res.onchange = function (e) {
@@ -246,7 +261,10 @@ var ExperimentStartupScreen = function (experiment) {
                 // checking what the new permissionStatus state is
                 var newState = e.target.state;
                 if (newState === 'granted') {
-                    player.startFullscreen();
+                    if (window.innerHeight !== screen.height) {
+                        player.startFullscreen();
+                    }
+
                 }
             }
         };
