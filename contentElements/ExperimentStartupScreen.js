@@ -237,39 +237,7 @@ var ExperimentStartupScreen = function (experiment) {
 
         }
     }
-    if (navigator.permissions) {
-        navigator.permissions.query({ name: 'microphone' }).then(function (res) {
-            res.onchange = function (e) {
-                // detecting if the event is a change
-                if (e.type === 'change') {
-                    // checking what the new permissionStatus state is
-                    var newState = e.target.state;
-                    if (newState === 'granted') {
-                        if (window.innerHeight !== screen.height) {
-                            player.startFullscreen();
-                        }
 
-                    }
-                }
-            };
-        });
-
-        navigator.permissions.query({ name: 'camera' }).then(function (res) {
-            res.onchange = function (e) {
-                // detecting if the event is a change
-                if (e.type === 'change') {
-                    // checking what the new permissionStatus state is
-                    var newState = e.target.state;
-                    if (newState === 'granted') {
-                        if (window.innerHeight !== screen.height) {
-                            player.startFullscreen();
-                        }
-
-                    }
-                }
-            };
-        });
-    }
 
 
 };
@@ -712,25 +680,42 @@ ExperimentStartupScreen.prototype.onReadyToStart = function () {
 };
 
 ExperimentStartupScreen.prototype.startExp = function () {
+    var self = this;
 
-    player.startFullscreen();
+    var cb = function () {
+        player.startFullscreen();
 
-    $('#sectionPreload').html("<div style='position: fixed; width: 100%; height: 100%;'>" +
-        "<div style='margin: 0; position: absolute; top: 50%; left: 50%;margin-right: -50%; transform: translate(-50%, -50%); font-size: xx-large;'>" + this.expData.staticStrings().startingExp + "</div>" +
-        "</div>");
-    $("#startExpSection").hide();
+        $('#sectionPreload').html("<div style='position: fixed; width: 100%; height: 100%;'>" +
+            "<div style='margin: 0; position: absolute; top: 50%; left: 50%;margin-right: -50%; transform: translate(-50%, -50%); font-size: xx-large;'>" + self.expData.staticStrings().startingExp + "</div>" +
+            "</div>");
+        $("#startExpSection").hide();
 
-    // wait for five seconds:
-    setTimeout(function () {
-        $("#sectionPreload").hide();
+        // wait for five seconds:
+        setTimeout(function () {
+            $("#sectionPreload").hide();
+            player.startExperiment();
+        }, 5000);
+    }
 
-        // TODO: this check is not working yet:
-        var fullscreenEnabled = document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled || document.msFullscreenEnabled;
-        if (fullscreenEnabled) { // this is false on Safari on iOS!!!!
+    // ask for permission to use camera / mic before going into fullscreen
 
-        }
-        player.startExperiment();
-    }, 5000);
+    var hasAudio = this.experiment.exp_data.studySettings.isAudioRecEnabled();
+    var hasVideo = this.experiment.exp_data.studySettings.isVideoRecEnabled();
+
+    if (hasAudio || hasVideo) {
+        navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+            .then(function (stream) {
+                cb();
+            }).catch(function (err) {
+                player.finishSessionWithError("Error access to camera or microphone not granted. You have to change your browser settings. settings --> site settings --> microphone/camera --> blocked --> labvanced.com --> clear & reset");
+            });
+    } else {
+        cb();
+    }
+
+
+
+
 
 };
 
