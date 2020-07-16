@@ -86,6 +86,9 @@ var PublishingData = function (experiment) {
     this.requiredEmail = ko.observable(false);
 
 
+    this.eyetrackingVersion = ko.observable("v2");
+
+
     this.recruitingEnabled = ko.computed(function () {
         if (self.recruitInLibrary() || self.recruitSecretly() || self.recruitViaCrowdsourcing() || self.recruitViaOwnCrowdsourcing() || self.recruitViaCustomLink()) {
             return true;
@@ -408,6 +411,15 @@ PublishingData.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('displayBackToLib')) {
         this.displayBackToLib(data.displayBackToLib);
     }
+
+
+
+    if (data.hasOwnProperty('eyetrackingVersion')) {
+        this.eyetrackingVersion(data.eyetrackingVersion);
+    } else {
+        this.eyetrackingVersion("v1");
+    }
+
 };
 
 
@@ -594,8 +606,7 @@ PublishingData.prototype.toJS = function () {
         isSelectedTemplate: this.isSelectedTemplate(),
         isSelectedFeature: this.isSelectedFeature(),
 
+        eyetrackingVersion: this.eyetrackingVersion(),
+
     };
 };
-
-
-
