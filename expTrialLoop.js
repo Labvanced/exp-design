@@ -120,7 +120,15 @@ var ExpTrialLoop = function (expData) {
         else return '';
 
     });
+    this.useEyetrackingV2.subscribe(function (newVal) {
+        if (newVal) {
+            self.expData.studySettings.isWebcamEnabled(true);
+            self.expData.studySettings.minRes(true);
+            self.expData.studySettings.minWidth(600);
+            self.expData.studySettings.minWidth(600);
 
+        }
+    });
 
 
 };
