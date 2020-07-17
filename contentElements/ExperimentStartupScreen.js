@@ -718,10 +718,11 @@ ExperimentStartupScreen.prototype.startExp = function () {
     // ask for permission to use camera / mic before going into fullscreen
 
     var hasAudio = this.experiment.exp_data.studySettings.isAudioRecEnabled();
-    var hasVideo = this.experiment.exp_data.studySettings.isVideoRecEnabled();
+    var hasVideo = this.experiment.exp_data.studySettings.isVideoRecEnabled() || this.experiment.exp_data.studySettings.isWebcamEnabled();
+
 
     if (hasAudio || hasVideo) {
-        navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+        navigator.mediaDevices.getUserMedia({ audio: hasAudio, video: hasVideo })
             .then(function (stream) {
                 cb();
             }).catch(function (err) {
