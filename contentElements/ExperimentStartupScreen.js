@@ -718,11 +718,24 @@ ExperimentStartupScreen.prototype.startExp = function () {
     // ask for permission to use camera / mic before going into fullscreen
 
     var hasAudio = this.experiment.exp_data.studySettings.isAudioRecEnabled();
-    var hasVideo = this.experiment.exp_data.studySettings.isVideoRecEnabled() || this.experiment.exp_data.studySettings.isWebcamEnabled();
+    var videoRequest = false;
+    if (this.experiment.exp_data.studySettings.isWebcamEnabled()) {
+        // isWebcamEnabled actually mean "use eyetracking", so we request a higher resolution:
+        videoRequest = { 
+            width: 1280, 
+            height: 720 
+        };
+    }
+    else if (this.experiment.exp_data.studySettings.isVideoRecEnabled()) {
+        // when webcam is only used for video recordings (without eyetracking) it is better to use only 800x600 to reduce upload size of recorded videos:
+        videoRequest = { 
+            width: 800, 
+            height: 600 
+        };
+    }
 
-
-    if (hasAudio || hasVideo) {
-        navigator.mediaDevices.getUserMedia({ audio: hasAudio, video: hasVideo })
+    if (hasAudio || videoRequest) {
+        navigator.mediaDevices.getUserMedia({ audio: hasAudio, video: videoRequest })
             .then(function (stream) {
                 cb();
             }).catch(function (err) {
