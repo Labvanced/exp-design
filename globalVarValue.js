@@ -889,20 +889,26 @@ GlobalVarValueArray.prototype.convert = function (data) {
     if (data instanceof Array) {
         var arrValues = jQuery.map(data, function (scalar) {
             var newDatType = self.parentVar.createScalarValueFromDataType();
+            self.parentVar.tmpDisableTimeseriesRec = true;
             newDatType.setValue(scalar);
+            self.parentVar.tmpDisableTimeseriesRec = false;
             return newDatType;
         });
     }
     else if (data instanceof GlobalVarValueArray) {
         var arrValues = jQuery.map(data.value(), function (scalar) {
             var newDatType = self.parentVar.createScalarValueFromDataType();
+            self.parentVar.tmpDisableTimeseriesRec = true;
             newDatType.setValue(scalar);
+            self.parentVar.tmpDisableTimeseriesRec = false;
             return newDatType;
         });
     }
     else {
         var newDatType = self.parentVar.createScalarValueFromDataType();
+        self.parentVar.tmpDisableTimeseriesRec = true;
         newDatType.setValue(data);
+        self.parentVar.tmpDisableTimeseriesRec = false;
         var arrValues = [newDatType];
     }
     return arrValues;
@@ -944,6 +950,9 @@ GlobalVarValueArray.prototype.setValue = function (data) {
     if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
         data = data.toJS();
     }
+    this.parentVar.tmpDisableTimeseriesRec = true;
+    this.value([]);
+    this.parentVar.tmpDisableTimeseriesRec = false;
     this.value(this.convert(data));
 };
 
