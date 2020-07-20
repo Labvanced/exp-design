@@ -340,6 +340,7 @@ TriggerEyetracking.prototype.setupOnPlayerFrame = function (playerFrame) {
                         self.event.triggerActions([
                             coordX,
                             coordY,
+                            [coordX, coordY],
                             playerFrame.getFrameTime(),
                             target.name(),
                             stimulusInformation
