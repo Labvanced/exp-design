@@ -76,6 +76,33 @@ var ExperimentStartupScreen = function (experiment) {
     this.initialSubjectDialog = ko.observable(new InitialSubjectDialog(this.expData));
     this.initialSubjectDialog().selectedSubjectGroup(this.expData.availableGroups()[0]);
 
+    this.audioRequest = this.experiment.exp_data.studySettings.isAudioRecEnabled();
+    this.videoRequest = false;
+    if (this.experiment.exp_data.studySettings.isWebcamEnabled()) {
+        // isWebcamEnabled actually mean "use eyetracking", so we request a higher resolution:
+        this.videoRequest = {
+            facingMode: 'user',
+            width: {
+                ideal: 1280
+            },
+            height: {
+                ideal: 720
+            }
+        };
+    }
+    else if (this.experiment.exp_data.studySettings.isVideoRecEnabled()) {
+        // when webcam is only used for video recordings (without eyetracking) it is better to use only 800x600 to reduce upload size of recorded videos:
+        this.videoRequest = {
+            facingMode: 'user',
+            width: {
+                ideal: 800
+            },
+            height: {
+                ideal: 600
+            }
+        };
+    }
+
     this.imgSource = ko.computed(function () {
         return "/files/" + experiment.publishing_data.img_file_id() + "/" + experiment.publishing_data.img_file_orig_name();
     }, this);
@@ -499,7 +526,7 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
         // directly skip to joint exp lobby:
         player.setSubjectGroupNr(1, 1);
         player.preloadAllContent();
-        self.jumpToLoadingScreen();
+        self.jumpToRequestPermissionScreen();
         return;
     }
 
@@ -521,10 +548,10 @@ ExperimentStartupScreen.prototype.jumpToSurvey = function () {
     }
 
     if (player.groupNrAssignedByServer && player.sessionNrAssignedByServer) {
-        // directly skip to loading screen (recording session already initialized on server:
+        // directly skip to permission screen (recording session already initialized on server:
         player.setSubjectGroupNr(player.groupNrAssignedByServer, player.sessionNrAssignedByServer);
         player.preloadAllContent();
-        self.jumpToLoadingScreen();
+        self.jumpToRequestPermissionScreen();
         return;
     }
 
@@ -615,10 +642,48 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function () {
                 player.setSubjectGroupNr(data.groupNr, data.sessionNr);
             }
             player.preloadAllContent();
-            self.jumpToLoadingScreen();
+            self.jumpToRequestPermissionScreen();
         }
 
     );
+};
+
+ExperimentStartupScreen.prototype.jumpToRequestPermissionScreen = function () {
+    var self = this;
+    this.wizardStep("requestPermission");
+
+    if (this.audioRequest || this.videoRequest) {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            // waiting for permission...
+        }
+        else {
+            self.finishSessionWithError("Error accessing your microphone or webcam. Please check your PC and browser settings.");
+        }
+    }
+    else {
+        this.jumpToLoadingScreen();
+    }
+};
+
+
+ExperimentStartupScreen.prototype.requestPermissions = function () {
+    var self = this;
+
+    // ask for permission to use camera / mic
+    navigator.mediaDevices.getUserMedia({ audio: this.audioRequest, video: this.videoRequest })
+        .then(function (stream) {
+            if (self.audioRequest) {
+                player.microphone_stream = stream;
+                player.audioContext = new AudioContext();
+            }
+            if (self.videoRequest) {
+                player.video_stream = stream;
+            }
+            self.jumpToLoadingScreen();
+        }).catch(function (err) {
+            console.error(err);
+            player.finishSessionWithError("Error access to camera or microphone not granted. You have to change your browser settings. settings --> site settings --> microphone/camera --> blocked --> labvanced.com --> clear & reset");
+        });
 };
 
 ExperimentStartupScreen.prototype.jumpToLoadingScreen = function () {
@@ -700,63 +765,18 @@ ExperimentStartupScreen.prototype.onReadyToStart = function () {
 ExperimentStartupScreen.prototype.startExp = function () {
     var self = this;
 
-    var cb = function () {
-        player.startFullscreen();
+    player.startFullscreen();
 
-        $('#sectionPreload').html("<div style='position: fixed; width: 100%; height: 100%;'>" +
-            "<div style='margin: 0; position: absolute; top: 50%; left: 50%;margin-right: -50%; transform: translate(-50%, -50%); font-size: xx-large;'>" + self.expData.staticStrings().startingExp + "</div>" +
-            "</div>");
-        $("#startExpSection").hide();
+    $('#sectionPreload').html("<div style='position: fixed; width: 100%; height: 100%;'>" +
+        "<div style='margin: 0; position: absolute; top: 50%; left: 50%;margin-right: -50%; transform: translate(-50%, -50%); font-size: xx-large;'>" + self.expData.staticStrings().startingExp + "</div>" +
+        "</div>");
+    $("#startExpSection").hide();
 
-        // wait for five seconds:
-        setTimeout(function () {
-            $("#sectionPreload").hide();
-            player.startExperimentContinue();
-        }, 5000);
-    };
-
-    // ask for permission to use camera / mic before going into fullscreen
-
-    var hasAudio = this.experiment.exp_data.studySettings.isAudioRecEnabled();
-    var videoRequest = false;
-    if (this.experiment.exp_data.studySettings.isWebcamEnabled()) {
-        // isWebcamEnabled actually mean "use eyetracking", so we request a higher resolution:
-        videoRequest = {
-            width: 1280,
-            height: 720
-        };
-    }
-    else if (this.experiment.exp_data.studySettings.isVideoRecEnabled()) {
-        // when webcam is only used for video recordings (without eyetracking) it is better to use only 800x600 to reduce upload size of recorded videos:
-        videoRequest = {
-            width: 800,
-            height: 600
-        };
-    }
-
-    if (hasAudio || videoRequest) {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ audio: hasAudio, video: videoRequest })
-                .then(function (stream) {
-                    if (!videoRequest) {
-                        player.microphone_stream = stream;
-                        player.audioContext = new AudioContext();
-                    } else {
-                        player.video_stream = stream;
-                    }
-                    cb();
-                }).catch(function (err) {
-                    console.error(err);
-                    player.finishSessionWithError("Error access to camera or microphone not granted. You have to change your browser settings. settings --> site settings --> microphone/camera --> blocked --> labvanced.com --> clear & reset");
-                });
-
-        } else {
-            self.finishSessionWithError("Error accessing your microphone or webcam. Please check your PC and browser settings.");
-        }
-    } else {
-        cb();
-    }
-
+    // wait for five seconds:
+    setTimeout(function () {
+        $("#sectionPreload").hide();
+        player.startExperimentContinue();
+    }, 5000);
 
 };
 
