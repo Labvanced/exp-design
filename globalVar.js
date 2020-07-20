@@ -65,6 +65,9 @@ var GlobalVar = function (expData) {
     // only for display in editor list:
     this.isShown = ko.observable(true);
 
+    // to fix multiple recordings when assigning new array to array-timeseries:
+    this.tmpDisableTimeseriesRec = false;
+
 };
 
 
@@ -321,6 +324,9 @@ GlobalVar.prototype.calcUnused = function () {
 GlobalVar.prototype.notifyValueChanged = function () {
     if (this.value()) {
         if (this.recType() == 'timeseries') {
+            if (this.tmpDisableTimeseriesRec) {
+                return;
+            }
             if (!this.recValue) {
                 this.recValue = [];
             }
