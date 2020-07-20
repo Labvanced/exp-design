@@ -242,6 +242,23 @@
                                 </div>
                             </div>
 
+                            <!-- 2b. request cam/audio permission -->
+                            <div id="requestPermissionScreen"
+                                 data-bind="if: wizardStep()=='requestPermission'">
+                                <h3 class="text-center"
+                                    data-bind="text: expData.staticStrings().requestPermissionHeader">
+                                </h3>
+
+                                <div class="row text-center">
+                                    <p class="text-medium"
+                                       data-bind="text: expData.staticStrings().requestPermissionBody">
+                                    </p>
+
+                                    <button class="btn-regular btn-lab-lightblue mg-20"
+                                            data-bind="click: requestPermissions, text: expData.staticStrings().continue"></button>
+                                </div>
+                            </div>
+
                             <!-- 3. lobby for joint experiments -->
                             <div id="JointExpLobby"
                                  style="border-style: solid; border-width: 1px;"

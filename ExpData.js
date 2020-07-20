@@ -266,7 +266,9 @@ ExpData.prototype.staticTranslations = {
         askEmailConsent2: "This is a longitudinal study, consisting of several participation sessions. Your email will only be recoded in order to invite/remind you to take part in the next session. Your Email will not be stored together with other kinds of data, and is accessible only internally to the Labvanced platform. We will not give away " +
             "your email or use it for different purposes.",
         calibDistance1: "Your distance to the screen (in cm) is: ",
-        calibDistance2: "centimeter"
+        calibDistance2: "centimeter",
+        requestPermissionHeader: "Device permissions required",
+        requestPermissionBody: "This experiment requires access to your webcam or microphone. In the following screen, please allow access to your webcam or microphone device to continue."
     },
     German: {
         library: "Experimente",
@@ -338,7 +340,9 @@ ExpData.prototype.staticTranslations = {
         askEmailConsent1: "Warum fragen wir nach Ihrer E-Mail: ",
         askEmailConsent2: "Dies ist eine Längsschnittstudie, die aus mehreren Teilnahme-Sitzungen besteht. Ihre E-Mail wird nur neu erfasst, um Sie zur Teilnahme an der nächsten Sitzung einzuladen. Ihre E-Mail wird nicht zusammen mit anderen Arten von Daten gespeichert und ist nur intern für die Labvanced-Plattform zugänglich. Wir geben Ihre E-Mail nicht weiter oder verwenden sie für andere Zwecke.",
         calibDistance1: "Ihre Distanz zum Bildschirm beträgt:",
-        calibDistance2: "Centimeter"
+        calibDistance2: "Centimeter",
+        requestPermissionHeader: "Geräteberechtigungen erforderlich",
+        requestPermissionBody: "Die Teilnahme an diesem Experiment benötigt Zugriff auf Ihre Webcam oder Ihr Microphone. Um fortzufahren, erlauben Sie bitte auf dem folgenden Bildschirm den Zugriff auf Ihre Webcam oder Ihr Mikrofon."
     },
     Spanish: {
         library: "Biblioteca",
@@ -411,7 +415,9 @@ ExpData.prototype.staticTranslations = {
         askEmailConsent2: "Este es un estudio longitudinal, que consta de varias sesiones.Su correo electrónico solo será recodificado para invitarle / recordarle que participe en la próxima sesión.Su correo electrónico no se almacenará junto con otro tipo de datos, y solo es accesible internamente a la plataforma Labvanced.No se lo revelaremos a nadie" +
             "su correo electrónico o úselo para diferentes propósitos.",
         calibDistance1: "Su distancia a la pantalla (en cm) es: ",
-        calibDistance2: "centímetro"
+        calibDistance2: "centímetro",
+        requestPermissionHeader: "Requiere permiso del dispositivo",
+        requestPermissionBody: "Este experimento requiere el acceso a su cámara web o micrófono. En la siguiente pantalla, permite el acceso a tu cámara web o al micrófono para continuar."
     },
 };
 
