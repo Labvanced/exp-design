@@ -711,9 +711,9 @@ ExperimentStartupScreen.prototype.startExp = function () {
         // wait for five seconds:
         setTimeout(function () {
             $("#sectionPreload").hide();
-            player.startExperiment();
+            player.startExperimentContinue();
         }, 5000);
-    }
+    };
 
     // ask for permission to use camera / mic before going into fullscreen
 
@@ -721,32 +721,41 @@ ExperimentStartupScreen.prototype.startExp = function () {
     var videoRequest = false;
     if (this.experiment.exp_data.studySettings.isWebcamEnabled()) {
         // isWebcamEnabled actually mean "use eyetracking", so we request a higher resolution:
-        videoRequest = { 
-            width: 1280, 
-            height: 720 
+        videoRequest = {
+            width: 1280,
+            height: 720
         };
     }
     else if (this.experiment.exp_data.studySettings.isVideoRecEnabled()) {
         // when webcam is only used for video recordings (without eyetracking) it is better to use only 800x600 to reduce upload size of recorded videos:
-        videoRequest = { 
-            width: 800, 
-            height: 600 
+        videoRequest = {
+            width: 800,
+            height: 600
         };
     }
 
     if (hasAudio || videoRequest) {
-        navigator.mediaDevices.getUserMedia({ audio: hasAudio, video: videoRequest })
-            .then(function (stream) {
-                cb();
-            }).catch(function (err) {
-                player.finishSessionWithError("Error access to camera or microphone not granted. You have to change your browser settings. settings --> site settings --> microphone/camera --> blocked --> labvanced.com --> clear & reset");
-            });
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ audio: hasAudio, video: videoRequest })
+                .then(function (stream) {
+                    if (!videoRequest) {
+                        player.microphone_stream = stream;
+                        player.audioContext = new AudioContext();
+                    } else {
+                        player.video_stream = stream;
+                    }
+                    cb();
+                }).catch(function (err) {
+                    console.error(err);
+                    player.finishSessionWithError("Error access to camera or microphone not granted. You have to change your browser settings. settings --> site settings --> microphone/camera --> blocked --> labvanced.com --> clear & reset");
+                });
+
+        } else {
+            self.finishSessionWithError("Error accessing your microphone or webcam. Please check your PC and browser settings.");
+        }
     } else {
         cb();
     }
-
-
-
 
 
 };
