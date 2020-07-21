@@ -364,7 +364,7 @@ var OperandVariable = function (event) {
 OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
 
-OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean", "constantDate", "constantTime", "constantCategorical", "constantColor"];
+OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean", "constantDate", "constantTime", "constantCategorical", "constantColor", "eyetracking"];
 OperandVariable.prototype.unaryOperandTypes = ["abs", "round0decimal", "round1decimal", "round2decimals", "round3decimals", "floor", "ceil", "sqrt", "toLowercase", "toUppercase", "removeSpaces", "trimSpaces"];
 OperandVariable.prototype.binaryOperandTypes = ["arithmetic"];
 OperandVariable.prototype.ternaryOperandTypes = ["strReplace"];
@@ -469,6 +469,19 @@ OperandVariable.prototype.getValue = function (parameters) {
             var paramNames = this.event.trigger().getParameterSpec();
             var paramIdx = paramNames.indexOf(value);
             return parameters[paramIdx];
+        case "eyetracking":
+            var paramNames = this.event.trigger().getParameterSpec();
+            var paramIdx = paramNames.indexOf(value);
+            if (paramIdx >= 0) {
+                return parameters[paramIdx];
+            } else if (value === 'Error Main Calibration') {
+                return player.eyetrackingCalibrationAccuracy();
+            } else if (value === 'Error Trial Validation') {
+                return player.eyetrackingValidationAccuracy();
+            }
+            else {
+                return null;
+            }
         case "constantString":
             if (typeof value != "string") {
                 console.error("operand is not a string");
