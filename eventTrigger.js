@@ -709,8 +709,8 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function (playerFrame) {
                 self.event.triggerActions([pressedKey, playerFrame.getFrameTime()]);
             }
 
-            ev.preventDefault();
-            return false;
+            // ev.preventDefault();
+            //return false;
         }
     };
 
