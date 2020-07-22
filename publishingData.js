@@ -93,6 +93,7 @@ var PublishingData = function (experiment) {
 
 
     this.eyetrackingVersion = ko.observable("v2");
+    this.calibrationImgType = ko.observable('dots');
 
 
     this.recruitingEnabled = ko.computed(function () {
@@ -442,6 +443,10 @@ PublishingData.prototype.fromJS = function (data) {
     } else {
         this.eyetrackingVersion("v1");
     }
+    if (data.hasOwnProperty('calibrationImgType')) {
+        this.calibrationImgType(data.calibrationImgType);
+    }
+
 
 };
 
@@ -641,6 +646,7 @@ PublishingData.prototype.toJS = function () {
         isSelectedFeature: this.isSelectedFeature(),
 
         eyetrackingVersion: this.eyetrackingVersion(),
+        calibrationImgType: this.calibrationImgType()
 
     };
 };
