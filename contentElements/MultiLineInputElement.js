@@ -1,8 +1,6 @@
 
 var MultiLineInputElement = function (expData) {
 
-    console.log('EXP DATA');
-    console.log(expData);
     this.expData = expData;
     this.parent = null;
 
@@ -16,7 +14,7 @@ var MultiLineInputElement = function (expData) {
     this.customHeight = ko.observable(100);
     this.customWidth = ko.observable(100);
     
-    this.isFocused = ko.observable(true);
+    this.isFocused = ko.observable(false);
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
 
@@ -57,8 +55,6 @@ MultiLineInputElement.prototype.init = function (variableName) {
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
 
-    console.log('DATA TYPE MULTI INPUT');
-    console.log(GlobalVar.dataTypes[0]);
 
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[0]);
@@ -233,8 +229,6 @@ MultiLineInputElement.prototype.toJS = function () {
 
 MultiLineInputElement.prototype.fromJS = function (data) {
 
-    console.log('DATA JS');
-    console.log(data);
 
     this.type = data.type;
     if (data.questionText.hasOwnProperty('rawText')) {
@@ -328,14 +322,6 @@ function createMultiLineInputComponents() {
                     this.questionText = dataModel.questionText;
                     this.answer = dataModel.answer;
                     
-                    //The parent is udenfind
-                    console.log(parent)
-
-                    //log data model
-                    console.log(dataModel)
-
-
-
                     // find parent playerFrame:
                     var parent = dataModel.parent;
                     // Deleted from this from dataModel
@@ -369,33 +355,10 @@ function createMultiLineInputComponents() {
                     this.isFocusedPure = ko.pureComputed({
                         read: function () {
                             if (self.isRenderedDeferred()) {
-                                console.log("WE ARE HERE");
-
-                                //log data model
-                                console.log("loggind the data Model")
-                                console.log(dataModel);
-
-                                //log modifier
-                                console.log("loggind the data Modifier!!")
-                                console.log(dataModel.modifier());
-
-                                //log selectedTrailView
-                                console.log("loggind the data TrialView")
-                                console.log(dataModel.modifier().selectedTrialView);
-
-                                //log is Focused();
-                                console.log("loggind the data isFocused")
-                                console.log(dataModel.isFocused());
-
-                                // dataModel.modifier().selectedTrialView.isFocused = function(){
-                                //     return true;
-                                // }
 
                                 return dataModel.modifier().selectedTrialView.isFocused();
-                                //return self.isFocused();
                             }
                             else {
-                                console.log("else false")
                                 return false;
                             }
                         },
