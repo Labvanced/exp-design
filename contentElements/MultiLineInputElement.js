@@ -322,7 +322,7 @@ function createMultiLineInputComponents() {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function (dataModel) {
 
-                  
+                    var self = this;
                     this.dataModel = ko.observable(dataModel);
                     
                     this.questionText = dataModel.questionText;
@@ -356,7 +356,7 @@ function createMultiLineInputComponents() {
                     }
 
                     // The computed isRenderedDeferred uses deferred update because hasFocus binding only works when element is already visible.
-                    isRenderedDeferred = ko.computed(function () {
+                    this.isRenderedDeferred = ko.computed(function () {
                         if (playerFrame && playerFrame.stateObs() == "displaying") {
                             return true;
                         }
@@ -366,7 +366,7 @@ function createMultiLineInputComponents() {
                     }).extend({ deferred: true }); // i.e. it is switched to true only AFTER the playerFrame was switch to "display: block"...
 
                     // use pureComputed for two-way binding:
-                    isFocusedPure = ko.pureComputed({
+                    this.isFocusedPure = ko.pureComputed({
                         read: function () {
                             if (self.isRenderedDeferred()) {
                                 console.log("WE ARE HERE");
