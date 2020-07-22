@@ -18,6 +18,8 @@
                    type="checkbox"
                    data-bind="checked: dataModel().isRequired,click:function(){return true},clickBubble: false">
         </div>
+        <label>Focused:<select
+                    data-bind="options: [true,false], value: dataModel.modifier().selectedTrialView.isFocused"></select></label>
         <hr>
 
         <div>
@@ -84,7 +86,7 @@
          data-bind="style:{height:dataModel().outerHeight()+'px'}">
         <textarea style="position:relative;resize: none;"
                   class="form-control"
-                  data-bind="attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().value().value,style:{width:dataModel().customWidth()+'%',height:dataModel().customHeight()+'%', 'cursor': dataModel().parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'},enable: dataModel().parent.modifier().selectedTrialView.isActive, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel().onKeyPress(event); return true}}"></textarea>
+                  data-bind="hasfocus: isFocusedPure, attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().value().value,style:{width:dataModel().customWidth()+'%',height:dataModel().customHeight()+'%', 'cursor': dataModel().parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'},enable: dataModel().parent.modifier().selectedTrialView.isActive, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel().onKeyPress(event); return true}}"></textarea>
     </div>
 
     <!-- ko if: dataModel().triedToSubmit() -->

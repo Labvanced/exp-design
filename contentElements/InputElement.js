@@ -154,6 +154,7 @@ InputElement.prototype.isInputValid = function () {
 
 
 InputElement.prototype.toJS = function () {
+    
     var variableId = null;
     if (this.variable()) {
         variableId = this.variable().id();
@@ -177,6 +178,10 @@ InputElement.prototype.toJS = function () {
 
 
 InputElement.prototype.fromJS = function (data) {
+
+    console.log('FROM JS INPUT');
+    console.log(data)
+
     this.type = data.type;
     if (data.questionText.hasOwnProperty('rawText')) {
         this.questionText(new EditableTextElement(this.expData, this, ''));
@@ -331,6 +336,9 @@ function createInputComponents() {
                     var self = this;
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
+                    
+                    console.log('INPUT MODIFIER')
+                    console.log(dataModel.modifier())
 
                     // find parent playerFrame:
                     var parent = this.dataModel.parent;
@@ -363,8 +371,11 @@ function createInputComponents() {
                     // use pureComputed for two-way binding:
                     this.isFocusedPure = ko.pureComputed({
                         read: function () {
+                            console.log('SELF DATA MODEL INPUT');
+                            console.log(self.dataModel);
                             if (self.isRenderedDeferred()) {
                                 return self.dataModel.modifier().selectedTrialView.isFocused();
+                                
                             }
                             else {
                                 return false;
