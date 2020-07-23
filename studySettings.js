@@ -60,6 +60,8 @@ var StudySettings = function (expData) {
 
     this.actionOnResourceError = ko.observable("abort experiment");
 
+    this.eyetrackingUploadEnabled = ko.observable(false);
+
 
     var self = this;
     this.deviceRunType = ko.computed(function () {
@@ -280,7 +282,9 @@ StudySettings.prototype.fromJS = function (data) {
     if (data.hasOwnProperty("actionOnResourceError")) {
         this.actionOnResourceError(data.actionOnResourceError);
     }
-
+    if (data.hasOwnProperty("eyetrackingUploadEnabled")) {
+        this.eyetrackingUploadEnabled(data.eyetrackingUploadEnabled);
+    }
 
 
 
@@ -328,7 +332,8 @@ StudySettings.prototype.toJS = function () {
         isWebcamEnabled: this.isWebcamEnabled(),
         assignSubjGroup: this.assignSubjGroup(),
         assignSession: this.assignSession(),
-        actionOnResourceError: this.actionOnResourceError()
+        actionOnResourceError: this.actionOnResourceError(),
+        eyetrackingUploadEnabled: this.eyetrackingUploadEnabled()
     };
     return data;
 };
