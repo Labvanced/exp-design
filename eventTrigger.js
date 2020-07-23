@@ -599,6 +599,7 @@ var TriggerKeyboard = function (event) {
     this.interactionType = ko.observable("Pressed");
     this.alphaNumericEnabled = ko.observable(false); // if true, then disable fullscreen in safari
     this.numpadEnabled = ko.observable(false);
+    this.allowEventPropagation = ko.observable(false);
 
     // not serialized:
     this.validKeyCodes = ko.computed(function () {
@@ -709,8 +710,11 @@ TriggerKeyboard.prototype.setupOnPlayerFrame = function (playerFrame) {
                 self.event.triggerActions([pressedKey, playerFrame.getFrameTime()]);
             }
 
-            // ev.preventDefault();
-            //return false;
+            if (!self.allowEventPropagation()) {
+                ev.preventDefault();
+                return false;
+            }
+
         }
     };
 
@@ -764,12 +768,17 @@ TriggerKeyboard.prototype.reAddEntities = function (entitiesArr) {
 TriggerKeyboard.prototype.fromJS = function (data) {
     this.buttons(data.buttons);
     this.interactionType(data.interactionType);
+    if (data.hasOwnProperty("allowEventPropagation")) {
+        this.allowEventPropagation(data.allowEventPropagation);
+    }
+
     if (data.hasOwnProperty("numpadEnabled")) {
         this.numpadEnabled(data.numpadEnabled);
     }
     if (data.hasOwnProperty("alphaNumericEnabled")) {
         this.alphaNumericEnabled(data.alphaNumericEnabled);
     }
+
     else {
         // check if alpha numeric is used:
         var alphaNumericEnabled = false;
@@ -801,6 +810,7 @@ TriggerKeyboard.prototype.toJS = function () {
         interactionType: this.interactionType(),
         alphaNumericEnabled: this.alphaNumericEnabled(),
         numpadEnabled: this.numpadEnabled(),
+        allowEventPropagation: this.allowEventPropagation()
     };
 };
 
