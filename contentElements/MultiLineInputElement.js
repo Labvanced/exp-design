@@ -1,19 +1,18 @@
 
 var MultiLineInputElement = function (expData) {
-
     this.expData = expData;
     this.parent = null;
 
     //serialized
     this.type = "MultiLineInputElement";
     this.questionText = ko.observable(null); // EditableTextElement
-    
+
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
     this.enableTitle = ko.observable(true);
     this.customHeight = ko.observable(100);
     this.customWidth = ko.observable(100);
-    
+
     this.isFocused = ko.observable(false);
     this.modifier = ko.observable(new Modifier(this.expData, this));
 
@@ -77,13 +76,11 @@ MultiLineInputElement.prototype.init = function (variableName) {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
-// MultiLineInputElement.prototype.getAllModifiers = function (modifiersArr) {
-//     this.questionText().getAllModifiers(modifiersArr);
-// };
 
 MultiLineInputElement.prototype.getAllModifiers = function (modifiersArr) {
     modifiersArr.push(this.modifier());
     this.questionText().getAllModifiers(modifiersArr);
+    this.recalcHeight();
 };
 
 MultiLineInputElement.prototype.setPointers = function (entitiesArr) {
@@ -112,49 +109,10 @@ MultiLineInputElement.prototype.selectTrialType = function (selectionSpec) {
     this.questionText().selectTrialType(selectionSpec);
 };
 
-MultiLineInputElement.prototype.dispose = function () {
-    this.questionText().dispose();
-    if (this.variable() instanceof GlobalVar) {
-        this.variable().removeBackRef(this);
-    }
-
-};
-
-MultiLineInputElement.prototype.getTextRefs = function (textArr, label) {
-    var questlabel = label + '.Question';
-    this.questionText().getTextRefs(textArr, questlabel);
-    return textArr;
-};
-
-MultiLineInputElement.prototype.onKeyPress = function (event) {
-    if (this.executeByKeyCode().indexOf(event.keyCode) >= 0) {
-        this.triggerRefernce.trigger(event);
-    }
-};
-
-MultiLineInputElement.prototype.isInputValid = function () {
-    this.triedToSubmit(true);
-    if (this.isRequired() == false) {
-        this.dataIsValid(true);
-        return true
-    }
-    else {
-        if (this.variable().value().value() === null || this.variable().value().value() === '' || this.variable().value().value() === this.variable().startValue().value()) {
-            this.dataIsValid(false);
-            return false;
-        }
-        else {
-            this.dataIsValid(true);
-            return true
-        }
-    }
-};
-
 MultiLineInputElement.prototype.setVariableBackRef = function () {
     if (this.variable() instanceof GlobalVar) {
         this.variable().addBackRef(this, this.parent, true, true, 'multiLineInput');
     }
-
 };
 
 MultiLineInputElement.prototype.dispose = function () {
@@ -318,10 +276,10 @@ function createMultiLineInputComponents() {
 
                     var self = this;
                     this.dataModel = ko.observable(dataModel);
-                    
+
                     this.questionText = dataModel.questionText;
                     this.answer = dataModel.answer;
-                    
+
                     // find parent playerFrame:
                     var parent = dataModel.parent;
                     // Deleted from this from dataModel
