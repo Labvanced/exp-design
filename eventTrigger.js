@@ -596,7 +596,7 @@ var TriggerKeyboard = function (event) {
 
     // serialized
     this.buttons = ko.observableArray([]);
-    this.interactionType = ko.observable("Pressed");
+    this.interactionType = ko.observable("PressDownOnce");
     this.alphaNumericEnabled = ko.observable(false); // if true, then disable fullscreen in safari
     this.numpadEnabled = ko.observable(false);
     this.allowEventPropagation = ko.observable(false);
@@ -687,42 +687,57 @@ TriggerKeyboard.prototype.getParameterSpec = function () {
 TriggerKeyboard.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
     var validKeyCodes = this.validKeyCodes();
+    var isPressedDown = false;
 
     this.eventHandleForCleanUp = function (ev) {
         var keyIdx = validKeyCodes.indexOf(ev.keyCode);
         var anyAllowed = self.buttons().indexOf("any");
         if (keyIdx >= 0 || anyAllowed >= 0) {
-            if (self.buttonTypesFkeysCode.indexOf(ev.keyCode) >= 0) {
-                // only prevent default for F keys:
-                ev.preventDefault();
-            }
-            if (anyAllowed >= 0) {
-                self.event.triggerActions([ev.key.toUpperCase(), playerFrame.getFrameTime()]);
-            }
-            else {
-                var pressedKey = self.buttons()[keyIdx];
-                // for numpad numbers
-                if (self.numpadEnabled()) {
-                    if (!pressedKey && TriggerKeyboard.prototype.buttonTypesNumbersNumpadCode.indexOf(ev.keyCode) >= 0) {
-                        pressedKey = String.fromCharCode(ev.keyCode - 48);
-                    }
+
+            if (self.interactionType() != "PressDownOnce" || isPressedDown === false) {
+                if (self.interactionType() === "PressDownOnce") {
+                    isPressedDown = true;
                 }
-                self.event.triggerActions([pressedKey, playerFrame.getFrameTime()]);
-            }
+                else if (self.interactionType() === "PressUp") {
+                    isPressedDown = false;
+                }
+                if (self.buttonTypesFkeysCode.indexOf(ev.keyCode) >= 0) {
+                    // only prevent default for F keys:
+                    ev.preventDefault();
+                }
+                if (anyAllowed >= 0) {
+                    self.event.triggerActions([ev.key.toUpperCase(), playerFrame.getFrameTime()]);
+                }
+                else {
+                    var pressedKey = self.buttons()[keyIdx];
+                    // for numpad numbers
+                    if (self.numpadEnabled()) {
+                        if (!pressedKey && TriggerKeyboard.prototype.buttonTypesNumbersNumpadCode.indexOf(ev.keyCode) >= 0) {
+                            pressedKey = String.fromCharCode(ev.keyCode - 48);
+                        }
+                    }
+                    self.event.triggerActions([pressedKey, playerFrame.getFrameTime()]);
+                }
+                if (!self.allowEventPropagation()) {
+                    ev.preventDefault();
+                    return false;
+                }
 
-            if (!self.allowEventPropagation()) {
-                ev.preventDefault();
-                return false;
             }
-
         }
     };
 
     if (this.interactionType() === "PressDown") {
         $(document).on("keydown", this.eventHandleForCleanUp);
     }
-    else { // PressUp
+    else if (this.interactionType() === "PressUp") {
         $(document).on("keyup", this.eventHandleForCleanUp);
+    }
+    else if (this.interactionType() === "PressDownOnce") {
+        $(document).on("keydown", this.eventHandleForCleanUp);
+        $(document).on("keyup", function () {
+            isPressedDown = false;
+        });
     }
 };
 
