@@ -84,7 +84,6 @@ MultiLineInputElement.prototype.init = function (variableName) {
 MultiLineInputElement.prototype.getAllModifiers = function (modifiersArr) {
     modifiersArr.push(this.modifier());
     this.questionText().getAllModifiers(modifiersArr);
-    this.recalcHeight();
 };
 
 MultiLineInputElement.prototype.setPointers = function (entitiesArr) {
@@ -96,6 +95,7 @@ MultiLineInputElement.prototype.setPointers = function (entitiesArr) {
     }
     this.modifier().setPointers(entitiesArr);
     this.questionText().setPointers(entitiesArr);
+    this.recalcHeight();
 };
 
 MultiLineInputElement.prototype.reAddEntities = function (entitiesArr) {
