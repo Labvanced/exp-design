@@ -6,11 +6,20 @@ var MultiLineInputElement = function (expData) {
     //serialized
     this.type = "MultiLineInputElement";
     this.questionText = ko.observable(null); // EditableTextElement
+
     this.variable = ko.observable();
     this.isRequired = ko.observable(false);
     this.enableTitle = ko.observable(true);
     this.customHeight = ko.observable(100);
     this.customWidth = ko.observable(100);
+
+    this.isFocused = ko.observable(false);
+    this.modifier = ko.observable(new Modifier(this.expData, this));
+
+
+    this.isFocused = ko.observable(false);
+    this.modifier = ko.observable(new Modifier(this.expData, this));
+
 
     this.outerHeight = ko.observable(50);
     this.executeByKeyCode = ko.observableArray([]);
@@ -25,9 +34,9 @@ var MultiLineInputElement = function (expData) {
 
 MultiLineInputElement.prototype.label = "Paragraph";
 MultiLineInputElement.prototype.iconPath = "/resources/icons/tools/textInput.svg";
-MultiLineInputElement.prototype.dataType = [];
-MultiLineInputElement.prototype.modifiableProp = [];
-MultiLineInputElement.prototype.displayNames = [];
+MultiLineInputElement.prototype.modifiableProp = ["isFocused"];
+MultiLineInputElement.prototype.displayNames = ["Focused"];
+MultiLineInputElement.prototype.dataType = ["boolean"];
 MultiLineInputElement.prototype.initWidth = 500;
 MultiLineInputElement.prototype.initHeight = 100;
 MultiLineInputElement.prototype.numVarNamesRequired = 1;
@@ -48,6 +57,7 @@ MultiLineInputElement.prototype.init = function (variableName) {
 
     this.questionText(new EditableTextElement(this.expData, this, '<p><span style="font-size:20px;">Your Question</span></p>'));
     this.questionText().init();
+
 
     var globalVar = new GlobalVar(this.expData);
     globalVar.dataType(GlobalVar.dataTypes[0]);
@@ -70,7 +80,9 @@ MultiLineInputElement.prototype.init = function (variableName) {
  * This function is used recursively to retrieve an array with all modifiers.
  * @param {Array} modifiersArr - this is an array that holds all modifiers.
  */
+
 MultiLineInputElement.prototype.getAllModifiers = function (modifiersArr) {
+    modifiersArr.push(this.modifier());
     this.questionText().getAllModifiers(modifiersArr);
 };
 
@@ -80,8 +92,8 @@ MultiLineInputElement.prototype.setPointers = function (entitiesArr) {
         if (this.variable() instanceof GlobalVar) {
             this.setVariableBackRef();
         }
-
     }
+    this.modifier().setPointers(entitiesArr);
     this.questionText().setPointers(entitiesArr);
     this.recalcHeight();
 };
@@ -92,11 +104,12 @@ MultiLineInputElement.prototype.reAddEntities = function (entitiesArr) {
             entitiesArr.push(this.variable());
         }
     }
-
+    this.modifier().reAddEntities(entitiesArr);
     this.questionText().reAddEntities(entitiesArr);
 };
 
 MultiLineInputElement.prototype.selectTrialType = function (selectionSpec) {
+    this.modifier().selectTrialType(selectionSpec);
     this.questionText().selectTrialType(selectionSpec);
 };
 
@@ -104,7 +117,6 @@ MultiLineInputElement.prototype.setVariableBackRef = function () {
     if (this.variable() instanceof GlobalVar) {
         this.variable().addBackRef(this, this.parent, true, true, 'multiLineInput');
     }
-
 };
 
 MultiLineInputElement.prototype.dispose = function () {
@@ -168,7 +180,9 @@ MultiLineInputElement.prototype.toJS = function () {
         customHeight: this.customHeight(),
         customWidth: this.customWidth(),
         outerHeight: this.outerHeight(),
-        executeByKeyCode: this.executeByKeyCode()
+        executeByKeyCode: this.executeByKeyCode(),
+        isFocused: this.isFocused(),
+        modifier: this.modifier().toJS()
 
     };
 };
@@ -176,6 +190,8 @@ MultiLineInputElement.prototype.toJS = function () {
 
 
 MultiLineInputElement.prototype.fromJS = function (data) {
+
+
     this.type = data.type;
     if (data.questionText.hasOwnProperty('rawText')) {
         this.questionText(new EditableTextElement(this.expData, this, ''));
@@ -202,6 +218,13 @@ MultiLineInputElement.prototype.fromJS = function (data) {
     }
     if (data.hasOwnProperty('executeByKeyCode')) {
         this.executeByKeyCode(data.executeByKeyCode);
+    }
+    if (data.hasOwnProperty('isFocused')) {
+        this.isFocused(data.isFocused);
+    }
+    if (data.hasOwnProperty('modifier')) {
+        this.modifier(new Modifier(this.expData, this));
+        this.modifier().fromJS(data.modifier);
     }
 
 
@@ -254,9 +277,60 @@ function createMultiLineInputComponents() {
         viewModel: {
             createViewModel: function (dataModel, componentInfo) {
                 var viewModel = function (dataModel) {
+
+                    var self = this;
                     this.dataModel = ko.observable(dataModel);
+
                     this.questionText = dataModel.questionText;
                     this.answer = dataModel.answer;
+
+                    // find parent playerFrame:
+                    var parent = dataModel.parent;
+                    // Deleted from this from dataModel
+                    var playerFrame = null;
+                    for (var k = 0; k < 8; k++) {
+                        if (parent.hasOwnProperty("playerFrame")) {
+                            // found:
+                            playerFrame = parent.playerFrame;
+                            break;
+                        }
+                        else {
+                            parent = parent.parent;
+                        }
+                    }
+
+                    if (!playerFrame) {
+                        console.log("could not find playerFrame in MultiLineInput-playerview component... do not set focus computed...");
+                    }
+
+                    // The computed isRenderedDeferred uses deferred update because hasFocus binding only works when element is already visible.
+                    this.isRenderedDeferred = ko.computed(function () {
+                        if (playerFrame && playerFrame.stateObs() == "displaying") {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }).extend({ deferred: true }); // i.e. it is switched to true only AFTER the playerFrame was switch to "display: block"...
+
+                    // use pureComputed for two-way binding:
+                    this.isFocusedPure = ko.pureComputed({
+                        read: function () {
+                            if (self.isRenderedDeferred()) {
+
+                                return dataModel.modifier().selectedTrialView.isFocused();
+                            }
+                            else {
+                                return false;
+                            }
+                        },
+                        write: function (value) {
+                            if (self.isRenderedDeferred()) {
+                                dataModel.modifier().selectedTrialView.isFocused(value);
+                            }
+                        },
+                        owner: this
+                    });
                 };
                 return new viewModel(dataModel);
             }
