@@ -154,7 +154,6 @@ InputElement.prototype.isInputValid = function () {
 
 
 InputElement.prototype.toJS = function () {
-    
     var variableId = null;
     if (this.variable()) {
         variableId = this.variable().id();
@@ -178,7 +177,6 @@ InputElement.prototype.toJS = function () {
 
 
 InputElement.prototype.fromJS = function (data) {
-
     this.type = data.type;
     if (data.questionText.hasOwnProperty('rawText')) {
         this.questionText(new EditableTextElement(this.expData, this, ''));
@@ -333,7 +331,6 @@ function createInputComponents() {
                     var self = this;
                     this.dataModel = dataModel;
                     this.questionText = dataModel.questionText;
-                    
 
                     // find parent playerFrame:
                     var parent = this.dataModel.parent;
@@ -368,7 +365,6 @@ function createInputComponents() {
                         read: function () {
                             if (self.isRenderedDeferred()) {
                                 return self.dataModel.modifier().selectedTrialView.isFocused();
-                                
                             }
                             else {
                                 return false;
