@@ -394,6 +394,11 @@ OperandVariable.prototype.getValue = function (parameters) {
 
     var value = this.operandValueOrObject();
 
+    var frameScale = 1.0;
+    if (player.currentFrame.frameData instanceof FrameData) {
+        frameScale = player.currentFrame.frameView.scale();
+    }
+
     switch (this.operandType()) {
         case "undefined":
             console.error("operand is undefined");
@@ -470,14 +475,24 @@ OperandVariable.prototype.getValue = function (parameters) {
             var paramIdx = paramNames.indexOf(value);
             return parameters[paramIdx];
         case "eyetracking":
-            var paramNames = this.event.trigger().getParameterSpec();
-            var paramIdx = paramNames.indexOf(value);
-            if (paramIdx >= 0) {
-                return parameters[paramIdx];
-            } else if (value === 'Error Main Calibration') {
-                return player.eyetrackingCalibrationAccuracy();
-            } else if (value === 'Error Trial Validation') {
-                return player.eyetrackingValidationAccuracy();
+            if (value === 'eyeLastCoordinateX') {
+                return player.currentFrame.frameLastEyeCoordX;
+            } else if (value === 'eyeLastCoordinateY') {
+                return player.currentFrame.frameLastEyeCoordY;
+            } else if (value === 'eyeLastCoordinateXYArr') {
+                return [player.currentFrame.frameLastEyeCoordX, player.currentFrame.frameLastEyeCoordY];
+            } else if (value === 'eyeErrorMain2D') {
+                return player.eyetrackingCalibrationAccuracy.meanAbsErrorInPixels2D / frameScale;
+            } else if (value === 'eyeErrorMainX') {
+                return player.eyetrackingCalibrationAccuracy.meanAbsErrorInPixelsX / frameScale;
+            } else if (value === 'eyeErrorMainY') {
+                return player.eyetrackingCalibrationAccuracy.meanAbsErrorInPixelsY / frameScale;
+            } else if (value === 'eyeErrorTrial2D') {
+                return player.eyetrackingValidationAccuracy.meanAbsErrorInPixels2D / frameScale;
+            } else if (value === 'eyeErrorTrialX') {
+                return player.eyetrackingValidationAccuracy.meanAbsErrorInPixelsX / frameScale;
+            } else if (value === 'eyeErrorTrialY') {
+                return player.eyetrackingValidationAccuracy.meanAbsErrorInPixelsY / frameScale;
             }
             else {
                 return null;
