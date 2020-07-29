@@ -675,7 +675,8 @@ TriggerKeyboard.prototype.getValidKeyCodes = function () {
  */
 TriggerKeyboard.prototype.getParameterSpec = function () {
     return [
-        'Id of Key'
+        'Id of Key',
+        'Time From Frame Onset',
     ];
 };
 
@@ -880,7 +881,8 @@ TriggerEnterOnInput.prototype.trigger = function (ev) {
 
 TriggerEnterOnInput.prototype.getParameterSpec = function () {
     return [
-        'Id of Key'
+        'Id of Key',
+        'Time From Frame Onset',
     ];
 };
 

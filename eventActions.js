@@ -1857,6 +1857,7 @@ var ActionDelayedActions = function (event) {
 
     this.delayType = ko.observable('fixed');
     this.variable = ko.observable(null);
+    this.usedDelay = null;
 };
 
 ActionDelayedActions.prototype.type = "ActionDelayedActions";
@@ -1902,10 +1903,10 @@ ActionDelayedActions.prototype.isValid = function () {
 ActionDelayedActions.prototype.run = function (triggerParams) {
     var self = this;
     if (this.delayType() == 'variable') {
-        var delayInMs = parseInt(this.variable().getValue(triggerParams));
+        this.usedDelay = parseInt(this.variable().getValue(triggerParams));
     }
     else {
-        var delayInMs = parseInt(this.delayInMs());
+        this.usedDelay = parseInt(this.delayInMs());
     }
 
     var pausableTimeout = new PausableSetTimeout(function () {
@@ -1914,12 +1915,18 @@ ActionDelayedActions.prototype.run = function (triggerParams) {
             self.pausableTimeouts.splice(idx, 1);
         }
         self.delayedRun(triggerParams);
-    }, delayInMs);
+    }, self.usedDelay);
     this.pausableTimeouts.push(pausableTimeout);
 };
 
 ActionDelayedActions.prototype.delayedRun = function (triggerParams) {
     var actions = this.subActions();
+    // correct frame onset time
+    var timeIdx = this.event.trigger().getParameterSpec().indexOf("Time From Frame Onset");
+    if (timeIdx >= 0) {
+        triggerParams[timeIdx] = triggerParams[timeIdx] + this.usedDelay;
+    }
+
     for (var i = 0; i < actions.length; i++) {
         actions[i].run(triggerParams);
     }
@@ -2113,7 +2120,12 @@ ActionStartRepeatedActions.prototype.isValid = function () {
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionStartRepeatedActions.prototype.run = function (triggerParams) {
-
+    // correct frame onset time
+    var origOnsetTime = null;
+    var timeIdx = this.event.trigger().getParameterSpec().indexOf("Time From Frame Onset");
+    if (timeIdx >= 0) {
+        origOnsetTime = triggerParams[timeIdx];
+    }
 
     if (this.executionType() == 'time') {
         var self = this;
@@ -2159,6 +2171,10 @@ ActionStartRepeatedActions.prototype.run = function (triggerParams) {
             // run all subActions:
             var actions = self.subActions();
             for (var i = 0; i < actions.length; i++) {
+                // correct frame onset time
+                if (origOnsetTime) {
+                    triggerParams[timeIdx] = origOnsetTime + (new Date().getTime() - start);
+                }
                 actions[i].run(triggerParams);
             }
 
@@ -2179,6 +2195,10 @@ ActionStartRepeatedActions.prototype.run = function (triggerParams) {
         var actions = this.subActions();
         while (!stopping) {
             for (var i = 0; i < actions.length; i++) {
+                // correct frame onset time
+                if (origOnsetTime) {
+                    triggerParams[timeIdx] = origOnsetTime + (new Date().getTime() - start);
+                }
                 actions[i].run(triggerParams);
             }
             stopping = this.stopCondition().checkIfTrue(triggerParams)
@@ -2746,6 +2766,12 @@ ActionSetVariable.prototype.removeVariable = function () {
  */
 ActionSetVariable.prototype.run = function (triggerParams) {
     var rValue = this.operand().getValue(triggerParams);
+
+    var timeIdx = this.event.trigger().getParameterSpec().indexOf("Time From Frame Onset");
+    if (timeIdx >= 0) {
+        var unixT = triggerParams[timeIdx] + player.currentFrame.startedTime;
+        this.variable().setLastTimeChanged(unixT);
+    }
     if (this.variable()) {
         this.variable().setValue(rValue);
     }

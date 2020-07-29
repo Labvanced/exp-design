@@ -50,6 +50,7 @@ var GlobalVar = function (expData) {
     this.backRefs = ko.observableArray([]).extend({ sortById: null });
     this.recValue = null; // takes care of buffering
 
+    this.lastTimeChanged = null;
 
     this.shortName = ko.computed(function () {
         if (self.name()) {
@@ -317,6 +318,10 @@ GlobalVar.prototype.calcUnused = function () {
     }
 };
 
+
+GlobalVar.prototype.setLastTimeChanged = function (time) {
+    this.lastTimeChanged = time;
+};
 /**
  * this function needs to be called in the player always when the value changes so that recordings are made.
  * @param val
@@ -330,8 +335,16 @@ GlobalVar.prototype.notifyValueChanged = function () {
             if (!this.recValue) {
                 this.recValue = [];
             }
+            var ts = null;
+            if (this.lastTimeChanged) {
+                ts = this.lastTimeChanged;
+                this.lastTimeChanged = null;
+            } else {
+                ts = new Date().getTime();
+            }
+
             this.recValue.push({
-                timeStamp: new Date().getTime(),
+                timeStamp: ts,
                 value: this.value().toJS()
             });
         }
