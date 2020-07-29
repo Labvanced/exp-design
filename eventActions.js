@@ -1922,10 +1922,10 @@ ActionDelayedActions.prototype.run = function (triggerParams) {
 ActionDelayedActions.prototype.delayedRun = function (triggerParams) {
     var actions = this.subActions();
     // correct frame onset time
-    var timeIdx = this.event.trigger().getParameterSpec().indexOf("Time From Frame Onset");
-    if (timeIdx >= 0) {
-        triggerParams[timeIdx] = triggerParams[timeIdx] + this.usedDelay;
-    }
+    // var timeIdx = this.event.trigger().getParameterSpec().indexOf("Time From Frame Onset");
+    //if (timeIdx >= 0) {
+    //    triggerParams[timeIdx] = triggerParams[timeIdx] + this.usedDelay;
+    // }
 
     for (var i = 0; i < actions.length; i++) {
         actions[i].run(triggerParams);
@@ -2121,11 +2121,11 @@ ActionStartRepeatedActions.prototype.isValid = function () {
  */
 ActionStartRepeatedActions.prototype.run = function (triggerParams) {
     // correct frame onset time
-    var origOnsetTime = null;
-    var timeIdx = this.event.trigger().getParameterSpec().indexOf("Time From Frame Onset");
-    if (timeIdx >= 0) {
-        origOnsetTime = triggerParams[timeIdx];
-    }
+    // var origOnsetTime = null;
+    // var timeIdx = this.event.trigger().getParameterSpec().indexOf("Time From Frame Onset");
+    //if (timeIdx >= 0) {
+    //    origOnsetTime = triggerParams[timeIdx];
+    // }
 
     if (this.executionType() == 'time') {
         var self = this;
@@ -2172,9 +2172,9 @@ ActionStartRepeatedActions.prototype.run = function (triggerParams) {
             var actions = self.subActions();
             for (var i = 0; i < actions.length; i++) {
                 // correct frame onset time
-                if (origOnsetTime) {
-                    triggerParams[timeIdx] = origOnsetTime + (new Date().getTime() - start);
-                }
+                //if (origOnsetTime) {
+                //    triggerParams[timeIdx] = origOnsetTime + (new Date().getTime() - start);
+                // }
                 actions[i].run(triggerParams);
             }
 
@@ -2196,9 +2196,9 @@ ActionStartRepeatedActions.prototype.run = function (triggerParams) {
         while (!stopping) {
             for (var i = 0; i < actions.length; i++) {
                 // correct frame onset time
-                if (origOnsetTime) {
-                    triggerParams[timeIdx] = origOnsetTime + (new Date().getTime() - start);
-                }
+                //if (origOnsetTime) {
+                //    triggerParams[timeIdx] = origOnsetTime + (new Date().getTime() - start);
+                // }
                 actions[i].run(triggerParams);
             }
             stopping = this.stopCondition().checkIfTrue(triggerParams)
@@ -2767,12 +2767,12 @@ ActionSetVariable.prototype.removeVariable = function () {
 ActionSetVariable.prototype.run = function (triggerParams) {
     var rValue = this.operand().getValue(triggerParams);
 
-    var timeIdx = this.event.trigger().getParameterSpec().indexOf("Time From Frame Onset");
-    if (timeIdx >= 0) {
-        var unixT = triggerParams[timeIdx] + player.currentFrame.startedTime;
-        this.variable().setLastTimeChanged(unixT);
-    }
     if (this.variable()) {
+        //var timeIdx = this.event.trigger().getParameterSpec().indexOf("Time From Frame Onset");
+        //if (timeIdx >= 0) {
+        //var unixT = triggerParams[timeIdx] + player.currentFrame.startedTime; 
+        this.variable().setLastTimeChanged(new Date().getTime());
+        //}
         this.variable().setValue(rValue);
     }
 };
