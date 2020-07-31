@@ -21,7 +21,7 @@ var ExpTrialLoop = function (expData) {
     this.displayInitialCountdown = ko.observable(true);
     this.syncTaskStart = ko.observable(true);
     this.useEyetrackingV2 = ko.observable(false);
-    this.useDriftCorrection = ko.observable(true);
+    this.useDriftCorrection = ko.observable(false);
     this.eyetrackingV2numRecalibPoints = ko.observable(3).extend({ numeric: 0 });
 
     this.zoomMode = ko.observable('fullscreen'); // fullscreen or visualDegree or pixel or millimeter
