@@ -648,11 +648,7 @@ OperandVariable.prototype.setPointers = function (entitiesArr) {
     if (this.operandType() == "objProperty") {
         this.operandValueOrObject().setPointers(entitiesArr);
     }
-    if (this.operandType() == "arithmetic") {
-        this.operandValueOrObject().left.setPointers(entitiesArr);
-        this.operandValueOrObject().right.setPointers(entitiesArr);
-    }
-    if (this.operandType() == "arrayvalue") {
+    if (this.operandType() == "arithmetic" || this.operandType() == "arrayvalue") {
         this.operandValueOrObject().left.setPointers(entitiesArr);
         this.operandValueOrObject().right.setPointers(entitiesArr);
     }
@@ -679,11 +675,7 @@ OperandVariable.prototype.reAddEntities = function (entitiesArr) {
             }
         }
     }
-    if (this.operandType() == "arithmetic") {
-        this.operandValueOrObject().left.reAddEntities(entitiesArr);
-        this.operandValueOrObject().right.reAddEntities(entitiesArr);
-    }
-    if (this.operandType() == "arrayvalue") {
+    if (this.operandType() == "arithmetic" || this.operandType() == "arrayvalue") {
         this.operandValueOrObject().left.reAddEntities(entitiesArr);
         this.operandValueOrObject().right.reAddEntities(entitiesArr);
     }
