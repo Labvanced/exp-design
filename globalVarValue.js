@@ -950,9 +950,6 @@ GlobalVarValueArray.prototype.setValue = function (data) {
     if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
         data = data.toJS();
     }
-    this.parentVar.tmpDisableTimeseriesRec = true;
-    this.value([]);
-    this.parentVar.tmpDisableTimeseriesRec = false;
     this.value(this.convert(data));
 };
 
