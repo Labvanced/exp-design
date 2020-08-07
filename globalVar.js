@@ -76,7 +76,7 @@ var GlobalVar = function (expData) {
 GlobalVar.scales = ['nominal', 'ordinal', 'interval', 'ratio', 'undefined'];
 GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'time', 'timer', 'file', 'structure', 'undefined'];
 GlobalVar.scopes = ['subject', 'session', 'task', 'trial', 'undefined'];
-GlobalVar.dataFormats = ['scalar', 'array'];
+GlobalVar.dataFormats = ['scalar', 'array', '2DArray'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];
@@ -157,7 +157,7 @@ GlobalVar.prototype.refactorDataTypes = function () {
 };
 
 GlobalVar.prototype.getIconPath = function () {
-    if (this.dataFormat() === "array") {
+    if (this.dataFormat() === "array" || this.dataFormat() === "2DArray") {
         return GlobalVar.iconArrayPerDataType[this.dataType()];
     }
     else {
@@ -206,6 +206,11 @@ GlobalVar.prototype.resetStartValue = function () {
 };
 
 GlobalVar.prototype.createScalarValueFromDataType = function () {
+
+    if (this.dataFormat() === '2DArray') {
+        return new GlobalVarValueArray(this);
+    }
+
     switch (this.dataType()) {
         case 'string':
             return new GlobalVarValueString(this);
@@ -231,10 +236,17 @@ GlobalVar.prototype.createScalarValueFromDataType = function () {
 };
 
 GlobalVar.prototype.createValueFromDataType = function () {
+
     if (this.dataFormat() == "array") {
         var val = new GlobalVarValueArray(this);
         // add a first element to the empty array:
-        val.value.push(this.createScalarValueFromDataType());
+        //val.value.push(this.createScalarValueFromDataType());
+        return val;
+    }
+    else if (this.dataFormat() == "2DArray") {
+        var val = new GlobalVarValue2DArray(this);
+        // add a first element to the empty array:
+        //val.value.push(this.createScalarValueFromDataType());
         return val;
     }
     else {
