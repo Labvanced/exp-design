@@ -996,6 +996,143 @@ GlobalVarValueArray.prototype.toString = function () {
     }
 };
 
+
+
+////////////////////  GlobalVarValue2DArray  ///////////////////////////////////
+
+GlobalVarValue2DArray = function (parentVar) {
+    var self = this;
+    this.parentVar = parentVar;
+    this.value = ko.observableArray([]);
+    this.value.subscribe(function () {
+        self.parentVar.notifyValueChanged();
+    });
+};
+
+GlobalVarValue2DArray.prototype.convert = function (data) {
+    var self = this;
+    if (data === null) {
+        return [];
+    }
+
+    if (data instanceof Array) {
+        var arrValues = jQuery.map(data, function (scalar) {
+            var newDatType = self.parentVar.createScalarValueFromDataType();
+            self.parentVar.tmpDisableTimeseriesRec = true;
+            newDatType.setValue(scalar);
+            self.parentVar.tmpDisableTimeseriesRec = false;
+            return newDatType;
+        });
+    }
+    else if (data instanceof GlobalVarValue2DArray) {
+        var arrValues = jQuery.map(data.value(), function (scalar) {
+            var newDatType = self.parentVar.createScalarValueFromDataType();
+            self.parentVar.tmpDisableTimeseriesRec = true;
+            newDatType.setValue(scalar);
+            self.parentVar.tmpDisableTimeseriesRec = false;
+            return newDatType;
+        });
+    }
+    else {
+        var newDatType = self.parentVar.createScalarValueFromDataType();
+        self.parentVar.tmpDisableTimeseriesRec = true;
+        newDatType.setValue(data);
+        self.parentVar.tmpDisableTimeseriesRec = false;
+        var arrValues = [newDatType];
+    }
+    return arrValues;
+};
+
+/**
+ * modify the value either by a supplying a globalVarValue instance or a javascript string or number
+ * @param data
+ */
+GlobalVarValue2DArray.prototype.getValueAt = function (idx) {
+    return this.value()[idx];
+};
+
+GlobalVarValue2DArray.prototype.getValues = function () {
+    return this.getValue();
+};
+
+
+GlobalVarValue2DArray.prototype.setValueAt = function (idx, val) {
+    this.value()[idx].value(val);
+};
+
+
+/**
+ * modify the value either by a supplying a globalVarValue instance or a javascript string or number
+ * @param data
+ */
+GlobalVarValue2DArray.prototype.pushValue = function (scalarData) {
+    var newScalar = this.parentVar.createScalarValueFromDataType();
+    newScalar.setValue(scalarData);
+    this.value.push(newScalar);
+};
+
+/**
+ * modify the value either by a supplying a globalVarValue instance or a javascript string or number
+ * @param data
+ */
+GlobalVarValue2DArray.prototype.setValue = function (data) {
+    if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
+        data = data.toJS();
+    }
+    this.parentVar.tmpDisableTimeseriesRec = true;
+    this.value([]);
+    this.parentVar.tmpDisableTimeseriesRec = false;
+    this.value(this.convert(data));
+};
+
+GlobalVarValue2DArray.prototype.getValue = function () {
+    return this.toJS();
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {GlobalVar}
+ */
+GlobalVarValue2DArray.prototype.fromJS = function (data) {
+    this.value(this.convert(data));
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+GlobalVarValue2DArray.prototype.toJS = function () {
+    var self = this;
+    var arrValuesJS = [];
+    this.value().forEach(function (scalar) {
+        arrValuesJS.push(scalar.toJS());
+    });
+    return arrValuesJS;
+};
+
+/**
+ * return string representation of value
+ * @returns {object}
+ */
+
+GlobalVarValue2DArray.prototype.toString = function () {
+    if (this.value() != null) {
+        var arrValuesString = jQuery.map(this.value(), function (scalar) {
+            return scalar.toString();
+        });
+        return arrValuesString.join();
+    }
+    else {
+        return null;
+    }
+};
+
+
+
+
+
+
 ////////////////////  GlobalVarValueStructure  ///////////////////////////////////
 
 GlobalVarValueStructure = function (parentVar) {
