@@ -351,6 +351,17 @@ GlobalVar.prototype.getRecAtEndOfTrial = function () {
     }
 };
 
+/**
+ * This is used by the player to retireve the recording at the end of a trial
+ */
+GlobalVar.prototype.getRecDuringTrial = function () {
+    if (this.recType() == 'overwrite') {
+        return this.value().toJS();
+    } else if (this.recType() == 'timeseries') {
+        return this.recValue;
+    }
+};
+
 GlobalVar.prototype.getValue = function () {
     // TODO: check datatypes and maybe convert here...
     return this.value().value();
