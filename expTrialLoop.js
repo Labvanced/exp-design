@@ -23,6 +23,7 @@ var ExpTrialLoop = function (expData) {
     this.useEyetrackingV2 = ko.observable(false);
     this.useDriftCorrection = ko.observable(false);
     this.eyetrackingV2numRecalibPoints = ko.observable(3).extend({ numeric: 0 });
+    this.eyetrackingV2numDriftPoints = ko.observable(6).extend({ numeric: 0 });
 
     this.zoomMode = ko.observable('fullscreen'); // fullscreen or visualDegree or pixel or millimeter
     this.visualDegreeToUnit = ko.observable(20);
@@ -1579,6 +1580,9 @@ ExpTrialLoop.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('eyetrackingV2numRecalibPoints')) {
         this.eyetrackingV2numRecalibPoints(data.eyetrackingV2numRecalibPoints);
     }
+    if (data.hasOwnProperty('eyetrackingV2numDriftPoints')) {
+        this.eyetrackingV2numDriftPoints(data.eyetrackingV2numDriftPoints);
+    }
 
     this.type = data.type;
 
@@ -1691,6 +1695,7 @@ ExpTrialLoop.prototype.toJS = function () {
         syncTaskStart: this.syncTaskStart(),
         useEyetrackingV2: this.useEyetrackingV2(),
         eyetrackingV2numRecalibPoints: this.eyetrackingV2numRecalibPoints(),
+        eyetrackingV2numDriftPoints: this.eyetrackingV2numDriftPoints(),
         type: this.type,
         factorGroups: jQuery.map(this.factorGroups(), function (factorGroup) { return factorGroup.toJS(); }),
         subSequencePerFactorGroup: jQuery.map(this.subSequencePerFactorGroup(), function (subSequence) { return subSequence.id(); }),
