@@ -572,7 +572,8 @@ ActionRecordData.prototype.isValid = function () {
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionRecordData.prototype.run = function (triggerParams) {
-    player.recordData()
+    var isDuringTrial = true;
+    player.recordData(isDuringTrial);
 };
 
 /**
@@ -4171,100 +4172,6 @@ ActionEndSession.prototype.toJS = function () {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-//////////////////////////////////////  ActionRecordQuestionaireResponse  //////////////////////////////////////////// depreciated!
-
-/**
- * This action records the response from a questionaire element.
- *
- * @param {ExpEvent} event - the parent event
- * @constructor
- */
-var ActionRecordQuestionaireResponse = function (event) {
-    this.event = event;
-
-    // serialized
-    this.variableId = ko.observable(undefined);
-    this.variable = null;
-
-};
-ActionRecordQuestionaireResponse.prototype.type = "ActionRecordQuestionaireResponse";
-ActionRecordQuestionaireResponse.prototype.label = "Record Questionaire Answer";
-
-/**
- * returns true if all settings are valid (used in the editor).
- * @returns {boolean}
- */
-ActionRecordQuestionaireResponse.prototype.isValid = function () {
-    return true;
-};
-
-/**
- * This function is called when the parent event was triggered and the requirements are true. It records the answers
- * of a questionaire and directly sends them to the server.
- *
- * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
- */
-ActionRecordQuestionaireResponse.prototype.run = function (triggerParams) {
-    var blockId = player.getBlockId();
-    var trialId = player.getTrialId();
-    var resp = triggerParams.questionElement.content.answer;
-    var recData = new RecData();
-    recData.addRecording(this.variable);
-    player.addRecording(blockId, trialId, recData.toJS());
-};
-
-/**
- * cleans up the subscribers and callbacks in the player when the frame ended.
- * @param playerFrame
- */
-ActionRecordQuestionaireResponse.prototype.destroyOnPlayerFrame = function (playerFrame) {
-};
-
-/**
- * This function initializes all internal state variables to point to other instances in the same experiment. Usually
- * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
- * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
- *
- * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
- */
-ActionRecordQuestionaireResponse.prototype.setPointers = function (entitiesArr) {
-
-};
-
-/**
- * Recursively adds all child objects that have a unique id to the global list of entities.
- *
- * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
- */
-ActionRecordQuestionaireResponse.prototype.reAddEntities = function (entitiesArr) {
-
-};
-
-/**
- * load from a json object to deserialize the states.
- * @param {object} data - the json description of the states.
- * @returns {ActionRecordQuestionaireResponse}
- */
-ActionRecordQuestionaireResponse.prototype.fromJS = function (data) {
-    this.variableId(data.variableId);
-    return this;
-};
-
-/**
- * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
- * @returns {object}
- */
-ActionRecordQuestionaireResponse.prototype.toJS = function () {
-    return {
-        type: this.type,
-        variableId: this.variableId()
-    };
-};
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 

@@ -15,18 +15,22 @@ var RecData = function () {
  * add the recording of a variable to data
  * @param {globalVar} globalVar - variable to be recorded
  */
-RecData.prototype.addRecording = function (globalVar) {
-    this.data[globalVar.id()] = globalVar.getRecAtEndOfTrial();
-};
+RecData.prototype.addRecording = function (globalVar, saveByName, isDuringTrial) {
+    var recVal;
+    if (isDuringTrial) {
+        recVal = globalVar.getRecDuringTrial();
+    }
+    else {
+        recVal = globalVar.getRecAtEndOfTrial();
+    }
 
-
-/**
- * add the recording of a variable to data
- * @param {globalVar} globalVar - variable to be recorded
- * Warning: as names might not be unique data could be overwritten by this method
- */
-RecData.prototype.addRecordingByName = function (globalVar) {
-    this.data[globalVar.name()] = globalVar.getRecAtEndOfTrial();
+    if (saveByName) {
+        this.data[globalVar.name()] = recVal;
+    }
+    else {
+        this.data[globalVar.id()] = recVal;
+    }
+    
 };
 
 /**
