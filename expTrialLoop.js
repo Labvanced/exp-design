@@ -21,7 +21,7 @@ var ExpTrialLoop = function (expData) {
     this.displayInitialCountdown = ko.observable(true);
     this.syncTaskStart = ko.observable(true);
     this.useEyetrackingV2 = ko.observable(false);
-    this.useDriftCorrection = ko.observable(false);
+    this.useDriftCorrection = ko.observable(true);
     this.eyetrackingV2numRecalibPoints = ko.observable(3).extend({ numeric: 0 });
     this.eyetrackingV2numDriftPoints = ko.observable(6).extend({ numeric: 0 });
 
