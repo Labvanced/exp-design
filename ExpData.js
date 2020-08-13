@@ -47,6 +47,11 @@ var ExpData = function (parentExperiment) {
         self.updateLanguage();
     });
 
+    this.translatedLanguagesSubscription = this.translatedLanguages.subscribe(function (newLang) {
+        self.updateLanguage();
+    });
+
+
     this.variableSubscription = null;
 
     this.dateLastModified = ko.observable(getCurrentDate(this.studySettings.timeZoneOffset()));
@@ -418,6 +423,82 @@ ExpData.prototype.staticTranslations = {
         calibDistance2: "centímetro",
         requestPermissionHeader: "Requiere permiso del dispositivo",
         requestPermissionBody: "Este experimento requiere el acceso a su cámara web o micrófono. En la siguiente pantalla, permite el acceso a tu cámara web o al micrófono para continuar."
+    },
+
+    Portuguese: {
+        library: "Biblioteca",
+        langSelect: "Este estudo está disponível em vários idiomas.",
+        studyLanguage: "Lingua do estudo:",
+        continue: "Continuar",
+        submit: "Submeter",
+        confirm: "Confirmar",
+        initialSurvey: "Preencha os campos abaixo (os campos obrigatórios estão marcados com *):",
+        yourGender: "Sexo",
+        yourGenderMale: "Masculino",
+        yourGenderFemale: "Feminino",
+        yourAge: "Sua idade",
+        years: "anos",
+        yourCountry: "País/Localização",
+        yourFirstLang: "Língua materna",
+        yourEmail: "Email",
+        errorGender: "Sexo ausente",
+        errorAge: "Idade ausente",
+        errorCountry: "País ausente",
+        errorLanguage: "Língua ausente",
+        errorEmail: "Email ausente",
+        errorSessionNotReady: "No momento, você não pode participar deste experimento porque este estudo só pode ser iniciado em determinados momentos.",
+        errorSessionStartIn: "Você pode iniciar esta sessão em",
+        refresh: "Atualizar",
+        errorSessionOver: "No momento, você não pode participar deste experimento porque não há uma janela de tempo de início definida para este estudo.",
+        loading1: "Carregando experimento...",
+        loading2: "Carregando, por favor espere",
+        loading3: "Isto pode levar um tempo.",
+        loadingComplete: "Carregamento Completo!",
+        canStart: "Agora você pode iniciar o experimento. Isso mudará seu navegador para o modo de tela inteira.",
+        keepFullscreen: "Observe que, durante a experiência, você nunca deve pressionar escape ou usar o botão \"voltar \" do seu navegador.",
+        start: "Começar",
+        playerErrorNoSubjGroup: "Erro: não há grupo de assuntos definido no experimento.",
+        playerErrorNoSession: "Erro: não há sessão definida no grupo de sujeitos no experimento.",
+        playerErrorNoBlock: "Erro: não há bloco definido nesta sessão de experimento.",
+        startingExp: "Iniciando Experimento...",
+        startingIn: "Iniciando em ",
+        calibrateIntro: "A distância e o tamanho da tela são necessários para a calibração:",
+        calibrateMethod1: "Especifique o tamanho da tela manualmente se você souber o tamanho do seu monitor.",
+        calibrateScreenSize: "Tamanho da tela (diagonal):",
+        calibrateInches: "polegadas",
+        calibrateMethod2: "Use um cartão de identificação padronizado (85,60 × 53,98 mm) ou qualquer outro cartão do mesmo tamanho contra a tela e tente corresponder ao tamanho do cartão exibido. " +
+            "Você pode alterar o tamanho da imagem arrastando a seta. A calibração estará correta se a imagem corresponder exatamente ao tamanho do cartão.",
+        endExpMsg: "Obrigado! A sessão de experimento terminou.",
+        goToLib: "Vá para a biblioteca de experimentos",
+        chooseSelection: "Por favor escolha...",
+        answerPlaceholder: "Resposta do participante ...",
+        endExpMsgTest: "A gravação de teste desta tarefa acabou. Para testar todo o experimento ou registrar dados, inicie o estudo em 'Executar' no painel de navegação.",
+        participationAgreement1: " Concordo que todos os dados pessoais que forneço aqui e todas as minhas respostas serão registrados e podem ser usados ​​para fins de pesquisa de forma pseudonimizada. Eu também concordo com o",
+        participationAgreement2: "da Scicovery GmbH para registro, armazenamento e tratamento de dados de participantes.",
+        multiUserExpLobby: "Experimento de Múltiplos Participantes",
+        participantsInLobby: "Participantes presentes:",
+        readyToStart: "Pronto para começar?",
+        waitingForOtherParticipants: "Esperando por mais participantes...",
+        experimentStartsShortly: "Seu experimento começará em breve...",
+        successfullyMatched_1: "Combinação realizada com sucesso. Pressione ",
+        successfullyMatched_2: " para prosseguir com a experiência!",
+        continueJointExpLobby: "continuar",
+        jointExpTestConnection: "Testando sua conexão com a Internet. Por favor aguarde 30 segundos ...",
+        yourCrowdsourcingID: "Seu ID de trabalho/ crowdsourcing ID (*):",
+        AdLibraryEndOfStudy: "Participe de experiências comportamentais mais emocionantes:",
+        AdRegisterEndOfStudy: "OU registre-se e crie seu próprio estudo gratuitamente:",
+        inviteFriendMultiUser1: "Precisa de outro jogador? Convidar um amigo!",
+        inviteFriendMultiUser2: "Seu Nome:",
+        inviteFriendMultiUser3: "O E-mail de seu colega:",
+        inviteFriendMultiUser4: "Convidar",
+        customRequirement: "Por meio deste, eu confirmo que aceito os termos e condições deste estudo e cumpro os seguintes requisitos de participação conforme declarado abaixo:",
+        askEmailConsent1: "Por que pedimos seu e-mail: ",
+        askEmailConsent2: "Este é um estudo longitudinal, constituído por várias sessões de participação. Seu e-mail será recodificado somente para convidar / lembra-lo de participar da próxima sessão. Seu e-mail não será armazenado junto com outros tipos de dados e está acessível apenas internamente na plataforma Labvanced. Não vamos dar " +
+            "seu e-mail ou usa-lo para finalidades diferentes.",
+        calibDistance1: "Sua distância da tela (em cm) é: ",
+        calibDistance2: "centímetros",
+        requestPermissionHeader: "Permissão de Dispositivo Necessária",
+        requestPermissionBody: "Este experimento requer acesso à sua webcam ou microfone. Permita o acesso à sua webcam ou microfone para continuar."
     },
 };
 
