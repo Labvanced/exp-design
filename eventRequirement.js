@@ -464,15 +464,10 @@ OperandVariable.prototype.getValue = function (parameters) {
                 }
 
             }
-
             if ($.isNumeric(right)) {
-                right = parseFloat(right);
+                right = parseInt(right);
             }
-
-            if (value.op == "+") {
-                return left[right]
-            }
-            return null;
+            return left[right]
         case "variable":
             return value.getValue();
         case "objProperty":
@@ -797,14 +792,7 @@ OperandVariable.prototype.toJS = function () {
             data.operandValueOrObject = data.operandValueOrObject.toJS();
         }
     }
-    if (data.operandType == "arithmetic") {
-        data.operandValueOrObject = {
-            left: data.operandValueOrObject.left.toJS(),
-            right: data.operandValueOrObject.right.toJS(),
-            op: data.operandValueOrObject.op
-        };
-    }
-    if (data.operandType == "arrayvalue") {
+    if (data.operandType == "arithmetic" || data.operandType == "arrayvalue") {
         data.operandValueOrObject = {
             left: data.operandValueOrObject.left.toJS(),
             right: data.operandValueOrObject.right.toJS(),
