@@ -366,7 +366,7 @@ OperandVariable.prototype.label = "Operand";
 
 OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean", "constantDate", "constantTime", "constantCategorical", "constantColor", "eyetracking"];
 OperandVariable.prototype.unaryOperandTypes = ["abs", "round0decimal", "round1decimal", "round2decimals", "round3decimals", "floor", "ceil", "sqrt", "toLowercase", "toUppercase", "removeSpaces", "trimSpaces"];
-OperandVariable.prototype.binaryOperandTypes = ["arithmetic"];
+OperandVariable.prototype.binaryOperandTypes = ["arithmetic", "arrayvalue"];
 OperandVariable.prototype.ternaryOperandTypes = ["strReplace"];
 OperandVariable.prototype.operandTypes = OperandVariable.prototype.nullaryOperandTypes.concat(OperandVariable.prototype.unaryOperandTypes, OperandVariable.prototype.binaryOperandTypes, OperandVariable.prototype.ternaryOperandTypes);
 OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
@@ -449,6 +449,25 @@ OperandVariable.prototype.getValue = function (parameters) {
                 return left % right;
             }
             return null;
+        case "arrayvalue":
+            var left = value.left.getValue(parameters);
+            var right = value.right.getValue(parameters);
+
+            if (left != null) {
+                if (left.hasOwnProperty('parentVar')) {
+                    left = left.toJS();
+                }
+            }
+            if (right != null) {
+                if (right.hasOwnProperty('parentVar')) {
+                    right = right.toJS();
+                }
+
+            }
+            if ($.isNumeric(right)) {
+                right = parseInt(right);
+            }
+            return left[right]
         case "variable":
             return value.getValue();
         case "objProperty":
@@ -645,7 +664,7 @@ OperandVariable.prototype.setPointers = function (entitiesArr) {
     if (this.operandType() == "objProperty") {
         this.operandValueOrObject().setPointers(entitiesArr);
     }
-    if (this.operandType() == "arithmetic") {
+    if (this.operandType() == "arithmetic" || this.operandType() == "arrayvalue") {
         this.operandValueOrObject().left.setPointers(entitiesArr);
         this.operandValueOrObject().right.setPointers(entitiesArr);
     }
@@ -672,7 +691,7 @@ OperandVariable.prototype.reAddEntities = function (entitiesArr) {
             }
         }
     }
-    if (this.operandType() == "arithmetic") {
+    if (this.operandType() == "arithmetic" || this.operandType() == "arrayvalue") {
         this.operandValueOrObject().left.reAddEntities(entitiesArr);
         this.operandValueOrObject().right.reAddEntities(entitiesArr);
     }
@@ -699,6 +718,17 @@ OperandVariable.prototype.fromJS = function (data) {
         this.operandValueOrObject(refToObjectProperty);
     }
     else if (data.operandType == "arithmetic") {
+        var left = new OperandVariable(this.event);
+        var right = new OperandVariable(this.event);
+        left.fromJS(data.operandValueOrObject.left);
+        right.fromJS(data.operandValueOrObject.right);
+        this.operandValueOrObject({
+            left: left,
+            right: right,
+            op: data.operandValueOrObject.op
+        });
+    }
+    else if (data.operandType == "arrayvalue") {
         var left = new OperandVariable(this.event);
         var right = new OperandVariable(this.event);
         left.fromJS(data.operandValueOrObject.left);
@@ -762,7 +792,7 @@ OperandVariable.prototype.toJS = function () {
             data.operandValueOrObject = data.operandValueOrObject.toJS();
         }
     }
-    if (data.operandType == "arithmetic") {
+    if (data.operandType == "arithmetic" || data.operandType == "arrayvalue") {
         data.operandValueOrObject = {
             left: data.operandValueOrObject.left.toJS(),
             right: data.operandValueOrObject.right.toJS(),
