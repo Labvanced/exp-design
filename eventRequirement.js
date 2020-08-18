@@ -717,18 +717,7 @@ OperandVariable.prototype.fromJS = function (data) {
         refToObjectProperty.fromJS(data.operandValueOrObject);
         this.operandValueOrObject(refToObjectProperty);
     }
-    else if (data.operandType == "arithmetic") {
-        var left = new OperandVariable(this.event);
-        var right = new OperandVariable(this.event);
-        left.fromJS(data.operandValueOrObject.left);
-        right.fromJS(data.operandValueOrObject.right);
-        this.operandValueOrObject({
-            left: left,
-            right: right,
-            op: data.operandValueOrObject.op
-        });
-    }
-    else if (data.operandType == "arrayvalue") {
+    else if (data.operandType == "arithmetic" || data.operandType == "arrayvalue") {
         var left = new OperandVariable(this.event);
         var right = new OperandVariable(this.event);
         left.fromJS(data.operandValueOrObject.left);
@@ -793,13 +782,6 @@ OperandVariable.prototype.toJS = function () {
         }
     }
     if (data.operandType == "arithmetic" || data.operandType == "arrayvalue") {
-        data.operandValueOrObject = {
-            left: data.operandValueOrObject.left.toJS(),
-            right: data.operandValueOrObject.right.toJS(),
-            op: data.operandValueOrObject.op
-        };
-    }
-    if (data.operandType == "arrayvalue") {
         data.operandValueOrObject = {
             left: data.operandValueOrObject.left.toJS(),
             right: data.operandValueOrObject.right.toJS(),
