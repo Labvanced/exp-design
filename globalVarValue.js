@@ -998,9 +998,9 @@ GlobalVarValueArray.prototype.toString = function () {
 
 
 
-////////////////////  GlobalVarValue2DArray  ///////////////////////////////////
+////////////////////  GlobalVarValueStructure  ///////////////////////////////////
 
-GlobalVarValue2DArray = function (parentVar) {
+GlobalVarValueStructure = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observableArray([]);
@@ -1009,7 +1009,7 @@ GlobalVarValue2DArray = function (parentVar) {
     });
 };
 
-GlobalVarValue2DArray.prototype.convert = function (data) {
+GlobalVarValueStructure.prototype.convert = function (data) {
     var self = this;
     if (data === null) {
         return [];
@@ -1024,7 +1024,7 @@ GlobalVarValue2DArray.prototype.convert = function (data) {
             return newDatType;
         });
     }
-    else if (data instanceof GlobalVarValue2DArray) {
+    else if (data instanceof GlobalVarValueStructure) {
         var arrValues = jQuery.map(data.value(), function (scalar) {
             var newDatType = self.parentVar.createScalarValueFromDataType();
             self.parentVar.tmpDisableTimeseriesRec = true;
@@ -1047,16 +1047,16 @@ GlobalVarValue2DArray.prototype.convert = function (data) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValue2DArray.prototype.getValueAt = function (idx) {
+GlobalVarValueStructure.prototype.getValueAt = function (idx) {
     return this.value()[idx];
 };
 
-GlobalVarValue2DArray.prototype.getValues = function () {
+GlobalVarValueStructure.prototype.getValues = function () {
     return this.getValue();
 };
 
 
-GlobalVarValue2DArray.prototype.setValueAt = function (idx, val) {
+GlobalVarValueStructure.prototype.setValueAt = function (idx, val) {
     this.value()[idx].value(val);
 };
 
@@ -1065,7 +1065,7 @@ GlobalVarValue2DArray.prototype.setValueAt = function (idx, val) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValue2DArray.prototype.pushValue = function (scalarData) {
+GlobalVarValueStructure.prototype.pushValue = function (scalarData) {
     var newScalar = this.parentVar.createScalarValueFromDataType();
     newScalar.setValue(scalarData);
     this.value.push(newScalar);
@@ -1075,7 +1075,7 @@ GlobalVarValue2DArray.prototype.pushValue = function (scalarData) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValue2DArray.prototype.setValue = function (data) {
+GlobalVarValueStructure.prototype.setValue = function (data) {
     if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
         data = data.toJS();
     }
@@ -1085,7 +1085,7 @@ GlobalVarValue2DArray.prototype.setValue = function (data) {
     this.value(this.convert(data));
 };
 
-GlobalVarValue2DArray.prototype.getValue = function () {
+GlobalVarValueStructure.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -1094,7 +1094,7 @@ GlobalVarValue2DArray.prototype.getValue = function () {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValue2DArray.prototype.fromJS = function (data) {
+GlobalVarValueStructure.prototype.fromJS = function (data) {
     this.value(this.convert(data));
 };
 
@@ -1102,7 +1102,7 @@ GlobalVarValue2DArray.prototype.fromJS = function (data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValue2DArray.prototype.toJS = function () {
+GlobalVarValueStructure.prototype.toJS = function () {
     var self = this;
     var arrValuesJS = [];
     this.value().forEach(function (scalar) {
@@ -1116,7 +1116,7 @@ GlobalVarValue2DArray.prototype.toJS = function () {
  * @returns {object}
  */
 
-GlobalVarValue2DArray.prototype.toString = function () {
+GlobalVarValueStructure.prototype.toString = function () {
     if (this.value() != null) {
         var arrValuesString = jQuery.map(this.value(), function (scalar) {
             return scalar.toString();
