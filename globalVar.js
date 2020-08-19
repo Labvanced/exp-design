@@ -76,7 +76,7 @@ var GlobalVar = function (expData) {
 GlobalVar.scales = ['nominal', 'ordinal', 'interval', 'ratio', 'undefined'];
 GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'time', 'timer', 'file', 'structure', 'undefined'];
 GlobalVar.scopes = ['subject', 'session', 'task', 'trial', 'undefined'];
-GlobalVar.dataFormats = ['scalar', 'array', '2DArray'];
+GlobalVar.dataFormats = ['scalar', 'array', 'structure'];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];
@@ -144,7 +144,7 @@ GlobalVar.prototype.refactorDataTypes = function () {
             out.push(obj)
         }
 
-        else if (value != "timer" && value != "structure") {
+        else if (value != "timer") {
             var obj = {
                 name: value,
                 viewName: value
@@ -157,7 +157,7 @@ GlobalVar.prototype.refactorDataTypes = function () {
 };
 
 GlobalVar.prototype.getIconPath = function () {
-    if (this.dataFormat() === "array" || this.dataFormat() === "2DArray") {
+    if (this.dataFormat() === "array" || this.dataFormat() === "structure") {
         return GlobalVar.iconArrayPerDataType[this.dataType()];
     }
     else {
@@ -207,7 +207,7 @@ GlobalVar.prototype.resetStartValue = function () {
 
 GlobalVar.prototype.createScalarValueFromDataType = function () {
 
-    if (this.dataFormat() === '2DArray') {
+    if (this.dataFormat() === 'structure') {
         return new GlobalVarValueArray(this);
     }
 
@@ -243,8 +243,8 @@ GlobalVar.prototype.createValueFromDataType = function () {
         //val.value.push(this.createScalarValueFromDataType());
         return val;
     }
-    else if (this.dataFormat() == "2DArray") {
-        var val = new GlobalVarValue2DArray(this);
+    else if (this.dataFormat() == "structure") {
+        var val = new GlobalVarValueStructure(this);
         // add a first element to the empty array:
         //val.value.push(this.createScalarValueFromDataType());
         return val;
