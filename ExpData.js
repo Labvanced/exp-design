@@ -124,7 +124,9 @@ ExpData.prototype.oldFixedVarNames = [
     'varGazeXEMPTY',
     'varGazeYEMPTY',
     'varRoleIdEMPTY',
-    'varDisplayedLanguageEMPTY'
+    'varDisplayedLanguageEMPTY',
+    'varPixelDensityPerMMEMPTY',
+
     // 'varTimeMeasureSpecMaxEMPTY',
 ];
 
@@ -158,7 +160,8 @@ ExpData.prototype.fixedVarNames = [
     'varGazeX',
     'varGazeY',
     'varRoleId',
-    'varDisplayedLanguage'
+    'varDisplayedLanguage',
+    'varPixelDensityPerMM',
 
     // 'varTimeMeasureSpecMax',
 
@@ -193,7 +196,8 @@ ExpData.prototype.varDescriptions = {
     'varCrowdsourcingSubjId': 'The variable "Crowdsourcing_SubjId" holds the value of the unique "identification code" for each crowdsourcing participant. This can be used to later on create a reference between crowdsourcing data on Labvanced and the external crowdsourcing service (e.g Mechanical Turk).',
     'varGazeX': 'The variable "GazeX" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in X coordinates. This value can be used for calibration and as a "fixation trigger".',
     'varGazeY': 'The variable "GazeY" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in Y coordinates. This value can be used for calibration and as a "fixation trigger".',
-    'varDisplayedLanguage': 'The variable "Displayed Language" holds the value of the selected display language, only if there were 2 or more languages to select from. This value can be used to show different content, i.e. texts for different language settings.'
+    'varDisplayedLanguage': 'The variable "Displayed Language" holds the value of the selected display language, only if there were 2 or more languages to select from. This value can be used to show different content, i.e. texts for different language settings.',
+    'varPixelDensityPerMM': 'This variable hold the number of pixels per millimeter of the screen.',
 
     // {'varTimeMeasureSpecMax':''},
 };
@@ -679,6 +683,10 @@ ExpData.prototype.createVars = function () {
     if (!this.varDisplayedLanguage()) {
         this.varDisplayedLanguage((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Displayed_Language'));
         this.varDisplayedLanguage().setDescription(ExpData.prototype.varDescriptions["varDisplayedLanguage"]);
+    }
+    if (!this.varPixelDensityPerMM()) {
+        this.varPixelDensityPerMM((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'Pixel_Density_PerMM'));
+        this.varPixelDensityPerMM().setDescription(ExpData.prototype.varDescriptions["varPixelDensityPerMM"]);
     }
 
     //  if (!this.varTimeMeasureSpecMax()) {

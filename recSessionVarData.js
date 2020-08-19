@@ -24,7 +24,7 @@ var RecSessionVarData = function (recSession) {
 
     this.roleId = ko.observable(null);
     this.displayedLanguage = ko.observable(null);
-
+    this.Pixel_Density_PerMM = ko.observable(null);
 
 
     // dynamically added:
@@ -93,6 +93,9 @@ RecSessionVarData.prototype.fromJS = function (data) {
     }
     if (data.hasOwnProperty('displayedLanguage')) {
         this.displayedLanguage(data.displayedLanguage);
+    }
+    if (data.hasOwnProperty('Pixel_Density_PerMM')) {
+        this.Pixel_Density_PerMM(data.Pixel_Density_PerMM);
     }
 
 
