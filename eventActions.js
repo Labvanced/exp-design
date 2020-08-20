@@ -541,7 +541,295 @@ ActionSetProp.prototype.toJS = function () {
         operand: this.operand.toJS()
     };
 };
+////////////////////////////////////////  ActionMultiSetPropElementProp ///////////////////////////////////////////////////
 
+/**
+ * This action changes properties of a contentElement.
+ * @param {ExpEvent} event - the parent event
+ * @constructor
+ */
+var ActionMultiSetPropElementProp = function (event) {
+    this.event = event;
+    this.target = ko.observable(null);
+    this.changes = ko.observableArray([]);
+    this.animate = ko.observable(false);
+    this.animationTime = ko.observable(0);
+};
+
+
+ActionMultiSetPropElementProp.prototype.type = "ActionSetElementProp";
+ActionMultiSetPropElementProp.prototype.label = "Set Object Property";
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionMultiSetPropElementProp.prototype.isValid = function () {
+    return true;
+};
+
+/**
+ * adds a new property that shall be changed.
+ */
+ActionMultiSetPropElementProp.prototype.addProperty = function () {
+    var newChange = new ActionMultiSetPropElementPropChange(this);
+    this.changes.push(newChange);
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionMultiSetPropElementProp.prototype.setVariableBackRef = function (variable) {
+    variable.addBackRef(this, this.event, false, true, 'Action Set Element Prop');
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It reads out the desired
+ * changes and applies them to the properties.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+
+ActionMultiSetPropElementProp.prototype.run = function (triggerParams) {
+
+    var changes = this.changes();
+    var target = this.target();
+    for (var i = 0; i < changes.length; i++) {
+        var property = changes[i].property();
+        var operatorType = changes[i].operatorType();
+        var changeType = changes[i].changeType();
+        var variable = changes[i].variable();
+
+        // make sure to calculate on numeric
+        var value = changes[i].value();
+
+        //var oldValue = target[property]();
+        var oldValue = target.modifier().selectedTrialView[property]();
+
+        if (typeof oldValue === 'string') {
+            oldValue = Number(oldValue);
+        }
+        if (typeof value === 'string') {
+            value = Number(value);
+        }
+
+        var newValue;
+        var changeValue;
+
+        if (changeType == 'value') {
+            changeValue = value;
+        }
+        else if (changeType == '%') {
+            changeValue = (oldValue * (value / 100));
+        }
+        else if (changeType == 'variable') {
+            changeValue = parseFloat(variable.value().value());
+        }
+
+        if (operatorType == '=') {
+            newValue = changeValue;
+        }
+        else if (operatorType == '+') {
+            newValue = oldValue + changeValue;
+        }
+        else if (operatorType == '-') {
+            newValue = oldValue - changeValue;
+        }
+        else if (operatorType == '*') {
+            newValue = oldValue * changeValue;
+        }
+        else if (operatorType == '/') {
+            newValue = oldValue / changeValue;
+        }
+
+        target.modifier().selectedTrialView[property](newValue);
+    }
+
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionMultiSetPropElementProp.prototype.destroyOnPlayerFrame = function (playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionMultiSetPropElementProp.prototype.setPointers = function (entitiesArr) {
+    if (this.target()) {
+        var target = entitiesArr.byId[this.target()];
+        this.target(target);
+    }
+
+
+    var changes = this.changes();
+    for (var i = 0; i < changes.length; i++) {
+        changes[i].setPointers(entitiesArr);
+    }
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionMultiSetPropElementProp.prototype.reAddEntities = function (entitiesArr) {
+    var changes = this.changes();
+    for (var i = 0; i < changes.length; i++) {
+        var variable = changes[i].variable();
+        if (variable) {
+            if (!entitiesArr.byId.hasOwnProperty(variable.id())) {
+                entitiesArr.push(variable);
+            }
+        }
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionMultiSetPropElementProp}
+ */
+ActionMultiSetPropElementProp.prototype.fromJS = function (data) {
+    this.animate(data.animate);
+    this.animationTime(data.animationTime);
+    this.target(data.target);
+
+    var changes = [];
+    for (var i = 0; i < data.changes.length; i++) {
+        var tmp = data.changes[i];
+        var obj = new ActionMultiSetPropElementPropChange(this);
+        obj.fromJS(tmp);
+        changes.push(obj);
+    }
+    this.changes(changes);
+
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionMultiSetPropElementProp.prototype.toJS = function () {
+
+    var changes = [];
+    var origChanges = this.changes();
+    for (var i = 0; i < origChanges.length; i++) {
+        var obj = origChanges[i].toJS();
+        changes.push(obj);
+    }
+
+    var targetId = null;
+    if (this.target()) {
+        targetId = this.target().id();
+    }
+
+    return {
+        type: this.type,
+        target: targetId,
+        animate: this.animate(),
+        animationTime: this.animationTime,
+        changes: changes
+    };
+};
+
+////////////////////////////////////////  ActionMultiSetProp (new version) ///////////////////////////////////////////////////
+
+var ActionMultiSetProp = function (event) {
+    this.event = event;
+
+    // serialized
+    this.refToObjectProperty = new RefToObjectProperty(event);
+    this.operand = new OperandVariable(event);
+};
+
+ActionMultiSetProp.prototype.type = "ActionMultiSetProp";
+ActionMultiSetProp.prototype.label = "Set Object Property";
+
+ActionMultiSetProp.prototype.isValid = function () {
+    return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ */
+ActionMultiSetProp.prototype.setVariableBackRef = function () {
+};
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It sets a specific
+ * globalVar to a specific value.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionMultiSetProp.prototype.run = function (triggerParams) {
+    var rValue = this.operand.getValue(triggerParams);
+    this.refToObjectProperty.setValue(rValue);
+};
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionMultiSetProp.prototype.destroyOnPlayerFrame = function (playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionMultiSetProp.prototype.setPointers = function (entitiesArr) {
+    this.refToObjectProperty.setPointers(entitiesArr);
+    this.operand.setPointers(entitiesArr);
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionMultiSetProp.prototype.reAddEntities = function (entitiesArr) {
+    if (this.operand && this.operand.reAddEntities) {
+        this.operand.reAddEntities(entitiesArr);
+    }
+    if (this.refToObjectProperty && this.refToObjectProperty.reAddEntities) {
+        this.refToObjectProperty.reAddEntities(entitiesArr);
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionMultiSetProp}
+ */
+ActionMultiSetProp.prototype.fromJS = function (data) {
+    this.refToObjectProperty.fromJS(data.refToObjectProperty);
+    this.operand.fromJS(data.operand);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionMultiSetProp.prototype.toJS = function () {
+    return {
+        type: this.type,
+        refToObjectProperty: this.refToObjectProperty.toJS(),
+        operand: this.operand.toJS()
+    };
+};
 
 
 
