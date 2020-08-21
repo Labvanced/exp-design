@@ -1015,32 +1015,23 @@ GlobalVarValueStructure.prototype.convert = function (data) {
         return [];
     }
 
+
     if (data instanceof Array) {
-        var arrValues = jQuery.map(data, function (scalar) {
-            var newDatType = self.parentVar.createScalarValueFromDataType();
+        var arrValues = jQuery.map(data, function (globalVar) {
+            jQuery.each()
+            var newVar = self.parentVar.createScalarValueFromDataType();
+
             self.parentVar.tmpDisableTimeseriesRec = true;
-            newDatType.setValue(scalar);
+            newVar.fromJS(globalVar);
+            newVar.initValue();
+            var newVarValue = newVar.createScalarValueFromDataType();
+            newVar.value().setValue(newVarValue);
             self.parentVar.tmpDisableTimeseriesRec = false;
-            return newDatType;
+            return newVar;
         });
+        return arrValues
     }
-    else if (data instanceof GlobalVarValueStructure) {
-        var arrValues = jQuery.map(data.value(), function (scalar) {
-            var newDatType = self.parentVar.createScalarValueFromDataType();
-            self.parentVar.tmpDisableTimeseriesRec = true;
-            newDatType.setValue(scalar);
-            self.parentVar.tmpDisableTimeseriesRec = false;
-            return newDatType;
-        });
-    }
-    else {
-        var newDatType = self.parentVar.createScalarValueFromDataType();
-        self.parentVar.tmpDisableTimeseriesRec = true;
-        newDatType.setValue(data);
-        self.parentVar.tmpDisableTimeseriesRec = false;
-        var arrValues = [newDatType];
-    }
-    return arrValues;
+
 };
 
 /**
@@ -1130,62 +1121,6 @@ GlobalVarValueStructure.prototype.toString = function () {
 
 
 
-
-
-
-////////////////////  GlobalVarValueStructure  ///////////////////////////////////
-
-GlobalVarValueStructure = function (parentVar) {
-    var self = this;
-    this.parentVar = parentVar;
-    this.value = ko.observable(null);
-    this.value.subscribe(function () {
-        self.parentVar.notifyValueChanged();
-    });
-};
-
-/**
- * modify the value either by a supplying a globalVarValue instance or a javascript string or number
- * @param data
- */
-GlobalVarValueStructure.prototype.setValue = function (data) {
-
-};
-
-GlobalVarValueStructure.prototype.getValue = function () {
-    return this.toJS();
-};
-
-/**
- * load from a json object to deserialize the states.
- * @param {object} data - the json description of the states.
- * @returns {GlobalVar}
- */
-GlobalVarValueStructure.prototype.fromJS = function (data) {
-    this.value(data);
-};
-
-/**
- * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
- * @returns {object}
- */
-GlobalVarValueStructure.prototype.toJS = function () {
-    return this.value();
-};
-
-
-/**
- * return string representation of value
- * @returns {object}
- */
-GlobalVarValueStructure.prototype.toString = function () {
-    if (this.value() != null) {
-        return this.value().toString();
-    }
-    else {
-        return null;
-    }
-};
 
 ////////////////////  GlobalVarValueUndefined  ///////////////////////////////////
 
