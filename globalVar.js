@@ -207,10 +207,6 @@ GlobalVar.prototype.resetStartValue = function () {
 
 GlobalVar.prototype.createScalarValueFromDataType = function () {
 
-    if (this.dataFormat() === 'structure') {
-        return new GlobalVarValueArray(this);
-    }
-
     switch (this.dataType()) {
         case 'string':
             return new GlobalVarValueString(this);
@@ -229,7 +225,7 @@ GlobalVar.prototype.createScalarValueFromDataType = function () {
         case 'timer':
             return new GlobalVarValueTimer(this);
         case 'structure':
-            return new GlobalVarValueStructure(this);
+            return new GlobalVar(this.expData);
         case 'undefined':
             return new GlobalVarValueUndefined(this);
     }
@@ -384,7 +380,10 @@ GlobalVar.prototype.getValue = function () {
  * @param valueObj
  */
 GlobalVar.prototype.setValue = function (valueObj) {
+
     this.value().setValue(valueObj);
+
+
 };
 
 GlobalVar.prototype.addLevel = function () {
