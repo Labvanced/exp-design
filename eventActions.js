@@ -464,6 +464,10 @@ var ActionSetProp = function (event) {
 
 ActionSetProp.prototype.type = "ActionSetProp";
 ActionSetProp.prototype.label = "Set Object Property";
+ActionSetProp.prototype.addExsitedElements = function(){
+    var counter = this.existedElements() + 1;
+    this.existedElements(counter);
+}
 
 ActionSetProp.prototype.isValid = function () {
     return true;
@@ -538,7 +542,7 @@ ActionSetProp.prototype.toJS = function () {
     return {
         type: this.type,
         refToObjectProperty: this.refToObjectProperty.toJS(),
-        operand: this.operand.toJS()
+        operand: this.operand.toJS(),
     };
 };
 
