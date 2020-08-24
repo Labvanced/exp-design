@@ -457,16 +457,26 @@ ActionSetElementPropChange.prototype.toJS = function () {
 var ActionSetProp = function (event) {
     this.event = event;
 
+    //Console logs are just for temp, will be remove in the final version
+    console.log(event);
+    console.log(event.actions._latestValue);
     // serialized
     this.refToObjectProperty = new RefToObjectProperty(event);
     this.operand = new OperandVariable(event);
+    this.refsToObjectProperty = ko.observableArray([new RefToObjectProperty(event)]);
 };
 
 ActionSetProp.prototype.type = "ActionSetProp";
-ActionSetProp.prototype.label = "Set Object Property";
+ActionSetProp.prototype.label = "Set Object Property"
 ActionSetProp.prototype.addExsitedElements = function(){
-    var counter = this.existedElements() + 1;
-    this.existedElements(counter);
+    // This loop is just a temporarly solution, it won't be in the final version of the code.
+    if(this.action.refsToObjectProperty()){
+        this.action.refsToObjectProperty.push(new RefToObjectProperty(this.action.event));
+    }
+    else{
+        this.action.refsToObjectProperty = ko.observableArray([new RefToObjectProperty(this.action.event)]);
+    }
+    console.log(this.action.refsToObjectProperty().length);  
 }
 
 ActionSetProp.prototype.isValid = function () {
@@ -529,8 +539,10 @@ ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
  * @returns {ActionSetProp}
  */
 ActionSetProp.prototype.fromJS = function (data) {
+    // FROM JS cost the error and the whole funtionality is broken.
+    // this.refsToObjectProperty.fromJS(data.refsToObjectProperty);
     this.refToObjectProperty.fromJS(data.refToObjectProperty);
-    this.operand.fromJS(data.operand);
+    this.operand.fromJS(data.operand); 
     return this;
 };
 
@@ -543,6 +555,7 @@ ActionSetProp.prototype.toJS = function () {
         type: this.type,
         refToObjectProperty: this.refToObjectProperty.toJS(),
         operand: this.operand.toJS(),
+        refsToObjectProperty: this.refsToObjectProperty()
     };
 };
 
