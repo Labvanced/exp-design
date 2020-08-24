@@ -96,6 +96,8 @@ var PublishingData = function (experiment) {
     this.calibrationImgType = ko.observable('dots');
     this.calibrationType = ko.observable("medium");
     this.calibrationInfantFriendly = ko.observable(false);
+    this.calibrationPlaySounds = ko.observable(false);
+    this.calibrationShowGrid = ko.observable(true);
 
 
     this.recruitingEnabled = ko.computed(function () {
@@ -460,6 +462,13 @@ PublishingData.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('calibrationInfantFriendly')) {
         this.calibrationInfantFriendly(data.calibrationInfantFriendly);
     }
+    if (data.hasOwnProperty('calibrationPlaySounds')) {
+        this.calibrationPlaySounds(data.calibrationPlaySounds);
+    }
+    if (data.hasOwnProperty('calibrationShowGrid')) {
+        this.calibrationShowGrid(data.calibrationShowGrid);
+    }
+
 
 };
 
@@ -661,7 +670,11 @@ PublishingData.prototype.toJS = function () {
         eyetrackingVersion: this.eyetrackingVersion(),
         calibrationImgType: this.calibrationImgType(),
         calibrationType: this.calibrationType(),
-        calibrationInfantFriendly: this.calibrationInfantFriendly()
+        calibrationInfantFriendly: this.calibrationInfantFriendly(),
+
+        calibrationPlaySounds: this.calibrationPlaySounds(),
+        calibrationShowGrid: this.calibrationShowGrid(),
+
 
     };
 };
