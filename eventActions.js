@@ -622,6 +622,7 @@ ActionSetProp.prototype.toJS = function () {
         refToObjectProperty: this.refToObjectProperty.toJS(),
         operand: this.operand.toJS(),
         // refsToObjectProperty: JSON.stringify(refsToObjectProperty)
+        refsToObjectProperty: refsToObjectProperty
     };
 };
 
