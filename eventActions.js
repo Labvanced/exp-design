@@ -463,20 +463,30 @@ var ActionSetProp = function (event) {
     // serialized
     this.refToObjectProperty = new RefToObjectProperty(event);
     this.operand = new OperandVariable(event);
-    this.refsToObjectProperty = ko.observableArray([new RefToObjectProperty(event)]);
+    //Initially it will be this.refsToObjectProperty = ko.observableArray([new RefToObjectProperty(event)]); however somehow at this
+    // it keep crashing with it.
+    this.refsToObjectProperty = ko.observableArray([]);
 };
 
 ActionSetProp.prototype.type = "ActionSetProp";
 ActionSetProp.prototype.label = "Set Object Property"
-ActionSetProp.prototype.addExsitedElements = function(){
+ActionSetProp.prototype.addProperty = function(){
+    // Temp Console Log to understand this in this funtion
+    console.log(this)
+    var newRefToObjectProperty = new RefToObjectProperty(this.action.event);
+    // Temp Console Log to understand newRefToObjectProperty 
+    console.log('newRefToObjectProperty');
+    console.log(newRefToObjectProperty);
+    this.action.refsToObjectProperty.push(newRefToObjectProperty);
+
     // This loop is just a temporarly solution, it won't be in the final version of the code.
-    if(this.action.refsToObjectProperty()){
-        this.action.refsToObjectProperty.push(new RefToObjectProperty(this.action.event));
-    }
-    else{
-        this.action.refsToObjectProperty = ko.observableArray([new RefToObjectProperty(this.action.event)]);
-    }
-    console.log(this.action.refsToObjectProperty().length);  
+    // if(this.action.refsToObjectProperty()){
+    //     this.action.refsToObjectProperty.push(new RefToObjectProperty(this.action.event));
+    // }
+    // else{
+    //     this.action.refsToObjectProperty = ko.observableArray([new RefToObjectProperty(this.action.event)]);
+    // }
+    // console.log(this.action.refsToObjectProperty().length);  
 }
 
 ActionSetProp.prototype.isValid = function () {
@@ -487,6 +497,7 @@ ActionSetProp.prototype.isValid = function () {
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  */
 ActionSetProp.prototype.setVariableBackRef = function () {
+    variable.addBackRef(this, this.event, false, true, 'Action Set Prop');
 };
 
 /**
@@ -505,6 +516,10 @@ ActionSetProp.prototype.run = function (triggerParams) {
  * @param playerFrame
  */
 ActionSetProp.prototype.destroyOnPlayerFrame = function (playerFrame) {
+    var refsToObjectProperty = this.refsToObjectProperty();
+    for (var i = 0; i < refsToObjectProperty.length; i++) {
+        refsToObjectProperty[i].setPointers(entitiesArr);
+    }
 };
 
 /**
@@ -517,6 +532,11 @@ ActionSetProp.prototype.destroyOnPlayerFrame = function (playerFrame) {
 ActionSetProp.prototype.setPointers = function (entitiesArr) {
     this.refToObjectProperty.setPointers(entitiesArr);
     this.operand.setPointers(entitiesArr);
+
+    var refsToObjectProperty = this.refsToObjectProperty();
+    for (var i = 0; i < refsToObjectProperty.length; i++) {
+        refsToObjectProperty[i].setPointers(entitiesArr);
+    }
 };
 
 /**
@@ -531,6 +551,15 @@ ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
     if (this.refToObjectProperty && this.refToObjectProperty.reAddEntities) {
         this.refToObjectProperty.reAddEntities(entitiesArr);
     }
+    var refsToObjectProperty = this.refsToObjectProperty();
+    for (var i = 0; i < refsToObjectProperty.length; i++) {
+        var variable = refsToObjectProperty[i].variable();
+        if (variable) {
+            if (!entitiesArr.byId.hasOwnProperty(variable.id())) {
+                entitiesArr.push(variable);
+            }
+        }
+    }
 };
 
 /**
@@ -541,6 +570,29 @@ ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
 ActionSetProp.prototype.fromJS = function (data) {
     // FROM JS cost the error and the whole funtionality is broken.
     // this.refsToObjectProperty.fromJS(data.refsToObjectProperty);
+    var refsToObjectProperty = [];
+    // This consol logs are temporarly there are here to understand how the fromJS works
+    console.log('DATA + THIS')
+    console.log(data);
+    console.log(this);
+    console.log(this.refsToObjectProperty());
+    for (var i = 0; i < this.refsToObjectProperty().length; i++) {
+        console.log("Done for");
+        var tmp = this.refsToObjectProperty()[i];
+        console.log("TMP");
+        console.log(tmp);
+       
+        var obj = new RefToObjectProperty(this.event);
+        console.log("done RefToObjectProerty");
+        obj.fromJS(tmp);
+        refsToObjectProperty.push(obj);
+    }
+
+    console.log('TABLICA - ARRAY');
+    console.log(refsToObjectProperty);
+
+    this.refsToObjectProperty(refsToObjectProperty);
+
     this.refToObjectProperty.fromJS(data.refToObjectProperty);
     this.operand.fromJS(data.operand); 
     return this;
@@ -551,11 +603,25 @@ ActionSetProp.prototype.fromJS = function (data) {
  * @returns {object}
  */
 ActionSetProp.prototype.toJS = function () {
+    var refsToObjectProperty = [];
+    var origChanges = this.refsToObjectProperty();
+    //Temp consol logs to understand how the toJS works
+    console.log("origChanges");
+    console.log(origChanges);
+    for (var i = 0; i < origChanges.length; i++) {
+        var obj = origChanges[i].toJS();
+        console.log(origChanges[i]);
+        refsToObjectProperty.push(obj);
+    }
+    //This console log return what refs... after loop.
+    console.log('po petli - after loop');
+    console.log(refsToObjectProperty);    
+
     return {
         type: this.type,
         refToObjectProperty: this.refToObjectProperty.toJS(),
         operand: this.operand.toJS(),
-        refsToObjectProperty: this.refsToObjectProperty()
+        // refsToObjectProperty: JSON.stringify(refsToObjectProperty)
     };
 };
 
