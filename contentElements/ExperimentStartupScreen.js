@@ -776,7 +776,7 @@ ExperimentStartupScreen.prototype.startExp = function () {
     setTimeout(function () {
         $("#sectionPreload").hide();
         player.startExperimentContinue();
-    }, 5000);
+    }, 2000);
 
 };
 
