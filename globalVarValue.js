@@ -1015,7 +1015,6 @@ GlobalVarValueStructure.prototype.convert = function (data) {
         return [];
     }
 
-
     if (data instanceof Array) {
         var arrValues = jQuery.map(data, function (globalVar) {
             return self.parentVar.createScalarValueFromDataType().fromJS(globalVar);
