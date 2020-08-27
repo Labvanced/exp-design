@@ -482,19 +482,19 @@ OperandVariable.prototype.getValue = function (parameters) {
                     }
                     else {
 
-                        console.error("wrong indexing trying to access array");
+                        console.error("wrong indexing trying to access structure");
                         return null;
                     }
 
                 }
                 else {
-                    console.error("wrong indexing trying to access array");
+                    console.error("wrong indexing trying to access structure");
                     return null;
                 }
 
             }
             else {
-                console.error("wrong indexing trying to access array");
+                console.error("wrong indexing trying to access structure");
                 return null;
             }
 
