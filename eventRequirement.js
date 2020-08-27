@@ -471,9 +471,14 @@ OperandVariable.prototype.getValue = function (parameters) {
 
         case "structvalue":
             var structVariable = value.param1.getValue(parameters);
+            if (!Array.isArray(structVariable)) {
+                console.error("wrong structure variable");
+                return null;
+            }
             var rowIndex = value.param2.getValue(parameters) - 1;
             var colIndex = value.param3.getValue(parameters) - 1;
             if (rowIndex >= 0 && colIndex >= 0) {
+
                 var variable = structVariable[rowIndex];
                 if (variable) {
                     var colVar = variable.getValue()[colIndex];
