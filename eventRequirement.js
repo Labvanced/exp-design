@@ -367,7 +367,7 @@ OperandVariable.prototype.label = "Operand";
 OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean", "constantDate", "constantTime", "constantCategorical", "constantColor", "eyetracking"];
 OperandVariable.prototype.unaryOperandTypes = ["abs", "round0decimal", "round1decimal", "round2decimals", "round3decimals", "floor", "ceil", "sqrt", "toLowercase", "toUppercase", "removeSpaces", "trimSpaces"];
 OperandVariable.prototype.binaryOperandTypes = ["arithmetic", "arrayvalue"];
-OperandVariable.prototype.ternaryOperandTypes = ["strReplace"];
+OperandVariable.prototype.ternaryOperandTypes = ["strReplace", "structvalue"];
 OperandVariable.prototype.operandTypes = OperandVariable.prototype.nullaryOperandTypes.concat(OperandVariable.prototype.unaryOperandTypes, OperandVariable.prototype.binaryOperandTypes, OperandVariable.prototype.ternaryOperandTypes);
 OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
 
@@ -467,7 +467,37 @@ OperandVariable.prototype.getValue = function (parameters) {
             if ($.isNumeric(right)) {
                 right = parseInt(right);
             }
-            return left[right]
+            return left[right];
+
+        case "structvalue":
+            var structVariable = value.param1.getValue(parameters);
+            var rowIndex = value.param2.getValue(parameters) - 1;
+            var colIndex = value.param3.getValue(parameters) - 1;
+            if (rowIndex >= 0 && colIndex >= 0) {
+                var variable = structVariable[rowIndex];
+                if (variable) {
+                    var colVar = variable.getValue()[colIndex];
+                    if (colVar) {
+                        return colVar.getValue();
+                    }
+                    else {
+
+                        console.error("wrong indexing trying to access array");
+                        return null;
+                    }
+
+                }
+                else {
+                    console.error("wrong indexing trying to access array");
+                    return null;
+                }
+
+            }
+            else {
+                console.error("wrong indexing trying to access array");
+                return null;
+            }
+
         case "variable":
             return value.getValue();
         case "objProperty":
