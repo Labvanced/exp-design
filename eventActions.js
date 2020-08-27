@@ -457,9 +457,6 @@ ActionSetElementPropChange.prototype.toJS = function () {
 var ActionSetProp = function (event) {
     this.event = event;
 
-    //Console logs are just for temp, will be remove in the final version
-    console.log(event);
-    console.log(event.actions._latestValue);
     // serialized
     this.refToObjectProperty = new RefToObjectProperty(event);
     this.operand = new OperandVariable(event);
@@ -470,23 +467,9 @@ var ActionSetProp = function (event) {
 
 ActionSetProp.prototype.type = "ActionSetProp";
 ActionSetProp.prototype.label = "Set Object Property"
-ActionSetProp.prototype.addProperty = function(){
-    // Temp Console Log to understand this in this funtion
-    console.log(this)
+ActionSetProp.prototype.addProperty = function () {
     var newRefToObjectProperty = new RefToObjectProperty(this.action.event);
-    // Temp Console Log to understand newRefToObjectProperty 
-    console.log('newRefToObjectProperty');
-    console.log(newRefToObjectProperty);
-    this.action.refsToObjectProperty.push(newRefToObjectProperty);
-
-    // This loop is just a temporarly solution, it won't be in the final version of the code.
-    // if(this.action.refsToObjectProperty()){
-    //     this.action.refsToObjectProperty.push(new RefToObjectProperty(this.action.event));
-    // }
-    // else{
-    //     this.action.refsToObjectProperty = ko.observableArray([new RefToObjectProperty(this.action.event)]);
-    // }
-    // console.log(this.action.refsToObjectProperty().length);  
+    this.action.refsToObjectProperty.push(new RefToObjectProperty(this.action.event));
 }
 
 ActionSetProp.prototype.isValid = function () {
@@ -509,6 +492,61 @@ ActionSetProp.prototype.setVariableBackRef = function () {
 ActionSetProp.prototype.run = function (triggerParams) {
     var rValue = this.operand.getValue(triggerParams);
     this.refToObjectProperty.setValue(rValue);
+
+    //THIS PART DOESN'T WORK! there is a issue with the target and modifier.
+    var refsToObjectProperty = this.refsToObjectProperty();
+    var target = this.target();
+
+    for (var i = 0; i < refsToObjectProperty.length; i++) {
+        var property = refsToObjectProperty[i].property();
+        var operatorType = refsToObjectProperty[i].operatorType();
+        var changeType = refsToObjectProperty[i].changeType();
+        var variable = refsToObjectProperty[i].variable();
+
+        // make sure to calculate on numeric
+        var value = refsToObjectProperty[i].value;
+
+        // var oldValue = target[property]();
+        var oldValue = target.modifier().selectedTrialView[property]();
+
+        if (typeof oldValue === 'string') {
+            oldValue = Number(oldValue);
+        }
+        if (typeof value === 'string') {
+            value = Number(value);
+        }
+
+        var newValue;
+        var changeValue;
+
+        if (changeType == 'value') {
+            changeValue = value;
+        }
+        else if (changeType == '%') {
+            changeValue = (oldValue * (value / 100));
+        }
+        else if (changeType == 'variable') {
+            changeValue = parseFloat(variable.value().value());
+        }
+
+        if (operatorType == '=') {
+            newValue = changeValue;
+        }
+        else if (operatorType == '+') {
+            newValue = oldValue + changeValue;
+        }
+        else if (operatorType == '-') {
+            newValue = oldValue - changeValue;
+        }
+        else if (operatorType == '*') {
+            newValue = oldValue * changeValue;
+        }
+        else if (operatorType == '/') {
+            newValue = oldValue / changeValue;
+        }
+
+        target.modifier().selectedTrialView[property](newValue);
+    }
 };
 
 /**
@@ -516,10 +554,6 @@ ActionSetProp.prototype.run = function (triggerParams) {
  * @param playerFrame
  */
 ActionSetProp.prototype.destroyOnPlayerFrame = function (playerFrame) {
-    var refsToObjectProperty = this.refsToObjectProperty();
-    for (var i = 0; i < refsToObjectProperty.length; i++) {
-        refsToObjectProperty[i].setPointers(entitiesArr);
-    }
 };
 
 /**
@@ -553,7 +587,7 @@ ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
     }
     var refsToObjectProperty = this.refsToObjectProperty();
     for (var i = 0; i < refsToObjectProperty.length; i++) {
-        var variable = refsToObjectProperty[i].variable();
+        var variable = refsToObjectProperty[i].variable;
         if (variable) {
             if (!entitiesArr.byId.hasOwnProperty(variable.id())) {
                 entitiesArr.push(variable);
@@ -568,33 +602,16 @@ ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
  * @returns {ActionSetProp}
  */
 ActionSetProp.prototype.fromJS = function (data) {
-    // FROM JS cost the error and the whole funtionality is broken.
-    // this.refsToObjectProperty.fromJS(data.refsToObjectProperty);
     var refsToObjectProperty = [];
-    // This consol logs are temporarly there are here to understand how the fromJS works
-    console.log('DATA + THIS')
-    console.log(data);
-    console.log(this);
-    console.log(this.refsToObjectProperty());
-    for (var i = 0; i < this.refsToObjectProperty().length; i++) {
-        console.log("Done for");
-        var tmp = this.refsToObjectProperty()[i];
-        console.log("TMP");
-        console.log(tmp);
-       
+    for (var i = 0; i < data.refsToObjectProperty.length; i++) {
+        var tmp = data.refsToObjectProperty[i];
         var obj = new RefToObjectProperty(this.event);
-        console.log("done RefToObjectProerty");
         obj.fromJS(tmp);
         refsToObjectProperty.push(obj);
     }
-
-    console.log('TABLICA - ARRAY');
-    console.log(refsToObjectProperty);
-
     this.refsToObjectProperty(refsToObjectProperty);
-
     this.refToObjectProperty.fromJS(data.refToObjectProperty);
-    this.operand.fromJS(data.operand); 
+    this.operand.fromJS(data.operand);
     return this;
 };
 
@@ -603,25 +620,22 @@ ActionSetProp.prototype.fromJS = function (data) {
  * @returns {object}
  */
 ActionSetProp.prototype.toJS = function () {
-    var refsToObjectProperty = [];
     var origChanges = this.refsToObjectProperty();
-    //Temp consol logs to understand how the toJS works
-    console.log("origChanges");
-    console.log(origChanges);
+    var refsToObjectProperty = [];
     for (var i = 0; i < origChanges.length; i++) {
         var obj = origChanges[i].toJS();
-        console.log(origChanges[i]);
         refsToObjectProperty.push(obj);
     }
-    //This console log return what refs... after loop.
-    console.log('po petli - after loop');
-    console.log(refsToObjectProperty);    
+    var targetId = null;
+    if (this.target) {
+        targetId = this.target.id();
+    }
 
     return {
         type: this.type,
+        target: targetId,
         refToObjectProperty: this.refToObjectProperty.toJS(),
         operand: this.operand.toJS(),
-        // refsToObjectProperty: JSON.stringify(refsToObjectProperty)
         refsToObjectProperty: refsToObjectProperty
     };
 };
