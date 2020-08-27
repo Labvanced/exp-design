@@ -1015,21 +1015,13 @@ GlobalVarValueStructure.prototype.convert = function (data) {
         return [];
     }
 
-
     if (data instanceof Array) {
         var arrValues = jQuery.map(data, function (globalVar) {
-            jQuery.each()
-            var newVar = self.parentVar.createScalarValueFromDataType();
-
-            self.parentVar.tmpDisableTimeseriesRec = true;
-            newVar.fromJS(globalVar);
-            newVar.initValue();
-            var newVarValue = newVar.createScalarValueFromDataType();
-            newVar.value().setValue(newVarValue);
-            self.parentVar.tmpDisableTimeseriesRec = false;
-            return newVar;
+            return self.parentVar.createScalarValueFromDataType().fromJS(globalVar);
         });
         return arrValues
+    } else {
+        return []
     }
 
 };
@@ -1096,8 +1088,8 @@ GlobalVarValueStructure.prototype.fromJS = function (data) {
 GlobalVarValueStructure.prototype.toJS = function () {
     var self = this;
     var arrValuesJS = [];
-    this.value().forEach(function (scalar) {
-        arrValuesJS.push(scalar.toJS());
+    this.value().forEach(function (globalVar) {
+        arrValuesJS.push(globalVar.toJS());
     });
     return arrValuesJS;
 };
