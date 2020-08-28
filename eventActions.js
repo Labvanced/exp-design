@@ -686,13 +686,13 @@ ActionSelectFromArray.prototype.removeOutVariable = function () {
  */
 ActionSelectFromArray.prototype.run = function (triggerParams) {
     if (this.InsertOption() == 'fixed') {
-        var index = parseInt(this.indexFixedVal()) - 1;
+        var index = parseInt(this.indexFixedVal());
     }
     else if (this.InsertOption() == 'end') {
-        var index = this.inVarArr().value().value().length - 1;
+        var index = this.inVarArr().value().value().length;
     }
     else {
-        var index = parseInt(this.inVarIndex().value().value()) - 1;
+        var index = parseInt(this.inVarIndex().value().value());
     }
 
     var value = this.inVarArr().value().getValueAt(index);

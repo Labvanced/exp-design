@@ -367,7 +367,7 @@ OperandVariable.prototype.label = "Operand";
 OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean", "constantDate", "constantTime", "constantCategorical", "constantColor", "eyetracking"];
 OperandVariable.prototype.unaryOperandTypes = ["abs", "round0decimal", "round1decimal", "round2decimals", "round3decimals", "floor", "ceil", "sqrt", "toLowercase", "toUppercase", "removeSpaces", "trimSpaces"];
 OperandVariable.prototype.binaryOperandTypes = ["arithmetic", "arrayvalue"];
-OperandVariable.prototype.ternaryOperandTypes = ["strReplace", "structvalue"];
+OperandVariable.prototype.ternaryOperandTypes = ["strReplace", "dataframevalue"];
 OperandVariable.prototype.operandTypes = OperandVariable.prototype.nullaryOperandTypes.concat(OperandVariable.prototype.unaryOperandTypes, OperandVariable.prototype.binaryOperandTypes, OperandVariable.prototype.ternaryOperandTypes);
 OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
 
@@ -417,7 +417,6 @@ OperandVariable.prototype.getValue = function (parameters) {
                 if (right.hasOwnProperty('parentVar')) {
                     right = right.toJS();
                 }
-
             }
 
             if ($.isNumeric(right)) {
@@ -450,38 +449,50 @@ OperandVariable.prototype.getValue = function (parameters) {
             }
             return null;
         case "arrayvalue":
-            var left = value.left.getValue(parameters);
-            var right = value.right.getValue(parameters);
+            var arrVarValue = value.left.getValue(parameters);
+            var arrIndex = value.right.getValue(parameters);
 
-            if (left != null) {
-                if (left.hasOwnProperty('parentVar')) {
-                    left = left.toJS();
-                }
-            }
-            if (right != null) {
-                if (right.hasOwnProperty('parentVar')) {
-                    right = right.toJS();
-                }
-
-            }
-            if ($.isNumeric(right)) {
-                right = parseInt(right);
-            }
-            return left[right];
-
-        case "structvalue":
-            var structVariable = value.param1.getValue(parameters);
-            if (!Array.isArray(structVariable)) {
-                console.error("wrong structure variable");
+            if (!(arrVarValue instanceof GlobalVarValueArray)) {
+                console.error("wrong array variable type");
                 return null;
             }
-            // TODO @ Holger all numeric system global vars such as subjCounterGlobal which could be used as indices for structure/dataframe,
-            // shoudld be initialized with 1 not zero. The fixe below is a big ugly.
-            var colIndex = Math.max(value.param2.getValue(parameters) - 1, 0);
-            var rowIndex = Math.max(value.param3.getValue(parameters) - 1, 0);
 
-            //var rotating_index = colIndex % structVariable.length;
-            var variable = structVariable[colIndex];
+            if (arrIndex != null) {
+                if (arrIndex.hasOwnProperty('parentVar')) {
+                    arrIndex = arrIndex.toJS();
+                }
+            }
+            if ($.isNumeric(arrIndex)) {
+                arrIndex = parseInt(arrIndex);
+            }
+            return arrVarValue.getValueAt(arrIndex);
+
+        case "dataframevalue":
+            var dfVarValue = value.param1.getValue(parameters);
+            if (!(dfVarValue instanceof GlobalVarValueDataFrame)) {
+                console.error("wrong dataframe variable");
+                return null;
+            }
+
+            var rowIndex = value.param2.getValue(parameters);
+            var colIndexOrName = value.param3.getValue(parameters);
+
+            if (rowIndex != null) {
+                if (rowIndex.hasOwnProperty('parentVar')) {
+                    rowIndex = rowIndex.toJS();
+                }
+            }
+            if (colIndexOrName != null) {
+                if (colIndexOrName.hasOwnProperty('parentVar')) {
+                    colIndexOrName = colIndexOrName.toJS();
+                }
+            }
+
+            var value = dfVarValue.getValueAt(rowIndex, colIndexOrName);
+            console.log("value: ", value)
+
+            /*
+            var variable = dfVarValue[colIndexOrName];
             if (variable) {
                 var rowVar = variable.getValue()[rowIndex];
                 if (rowVar) {
@@ -495,24 +506,24 @@ OperandVariable.prototype.getValue = function (parameters) {
                     } else {
                         return rowVar.getValue();
                     }
-
+    
                 }
                 else {
-
-                    console.error("wrong indexing trying to access structure");
+    
+                    console.error("wrong indexing trying to access dataframe");
                     return null;
                 }
-
+    
             }
             else {
-                console.error("wrong indexing trying to access structure");
+                console.error("wrong indexing trying to access dataframe");
                 return null;
-            }
+            }*/
 
 
-
+            return value;
         case "variable":
-            return value.getValue();
+            return value.value();
         case "objProperty":
             return this.operandValueOrObject().getValue();
         case "unixTimestamp":

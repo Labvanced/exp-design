@@ -162,6 +162,18 @@ GlobalVarValueFile = function (parentVar) {
     });
 };
 
+GlobalVarValueFile.prototype.name = function () {
+    return this.value().name();
+};
+
+GlobalVarValueFile.prototype.guid = function () {
+    return this.value().guid();
+};
+
+GlobalVarValueFile.prototype.id = function () {
+    return this.value().id();
+};
+
 GlobalVarValueFile.prototype.setName = function (name) {
     this.value().name(name);
     this.parentVar.notifyValueChanged();
@@ -919,7 +931,7 @@ GlobalVarValueArray.prototype.convert = function (data) {
  * @param data
  */
 GlobalVarValueArray.prototype.getValueAt = function (idx) {
-    return this.value()[idx];
+    return this.value()[idx - 1];
 };
 
 GlobalVarValueArray.prototype.getValues = function () {
@@ -998,9 +1010,9 @@ GlobalVarValueArray.prototype.toString = function () {
 
 
 
-////////////////////  GlobalVarValueStructure  ///////////////////////////////////
+////////////////////  GlobalVarValueDataFrame  ///////////////////////////////////
 
-GlobalVarValueStructure = function (parentVar) {
+GlobalVarValueDataFrame = function (parentVar) {
     var self = this;
     this.parentVar = parentVar;
     this.value = ko.observableArray([]);
@@ -1009,7 +1021,7 @@ GlobalVarValueStructure = function (parentVar) {
     });
 };
 
-GlobalVarValueStructure.prototype.convert = function (data) {
+GlobalVarValueDataFrame.prototype.convert = function (data) {
     var self = this;
     if (data === null) {
         return [];
@@ -1017,7 +1029,7 @@ GlobalVarValueStructure.prototype.convert = function (data) {
 
     if (data instanceof Array) {
         var arrValues = jQuery.map(data, function (globalVar) {
-            return self.parentVar.createScalarValueFromDataType().fromJS(globalVar);
+            return self.createSubVar().fromJS(globalVar);
         });
         return arrValues
     } else {
@@ -1026,20 +1038,57 @@ GlobalVarValueStructure.prototype.convert = function (data) {
 
 };
 
+GlobalVarValueDataFrame.prototype.getColumnByIndex = function (col_idx) {
+    return this.value()[col_idx].value();
+};
+
+GlobalVarValueDataFrame.prototype.getColumnByName = function (col_name) {
+    var foundSubVar = null;
+    jQuery.each(this.value(), function (index, elem) {
+        if (elem.name() == col_name) {
+            foundSubVar = elem;
+        }
+    });
+    return foundSubVar;
+};
+
+GlobalVarValueDataFrame.prototype.isInt = function (value) {
+    return !isNaN(value) &&
+        parseInt(Number(value)) == value &&
+        !isNaN(parseInt(value, 10));
+};
+
 /**
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueStructure.prototype.getValueAt = function (idx) {
-    return this.value()[idx];
+GlobalVarValueDataFrame.prototype.getValueAt = function (rowIdx, colIdxOrName) {
+    // first find column:
+    var colVar = null;
+    if (this.isInt(colIdxOrName)) {
+        var colIdx = parseInt(Number(colIdxOrName))
+        colVar = this.value()[colIdx - 1];
+    }
+
+    // if not found by index, try by name
+    if (!colVar) {
+        colVar = this.getColumnByName(colIdxOrName);
+    }
+
+    if (colVar) {
+        return colVar.value().getValueAt(rowIdx);
+    }
+    else {
+        return null;
+    }
 };
 
-GlobalVarValueStructure.prototype.getValues = function () {
+GlobalVarValueDataFrame.prototype.getValues = function () {
     return this.getValue();
 };
 
 
-GlobalVarValueStructure.prototype.setValueAt = function (idx, val) {
+GlobalVarValueDataFrame.prototype.setValueAt = function (idx, val) {
     this.value()[idx].value(val);
 };
 
@@ -1048,17 +1097,24 @@ GlobalVarValueStructure.prototype.setValueAt = function (idx, val) {
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueStructure.prototype.pushValue = function (scalarData) {
-    var newScalar = this.parentVar.createScalarValueFromDataType();
-    newScalar.setValue(scalarData);
-    this.value.push(newScalar);
+GlobalVarValueDataFrame.prototype.pushValue = function (scalarData) {
+    var newSubVar = this.createSubVar();
+    newSubVar.setValue(scalarData);
+    this.value.push(newSubVar);
+};
+
+/**
+ * create a new sub varibale
+ */
+GlobalVarValueDataFrame.prototype.createSubVar = function () {
+    return new GlobalVar(this.parentVar.expData);
 };
 
 /**
  * modify the value either by a supplying a globalVarValue instance or a javascript string or number
  * @param data
  */
-GlobalVarValueStructure.prototype.setValue = function (data) {
+GlobalVarValueDataFrame.prototype.setValue = function (data) {
     if (data && data.hasOwnProperty("parentVar") && typeof data.parentVar == "GlobalVar") {
         data = data.toJS();
     }
@@ -1068,7 +1124,7 @@ GlobalVarValueStructure.prototype.setValue = function (data) {
     this.value(this.convert(data));
 };
 
-GlobalVarValueStructure.prototype.getValue = function () {
+GlobalVarValueDataFrame.prototype.getValue = function () {
     return this.toJS();
 };
 
@@ -1077,7 +1133,7 @@ GlobalVarValueStructure.prototype.getValue = function () {
  * @param {object} data - the json description of the states.
  * @returns {GlobalVar}
  */
-GlobalVarValueStructure.prototype.fromJS = function (data) {
+GlobalVarValueDataFrame.prototype.fromJS = function (data) {
     this.value(this.convert(data));
 };
 
@@ -1085,7 +1141,7 @@ GlobalVarValueStructure.prototype.fromJS = function (data) {
  * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
  * @returns {object}
  */
-GlobalVarValueStructure.prototype.toJS = function () {
+GlobalVarValueDataFrame.prototype.toJS = function () {
     var self = this;
     var arrValuesJS = [];
     this.value().forEach(function (globalVar) {
@@ -1099,7 +1155,7 @@ GlobalVarValueStructure.prototype.toJS = function () {
  * @returns {object}
  */
 
-GlobalVarValueStructure.prototype.toString = function () {
+GlobalVarValueDataFrame.prototype.toString = function () {
     if (this.value() != null) {
         var arrValuesString = jQuery.map(this.value(), function (scalar) {
             return scalar.toString();

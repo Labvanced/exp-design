@@ -10,7 +10,6 @@
 var GlobalVar = function (expData) {
     var self = this;
     this.expData = expData;
-    this.dataTypes_Refactored = ko.observableArray(this.refactorDataTypes());
 
     // serialized:
     this.id = ko.observable(guid());
@@ -74,9 +73,57 @@ var GlobalVar = function (expData) {
 
 // enum definitions:
 GlobalVar.scales = ['nominal', 'ordinal', 'interval', 'ratio', 'undefined'];
-GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'time', 'timer', 'file', 'structure', 'undefined'];
+GlobalVar.dataTypes = ['string', 'numeric', 'boolean', 'categorical', 'datetime', 'time', 'timer', 'file', 'dataframe', 'undefined'];
+GlobalVar.dataTypesView = [
+    {
+        name: 'string',
+        viewName: 'String'
+    },
+    {
+        name: 'numeric',
+        viewName: 'Numeric'
+    },
+    {
+        name: 'boolean',
+        viewName: 'Boolean'
+    },
+    {
+        name: 'categorical',
+        viewName: 'Categorical'
+    },
+    {
+        name: 'datetime',
+        viewName: 'Date'
+    },
+    {
+        name: 'time',
+        viewName: 'Time'
+    },
+    {
+        name: 'file',
+        viewName: 'File'
+    },
+    {
+        name: 'undefined',
+        viewName: 'Undefined'
+    }
+];
 GlobalVar.scopes = ['subject', 'session', 'task', 'trial', 'undefined'];
-GlobalVar.dataFormats = ['scalar', 'array', 'structure'];
+GlobalVar.dataFormats = ['scalar', 'array', 'dataframe'];
+GlobalVar.dataFormatsView = [
+    {
+        name: 'scalar',
+        viewName: 'Scalar'
+    },
+    {
+        name: 'array',
+        viewName: 'Array'
+    },
+    {
+        name: 'dataframe',
+        viewName: 'Data Frame'
+    }
+];
 GlobalVar.depOrIndepVar = [true, false];
 GlobalVar.isRecorded = [true, false];
 GlobalVar.isUserWritable = [true, false];
@@ -93,12 +140,12 @@ GlobalVar.allowedScalePerDataType = {
     'time': ['ordinal', 'interval', 'ratio', 'undefined'],
     'timer': ['interval', 'ratio', 'undefined'],
     'file': ['nominal', 'undefined'],
-    'structure': ['undefined']
+    'dataframe': ['undefined']
 };
 
 // now create the inverted mapping:
 GlobalVar.allowedDataTypePerScale = {
-    'undefined': ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime', 'time', 'timer', 'file', 'structure'],
+    'undefined': ['undefined', 'string', 'numeric', 'boolean', 'categorical', 'datetime', 'time', 'timer', 'file', 'dataframe'],
     'nominal': ['string', 'boolean', 'categorical', 'file'],
     'ordinal': ['string', 'numeric', 'datetime', 'time'],
     'interval': ['numeric', 'datetime', 'time', 'timer'],
@@ -116,7 +163,7 @@ GlobalVar.iconPerDataType = {
     'time': "/resources/icons/variables/timer.svg",
     'timer': "/resources/icons/variables/stopwatch.svg",
     'file': "/resources/icons/variables/structure.svg",
-    'structure': "/resources/icons/variables/structure.svg"
+    'dataframe': "/resources/icons/variables/structure.svg"
 
 };
 GlobalVar.iconArrayPerDataType = {
@@ -129,35 +176,11 @@ GlobalVar.iconArrayPerDataType = {
     'time': "/resources/icons/variables/array/timer.svg",
     'timer': "/resources/icons/variables/array/stopwatch.svg",
     'file': "/resources/icons/variables/array/structure.svg",
-    'structure': "/resources/icons/variables/array/structure.svg"
-};
-
-GlobalVar.prototype.refactorDataTypes = function () {
-    var names = GlobalVar.dataTypes;
-    var out = [];
-    $.each(names, function (idx, value) {
-        if (value == "datetime") {
-            var obj = {
-                name: value,
-                viewName: "date"
-            };
-            out.push(obj)
-        }
-
-        else if (value != "timer") {
-            var obj = {
-                name: value,
-                viewName: value
-            };
-            out.push(obj)
-        }
-
-    });
-    return out;
+    'dataframe': "/resources/icons/variables/array/structure.svg"
 };
 
 GlobalVar.prototype.getIconPath = function () {
-    if (this.dataFormat() === "array" || this.dataFormat() === "structure") {
+    if (this.dataFormat() === "array" || this.dataFormat() === "dataframe") {
         return GlobalVar.iconArrayPerDataType[this.dataType()];
     }
     else {
@@ -224,8 +247,6 @@ GlobalVar.prototype.createScalarValueFromDataType = function () {
             return new GlobalVarValueTime(this);
         case 'timer':
             return new GlobalVarValueTimer(this);
-        case 'structure':
-            return new GlobalVar(this.expData);
         case 'undefined':
             return new GlobalVarValueUndefined(this);
     }
@@ -239,8 +260,8 @@ GlobalVar.prototype.createValueFromDataType = function () {
         //val.value.push(this.createScalarValueFromDataType());
         return val;
     }
-    else if (this.dataFormat() == "structure") {
-        var val = new GlobalVarValueStructure(this);
+    else if (this.dataFormat() == "dataframe") {
+        var val = new GlobalVarValueDataFrame(this);
         // add a first element to the empty array:
         //val.value.push(this.createScalarValueFromDataType());
         return val;
