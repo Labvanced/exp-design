@@ -458,17 +458,13 @@ var ActionSetProp = function (event) {
     this.event = event;
 
     // serialized
-    this.refToObjectProperty = new RefToObjectProperty(event);
     this.operand = new OperandVariable(event);
-    //Initially it will be this.refsToObjectProperty = ko.observableArray([new RefToObjectProperty(event)]); however somehow at this
-    // it keep crashing with it.
     this.refsToObjectProperty = ko.observableArray([]);
 };
 
 ActionSetProp.prototype.type = "ActionSetProp";
 ActionSetProp.prototype.label = "Set Object Property"
 ActionSetProp.prototype.addProperty = function () {
-    var newRefToObjectProperty = new RefToObjectProperty(this.action.event);
     this.action.refsToObjectProperty.push(new RefToObjectProperty(this.action.event));
 }
 
@@ -491,61 +487,9 @@ ActionSetProp.prototype.setVariableBackRef = function () {
  */
 ActionSetProp.prototype.run = function (triggerParams) {
     var rValue = this.operand.getValue(triggerParams);
-    this.refToObjectProperty.setValue(rValue);
 
-    //THIS PART DOESN'T WORK! there is a issue with the target and modifier.
-    var refsToObjectProperty = this.refsToObjectProperty();
-    var target = this.target();
-
-    for (var i = 0; i < refsToObjectProperty.length; i++) {
-        var property = refsToObjectProperty[i].property();
-        var operatorType = refsToObjectProperty[i].operatorType();
-        var changeType = refsToObjectProperty[i].changeType();
-        var variable = refsToObjectProperty[i].variable();
-
-        // make sure to calculate on numeric
-        var value = refsToObjectProperty[i].value;
-
-        // var oldValue = target[property]();
-        var oldValue = target.modifier().selectedTrialView[property]();
-
-        if (typeof oldValue === 'string') {
-            oldValue = Number(oldValue);
-        }
-        if (typeof value === 'string') {
-            value = Number(value);
-        }
-
-        var newValue;
-        var changeValue;
-
-        if (changeType == 'value') {
-            changeValue = value;
-        }
-        else if (changeType == '%') {
-            changeValue = (oldValue * (value / 100));
-        }
-        else if (changeType == 'variable') {
-            changeValue = parseFloat(variable.value().value());
-        }
-
-        if (operatorType == '=') {
-            newValue = changeValue;
-        }
-        else if (operatorType == '+') {
-            newValue = oldValue + changeValue;
-        }
-        else if (operatorType == '-') {
-            newValue = oldValue - changeValue;
-        }
-        else if (operatorType == '*') {
-            newValue = oldValue * changeValue;
-        }
-        else if (operatorType == '/') {
-            newValue = oldValue / changeValue;
-        }
-
-        target.modifier().selectedTrialView[property](newValue);
+    for (var i = 0; i < this.refsToObjectProperty().length; i++) {
+        this.refsToObjectProperty()[i].setValue(rValue);
     }
 };
 
@@ -564,7 +508,6 @@ ActionSetProp.prototype.destroyOnPlayerFrame = function (playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionSetProp.prototype.setPointers = function (entitiesArr) {
-    this.refToObjectProperty.setPointers(entitiesArr);
     this.operand.setPointers(entitiesArr);
 
     var refsToObjectProperty = this.refsToObjectProperty();
@@ -581,9 +524,6 @@ ActionSetProp.prototype.setPointers = function (entitiesArr) {
 ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
     if (this.operand && this.operand.reAddEntities) {
         this.operand.reAddEntities(entitiesArr);
-    }
-    if (this.refToObjectProperty && this.refToObjectProperty.reAddEntities) {
-        this.refToObjectProperty.reAddEntities(entitiesArr);
     }
     var refsToObjectProperty = this.refsToObjectProperty();
     for (var i = 0; i < refsToObjectProperty.length; i++) {
@@ -610,7 +550,6 @@ ActionSetProp.prototype.fromJS = function (data) {
         refsToObjectProperty.push(obj);
     }
     this.refsToObjectProperty(refsToObjectProperty);
-    this.refToObjectProperty.fromJS(data.refToObjectProperty);
     this.operand.fromJS(data.operand);
     return this;
 };
@@ -634,7 +573,6 @@ ActionSetProp.prototype.toJS = function () {
     return {
         type: this.type,
         target: targetId,
-        refToObjectProperty: this.refToObjectProperty.toJS(),
         operand: this.operand.toJS(),
         refsToObjectProperty: refsToObjectProperty
     };
