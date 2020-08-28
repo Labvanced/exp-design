@@ -475,24 +475,30 @@ OperandVariable.prototype.getValue = function (parameters) {
                 console.error("wrong structure variable");
                 return null;
             }
-            var rowIndex = value.param2.getValue(parameters) - 1;
-            var colIndex = value.param3.getValue(parameters) - 1;
-            if (rowIndex >= 0 && colIndex >= 0) {
+            // TODO @ Holger all numeric system global vars such as subjCounterGlobal which could be used as indices for structure/dataframe,
+            // shoudld be initialized with 1 not zero. The fixe below is a big ugly.
+            var colIndex = Math.max(value.param2.getValue(parameters) - 1, 0);
+            var rowIndex = Math.max(value.param3.getValue(parameters) - 1, 0);
 
-                var variable = structVariable[rowIndex];
-                if (variable) {
-                    var colVar = variable.getValue()[colIndex];
-                    if (colVar) {
-                        return colVar.getValue();
-                    }
-                    else {
-
-                        console.error("wrong indexing trying to access structure");
-                        return null;
+            //var rotating_index = colIndex % structVariable.length;
+            var variable = structVariable[colIndex];
+            if (variable) {
+                var rowVar = variable.getValue()[rowIndex];
+                if (rowVar) {
+                    if (rowVar instanceof GlobalVarValueFile) {
+                        var obj = rowVar.getValue();
+                        return {
+                            guid: ko.observable(obj["guid"]),
+                            id: ko.observable(obj["id"]),
+                            name: ko.observable(obj["name"]),
+                        };
+                    } else {
+                        return rowVar.getValue();
                     }
 
                 }
                 else {
+
                     console.error("wrong indexing trying to access structure");
                     return null;
                 }
@@ -502,6 +508,8 @@ OperandVariable.prototype.getValue = function (parameters) {
                 console.error("wrong indexing trying to access structure");
                 return null;
             }
+
+
 
         case "variable":
             return value.getValue();
