@@ -27,6 +27,7 @@ var ExpData = function (parentExperiment) {
     this.studySettings = new StudySettings(this.expData);
 
     this.translations = ko.observableArray([]);
+    this.translationsOfStaticTexts = ko.observableArray([]);
     this.translatedLanguages = ko.observableArray([]);
     this.languageTransferOption = ko.observable('empty');
 
@@ -548,6 +549,7 @@ ExpData.prototype.disableTranslations = function () {
 
         this.translatedLanguages([this.translatedLanguages()[0]]);
         this.translations([]);
+        this.translationsOfStaticTexts([]);
     }
 };
 
