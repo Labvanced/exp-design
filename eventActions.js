@@ -459,13 +459,27 @@ var ActionSetProp = function (event) {
 
     // serialized
     this.operand = new OperandVariable(event);
-    this.refsToObjectProperty = ko.observableArray([]);
+    this.operands = ko.observableArray([new OperandVariable(event)]);
+    this.refsToObjectProperty = ko.observableArray([new RefToObjectProperty(event)]);
 };
 
 ActionSetProp.prototype.type = "ActionSetProp";
 ActionSetProp.prototype.label = "Set Object Property"
 ActionSetProp.prototype.addProperty = function () {
+    this.action.operands.push(new OperandVariable(this.action.event));
     this.action.refsToObjectProperty.push(new RefToObjectProperty(this.action.event));
+}
+
+
+ActionSetProp.prototype.removeProperty = function (index) {
+    var operands = this.operands();
+    var refsToObjectProperty = this.refsToObjectProperty();
+
+    operands.splice(index, 1);
+    refsToObjectProperty.splice(index, 1);
+
+    this.operands(operands);
+    this.refsToObjectProperty(refsToObjectProperty);
 }
 
 ActionSetProp.prototype.isValid = function () {
@@ -486,9 +500,11 @@ ActionSetProp.prototype.setVariableBackRef = function () {
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionSetProp.prototype.run = function (triggerParams) {
-    var rValue = this.operand.getValue(triggerParams);
+    //var rValue = this.operand.getValue(triggerParams);
 
     for (var i = 0; i < this.refsToObjectProperty().length; i++) {
+        console.log(this.operands());
+        var rValue = this.operands()[i].getValue(triggerParams);
         this.refsToObjectProperty()[i].setValue(rValue);
     }
 };
@@ -508,11 +524,16 @@ ActionSetProp.prototype.destroyOnPlayerFrame = function (playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionSetProp.prototype.setPointers = function (entitiesArr) {
-    this.operand.setPointers(entitiesArr);
+    //this.operand.setPointers(entitiesArr);
+
 
     var refsToObjectProperty = this.refsToObjectProperty();
     for (var i = 0; i < refsToObjectProperty.length; i++) {
         refsToObjectProperty[i].setPointers(entitiesArr);
+    }
+    var operands = this.operands();
+    for (var i = 0; i < operands.length; i++) {
+        operands[i].setPointers(entitiesArr);
     }
 };
 
@@ -522,9 +543,9 @@ ActionSetProp.prototype.setPointers = function (entitiesArr) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
-    if (this.operand && this.operand.reAddEntities) {
-        this.operand.reAddEntities(entitiesArr);
-    }
+    // if (this.operand && this.operand.reAddEntities) {
+    //     this.operand.reAddEntities(entitiesArr);
+    // }
     var refsToObjectProperty = this.refsToObjectProperty();
     for (var i = 0; i < refsToObjectProperty.length; i++) {
         var variable = refsToObjectProperty[i].variable;
@@ -532,6 +553,11 @@ ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
             if (!entitiesArr.byId.hasOwnProperty(variable.id())) {
                 entitiesArr.push(variable);
             }
+        }
+    }
+    for (var i = 0; i < this.operands().length; i++) {
+        if (this.operands()[i] && this.operands()[i].reAddEntities) {
+            this.operands()[i].reAddEntities(entitiesArr);
         }
     }
 };
@@ -550,7 +576,17 @@ ActionSetProp.prototype.fromJS = function (data) {
         refsToObjectProperty.push(obj);
     }
     this.refsToObjectProperty(refsToObjectProperty);
-    this.operand.fromJS(data.operand);
+
+    console.log(data);
+
+    var operands = [];
+    for (var i = 0; i < data.operands.length; i++) {
+        var tmp = data.operands[i];
+        var obj = new OperandVariable(this.event);
+        obj.fromJS(tmp);
+        operands.push(obj);
+    }
+    this.operands(operands);
     return this;
 };
 
@@ -570,10 +606,17 @@ ActionSetProp.prototype.toJS = function () {
         targetId = this.target.id();
     }
 
+    var operands = [];
+    for (var i = 0; i < this.operands().length; i++) {
+        var obj = this.operands()[i].toJS();
+        operands.push(obj);
+    }
+
     return {
         type: this.type,
         target: targetId,
-        operand: this.operand.toJS(),
+        // operand: this.operand.toJS(),
+        operands: operands,
         refsToObjectProperty: refsToObjectProperty
     };
 };
