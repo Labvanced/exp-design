@@ -500,8 +500,6 @@ ActionSetProp.prototype.setVariableBackRef = function () {
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionSetProp.prototype.run = function (triggerParams) {
-    //var rValue = this.operand.getValue(triggerParams);
-
     for (var i = 0; i < this.refsToObjectProperty().length; i++) {
         console.log(this.operands());
         var rValue = this.operands()[i].getValue(triggerParams);
@@ -524,9 +522,6 @@ ActionSetProp.prototype.destroyOnPlayerFrame = function (playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionSetProp.prototype.setPointers = function (entitiesArr) {
-    //this.operand.setPointers(entitiesArr);
-
-
     var refsToObjectProperty = this.refsToObjectProperty();
     for (var i = 0; i < refsToObjectProperty.length; i++) {
         refsToObjectProperty[i].setPointers(entitiesArr);
@@ -543,9 +538,6 @@ ActionSetProp.prototype.setPointers = function (entitiesArr) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
-    // if (this.operand && this.operand.reAddEntities) {
-    //     this.operand.reAddEntities(entitiesArr);
-    // }
     var refsToObjectProperty = this.refsToObjectProperty();
     for (var i = 0; i < refsToObjectProperty.length; i++) {
         var variable = refsToObjectProperty[i].variable;
@@ -576,9 +568,6 @@ ActionSetProp.prototype.fromJS = function (data) {
         refsToObjectProperty.push(obj);
     }
     this.refsToObjectProperty(refsToObjectProperty);
-
-    console.log(data);
-
     var operands = [];
     for (var i = 0; i < data.operands.length; i++) {
         var tmp = data.operands[i];
@@ -615,7 +604,6 @@ ActionSetProp.prototype.toJS = function () {
     return {
         type: this.type,
         target: targetId,
-        // operand: this.operand.toJS(),
         operands: operands,
         refsToObjectProperty: refsToObjectProperty
     };
