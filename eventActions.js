@@ -3272,6 +3272,138 @@ ActionModifyVariable.prototype.toJS = function () {
 
 
 
+
+
+
+/////////////////////////////////////////////   ActionReadParamFromURL    ////////////////////////////////////////////////
+
+/**
+ * This action sets the value of a variable to a random number drawn from a specified distribution.
+ *
+ * @param {ExpEvent} event - the parent event
+ * @constructor
+ */
+var ActionReadParamFromURL = function (event) {
+    this.event = event;
+
+    // serialized
+    this.variable = ko.observable(null);
+    this.paramName = ko.observable('');
+
+};
+ActionReadParamFromURL.prototype.type = "ActionReadParamFromURL";
+ActionReadParamFromURL.prototype.label = "Get URL Parameter";
+
+
+/**
+ * This function is called when the parent event was triggered and the requirements are true. It draws a random number
+ * and saves it into the globalVar.
+ *
+ * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
+ */
+ActionReadParamFromURL.prototype.run = function () {
+    this.variable().value().setValue(this.getParameterByName());
+};
+ActionReadParamFromURL.prototype.getParameterByName = function () {
+    var name = this.paramName();
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+};
+
+/**
+ * returns true if all settings are valid (used in the editor).
+ * @returns {boolean}
+ */
+ActionReadParamFromURL.prototype.isValid = function () {
+    return true;
+};
+
+/**
+ * This function is used to associate a global variable with this action, so that the variable knows where it is used.
+ * @param {GlobalVar} variable - the variable which is recorded.
+ */
+ActionReadParamFromURL.prototype.setVariableBackRef = function (variable) {
+    if (variable) {
+        variable.addBackRef(this, this.event, true, false, 'Save URL Param');
+    }
+};
+
+
+/**
+ * cleans up the subscribers and callbacks in the player when the frame ended.
+ * @param playerFrame
+ */
+ActionReadParamFromURL.prototype.destroyOnPlayerFrame = function (playerFrame) {
+};
+
+/**
+ * This function initializes all internal state variables to point to other instances in the same experiment. Usually
+ * this is called after ALL experiment instances were deserialized using fromJS(). In this function use
+ * 'entitiesArr.byId[id]' to retrieve an instance from the global list given some unique id.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionReadParamFromURL.prototype.setPointers = function (entitiesArr) {
+    if (this.variable()) {
+        var globVar = entitiesArr.byId[this.variable()];
+        this.variable(globVar);
+        this.setVariableBackRef(globVar);
+    }
+};
+
+/**
+ * Recursively adds all child objects that have a unique id to the global list of entities.
+ *
+ * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
+ */
+ActionReadParamFromURL.prototype.reAddEntities = function (entitiesArr) {
+    if (this.variable()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
+    }
+};
+
+/**
+ * load from a json object to deserialize the states.
+ * @param {object} data - the json description of the states.
+ * @returns {ActionDrawRandomNumber}
+ */
+ActionReadParamFromURL.prototype.fromJS = function (data) {
+    this.variable(data.variable);
+    this.paramName(data.paramName);
+    return this;
+};
+
+/**
+ * serialize the state of this instance into a json object, which can later be restored using the method fromJS.
+ * @returns {object}
+ */
+ActionReadParamFromURL.prototype.toJS = function () {
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
+    return {
+        type: this.type,
+        variable: variableId,
+        paramName: this.paramName()
+    };
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
 /////////////////////////////////////////////   ActionDrawRandomNumber    ////////////////////////////////////////////////
 
 /**
