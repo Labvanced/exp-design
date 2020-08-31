@@ -240,8 +240,8 @@ RequirementVariableHasValue.prototype.comparisonTypes = ["==", "!=", ">", "<", "
  */
 RequirementVariableHasValue.prototype.checkIfTrue = function (parameters) {
 
-    var operandLeftValue = this.operandLeft().getValue(parameters);
-    var operandRightValue = this.operandRight().getValue(parameters);
+    var operandLeftValue = this.operandLeft().getRawValue(parameters);
+    var operandRightValue = this.operandRight().getRawValue(parameters);
 
     if ($.isNumeric(operandLeftValue)) {
         operandLeftValue = parseFloat(operandLeftValue);
@@ -249,7 +249,6 @@ RequirementVariableHasValue.prototype.checkIfTrue = function (parameters) {
     if ($.isNumeric(operandRightValue)) {
         operandRightValue = parseFloat(operandRightValue);
     }
-
 
     switch (this.comparisonType()) {
         case "==":
@@ -367,7 +366,7 @@ OperandVariable.prototype.label = "Operand";
 OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean", "constantDate", "constantTime", "constantCategorical", "constantColor", "eyetracking"];
 OperandVariable.prototype.unaryOperandTypes = ["abs", "round0decimal", "round1decimal", "round2decimals", "round3decimals", "floor", "ceil", "sqrt", "toLowercase", "toUppercase", "removeSpaces", "trimSpaces"];
 OperandVariable.prototype.binaryOperandTypes = ["arithmetic", "arrayvalue"];
-OperandVariable.prototype.ternaryOperandTypes = ["strReplace"];
+OperandVariable.prototype.ternaryOperandTypes = ["strReplace", "dataframevalue"];
 OperandVariable.prototype.operandTypes = OperandVariable.prototype.nullaryOperandTypes.concat(OperandVariable.prototype.unaryOperandTypes, OperandVariable.prototype.binaryOperandTypes, OperandVariable.prototype.ternaryOperandTypes);
 OperandVariable.prototype.arithmeticOpTypes = ["+", "-", "*", "/", "%"];
 
@@ -384,11 +383,30 @@ OperandVariable.prototype.setVariableBackRef = function (variable) {
     });
 };
 
+OperandVariable.prototype.convertToRawValue = function (value) {
+    if (value != null) {
+        if (value.hasOwnProperty('parentVar')) {
+            value = value.toJS();
+        }
+    }
+    return value;
+}
+
+/**
+ * calculates the current value of the operand and returns it as a js primitive or object (i.e. not GlobalVarValue instance).
+ *
+ * @param {object} parameters - the values that are passed by the trigger.
+ * @returns {number | string}
+ */
+OperandVariable.prototype.getRawValue = function (parameters) {
+    return this.convertToRawValue(this.getValue(parameters));
+}
+
 /**
  * calculates the current value of the operand. This is used in the player to evaluate logical or boolean expressions.
  *
  * @param {object} parameters - the values that are passed by the trigger.
- * @returns {number | string}
+ * @returns {number | string | GlobalVarValue}
  */
 OperandVariable.prototype.getValue = function (parameters) {
 
@@ -404,22 +422,8 @@ OperandVariable.prototype.getValue = function (parameters) {
             console.error("operand is undefined");
             return null;
         case "arithmetic":
-            var left = value.left.getValue(parameters);
-            var right = value.right.getValue(parameters);
-
-            // convert to value if these are GlobalVarValueInstances:
-            if (left != null) {
-                if (left.hasOwnProperty('parentVar')) {
-                    left = left.toJS();
-                }
-            }
-            if (right != null) {
-                if (right.hasOwnProperty('parentVar')) {
-                    right = right.toJS();
-                }
-
-            }
-
+            var left = value.left.getRawValue(parameters);
+            var right = value.right.getRawValue(parameters);
             if ($.isNumeric(right)) {
                 right = parseFloat(right);
             }
@@ -450,26 +454,28 @@ OperandVariable.prototype.getValue = function (parameters) {
             }
             return null;
         case "arrayvalue":
-            var left = value.left.getValue(parameters);
-            var right = value.right.getValue(parameters);
-
-            if (left != null) {
-                if (left.hasOwnProperty('parentVar')) {
-                    left = left.toJS();
-                }
+            var arrVarValue = value.left.getValue(parameters);
+            var arrIndex = value.right.getRawValue(parameters);
+            if (!(arrVarValue instanceof GlobalVarValueArray)) {
+                console.error("wrong array variable type");
+                return null;
             }
-            if (right != null) {
-                if (right.hasOwnProperty('parentVar')) {
-                    right = right.toJS();
-                }
-
+            if ($.isNumeric(arrIndex)) {
+                arrIndex = parseInt(arrIndex);
             }
-            if ($.isNumeric(right)) {
-                right = parseInt(right);
+            return arrVarValue.getValueAt(arrIndex);
+        case "dataframevalue":
+            var dfVarValue = value.param1.getValue(parameters);
+            if (!(dfVarValue instanceof GlobalVarValueDataFrame)) {
+                console.error("wrong dataframe variable");
+                return null;
             }
-            return left[right]
+            var rowIndex = value.param2.getRawValue(parameters);
+            var colIndexOrName = value.param3.getRawValue(parameters);
+            var value = dfVarValue.getValueAt(rowIndex, colIndexOrName);
+            return value;
         case "variable":
-            return value.getValue();
+            return value.value();
         case "objProperty":
             return this.operandValueOrObject().getValue();
         case "unixTimestamp":
@@ -559,7 +565,7 @@ OperandVariable.prototype.getValue = function (parameters) {
             return this.subParam();
 
         case "toLowercase":
-            var inputStrValue = value.left.getValue(parameters);
+            var inputStrValue = value.left.getRawValue(parameters);
             if (typeof inputStrValue === 'string' || inputStrValue instanceof String) {
                 return inputStrValue.toLowerCase();
             }
@@ -567,7 +573,7 @@ OperandVariable.prototype.getValue = function (parameters) {
                 return "";
             }
         case "toUppercase":
-            var inputStrValue = value.left.getValue(parameters);
+            var inputStrValue = value.left.getRawValue(parameters);
             if (typeof inputStrValue === 'string' || inputStrValue instanceof String) {
                 return inputStrValue.toUpperCase();
             }
@@ -575,7 +581,7 @@ OperandVariable.prototype.getValue = function (parameters) {
                 return "";
             }
         case "removeSpaces":
-            var inputStrValue = value.left.getValue(parameters);
+            var inputStrValue = value.left.getRawValue(parameters);
             if (typeof inputStrValue === 'string' || inputStrValue instanceof String) {
                 return inputStrValue.replace(/\s/g, '')
             }
@@ -583,7 +589,7 @@ OperandVariable.prototype.getValue = function (parameters) {
                 return "";
             }
         case "trimSpaces":
-            var inputStrValue = value.left.getValue(parameters);
+            var inputStrValue = value.left.getRawValue(parameters);
             if (typeof inputStrValue === 'string' || inputStrValue instanceof String) {
                 return inputStrValue.trim();
             }
@@ -591,9 +597,9 @@ OperandVariable.prototype.getValue = function (parameters) {
                 return "";
             }
         case "strReplace":
-            var inputStrValue = value.param1.getValue(parameters);
-            var substrReplaceRegexp = value.param2.getValue(parameters);
-            var replacementStr = value.param3.getValue(parameters);
+            var inputStrValue = value.param1.getRawValue(parameters);
+            var substrReplaceRegexp = value.param2.getRawValue(parameters);
+            var replacementStr = value.param3.getRawValue(parameters);
             if (!(typeof inputStrValue === 'string' || inputStrValue instanceof String)) {
                 return "";
             }
@@ -606,28 +612,28 @@ OperandVariable.prototype.getValue = function (parameters) {
             return inputStrValue.replace(new RegExp(substrReplaceRegexp, 'gm'), replacementStr);
 
         case "round0decimal":
-            return Math.round(value.left.getValue(parameters));
+            return Math.round(value.left.getRawValue(parameters));
 
         case "round1decimal":
-            return Math.round(value.left.getValue(parameters) * 10) / 10;
+            return Math.round(value.left.getRawValue(parameters) * 10) / 10;
 
         case "round2decimals":
-            return Math.round(value.left.getValue(parameters) * 100) / 100;
+            return Math.round(value.left.getRawValue(parameters) * 100) / 100;
 
         case "round3decimals":
-            return Math.round(value.left.getValue(parameters) * 1000) / 1000;
+            return Math.round(value.left.getRawValue(parameters) * 1000) / 1000;
 
         case "floor":
-            return Math.floor(value.left.getValue(parameters));
+            return Math.floor(value.left.getRawValue(parameters));
 
         case "ceil":
-            return Math.ceil(value.left.getValue(parameters));
+            return Math.ceil(value.left.getRawValue(parameters));
 
         case "abs":
-            return Math.abs(value.left.getValue(parameters));
+            return Math.abs(value.left.getRawValue(parameters));
 
         case "sqrt":
-            return Math.sqrt(value.left.getValue(parameters));
+            return Math.sqrt(value.left.getRawValue(parameters));
     }
 };
 
@@ -873,6 +879,11 @@ RefToObjectProperty.prototype.setValue = function (newVal) {
                 target = target[propertyPath[k]];
                 if (ko.isObservable(target)) {
                     target = target();
+                }
+            }
+            if (newVal != null) {
+                if (newVal.hasOwnProperty('parentVar')) {
+                    newVal = newVal.value();
                 }
             }
             target.modifier().selectedTrialView[propertyPath[propertyPath.length - 1]](newVal);

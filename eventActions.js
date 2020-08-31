@@ -686,13 +686,13 @@ ActionSelectFromArray.prototype.removeOutVariable = function () {
  */
 ActionSelectFromArray.prototype.run = function (triggerParams) {
     if (this.InsertOption() == 'fixed') {
-        var index = parseInt(this.indexFixedVal()) - 1;
+        var index = parseInt(this.indexFixedVal());
     }
     else if (this.InsertOption() == 'end') {
-        var index = this.inVarArr().value().value().length - 1;
+        var index = this.inVarArr().value().value().length;
     }
     else {
-        var index = parseInt(this.inVarIndex().value().value()) - 1;
+        var index = parseInt(this.inVarIndex().value().value());
     }
 
     var value = this.inVarArr().value().getValueAt(index);
@@ -1903,7 +1903,7 @@ ActionDelayedActions.prototype.isValid = function () {
 ActionDelayedActions.prototype.run = function (triggerParams) {
     var self = this;
     if (this.delayType() == 'variable') {
-        var delayInMs = parseInt(this.variable().getValue(triggerParams));
+        var delayInMs = parseInt(this.variable().getValue());
     }
     else {
         var delayInMs = parseInt(this.delayInMs());
@@ -1973,7 +1973,6 @@ ActionDelayedActions.prototype.destroyOnPlayerFrame = function (playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionDelayedActions.prototype.setPointers = function (entitiesArr) {
-
     if (this.variable()) {
         var varToSet = entitiesArr.byId[this.variable()];
         if (varToSet) {
@@ -1981,7 +1980,6 @@ ActionDelayedActions.prototype.setPointers = function (entitiesArr) {
             this.setVariableBackRef(varToSet);
         }
     }
-
 
     jQuery.each(this.subActions(), function (index, elem) {
         elem.setPointers(entitiesArr);
@@ -2897,7 +2895,7 @@ ActionMovingAvgFilter.prototype.setVariableBackRef = function (variable) {
 ActionMovingAvgFilter.prototype.run = function (triggerParams) {
 
     if (this.variable()) {
-        var rValue = this.operand().getValue(triggerParams);
+        var rValue = this.operand().getRawValue(triggerParams);
         if (this.filterType() == "sma") {
             this.hist_samples.push(rValue);
             if (this.hist_samples.length > this.numSamples()) {
@@ -4334,8 +4332,8 @@ ActionDistributeVariable.prototype.run = function (triggerParams) {
     var self = this;
 
     var operandValueToSend = null;
-    if (self.operand) {
-        operandValueToSend = self.operand().getValue();
+    if (self.operand()) {
+        operandValueToSend = self.operand().getRawValue();
     }
 
     // jQuery mapping?
