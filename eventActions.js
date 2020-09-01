@@ -458,12 +458,29 @@ var ActionSetProp = function (event) {
     this.event = event;
 
     // serialized
-    this.refToObjectProperty = new RefToObjectProperty(event);
     this.operand = new OperandVariable(event);
+    this.operands = ko.observableArray([new OperandVariable(event)]);
+    this.refsToObjectProperty = ko.observableArray([new RefToObjectProperty(event)]);
 };
 
 ActionSetProp.prototype.type = "ActionSetProp";
-ActionSetProp.prototype.label = "Set Object Property";
+ActionSetProp.prototype.label = "Set Object Property"
+ActionSetProp.prototype.addProperty = function () {
+    this.action.operands.push(new OperandVariable(this.action.event));
+    this.action.refsToObjectProperty.push(new RefToObjectProperty(this.action.event));
+}
+
+
+ActionSetProp.prototype.removeProperty = function (index) {
+    var operands = this.operands();
+    var refsToObjectProperty = this.refsToObjectProperty();
+
+    operands.splice(index, 1);
+    refsToObjectProperty.splice(index, 1);
+
+    this.operands(operands);
+    this.refsToObjectProperty(refsToObjectProperty);
+}
 
 ActionSetProp.prototype.isValid = function () {
     return true;
@@ -473,6 +490,7 @@ ActionSetProp.prototype.isValid = function () {
  * This function is used to associate a global variable with this action, so that the variable knows where it is used.
  */
 ActionSetProp.prototype.setVariableBackRef = function () {
+    variable.addBackRef(this, this.event, false, true, 'Action Set Prop');
 };
 
 /**
@@ -482,8 +500,11 @@ ActionSetProp.prototype.setVariableBackRef = function () {
  * @param {object} triggerParams - Contains some additional values that are specifically passed through by the trigger.
  */
 ActionSetProp.prototype.run = function (triggerParams) {
-    var rValue = this.operand.getValue(triggerParams);
-    this.refToObjectProperty.setValue(rValue);
+    for (var i = 0; i < this.refsToObjectProperty().length; i++) {
+        console.log(this.operands());
+        var rValue = this.operands()[i].getValue(triggerParams);
+        this.refsToObjectProperty()[i].setValue(rValue);
+    }
 };
 
 /**
@@ -501,8 +522,14 @@ ActionSetProp.prototype.destroyOnPlayerFrame = function (playerFrame) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionSetProp.prototype.setPointers = function (entitiesArr) {
-    this.refToObjectProperty.setPointers(entitiesArr);
-    this.operand.setPointers(entitiesArr);
+    var refsToObjectProperty = this.refsToObjectProperty();
+    for (var i = 0; i < refsToObjectProperty.length; i++) {
+        refsToObjectProperty[i].setPointers(entitiesArr);
+    }
+    var operands = this.operands();
+    for (var i = 0; i < operands.length; i++) {
+        operands[i].setPointers(entitiesArr);
+    }
 };
 
 /**
@@ -511,11 +538,19 @@ ActionSetProp.prototype.setPointers = function (entitiesArr) {
  * @param {ko.observableArray} entitiesArr - this is the knockout array that holds all instances.
  */
 ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
-    if (this.operand && this.operand.reAddEntities) {
-        this.operand.reAddEntities(entitiesArr);
+    var refsToObjectProperty = this.refsToObjectProperty();
+    for (var i = 0; i < refsToObjectProperty.length; i++) {
+        var variable = refsToObjectProperty[i].variable;
+        if (variable) {
+            if (!entitiesArr.byId.hasOwnProperty(variable.id())) {
+                entitiesArr.push(variable);
+            }
+        }
     }
-    if (this.refToObjectProperty && this.refToObjectProperty.reAddEntities) {
-        this.refToObjectProperty.reAddEntities(entitiesArr);
+    for (var i = 0; i < this.operands().length; i++) {
+        if (this.operands()[i] && this.operands()[i].reAddEntities) {
+            this.operands()[i].reAddEntities(entitiesArr);
+        }
     }
 };
 
@@ -525,8 +560,22 @@ ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
  * @returns {ActionSetProp}
  */
 ActionSetProp.prototype.fromJS = function (data) {
-    this.refToObjectProperty.fromJS(data.refToObjectProperty);
-    this.operand.fromJS(data.operand);
+    var refsToObjectProperty = [];
+    for (var i = 0; i < data.refsToObjectProperty.length; i++) {
+        var tmp = data.refsToObjectProperty[i];
+        var obj = new RefToObjectProperty(this.event);
+        obj.fromJS(tmp);
+        refsToObjectProperty.push(obj);
+    }
+    this.refsToObjectProperty(refsToObjectProperty);
+    var operands = [];
+    for (var i = 0; i < data.operands.length; i++) {
+        var tmp = data.operands[i];
+        var obj = new OperandVariable(this.event);
+        obj.fromJS(tmp);
+        operands.push(obj);
+    }
+    this.operands(operands);
     return this;
 };
 
@@ -535,10 +584,28 @@ ActionSetProp.prototype.fromJS = function (data) {
  * @returns {object}
  */
 ActionSetProp.prototype.toJS = function () {
+    var origChanges = this.refsToObjectProperty();
+    var refsToObjectProperty = [];
+    for (var i = 0; i < origChanges.length; i++) {
+        var obj = origChanges[i].toJS();
+        refsToObjectProperty.push(obj);
+    }
+    var targetId = null;
+    if (this.target) {
+        targetId = this.target.id();
+    }
+
+    var operands = [];
+    for (var i = 0; i < this.operands().length; i++) {
+        var obj = this.operands()[i].toJS();
+        operands.push(obj);
+    }
+
     return {
         type: this.type,
-        refToObjectProperty: this.refToObjectProperty.toJS(),
-        operand: this.operand.toJS()
+        target: targetId,
+        operands: operands,
+        refsToObjectProperty: refsToObjectProperty
     };
 };
 
