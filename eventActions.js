@@ -4606,6 +4606,10 @@ var ActionMathAndStats = function (event) {
         else if (self.operationType() == "Statistical Tests") {
             return ActionMathAndStats.prototype.statisticalOerations;
         }
+
+        else if (self.operationType() == "Distributions") {
+            return ActionMathAndStats.prototype.distributions;
+        }
     });
 
     // not serialized
@@ -4872,8 +4876,73 @@ ActionMathAndStats.prototype.toJS = function () {
 
 ActionMathAndStats.prototype.type = "ActionMathAndStats";
 ActionMathAndStats.prototype.label = "Math & Statistics";
-ActionMathAndStats.prototype.operationTypes = ["Array Operations", "Linear Algebra", "Statistical Tests"];
+ActionMathAndStats.prototype.operationTypes = ["Array Operations", "Linear Algebra", "Statistical Tests", "Distributions"];
 
+
+ActionMathAndStats.prototype.distributions = [
+    {
+        key: "normal-distribution",
+        name: 'normal-distribution',
+        inputs: [
+
+
+            {
+                name: "type",
+                dataFormats: ["array"],
+                dataTypes: ["string"],
+                relationGlobalVar: "cannotBeGlobalVar",
+                selectionValues: ["pdf", "cdf", "inv", "mean", "median", "mode", "sample", "variance"],
+                required: true,
+                value: false,
+                formType: "selection"
+            },
+
+            {
+                name: "P or X",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+            },
+            {
+                name: "Mean",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+            },
+            {
+                name: "Std",
+                dataFormats: ["scalar"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null,
+            },
+
+        ],
+        outputs: [
+            {
+                name: "output normal distribution",
+                dataFormats: ["array"],
+                dataTypes: ["numeric"],
+                relationGlobalVar: "mustBeVariable",
+                required: true,
+                value: null
+            }
+        ],
+        operation: function () {
+            var val1 = arguments[0];
+            var val2 = arguments[1];
+            var stdSelection = arguments[2];
+            var result = jStat.normal(val1, val2);
+            return result;
+        }
+    },
+
+];
 
 ActionMathAndStats.prototype.statisticalOerations = [
 
@@ -6568,7 +6637,8 @@ ActionMathAndStats.prototype.arrayOperations = [
 
 ActionMathAndStats.prototype.allOperations = ActionMathAndStats.prototype.statisticalOerations.concat(
     ActionMathAndStats.prototype.algebraOerations,
-    ActionMathAndStats.prototype.arrayOperations);
+    ActionMathAndStats.prototype.arrayOperations,
+    ActionMathAndStats.prototype.distributions);
 
 ActionMathAndStats.prototype.allOperationsByKey = {};
 for (var i = 0; i < ActionMathAndStats.prototype.allOperations.length; i++) {
