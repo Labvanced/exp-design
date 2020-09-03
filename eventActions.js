@@ -546,9 +546,10 @@ ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
             }
         }
     }
-    for (var i = 0; i < this.operand().length; i++) {
-        if (this.operand()[i] && this.operand()[i].reAddEntities) {
-            this.operand()[i].reAddEntities(entitiesArr);
+    var operand = this.operand();
+    for (var i = 0; i < operand.length; i++) {
+        if (operand[i] && operand[i].reAddEntities) {
+            operand[i].reAddEntities(entitiesArr);
         }
     }
 };
@@ -560,7 +561,7 @@ ActionSetProp.prototype.reAddEntities = function (entitiesArr) {
  */
 ActionSetProp.prototype.fromJS = function (data) {
     var refToObjectProperty = [];
-    if(data.refToObjectProperty.constructor.name == 'Array'){
+    if (data.refToObjectProperty.constructor.name == 'Array') {
         for (var i = 0; i < data.refToObjectProperty.length; i++) {
             var tmp = data.refToObjectProperty[i];
             var obj = new RefToObjectProperty(this.event);
@@ -568,7 +569,7 @@ ActionSetProp.prototype.fromJS = function (data) {
             refToObjectProperty.push(obj);
         }
     }
-    else{
+    else {
         var obj = new RefToObjectProperty(this.event);
         obj.fromJS(data.refToObjectProperty);
         refToObjectProperty.push(obj);
@@ -576,14 +577,14 @@ ActionSetProp.prototype.fromJS = function (data) {
     this.refToObjectProperty(refToObjectProperty);
 
     var operand = [];
-    if (data.operand.constructor.name == 'Array'){
+    if (data.operand.constructor.name == 'Array') {
         for (var i = 0; i < data.operand.length; i++) {
             var tmp = data.operand[i];
             var obj = new OperandVariable(this.event);
             obj.fromJS(tmp);
             operand.push(obj);
         }
-    }else{
+    } else {
         var obj = new OperandVariable(this.event);
         obj.fromJS(data.operand);
         operand.push(obj);
@@ -603,10 +604,6 @@ ActionSetProp.prototype.toJS = function () {
         var obj = origChanges[i].toJS();
         refToObjectProperty.push(obj);
     }
-    var targetId = null;
-    if (this.target) {
-        targetId = this.target.id();
-    }
 
     var operand = [];
     for (var i = 0; i < this.operand().length; i++) {
@@ -616,7 +613,6 @@ ActionSetProp.prototype.toJS = function () {
 
     return {
         type: this.type,
-        target: targetId,
         operand: operand,
         refToObjectProperty: refToObjectProperty
     };
