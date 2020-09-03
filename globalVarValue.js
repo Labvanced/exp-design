@@ -19,13 +19,34 @@ GlobalVarValueString.prototype.editEntry = function () {
     this.editVal(true);
 };
 
+GlobalVarValueString.prototype.createHyperlink = function (data) {
+    if (!data) {
+        return null;
+    }
+
+    if (data.indexOf('</a>') != -1 || data.indexOf('http') == -1 && data.indexOf('www') == -1) {
+        return data;
+    }
+
+    if (data.indexOf('www') != -1) {
+        if (data.indexOf('http') == -1) {
+            data = "https://" + data;
+        }
+    }
+
+    return '<a href="' + data + '" target="_blank">' + data + '</a>';
+}
+
 GlobalVarValueString.prototype.convert = function (data) {
     if (data === null) {
         return null;
     }
     if ((typeof data) != "string") {
-        return String(data);
+        data = String(data);
     }
+
+    data = this.createHyperlink(data);
+
     return data;
 };
 
