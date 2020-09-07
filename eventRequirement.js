@@ -364,7 +364,7 @@ OperandVariable.prototype.type = "OperandVariable";
 OperandVariable.prototype.label = "Operand";
 
 OperandVariable.prototype.nullaryOperandTypes = ['undefined', "variable", "objProperty", "eventParam", "constantString", "constantNumeric", "constantBoolean", "constantDate", "constantTime", "constantCategorical", "constantColor", "eyetracking"];
-OperandVariable.prototype.unaryOperandTypes = ["abs", "round0decimal", "round1decimal", "round2decimals", "round3decimals", "floor", "ceil", "sqrt", "toLowercase", "toUppercase", "removeSpaces", "trimSpaces"];
+OperandVariable.prototype.unaryOperandTypes = ["abs", "round0decimal", "round1decimal", "round2decimals", "round3decimals", "floor", "ceil", "sqrt", "toLowercase", "toUppercase", "removeSpaces", "trimSpaces", "toLink"];
 OperandVariable.prototype.binaryOperandTypes = ["arithmetic", "arrayvalue"];
 OperandVariable.prototype.ternaryOperandTypes = ["strReplace", "dataframevalue"];
 OperandVariable.prototype.operandTypes = OperandVariable.prototype.nullaryOperandTypes.concat(OperandVariable.prototype.unaryOperandTypes, OperandVariable.prototype.binaryOperandTypes, OperandVariable.prototype.ternaryOperandTypes);
@@ -596,6 +596,18 @@ OperandVariable.prototype.getValue = function (parameters) {
             else {
                 return "";
             }
+
+        case "toLink":
+            var inputStrValue = value.left.getRawValue(parameters);
+            if (typeof inputStrValue === 'string' || inputStrValue instanceof String) {
+                if (inputStrValue.indexOf('http') == -1) {
+                    inputStrValue = "https://" + inputStrValue;
+                }
+                return '<a href="' + inputStrValue + '" target="_blank">' + inputStrValue + '</a>';
+            } else {
+                return "";
+            }
+
         case "strReplace":
             var inputStrValue = value.param1.getRawValue(parameters);
             var substrReplaceRegexp = value.param2.getRawValue(parameters);
