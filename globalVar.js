@@ -28,6 +28,8 @@ var GlobalVar = function (expData) {
 
 
     this.isHidden = ko.observable(false);
+    // Work in progress
+    this.isSoftDeleted = ko.observable(false);
     this.isRecorded = ko.observable(true);
 
     this.resetAtTrialStart = ko.observable(false);
@@ -484,6 +486,9 @@ GlobalVar.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('isHidden')) {
         this.isHidden(data.isHidden);
     }
+    if (data.hasOwnProperty('isSoftDeleted')) {
+        this.isSoftDeleted(data.isSoftDeleted)
+    }
 
 
 
@@ -541,6 +546,7 @@ GlobalVar.prototype.toJS = function () {
         isRecorded: this.isRecorded(),
         recType: this.recType(),
         isHidden: this.isHidden(),
+        isSoftDeleted: this.isSoftDeleted(),
 
         type: this.type,
         levels: jQuery.map(this.levels(), function (lvl) { return lvl.toJS(); })
