@@ -277,7 +277,136 @@ ExpData.prototype.staticTranslations = {
         calibDistance1: "Your distance to the screen (in cm) is: ",
         calibDistance2: "centimeter",
         requestPermissionHeader: "Device permissions required",
-        requestPermissionBody: "This experiment requires access to your webcam or microphone. In the following screen, please allow access to your webcam or microphone device to continue."
+        requestPermissionBody: "This experiment requires access to your webcam or microphone. In the following screen, please allow access to your webcam or microphone device to continue.",
+        eyetracking: {
+
+            previousCalib1: "Use Previous Calibration Data",
+            previousCalib2: "Rerun Calibration",
+            calibLoading: "loading calibration... please wait...",
+            headPoseBlueMesh: "<p>Please position your head such that the blue mesh is aligned with the green target mesh:</p>",
+            feedbackHeadpose1: "Please make sure that your face is visible in your webcam.",
+            feedbackHeadpose2: "Please move closer to cam.",
+            feedbackHeadpose3: "Please face the webcam and place the webcam near the monitor.",
+            feedbackHeadpose4: "Please make sure that your head is oriented upright.",
+            feedbackHeadpose5: "Please move further to the left.",
+            feedbackHeadpose6: "Please move further to the right.",
+            feedbackHeadpose7: "Please move further down.",
+            feedbackHeadpose8: "Please move further up.",
+
+            feedbackHeadpose9: "Please shift your head up.",
+            feedbackHeadpose10: "Please shift your head down.",
+            feedbackHeadpose11: "Please shift your head right.",
+            feedbackHeadpose12: "Please shift your head left.",
+            feedbackHeadpose13: "Please tilt your head down.",
+            feedbackHeadpose14: "Please tilt your head up.",
+            feedbackHeadpose15: "Please turn your head left.",
+            feedbackHeadpose16: "Please turn your head right.",
+            feedbackHeadpose17: "Please move closer to cam.",
+            feedbackHeadpose18: "Please move away from cam.",
+
+            countdown1: "Great! Now, please keep this head pose... Start in ",
+            poseError: "<p>You lost the head pose. Please realign your head pose to the green mesh:</p>",
+            screenResolutionError: "Screen resolution was changed. Please restart the calibration.",
+
+            instructionsExistingCalibDataFoundAdult: "<h3>Eye-Tracking Calibration</h3>" +
+                "<p>We found previous calibration data in your browser cache. You can skip calibration if:" +
+                "<ul>" +
+                "<li>you are the same person that calibrated in the previous session.</li>" +
+                "<li>the environment and lightning conditions did not change.</li>" +
+                "</ul></p>",
+            instructionsPreEnvironmentAdult: "<h3>Calibration of eye tracker</h3>" +
+                "<p><b>Please read carefully</b></p>" +
+                "<p>To use your webcam for eye tracking, it needs to " +
+                "be calibrated for your specific environment. This will take about 3-4 minutes. " +
+                "Before starting the calibration, please make sure that:</p>" +
+                "<ul>" +
+                "<li>You are in a quiet room.</li>" +
+                "<li>You have enough time.</li>" +
+                "<li>You do not wear glasses.</li>" +
+                "<li>Your webcam is as near as possible to the center of your screen (if it is not integrated in your monitor anyway).</li>" +
+                "</ul>",
+            instructionsEnvironmentAdult: "<h3>Step 1: Setup illumination</h3>" +
+                "<p>Please make sure that:</p>" +
+                "<li>There is no bright light source (window, lamp) behind you visible in the image.</li>" +
+                "<li>Your face and eyes should be well illuminated from the front.</li>" +
+                "</ul>",
+            instructionsPrePositioningAdult: "<h3>Step 2: Set Center Pose</h3>" +
+                "<p><b>Please read carefully</b></p>" +
+                "<p>The eye tracker will be calibrated for a specific pose (position and orientation) of your head in front of the camera. " +
+                "In the next step, you will define this 'center' pose. " +
+                "Please make sure that:</p>" +
+                "<ul>" +
+                "<li>This head pose is comfortable for you to keep for a long duration.</li>" +
+                "<li>Please pay attention, that also the tilt and yaw orientation of your head is comfortable.</li>" +
+                "<li>Please adjust your screen and webcam on the following screen, so that your webcam can easily detect your eye movements when you look at the screen. </li>" +
+                "</ul>",
+            instructionsPositioningAdult: "<h3>Step 2: Set Center Pose</h3>" +
+                "<ul>" +
+                "<li>Make sure that you are facing the screen in a comfortable pose.</li>" +
+                "<li>Be close enough to the camera such that your face and eyes are well detected and visible.</li>" +
+                "<li>This is the last time to adjust the camera and screen position.</li>" +
+                "</ul>",
+            instructionsPositioningCheckAdult: "<h3>Step 2: Set Center Pose</h3>" +
+                "<p>Do you want to use this pose (green mesh) or go back?</p>" +
+                "<ul>" +
+                "<li>Is the pose facing the screen and comfortable for you?</li>" +
+                "<li>Is the pose close enough to the camera such that your eyes are well detected?</li>" +
+                "</ul>",
+            instructionsPreCalibAdult: "<h3>Step 3: Calibration</h3>" +
+                "<p><b>Please read carefully</b></p>" +
+                "<p>Now the real calibration will start. Please, DO NOT move the webcam or screen anymore, because doing so results in a failed calibration.</p>" +
+                "<ul>" +
+                "<li>Each calibration step has 2 parts: " +
+                "<ul>" +
+                "<li>Position your head in a specified pose (position and orientation).</li>" +
+                "<li>Keep that pose and fixate on the points that are shown on the screen.</li>" +
+                "</ul></li>" +
+                "<li>To position your head correctly on each step, the best option is to try to overlap the face meshes, blue (current postion) and green (target position).</li>" +
+                "<li>If your head pose is not recocknized at any time, relax, sit straight again, and follow the instructions.</li>" +
+                "<li>After the calibration is done DO NOT move away from the screen and avoid strong head movements.</li>" +
+                "</ul>",
+
+            instructionsExistingCalibDataFoundInfant: "<h3>Eye-Tracking Calibration</h3>" +
+                "<p>We found previous calibration data in your browser cache. You can skip calibration if:" +
+                "<ul>" +
+                "<li>you are the same person that calibrated in the previous session.</li>" +
+                "<li>the environment and lightning conditions did not change.</li>" +
+                "</ul></p>",
+            instructionsPreEnvironmentInfant: "<h3>Calibration of eye tracker</h3>" +
+                "<p><b>Instruction for parents: Please read carefully</b></p>" +
+                "<p>To use your webcam for eye tracking, it needs to " +
+                "be calibrated for your specific environment. This will take about 1-2 minutes. " +
+                "Before starting, please make sure that:</p>" +
+                "<ul>" +
+                "<li>Your child sits comfortably on your lab.</li>" +
+                "<li>There is no bright light source (window, lamp) behind you visible in the image.</li>" +
+                "<li>Your child does not wear glasses.</li>" +
+                "</ul>",
+            instructionsEnvironmentInfant: "",
+            instructionsPrePositioningInfant: "<h3>Step 1: Set Center Pose</h3>" +
+                "<p><b>Instruction for parents: The eye tracker will be calibrated for a specific head pose. " +
+                "Please make sure that:</b></p>" +
+                "<ul>" +
+                "<li>Your child's face is visible in the video and detected with a blue mesh, while looking at the screen (not yours).</li>" +
+                "<li>The position / head pose is comfortable for you and your child to keep for the rest of the study without much movement.</li>" +
+                "</ul>",
+            instructionsPositioningInfant: "",
+            instructionsPositioningCheckInfant: "<h3>Step 2: Set Center Pose</h3>" +
+                "<p><b>Instruction for parents: Please read carefully</b></p>" +
+                "<p>Do you want to use this pose (green mesh) or go back?</p>" +
+                "<ul>" +
+                "<li>Is the pose facing the screen and comfortable for your child?</li>" +
+                "<li>Is the pose roughly centered horizontally and the face well visible?</li>" +
+                "<li>If not to back and re-define the center pose.</li>" +
+                "</ul>",
+            instructionsPreCalibInfant: "<h3>Step 3: Calibration</h3>" +
+                "<p><b>Instruction for parents: Please read carefully</b></p>" +
+                "<ul>" +
+                "<li>Now the calibration will start. Please, DO NOT move the webcam or screen anymore, otherwise calibration will fail.</li>" +
+                "<li>We will present animals at different positions on the screen and record your child's gaze when looking at these animals.</li>" +
+                "<li>For the calibration to work, your child will need to look at these animals, and sit in a stable position on your lab without strong head movements during and after the calibration.</li>" +
+                "</ul>"
+        }
     },
     German: {
         library: "Experimente",
@@ -351,7 +480,142 @@ ExpData.prototype.staticTranslations = {
         calibDistance1: "Ihre Distanz zum Bildschirm beträgt:",
         calibDistance2: "Centimeter",
         requestPermissionHeader: "Geräteberechtigungen erforderlich",
-        requestPermissionBody: "Die Teilnahme an diesem Experiment benötigt Zugriff auf Ihre Webcam oder Ihr Microphone. Um fortzufahren, erlauben Sie bitte auf dem folgenden Bildschirm den Zugriff auf Ihre Webcam oder Ihr Mikrofon."
+        requestPermissionBody: "Die Teilnahme an diesem Experiment benötigt Zugriff auf Ihre Webcam oder Ihr Microphone. Um fortzufahren, erlauben Sie bitte auf dem folgenden Bildschirm den Zugriff auf Ihre Webcam oder Ihr Mikrofon.",
+        eyetracking: {
+
+            previousCalib1: "Vorherige Kalibrierdaten verwenden",
+            previousCalib2: "Kalibrierung erneut durchführen",
+            calibLoading: "Kalibrierung laden... bitte warten...",
+            headPoseBlueMesh: "<p>Bitte positionieren Sie Ihren Kopf so, dass das blaue Netz auf das grüne Zielnetz ausgerichtet ist:</p>",
+            feedbackHeadpose1: "Bitte stellen Sie sicher, dass Ihr Gesicht in Ihrer Webcam sichtbar ist",
+            feedbackHeadpose2: "Bitte gehen Sie näher an die Kamera heran.",
+            feedbackHeadpose3: "Bitte schauen Sie mit dem Gesicht zur Webcam und platzieren Sie die Webcam in der Nähe des Monitors.",
+            feedbackHeadpose4: "Bitte stellen Sie sicher, dass Ihr Kopf aufrecht ausgerichtet ist.",
+            feedbackHeadpose5: "Bitte bewegen Sie sich weiter nach links.",
+            feedbackHeadpose6: "Bitte bewegen Sie sich weiter nach rechts.",
+            feedbackHeadpose7: "Bitte gehen Sie weiter nach unten.",
+            feedbackHeadpose8: "Bitte gehen Sie weiter nach oben.",
+
+            feedbackHeadpose9: "Bitte bewegen Sie Ihren Kopf nach oben.",
+            feedbackHeadpose10: "Bitte bewegen Sie Ihren Kopf nach unten.",
+            feedbackHeadpose11: "Bitte bewegen Sie Ihren Kopf nach rechts.",
+            feedbackHeadpose12: "Bitte bewegen Sie Ihren Kopf nach links.",
+            feedbackHeadpose13: "Bitte neigen Sie Ihren Kopf nach unten.",
+            feedbackHeadpose14: "Bitte neigen Sie Ihren Kopf nach oben.",
+            feedbackHeadpose15: "Bitte drehen Sie Ihren Kopf nach links.",
+            feedbackHeadpose16: "Bitte drehen Sie Ihren Kopf nach rechts.",
+            feedbackHeadpose17: "Bitte gehen Sie näher zur Kamera.",
+            feedbackHeadpose18: "Bitte gehen Sie von der Kamera weg.",
+
+            Countdown1: "Gut! Behalten Sie jetzt bitte diese Kopfhaltung bei... Beginnen Sie in ",
+            poseError: "<p>Sie haben die Kopfhaltung verloren. Bitte richten Sie Ihre Kopfhaltung wieder auf das grüne Netz aus:</p>",
+            screenResolutionError: "Die Bildschirmauflösung wurde geändert. Bitte starten Sie die Kalibrierung neu",
+
+
+            instructionsExistingCalibDataFoundAdult: "<h3>Augenverfolgungs-Kalibrierung</h3>" +
+                "<p>Wir haben frühere Kalibrierungsdaten in Ihrem Browser-Cache gefunden. Sie können die Kalibrierung überspringen, wenn:" +
+                "<ul>" +
+                "<li>Sie sind dieselbe Person, die sich in der vorherigen Sitzung kalibriert hat.</li>" +
+                "<li>die Umwelt- und Blitzbedingungen haben sich nicht verändert. </li>" +
+                "</ul><</p>",
+            instructionsPreEnvironmentAdult: "<h3>Kalibrierung des Eyetrackers</h3>" +
+                "<p><b>Bitte sorgfältig lesen</b></p>" +
+                "<p>Um Ihre Webcam für die Blickverfolgung zu verwenden, muss sie " +
+                "für Ihre spezifische Umgebung kalibriert werden. Dies wird etwa 3-4 Minuten dauern. " +
+                "Bevor Sie die Kalibrierung starten, stellen Sie bitte folgendes sicher:</p>" +
+                "<ul>" +
+                "<li>Sie befinden sich in einem ruhigen Raum. </li>" +
+                "<li>Sie haben genug Zeit. </li>" +
+                "<li>Sie tragen keine Brille.</li>" +
+                "<li>Ihre Webcam befindet sich so nah wie möglich an der Mitte Ihres Bildschirms (falls sie nicht ohnehin in Ihren Monitor integriert ist).</li>" +
+                "</ul>",
+            instructionsEnvironmentAdult: "<h3>Schritt 1: Beleuchtung einrichten</h3>" +
+                "<p>Bitte stellen Sie folgendes sicher:</p>" +
+                "<li>Es ist keine helle Lichtquelle (Fenster, Lampe) hinter Ihnen im Bild sichtbar.</li>" +
+                "<li>Das Gesicht und die Augen sollten von vorne gut ausgeleuchtet sein.</li>" +
+                "</ul>",
+            instructionsPrePositioningAdult: "<h3>Schritt 2: Mittelposition setzen</h3>" +
+                "<p><b>Bitte sorgfältig lesen</b></p>" +
+                "<p>Der Eyetracker wird für eine bestimmte Pose (Position und Ausrichtung) Ihres Kopfes vor der Kamera kalibriert. " +
+                "Im nächsten Schritt werden Sie diese 'Center'-Pose definieren. " +
+                "Bittes stellen Sie folgendes sicher: </p>" +
+                "<ul>" +
+                "<li>Diese Kopfhaltung ist bequem für Sie, um sie lange beizubehalten.</li>" +
+                "<li>Bitte achten Sie darauf, dass auch die Neigungs- und Orientierung Ihres Kopfes angenehm ist.</li>" +
+                "<li>Bitte stellen Sie Ihren Bildschirm und Ihre Webcam auf dem folgenden Bildschirm so ein, dass Ihre Webcam Ihre Augenbewegungen leicht erkennen kann, wenn Sie auf den Bildschirm blicken. </li>" +
+                "</ul>",
+            instructionsPositioningAdult: "<h3>Schritt 2: Mittelposition setzen</h3>" +
+                "<ul>" +
+                "<li>Vergewissern Sie sich, dass Sie in einer bequemen Pose auf den Bildschirm schauen.</li>" +
+                "<li>Seien Sie nahe genug an der Kamera, so dass Ihr Gesicht und Ihre Augen gut erkannt werden und sichtbar sind.</li>" +
+                "<li>Dies ist das letzte Mal, dass die Kamera- und Bildschirmposition eingestellt wird.</li>" +
+                "</ul>",
+            instructionsPositioningCheckAdult: "<h3>Schritt 2: Mittelposition setzen</h3>" +
+                "<p>Wollen Sie diese Pose (grünes Netz) verwenden oder zurückgehen?</p>" +
+                "<ul>" +
+                "<li>Ist die Pose dem Bildschirm zugewandt und für Sie bequem?</li>" +
+                "<li>Ist die Pose nahe genug an der Kamera, so dass Ihre Augen gut erkannt werden?</li>" +
+                "</ul>",
+            instructionsPreCalibAdult: "<h3>Schritt 3: Kalibrierung</h3>" +
+                "<p><b>Bitte sorgfältig lesen</b></p>" +
+                "<p>Jetzt beginnt die eigentliche Kalibrierung. Bitte bewegen Sie die Webcam oder den Bildschirm NICHT mehr, da dies zu einer fehlgeschlagenen Kalibrierung führt.</p>" +
+                "<ul>" +
+                "<li>Jeder Kalibrierungsschritt besteht aus 2 Teilen: " +
+                "<ul>" +
+                "<li>Positionieren Sie Ihren Kopf in einer bestimmten Pose (Position und Ausrichtung).</li>" +
+                "<li>Behalten Sie diese Pose bei und fixieren Sie auf die Punkte, die auf dem Bildschirm angezeigt werden.</li>" +
+                "</ul></li>" +
+                "<li>Um Ihren Kopf immer richtig zu positionieren, ist es am besten, wenn Sie versuchen, die Gesichtsmasken, blau (aktuelle Position) und grün (Zielposition), zu überlappen.</li>" +
+                "<li>Wenn Ihre Kopfhaltung zu irgendeinem Zeitpunkt nicht erkannt wird, entspannen Sie sich, setzen Sie sich wieder gerade hin und folgen Sie den Anweisungen.</li>" +
+                "<li>Nach erfolgter Kalibrierung bewegen Sie sich NICHT vom Bildschirm weg und vermeiden Sie starke Kopfbewegungen.</li>" +
+                "</ul>",
+
+
+
+
+            instructionsExistingCalibDataFoundInfant: "<h3>Augenverfolgungs-Kalibrierung</h3>" +
+                "<p>Wir haben frühere Kalibrierungsdaten in Ihrem Browser-Cache gefunden. Sie können die Kalibrierung überspringen, wenn:" +
+                "<ul>" +
+                "<li>Sie sind dieselbe Person, die sich in der vorherigen Sitzung kalibriert hat.</li>" +
+                "<li>die Umwelt- und Blitzbedingungen haben sich nicht verändert. </li>" +
+                "</ul><</p>",
+            instructionsPreEnvironmentInfant: "<h3>Kalibrierung des Eyetrackers</h3>" +
+                "<p><b>Unterweisung für Eltern: Bitte lesen Sie sorgfältig </b><</p>" +
+                "<p>Um Ihre Webcam für die Blickverfolgung zu verwenden, muss sie " +
+                "für Ihre spezifische Umgebung kalibriert werden. Dies wird etwa 1-2 Minuten dauern. " +
+                "Bevor Sie beginnen, vergewissern Sie sich bitte, dass:</p>" +
+                "<ul>" +
+                "<li>Ihr Kind sitzt bequem auf Ihrem Labor. </li>" +
+                "<li>Es ist keine helle Lichtquelle (Fenster, Lampe) hinter Ihnen im Bild sichtbar.</li>" +
+                "<li>Ihr Kind trägt keine Brille.</li>" +
+                "</ul>",
+            instructionsEnvironmentInfant: "",
+            instructionsPrePositioningInfant: "<h3>Schritt 1: Mittelposition setzen</h3>" +
+                "<p><b>Unterweisung für Eltern: Der Eyetracker wird für eine bestimmte Kopfhaltung kalibriert. " +
+                "Bitte stellen Sie sicher, dass:</b><</p>" +
+                "<ul>" +
+                "<li>Das Gesicht Ihres Kindes ist auf dem Video sichtbar und wird mit einem blauen Netz erkannt, während es auf den Bildschirm schaut (nicht auf Ihr Gesicht).</li>" +
+                "<li>Die Position / Kopfhaltung ist für Sie und Ihr Kind bequem und kann für den Rest der Studie ohne viel Bewegung beibehalten werden.</li>" +
+                "</ul>",
+            instructionsPositioningInfant: "",
+            instructionsPositioningCheckInfant: "<h3>Schritt 2: Mittelposition setzen</h3>" +
+                "<p><b>Unterweisung für Eltern: Bitte lesen Sie sorgfältig </b><</p>" +
+                "<p>Wollen Sie diese Pose (grünes Netz) verwenden oder zurückgehen?</p>" +
+                "<ul>" +
+                "<li>Ist die Pose dem Bildschirm zugewandt und für Ihr Kind bequem?</li>" +
+                "<li>Ist die Pose ungefähr horizontal zentriert und das Gesicht gut sichtbar?</li>" +
+                "<li>Wenn man nicht zurückgehen und die Mittelstellung neu definieren will.</li>" +
+                "</ul>",
+            instructionsPreCalibInfant: "<h3>Schritt 3: Kalibrierung</h3>" +
+                "<p><b>Unterweisung für Eltern: Bitte lesen Sie sorgfältig </b><</p>" +
+                "<ul>" +
+                "<li>Jetzt beginnt die Kalibrierung. Bitte bewegen Sie die Webcam oder den Bildschirm NICHT mehr, sonst wird die Kalibrierung fehlschlagen.</li>" +
+                "<li>Wir präsentieren Tiere an verschiedenen Positionen auf dem Bildschirm und zeichnen den Blick Ihres Kindes auf, wenn es diese Tiere ansieht.</li>" +
+                "<li> Damit die Kalibrierung funktioniert, muss Ihr Kind diese Tiere anschauen und in einer stabilen Position auf Ihrem Labor sitzen, ohne starke Kopfbewegungen während und nach der Kalibrierung.</li>" +
+                "</ul>"
+
+        }
+
     },
     Spanish: {
         library: "Biblioteca",
@@ -426,7 +690,7 @@ ExpData.prototype.staticTranslations = {
         calibDistance1: "Su distancia a la pantalla (en cm) es: ",
         calibDistance2: "centímetro",
         requestPermissionHeader: "Requiere permiso del dispositivo",
-        requestPermissionBody: "Este experimento requiere el acceso a su cámara web o micrófono. En la siguiente pantalla, permite el acceso a tu cámara web o al micrófono para continuar."
+        requestPermissionBody: "Este experimento requiere el acceso a su cámara web o micrófono. En la siguiente pantalla, permite el acceso a tu cámara web o al micrófono para continuar.",
     },
 
     Portuguese: {
