@@ -700,8 +700,6 @@ ExpData.prototype.staticTranslations = {
         requestPermissionHeader: "Requiere permiso del dispositivo",
         requestPermissionBody: "Este experimento requiere el acceso a su cámara web o micrófono. En la siguiente pantalla, permite el acceso a tu cámara web o al micrófono para continuar.",
         eyetracking: {
-
-
             previousCalib1: "Usar los datos de calibración anteriores",
             previousCalib2: "Reejecutar la calibración",
             calibLoading: "Calibración de carga... por favor espere...",
@@ -788,7 +786,6 @@ ExpData.prototype.staticTranslations = {
                 "<li>Si la postura de la cabeza no es reconocida en cualquier momento, relájate, siéntate derecho de nuevo, y sigue las instrucciones.</li>" +
                 "<li>Después de la calibración NO se aleje de la pantalla y evite los movimientos fuertes de la cabeza.</li>" +
                 "</ul>",
-
 
             instructionsExistingCalibDataFoundInfant: "<h3> Calibración de seguimiento de ojos</h3>" +
                 "<p>Encontramos datos de calibración anteriores en la caché de su navegador. Puedes saltarte la calibración si:" +
@@ -911,7 +908,143 @@ ExpData.prototype.staticTranslations = {
         calibDistance1: "Sua distância da tela (em cm) é: ",
         calibDistance2: "centímetros",
         requestPermissionHeader: "Permissão de Dispositivo Necessária",
-        requestPermissionBody: "Este experimento requer acesso à sua webcam ou microfone. Permita o acesso à sua webcam ou microfone para continuar."
+        requestPermissionBody: "Este experimento requer acesso à sua webcam ou microfone. Permita o acesso à sua webcam ou microfone para continuar.",
+        eyetracking: {
+
+
+            previousCalib1: "Utilizar Dados de Calibração Anteriores",
+            previousCalib2: "Re-executar a calibração.",
+            calibLoading: "calibragem de carga... por favor aguarde...",
+            headPoseBlueMesh: "<p>Posicione por favor a cabeça de forma a que a malha azul esteja alinhada com a malha alvo verde:</p>",
+            feedbackHeadpose1: "Por favor, certifique-se de que o seu rosto está visível na sua webcam",
+            feedbackHeadpose2: "Por favor, aproxime-se da câmara.",
+            feedbackHeadpose3: "Por favor, dirija-se à webcam e coloque a webcam perto do monitor",
+            feedbackHeadpose4: "Por favor, certifique-se de que a sua cabeça está virada para cima",
+            feedbackHeadpose5: "Por favor, mova-se mais para a esquerda",
+            feedbackHeadpose6: "Por favor, avance mais para a direita",
+            feedbackHeadpose7: "Por favor, avance mais para baixo",
+            feedbackHeadpose8: "Por favor, avancem mais para cima",
+
+            feedbackHeadpose9: "Por favor, levantem a cabeça",
+            feedbackHeadpose10: "Por favor desloque a cabeça para baixo",
+            feedbackHeadpose11: "Por favor, desloque a sua cabeça para a direita",
+            feedbackHeadpose12: "Por favor, desloque a sua cabeça para a esquerda",
+            feedbackHeadpose13: "Por favor incline a cabeça para baixo",
+            feedbackHeadpose14: "Por favor incline a cabeça para cima",
+            feedbackHeadpose15: "Por favor, incline a cabeça para a esquerda",
+            feedbackHeadpose16: "Por favor, incline a cabeça para a direita",
+            feedbackHeadpose17: "Por favor, aproxime-se da câmara.",
+            feedbackHeadpose18: "Por favor afaste-se da came.",
+
+            countdown1: "Óptimo! Agora, por favor mantenha esta pose de cabeça... Comece em ",
+            poseError: "<p>Perdeste a pose da cabeça. Por favor realinhar a sua pose da cabeça para a malha verde:</p>",
+            screenResolutionError: "A resolução do ecrã foi alterada. Por favor, reinicie a calibração",
+
+
+            instructionsExistingCalibDataFoundAdult: "<h3>Calibração do rastreador ocular</h3>" +
+                "<p> Encontrámos dados de calibração anteriores na cache do seu navegador. Pode saltar a calibração se:" +
+                "<ul>" +
+                "<li>é a mesma pessoa que calibrou na sessão anterior.</li>" +
+                "<li>o ambiente e as condições de iluminação não mudaram.</li>" +
+                "</ul></p>",
+            instructionsPreEnvironmentAdult: "<h3>Calibração do rastreador ocular</h3>" +
+                "<p><b>Por favor leia com atenção</b></p>" +
+                "<p>Para usar a sua webcam para localizar os olhos, precisa de " +
+                "ser calibrado para o seu ambiente específico. Isto demorará cerca de 3-4 minutos. " +
+                "Antes de iniciar a calibração, certifique-se por favor que:</p>" +
+                "<ul>" +
+                "<li>Você está numa sala calma.</li>" +
+                "<li>Você tem tempo suficiente.</li>" +
+                "<li>Você não usa óculos.</li>" +
+                "<li>A sua webcam está o mais perto possível do centro do seu ecrã (se não estiver integrada no seu monitor de qualquer forma).</li>" +
+                "</ul>",
+            instructionsEnvironmentAdult: "<h3>Passo 1: Iluminação de configuração</h3>" +
+                "<p>Por favor, certifique-se de que:</p>" +
+                "<li>Não há nenhuma fonte de luz brilhante (janela, lâmpada) atrás de si visível na imagem.</li>" +
+                "<li>Sua cara e olhos devem ser bem iluminados de frente.</li>" +
+                "</ul>",
+            instructionsPrePositioningAdult: "<h3>Passo 2: Definir Centro de Posicionamento</h3>" +
+                "<p><b>Por favor leia com atenção</b></p>" +
+                "<p>O visualizador será calibrado para uma pose específica (posição e orientação) da sua cabeça em frente da câmara. " +
+                "No passo seguinte, definirá esta pose de 'centro'. " +
+                "Por favor certifique-se de que:</p>" +
+                "<ul>" +
+                "<li>Esta pose de cabeça é confortável para você manter por muito tempo.</li>" +
+                "<li>Please pay attention, that also the tilt and yaw orientation of your head is comfortable.</li>" +
+                "<li>Por favor ajuste o seu ecrã e a sua webcam no ecrã seguinte, para que a sua webcam possa detectar facilmente os movimentos dos seus olhos quando olha para o ecrã. </li>" +
+                "</ul>",
+            instructionsPositioningAdult: "<h3>Passo 2: Definir Centro de Posicionamento</h3>" +
+                "<ul>" +
+                "<li>Certifique-se de que está de frente para o ecrã numa pose confortável.</li>" +
+                "<li>Se aproxime o suficiente da câmara para que o seu rosto e olhos sejam bem detectados e visíveis.</li>" +
+                "<li>Esta é a última vez para ajustar a posição da câmara e do ecrã.</li>" +
+                "</ul>",
+            instructionsPositioningCheckAdult: "<h3>Passo 2: Definir Centro de Posicionamento</h3>" +
+                "<p>Quer usar esta pose (malha verde) ou voltar atrás?</p>" +
+                "<ul>" +
+                "<li>É a pose virada para o ecrã e confortável para si?</li>" +
+                "<li>É a pose suficientemente próxima da câmara de modo a que os seus olhos sejam bem detectados?</li>" +
+                "</ul>",
+            instructionsPreCalibAdult: "<h3>Passo 3: Calibração</h3>" +
+                "<p><b>Por favor leia com atenção</b></p>" +
+                "<p>Agora a verdadeira calibração começará. Por favor, NÃO mova mais a webcam ou o ecrã, porque isso resulta numa calibração falhada.</p>." +
+                "<ul>" +
+                "<li>Cada passo de calibração tem 2 partes: " +
+                "<ul>" +
+                "<li>Posicione a sua cabeça numa pose especificada (posição e orientação).</li>" +
+                "<li>Keep que posam e fixam nos pontos que são mostrados no ecrã.</li>" +
+                "</ul></li>" +
+                "<li>Para posicionar correctamente a cabeça em cada passo, a melhor opção é tentar sobrepor as malhas do rosto, azul (posição actual) e verde (posição alvo).</li>" +
+                "<li>Se a sua pose de cabeça não for recocalizada em nenhum momento, relaxe, sente-se novamente direito, e siga as instruções.</li>" +
+                "<li>Após a calibração ser feita NÃO se afaste do ecrã e evite movimentos fortes da cabeça.</li>" +
+                "</ul>",
+
+            instructionsExistingCalibDataFoundInfant: "<h3>Calibração do rastreador ocular</h3>" +
+                "<p> Encontrámos dados de calibração anteriores na cache do seu navegador. Pode saltar a calibração se:" +
+                "<ul>" +
+                "<li>é a mesma pessoa que calibrou na sessão anterior.</li>" +
+                "<li>o ambiente e as condições de iluminação não mudaram.</li>" +
+                "</ul></p>",
+            instructionsPreEnvironmentInfant: "<h3>Calibração do rastreador ocular</h3>" +
+                "<p><b>Instrução para os pais: Por favor leia com atenção</b></p>" +
+                "<p>Para usar a sua webcam para localizar os olhos, precisa de " +
+                "ser calibrado para o seu ambiente específico. Isto demorará cerca de 1-2 minutos. " +
+                "Antes de começar, por favor certifique-se que:</p>" +
+                "<ul>" +
+                "<li>Sua criança senta-se confortavelmente no seu colo.</li>" +
+                "<li>Não há nenhuma fonte de luz brilhante (janela, lâmpada) atrás de si visível na imagem.</li>" +
+                "<li>Sua criança não usa óculos.</li>" +
+                "</ul>",
+            instructionsEnvironmentInfant: "",
+            instructionsPrePositioningInfant: "<h3>Passo 1: Definir Centro de Posicionamento</h3>" +
+                "<p><b>Instrução para os pais: O rastreador ocular será calibrado para uma posição específica da cabeça. " +
+                "Por favor certifique-se de que:</b></p>" +
+                "<ul>" +
+                "<li>O seu rosto de criança é visível no vídeo e detectado com uma malha azul, enquanto olha para o ecrã (não o seu).</li>" +
+                "<li>A posição / posição da cabeça é confortável para si e para o seu filho, para manter durante o resto do estudo sem muito movimento.</li>" +
+                "</ul>",
+            instructionsPositioningInfant: "",
+            instructionsPositioningCheckInfant: "<h3>Passo 2: Definir Centro de Posicionamento</h3>" +
+                "<p><b>Instrução para os pais: Por favor leia com atenção</b></p>" +
+                "p>Quer usar esta pose (malha verde) ou voltar atrás?</p>" +
+                "<ul>" +
+                "<li>É a pose virada para o ecrã e confortável para o seu filho?</li>" +
+                "<li>É a pose mais ou menos centrada horizontalmente e o rosto bem visível?</li>" +
+                "<li>Se não voltar atrás e redefinir a pose central.</li>" +
+                "</ul>",
+            instructionsPreCalibInfant: "<h3>Passo 3: Calibração</h3>" +
+                "<p><b>Instrução para os pais: Por favor leia com atenção</b></p>" +
+                "<ul>" +
+                "<li>Agora a calibração começará. Por favor, NÃO mova mais a webcam ou o ecrã, caso contrário a calibração falhará.</li>" +
+                "<li>Apresentaremos animais em diferentes posições no ecrã e registaremos o olhar do seu filho ao olhar para estes animais.</li>" +
+                "<li> Para a calibração funcionar, o seu filho terá de olhar para estes animais, e sentar-se numa posição estável no seu laboratório sem movimentos fortes da cabeça durante e após a calibração.</li>" +
+                "</ul>",
+            countdownMessage1: "continuar a fixar o círculo vermelho",
+            countdownMessage2: "Continuar a fixar o animal",
+            loadingCalib: "Por favor aguarde a calibração para completar:<br>",
+            moveForward: "continuar",
+            moveBackward: "para trás"
+        }
     },
 };
 
