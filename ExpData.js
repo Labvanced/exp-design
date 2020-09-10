@@ -405,7 +405,13 @@ ExpData.prototype.staticTranslations = {
                 "<li>Now the calibration will start. Please, DO NOT move the webcam or screen anymore, otherwise calibration will fail.</li>" +
                 "<li>We will present animals at different positions on the screen and record your child's gaze when looking at these animals.</li>" +
                 "<li>For the calibration to work, your child will need to look at these animals, and sit in a stable position on your lab without strong head movements during and after the calibration.</li>" +
-                "</ul>"
+                "</ul>",
+            countdownMessage1: "keep fixating the red circle",
+            countdownMessage2: "Keep fixating the animal",
+            loadingCalib: "Please wait for calibration to complete:<br>",
+
+            moveForward: "continue",
+            moveBackward: "back"
         }
     },
     German: {
@@ -541,7 +547,7 @@ ExpData.prototype.staticTranslations = {
                 "Bittes stellen Sie folgendes sicher: </p>" +
                 "<ul>" +
                 "<li>Diese Kopfhaltung ist bequem für Sie, um sie lange beizubehalten.</li>" +
-                "<li>Bitte achten Sie darauf, dass auch die Neigungs- und Orientierung Ihres Kopfes angenehm ist.</li>" +
+                "<li>Bitte achten Sie darauf, dass auch die Neigung- und Orientierung Ihres Kopfes angenehm ist.</li>" +
                 "<li>Bitte stellen Sie Ihren Bildschirm und Ihre Webcam auf dem folgenden Bildschirm so ein, dass Ihre Webcam Ihre Augenbewegungen leicht erkennen kann, wenn Sie auf den Bildschirm blicken. </li>" +
                 "</ul>",
             instructionsPositioningAdult: "<h3>Schritt 2: Mittelposition setzen</h3>" +
@@ -569,9 +575,6 @@ ExpData.prototype.staticTranslations = {
                 "<li>Wenn Ihre Kopfhaltung zu irgendeinem Zeitpunkt nicht erkannt wird, entspannen Sie sich, setzen Sie sich wieder gerade hin und folgen Sie den Anweisungen.</li>" +
                 "<li>Nach erfolgter Kalibrierung bewegen Sie sich NICHT vom Bildschirm weg und vermeiden Sie starke Kopfbewegungen.</li>" +
                 "</ul>",
-
-
-
 
             instructionsExistingCalibDataFoundInfant: "<h3>Augenverfolgungs-Kalibrierung</h3>" +
                 "<p>Wir haben frühere Kalibrierungsdaten in Ihrem Browser-Cache gefunden. Sie können die Kalibrierung überspringen, wenn:" +
@@ -612,7 +615,13 @@ ExpData.prototype.staticTranslations = {
                 "<li>Jetzt beginnt die Kalibrierung. Bitte bewegen Sie die Webcam oder den Bildschirm NICHT mehr, sonst wird die Kalibrierung fehlschlagen.</li>" +
                 "<li>Wir präsentieren Tiere an verschiedenen Positionen auf dem Bildschirm und zeichnen den Blick Ihres Kindes auf, wenn es diese Tiere ansieht.</li>" +
                 "<li> Damit die Kalibrierung funktioniert, muss Ihr Kind diese Tiere anschauen und in einer stabilen Position auf Ihrem Labor sitzen, ohne starke Kopfbewegungen während und nach der Kalibrierung.</li>" +
-                "</ul>"
+                "</ul>",
+
+            countdownMessage1: "Fixieren Sie den roten Kreis",
+            countdownMeldung2: "Fixieren Sie das Tier Bild",
+            LadenCalib: "Bitte warten Sie, bis die Kalibrierung abgeschlossen ist:<br>",
+            moveForward: "weiter",
+            moveBackward: "zurück",
 
         }
 
