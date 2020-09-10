@@ -312,7 +312,7 @@ ExpData.prototype.staticTranslations = {
                 "<p>We found previous calibration data in your browser cache. You can skip calibration if:" +
                 "<ul>" +
                 "<li>you are the same person that calibrated in the previous session.</li>" +
-                "<li>the environment and lightning conditions did not change.</li>" +
+                "<li>the environment and lighting conditions did not change.</li>" +
                 "</ul></p>",
             instructionsPreEnvironmentAdult: "<h3>Calibration of eye tracker</h3>" +
                 "<p><b>Please read carefully</b></p>" +
@@ -370,7 +370,7 @@ ExpData.prototype.staticTranslations = {
                 "<p>We found previous calibration data in your browser cache. You can skip calibration if:" +
                 "<ul>" +
                 "<li>you are the same person that calibrated in the previous session.</li>" +
-                "<li>the environment and lightning conditions did not change.</li>" +
+                "<li>the environment and lighting conditions did not change.</li>" +
                 "</ul></p>",
             instructionsPreEnvironmentInfant: "<h3>Calibration of eye tracker</h3>" +
                 "<p><b>Instruction for parents: Please read carefully</b></p>" +
@@ -378,7 +378,7 @@ ExpData.prototype.staticTranslations = {
                 "be calibrated for your specific environment. This will take about 1-2 minutes. " +
                 "Before starting, please make sure that:</p>" +
                 "<ul>" +
-                "<li>Your child sits comfortably on your lab.</li>" +
+                "<li>Your child sits comfortably on your lap.</li>" +
                 "<li>There is no bright light source (window, lamp) behind you visible in the image.</li>" +
                 "<li>Your child does not wear glasses.</li>" +
                 "</ul>",
@@ -513,17 +513,17 @@ ExpData.prototype.staticTranslations = {
             feedbackHeadpose17: "Bitte gehen Sie näher zur Kamera.",
             feedbackHeadpose18: "Bitte gehen Sie von der Kamera weg.",
 
-            Countdown1: "Gut! Behalten Sie jetzt bitte diese Kopfhaltung bei... Beginnen Sie in ",
+            countdown1: "Gut! Behalten Sie jetzt bitte diese Kopfhaltung bei... Beginnen Sie in ",
             poseError: "<p>Sie haben die Kopfhaltung verloren. Bitte richten Sie Ihre Kopfhaltung wieder auf das grüne Netz aus:</p>",
             screenResolutionError: "Die Bildschirmauflösung wurde geändert. Bitte starten Sie die Kalibrierung neu",
 
 
-            instructionsExistingCalibDataFoundAdult: "<h3>Augenverfolgungs-Kalibrierung</h3>" +
+            instructionsExistingCalibDataFoundAdult: "<h3>Blickbewegungs-Kalibrierung</h3>" +
                 "<p>Wir haben frühere Kalibrierungsdaten in Ihrem Browser-Cache gefunden. Sie können die Kalibrierung überspringen, wenn:" +
                 "<ul>" +
                 "<li>Sie sind dieselbe Person, die sich in der vorherigen Sitzung kalibriert hat.</li>" +
-                "<li>die Umwelt- und Blitzbedingungen haben sich nicht verändert. </li>" +
-                "</ul><</p>",
+                "<li>sich die Umwelt- und Lichtbedingungen nicht geändert haben. </li>" +
+                "</ul></p>",
             instructionsPreEnvironmentAdult: "<h3>Kalibrierung des Eyetrackers</h3>" +
                 "<p><b>Bitte sorgfältig lesen</b></p>" +
                 "<p>Um Ihre Webcam für die Blickverfolgung zu verwenden, muss sie " +
@@ -580,37 +580,37 @@ ExpData.prototype.staticTranslations = {
                 "<p>Wir haben frühere Kalibrierungsdaten in Ihrem Browser-Cache gefunden. Sie können die Kalibrierung überspringen, wenn:" +
                 "<ul>" +
                 "<li>Sie sind dieselbe Person, die sich in der vorherigen Sitzung kalibriert hat.</li>" +
-                "<li>die Umwelt- und Blitzbedingungen haben sich nicht verändert. </li>" +
-                "</ul><</p>",
+                "<li>die Umgebungsbedingungen sich nicht nicht verändert haben. </li>" +
+                "</ul></p>",
             instructionsPreEnvironmentInfant: "<h3>Kalibrierung des Eyetrackers</h3>" +
-                "<p><b>Unterweisung für Eltern: Bitte lesen Sie sorgfältig </b><</p>" +
+                "<p><b>Unterweisung für Eltern: Bitte lesen Sie sorgfältig </b></p>" +
                 "<p>Um Ihre Webcam für die Blickverfolgung zu verwenden, muss sie " +
                 "für Ihre spezifische Umgebung kalibriert werden. Dies wird etwa 1-2 Minuten dauern. " +
                 "Bevor Sie beginnen, vergewissern Sie sich bitte, dass:</p>" +
                 "<ul>" +
-                "<li>Ihr Kind sitzt bequem auf Ihrem Labor. </li>" +
-                "<li>Es ist keine helle Lichtquelle (Fenster, Lampe) hinter Ihnen im Bild sichtbar.</li>" +
-                "<li>Ihr Kind trägt keine Brille.</li>" +
+                "<li>Ihr Kind bequem auf ihrem Schoß sitzt.</li>" +
+                "<li>Keine helle Lichtquelle (Fenster, Lampe) hinter Ihnen im Bild sichtbar ist.</li>" +
+                "<li>Ihr Kind keine Brille trägt.</li>" +
                 "</ul>",
             instructionsEnvironmentInfant: "",
             instructionsPrePositioningInfant: "<h3>Schritt 1: Mittelposition setzen</h3>" +
                 "<p><b>Unterweisung für Eltern: Der Eyetracker wird für eine bestimmte Kopfhaltung kalibriert. " +
                 "Bitte stellen Sie sicher, dass:</b><</p>" +
                 "<ul>" +
-                "<li>Das Gesicht Ihres Kindes ist auf dem Video sichtbar und wird mit einem blauen Netz erkannt, während es auf den Bildschirm schaut (nicht auf Ihr Gesicht).</li>" +
+                "<li>Das Gesicht Ihres Kindes ist auf dem Video sichtbar ist und von der blauen Maske erkannt wird während es auf den Bildschirm schaut (und nicht Ihr Gesicht).</li>" +
                 "<li>Die Position / Kopfhaltung ist für Sie und Ihr Kind bequem und kann für den Rest der Studie ohne viel Bewegung beibehalten werden.</li>" +
                 "</ul>",
             instructionsPositioningInfant: "",
             instructionsPositioningCheckInfant: "<h3>Schritt 2: Mittelposition setzen</h3>" +
-                "<p><b>Unterweisung für Eltern: Bitte lesen Sie sorgfältig </b><</p>" +
-                "<p>Wollen Sie diese Pose (grünes Netz) verwenden oder zurückgehen?</p>" +
+                "<p><b>Unterweisung für Eltern: Bitte lesen Sie sorgfältig </b></p>" +
+                "<p>Wollen Sie diese Pose (grüne Maske) verwenden oder zurückgehen?</p>" +
                 "<ul>" +
                 "<li>Ist die Pose dem Bildschirm zugewandt und für Ihr Kind bequem?</li>" +
                 "<li>Ist die Pose ungefähr horizontal zentriert und das Gesicht gut sichtbar?</li>" +
-                "<li>Wenn man nicht zurückgehen und die Mittelstellung neu definieren will.</li>" +
+                "<li>Falls nicht, bitte zurückgehen und die Mittelposition neu definieren.</li>" +
                 "</ul>",
             instructionsPreCalibInfant: "<h3>Schritt 3: Kalibrierung</h3>" +
-                "<p><b>Unterweisung für Eltern: Bitte lesen Sie sorgfältig </b><</p>" +
+                "<p><b>Unterweisung für Eltern: Bitte lesen Sie sorgfältig </b></p>" +
                 "<ul>" +
                 "<li>Jetzt beginnt die Kalibrierung. Bitte bewegen Sie die Webcam oder den Bildschirm NICHT mehr, sonst wird die Kalibrierung fehlschlagen.</li>" +
                 "<li>Wir präsentieren Tiere an verschiedenen Positionen auf dem Bildschirm und zeichnen den Blick Ihres Kindes auf, wenn es diese Tiere ansieht.</li>" +
