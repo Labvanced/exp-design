@@ -50,12 +50,35 @@ VideoElement.prototype.iconPath = "/resources/icons/tools/tool_video.svg";
 VideoElement.prototype.dataType = ["string", "string", "file"];
 VideoElement.prototype.modifiableProp = ["file_id", "file_orig_name", "file"];
 VideoElement.prototype.displayNames = ["file_id", "Filename", "Filedata"];
+VideoElement.prototype.actionTypes = ["StartPlayback", "StopPlayback"];
 VideoElement.prototype.numVarNamesRequired = 0;
 
 VideoElement.prototype.switchPlayState = function () {
     this.currentlyPlaying(!this.currentlyPlaying());
 };
 
+VideoElement.prototype.getActionTypes = function () {
+    return VideoElement.prototype.actionTypes;
+};
+
+VideoElement.prototype.getTriggerTypes = function () {
+    return VideoElement.prototype.triggerTypes;
+};
+
+VideoElement.prototype.executeAction = function (actionType) {
+    if (actionType == "StartPlayback") {
+        console.log("StartPlayback");
+        if (!this.currentlyPlaying()) {
+            this.currentlyPlaying(true);
+        }
+    }
+    else if (actionType == "StopPlayback") {
+        console.log("StopPlayback");
+        if (this.currentlyPlaying()) {
+            this.currentlyPlaying(false);
+        }
+    }
+};
 
 VideoElement.prototype.dispose = function () {
     console.log("disposing VideoEditViewModel");
