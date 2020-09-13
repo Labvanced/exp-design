@@ -49,7 +49,7 @@
 <template id='audio-preview-template'>
     <audio data-bind="attr: {width: dataModel.parent.editorWidth(), height: dataModel.parent.editorHeight()}"
            preload="auto">
-        <source data-bind="attr: {src: dataModel.audioSource()}">
+        <source class="audioSource">
         Your browser does not support HTML5 audio.
     </audio>
 
@@ -72,8 +72,7 @@
 
 <template id='audio-playerview-template'>
     <audio preload="auto">
-        <source class="preloadedSource">
-        <source data-bind="attr: {src: dataModel.audioSource()}">
+        <source class="audioSource">
         Your browser does not support HTML5 audio.
     </audio>
     <span data-bind="if: dataModel.showMediaControls"

@@ -11,9 +11,6 @@ var VideoElement = function (expData) {
     this.file_orig_name = ko.observable(null);
     this.showMediaControls = ko.observable(true);
 
-    this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
-    this.currentTimePercentage = ko.observable(0);
-
     this.shortName = ko.computed(function () {
         if (self.file_orig_name()) {
             return (self.file_orig_name().length > 10 ? self.file_orig_name().substring(0, 9) + '...' : self.file_orig_name());
@@ -37,9 +34,11 @@ var VideoElement = function (expData) {
         }
     }, this);
 
-    this.subscribersForJumpEvents = [];
-
     ///// not serialized
+    this.subscribersForJumpEvents = [];
+    this.subscribersForActions = [];
+    this.currentlyPlaying = ko.observable(false); // not serialized at the moment... maybe later?
+    this.currentTimePercentage = ko.observable(0);
     this.selected = ko.observable(false);
     this.file = ko.observable(null);
     /////
@@ -50,11 +49,17 @@ VideoElement.prototype.iconPath = "/resources/icons/tools/tool_video.svg";
 VideoElement.prototype.dataType = ["string", "string", "file"];
 VideoElement.prototype.modifiableProp = ["file_id", "file_orig_name", "file"];
 VideoElement.prototype.displayNames = ["file_id", "Filename", "Filedata"];
-VideoElement.prototype.actionTypes = ["StartPlayback", "StopPlayback"];
+VideoElement.prototype.actionTypes = ["StartPlayback", "StopPlayback", "PausePlayback", "Mute", "Unmute"];
+VideoElement.prototype.triggerTypes = ["PlaybackStarted", "PlaybackStopped"];
 VideoElement.prototype.numVarNamesRequired = 0;
 
 VideoElement.prototype.switchPlayState = function () {
-    this.currentlyPlaying(!this.currentlyPlaying());
+    if (this.currentlyPlaying()) {
+        this.executeAction("PausePlayback");
+    }
+    else {
+        this.executeAction("StartPlayback");
+    }
 };
 
 VideoElement.prototype.getActionTypes = function () {
@@ -66,22 +71,10 @@ VideoElement.prototype.getTriggerTypes = function () {
 };
 
 VideoElement.prototype.executeAction = function (actionType) {
-    if (actionType == "StartPlayback") {
-        console.log("StartPlayback");
-        if (!this.currentlyPlaying()) {
-            this.currentlyPlaying(true);
-        }
+    console.log("video element executeAction " + actionType);
+    for (var i = 0; i < this.subscribersForActions.length; i++) {
+        this.subscribersForActions[i](actionType);
     }
-    else if (actionType == "StopPlayback") {
-        console.log("StopPlayback");
-        if (this.currentlyPlaying()) {
-            this.currentlyPlaying(false);
-        }
-    }
-};
-
-VideoElement.prototype.dispose = function () {
-    console.log("disposing VideoEditViewModel");
 };
 
 VideoElement.prototype.jumpToByFraction = function (fraction) {
@@ -96,6 +89,11 @@ VideoElement.prototype.jumpToByTime = function (time) {
     for (var i = 0; i < this.subscribersForJumpEvents.length; i++) {
         this.subscribersForJumpEvents[i]({ jumpToTime: time });
     }
+};
+
+VideoElement.prototype.dispose = function () {
+    this.subscribersForJumpEvents = [];
+    this.subscribersForActions = [];
 };
 
 /**
@@ -169,77 +167,31 @@ VideoEditViewModel.prototype.dispose = function () {
     this.subscriberTimePercentage.dispose();
 };
 
-function getBlobURL(url, mime, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", url);
-    xhr.responseType = "arraybuffer";
-
-    xhr.addEventListener("load", function () {
-
-        var arrayBufferView = new Uint8Array(this.response);
-        var blob = new Blob([arrayBufferView], { type: mime });
-        var url = null;
-
-        if (window.URL) {
-            url = window.URL.createObjectURL(blob);
-        } else if (window.URL && window.URL.createObjectURL) {
-            url = window.URL.createObjectURL(blob);
-        }
-
-        callback(url, blob);
-    });
-    xhr.send();
-}
-
 /******************* View Model for Preview and for Player ***********************/
 
 var VideoPreviewAndPlayerViewModel = function (dataModel, componentInfo) {
     var self = this;
     this.element = componentInfo.element;
     this.dataModel = dataModel;
+    this.sourceSubscriber = null;
+    this.videoElem = $(this.element).find('video')[0];
+    this.videoSourceElem = $(this.element).find('.videoSource')[0];
+    this.startPlaybackAfterLoading = false;
+    this.loading = false;
 
+    if (this.videoSourceElem) {
+        this.updateSource();
 
-
-    var myPreloadedVideoSource = $(this.element).find('.videoSource')[0];
-    if (myPreloadedVideoSource) {
-        this.updateVideoSource = function () {
-            if (!self.dataModel.vidSource()) {
-                return;
-            }
-            // check if we have it preloaded:
-            var videoElem;
-            var htmlObjectUrl;
-            if (typeof player !== 'undefined') {
-                var file_id = self.dataModel.modifier().selectedTrialView.file_id();
-                htmlObjectUrl = player.playerPreloader.preloadedObjectUrlsById[file_id];
-                videoElem = player.playerPreloader.queue.getResult(file_id);
-            }
-
-            if (videoElem instanceof HTMLVideoElement && htmlObjectUrl) {
-                myPreloadedVideoSource.src = htmlObjectUrl;
-                $(self.element).find('video')[0].load();
-            }
-            else {
-                getBlobURL(self.dataModel.vidSource(), "video/mp4", function (url, blob) {
-                    myPreloadedVideoSource.src = url;
-                    $(self.element).find('video')[0].load();
-                });
-            }
-
-        };
-        this.updateVideoSource();
-        //TODO updateVideoSource is called twice because vidSource changes once for file_id and once for file_orig_name
-        self.dataModel.vidSource.subscribe(function () {
-            self.updateVideoSource();
+        //TODO updateSource is called twice because vidSource changes once for file_id and once for file_orig_name
+        this.sourceSubscriber = this.dataModel.vidSource.subscribe(function () {
+            self.updateSource();
         });
     }
 
     // only add playback functionality if not in sequence view:
     if ($(this.element).parents('#sequenceView').length == 0) {
 
-        var myVideo = $(this.element).find('video')[0];
         var seekBar = $(this.element).find('.seek-bar')[0];
-
         seekBar.addEventListener("click", function (param1) {
             var widthClicked = param1.pageX - $(this).offset().left;
             var totalWidth = $(this)[0].getBoundingClientRect().width;
@@ -247,54 +199,135 @@ var VideoPreviewAndPlayerViewModel = function (dataModel, componentInfo) {
             dataModel.jumpToByFraction(fractionClicked);
         });
 
-        this.dataModel.currentlyPlaying.subscribe(function (value) {
-            if (value) {
-                myVideo.play();
-            }
-            else {
-                myVideo.pause();
-            }
-        });
-
         // add subscriber to be notified when the video should jump to specific time:
         this.listenForJumpTo = function (evtParam) {
             if (evtParam.jumpToFraction) {
-                var time = myVideo.duration * evtParam.jumpToFraction;
+                var time = self.videoElem.duration * evtParam.jumpToFraction;
                 console.log("setting video time to " + time);
-                myVideo.currentTime = time;
+                self.videoElem.currentTime = time;
             }
             else if (evtParam.jumpToTime) {
                 console.log("setting video time to " + evtParam.jumpToTime);
-                myVideo.currentTime = evtParam.jumpToTime;
+                self.videoElem.currentTime = evtParam.jumpToTime;
             }
         };
         this.dataModel.subscribersForJumpEvents.push(this.listenForJumpTo);
 
+        this.listenForExecuteAction = function (actionType) {
+            self.executeAction(actionType);
+        };
+        this.dataModel.subscribersForActions.push(this.listenForExecuteAction);
+
+        this.onpauseListener = function () {
+            self.dataModel.currentlyPlaying(false);
+            $(self.dataModel.parent).trigger("PlaybackStopped");
+        };
+        this.videoElem.addEventListener("pause", this.onpauseListener);
+
+        this.oncanplaythroughListener = function () {
+            console.log("Can start playing. startPlaybackAfterLoading=", self.startPlaybackAfterLoading);
+            if (self.loading) {
+                self.loading = false;
+                if (self.startPlaybackAfterLoading) {
+                    self.startPlaybackAfterLoading = false; // to prevent firing again later when seeking with progress bar
+                    self.executeAction("StartPlayback");
+                }
+            }
+        };
+        this.videoElem.addEventListener("canplaythrough", this.oncanplaythroughListener);
+
+        this.onplayListener = function () {
+            self.dataModel.currentlyPlaying(true);
+            $(self.dataModel.parent).trigger("PlaybackStarted");
+        };
+        this.videoElem.addEventListener("play", this.onplayListener);
+
         // this needs to be defined here, but the handle saved in the object so that we can remove it later in dispose:
         this.timeUpdateListener = function () {
-            if (!isNaN(myVideo.duration)) {
-                var percentage = Math.floor(100 * myVideo.currentTime / myVideo.duration);
+            if (!isNaN(self.videoElem.duration)) {
+                var percentage = Math.floor(100 * self.videoElem.currentTime / self.videoElem.duration);
                 self.dataModel.currentTimePercentage(percentage);
             }
         };
-        // Update the seek bar as the video plays
-        myVideo.addEventListener("timeupdate", this.timeUpdateListener);
+        this.videoElem.addEventListener("timeupdate", this.timeUpdateListener);
 
         // on ended listener:
         this.onEndedListener = function () {
             self.dataModel.currentlyPlaying(false);
         };
-        myVideo.addEventListener("ended", this.onEndedListener);
+        this.videoElem.addEventListener("ended", this.onEndedListener);
 
         this.subscriberTimePercentage = this.dataModel.currentTimePercentage.subscribe(function (percentage) {
             seekBar.value = percentage;
         });
     }
+};
 
-    this.dataModel.vidSource.subscribe(function () {
-        var myVideo = $(self.element).find('video')[0];
-        myVideo.load();
-    });
+VideoPreviewAndPlayerViewModel.prototype.updateSource = function () {
+    console.log("updateSource called...")
+    var self = this;
+
+    var vidSource = this.dataModel.vidSource();
+    if (!vidSource) {
+        return;
+    }
+
+    // check if we have it preloaded:
+    var preloadedVideoElem;
+    var htmlObjectUrl;
+    if (typeof player !== 'undefined') {
+        var file_id = this.dataModel.modifier().selectedTrialView.file_id();
+        htmlObjectUrl = player.playerPreloader.preloadedObjectUrlsById[file_id];
+        preloadedVideoElem = player.playerPreloader.queue.getResult(file_id);
+    }
+
+    this.loading = true;
+    if (preloadedVideoElem instanceof HTMLVideoElement && htmlObjectUrl) {
+        // is preloaded already.
+        this.videoSourceElem.src = htmlObjectUrl;
+        this.videoElem.load();
+    }
+    else {
+        // Need to first fully load the file and create a blob to support the following features: 
+        // 1. iOS/iPad/Safari
+        // 2. Seek
+        // 3. OnFinishPlayback-Triggers
+        // (If you need streaming / buffering, then use youtube)
+        getBlobURL(vidSource, "video/mp4", function (url, blob) {
+            self.videoSourceElem.src = url;
+            self.videoElem.load();
+        });
+    }
+
+};
+
+VideoPreviewAndPlayerViewModel.prototype.executeAction = function (actionType) {
+    console.log("execute Action ", actionType);
+    if (actionType == "StartPlayback") {
+        if (this.loading) {
+            console.log("loading is still in progress: execute StartPlayback when loading finishes");
+            this.startPlaybackAfterLoading = true;
+        }
+        else {
+            console.log("readyState == 4");
+            this.videoElem.play();
+        }
+    }
+    else if (actionType == "StopPlayback") {
+        this.startPlaybackAfterLoading = false;
+        this.videoElem.pause();
+        this.videoElem.currentTime = 0;
+    }
+    else if (actionType == "PausePlayback") {
+        this.startPlaybackAfterLoading = false;
+        this.videoElem.pause();
+    }
+    else if (actionType == "Mute") {
+        this.videoElem.muted = true;
+    }
+    else if (actionType == "Unmute") {
+        this.videoElem.muted = false;
+    }
 };
 
 VideoPreviewAndPlayerViewModel.prototype.dispose = function () {
@@ -304,12 +337,33 @@ VideoPreviewAndPlayerViewModel.prototype.dispose = function () {
     if (index > -1) {
         this.dataModel.subscribersForJumpEvents.splice(index, 1);
     }
+
+    var executeCbIndex = this.dataModel.subscribersForActions.indexOf(this.listenForExecuteAction);
+    if (executeCbIndex > -1) {
+        this.dataModel.subscribersForActions.splice(executeCbIndex, 1);
+    }
+
     if (this.subscriberTimePercentage) {
         this.subscriberTimePercentage.dispose();
     }
-    var myVideo = $(this.element).find('video')[0];
-    myVideo.removeEventListener("timeupdate", this.timeUpdateListener);
-    myVideo.removeEventListener("ended", this.onEndedListener);
+    if (this.sourceSubscriber) {
+        this.sourceSubscriber.dispose();
+    }
+
+    this.videoElem.removeEventListener("pause", this.onpauseListener);
+    this.videoElem.removeEventListener("canplaythrough", this.oncanplaythroughListener);
+    this.videoElem.removeEventListener("play", this.onplayListener);
+    this.videoElem.removeEventListener("timeupdate", this.timeUpdateListener);
+    this.videoElem.removeEventListener("ended", this.onEndedListener);
+
+    this.onpauseListener = null;
+    this.oncanplaythroughListener = null;
+    this.onplayListener = null;
+    this.timeUpdateListener = null;
+    this.onEndedListener = null;
+
+    var seekBar = $(this.element).find('.seek-bar')[0];
+    $(seekBar).off("click");
 };
 
 
