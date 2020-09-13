@@ -71,21 +71,18 @@ VideoElement.prototype.getTriggerTypes = function () {
 };
 
 VideoElement.prototype.executeAction = function (actionType) {
-    console.log("video element executeAction " + actionType);
     for (var i = 0; i < this.subscribersForActions.length; i++) {
         this.subscribersForActions[i](actionType);
     }
 };
 
 VideoElement.prototype.jumpToByFraction = function (fraction) {
-    console.log("jump to fraction " + fraction);
     for (var i = 0; i < this.subscribersForJumpEvents.length; i++) {
         this.subscribersForJumpEvents[i]({ jumpToFraction: fraction });
     }
 };
 
 VideoElement.prototype.jumpToByTime = function (time) {
-    console.log("jump to time " + time);
     for (var i = 0; i < this.subscribersForJumpEvents.length; i++) {
         this.subscribersForJumpEvents[i]({ jumpToTime: time });
     }
@@ -163,7 +160,6 @@ var VideoEditViewModel = function (dataModel, componentInfo) {
     seekBar.value = this.dataModel.currentTimePercentage();
 };
 VideoEditViewModel.prototype.dispose = function () {
-    console.log("disposing VideoEditViewModel");
     this.subscriberTimePercentage.dispose();
 };
 
@@ -203,11 +199,9 @@ var VideoPreviewAndPlayerViewModel = function (dataModel, componentInfo) {
         this.listenForJumpTo = function (evtParam) {
             if (evtParam.jumpToFraction) {
                 var time = self.videoElem.duration * evtParam.jumpToFraction;
-                console.log("setting video time to " + time);
                 self.videoElem.currentTime = time;
             }
             else if (evtParam.jumpToTime) {
-                console.log("setting video time to " + evtParam.jumpToTime);
                 self.videoElem.currentTime = evtParam.jumpToTime;
             }
         };
@@ -225,7 +219,6 @@ var VideoPreviewAndPlayerViewModel = function (dataModel, componentInfo) {
         this.videoElem.addEventListener("pause", this.onpauseListener);
 
         this.oncanplaythroughListener = function () {
-            console.log("Can start playing. startPlaybackAfterLoading=", self.startPlaybackAfterLoading);
             if (self.loading) {
                 self.loading = false;
                 if (self.startPlaybackAfterLoading) {
@@ -264,7 +257,6 @@ var VideoPreviewAndPlayerViewModel = function (dataModel, componentInfo) {
 };
 
 VideoPreviewAndPlayerViewModel.prototype.updateSource = function () {
-    console.log("updateSource called...")
     var self = this;
 
     var vidSource = this.dataModel.vidSource();
@@ -302,14 +294,11 @@ VideoPreviewAndPlayerViewModel.prototype.updateSource = function () {
 };
 
 VideoPreviewAndPlayerViewModel.prototype.executeAction = function (actionType) {
-    console.log("execute Action ", actionType);
     if (actionType == "StartPlayback") {
         if (this.loading) {
-            console.log("loading is still in progress: execute StartPlayback when loading finishes");
             this.startPlaybackAfterLoading = true;
         }
         else {
-            console.log("readyState == 4");
             this.videoElem.play();
         }
     }
@@ -331,7 +320,6 @@ VideoPreviewAndPlayerViewModel.prototype.executeAction = function (actionType) {
 };
 
 VideoPreviewAndPlayerViewModel.prototype.dispose = function () {
-    console.log("disposing VideoPreviewAndPlayerViewModel");
     // remove subscriber to be notified when the video should jump to specific time:
     var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
     if (index > -1) {

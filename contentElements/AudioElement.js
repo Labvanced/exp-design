@@ -72,21 +72,18 @@ AudioElement.prototype.getTriggerTypes = function () {
 };
 
 AudioElement.prototype.executeAction = function (actionType) {
-    console.log("audio element executeAction " + actionType);
     for (var i = 0; i < this.subscribersForActions.length; i++) {
         this.subscribersForActions[i](actionType);
     }
 };
 
 AudioElement.prototype.jumpToByFraction = function (fraction) {
-    console.log("jump to fraction " + fraction);
     for (var i = 0; i < this.subscribersForJumpEvents.length; i++) {
         this.subscribersForJumpEvents[i]({ jumpToFraction: fraction });
     }
 };
 
 AudioElement.prototype.jumpToByTime = function (time) {
-    console.log("jump to time " + time);
     for (var i = 0; i < this.subscribersForJumpEvents.length; i++) {
         this.subscribersForJumpEvents[i]({ jumpToTime: time });
     }
@@ -162,7 +159,6 @@ function createAudioComponents() {
         seekBar.value = this.dataModel.currentTimePercentage();
     };
     AudioEditViewModel.prototype.dispose = function () {
-        console.log("disposing AudioEditViewModel");
         this.subscriberTimePercentage.dispose();
         var seekBar = $(this.element).find('.seek-bar')[0];
         seekBar.removeEventListener("change", this.changeListener);
@@ -209,11 +205,9 @@ function createAudioComponents() {
             this.listenForJumpTo = function (evtParam) {
                 if (evtParam.jumpToFraction) {
                     var time = self.audioElem.duration * evtParam.jumpToFraction;
-                    console.log("setting audio time to " + time);
                     self.audioElem.currentTime = time;
                 }
                 else if (evtParam.jumpToTime) {
-                    console.log("setting audio time to " + evtParam.jumpToTime);
                     self.audioElem.currentTime = evtParam.jumpToTime;
                 }
             };
@@ -231,7 +225,6 @@ function createAudioComponents() {
             this.audioElem.addEventListener("pause", this.onpauseListener);
 
             this.oncanplaythroughListener = function () {
-                console.log("Can start playing. startPlaybackAfterLoading=", self.startPlaybackAfterLoading);
                 if (self.loading) {
                     self.loading = false;
                     if (self.startPlaybackAfterLoading) {
@@ -268,11 +261,9 @@ function createAudioComponents() {
                 seekBar.value = percentage;
             });
         }
-
     };
 
     AudioPreviewAndPlayerViewModel.prototype.updateSource = function () {
-        console.log("updateSource called...")
         var self = this;
 
         var audioSource = this.dataModel.audioSource();
@@ -309,14 +300,11 @@ function createAudioComponents() {
     };
 
     AudioPreviewAndPlayerViewModel.prototype.executeAction = function (actionType) {
-        console.log("execute Action ", actionType);
         if (actionType == "StartPlayback") {
             if (this.loading) {
-                console.log("loading is still in progress: execute StartPlayback when loading finishes");
                 this.startPlaybackAfterLoading = true;
             }
             else {
-                console.log("audioElem.readyState == 4");
                 this.audioElem.play();
             }
         }
@@ -338,7 +326,6 @@ function createAudioComponents() {
     };
 
     AudioPreviewAndPlayerViewModel.prototype.dispose = function () {
-        console.log("disposing AudioPreviewAndPlayerViewModel");
         // remove subscriber to be notified when the audio should jump to specific time:
         var index = this.dataModel.subscribersForJumpEvents.indexOf(this.listenForJumpTo);
         if (index > -1) {
