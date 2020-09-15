@@ -60,7 +60,13 @@ ModifierTrialType.prototype.deepCopy = function () {
     var modifiedPropNew = newObj.modifiedProp;
     for (var property in modifiedPropOld) {
         if (modifiedPropOld.hasOwnProperty(property)) {
-            modifiedPropNew[property] = ko.observable(modifiedPropOld[property]());
+            if (typeof this.objToModify.cloneModifiableProp == 'function') {
+                var newPropVal = this.objToModify.cloneModifiableProp(property, modifiedPropOld[property]());
+                modifiedPropNew[property] = ko.observable(newPropVal);
+            }
+            else {
+                modifiedPropNew[property] = ko.observable(modifiedPropOld[property]());
+            }
             newObj.propIsModified[property](true);
         }
     }

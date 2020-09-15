@@ -8,11 +8,11 @@
         <!-- ko ifnot: dataModel.isEditingText -->
         <!-- ko if: previewText()=="" -->
         <div style="margin: auto; color: lightgrey;"
-             data-bind="click: function(data,event) {uc.currentEditorView.checkDblClick(data,event,function(){ dataModel.isEditingText(true) },['true'])}">
+             data-bind="click: function(data,event) { dataModel.isEditingText(true); }">
             text</div>
         <!-- /ko -->
         <div style="margin: auto;"
-             data-bind="html: previewText, click: function(data,event) {uc.currentEditorView.checkDblClick(data,event,function(){ dataModel.isEditingText(true) },['true'])}">
+             data-bind="html: previewText, click: function(data,event) { dataModel.isEditingText(true); }">
         </div>
         <!-- /ko -->
     </div>

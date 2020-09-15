@@ -31,12 +31,7 @@ var ExpData = function (parentExperiment) {
     this.languageTransferOption = ko.observable('empty');
 
     this.translationsEnabled = ko.computed(function () {
-        if (self.translations().length > 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return true;
     });
 
     // not serialized
@@ -1456,11 +1451,6 @@ ExpData.prototype.setPointers = function () {
             elem.setPointers(self.entities);
         }
     });
-
-    // make sure that if translations are eneabled, that all text elements are in translation table:
-    if (this.translationsEnabled()) {
-        this.markAllTextsTranslatable();
-    }
 
     this.updateLanguage();
 

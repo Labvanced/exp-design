@@ -26,6 +26,20 @@ EditableTextElement.prototype.dataType = ["string"];
 EditableTextElement.prototype.displayNames = ["rawText"];
 EditableTextElement.prototype.numVarNamesRequired = 0;
 
+EditableTextElement.prototype.cloneModifiableProp = function (propName, val) {
+    if (propName == "rawText") {
+        if (typeof val == 'number') {
+            // need to create new transation entry:
+            referencedTextInMainLanguage = this.expData.translations()[val].languages()[0]();
+            var newModText = ko.observable(referencedTextInMainLanguage);
+            this.markTextObsTranslatable(newModText);
+            return newModText();
+        }
+        return valOut;
+    }
+    var valOut = val;
+    return valOut;
+}
 
 EditableTextElement.prototype.reLinkVar = function (oldVar, newVar) {
 
@@ -44,9 +58,6 @@ EditableTextElement.prototype.reLinkVar = function (oldVar, newVar) {
 
 
 EditableTextElement.prototype.init = function () {
-    if (this.expData.translationsEnabled()) {
-        this.markTranslatable();
-    }
 };
 
 EditableTextElement.prototype.getAllModifiers = function (modifiersArr) {
@@ -93,11 +104,42 @@ EditableTextElement.prototype.markTranslatable = function () {
 
     this.markTextObsTranslatable(this.rawText);
 
+    // make sure that every trial has it's own unique translation idx:
+    var uniqueTranslationIdxs = {};
+    uniqueTranslationIdxs[this.rawText()] = true;
+
     if (this.modifier().ndimModifierTrialTypes.length > 0) {
         var flattend = this.modifier().getFlattendArray();
         for (var k = 0; k < flattend.length; k++) {
             if (flattend[k].modifiedProp.rawText) {
-                this.markTextObsTranslatable(flattend[k].modifiedProp.rawText);
+
+                var transIdx = flattend[k].modifiedProp.rawText();
+                if (typeof transIdx == 'number') {
+                    if (uniqueTranslationIdxs[transIdx]) {
+                        // already used... need to create new transIdx:
+                        referencedTextInMainLanguage = this.expData.translations()[transIdx].languages()[0]();
+                        flattend[k].modifiedProp.rawText(referencedTextInMainLanguage);
+                        this.markTextObsTranslatable(flattend[k].modifiedProp.rawText);
+                        uniqueTranslationIdxs[flattend[k].modifiedProp.rawText()] = true;
+                    }
+                    else {
+                        // ok
+                    }
+                }
+                else {
+                    // not yet as translationEntry... need to create new transIdx:
+                    this.markTextObsTranslatable(flattend[k].modifiedProp.rawText);
+                    uniqueTranslationIdxs[flattend[k].modifiedProp.rawText()] = true;
+                }
+            }
+            else {
+                // not yet as translationEntry... need to create new transIdx from defaultTrialTransIdx:
+                var defaultTrialTransIdx = this.rawText();
+                referencedTextInMainLanguage = this.expData.translations()[defaultTrialTransIdx].languages()[0]();
+                var newModText = ko.observable(referencedTextInMainLanguage);
+                this.markTextObsTranslatable(newModText);
+                flattend[k].setModification("rawText", newModText());
+                uniqueTranslationIdxs[flattend[k].modifiedProp.rawText()] = true;
             }
         }
     }
@@ -298,26 +340,27 @@ function createEditableTextComponents() {
         this.text = ko.pureComputed({
 
             read: function () {
-                if (typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number') {
-                    if (self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()]) {
-                        if (self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].hasOwnProperty("languages")) {
-                            var rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()]();
+                var trialViewRaw = self.dataModel.modifier().selectedTrialView.rawText();
+                if (typeof trialViewRaw == 'number') {
+                    if (self.expData.translations()[trialViewRaw]) {
+                        if (self.expData.translations()[trialViewRaw].hasOwnProperty("languages")) {
+                            var rawText = self.expData.translations()[trialViewRaw].languages()[self.expData.currentLanguage()]();
                             if (rawText == null) {
-                                rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[0]();
+                                rawText = self.expData.translations()[trialViewRaw].languages()[0]();
                             }
                             return rawText;
                         }
-
                     }
-
-
                 }
                 else {
-                    return self.dataModel.modifier().selectedTrialView.rawText();
+                    return trialViewRaw;
                 }
             },
 
             write: function (value) {
+
+                console.log("writing text");
+
                 var match;
                 var ids = [];
                 //parse varids
@@ -372,9 +415,22 @@ function createEditableTextComponents() {
                 if (typeof viewOnRawTextObs() == 'number') {
 
                     if (viewOnRawTextObs() == self.dataModel.rawText()) {
-                        // still only the default trial:
-                        viewOnRawTextObs(value);
-                        self.dataModel.markTextObsTranslatable(viewOnRawTextObs)
+                        // the current trial VIEW refers to the default trial (i.e. so far it is an unmodified trial).
+
+                        if (self.dataModel.modifier().selectedTrialType().type == 'allTrials') {
+                            // editing default trial:
+                            // therefore reset all trials to point to the same translation entry:
+                            viewOnRawTextObs(self.dataModel.rawText());
+                        }
+                        else {
+                            // editing some trial/condition that has no modification so far:
+                            // first write to modifier (to create new modifierTrialTypes):
+                            viewOnRawTextObs(value);
+
+                            // make sure that all trial modifications (that were created due to above Writing) have translation entries:
+                            self.dataModel.markTranslatable();
+                            //self.dataModel.markTextObsTranslatable(viewOnRawTextObs)
+                        }
                     }
 
                     self.expData.translations()[viewOnRawTextObs()].languages()[self.expData.currentLanguage()](value);
@@ -455,19 +511,20 @@ function createEditableTextComponents() {
         };
 
         this.playerText = ko.computed(function () {
-            if (typeof self.dataModel.modifier().selectedTrialView.rawText() == 'number') {
-                if (self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()]) {
-                    if (self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].hasOwnProperty("languages")) {
-                        var rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[self.expData.currentLanguage()]();
+            var trialViewRaw = self.dataModel.modifier().selectedTrialView.rawText();
+            if (typeof trialViewRaw == 'number') {
+                if (self.expData.translations()[trialViewRaw]) {
+                    if (self.expData.translations()[trialViewRaw].hasOwnProperty("languages")) {
+                        var rawText = self.expData.translations()[trialViewRaw].languages()[self.expData.currentLanguage()]();
                         if (rawText == null) {
-                            rawText = self.expData.translations()[self.dataModel.modifier().selectedTrialView.rawText()].languages()[0]();
+                            rawText = self.expData.translations()[trialViewRaw].languages()[0]();
                         }
                         return rawText.replace(regex, function (match, id) { return replaceId(match, id); });
                     }
                 }
             }
             else {
-                return self.dataModel.modifier().selectedTrialView.rawText().replace(regex, function (match, id) { return replaceId(match, id); });
+                return trialViewRaw.replace(regex, function (match, id) { return replaceId(match, id); });
             }
 
         });
