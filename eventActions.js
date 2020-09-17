@@ -3952,24 +3952,28 @@ ActionControlAV.prototype.isValid = function () {
 ActionControlAV.prototype.run = function (triggerParams) {
     if (this.target()) {
         if (this.actionType() == 'start') {
-            if (!this.event.hasUserGestureTrigger() &&
-                this.target().content() instanceof VideoElement &&
+
+            if (this.target().content() instanceof VideoElement &&
                 (this.event.parent.expData.varBrowserSpec().value().value().indexOf("Safari") >= 0 ||
                     this.event.parent.expData.varSystemSpec().value().value().indexOf("iOS") >= 0)) {
-                var elem = $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
-                elem[0].muted = true;
+
+                if (this.event.hasUserGestureTrigger()) {
+                    // need to unmute again, in case an experiment uses auto play OnFrameStart but also allows to later manually start the video:
+                    this.target().content().executeAction("Unmute");
+                }
+                else {
+                    this.target().content().executeAction("Mute");
+                }
             }
-            this.target().content().currentlyPlaying(true);
+
+            this.target().content().executeAction("StartPlayback");
         }
         else if (this.actionType() == 'end') {
-            this.target().content().currentlyPlaying(false);
-            var elem = $(player.currentFrame.frameView.viewElements.byId[this.target().id()].div).find("audio, video");
-            if (elem.length > 0) {
-                elem[0].currentTime = 0;
-            }
+            this.target().content().executeAction("StopPlayback");
+
         }
         else if (this.actionType() == 'pause') {
-            this.target().content().currentlyPlaying(false);
+            this.target().content().executeAction("PausePlayback");
         }
     }
 
@@ -4054,7 +4058,7 @@ var ActionControlElement = function (event) {
 
 
 ActionControlElement.prototype.type = "ActionControlElement";
-ActionControlElement.prototype.label = "Control Upload/Recording Obj";
+ActionControlElement.prototype.label = "Control Object";
 
 /**
  * returns true if all settings are valid (used in the editor).

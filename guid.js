@@ -132,3 +132,31 @@ function copyTarget(elemId) {
     }
     return succeed;
 }
+
+function getBlobURL(url, fallbackMimetype, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", url);
+    xhr.responseType = "arraybuffer";
+    var ext = url.substr(url.lastIndexOf('.') + 1);
+
+    xhr.addEventListener("load", function () {
+
+        var arrayBufferView = new Uint8Array(this.response);
+
+        var mime = xhr.getResponseHeader("Content-Type");
+        if (!mime) {
+            mime = fallbackMimetype;
+        }
+
+        var blob = new Blob([arrayBufferView], { type: mime });
+        var url = null;
+
+        if (window.URL) {
+            url = window.URL.createObjectURL(blob);
+        } else if (window.URL && window.URL.createObjectURL) {
+            url = window.URL.createObjectURL(blob);
+        }
+        callback(url, blob);
+    });
+    xhr.send();
+}
