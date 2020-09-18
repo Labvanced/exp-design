@@ -1223,63 +1223,96 @@ ExpData.prototype.createVars = function () {
         this.varConditionId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'ordinal', 'Condition_Id'));
         this.varConditionId().setDescription(ExpData.prototype.varDescriptions["varConditionId"]);
     }
+
+
+
     if (!this.varBrowserSpec()) {
         this.varBrowserSpec((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Browser_Spec'));
         this.varBrowserSpec().setDescription(ExpData.prototype.varDescriptions["varBrowserSpec"]);
+        this.varBrowserSpec().isRecorded(false);
+        this.varBrowserSpec().includeInGlobalVarList(false);
     }
     if (!this.varSystemSpec()) {
         this.varSystemSpec((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'System_Spec'));
         this.varSystemSpec().setDescription(ExpData.prototype.varDescriptions["varSystemSpec"]);
+        this.varSystemSpec().isRecorded(false);
+        this.varSystemSpec().includeInGlobalVarList(false);
     }
     if (!this.varAgentSpec()) {
         this.varAgentSpec((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Agent_Spec'));
         this.varAgentSpec().setDescription(ExpData.prototype.varDescriptions["varAgentSpec"]);
+        this.varAgentSpec().isRecorded(false);
+        this.varAgentSpec().includeInGlobalVarList(false);
     }
     if (!this.varBrowserVersionSpec()) {
         this.varBrowserVersionSpec((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'BrowserVersion_Spec'));
         this.varBrowserVersionSpec().setDescription(ExpData.prototype.varDescriptions["varBrowserVersionSpec"]);
+        this.varBrowserVersionSpec().isRecorded(false);
+        this.varBrowserVersionSpec().includeInGlobalVarList(false);
     }
     if (!this.varFullscreenSpec()) {
         this.varFullscreenSpec((new GlobalVar(this.expData)).initProperties('boolean', 'session', 'nominal', 'Always_Fullscreen'));
         this.varFullscreenSpec().resetStartValue();
         this.varFullscreenSpec().startValue().value(true);
         this.varFullscreenSpec().setDescription(ExpData.prototype.varDescriptions["varFullscreenSpec"]);
+        this.varFullscreenSpec().isRecorded(false);
+        this.varFullscreenSpec().includeInGlobalVarList(false);
     }
     if (!this.varTimeMeasureSpecMean()) {
         this.varTimeMeasureSpecMean((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Mean'));
         this.varTimeMeasureSpecMean().setDescription(ExpData.prototype.varDescriptions["varTimeMeasureSpecMean"]);
+        this.varTimeMeasureSpecMean().isRecorded(false);
+        this.varTimeMeasureSpecMean().includeInGlobalVarList(false);
     }
     if (!this.varTimeMeasureSpecStd()) {
         this.varTimeMeasureSpecStd((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Std'));
         this.varTimeMeasureSpecStd().setDescription(ExpData.prototype.varDescriptions["varTimeMeasureSpecStd"]);
+        this.varTimeMeasureSpecStd().isRecorded(false);
+        this.varTimeMeasureSpecStd().includeInGlobalVarList(false);
     }
     if (!this.varCrowdsourcingCode()) {
         this.varCrowdsourcingCode((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Crowdsourcing_Code'));
         this.varCrowdsourcingCode().setDescription(ExpData.prototype.varDescriptions["varCrowdsourcingCode"]);
+        this.varCrowdsourcingCode().isRecorded(false);
+        this.varCrowdsourcingCode().includeInGlobalVarList(false);
     }
     if (!this.varCrowdsourcingSubjId()) {
         this.varCrowdsourcingSubjId((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Crowdsourcing_SubjId'));
         this.varCrowdsourcingSubjId().setDescription(ExpData.prototype.varDescriptions["varCrowdsourcingSubjId"]);
+        this.varCrowdsourcingSubjId().isRecorded(false);
+        this.varCrowdsourcingSubjId().includeInGlobalVarList(false);
     }
+    ///// these should be removed /////
     if (!this.varGazeX()) {
         this.varGazeX((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeX'));
         this.varGazeX().setDescription(ExpData.prototype.varDescriptions["varGazeX"]);
+        this.varGazeX().isRecorded(false);
+        this.varGazeX().includeInGlobalVarList(false);
     }
     if (!this.varGazeY()) {
         this.varGazeY((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeY'));
         this.varGazeY().setDescription(ExpData.prototype.varDescriptions["varGazeY"]);
+        this.varGazeY().isRecorded(false);
+        this.varGazeY().includeInGlobalVarList(false);
     }
+    ////////////////////////////////////
     if (!this.varRoleId()) {
         this.varRoleId((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Role_Id'));
         this.varRoleId().setDescription(ExpData.prototype.varDescriptions["varRoleId"]);
+        this.varRoleId().isRecorded(false);
+        this.varRoleId().includeInGlobalVarList(false);
     }
     if (!this.varDisplayedLanguage()) {
         this.varDisplayedLanguage((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Displayed_Language'));
         this.varDisplayedLanguage().setDescription(ExpData.prototype.varDescriptions["varDisplayedLanguage"]);
+        this.varDisplayedLanguage().isRecorded(false);
+        this.varDisplayedLanguage().includeInGlobalVarList(false);
     }
     if (!this.varPixelDensityPerMM()) {
         this.varPixelDensityPerMM((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'Pixel_Density_PerMM'));
         this.varPixelDensityPerMM().setDescription(ExpData.prototype.varDescriptions["varPixelDensityPerMM"]);
+        this.varPixelDensityPerMM().isRecorded(false);
+        this.varPixelDensityPerMM().includeInGlobalVarList(false);
     }
 
     //  if (!this.varTimeMeasureSpecMax()) {

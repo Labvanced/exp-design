@@ -28,6 +28,7 @@ var GlobalVar = function (expData) {
 
 
     this.isHidden = ko.observable(false);
+    this.includeInGlobalVarList = ko.observable(true);
     this.isRecorded = ko.observable(true);
 
     this.resetAtTrialStart = ko.observable(false);
@@ -524,6 +525,12 @@ GlobalVar.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('isHidden')) {
         this.isHidden(data.isHidden);
     }
+    if (data.hasOwnProperty('includeInGlobalVarList')) {
+        this.includeInGlobalVarList(data.includeInGlobalVarList);
+    }
+
+
+
 
 
 
@@ -581,6 +588,7 @@ GlobalVar.prototype.toJS = function () {
         isRecorded: this.isRecorded(),
         recType: this.recType(),
         isHidden: this.isHidden(),
+        includeInGlobalVarList: this.includeInGlobalVarList(),
 
         type: this.type,
         levels: jQuery.map(this.levels(), function (lvl) { return lvl.toJS(); })
