@@ -1350,6 +1350,46 @@ ExpData.prototype.addTranslation = function (translationEntry) {
     this.translations.push(translationEntry);
 };
 
+ExpData.prototype.getTaskFromFrameId = function (frameId) {
+
+    var found = false;
+    var taskName = "";
+    var entities = this.entities();
+
+    for (var i = 0; i < entities.length && found == false; i++) {
+        var entity = entities[i];
+        if (entity instanceof ExpTrialLoop) {
+            var currTaskName = entity.name();
+            var sequences = entity.subSequencePerFactorGroup();
+            for (var k = 0; k < sequences.length && found == false; k++) {
+                if (sequences[k] instanceof Sequence) {
+                    var sequence = sequences[k];
+                } else {
+                    var sequence = this.entities.byId[sequences[k]];
+                }
+                var elements = sequence.elements();
+                for (var j = 0; j < elements.length && found == false; j++) {
+                    if (elements[j] instanceof FrameData) {
+                        var frame = elements[j];
+                    } else {
+                        var frame = this.entities.byId[elements[j]];
+                    }
+
+                    if (frame.id() === frameId) {
+                        taskName = currTaskName;
+                        found = true;
+                    }
+                }
+
+            }
+
+        }
+    }
+    return taskName;
+
+};
+
+
 
 /**
  * should be called by the ui classes after a change was made to some sub datamodels of this expData.
