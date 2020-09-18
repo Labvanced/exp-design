@@ -304,7 +304,7 @@ GlobalVar.prototype.calcRefUsePath = function (parent, entity, label) {
         startString = task_name + "/" + frame_name + "/" + label + "/" + element_name;
     } else if (parent instanceof FactorGroup) {
         var task_name = parent.expTrialLoop.name();
-        startString = task_name + "/" + label + "/";
+        startString = task_name + "/" + label;
     }
     return startString;
 };
