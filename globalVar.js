@@ -58,6 +58,21 @@ var GlobalVar = function (expData) {
 
     });
 
+    this.factorIsShownAsVar = ko.computed(function () {
+        if (self.isFactor()) {
+            if (self.levels().length > 1) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+        else {
+            return true;
+        }
+
+    });
+
     this.unused = ko.observable(true);
     this.calcUnused();
 
@@ -271,6 +286,29 @@ GlobalVar.prototype.createValueFromDataType = function () {
     }
 };
 
+GlobalVar.prototype.calcRefUsePath = function (parent, entity, label) {
+    var startString = "";
+    if (parent instanceof FrameData) {
+        var frame_name = parent.name();
+        var task_name = this.expData.getTaskFromFrameId(parent.id());
+        startString = task_name + "/" + frame_name + "/" + label;
+    } else if (parent instanceof ExpEvent) {
+        var exp_name = parent.name();
+        var frame_name = parent.parent.name();
+        var task_name = this.expData.getTaskFromFrameId(parent.parent.id());
+        startString = task_name + "/" + frame_name + "/" + exp_name + "/" + label;
+    } else if (parent instanceof FrameElement) {
+        var element_name = parent.name();
+        var frame_name = parent.parent.name();
+        var task_name = this.expData.getTaskFromFrameId(parent.parent.id());
+        startString = task_name + "/" + frame_name + "/" + label + "/" + element_name;
+    } else if (parent instanceof FactorGroup) {
+        var task_name = parent.expTrialLoop.name();
+        startString = task_name + "/" + label + "/";
+    }
+    return startString;
+};
+
 GlobalVarRef = function (entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback) {
     this.entity = entity;
     this.parentNamedEntity = parentNamedEntity;
@@ -278,6 +316,7 @@ GlobalVarRef = function (entity, parentNamedEntity, isWritten, isRead, refLabel,
     this.isRead = isRead;
     this.refLabel = refLabel;
     this.onDeleteCallback = onDeleteCallback;
+
 };
 
 GlobalVar.prototype.addBackRef = function (entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback) {
@@ -287,6 +326,7 @@ GlobalVar.prototype.addBackRef = function (entity, parentNamedEntity, isWritten,
     // only add back references in editor for variables view:
     if (window.uc !== undefined && (uc instanceof Client) && entity) {
         var obj = new GlobalVarRef(entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback);
+        obj.usePath = this.calcRefUsePath(parentNamedEntity, entity, refLabel);
         this.backRefs.push(obj);
         this.calcUnused();
         return obj;
