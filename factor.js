@@ -68,6 +68,7 @@ Factor.prototype.init = function (name, globVar) {
         var globalVar = (new GlobalVar(this.expData)).initProperties('categorical', 'trial', 'nominal', name);
         globalVar.isFactor(true);
         globalVar.isInteracting(true);
+        globalVar.includeInGlobalVarList(false);
         this.globalVar(globalVar);
         this.expData.entities.insertIfNotExist(globalVar);
         this.updateLevels();

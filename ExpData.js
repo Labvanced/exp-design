@@ -1112,67 +1112,79 @@ ExpData.prototype.initVars = function () {
 
 
 ExpData.prototype.createVars = function () {
-    if (!this.varSubjectCode()) {
-        this.varSubjectCode((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Subject_Code'));
-        this.varSubjectCode().setDescription(ExpData.prototype.varDescriptions["varSubjectCode"]);
-    }
+
     if (!this.varSubjectNr()) {
         this.varSubjectNr((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'ordinal', 'Subject_Nr'));
         this.varSubjectNr().setDescription(ExpData.prototype.varDescriptions["varSubjectNr"]);
     }
-    if (!this.varSubjectNrPerSubjGroup()) {
-        this.varSubjectNrPerSubjGroup((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'ordinal', 'Subject_Nr_Per_Group'));
-        this.varSubjectNrPerSubjGroup().setDescription(ExpData.prototype.varDescriptions["varSubjectNrPerSubjGroup"]);
-    }
-    if (!this.varGroupName()) {
-        this.varGroupName((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group_Name'));
-        this.varGroupName().setDescription(ExpData.prototype.varDescriptions["varGroupName"]);
-    }
-    if (!this.varSessionTimeStamp()) {
-        this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'session', 'interval', 'Session_Start_Time'));
-        this.varSessionTimeStamp().setDescription(ExpData.prototype.varDescriptions["varSessionTimeStamp"]);
-    }
-    if (!this.varSessionTimeStampEnd()) {
-        this.varSessionTimeStampEnd((new GlobalVar(this.expData)).initProperties('datetime', 'session', 'interval', 'Session_End_Time'));
-        this.varSessionTimeStampEnd().setDescription(ExpData.prototype.varDescriptions["varSessionTimeStampEnd"]);
-    }
-    if (!this.varSessionName()) {
-        this.varSessionName((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Session_Name'));
-        this.varSessionName().setDescription(ExpData.prototype.varDescriptions["varSessionName"]);
-    }
-    if (!this.varSessionNr()) {
-        this.varSessionNr((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Session_Nr'));
-        this.varSessionNr().setDescription(ExpData.prototype.varDescriptions["varSessionNr"]);
-    }
-    if (!this.varBlockName()) {
-        this.varBlockName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Block_Name'));
-        this.varBlockName().setDescription(ExpData.prototype.varDescriptions["varBlockName"]);
-    }
-    if (!this.varBlockNr()) {
-        this.varBlockNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'ordinal', 'Block_Nr'));
-        this.varBlockNr().setDescription(ExpData.prototype.varDescriptions["varBlockNr"]);
-    }
-    if (!this.varTaskName()) {
-        this.varTaskName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Task_Name'));
-        this.varTaskName().setDescription(ExpData.prototype.varDescriptions["varTaskName"]);
-    }
-    if (!this.varTaskNr()) {
-        this.varTaskNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'ordinal', 'Task_Nr'));
-        this.varTaskNr().setDescription(ExpData.prototype.varDescriptions["varTaskNr"]);
+    if (!this.varTrialNr()) {
+        this.varTrialNr((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'ordinal', 'Trial_Nr'));
+        this.varTrialNr().setDescription(ExpData.prototype.varDescriptions["varTrialNr"]);
     }
     if (!this.varTrialId()) {
         this.varTrialId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'ordinal', 'Trial_Id'));
         this.varTrialId().setDescription(ExpData.prototype.varDescriptions["varTrialId"]);
-    }
-    if (!this.varTrialNr()) {
-        this.varTrialNr((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'ordinal', 'Trial_Nr'));
-        this.varTrialNr().setDescription(ExpData.prototype.varDescriptions["varTrialNr"]);
     }
     if (!this.varConditionId()) {
         this.varConditionId((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'ordinal', 'Condition_Id'));
         this.varConditionId().setDescription(ExpData.prototype.varDescriptions["varConditionId"]);
     }
 
+    if (!this.varSubjectCode()) {
+        this.varSubjectCode((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Subject_Code'));
+        this.varSubjectCode().setDescription(ExpData.prototype.varDescriptions["varSubjectCode"]);
+        this.varSubjectCode().includeInGlobalVarList(false);
+    }
+    if (!this.varSubjectNrPerSubjGroup()) {
+        this.varSubjectNrPerSubjGroup((new GlobalVar(this.expData)).initProperties('numeric', 'subject', 'ordinal', 'Subject_Nr_Per_Group'));
+        this.varSubjectNrPerSubjGroup().setDescription(ExpData.prototype.varDescriptions["varSubjectNrPerSubjGroup"]);
+        this.varSubjectNrPerSubjGroup().includeInGlobalVarList(false);
+    }
+    if (!this.varGroupName()) {
+        this.varGroupName((new GlobalVar(this.expData)).initProperties('string', 'subject', 'nominal', 'Group_Name'));
+        this.varGroupName().setDescription(ExpData.prototype.varDescriptions["varGroupName"]);
+        this.varGroupName().includeInGlobalVarList(false);
+    }
+    if (!this.varSessionTimeStamp()) {
+        this.varSessionTimeStamp((new GlobalVar(this.expData)).initProperties('datetime', 'session', 'interval', 'Session_Start_Time'));
+        this.varSessionTimeStamp().setDescription(ExpData.prototype.varDescriptions["varSessionTimeStamp"]);
+        this.varSessionTimeStamp().includeInGlobalVarList(false);
+    }
+    if (!this.varSessionTimeStampEnd()) {
+        this.varSessionTimeStampEnd((new GlobalVar(this.expData)).initProperties('datetime', 'session', 'interval', 'Session_End_Time'));
+        this.varSessionTimeStampEnd().setDescription(ExpData.prototype.varDescriptions["varSessionTimeStampEnd"]);
+        this.varSessionTimeStampEnd().includeInGlobalVarList(false);
+    }
+    if (!this.varSessionName()) {
+        this.varSessionName((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Session_Name'));
+        this.varSessionName().setDescription(ExpData.prototype.varDescriptions["varSessionName"]);
+        this.varSessionName().includeInGlobalVarList(false);
+    }
+    if (!this.varSessionNr()) {
+        this.varSessionNr((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Session_Nr'));
+        this.varSessionNr().setDescription(ExpData.prototype.varDescriptions["varSessionNr"]);
+        this.varSessionNr().includeInGlobalVarList(false);
+    }
+    if (!this.varBlockName()) {
+        this.varBlockName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Block_Name'));
+        this.varBlockName().setDescription(ExpData.prototype.varDescriptions["varBlockName"]);
+        this.varBlockName().includeInGlobalVarList(false);
+    }
+    if (!this.varBlockNr()) {
+        this.varBlockNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'ordinal', 'Block_Nr'));
+        this.varBlockNr().setDescription(ExpData.prototype.varDescriptions["varBlockNr"]);
+        this.varBlockNr().includeInGlobalVarList(false);
+    }
+    if (!this.varTaskName()) {
+        this.varTaskName((new GlobalVar(this.expData)).initProperties('string', 'task', 'nominal', 'Task_Name'));
+        this.varTaskName().setDescription(ExpData.prototype.varDescriptions["varTaskName"]);
+        this.varTaskName().includeInGlobalVarList(false);
+    }
+    if (!this.varTaskNr()) {
+        this.varTaskNr((new GlobalVar(this.expData)).initProperties('numeric', 'task', 'ordinal', 'Task_Nr'));
+        this.varTaskNr().setDescription(ExpData.prototype.varDescriptions["varTaskNr"]);
+        this.varTaskNr().includeInGlobalVarList(false);
+    }
 
 
     if (!this.varBrowserSpec()) {
