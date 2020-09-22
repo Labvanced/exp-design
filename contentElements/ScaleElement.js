@@ -335,6 +335,7 @@ ScaleEntry.prototype.init = function (varName) {
     globalVar.scale(GlobalVar.scales[1]);
     globalVar.name(varName);
     globalVar.isObjectVar(true);
+    globalVar.includeInGlobalVarList(false);
     globalVar.resetStartValue();
 
     this.variable(globalVar);

@@ -25,6 +25,7 @@ var ExpData = function (parentExperiment) {
 
     //serialized
     this.studySettings = new StudySettings(this.expData);
+    this.confirmedVariables = ko.observable(false);
 
     this.translations = ko.observableArray([]);
     this.translatedLanguages = ko.observableArray([]);
@@ -121,8 +122,7 @@ ExpData.prototype.oldFixedVarNames = [
 
     'varCrowdsourcingCodeEMPTY',
     'varCrowdsourcingSubjIdEMPTY',
-    'varGazeXEMPTY',
-    'varGazeYEMPTY',
+
     'varRoleIdEMPTY',
     'varDisplayedLanguageEMPTY',
     'varPixelDensityPerMMEMPTY',
@@ -131,9 +131,15 @@ ExpData.prototype.oldFixedVarNames = [
 ];
 
 ExpData.prototype.fixedVarNames = [
-    'varSubjectCode',
+
+    //recorded and global by default
     'varSubjectNr',
-    'varSubjectNrPerSubjGroup',
+    'varTrialNr',
+    'varTrialId',
+    'varConditionId',
+
+    //recorded not global by default
+    'varSubjectCode',
     'varGroupName',
     'varSessionTimeStamp',
     'varSessionTimeStampEnd',
@@ -143,25 +149,24 @@ ExpData.prototype.fixedVarNames = [
     'varBlockNr',
     'varTaskName',
     'varTaskNr',
-    'varTrialId',
-    'varTrialNr',
-    'varConditionId',
+    'varTimeMeasureSpecMean',
+    'varTimeMeasureSpecStd',
+    'varCrowdsourcingCode',
+    'varCrowdsourcingSubjId',
 
+    // dynamically adjusted
+    'varSubjectNrPerSubjGroup',
+    'varRoleId',
+    'varDisplayedLanguage',
+    'varPixelDensityPerMM',
+
+    //not recorded and not global by default
     'varBrowserSpec',
     'varSystemSpec',
     'varAgentSpec',
     'varBrowserVersionSpec',
     'varFullscreenSpec',
-    'varTimeMeasureSpecMean',
-    'varTimeMeasureSpecStd',
 
-    'varCrowdsourcingCode',
-    'varCrowdsourcingSubjId',
-    'varGazeX',
-    'varGazeY',
-    'varRoleId',
-    'varDisplayedLanguage',
-    'varPixelDensityPerMM',
 
     // 'varTimeMeasureSpecMax',
 
@@ -194,8 +199,6 @@ ExpData.prototype.varDescriptions = {
     'varBrowserVersionSpec': 'The variable "BrowserVersion_Spec" holds the value of the browser version used by the participant to perform the experiment. This can be used to later analyze possible differences between browser versions.',
     'varCrowdsourcingCode': 'The variable "Crowdsourcing_Code" holds the value of the unique "crowdsourcing code", typically shown to the subject at end of the experiment to complete the crowdsourcing session and claim the payment.',
     'varCrowdsourcingSubjId': 'The variable "Crowdsourcing_SubjId" holds the value of the unique "identification code" for each crowdsourcing participant. This can be used to later on create a reference between crowdsourcing data on Labvanced and the external crowdsourcing service (e.g Mechanical Turk).',
-    'varGazeX': 'The variable "GazeX" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in X coordinates. This value can be used for calibration and as a "fixation trigger".',
-    'varGazeY': 'The variable "GazeY" is used for webcam based Eyetracking stduies. The value holds the current estimated value of the Gaze/Eye Position in Y coordinates. This value can be used for calibration and as a "fixation trigger".',
     'varDisplayedLanguage': 'The variable "Displayed Language" holds the value of the selected display language, only if there were 2 or more languages to select from. This value can be used to show different content, i.e. texts for different language settings.',
     'varPixelDensityPerMM': 'This variable hold the number of pixels per millimeter of the screen.',
 
@@ -1186,6 +1189,27 @@ ExpData.prototype.createVars = function () {
         this.varTaskNr().includeInGlobalVarList(false);
     }
 
+    if (!this.varTimeMeasureSpecMean()) {
+        this.varTimeMeasureSpecMean((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Mean'));
+        this.varTimeMeasureSpecMean().setDescription(ExpData.prototype.varDescriptions["varTimeMeasureSpecMean"]);
+        this.varTimeMeasureSpecMean().includeInGlobalVarList(false);
+    }
+    if (!this.varTimeMeasureSpecStd()) {
+        this.varTimeMeasureSpecStd((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Std'));
+        this.varTimeMeasureSpecStd().setDescription(ExpData.prototype.varDescriptions["varTimeMeasureSpecStd"]);
+        this.varTimeMeasureSpecStd().includeInGlobalVarList(false);
+    }
+    if (!this.varCrowdsourcingCode()) {
+        this.varCrowdsourcingCode((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Crowdsourcing_Code'));
+        this.varCrowdsourcingCode().setDescription(ExpData.prototype.varDescriptions["varCrowdsourcingCode"]);
+        this.varCrowdsourcingCode().includeInGlobalVarList(false);
+    }
+    if (!this.varCrowdsourcingSubjId()) {
+        this.varCrowdsourcingSubjId((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Crowdsourcing_SubjId'));
+        this.varCrowdsourcingSubjId().setDescription(ExpData.prototype.varDescriptions["varCrowdsourcingSubjId"]);
+        this.varCrowdsourcingSubjId().includeInGlobalVarList(false);
+    }
+
 
     if (!this.varBrowserSpec()) {
         this.varBrowserSpec((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Browser_Spec'));
@@ -1219,44 +1243,6 @@ ExpData.prototype.createVars = function () {
         this.varFullscreenSpec().isRecorded(false);
         this.varFullscreenSpec().includeInGlobalVarList(false);
     }
-    if (!this.varTimeMeasureSpecMean()) {
-        this.varTimeMeasureSpecMean((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Mean'));
-        this.varTimeMeasureSpecMean().setDescription(ExpData.prototype.varDescriptions["varTimeMeasureSpecMean"]);
-        this.varTimeMeasureSpecMean().isRecorded(false);
-        this.varTimeMeasureSpecMean().includeInGlobalVarList(false);
-    }
-    if (!this.varTimeMeasureSpecStd()) {
-        this.varTimeMeasureSpecStd((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Std'));
-        this.varTimeMeasureSpecStd().setDescription(ExpData.prototype.varDescriptions["varTimeMeasureSpecStd"]);
-        this.varTimeMeasureSpecStd().isRecorded(false);
-        this.varTimeMeasureSpecStd().includeInGlobalVarList(false);
-    }
-    if (!this.varCrowdsourcingCode()) {
-        this.varCrowdsourcingCode((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Crowdsourcing_Code'));
-        this.varCrowdsourcingCode().setDescription(ExpData.prototype.varDescriptions["varCrowdsourcingCode"]);
-        this.varCrowdsourcingCode().isRecorded(false);
-        this.varCrowdsourcingCode().includeInGlobalVarList(false);
-    }
-    if (!this.varCrowdsourcingSubjId()) {
-        this.varCrowdsourcingSubjId((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Crowdsourcing_SubjId'));
-        this.varCrowdsourcingSubjId().setDescription(ExpData.prototype.varDescriptions["varCrowdsourcingSubjId"]);
-        this.varCrowdsourcingSubjId().isRecorded(false);
-        this.varCrowdsourcingSubjId().includeInGlobalVarList(false);
-    }
-    ///// these should be removed /////
-    if (!this.varGazeX()) {
-        this.varGazeX((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeX'));
-        this.varGazeX().setDescription(ExpData.prototype.varDescriptions["varGazeX"]);
-        this.varGazeX().isRecorded(false);
-        this.varGazeX().includeInGlobalVarList(false);
-    }
-    if (!this.varGazeY()) {
-        this.varGazeY((new GlobalVar(this.expData)).initProperties('numeric', 'trial', 'interval', 'GazeY'));
-        this.varGazeY().setDescription(ExpData.prototype.varDescriptions["varGazeY"]);
-        this.varGazeY().isRecorded(false);
-        this.varGazeY().includeInGlobalVarList(false);
-    }
-    ////////////////////////////////////
     if (!this.varRoleId()) {
         this.varRoleId((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Role_Id'));
         this.varRoleId().setDescription(ExpData.prototype.varDescriptions["varRoleId"]);
@@ -1275,10 +1261,6 @@ ExpData.prototype.createVars = function () {
         this.varPixelDensityPerMM().isRecorded(false);
         this.varPixelDensityPerMM().includeInGlobalVarList(false);
     }
-
-    //  if (!this.varTimeMeasureSpecMax()) {
-    //      this.varTimeMeasureSpecMax((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'TimeMeasure_Max'));
-    //  }
 
     this.reAddEntities();
 
@@ -1363,7 +1345,7 @@ ExpData.prototype.getTaskFromFrameId = function (frameId) {
                 }
                 var elements = sequence.elements();
                 for (var j = 0; j < elements.length && found == false; j++) {
-                    if (elements[j] instanceof FrameData) {
+                    if (elements[j] instanceof FrameData || elements[j] instanceof PageData) {
                         var frame = elements[j];
                     } else {
                         var frame = this.entities.byId[elements[j]];
@@ -1399,6 +1381,7 @@ ExpData.prototype.notifyChanged = function () {
 ExpData.prototype.addGroup = function (group) {
     this.availableGroups.push(group);
     this.addEntity(group);
+    this.varSubjectNrPerSubjGroup().includeInGlobalVarList(true);
     this.notifyChanged();
 };
 
@@ -1865,6 +1848,11 @@ ExpData.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('languageTransferOption')) {
         this.languageTransferOption(data.languageTransferOption);
     }
+    if (data.hasOwnProperty('confirmedVariables')) {
+        this.confirmedVariables(data.confirmedVariables);
+    }
+
+
 
 
     for (var i = 0; i < ExpData.prototype.fixedVarNames.length; i++) {
@@ -1928,7 +1916,8 @@ ExpData.prototype.toJS = function () {
         translatedLanguages: this.translatedLanguages(),
         languageTransferOption: this.languageTransferOption(),
         studySettings: studySettings,
-        entities: jQuery.map(this.entities(), function (entity) { return entity.toJS(); })
+        entities: jQuery.map(this.entities(), function (entity) { return entity.toJS(); }),
+        confirmedVariables: this.confirmedVariables(),
     };
 
     // add all variable ids:
