@@ -83,6 +83,29 @@ var GlobalVar = function (expData) {
     // to fix multiple recordings when assigning new array to array-timeseries:
     this.tmpDisableTimeseriesRec = false;
 
+    this.taskAssociation = ko.computed(function () {
+        var taskName = "Unused";
+        var isSame = true;
+        var refs = self.backRefs();
+        for (var i = 0; i < refs.length && isSame; i++) {
+            var ref = refs[i];
+            var newSplit = ref.usePath.split("/")[0];
+            if (newSplit == taskName || taskName === "Unused") {
+                taskName = newSplit;
+            }
+            else {
+                taskName = "multiple tasks";
+                isSame = false;
+
+            }
+        }
+
+
+
+        return taskName;
+
+    });
+
 };
 
 
@@ -289,7 +312,7 @@ GlobalVar.prototype.createValueFromDataType = function () {
 
 GlobalVar.prototype.calcRefUsePath = function (parent, entity, label) {
     var startString = "";
-    if (parent instanceof FrameData) {
+    if (parent instanceof FrameData || parent instanceof PageData) {
         var frame_name = parent.name();
         var task_name = this.expData.getTaskFromFrameId(parent.id());
         startString = task_name + "/" + frame_name + "/" + label;
@@ -298,7 +321,7 @@ GlobalVar.prototype.calcRefUsePath = function (parent, entity, label) {
         var frame_name = parent.parent.name();
         var task_name = this.expData.getTaskFromFrameId(parent.parent.id());
         startString = task_name + "/" + frame_name + "/" + exp_name + "/" + label;
-    } else if (parent instanceof FrameElement) {
+    } else if (parent instanceof FrameElement || parent instanceof PageElement) {
         var element_name = parent.name();
         var frame_name = parent.parent.name();
         var task_name = this.expData.getTaskFromFrameId(parent.parent.id());

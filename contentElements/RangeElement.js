@@ -44,6 +44,7 @@ RangeElement.prototype.init = function (variableName) {
     globalVar.name(variableName);
     globalVar.isObjectVar(true);
     globalVar.resetStartValue();
+    globalVar.includeInGlobalVarList(false);
     this.variable(globalVar);
 
     var frameOrPageElement = this.parent;

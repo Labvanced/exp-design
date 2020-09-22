@@ -82,6 +82,7 @@ VideoRecordingElement.prototype.init = function (variableName) {
     globalVar.resetAtTrialStart(true);
     globalVar.isObjectVar(true);
     globalVar.resetStartValue();
+    globalVar.includeInGlobalVarList(false);
     this.variable(globalVar);
 
     var frameOrPageElement = this.parent;

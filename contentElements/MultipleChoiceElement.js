@@ -60,6 +60,7 @@ MultipleChoiceElement.prototype.init = function (variableName) {
     globalVar.name(variableName);
     globalVar.resetStartValue();
     globalVar.isObjectVar(true);
+    globalVar.includeInGlobalVarList(false);
     this.variable(globalVar);
 
     var frameOrPageElement = this.parent;
