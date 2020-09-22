@@ -16,12 +16,14 @@ TranslationEntry.prototype.addTranslation = function (translation) {
 };
 
 TranslationEntry.prototype.setPointers = function (entitiesArr) {
-    this.namedEntity = entitiesArr.byId[this.namedEntity];
+    if (this.namedEntity) {
+        this.namedEntity = entitiesArr.byId[this.namedEntity];
+    }
 };
 
 TranslationEntry.prototype.toJS = function () {
     return {
-        namedEntity: this.namedEntity.id(),
+        namedEntity: this.namedEntity ? this.namedEntity.id() : null,
         languages: jQuery.map(this.languages(), function (elem) {
             return [elem()]; // use array so that null values are not removed
         })
@@ -30,7 +32,9 @@ TranslationEntry.prototype.toJS = function () {
 
 TranslationEntry.prototype.fromJS = function (data) {
     this.namedEntity = data.namedEntity;
+    var purify_config = { ADD_TAGS: ['vars'], ADD_ATTR: ['globvarid'] };
     this.languages(jQuery.map(data.languages, function (elem) {
-        return ko.observable(elem);
+        var clean = DOMPurify.sanitize(elem, purify_config);
+        return ko.observable(clean);
     }));
 };

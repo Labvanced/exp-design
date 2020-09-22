@@ -295,9 +295,28 @@ EditableTextElement.prototype.toJS = function () {
 
 EditableTextElement.prototype.fromJS = function (data) {
     this.type = data.type;
-    this.rawText(data.rawText);
+
+    var purify_config = { ADD_TAGS: ['vars'], ADD_ATTR: ['globvarid'] };
+    if (typeof this.rawText() === 'number') {
+        this.rawText(data.rawText);
+    }
+    else {
+        this.rawText(DOMPurify.sanitize(data.rawText, purify_config));
+    }
+
     this.modifier(new Modifier(this.expData, this));
     this.modifier().fromJS(data.modifier);
+
+    if (this.modifier().ndimModifierTrialTypes.length > 0) {
+        var flattend = this.modifier().getFlattendArray();
+        for (var k = 0; k < flattend.length; k++) {
+            if (flattend[k].modifiedProp.rawText) {
+                if (typeof flattend[k].modifiedProp.rawText() != 'number') {
+                    flattend[k].modifiedProp.rawText(DOMPurify.sanitize(flattend[k].modifiedProp.rawText(), purify_config));
+                }
+            }
+        }
+    }
 
     // convert and fix double ids in dataModel by merging data.globalVars and data.globalVarIds:
     var allGlobalVarIds = [];
