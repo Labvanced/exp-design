@@ -122,6 +122,19 @@ var ExpTrialLoop = function (expData) {
         else return '';
 
     });
+
+
+    this.zoomMode.subscribe(function (newVal) {
+        if (newVal == "visualDegree") {
+            if (self.expData.varPixelDensityPerMM()) {
+                self.expData.varPixelDensityPerMM().includeInGlobalVarList(true);
+                self.expData.varPixelDensityPerMM().isRecorded(true);
+                self.expData.notifyChanged();
+
+            }
+
+        }
+    });
     this.useEyetrackingV2.subscribe(function (newVal) {
         if (newVal) {
             self.expData.studySettings.isWebcamEnabled(true);

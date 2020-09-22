@@ -1432,7 +1432,10 @@ ExpData.prototype.notifyChanged = function () {
 ExpData.prototype.addGroup = function (group) {
     this.availableGroups.push(group);
     this.addEntity(group);
-    this.varSubjectNrPerSubjGroup().includeInGlobalVarList(true);
+    if (this.availableGroups().length > 1) {
+        this.varSubjectNrPerSubjGroup().includeInGlobalVarList(true);
+    }
+
     this.notifyChanged();
 };
 
