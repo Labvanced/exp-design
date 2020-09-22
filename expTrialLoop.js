@@ -132,6 +132,15 @@ var ExpTrialLoop = function (expData) {
                 self.expData.notifyChanged();
 
             }
+        }
+        if (newVal != "fullscreen") {
+            if (self.expData.varDisplayWidthX()) {
+                self.expData.varDisplayWidthX().includeInGlobalVarList(true);
+                self.expData.varDisplayWidthX().isRecorded(true);
+                self.expData.varDisplayWidthY().includeInGlobalVarList(true);
+                self.expData.varDisplayWidthY().isRecorded(true);
+                self.expData.notifyChanged();
+            }
 
         }
     });
