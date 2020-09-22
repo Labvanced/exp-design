@@ -157,6 +157,8 @@ ExpData.prototype.fixedVarNames = [
     'varSubjectNrPerSubjGroup',
     'varRoleId',
     'varDisplayedLanguage',
+    'varDisplayWidthX',
+    'varDisplayWidthY',
     'varPixelDensityPerMM',
 
     //not recorded and not global by default
@@ -200,6 +202,8 @@ ExpData.prototype.varDescriptions = {
     'varCrowdsourcingSubjId': 'The variable "Crowdsourcing_SubjId" holds the value of the unique "identification code" for each crowdsourcing participant. This can be used to later on create a reference between crowdsourcing data on Labvanced and the external crowdsourcing service (e.g Mechanical Turk).',
     'varDisplayedLanguage': 'The variable "Displayed Language" holds the value of the selected display language, only if there were 2 or more languages to select from. This value can be used to show different content, i.e. texts for different language settings.',
     'varPixelDensityPerMM': 'This variable hold the number of pixels per millimeter of the screen.',
+    'varDisplayWidthX': 'This variable holds the number of pixels in the X-dimension of the experiment window in pixels.',
+    'varDisplayWidthY': 'This variable holds the number of pixels in the Y-dimension of the experiment window in pixels.',
 
     // {'varTimeMeasureSpecMax':''},
 };
@@ -1311,6 +1315,20 @@ ExpData.prototype.createVars = function () {
         this.varPixelDensityPerMM().setDescription(ExpData.prototype.varDescriptions["varPixelDensityPerMM"]);
         this.varPixelDensityPerMM().isRecorded(false);
         this.varPixelDensityPerMM().includeInGlobalVarList(false);
+    }
+
+    if (!this.varDisplayWidthX()) {
+        this.varDisplayWidthX((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'Window_Width_In_Pixels'));
+        this.varDisplayWidthX().setDescription(ExpData.prototype.varDescriptions["varDisplayWidthX"]);
+        this.varDisplayWidthX().isRecorded(false);
+        this.varDisplayWidthX().includeInGlobalVarList(false);
+    }
+
+    if (!this.varDisplayWidthY()) {
+        this.varDisplayWidthY((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'Window_Height_In_Pixels'));
+        this.varDisplayWidthY().setDescription(ExpData.prototype.varDescriptions["varDisplayWidthY"]);
+        this.varDisplayWidthY().isRecorded(false);
+        this.varDisplayWidthY().includeInGlobalVarList(false);
     }
 
     this.reAddEntities();
