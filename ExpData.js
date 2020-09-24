@@ -28,7 +28,6 @@ var ExpData = function (parentExperiment) {
 
     this.translations = ko.observableArray([]);
     this.translatedLanguages = ko.observableArray([]);
-    this.languageTransferOption = ko.observable('empty');
 
     // customizedStaticStrings stores a map with the same structure as ExpData.prototype.staticTranslations but with values being the index of the TranslationEntry in this.translations
     this.customizedStaticStrings = {
@@ -203,17 +202,15 @@ ExpData.prototype.varDescriptions = {
 };
 
 
-
-// TODO: add categories: general, startSurvey, errors, multiUser, screenCalibration
 ExpData.prototype.staticTranslations = {
     English: {
-        otherStrings: {
+        start: {
             library: "Library",
             langSelect: "This study is available in multiple languages.",
             studyLanguage: "Study Language:",
             continue: "Continue",
             submit: "Submit",
-            confirm: "Confirm",
+            refresh: "Refresh",
             initialSurvey: "Please fill out the fields below (required fields are marked with *):",
             yourGender: "Gender",
             yourGenderMale: "Male",
@@ -223,40 +220,34 @@ ExpData.prototype.staticTranslations = {
             yourCountry: "Country/Location",
             yourFirstLang: "First Language",
             yourEmail: "Email",
-            errorGender: "Gender missing",
-            errorAge: "Age missing",
-            errorCountry: "Country missing",
-            errorLanguage: "Language missing",
-            errorEmail: "Email missing",
-            errorSessionNotReady: "You can currently not take part in this experiment because this study can only be started at certain times.",
-            errorSessionStartIn: "You can start this session in",
-            refresh: "Refresh",
-            errorSessionOver: "You can currently not take part in this experiment because there is no starting time window defined for this study.",
-            loading1: "Loading experiment...",
+            missing: "missing",
+            askEmailConsent1: "Why do we ask for your Email: ",
+            askEmailConsent2: "This is a longitudinal study, consisting of several participation sessions. Your email will only be recoded in order to invite/remind you to take part in the next session. Your Email will not be stored together with other kinds of data, and is accessible only internally to the Labvanced platform. We will not give away " +
+                "your email or use it for different purposes.",
+            yourCrowdsourcingID: "Your worker / crowdsourcing ID (*):",
             loading2: "Loading, please wait",
             loading3: "This might take a while.",
             loadingComplete: "Loading Complete!",
             canStart: "You can now start the experiment. This will switch your browser into fullscreen mode.",
-            keepFullscreen: "Please note that during the experiment you should never press escape or use the \"backward\" button in your browser.",
-            start: "Start",
+            keepFullscreen: "Please note that during the experiment you should not press escape or use the \"backward\" button in your browser.",
+            startButton: "Start",
+            startingExp: "Starting Experiment...",
+            startingIn: "Starting in ",
+            participationAgreement1: " I agree that all the personal data, which I provide here and all my responses will be recorded, and can be used for research purposes in a pseudonymised way. I also agree to the",
+            participationAgreement2: "of the Scicovery GmbH for recording, storing, and handling, participant data.",
+            customRequirement: "Hereby I confirm that I accept the terms and conditions of this study and fulfill the following participation requirements as stated below:",
+            requestPermissionHeader: "Device permissions required",
+            requestPermissionBody: "This experiment requires access to your webcam or microphone. In the following screen, please allow access to your webcam or microphone device to continue.",
+        },
+        errors: {
+            errorSessionNotReady: "You can currently not take part in this experiment because this study can only be started at certain times.",
+            errorSessionStartIn: "You can start this session in",
+            errorSessionOver: "You can currently not take part in this experiment because there is no starting time window defined for this study.",
             playerErrorNoSubjGroup: "Error: there is no subject group defined in the experiment.",
             playerErrorNoSession: "Error: there is no session defined in the subject group in the experiment.",
             playerErrorNoBlock: "Error: there is no block defined in this experiment session.",
-            startingExp: "Starting Experiment...",
-            startingIn: "Starting in ",
-            calibrateIntro: "Distance and screen size are needed for the calibration:",
-            calibrateMethod1: "Specify your screen size manually if you know the size of your monitor.",
-            calibrateScreenSize: "Screen size (diagonal):",
-            calibrateInches: "inches",
-            calibrateMethod2: "Use a standardized ID card (85.60 × 53.98 mm) or any other card of the same size against the screen and try to match the size of the displayed card. " +
-                "You can change the size of the image by dragging the arrow. The calibration is correct if the image exactly matches the size of the card.",
-            endExpMsg: "Thank you! The experiment session is finished.",
-            goToLib: "Go to experiment library",
-            chooseSelection: "Please Choose...",
-            answerPlaceholder: "Participant Answer...",
-            endExpMsgTest: "The test recording of this task is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel.",
-            participationAgreement1: " I agree that all the personal data, which I provide here and all my responses will be recorded, and can be used for research purposes in a pseudonymised way. I also agree to the",
-            participationAgreement2: "of the Scicovery GmbH for recording, storing, and handling, participant data.",
+        },
+        multiUser: {
             multiUserExpLobby: "Multiple Participant Experiment",
             participantsInLobby: "Participants in lobby:",
             readyToStart: "Ready to start?",
@@ -266,24 +257,34 @@ ExpData.prototype.staticTranslations = {
             successfullyMatched_2: " to proceed to experiment!",
             continueJointExpLobby: "continue",
             jointExpTestConnection: "Testing your internet connection. please wait for 30 seconds...",
-            yourCrowdsourcingID: "Your worker / crowdsourcing ID (*):",
-            AdLibraryEndOfStudy: "Take part in more exiting behavioral experiments:",
-            AdRegisterEndOfStudy: "OR register and build your own study for free:",
             inviteFriendMultiUser1: "Need another player? Invite a friend!",
             inviteFriendMultiUser2: "Your Name:",
             inviteFriendMultiUser3: "Your Friends' Email:",
             inviteFriendMultiUser4: "Invite",
-            customRequirement: "Hereby I confirm that I accept the terms and conditions of this study and fulfill the following participation requirements as stated below:",
-            askEmailConsent1: "Why do we ask for your Email: ",
-            askEmailConsent2: "This is a longitudinal study, consisting of several participation sessions. Your email will only be recoded in order to invite/remind you to take part in the next session. Your Email will not be stored together with other kinds of data, and is accessible only internally to the Labvanced platform. We will not give away " +
-                "your email or use it for different purposes.",
+        },
+        screenCalibration: {
+            confirm: "Confirm",
+            calibrateIntro: "Distance and screen size are needed for the calibration:",
+            calibrateMethod1: "Specify your screen size manually if you know the size of your monitor.",
+            calibrateScreenSize: "Screen size (diagonal):",
+            calibrateInches: "inches",
+            calibrateMethod2: "Use a standardized ID card (85.60 × 53.98 mm) or any other card of the same size against the screen and try to match the size of the displayed card. " +
+                "You can change the size of the image by dragging the arrow. The calibration is correct if the image exactly matches the size of the card.",
             calibDistance1: "Your distance to the screen (in cm) is: ",
             calibDistance2: "centimeter",
-            requestPermissionHeader: "Device permissions required",
-            requestPermissionBody: "This experiment requires access to your webcam or microphone. In the following screen, please allow access to your webcam or microphone device to continue.",
+        },
+        content: {
+            chooseSelection: "Please Choose...",
+            answerPlaceholder: "Participant Answer...",
+        },
+        end: {
+            endExpMsg: "Thank you! The experiment session is finished.",
+            goToLib: "Go to experiment library",
+            endExpMsgTest: "The test recording of this task is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel.",
+            moreExperiments: "Take part in more behavioral experiments:",
+            registerAndBuild: "OR register and build your own study for free:",
         },
         eyetracking: {
-
             previousCalib1: "Use Previous Calibration Data",
             previousCalib2: "Rerun Calibration",
             calibLoading: "loading calibration... please wait...",
@@ -296,7 +297,6 @@ ExpData.prototype.staticTranslations = {
             feedbackHeadpose6: "Please move further to the right.",
             feedbackHeadpose7: "Please move further down.",
             feedbackHeadpose8: "Please move further up.",
-
             feedbackHeadpose9: "Please shift your head up.",
             feedbackHeadpose10: "Please shift your head down.",
             feedbackHeadpose11: "Please shift your head right.",
@@ -307,11 +307,9 @@ ExpData.prototype.staticTranslations = {
             feedbackHeadpose16: "Please turn your head right.",
             feedbackHeadpose17: "Please move closer to cam.",
             feedbackHeadpose18: "Please move away from cam.",
-
             countdown1: "Great! Now, please keep this head pose... Start in ",
             poseError: "<p>You lost the head pose. Please realign your head pose to the green mesh:</p>",
             screenResolutionError: "Screen resolution was changed. Please restart the calibration.",
-
             instructionsExistingCalibDataFoundAdult: "<h3>Eye-Tracking Calibration</h3>" +
                 "<p>We found previous calibration data in your browser cache. You can skip calibration if:" +
                 "<ul>" +
@@ -418,13 +416,13 @@ ExpData.prototype.staticTranslations = {
         }
     },
     German: {
-        otherStrings: {
+        start: {
             library: "Experimente",
             langSelect: "Diese Studie ist in mehreren Sprachen verfügbar.",
             studyLanguage: "Studiensprache:",
             continue: "Weiter",
             submit: "Ok",
-            confirm: "Bestätigen",
+            refresh: "Aktualisieren",
             initialSurvey: "Bitte füllen Sie die untenstehenden Felder aus (Pflichtfelder sind mit * gekennzeichnet):",
             yourGender: "Geschlecht",
             yourGenderMale: "Männlich",
@@ -434,40 +432,33 @@ ExpData.prototype.staticTranslations = {
             yourCountry: "Land / Aufenthaltsort",
             yourFirstLang: "Muttersprache",
             yourEmail: "Email",
-            errorGender: "Geschlecht fehlt",
-            errorAge: "Age fehlt",
-            errorCountry: "Land fehlt",
-            errorLanguage: "Sprache fehlt",
-            errorEmail: "Email fehlt",
-            errorSessionNotReady: "Sie können derzeit nicht an diesem Experiment teilnehmen, da diese Studie nur zu bestimmten Zeiten gestartet werden kann.",
-            errorSessionStartIn: "Sie können diese Sitzung starten in",
-            refresh: "Aktualisieren",
-            errorSessionOver: "Sie können derzeit nicht an diesem Experiment teilnehmen, da für diese Studie kein Startzeitfenster definiert ist.",
-            loading1: "Lade experiment...",
+            missing: "fehlt",
+            askEmailConsent1: "Warum fragen wir nach Ihrer E-Mail: ",
+            askEmailConsent2: "Dies ist eine Längsschnittstudie, die aus mehreren Teilnahme-Sitzungen besteht. Ihre E-Mail wird nur neu erfasst, um Sie zur Teilnahme an der nächsten Sitzung einzuladen. Ihre E-Mail wird nicht zusammen mit anderen Arten von Daten gespeichert und ist nur intern für die Labvanced-Plattform zugänglich. Wir geben Ihre E-Mail nicht weiter oder verwenden sie für andere Zwecke.",
+            yourCrowdsourcingID: "Ihre Worker / Crowdsourcing Id (*):",
             loading2: "Lade, bitte warten",
             loading3: "Dies kann eine Weile dauern.",
             loadingComplete: "Fertig geladen!",
             canStart: "Sie können nun das Experiment starten. Dies schaltet Ihren Browser in den Vollbildmodus um.",
-            keepFullscreen: "Bitte beachten Sie, dass Sie während des Experiments niemals die Escape-Taste drücken oder die Schaltfläche \"Zurück\" in Ihrem Browser verwenden sollten.",
-            start: "Start",
+            keepFullscreen: "Bitte beachten Sie, dass Sie während des Experiments nicht die Escape-Taste drücken oder die Schaltfläche \"Zurück\" in Ihrem Browser verwenden sollten.",
+            startButton: "Start",
+            startingExp: "Experiment wird gestartet...",
+            startingIn: "Start in ",
+            participationAgreement1: "Ich stimme zu, dass alle persönlichen Daten, die ich hier zur Verfügung stelle, und alle meine Antworten aufgezeichnet werden und zu Forschungszwecken pseudonymisiert verwendet werden dürfen. Zudem stimme ich den",
+            participationAgreement2: "der Scicovery GmbH bzgl Datenaufnahme, Datenspeicherung, und Datenverwaltung von Teilnehmerdaten zu.",
+            customRequirement: "Ich bestätige hiermit, dass ich mit den folgenden Regeln und Bedingungen der Studie einverstanden bin und folgende Teilnahmebedingungen vollständig erfülle:",
+            requestPermissionHeader: "Geräteberechtigungen erforderlich",
+            requestPermissionBody: "Die Teilnahme an diesem Experiment benötigt Zugriff auf Ihre Webcam oder Ihr Microphone. Um fortzufahren, erlauben Sie bitte auf dem folgenden Bildschirm den Zugriff auf Ihre Webcam oder Ihr Mikrofon.",
+        },
+        errors: {
+            errorSessionNotReady: "Sie können derzeit nicht an diesem Experiment teilnehmen, da diese Studie nur zu bestimmten Zeiten gestartet werden kann.",
+            errorSessionStartIn: "Sie können diese Sitzung starten in",
+            errorSessionOver: "Sie können derzeit nicht an diesem Experiment teilnehmen, da für diese Studie kein Startzeitfenster definiert ist.",
             playerErrorNoSubjGroup: "Fehler: Im Experiment ist keine Versuchspersonengruppe definiert.",
             playerErrorNoSession: "Fehler: in der Versuchspersonengruppe ist keine Experimentssitzung definiert.",
             playerErrorNoBlock: "Fehler: In dieser Experimentssitzung ist kein Versuchsblock definiert.",
-            startingExp: "Experiment wird gestartet...",
-            startingIn: "Start in ",
-            calibrateIntro: "Sitzabstand und Bildschirmgröße sind notwendig für die Kalibrierung:",
-            calibrateMethod1: "Geben Sie Ihre Bildschirmgröße manuell an, wenn Sie die Größe Ihres Monitors kennen.",
-            calibrateScreenSize: "Bildschirmgröße (Diagonal):",
-            calibrateInches: "Inch",
-            calibrateMethod2: "Halten Sie einen standardisierten Ausweis (85.60 × 53.98 mm) oder eine andere Karte der gleichen Größe gegen den Bildschirm und versuchen Sie, die Größe der angezeigten Karte anzupassen. " +
-                "Sie können die Größe des Bildes durch Ziehen des Pfeils ändern. Die Kalibrierung ist korrekt, wenn das Bild genau der Größe der Karte entspricht.",
-            endExpMsg: "Vielen Dank! Die Experimentssitzung ist beendet.",
-            goToLib: "Gehe zur Experiment-Bibliothek",
-            chooseSelection: "Bitte Auswählen...",
-            answerPlaceholder: "Teilnehmer Antwort",
-            endExpMsgTest: "Die Test-Aufnahme dieses Taks ist beendet. Um das ganze Experiment zu testen, oder um Daten aufzunehmen, starten Sie die Studie unter 'Run' in der Navigationsleite.",
-            participationAgreement1: "Ich stimme zu, dass alle persönlichen Daten, die ich hier zur Verfügung stelle, und alle meine Antworten aufgezeichnet werden und zu Forschungszwecken pseudonymisiert verwendet werden dürfen. Zudem stimme ich den",
-            participationAgreement2: "der Scicovery GmbH bzgl Datenaufnahme, Datenspeicherung, und Datenverwaltung von Teilnehmerdaten zu.",
+        },
+        multiUser: {
             multiUserExpLobby: "Experiment mit mehreren Teilnehmern",
             participantsInLobby: "Teilnehmer in der Lobby:",
             readyToStart: "Bereit zum Start?",
@@ -477,23 +468,34 @@ ExpData.prototype.staticTranslations = {
             successfullyMatched_2: "um zu dem Experiment zu gelangen!",
             continueJointExpLobby: "Weiter,",
             jointExpTestConnection: "Ihre Internet-Verbindung wird getestet. Bitte warten Sie ca. 30 Sekunden...",
-            yourCrowdsourcingID: "Ihre Worker / Crowdsourcing Id (*):",
-            AdLibraryEndOfStudy: "Nehmen Sie an weiteren spannenden Online Verhaltensstudien teil:",
-            AdRegisterEndOfStudy: "Oder registrieren Sie sich und erstellen komplett gratis Ihre eigene Studie:",
             inviteFriendMultiUser1: "Brauchen Sie einen Mitspieler? Landen Sie doch einen Freund ein!",
             inviteFriendMultiUser2: "Ihr Name:",
             inviteFriendMultiUser3: "Die Email Adresse Ihres Freundes:",
             inviteFriendMultiUser4: "Einladen",
-            customRequirement: "Ich bestätige hiermit, dass ich mit den folgenden Regeln und Bedingungen der Studie einverstanden bin und folgende Teilnahmebedingungen vollständig erfülle:",
-            askEmailConsent1: "Warum fragen wir nach Ihrer E-Mail: ",
-            askEmailConsent2: "Dies ist eine Längsschnittstudie, die aus mehreren Teilnahme-Sitzungen besteht. Ihre E-Mail wird nur neu erfasst, um Sie zur Teilnahme an der nächsten Sitzung einzuladen. Ihre E-Mail wird nicht zusammen mit anderen Arten von Daten gespeichert und ist nur intern für die Labvanced-Plattform zugänglich. Wir geben Ihre E-Mail nicht weiter oder verwenden sie für andere Zwecke.",
+        },
+        screenCalibration: {
+            confirm: "Bestätigen",
+            calibrateIntro: "Sitzabstand und Bildschirmgröße sind notwendig für die Kalibrierung:",
+            calibrateMethod1: "Geben Sie Ihre Bildschirmgröße manuell an, wenn Sie die Größe Ihres Monitors kennen.",
+            calibrateScreenSize: "Bildschirmgröße (Diagonal):",
+            calibrateInches: "Inch",
+            calibrateMethod2: "Halten Sie einen standardisierten Ausweis (85.60 × 53.98 mm) oder eine andere Karte der gleichen Größe gegen den Bildschirm und versuchen Sie, die Größe der angezeigten Karte anzupassen. " +
+                "Sie können die Größe des Bildes durch Ziehen des Pfeils ändern. Die Kalibrierung ist korrekt, wenn das Bild genau der Größe der Karte entspricht.",
             calibDistance1: "Ihre Distanz zum Bildschirm beträgt:",
             calibDistance2: "Centimeter",
-            requestPermissionHeader: "Geräteberechtigungen erforderlich",
-            requestPermissionBody: "Die Teilnahme an diesem Experiment benötigt Zugriff auf Ihre Webcam oder Ihr Microphone. Um fortzufahren, erlauben Sie bitte auf dem folgenden Bildschirm den Zugriff auf Ihre Webcam oder Ihr Mikrofon.",
+        },
+        content: {
+            chooseSelection: "Bitte Auswählen...",
+            answerPlaceholder: "Teilnehmer Antwort",
+        },
+        end: {
+            endExpMsg: "Vielen Dank! Die Experimentssitzung ist beendet.",
+            goToLib: "Gehe zur Experiment-Bibliothek",
+            endExpMsgTest: "Die Test-Aufnahme dieses Taks ist beendet. Um das ganze Experiment zu testen, oder um Daten aufzunehmen, starten Sie die Studie unter 'Run' in der Navigationsleite.",
+            moreExperiments: "Nehmen Sie an weiteren spannenden Online Verhaltensstudien teil:",
+            registerAndBuild: "Oder registrieren Sie sich und erstellen komplett gratis Ihre eigene Studie:",
         },
         eyetracking: {
-
             previousCalib1: "Vorherige Kalibrierdaten verwenden",
             previousCalib2: "Kalibrierung erneut durchführen",
             calibLoading: "Kalibrierung laden... bitte warten...",
@@ -506,7 +508,6 @@ ExpData.prototype.staticTranslations = {
             feedbackHeadpose6: "Bitte bewegen Sie sich weiter nach rechts.",
             feedbackHeadpose7: "Bitte gehen Sie weiter nach unten.",
             feedbackHeadpose8: "Bitte gehen Sie weiter nach oben.",
-
             feedbackHeadpose9: "Bitte bewegen Sie Ihren Kopf nach oben.",
             feedbackHeadpose10: "Bitte bewegen Sie Ihren Kopf nach unten.",
             feedbackHeadpose11: "Bitte bewegen Sie Ihren Kopf nach rechts.",
@@ -517,12 +518,9 @@ ExpData.prototype.staticTranslations = {
             feedbackHeadpose16: "Bitte drehen Sie Ihren Kopf nach rechts.",
             feedbackHeadpose17: "Bitte gehen Sie näher zur Kamera.",
             feedbackHeadpose18: "Bitte gehen Sie von der Kamera weg.",
-
             countdown1: "Gut! Behalten Sie jetzt bitte diese Kopfhaltung bei... Beginnen Sie in ",
             poseError: "<p>Sie haben die Kopfhaltung verloren. Bitte richten Sie Ihre Kopfhaltung wieder auf das grüne Netz aus:</p>",
             screenResolutionError: "Die Bildschirmauflösung wurde geändert. Bitte starten Sie die Kalibrierung neu",
-
-
             instructionsExistingCalibDataFoundAdult: "<h3>Blickbewegungs-Kalibrierung</h3>" +
                 "<p>Wir haben frühere Kalibrierungsdaten in Ihrem Browser-Cache gefunden. Sie können die Kalibrierung überspringen, wenn:" +
                 "<ul>" +
@@ -580,7 +578,6 @@ ExpData.prototype.staticTranslations = {
                 "<li>Wenn Ihre Kopfhaltung zu irgendeinem Zeitpunkt nicht erkannt wird, entspannen Sie sich, setzen Sie sich wieder gerade hin und folgen Sie den Anweisungen.</li>" +
                 "<li>Nach erfolgter Kalibrierung bewegen Sie sich NICHT vom Bildschirm weg und vermeiden Sie starke Kopfbewegungen.</li>" +
                 "</ul>",
-
             instructionsExistingCalibDataFoundInfant: "<h3>Augenverfolgungs-Kalibrierung</h3>" +
                 "<p>Wir haben frühere Kalibrierungsdaten in Ihrem Browser-Cache gefunden. Sie können die Kalibrierung überspringen, wenn:" +
                 "<ul>" +
@@ -621,24 +618,21 @@ ExpData.prototype.staticTranslations = {
                 "<li>Wir präsentieren Tiere an verschiedenen Positionen auf dem Bildschirm und zeichnen den Blick Ihres Kindes auf, wenn es diese Tiere ansieht.</li>" +
                 "<li> Damit die Kalibrierung funktioniert, muss Ihr Kind diese Tiere anschauen und in einer stabilen Position auf Ihrem Labor sitzen, ohne starke Kopfbewegungen während und nach der Kalibrierung.</li>" +
                 "</ul>",
-
             countdownMessage1: "Fixieren Sie den roten Kreis",
             countdownMeldung2: "Fixieren Sie das Tier Bild",
             LadenCalib: "Bitte warten Sie, bis die Kalibrierung abgeschlossen ist:<br>",
             moveForward: "weiter",
             moveBackward: "zurück",
-
         }
-
     },
     Spanish: {
-        otherStrings: {
+        start: {
             library: "Biblioteca",
             langSelect: "Este estudio está disponible en varios idiomas.",
             studyLanguage: "Idioma del estudio:",
             continue: "Seguir",
             submit: "Enviar",
-            confirm: "Confirmar",
+            refresh: "Actualizar",
             initialSurvey: "Por favor, rellene los siguientes campos (los campos obligatorios están marcados con un *): ",
             yourGender: "Género",
             yourGenderMale: "Masculino",
@@ -648,40 +642,34 @@ ExpData.prototype.staticTranslations = {
             yourCountry: "País / Ubicación",
             yourFirstLang: "Primer Idioma",
             yourEmail: "Correo Electrónico",
-            errorGender: "Falta el género",
-            errorAge: "Falta la edad",
-            errorCountry: "Falta el país",
-            errorLanguage: "Falta el idioma",
-            errorEmail: "Falta el correo electrónico",
-            errorSessionNotReady: "Actualmente no puede participar en este experimento porque este estudio solo puede iniciarse en un horario concreto",
-            errorSessionStartIn: "Puedes comenzar esta sesión en",
-            refresh: "Actualizar",
-            errorSessionOver: "Actualmente no puede participar en este experimento porque aun no se ha definido la hora de inicio del estudio.",
-            loading1: "Cargando el experimento...",
+            missing: "esta perdido",
+            askEmailConsent1: "Por qué solicitamos su correo electrónico: ",
+            askEmailConsent2: "Este es un estudio longitudinal, que consta de varias sesiones.Su correo electrónico solo será recodificado para invitarle / recordarle que participe en la próxima sesión.Su correo electrónico no se almacenará junto con otro tipo de datos, y solo es accesible internamente a la plataforma Labvanced.No se lo revelaremos a nadie" +
+                "su correo electrónico o úselo para diferentes propósitos.",
+            yourCrowdsourcingID: "Su identificación de trabajador / crowdsourcing(*): ",
             loading2: "Cargando, por favor espere",
             loading3: "Esto aún puede tardar.",
             loadingComplete: "Carga completada!",
             canStart: "Ahora puede comenzar el experimento. Esto cambiará su navegador al modo de pantalla completa.",
             keepFullscreen: "Tenga en cuenta que durante el experimento nunca debe presionar escape o usar el botón \"hacia atrás\" en su navegador.",
-            start: "Comience",
+            startButton: "Comience",
+            startingExp: "Iniciando el experimento...",
+            startingIn: "Comenzando en ",
+            participationAgreement1: " Acepto que todos los datos personales que proporciono aquí y todas mis respuestas se registrarán y se podrán utilizar para fines de investigación de forma seudónima. También estoy de acuerdo con el",
+            participationAgreement2: "de Scicovery GmbH para el registro, almacenamiento y manejo de los datos de los participantes.",
+            customRequirement: "Por la presente confirmo que acepto los términos y condiciones de este estudio y cumplo con los siguientes requisitos de participación como se indica a continuación: ",
+            requestPermissionHeader: "Requiere permiso del dispositivo",
+            requestPermissionBody: "Este experimento requiere el acceso a su cámara web o micrófono. En la siguiente pantalla, permite el acceso a tu cámara web o al micrófono para continuar.",
+        },
+        errors: {
+            errorSessionNotReady: "Actualmente no puede participar en este experimento porque este estudio solo puede iniciarse en un horario concreto",
+            errorSessionStartIn: "Puedes comenzar esta sesión en",
+            errorSessionOver: "Actualmente no puede participar en este experimento porque aun no se ha definido la hora de inicio del estudio.",
             playerErrorNoSubjGroup: "Error: no hay un grupo de sujetos definido en el experimento.",
             playerErrorNoSession: "Error: no hay una sesión definida en el grupo de sujetos en el experimento.",
             playerErrorNoBlock: "Error: no hay un bloque definido en esta sesión de experimento.",
-            startingExp: "Iniciando el experimento...",
-            startingIn: "Comenzando en ",
-            calibrateIntro: "La distancia y el tamaño de la pantalla son necesarios para la calibración: ",
-            calibrateMethod1: "Especifique el tamaño de su pantalla manualmente si conoce el tamaño de su monitor.",
-            calibrateScreenSize: "Tamaño de pantalla (diagonal):",
-            calibrateInches: "pulgadas",
-            calibrateMethod2: "Utilice una tarjeta de identificación estandarizada(85.60 × 53.98 mm) o cualquier otra tarjeta del mismo tamaño contra la pantalla e intente hacerla coincidir con el tamaño de la tarjeta que se muestra. " +
-                "Puede cambiar el tamaño de la imagen arrastrando la flecha.La calibración será correcta si la imagen coincide exactamente con el tamaño de la tarjeta.",
-            endExpMsg: "¡Gracias! La sesión experimental ha finalizado.",
-            goToLib: "Ir a la biblioteca de experimentos",
-            chooseSelection: "Por favor elija...",
-            answerPlaceholder: "Respuesta del participante...",
-            endExpMsgTest: "La grabación de prueba de esta tarea ha terminado.Para probar todo el experimento o registrar datos, comience el estudio en 'Ejecutar' en el panel de navegación.",
-            participationAgreement1: " Acepto que todos los datos personales que proporciono aquí y todas mis respuestas se registrarán y se podrán utilizar para fines de investigación de forma seudónima. También estoy de acuerdo con el",
-            participationAgreement2: "de Scicovery GmbH para el registro, almacenamiento y manejo de los datos de los participantes.",
+        },
+        multiUser: {
             multiUserExpLobby: "Experimento de participantes múltiples",
             participantsInLobby: "Participantes en el lobby:",
             readyToStart: "¿Listo para comenzar?",
@@ -691,21 +679,32 @@ ExpData.prototype.staticTranslations = {
             successfullyMatched_2: " para continuar con el experimento!",
             continueJointExpLobby: "Continuar",
             jointExpTestConnection: "Compruebe su conexión a internet. Por favor, espere 30 segundos...",
-            yourCrowdsourcingID: "Su identificación de trabajador / crowdsourcing(*): ",
-            AdLibraryEndOfStudy: "Participe en más experimentos comportamentales:",
-            AdRegisterEndOfStudy: "O regístrese y cree su propio estudio gratis: ",
             inviteFriendMultiUser1: "¿Necesitas otro jugador? Invite a un amigo!",
             inviteFriendMultiUser2: "Su nombre:",
             inviteFriendMultiUser3: "El correo electrónico de sus amigos:",
             inviteFriendMultiUser4: "Invite",
-            customRequirement: "Por la presente confirmo que acepto los términos y condiciones de este estudio y cumplo con los siguientes requisitos de participación como se indica a continuación: ",
-            askEmailConsent1: "Por qué solicitamos su correo electrónico: ",
-            askEmailConsent2: "Este es un estudio longitudinal, que consta de varias sesiones.Su correo electrónico solo será recodificado para invitarle / recordarle que participe en la próxima sesión.Su correo electrónico no se almacenará junto con otro tipo de datos, y solo es accesible internamente a la plataforma Labvanced.No se lo revelaremos a nadie" +
-                "su correo electrónico o úselo para diferentes propósitos.",
+        },
+        screenCalibration: {
+            confirm: "Confirmar",
+            calibrateIntro: "La distancia y el tamaño de la pantalla son necesarios para la calibración: ",
+            calibrateMethod1: "Especifique el tamaño de su pantalla manualmente si conoce el tamaño de su monitor.",
+            calibrateScreenSize: "Tamaño de pantalla (diagonal):",
+            calibrateInches: "pulgadas",
+            calibrateMethod2: "Utilice una tarjeta de identificación estandarizada(85.60 × 53.98 mm) o cualquier otra tarjeta del mismo tamaño contra la pantalla e intente hacerla coincidir con el tamaño de la tarjeta que se muestra. " +
+                "Puede cambiar el tamaño de la imagen arrastrando la flecha.La calibración será correcta si la imagen coincide exactamente con el tamaño de la tarjeta.",
             calibDistance1: "Su distancia a la pantalla (en cm) es: ",
             calibDistance2: "centímetro",
-            requestPermissionHeader: "Requiere permiso del dispositivo",
-            requestPermissionBody: "Este experimento requiere el acceso a su cámara web o micrófono. En la siguiente pantalla, permite el acceso a tu cámara web o al micrófono para continuar.",
+        },
+        content: {
+            chooseSelection: "Por favor elija...",
+            answerPlaceholder: "Respuesta del participante...",
+        },
+        end: {
+            endExpMsg: "¡Gracias! La sesión experimental ha finalizado.",
+            goToLib: "Ir a la biblioteca de experimentos",
+            endExpMsgTest: "La grabación de prueba de esta tarea ha terminado.Para probar todo el experimento o registrar datos, comience el estudio en 'Ejecutar' en el panel de navegación.",
+            moreExperiments: "Participe en más experimentos comportamentales:",
+            registerAndBuild: "O regístrese y cree su propio estudio gratis: ",
         },
         eyetracking: {
             previousCalib1: "Usar los datos de calibración anteriores",
@@ -720,7 +719,6 @@ ExpData.prototype.staticTranslations = {
             feedbackHeadpose6: "Por favor, muévase más a la derecha",
             feedbackHeadpose7: "Por favor, muévase más hacia abajo",
             feedbackHeadpose8: "Por favor, muévase más arriba",
-
             feedbackHeadpose9: "Por favor, mueve la cabeza hacia arriba",
             feedbackHeadpose10: "Por favor, mueva su cabeza hacia abajo",
             feedbackHeadpose11: "Por favor, mueve la cabeza hacia la derecha",
@@ -731,13 +729,9 @@ ExpData.prototype.staticTranslations = {
             feedbackHeadpose16: "Por favor, gire la cabeza hacia la derecha",
             feedbackHeadpose17: "Por favor, acérquese a la cámara",
             feedbackHeadpose18: "Por favor, aléjese de la cámara",
-
             countdown1: "¡Genial! Ahora, por favor mantén esta pose de cabeza... Empieza en ",
             poseError: "<p>Perdió la pose de la cabeza. Por favor, realinee su pose de cabeza a la malla verde:</p>",
             screenResolutionError: "La resolución de la pantalla fue cambiada. Por favor, reinicie la calibración",
-
-
-
             instructionsExistingCalibDataFoundAdult: "<h3> Calibración de seguimiento de ojos</h3>" +
                 "<p>Encontramos datos de calibración anteriores en la caché de su navegador. Puedes saltarte la calibración si:" +
                 "<ul>" +
@@ -794,7 +788,6 @@ ExpData.prototype.staticTranslations = {
                 "<li>Si la postura de la cabeza no es reconocida en cualquier momento, relájate, siéntate derecho de nuevo, y sigue las instrucciones.</li>" +
                 "<li>Después de la calibración NO se aleje de la pantalla y evite los movimientos fuertes de la cabeza.</li>" +
                 "</ul>",
-
             instructionsExistingCalibDataFoundInfant: "<h3> Calibración de seguimiento de ojos</h3>" +
                 "<p>Encontramos datos de calibración anteriores en la caché de su navegador. Puedes saltarte la calibración si:" +
                 "<ul>" +
@@ -842,15 +835,14 @@ ExpData.prototype.staticTranslations = {
             moveBackward: "atrás"
         }
     },
-
     Portuguese: {
-        otherStrings: {
+        start: {
             library: "Biblioteca",
             langSelect: "Este estudo está disponível em vários idiomas.",
             studyLanguage: "Lingua do estudo:",
             continue: "Continuar",
             submit: "Submeter",
-            confirm: "Confirmar",
+            refresh: "Atualizar",
             initialSurvey: "Preencha os campos abaixo (os campos obrigatórios estão marcados com *):",
             yourGender: "Sexo",
             yourGenderMale: "Masculino",
@@ -860,40 +852,34 @@ ExpData.prototype.staticTranslations = {
             yourCountry: "País/Localização",
             yourFirstLang: "Língua materna",
             yourEmail: "Email",
-            errorGender: "Sexo ausente",
-            errorAge: "Idade ausente",
-            errorCountry: "País ausente",
-            errorLanguage: "Língua ausente",
-            errorEmail: "Email ausente",
-            errorSessionNotReady: "No momento, você não pode participar deste experimento porque este estudo só pode ser iniciado em determinados momentos.",
-            errorSessionStartIn: "Você pode iniciar esta sessão em",
-            refresh: "Atualizar",
-            errorSessionOver: "No momento, você não pode participar deste experimento porque não há uma janela de tempo de início definida para este estudo.",
-            loading1: "Carregando experimento...",
+            missing: "ausente",
+            askEmailConsent1: "Por que pedimos seu e-mail: ",
+            askEmailConsent2: "Este é um estudo longitudinal, constituído por várias sessões de participação. Seu e-mail será recodificado somente para convidar / lembra-lo de participar da próxima sessão. Seu e-mail não será armazenado junto com outros tipos de dados e está acessível apenas internamente na plataforma Labvanced. Não vamos dar " +
+                "seu e-mail ou usa-lo para finalidades diferentes.",
+            yourCrowdsourcingID: "Seu ID de trabalho/ crowdsourcing ID (*):",
             loading2: "Carregando, por favor espere",
             loading3: "Isto pode levar um tempo.",
             loadingComplete: "Carregamento Completo!",
             canStart: "Agora você pode iniciar o experimento. Isso mudará seu navegador para o modo de tela inteira.",
             keepFullscreen: "Observe que, durante a experiência, você nunca deve pressionar escape ou usar o botão \"voltar \" do seu navegador.",
-            start: "Começar",
+            startButton: "Começar",
+            startingExp: "Iniciando Experimento...",
+            startingIn: "Iniciando em ",
+            participationAgreement1: " Concordo que todos os dados pessoais que forneço aqui e todas as minhas respostas serão registrados e podem ser usados ​​para fins de pesquisa de forma pseudonimizada. Eu também concordo com o",
+            participationAgreement2: "da Scicovery GmbH para registro, armazenamento e tratamento de dados de participantes.",
+            customRequirement: "Por meio deste, eu confirmo que aceito os termos e condições deste estudo e cumpro os seguintes requisitos de participação conforme declarado abaixo:",
+            requestPermissionHeader: "Permissão de Dispositivo Necessária",
+            requestPermissionBody: "Este experimento requer acesso à sua webcam ou microfone. Permita o acesso à sua webcam ou microfone para continuar.",
+        },
+        errors: {
+            errorSessionNotReady: "No momento, você não pode participar deste experimento porque este estudo só pode ser iniciado em determinados momentos.",
+            errorSessionStartIn: "Você pode iniciar esta sessão em",
+            errorSessionOver: "No momento, você não pode participar deste experimento porque não há uma janela de tempo de início definida para este estudo.",
             playerErrorNoSubjGroup: "Erro: não há grupo de assuntos definido no experimento.",
             playerErrorNoSession: "Erro: não há sessão definida no grupo de sujeitos no experimento.",
             playerErrorNoBlock: "Erro: não há bloco definido nesta sessão de experimento.",
-            startingExp: "Iniciando Experimento...",
-            startingIn: "Iniciando em ",
-            calibrateIntro: "A distância e o tamanho da tela são necessários para a calibração:",
-            calibrateMethod1: "Especifique o tamanho da tela manualmente se você souber o tamanho do seu monitor.",
-            calibrateScreenSize: "Tamanho da tela (diagonal):",
-            calibrateInches: "polegadas",
-            calibrateMethod2: "Use um cartão de identificação padronizado (85,60 × 53,98 mm) ou qualquer outro cartão do mesmo tamanho contra a tela e tente corresponder ao tamanho do cartão exibido. " +
-                "Você pode alterar o tamanho da imagem arrastando a seta. A calibração estará correta se a imagem corresponder exatamente ao tamanho do cartão.",
-            endExpMsg: "Obrigado! A sessão de experimento terminou.",
-            goToLib: "Vá para a biblioteca de experimentos",
-            chooseSelection: "Por favor escolha...",
-            answerPlaceholder: "Resposta do participante ...",
-            endExpMsgTest: "A gravação de teste desta tarefa acabou. Para testar todo o experimento ou registrar dados, inicie o estudo em 'Executar' no painel de navegação.",
-            participationAgreement1: " Concordo que todos os dados pessoais que forneço aqui e todas as minhas respostas serão registrados e podem ser usados ​​para fins de pesquisa de forma pseudonimizada. Eu também concordo com o",
-            participationAgreement2: "da Scicovery GmbH para registro, armazenamento e tratamento de dados de participantes.",
+        },
+        multiUser: {
             multiUserExpLobby: "Experimento de Múltiplos Participantes",
             participantsInLobby: "Participantes presentes:",
             readyToStart: "Pronto para começar?",
@@ -903,25 +889,34 @@ ExpData.prototype.staticTranslations = {
             successfullyMatched_2: " para prosseguir com a experiência!",
             continueJointExpLobby: "continuar",
             jointExpTestConnection: "Testando sua conexão com a Internet. Por favor aguarde 30 segundos ...",
-            yourCrowdsourcingID: "Seu ID de trabalho/ crowdsourcing ID (*):",
-            AdLibraryEndOfStudy: "Participe de experiências comportamentais mais emocionantes:",
-            AdRegisterEndOfStudy: "OU registre-se e crie seu próprio estudo gratuitamente:",
             inviteFriendMultiUser1: "Precisa de outro jogador? Convidar um amigo!",
             inviteFriendMultiUser2: "Seu Nome:",
             inviteFriendMultiUser3: "O E-mail de seu colega:",
             inviteFriendMultiUser4: "Convidar",
-            customRequirement: "Por meio deste, eu confirmo que aceito os termos e condições deste estudo e cumpro os seguintes requisitos de participação conforme declarado abaixo:",
-            askEmailConsent1: "Por que pedimos seu e-mail: ",
-            askEmailConsent2: "Este é um estudo longitudinal, constituído por várias sessões de participação. Seu e-mail será recodificado somente para convidar / lembra-lo de participar da próxima sessão. Seu e-mail não será armazenado junto com outros tipos de dados e está acessível apenas internamente na plataforma Labvanced. Não vamos dar " +
-                "seu e-mail ou usa-lo para finalidades diferentes.",
+        },
+        screenCalibration: {
+            confirm: "Confirmar",
+            calibrateIntro: "A distância e o tamanho da tela são necessários para a calibração:",
+            calibrateMethod1: "Especifique o tamanho da tela manualmente se você souber o tamanho do seu monitor.",
+            calibrateScreenSize: "Tamanho da tela (diagonal):",
+            calibrateInches: "polegadas",
+            calibrateMethod2: "Use um cartão de identificação padronizado (85,60 × 53,98 mm) ou qualquer outro cartão do mesmo tamanho contra a tela e tente corresponder ao tamanho do cartão exibido. " +
+                "Você pode alterar o tamanho da imagem arrastando a seta. A calibração estará correta se a imagem corresponder exatamente ao tamanho do cartão.",
             calibDistance1: "Sua distância da tela (em cm) é: ",
             calibDistance2: "centímetros",
-            requestPermissionHeader: "Permissão de Dispositivo Necessária",
-            requestPermissionBody: "Este experimento requer acesso à sua webcam ou microfone. Permita o acesso à sua webcam ou microfone para continuar.",
+        },
+        content: {
+            chooseSelection: "Por favor escolha...",
+            answerPlaceholder: "Resposta do participante ...",
+        },
+        end: {
+            endExpMsg: "Obrigado! A sessão de experimento terminou.",
+            goToLib: "Vá para a biblioteca de experimentos",
+            endExpMsgTest: "A gravação de teste desta tarefa acabou. Para testar todo o experimento ou registrar dados, inicie o estudo em 'Executar' no painel de navegação.",
+            moreExperiments: "Participe de experiências comportamentais mais emocionantes:",
+            registerAndBuild: "OU registre-se e crie seu próprio estudo gratuitamente:",
         },
         eyetracking: {
-
-
             previousCalib1: "Utilizar Dados de Calibração Anteriores",
             previousCalib2: "Re-executar a calibração.",
             calibLoading: "calibragem de carga... por favor aguarde...",
@@ -934,7 +929,6 @@ ExpData.prototype.staticTranslations = {
             feedbackHeadpose6: "Por favor, avance mais para a direita",
             feedbackHeadpose7: "Por favor, avance mais para baixo",
             feedbackHeadpose8: "Por favor, avancem mais para cima",
-
             feedbackHeadpose9: "Por favor, levantem a cabeça",
             feedbackHeadpose10: "Por favor desloque a cabeça para baixo",
             feedbackHeadpose11: "Por favor, desloque a sua cabeça para a direita",
@@ -945,12 +939,9 @@ ExpData.prototype.staticTranslations = {
             feedbackHeadpose16: "Por favor, incline a cabeça para a direita",
             feedbackHeadpose17: "Por favor, aproxime-se da câmara.",
             feedbackHeadpose18: "Por favor afaste-se da came.",
-
             countdown1: "Óptimo! Agora, por favor mantenha esta pose de cabeça... Comece em ",
             poseError: "<p>Perdeste a pose da cabeça. Por favor realinhar a sua pose da cabeça para a malha verde:</p>",
             screenResolutionError: "A resolução do ecrã foi alterada. Por favor, reinicie a calibração",
-
-
             instructionsExistingCalibDataFoundAdult: "<h3>Calibração do rastreador ocular</h3>" +
                 "<p> Encontrámos dados de calibração anteriores na cache do seu navegador. Pode saltar a calibração se:" +
                 "<ul>" +
@@ -1008,7 +999,6 @@ ExpData.prototype.staticTranslations = {
                 "<li>Se a sua pose de cabeça não for recocalizada em nenhum momento, relaxe, sente-se novamente direito, e siga as instruções.</li>" +
                 "<li>Após a calibração ser feita NÃO se afaste do ecrã e evite movimentos fortes da cabeça.</li>" +
                 "</ul>",
-
             instructionsExistingCalibDataFoundInfant: "<h3>Calibração do rastreador ocular</h3>" +
                 "<p> Encontrámos dados de calibração anteriores na cache do seu navegador. Pode saltar a calibração se:" +
                 "<ul>" +
@@ -1118,13 +1108,6 @@ ExpData.prototype.updateLanguage = function () {
 
     // merge in the custom user modifications of static strings (and their translations):
     this.mergeStaticStrings(this.customizedStaticStrings, assembledStrings);
-
-    // temporary copy otherStrings category to root for backwards compatibility:
-    for (var stringName in assembledStrings.otherStrings) {
-        if (Object.prototype.hasOwnProperty.call(assembledStrings.otherStrings, stringName)) {
-            assembledStrings[stringName] = assembledStrings.otherStrings[stringName];
-        }
-    }
 
     this.staticStrings(assembledStrings);
 };
@@ -1840,9 +1823,6 @@ ExpData.prototype.fromJS = function (data) {
     else if (data.hasOwnProperty('translatedLanguages')) {
         this.translatedLanguages(data.translatedLanguages);
     }
-    if (data.hasOwnProperty('languageTransferOption')) {
-        this.languageTransferOption(data.languageTransferOption);
-    }
     if (data.hasOwnProperty('customizedStaticStrings')) {
         this.customizedStaticStrings = data.customizedStaticStrings;
     }
@@ -1906,7 +1886,6 @@ ExpData.prototype.toJS = function () {
             }
         }),
         translatedLanguages: this.translatedLanguages(),
-        languageTransferOption: this.languageTransferOption(),
         studySettings: studySettings,
         customizedStaticStrings: this.customizedStaticStrings,
         entities: jQuery.map(this.entities(), function (entity) { return entity.toJS(); })

@@ -297,7 +297,7 @@ EditableTextElement.prototype.fromJS = function (data) {
     this.type = data.type;
 
     var purify_config = { ADD_TAGS: ['vars'], ADD_ATTR: ['globvarid'] };
-    if (typeof this.rawText() === 'number') {
+    if (typeof data.rawText === 'number') {
         this.rawText(data.rawText);
     }
     else {
