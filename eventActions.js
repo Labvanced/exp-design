@@ -2263,6 +2263,19 @@ ActionStartRepeatedActions.prototype.run = function (triggerParams) {
 
 };
 
+ActionStartRepeatedActions.prototype.dependsOnObjects = function () {
+    var actions = this.subActions();
+    for (var i = 0; i < actions.length; i++) {
+        if(typeof actions[i].dependsOnObjects !== 'function'){
+            continue;
+        }
+        if (actions[i].dependsOnObjects())
+        {
+            return true;
+        }
+    }
+};
+
 
 /**
  * this function is called in the player when the frame starts. It sets up the knockout subscribers at the globalVars.
@@ -6664,6 +6677,6 @@ for (var i = 0; i < ActionMathAndStats.prototype.allOperations.length; i++) {
  * @returns {Action}
  */
 function actionFactory(event, type) {
-    var action = new window[type](event);
+    var action = new window[type](event);   
     return action;
 }

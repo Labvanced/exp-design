@@ -57,6 +57,7 @@ ExpEvent.prototype.hasUserGestureTrigger = function () {
 };
 
 ExpEvent.prototype.setGlobal = function(){
+    console.log(this.dependsOnObjects());
     if(this.dependsOnObjects()){
         return console.error('Target is not empty!');
     }
@@ -67,17 +68,17 @@ ExpEvent.prototype.unsetGlobal = function(){
 }
 
 ExpEvent.prototype.dependsOnObjects = function() {
+    console.log(this)
     var actions = this.actions();
+    
     for(var i = 0; i < actions.length; i++){
-        if(typeof actions[i].refToObjectProperty !== 'function'){
+        if(typeof actions[i].dependsOnObjects !== 'function'){
+            console.log('Nie idz dalej, tu koncz');
             continue;
         }
-        var refToObjectProperty = actions[i].refToObjectProperty();
-        for(var j = 0; j < refToObjectProperty.length; j++){
-            console.log(refToObjectProperty[j].target())
-            if(refToObjectProperty[j].target()){
-                return true;
-            }
+        if (actions[i].dependsOnObjects())
+        {
+            return true;
         }
     }
     return false;   
