@@ -912,8 +912,13 @@ RefToObjectProperty.prototype.setValue = function (newVal) {
  */
 RefToObjectProperty.prototype.setPointers = function (entitiesArr) {
     if (this.target()) {
-        var target = entitiesArr.byId[this.target()];
-        this.target(target);
+        var target = entitiesArr.byId[this.target()];   
+        if (target) {
+            this.target(target);
+        }
+        else{
+            this.target(null);
+        }
     }
 };
 
