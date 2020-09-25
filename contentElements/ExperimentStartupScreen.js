@@ -113,27 +113,27 @@ var ExperimentStartupScreen = function (experiment) {
         // validate if all required fields are filled:
         if (this.requiredGender() == 'required') {
             if (this.selectedGender() != "male" && this.selectedGender() != "female") {
-                errorString += self.expData.staticStrings().errorGender + ", ";
+                errorString += self.expData.staticStrings().start.yourGender + " " + self.expData.staticStrings().start.missing + ", ";
             }
         }
         if (this.requiredAge() == 'required') {
             if (!(this.selectedAge() > 0)) {
-                errorString += self.expData.staticStrings().errorAge + ", ";
+                errorString += self.expData.staticStrings().start.yourAge + " " + self.expData.staticStrings().start.missing + ", ";
             }
         }
         if (this.requiredCountry() == 'required') {
             if (this.selectedCountry() == null) {
-                errorString += self.expData.staticStrings().errorCountry + ", ";
+                errorString += self.expData.staticStrings().start.yourCountry + " " + self.expData.staticStrings().start.missing + ", ";
             }
         }
         if (this.requiredLanguage() == 'required') {
             if (this.selectedLanguage() == null) {
-                errorString += self.expData.staticStrings().errorLanguage + ", ";
+                errorString += self.expData.staticStrings().start.yourFirstLang + " " + self.expData.staticStrings().start.missing + ", ";
             }
         }
         if (this.requiredEmail() == 'required') {
             if (this.selectedEmail() == null) {
-                errorString += self.expData.staticStrings().errorEmail + ", ";
+                errorString += self.expData.staticStrings().start.yourEmail + " " + self.expData.staticStrings().start.missing + ", ";
             }
         }
 
@@ -768,7 +768,7 @@ ExperimentStartupScreen.prototype.startExp = function () {
     player.startFullscreen();
 
     $('#sectionPreload').html("<div style='position: fixed; width: 100%; height: 100%;'>" +
-        "<div style='margin: 0; position: absolute; top: 50%; left: 50%;margin-right: -50%; transform: translate(-50%, -50%); font-size: xx-large;'>" + self.expData.staticStrings().startingExp + "</div>" +
+        "<div style='margin: 0; position: absolute; top: 50%; left: 50%;margin-right: -50%; transform: translate(-50%, -50%); font-size: xx-large;'>" + self.expData.staticStrings().start.startingExp + "</div>" +
         "</div>");
     $("#startExpSection").hide();
 

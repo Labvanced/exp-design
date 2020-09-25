@@ -63,7 +63,7 @@
          data-bind="style:{height:dataModel().outerHeight()+'px'}">
         <textarea style="position:relative;resize: none;"
                   class="form-control"
-                  data-bind="attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().startValue().value,style:{width:dataModel().customWidth()+'%',height:dataModel().customHeight()+'%', 'cursor': dataModel().parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'},enable: dataModel().parent.modifier().selectedTrialView.isActive, valueUpdate: 'afterkeydown'"></textarea>
+                  data-bind="attr: {placeholder: dataModel().expData.staticStrings().content.answerPlaceholder},value: dataModel().variable().startValue().value,style:{width:dataModel().customWidth()+'%',height:dataModel().customHeight()+'%', 'cursor': dataModel().parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'},enable: dataModel().parent.modifier().selectedTrialView.isActive, valueUpdate: 'afterkeydown'"></textarea>
     </div>
 
     <!-- ko if: dataModel().isRequired() -->
@@ -86,7 +86,7 @@
          data-bind="style:{height:dataModel().outerHeight()+'px'}">
         <textarea style="position:relative;resize: none;"
                   class="form-control"
-                  data-bind="hasfocus: isFocusedPure, attr: {placeholder: dataModel().expData.staticStrings().answerPlaceholder},value: dataModel().variable().value().value,style:{width:dataModel().customWidth()+'%',height:dataModel().customHeight()+'%', 'cursor': dataModel().parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'},enable: dataModel().parent.modifier().selectedTrialView.isActive, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel().onKeyPress(event); return true}}"></textarea>
+                  data-bind="hasfocus: isFocusedPure, attr: {placeholder: dataModel().expData.staticStrings().content.answerPlaceholder},value: dataModel().variable().value().value,style:{width:dataModel().customWidth()+'%',height:dataModel().customHeight()+'%', 'cursor': dataModel().parent.modifier().selectedTrialView.isActive() == true ? 'pointer' : 'not-allowed'},enable: dataModel().parent.modifier().selectedTrialView.isActive, valueUpdate: 'afterkeydown', event: {keypress: function(data,event) {dataModel().onKeyPress(event); return true}}"></textarea>
     </div>
 
     <!-- ko if: dataModel().triedToSubmit() -->
