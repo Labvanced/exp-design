@@ -28,6 +28,7 @@ var GlobalVar = function (expData) {
 
 
     this.isHidden = ko.observable(false);
+    this.includeInGlobalVarList = ko.observable(true);
     this.isRecorded = ko.observable(true);
 
     this.resetAtTrialStart = ko.observable(false);
@@ -58,6 +59,21 @@ var GlobalVar = function (expData) {
 
     });
 
+    this.factorIsShownAsVar = ko.computed(function () {
+        if (self.isFactor()) {
+            if (self.levels().length > 1) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+        else {
+            return true;
+        }
+
+    });
+
     this.unused = ko.observable(true);
     this.calcUnused();
 
@@ -66,6 +82,29 @@ var GlobalVar = function (expData) {
 
     // to fix multiple recordings when assigning new array to array-timeseries:
     this.tmpDisableTimeseriesRec = false;
+
+    this.taskAssociation = ko.computed(function () {
+        var taskName = "Unused";
+        var isSame = true;
+        var refs = self.backRefs();
+        for (var i = 0; i < refs.length && isSame; i++) {
+            var ref = refs[i];
+            var newSplit = ref.usePath.split("/")[0];
+            if (newSplit == taskName || taskName === "Unused") {
+                taskName = newSplit;
+            }
+            else {
+                taskName = "multiple tasks";
+                isSame = false;
+
+            }
+        }
+
+
+
+        return taskName;
+
+    });
 
 };
 
@@ -271,6 +310,29 @@ GlobalVar.prototype.createValueFromDataType = function () {
     }
 };
 
+GlobalVar.prototype.calcRefUsePath = function (parent, entity, label) {
+    var startString = "";
+    if (parent instanceof FrameData || parent instanceof PageData) {
+        var frame_name = parent.name();
+        var task_name = this.expData.getTaskFromFrameId(parent.id());
+        startString = task_name + "/" + frame_name + "/" + label;
+    } else if (parent instanceof ExpEvent) {
+        var exp_name = parent.name();
+        var frame_name = parent.parent.name();
+        var task_name = this.expData.getTaskFromFrameId(parent.parent.id());
+        startString = task_name + "/" + frame_name + "/" + exp_name + "/" + label;
+    } else if (parent instanceof FrameElement || parent instanceof PageElement) {
+        var element_name = parent.name();
+        var frame_name = parent.parent.name();
+        var task_name = this.expData.getTaskFromFrameId(parent.parent.id());
+        startString = task_name + "/" + frame_name + "/" + label + "/" + element_name;
+    } else if (parent instanceof FactorGroup) {
+        var task_name = parent.expTrialLoop.name();
+        startString = task_name + "/" + label;
+    }
+    return startString;
+};
+
 GlobalVarRef = function (entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback) {
     this.entity = entity;
     this.parentNamedEntity = parentNamedEntity;
@@ -278,6 +340,7 @@ GlobalVarRef = function (entity, parentNamedEntity, isWritten, isRead, refLabel,
     this.isRead = isRead;
     this.refLabel = refLabel;
     this.onDeleteCallback = onDeleteCallback;
+
 };
 
 GlobalVar.prototype.addBackRef = function (entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback) {
@@ -287,6 +350,7 @@ GlobalVar.prototype.addBackRef = function (entity, parentNamedEntity, isWritten,
     // only add back references in editor for variables view:
     if (window.uc !== undefined && (uc instanceof Client) && entity) {
         var obj = new GlobalVarRef(entity, parentNamedEntity, isWritten, isRead, refLabel, onDeleteCallback);
+        obj.usePath = this.calcRefUsePath(parentNamedEntity, entity, refLabel);
         this.backRefs.push(obj);
         this.calcUnused();
         return obj;
@@ -484,6 +548,12 @@ GlobalVar.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('isHidden')) {
         this.isHidden(data.isHidden);
     }
+    if (data.hasOwnProperty('includeInGlobalVarList')) {
+        this.includeInGlobalVarList(data.includeInGlobalVarList);
+    }
+
+
+
 
 
 
@@ -541,6 +611,7 @@ GlobalVar.prototype.toJS = function () {
         isRecorded: this.isRecorded(),
         recType: this.recType(),
         isHidden: this.isHidden(),
+        includeInGlobalVarList: this.includeInGlobalVarList(),
 
         type: this.type,
         levels: jQuery.map(this.levels(), function (lvl) { return lvl.toJS(); })

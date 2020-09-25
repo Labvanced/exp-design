@@ -52,6 +52,7 @@ SortableElement.prototype.init = function (variableName) {
     globalVar.isObjectVar(true);
     globalVar.resetStartValue();
     globalVar.startValue().value([]);
+    globalVar.includeInGlobalVarList(false);
     this.variable(globalVar);
 
     var frameOrPageElement = this.parent;
