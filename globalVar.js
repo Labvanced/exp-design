@@ -323,9 +323,23 @@ GlobalVar.prototype.calcRefUsePath = function (parent, entity, label) {
         startString = task_name + "/" + frame_name + "/" + exp_name + "/" + label;
     } else if (parent instanceof FrameElement || parent instanceof PageElement) {
         var element_name = parent.name();
-        var frame_name = parent.parent.name();
-        var task_name = this.expData.getTaskFromFrameId(parent.parent.id());
+        // same frame elements do not have parent prop set this coudl be problemtic and the cause of other bugs
+        if (parent.parent) {
+            var frame_name = parent.parent.name();
+            var task_name = this.expData.getTaskFromFrameId(parent.parent.id());
+        }
+        else {
+            var frame_name = "";
+            var task_name = "";
+            var frame = this.expData.getFrameFromFrameElementId(parent.id());
+            if (frame) {
+                frame_name = frame.name();
+                task_name = this.expData.getTaskFromFrameId(frame.id());
+            }
+
+        }
         startString = task_name + "/" + frame_name + "/" + label + "/" + element_name;
+
     } else if (parent instanceof FactorGroup) {
         var task_name = parent.expTrialLoop.name();
         startString = task_name + "/" + label;

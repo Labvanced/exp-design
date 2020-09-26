@@ -1434,6 +1434,38 @@ ExpData.prototype.getTaskFromFrameId = function (frameId) {
 
 };
 
+ExpData.prototype.getFrameFromFrameElementId = function (frameElemId) {
+
+    var found = false;
+    var frameOrPage = null;
+    var entities = this.entities();
+
+    for (var i = 0; i < entities.length && found == false; i++) {
+        var entity = entities[i];
+        if (entity instanceof FrameData || entity instanceof PageData) {
+
+            var elements = entity.elements();
+            for (var j = 0; j < elements.length && found == false; j++) {
+                if (elements[j] instanceof FrameElement || elements[j] instanceof PageElement) {
+                    var element = elements[j];
+                } else {
+                    var element = this.entities.byId[elements[j]];
+                }
+
+                if (element.id() === frameElemId) {
+                    frameOrPage = element;
+                    found = true;
+                }
+            }
+
+
+
+        }
+    }
+    return frameOrPage;
+
+};
+
 
 
 /**
