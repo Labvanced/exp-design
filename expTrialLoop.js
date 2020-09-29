@@ -26,7 +26,7 @@ var ExpTrialLoop = function (expData) {
     this.eyetrackingV2numDriftPoints = ko.observable(6).extend({ numeric: 0 });
 
     this.zoomMode = ko.observable('fullscreen'); // fullscreen or visualDegree or pixel or millimeter
-    this.visualDegreeToUnit = ko.observable(20);
+    this.visualDegreeToUnit = ko.observable(25);
 
     //properties
     this.name = ko.observable("New Task");
