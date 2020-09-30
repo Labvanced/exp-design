@@ -1271,6 +1271,217 @@ ExpData.prototype.staticTranslations = {
             moveBackward: "retour"
         }
     },
+    Chinese: {
+        start: {
+            library: "图书馆",
+            langSelect: "本研究报告有多种语言版本",
+            studyLanguage: "研究语言：",
+            continue: "继续",
+            submit: "提交",
+            refresh: "刷新",
+            initialSurvey: "请填写下面的字段（带*号的为必填字段）：",
+            yourGender: "性别",
+            yourGenderMale: "男性",
+            yourGenderFemale: "女",
+            yourAge: "你的年龄",
+            years: "年",
+            yourCountry: "国家/地点",
+            yourFirstLang: "第一语言",
+            yourEmail: "电子邮件",
+            missing: "失踪",
+            askEmailConsent1: "我们为什么要索取你的Email: ",
+            askEmailConsent2: "这是一项纵向研究，包括几个参与环节。您的电子邮件将被重新编码，以便邀请/提醒您参加下一个环节。您的电子邮件不会与其他类型的数据一起存储，并且只能在Labvanced平台内部访问。我们不会将 泄露给您 您的电子邮件或用于不同的目的",
+            yourCrowdsourcingID: "您的工作者/众包ID（*）：",
+            loading2: "正在加载，请等待",
+            loading3: "这可能需要一段时间。",
+            loadingComplete: "加载完成",
+            canStart: "你现在可以开始实验了: 你现在可以开始实验了. 这将把你的浏览器切换到全屏模式",
+            keepFullscreen: "请注意，在实验过程中，你不应该按escape键或者使用浏览器中的 后退 键。",
+            startButton: "开始",
+            startingExp: "开始实验...",
+            startingIn: "开始实验...",
+            participationAgreement1: "我同意我在这里提供的所有个人数据和我的所有回答都将被记录，并可以以假名的方式用于研究目的。我也同意",
+            participationAgreement2: "Scicovery GmbH记录、存储和处理参与者数据的协议",
+            CustomRequirement: "我在此确认，我接受本研究的条款和条件，并满足以下参与要求。我在此确认我接受本研究的条款和条件并满足以下参与要求：",
+            requestPermissionHeader: "需要设备权限",
+            requestPermissionBody: "本实验需要访问您的网络摄像头或麦克风。在下面的屏幕中，请允许访问您的网络摄像头或麦克风设备以继续进行。",
+
+
+
+
+        },
+        errors: {
+            errorSessionNotReady: "你目前不能参加这个实验，因为这个研究只能在特定时间开始。",
+            errorSessionStartIn: "你可以在以下时间段开始这个环节",
+            errorSessionOver: "你目前不能参加这个实验，因为没有为这个研究定义起始时间窗口。",
+            playerErrorNoSubjGroup: "错误：实验中没有定义课题组。",
+            playerErrorNoSession: "错误：实验中课题组没有定义环节。",
+            playerErrorNoBlock: "错误：在这个实验环节中没有定义块。",
+        },
+        multiUser: {
+            multiUserExpLobby: "多人参与实验",
+            participantsInLobby: "大厅里的与会者。",
+            readyToStart: "准备好开始了吗？",
+            waitingForOtherParticipants: "等待更多的参与者...",
+            experimentStartsShortly: "你的实验很快就会开始...",
+            successfullyMatched_1: "成功匹配。按 ",
+            successfullyMatched_2: " 继续实验!",
+            continueJointExpLobby: "继续",
+            jointExpTestConnection: "测试您的网络连接，请等待30秒......",
+            inviteFriendMultiUser1: "需要其他玩家吗？邀请朋友吧!",
+            inviteFriendMultiUser2: "你的名字。",
+            inviteFriendMultiUser3: "你朋友的邮箱。",
+            inviteFriendMultiUser4: "邀约",
+        },
+        screenCalibration: {
+            confirm: "确认",
+            calibrateIntro: "校验时需要距离和屏幕尺寸。",
+            calibrateMethod1: "如果您知道显示器的尺寸，请手动指定屏幕尺寸。",
+            calibrateScreenSize: "屏幕尺寸（对角线）：",
+            calibrateInches: "英寸",
+            calibrateMethod2: "使用标准身份证（85.60×53.98毫米）或其他任何相同尺寸的卡片对着屏幕，并尝试与显示的卡片尺寸一致。您可以通过拖动箭头来改变图像的尺寸。如果图像与卡的大小完全一致，则校准是正确的。",
+            calibDistance1: "您与屏幕的距离（单位：厘米）为：。 ",
+            calibDistance2: "公分",
+        },
+        content: {
+            chooseSelection: "请选择...",
+            answerPlaceholder: "参与者回答...",
+        },
+        end: {
+            endExpMsg: "谢谢你！实验环节结束。",
+            goToLib: "进入实验库",
+            endExpMsgTest: "这个任务的测试记录已经结束。要测试整个实验或记录数据，请在导航面板的 运行 下开始研究。",
+            moreExperiments: "多参加行为实验：",
+            registerAndBuild: "或免费注册并建立自己的学习。",
+        },
+        eyetracking: {
+            previousCalib1: "使用以前的校准数据",
+            previousCalib2: "重新运行校准",
+            calibLoading: "加载校准，请等待... ...",
+            headPoseBlueMesh: "<p>将你的头定位在蓝色网格与绿色目标网格对齐的位置。</p>",
+            feedbackHeadpose1: "请确保你的脸在你的网络摄像头中是可见的。",
+            feedbackHeadpose2: "请靠近摄像头",
+            feedbackHeadpose3: "请面对网络摄像头，并将网络摄像头放在显示器附近。",
+            feedbackHeadpose4: "请确保你的头是直立的。",
+            feedbackHeadpose5: "请再往左边走。",
+            feedbackHeadpose6: "请再往右走。",
+            feedbackHeadpose7: "请再往下走。",
+            feedbackHeadpose8: "请再往上走。",
+            feedbackHeadpose9: "请把头抬起来",
+            feedbackHeadpose10: "请把头低下。",
+            feedbackHeadpose11: "请把你的头往右移。",
+            feedbackHeadpose12: "请把头向左移。",
+            feedbackHeadpose13: "请把头往下仰。",
+            feedbackHeadpose14: "请把头仰起。",
+            feedbackHeadpose15: "请向左转头。",
+            feedbackHeadpose16: "请向右转头。",
+            feedbackHeadpose17: "请靠近摄像头。",
+            feedbackHeadpose18: "请远离摄像头。",
+            countdown1: "很好！ 现在，请保持这个头型... 现在，请保持这个头部姿势... ... 开始 ",
+            poseError: "<p>你失去了头部的姿势。请将你的头部姿势重新调整到绿色的网格上。</p>",
+            screenResolutionError: "屏幕分辨率被改变。请重新开始校准。",
+            instructionsExistingCalibDataFoundAdult: "<h3>眼动跟踪校准</h3>" +
+                "<p>我们在您的浏览器缓存中找到了以前的校准数据。您可以跳过校准，如果：" +
+                "<ul>" +
+                "<li>你是上一节课校准的那个人。</li>" +
+                "<li>环境和照明条件没有改变。</li>" +
+                "</ul></p>",
+            instructionsPreEnvironmentAdult: "<h3>眼动跟踪校准</h3>" +
+                "<p><b>请仔细阅读</b></p>" +
+                "<p>要使用网络摄像头进行眼球跟踪，它需要 针对你的特定环境进行校准。这将需要大约3-4分钟。在开始校准之前，请确保：</p>" +
+                "<ul>" +
+                "<li>你在一个安静的房间里。</li>" +
+                "<li>你有足够的时间。</li>" +
+                "<li>你不戴眼镜。</li>" +
+                "<li>您的网络摄像头尽可能地靠近您的屏幕中心（如果它没有集成在您的显示器中的话）.</li>" +
+                "</ul>",
+            instructionsEnvironmentAdult: "<h3>第一步：设置照明</h3>" +
+                "<p>请确保：</p>" +
+                "<li>图像中看不到您身后的明亮光源（窗户、灯）。</li>" +
+                "<li>你的脸和眼睛要从正面照好。</li>" +
+                "</ul>",
+            instructionsPrePositioningAdult: "<h3>第二步：设置中心姿势</h3>" +
+                "<p><b>请仔细阅读</b></p>" +
+                "<p>眼球追踪器将根据您的头部在相机前的特定姿势（位置和方向）进行校准。" +
+                "在下一步，你将定义这个'中心'的姿势。" +
+                "请确认：</p>" +
+                "<ul>" +
+                "<li>这个头部姿势很舒服，你可以长时间保持。</li>" +
+                "<li>请注意，您的头部的倾斜和偏航方向也是舒适的。</li>" +
+                "<li>请在下面的屏幕上调整您的屏幕和网络摄像头，这样您的网络摄像头在看屏幕时就可以很容易地检测到您的眼球运动。</li>" +
+                "</ul>",
+            instructionsPositioningAdult: "<h3>第二步：设置中心姿势</h3>" +
+                "<ul>" +
+                "<li>确保以舒适的姿势面对屏幕。</li>" +
+                "<li>要离摄像机足够近，这样你的脸和眼睛就能很好地被发现和看到。</li>" +
+                "<li>这是最后一次调整摄像头和屏幕位置。</li>" +
+                "</ul>",
+            instructionsPositioningCheckAdult: "<h3>第二步：设置中心姿势</h3>" +
+                "<p>你是要用这个姿势（绿网）还是回去？</p>" +
+                "<ul>" +
+                "<li>面对屏幕的姿势，你觉得舒服吗？</li>" +
+                "<li>这个姿势是否离摄像头足够近，以至于你的眼睛能很好地被发现？</li>" +
+                "</ul>",
+            instructionsPreCalibAdult: "<h3>步骤3：校准</h3>" +
+                "<p><b>请仔细阅读</b></p>" +
+                "<p>现在将开始真正的校准。请不要再移动摄像头或屏幕，因为这样做会导致校准失败。</p>" +
+                "<ul>" +
+                "<li>每个校准步骤有两个部分。" +
+                "<ul>" +
+                "<li>以指定的姿势（位置和方向）摆放你的头。</li>" +
+                "<li>保持这个姿势，固定在屏幕上显示的点上。</li>" +
+                "</ul></li>" +
+                "<li>为了在每一步上正确定位你的头部，最好的选择是尝试将脸部网格、蓝色（当前位置）和绿色（目标位置）重叠起来。</li>" +
+                "<li>如果你的头部姿势随时没有重新调整，请放松，重新坐直，然后按照指示进行。</li>" +
+                "<li>校准完成后，不要离开屏幕，避免头部剧烈运动。</li>" +
+                "</ul>",
+            instructionsExistingCalibDataFoundInfant: "<h3>眼球跟踪器的校准</h3>" +
+                "<p>我们在您的浏览器缓存中找到了以前的校准数据。您可以跳过校准，如果：" +
+                "<ul>" +
+                "<li>你是上一节课校准的那个人。</li>" +
+                "<li>环境和照明条件没有改变。</li>" +
+                "</ul></p>",
+            instructionsPreEnvironmentInfant: "<h3>眼球跟踪器的校准</h3>" +
+                "<p><b>家长须知。请仔细阅读</b></p>" +
+                "<p>要使用网络摄像头进行眼球跟踪，它需要" +
+                "针对你的特定环境进行校准。这将需要大约1-2分钟。" +
+                "在开始之前，请确保：</p>" +
+                "<ul>" +
+                "<li>您的孩子舒适地坐在您的腿上。</li>" +
+                "<li>图像中看不到您身后的明亮光源（窗户、灯）。</li>" +
+                "<li>您的孩子没有戴眼镜。</li>" +
+                "</ul>",
+            instructionsEnvironmentInfant: "",
+            instructionsPrePositioningInfant: "<h3>步骤1：设置中心姿势</h3>" +
+                "<p><b>给家长的说明。眼球追踪器将根据特定的头部姿势进行校准。" +
+                "请确认：</b></p>" +
+                "<ul>" +
+                "<li>您的孩子的脸在视频中可见，用蓝色的网状物检测，同时看着屏幕（不是您的）。</li>" +
+                "<li>位置/头部姿势对您和您的孩子来说很舒服，可以在接下来的学习中保持，不需要太多动作。</li>" +
+                "</ul>",
+            instructionsPositioningInfant: "",
+            instructionsPositioningCheckInfant: "<h3>第二步：设置中心姿势</h3>" +
+                "<p><b>家长须知。请仔细阅读</b></p>" +
+                "<p>你是要用这个姿势（绿网）还是回去？</p>" +
+                "<ul>" +
+                "<li>面对屏幕的姿势是否让您的孩子感到舒服？</li>" +
+                "<li>姿势是否大致水平居中，面部是否清晰可见？</li>" +
+                "<li>如果不退，重新定义中心姿势。</li>" +
+                "</ul>",
+            instructionsPreCalibInfant: "<h3>Step 3: Calibration</h3>" +
+                "<p><b>家长须知。请仔细阅读</b></p>" +
+                "<ul>" +
+                "<li>现在将开始校准。请不要再移动摄像头或屏幕，否则校准将失败。</li>" +
+                "<li>我们会在屏幕上呈现不同位置的动物，并记录孩子看这些动物时的目光。</li>" +
+                "<li>为了校准工作，您的孩子需要看着这些动物，并在校准期间和之后以稳定的姿势坐在您的实验室上，没有强烈的头部运动。</li>" +
+                "</ul>",
+            countdownMessage1: "盯着红圈",
+            countdownMessage2: "继续盯着动物",
+            loadingCalib: "请等待校准完成。<br>",
+            moveForward: "继续",
+            moveBackward: "后面"
+        }
+    },
 
 
 
