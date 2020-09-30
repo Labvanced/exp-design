@@ -123,6 +123,8 @@ ExpData.prototype.oldFixedVarNames = [
     'varCrowdsourcingSubjIdEMPTY',
 
     'varRoleIdEMPTY',
+    'varvarMultiUserGroupIdEMPTY',
+
     'varDisplayedLanguageEMPTY',
     'varPixelDensityPerMMEMPTY',
 
@@ -156,6 +158,7 @@ ExpData.prototype.fixedVarNames = [
     // dynamically adjusted
     'varSubjectNrPerSubjGroup',
     'varRoleId',
+    'varMultiUserGroupId',
     'varDisplayedLanguage',
     'varDisplayWidthX',
     'varDisplayWidthY',
@@ -208,6 +211,8 @@ ExpData.prototype.varDescriptions = {
     'varDisplayWidthY': 'This variable holds the number of pixels in the Y-dimension of the experiment window in pixels.',
     'varScreenTotalWidthX': 'This variable holds the number of pixels in the X-dimension of the computer screen in pixels.',
     'varScreenTotalWidthY': 'This variable holds the number of pixels in the Y-dimension of the computer screen in pixels.',
+    'varMultiUserGroupId': 'This variable holds a unique group ID for multi user studies.',
+
 
 
     // {'varTimeMeasureSpecMax':''},
@@ -1735,6 +1740,13 @@ ExpData.prototype.createVars = function () {
         this.varRoleId().setDescription(ExpData.prototype.varDescriptions["varRoleId"]);
         this.varRoleId().isRecorded(false);
         this.varRoleId().includeInGlobalVarList(false);
+    }
+
+    if (!this.varMultiUserGroupId()) {
+        this.varMultiUserGroupId((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'ordinal', 'Multi_User_Group_Id'));
+        this.varMultiUserGroupId().setDescription(ExpData.prototype.varDescriptions["varMultiUserGroupId"]);
+        this.varMultiUserGroupId().isRecorded(false);
+        this.varMultiUserGroupId().includeInGlobalVarList(false);
     }
     if (!this.varDisplayedLanguage()) {
         this.varDisplayedLanguage((new GlobalVar(this.expData)).initProperties('string', 'session', 'nominal', 'Displayed_Language'));
