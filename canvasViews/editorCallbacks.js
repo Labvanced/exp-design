@@ -41,21 +41,26 @@ EditorCallbacks.prototype.addHandles = function () {
 
     // draggable handles:
     if (this.drag) {
-        this.handleN = document.createElement('div');
-        $(this.handleN).addClass('draggableHandleN draggableHandle');
-        $(this.handleN).appendTo(this.handles);
 
-        this.handleW = document.createElement('div');
-        $(this.handleW).addClass('draggableHandleW draggableHandle');
-        $(this.handleW).appendTo(this.handles);
+        if (this.editorOrPlayer === 'editor') {
 
-        this.handleE = document.createElement('div');
-        $(this.handleE).addClass('draggableHandleE draggableHandle');
-        $(this.handleE).appendTo(this.handles);
+            this.handleN = document.createElement('div');
+            $(this.handleN).addClass('draggableHandleN draggableHandle');
+            $(this.handleN).appendTo(this.handles);
 
-        this.handleS = document.createElement('div');
-        $(this.handleS).addClass('draggableHandleS draggableHandle');
-        $(this.handleS).appendTo(this.handles);
+            this.handleW = document.createElement('div');
+            $(this.handleW).addClass('draggableHandleW draggableHandle');
+            $(this.handleW).appendTo(this.handles);
+
+            this.handleE = document.createElement('div');
+            $(this.handleE).addClass('draggableHandleE draggableHandle');
+            $(this.handleE).appendTo(this.handles);
+
+            this.handleS = document.createElement('div');
+            $(this.handleS).addClass('draggableHandleS draggableHandle');
+            $(this.handleS).appendTo(this.handles);
+        }
+
     }
 
     // resizable handles:
@@ -104,8 +109,13 @@ EditorCallbacks.prototype.addCallbacks = function () {
 
     if (this.drag) {
         // Draggable On Frame in Editor View:
+        if (this.editorOrPlayer === 'player') {
+            handle = false;
+        } else {
+            handle = '.draggableHandle';
+        }
         $(this.div).draggable({
-            handle: '.draggableHandle',
+            handle: handle,
             distance: 10,
             cancel: '.notDraggable',
             drag: function (event, ui) {
