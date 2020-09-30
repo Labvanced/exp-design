@@ -17,12 +17,33 @@ var Sequence = function (expData) {
     this.type = "Sequence";
     this.name = ko.observable("Sequence");
     this.workspaceVars = ko.observableArray([]).extend({ sortById: null });
+    this.globalEvents = ko.observableArray([]);
 
     // sub-Structures (serialized below)
     this.elements = ko.observableArray().extend({ sortById: null });
 
 };
 
+Sequence.prototype.getGlobalEvents = function () {
+    var events = [];
+    var elements = this.elements();
+    for (var i = 0; i < elements.length; i++) {
+        var frame_events = elements[i].events();
+        for (var j = 0; j < frame_events.length; j++) {
+            if (frame_events[j].isGlobal() == 'true') {
+                events.push(frame_events[j]);
+            }
+        }
+    }
+    console.log(this.currSelectedElement());
+    for (var i = 0; i < elements.length; i++) {
+        for (var j = 0; j < events.length; j++) {
+            elements[i].events().push(events[j]);
+        }
+    }
+    this.elements(elements);
+    console.log(events);
+}
 Sequence.prototype.dispose = function () {
     this.elements().forEach(function (elem) {
         elem.dispose();
@@ -198,6 +219,7 @@ Sequence.prototype.setPointers = function (entitiesArr) {
         return entitiesArr.byId[id];
     }));
 
+    this.getGlobalEvents();
     // converter to add all old existing factors to workspace only in editor
     //if(window.uc!==undefined){
     //    this.addAllRemainingFactorToWorkspace();
