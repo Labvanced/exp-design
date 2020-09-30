@@ -159,6 +159,8 @@ ExpData.prototype.fixedVarNames = [
     'varDisplayedLanguage',
     'varDisplayWidthX',
     'varDisplayWidthY',
+    'varScreenTotalWidthX',
+    'varScreenTotalWidthY',
     'varPixelDensityPerMM',
 
     //not recorded and not global by default
@@ -204,6 +206,9 @@ ExpData.prototype.varDescriptions = {
     'varPixelDensityPerMM': 'This variable hold the number of pixels per millimeter of the screen.',
     'varDisplayWidthX': 'This variable holds the number of pixels in the X-dimension of the experiment window in pixels.',
     'varDisplayWidthY': 'This variable holds the number of pixels in the Y-dimension of the experiment window in pixels.',
+    'varScreenTotalWidthX': 'This variable holds the number of pixels in the X-dimension of the computer screen in pixels.',
+    'varScreenTotalWidthY': 'This variable holds the number of pixels in the Y-dimension of the computer screen in pixels.',
+
 
     // {'varTimeMeasureSpecMax':''},
 };
@@ -1329,6 +1334,20 @@ ExpData.prototype.createVars = function () {
         this.varDisplayWidthY().setDescription(ExpData.prototype.varDescriptions["varDisplayWidthY"]);
         this.varDisplayWidthY().isRecorded(false);
         this.varDisplayWidthY().includeInGlobalVarList(false);
+    }
+
+    if (!this.varScreenTotalWidthX()) {
+        this.varScreenTotalWidthX((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'Screen_Width_In_Pixels'));
+        this.varScreenTotalWidthX().setDescription(ExpData.prototype.varDescriptions["varScreenTotalWidthX"]);
+        this.varScreenTotalWidthX().isRecorded(false);
+        this.varScreenTotalWidthX().includeInGlobalVarList(false);
+    }
+
+    if (!this.varScreenTotalWidthY()) {
+        this.varScreenTotalWidthY((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'Screen_Height_In_Pixels'));
+        this.varScreenTotalWidthY().setDescription(ExpData.prototype.varDescriptions["varScreenTotalWidthY"]);
+        this.varScreenTotalWidthY().isRecorded(false);
+        this.varScreenTotalWidthY().includeInGlobalVarList(false);
     }
 
     this.reAddEntities();
