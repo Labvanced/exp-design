@@ -17,6 +17,7 @@ var ExpEvent = function (parent) {
     this.actions = ko.observableArray([]);
     this.name = ko.observable(null);
     this.description = ko.observable('event description');
+    this.isGlobal = ko.observable(false);
 
     this.shortName = ko.computed(function () {
         if (self.name()) {
@@ -226,7 +227,11 @@ ExpEvent.prototype.fromJS = function (data) {
     if (data.requirement) {
         this.requirementConverter(data);
     }
+    if (data.hasOwnProperty('isGlobal')) {
+        this.isGlobal(data.isGlobal);
+    }
 
+    console.log(data.isGlobal)
 
 
 
@@ -264,7 +269,8 @@ ExpEvent.prototype.toJS = function () {
         type: this.type,
         trigger: this.trigger().toJS(),
         actions: actionData,
-        description: this.description()
+        description: this.description(),
+        isGlobal: this.isGlobal(),
     };
 };
 
