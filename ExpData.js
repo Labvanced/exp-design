@@ -1063,56 +1063,56 @@ ExpData.prototype.staticTranslations = {
         start: {
             library: "Bibliothèque",
             langSelect: "Cette étude est disponible en plusieurs langues.",
-            studyLanguage: "étude Langue:",
+            studyLanguage: "Etude Langage:",
             continue: "Continuer",
-            submit: "Soumettre",
+            submit: "Envoyer",
             refresh: "Rafraîchir",
             initialSurvey: "Veuillez remplir les champs ci-dessous (les champs obligatoires sont marqués d'un *) :",
             yourGender: "Sexe",
-            yourGenderMale: "Mâle",
+            yourGenderMale: "Homme",
             yourGenderFemale: "Femme",
             yourAge: "Votre âge",
-            years: "années",
-            yourCountry: "Pays/Lieu",
-            yourFirstLang: "Première langue",
+            years: "ans",
+            yourCountry: "Pays/Localité",
+            yourFirstLang: "Langue première",
             yourEmail: "Email",
             missing: "manquant",
             askEmailConsent1: "Pourquoi nous vous demandons votre adresse électronique: ",
             askEmailConsent2: "Il s'agit d'une étude longitudinale, composée de plusieurs sessions de participation. Votre courriel sera uniquement recodé afin de vous inviter/rappeler à participer à la session suivante. Votre courriel ne sera pas stocké avec d'autres types de données et n'est accessible qu'en interne à la plateforme Labvanced. Nous ne donnerons pas votre e-mail et ne l'utiliserons pas à d'autres fins",
-            yourCrowdsourcingID: "Votre ID travailleur / crowdsourcing (*):",
-            loading2: "Chargement, veuillez patienter",
-            loading3: "Cela pourrait prendre un certain temps",
-            loadingComplete: "Chargement complet !",
+            yourCrowdsourcingID: "Votre ID de crowdsourcing / worker (*):",
+            loading2: "Chargement en cours, veuillez patienter",
+            loading3: "Cela peut prendre un certain temps",
+            loadingComplete: "Chargement terminé !",
             canStart: "Vous pouvez maintenant commencer l'expérience. Cela fera passer votre navigateur en mode plein écran.",
             keepFullscreen: "Veuillez noter que pendant l'expérience, vous ne devez pas appuyer sur la touche Echap ni utiliser le bouton 'retour' de votre navigateur.",
-            startButton: "Démarrer",
-            startingExp: "Démarrage de l'expérience",
-            startingIn: "A partir de ",
+            startButton: "Commencer",
+            startingExp: "Lancement de l'expérience...",
+            startingIn: "Commencement dans ",
             participationAgreement1: " J'accepte que toutes les données personnelles que je fournis ici et toutes mes réponses soient enregistrées et puissent être utilisées à des fins de recherche sous une forme pseudonyme. J'accepte également ",
-            participationAgreement2: "de la Scicovery GmbH pour l'enregistrement, le stockage et le traitement des données des participants.",
+            participationAgreement2: "de la société Scicovery GmbH pour l'enregistrement, le stockage et le traitement des données des participants.",
             customRequirement: "Par la présente, je confirme que j'accepte les termes et conditions de cette étude et que je remplis les conditions de participation suivantes, comme indiqué ci-dessous:",
-            requestPermissionHeader: "Autorisation de l'appareil requise",
+            requestPermissionHeader: "Autorisation requise de l'appareil",
             requestPermissionBody: "Cette expérience nécessite l'accès à votre webcam ou à votre microphone. Dans l'écran suivant, veuillez autoriser l'accès à votre webcam ou à votre microphone pour continuer.",
         },
         errors: {
             errorSessionNotReady: "Vous ne pouvez actuellement pas participer à cette expérience car cette étude ne peut être lancée qu'à certains moments",
-            errorSessionStartIn: "Vous pouvez démarrer cette session en",
-            errorSessionOver: "Vous ne pouvez actuellement pas participer à cette expérience car il n'y a pas de fenêtre temporelle de départ définie pour cette étude",
+            errorSessionStartIn: "Vous pouvez commencer cette session dans",
+            errorSessionOver: "Vous ne pouvez actuellement pas participer à cette expérience car la fenêtre temporelle de départ n'est pas définie pour cette étude",
             playerErrorNoSubjGroup: "Erreur : il n'y a pas de groupe de sujets défini dans l'expérience.",
             playerErrorNoSession: "Erreur : il n'y a pas de session définie dans le groupe de sujets de l'expérience.",
             playerErrorNoBlock: "Erreur : il n'y a pas de bloc défini dans cette session de l'expérience.",
         },
 
         multiUser: {
-            multiUserExpLobby: "Expérience à participants multiples",
-            participantsInLobby: "Participants au lobby :",
+            multiUserExpLobby: "Expérience à plusieurs participants",
+            participantsInLobby: "Participants en attente :",
             readyToStart: "Prêt à commencer ?",
             waitingForOtherParticipants: "En attente d'autres participants...",
             experimentStartsShortly: "Votre expérience va bientôt commencer...",
-            successfulMatched_1: "Successfully matched. Appuyez sur ",
-            successfulMatched_2: " procéder à l'expérimentation !",
-            continueJointExpLobby: "continue",
-            jointExpTestConnection: "Tester votre connexion internet. Veuillez attendre 30 secondes...",
+            successfulMatched_1: "Appairage réussi. Appuyez sur ",
+            successfulMatched_2: " commencer l'expérience !",
+            continueJointExpLobby: "continuer",
+            jointExpTestConnection: "Test de votre connexion internet. Veuillez patienter 30 secondes...",
             inviteFriendMultiUser1: "Besoin d'un autre joueur ? Invitez un ami !",
             inviteFriendMultiUser2: "Votre nom :",
             inviteFriendMultiUser3: "L'e-mail de vos amis :",
@@ -1121,36 +1121,36 @@ ExpData.prototype.staticTranslations = {
 
         screenCalibration: {
             confirm: "Confirmer",
-            calibrateIntro: "La distance et la taille de l'écran sont nécessaires pour le calibrage :",
-            calibrateMethod1: "Spécifiez manuellement votre taille d'écran si vous connaissez la taille de votre moniteur",
+            calibrateIntro: "La mesure de distance et la taille de l'écran sont nécessaires pour le calibrage :",
+            calibrateMethod1: "Veuillez spécifier manuellement la taille de votre écran si vous la connaissez",
             calibrateScreenSize: "Taille de l'écran (diagonale) :",
             calibrateInches: "pouces",
-            calibrateMethod2: "Utilisez une carte d'identité standardisée (85,60 × 53,98 mm) ou toute autre carte de même taille contre l'écran et essayez de faire correspondre la taille de la carte affichée. " +
-                "Vous pouvez modifier la taille de l'image en faisant glisser la flèche. Le calibrage est correct si l'image correspond exactement à la taille de la carte",
-            calibDistance1: "Votre distance à l'écran (en cm) est : ",
+            calibrateMethod2: "Veuillez utiliser une carte à puce / magnétique standardisée (85,60 × 53,98 mm) ou toute autre carte de même taille contre l'écran et essayez de faire correspondre la taille de la carte affichée. " +
+                "Vous pouvez modifier la taille de l'image en faisant déplaçant la flèche. Le calibrage est correct si l'image correspond exactement à la taille de la carte",
+            calibDistance1: "Votre distance à l'écran (en cm) est de : ",
             calibDistance2: "centimètre",
         },
         content: {
             chooseSelection: "Veuillez choisir...",
-            answerPlaceholder: "Participant Réponse...",
+            answerPlaceholder: "Réponse du participant...",
         },
         end: {
-            finExpMsg: "Merci ! La session d'expérimentation est terminée",
+            finExpMsg: "Merci ! La session d'expérimentation est terminée.",
             goToLib: "Aller à la bibliothèque d'expériences",
             endExpMsgTest: "L'enregistrement du test de cette tâche est terminé. Pour tester l'ensemble de l'expérience ou pour enregistrer des données, démarrez l'étude sous Exécuter dans le panneau de navigation",
-            moreExperiments: "Participez à d'autres expériences comportementales :",
+            moreExperiments: "Participer à d'autres expériences comportementales :",
             registerAndBuild: "OU inscrivez-vous et construisez votre propre étude gratuitement :",
         },
         eyetracking: {
-            précédentCalib1: "Utiliser les données du calibrage précédent",
-            previousCalib2: "Rerun Calibration",
-            calibLoading: "Chargement de l'étalonnage... veuillez patienter...",
-            headPoseBlueMesh: "<p>Veuillez positionner votre tête de manière à ce que le maillage bleu soit aligné avec le maillage cible vert:</p>",
-            FeedbackHeadpose1: "Veuillez vous assurer que votre visage est visible dans votre webcam",
+            précédentCalib1: "Utiliser les données de la calibration précédente",
+            previousCalib2: "Refaire une calibration",
+            calibLoading: "Chargement de la calibration... veuillez patienter...",
+            headPoseBlueMesh: "<p>Veuillez positionner votre tête de manière à ce que le maillage bleu soit aligné avec le maillage cible (en vert):</p>",
+            FeedbackHeadpose1: "Veuillez vous assurer que votre visage est visible (capté par la webcam)",
             feedbackHeadpose2: "Veuillez vous rapprocher de la webcam.",
-            FeedbackHeadpose3: "Veuillez faire face à la webcam et placer la webcam près du moniteur.",
+            FeedbackHeadpose3: "Veuillez faire face à la webcam et placer la webcam près du moniteur (si possible).",
             feedbackHeadpose4: "Veuillez vous assurer que votre tête est orientée vers le haut.",
-            FeedbackHeadpose5: "Veuillez vous déplacer plus à gauche.",
+            FeedbackHeadpose5: "Veuillez vous déplacer vers la gauche.",
             FeedbackHeadpose6: "Veuillez vous déplacer vers la droite.",
             FeedbackHeadpose7: "Veuillez vous déplacer vers le bas.",
             FeedbackHeadpose8: "Veuillez vous déplacer vers le haut.",
@@ -1160,29 +1160,29 @@ ExpData.prototype.staticTranslations = {
             FeedbackHeadpose12: "Veuillez tourner la tête vers la gauche.",
             FeedbackHeadpose13: "Penchez la tête vers le bas.",
             FeedbackHeadpose14: "Veuillez incliner votre tête vers le haut.",
-            FeedbackHeadpose15: "Tournez la tête vers la gauche.",
-            FeedbackHeadpose16: "Tournez la tête à droite.",
+            FeedbackHeadpose15: "Veuillez tourner la tête vers la gauche.",
+            FeedbackHeadpose16: "Veuillez tourner la tête à droite.",
             FeedbackHeadpose17: "Rapprochez-vous de la caméra.",
             FeedbackHeadpose18: "Veuillez vous éloigner de la caméra.",
-            countdown1: "Super ! Maintenant, gardez cette pose de la tête... Commencez par ",
-            poseError: "<p>Vous avez perdu la pose de la tête. Veuillez réaligner votre pose de la tête sur le filet vert :</p>",
-            screenResolutionError: "La résolution de l'écran a été modifiée. Veuillez recommencer le calibrage",
+            countdown1: "Parfait ! Maintenant, veuillez garder cette pose... Commencement dans ",
+            poseError: "<p>Vous avez perdu la pose correcte de la tête. Veuillez réaligner votre pose de tête sur le maillage vert :</p>",
+            screenResolutionError: "La résolution de l'écran a été modifiée. Veuillez recommencer la calibration",
             instructionsExistingCalibDataFoundAdult: "<h3>Calibrage du traceur oculaire</h3>" +
-                "<p>Nous avons trouvé des données de calibrage antérieures dans le cache de votre navigateur. Vous pouvez sauter l'étalonnage si :" +
+                "<p>Nous avons trouvé des données de calibration antérieures dans le cache de votre navigateur. Vous pouvez ne pas faire de nouvelle calibration si :" +
                 "<ul>" +
-                "<li>vous êtes la même personne que celle qui a calibré lors de la session précédente.</li>" +
+                "<li>vous êtes la même personne que celle qui a réalisé la calibration lors de la session précédente.</li>" +
                 "<li>l'environnement et les conditions d'éclairage n'ont pas changé.</li>" +
                 "</ul></p>",
             instructionsPreEnvironmentAdult: "<h3>Calibrage du traceur oculaire</h3>" +
                 "<p><b>Veuillez lire attentivement</b></p>" +
                 "<p>Pour utiliser votre webcam pour le suivi des yeux, elle doit " +
-                "être calibré pour votre environnement spécifique. Cela prendra environ 3 à 4 minutes. " +
-                "Avant de commencer l'étalonnage, veuillez vous assurer que:</p>" +
+                "être calibrée pour votre environnement spécifique. Cela prendra environ 3 à 4 minutes. " +
+                "Avant de commencer la calibration, veuillez vous assurer que:</p>" +
                 "<ul>" +
                 "<li>Vous êtes dans une pièce calme.</li>" +
                 "<li>Vous avez assez de temps.</li>" +
                 "<li>Vous ne portez pas de lunettes.</li>" +
-                "<li>Votre webcam est aussi proche que possible du centre de votre écran (si elle n'est de toute façon pas intégrée à votre moniteur).</li>" +
+                "<li>Votre webcam est aussi proche que possible du centre de votre écran (si elle n'est pas intégrée à votre moniteur).</li>" +
                 "</ul>",
             instructionsEnvironmentAdult: "<h3>Etape 1 : Réglage de l'éclairage</h3>" +
                 "<p>Veuillez vous assurer que:</p>" +
@@ -1196,7 +1196,7 @@ ExpData.prototype.staticTranslations = {
                 "Veuillez vous assurer que:</p>" +
                 "<ul>" +
                 "<li>Cette pose de la tête est confortable pour vous de la garder pendant une longue durée.</li>" +
-                "<li>Veuillez noter que l'inclinaison et l'orientation en lacet de votre tête sont également confortables.</li>" +
+                "<li>Veuillez noter que l'inclinaison et l'orientation de votre tête sont également confortables.</li>" +
                 "<li>Veuillez régler votre écran et votre webcam sur l'écran suivant, afin que votre webcam puisse facilement détecter les mouvements de vos yeux lorsque vous regardez l'écran. </li>" +
                 "</ul>",
             instructionsPositioningAdult: "<h3>Etape 2 : Positionner la pose centrale</h3>" +
@@ -1206,28 +1206,28 @@ ExpData.prototype.staticTranslations = {
                 "<li>C'est la dernière fois qu'il faut ajuster la position de la caméra et de l'écran.</li>" +
                 "</ul>",
             instructionsPositioningCheckAdult: "<h3>Etape 2 : Définir la position centrale</h3>" +
-                "<p>Vous voulez utiliser cette pose (maille verte) ou revenir en arrière ?</p>" +
+                "<p>Vous voulez utiliser cette pose (maillage vert) ou revenir en arrière ?</p>" +
                 "<ul>" +
                 "<li>La pose est-elle face à l'écran et confortable pour vous ? </li>" +
                 "<li>Est-ce que la pose est suffisamment proche de la caméra pour que vos yeux soient bien détectés ? </li>" +
                 "</ul>",
             instructionsPreCalibAdult: "<h3>Etape 3 : Calibration</h3>" +
                 "<p><b>Veuillez lire attentivement</b></p>" +
-                "<p>Maintenant, le vrai calibrage va commencer. Veuillez ne plus déplacer la webcam ou l'écran, car cela entraînerait un échec de l'étalonnage. </p>" +
+                "<p>Maintenant, la vraie calibration va commencer. Veuillez ne plus déplacer la webcam ou l'écran, car cela entraînerait un échec de la calibration. </p>" +
                 "<ul>" +
-                "<li>Chaque étape d'étalonnage comporte 2 parties : " +
+                "<li>Chaque étape de la calibration comporte 2 parties : " +
                 "<ul>" +
                 "<li>Positionnez votre tête dans une pose spécifiée (position et orientation).</li>" +
                 "<li>Maintenez cette pose et fixez les points qui sont affichés à l'écran.</li>" +
                 "</ul></li>" +
-                "<li>Pour positionner correctement votre tête sur chaque marche, la meilleure option est d'essayer de faire se chevaucher les mailles du visage, le bleu (position actuelle) et le vert (position cible).</li>" +
-                "<li>Si votre tête n'est pas recockée à un moment quelconque, détendez-vous, asseyez-vous à nouveau droit et suivez les instructions. </li>" +
-                "<li>Une fois le calibrage effectué, NE vous éloignez PAS de l'écran et évitez les mouvements forts de la tête.</li>" +
+                "<li>Pour positionner correctement votre tête à chaque étape, la meilleure option est d'essayer de faire se chevaucher les maillages du visage, le bleu (position actuelle) et le vert (position cible).</li>" +
+                "<li>Si à certains moments votre visage n'est plus détecté, détendez-vous, asseyez-vous à nouveau droit et suivez les instructions. </li>" +
+                "<li>Une fois la calibation effectuée, NE vous éloignez PAS de l'écran et évitez les mouvements forts de la tête.</li>" +
                 "</ul>",
             instructionsExistingCalibDataFoundInfant: "<h3>Calibrage du traceur oculaire</h3>" +
-                "<p>Nous avons trouvé des données de calibrage antérieures dans le cache de votre navigateur. Vous pouvez sauter l'étalonnage si :" +
+                "<p>Nous avons trouvé des données de calibration antérieures dans le cache de votre navigateur. Vous pouvez ne pas faire la calibration si :" +
                 "<ul>" +
-                "<li>vous êtes la même personne que celle qui a calibré lors de la session précédente.</li>" +
+                "<li>vous êtes la même personne que celle qui a réalisé la calibration lors de la session précédente.</li>" +
                 "<li>l'environnement et les conditions d'éclairage n'ont pas changé.</li>" +
                 "</ul></p>",
             instructionsPreEnvironmentInfant: "<h3>Calibrage du traceur oculaire</h3>" +
@@ -1245,13 +1245,13 @@ ExpData.prototype.staticTranslations = {
                 "<p><b>Instruction pour les parents : L'oculomètre sera calibré pour une pose spécifique de la tête. " +
                 "Veuillez vous assurer que:</b></p>" +
                 "<ul>" +
-                "<li>Le visage de votre enfant est visible dans la vidéo et détecté par un filet bleu, tout en regardant l'écran (pas le vôtre).</li>" +
+                "<li>Le visage de votre enfant est visible dans la vidéo et détecté par un maillage bleu, tout en regardant l'écran (pas le vôtre).</li>" +
                 "<li>La position / la pose de la tête est confortable pour vous et votre enfant, vous pouvez la garder pour le reste de l'étude sans trop bouger.</li>" +
                 "</ul>",
             instructionsPositioningInfant: "",
             instructionsPositioningCheckInfant: "<h3>étape 2 : Définir la position centrale</h3>" +
                 "<p><b>Instruction pour les parents : Veuillez lire attentivement </b></p>" +
-                "<p>Vous voulez utiliser cette pose (maille verte) ou revenir en arrière ? </p>" +
+                "<p>Vous voulez utiliser cette pose (maillage vert) ou revenir en arrière ? </p>" +
                 "<ul>" +
                 "<li>La pose est-elle face à l'écran et confortable pour votre enfant ? </li>" +
                 "<li>Est-ce que la pose est à peu près centrée horizontalement et le visage bien visible ?  </li>" +
@@ -1260,13 +1260,13 @@ ExpData.prototype.staticTranslations = {
             instructionsPreCalibInfant: "<h3>Etape 3 : Calibration</h3>" +
                 "<p><b>Instruction pour les parents : Veuillez lire attentivement </b></p>" +
                 "<ul>" +
-                "<li>Maintenant, l'étalonnage va commencer. Veuillez ne plus déplacer la webcam ou l'écran, sinon le calibrage échouera.  </li>" +
+                "<li>Maintenant, la calibration va commencer. Veuillez ne plus déplacer la webcam ou l'écran, sinon la calibration échouera.  </li>" +
                 "<li>Nous présenterons des animaux à différentes positions sur l'écran et enregistrerons le regard de votre enfant lorsqu'il regardera ces animaux.</li>" +
-                "<li>Pour que le calibrage fonctionne, votre enfant devra regarder ces animaux, et s'asseoir dans une position stable sur votre laboratoire sans faire de grands mouvements de tête pendant et après le calibrage.</li>" +
+                "<li>Pour que la calibration fonctionne, votre enfant devra regarder ces animaux, et s'asseoir dans une position stable sur vos genoux sans faire de grands mouvements de tête pendant et après la calibration.</li>" +
                 "</ul>",
             countdownMessage1: "continuez à fixer le cercle rouge",
             countdownMessage2: "Continuez à fixer l'animal",
-            loadingCalib: "Veuillez attendre la fin de l'étalonnage:<br>",
+            loadingCalib: "Veuillez attendre la fin de la calibration:<br>",
             moveForward: "continuer",
             moveBackward: "retour"
         }
