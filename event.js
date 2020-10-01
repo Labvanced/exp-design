@@ -31,6 +31,17 @@ var ExpEvent = function (parent) {
 
 };
 
+ExpEvent.prototype.switchGlobal = function (data, event) {
+    if (event.target.value == 'false') {
+        data.event.isGlobal(false);
+    }
+    else {
+        var id = Math.floor(Math.random() * 999999999999999999999);
+        data.event.isGlobal(id);
+    }
+    console.log(data.event.isGlobal());
+}
+
 /**
  * delete the action at the specified index.
  * @param {number} index
