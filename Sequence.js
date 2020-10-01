@@ -30,19 +30,24 @@ Sequence.prototype.getGlobalEvents = function () {
     for (var i = 0; i < elements.length; i++) {
         var frame_events = elements[i].events();
         for (var j = 0; j < frame_events.length; j++) {
-            if (frame_events[j].isGlobal() == 'true') {
+            if (frame_events[j].isGlobal() !== false) {
                 events.push(frame_events[j]);
             }
         }
     }
-    console.log(this.currSelectedElement());
     for (var i = 0; i < elements.length; i++) {
+        var tmp_events = elements[i].events();
         for (var j = 0; j < events.length; j++) {
-            elements[i].events().push(events[j]);
+            var checkInArray = tmp_events.findIndex(function (element) {
+                return element.isGlobal() === events[j].isGlobal();
+            })
+            if (checkInArray === -1) {
+                tmp_events.push(events[j]);
+            }
         }
+        elements[i].events(tmp_events);
     }
     this.elements(elements);
-    console.log(events);
 }
 Sequence.prototype.dispose = function () {
     this.elements().forEach(function (elem) {
