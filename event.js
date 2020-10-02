@@ -36,10 +36,8 @@ ExpEvent.prototype.switchGlobal = function (data, event) {
         data.event.isGlobal(false);
     }
     else {
-        var id = Math.floor(Math.random() * 999999999999999999999);
-        data.event.isGlobal(id);
+        data.event.isGlobal(true);
     }
-    console.log(data.event.isGlobal());
 }
 
 /**
@@ -241,8 +239,6 @@ ExpEvent.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('isGlobal')) {
         this.isGlobal(data.isGlobal);
     }
-
-    console.log(data.isGlobal)
 
 
 

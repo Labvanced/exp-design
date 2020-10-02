@@ -293,6 +293,11 @@ FrameData.prototype.fromJS = function (data) {
  * @returns {object}
  */
 FrameData.prototype.toJS = function () {
+
+    var events = this.events();
+    events = events.filter(function (element) {
+        return !element.isGlobal();
+    });
     return {
         id: this.id(),
         type: this.type,
@@ -308,7 +313,7 @@ FrameData.prototype.toJS = function () {
         syncFrame: this.syncFrame(),
         emotionFeedbackEnabled: this.emotionFeedbackEnabled(),
         emotionOffset: this.emotionOffset(),
-        events: jQuery.map(this.events(), function (event) {
+        events: jQuery.map(events, function (event) {
             return event.toJS();
         }),
         elements: jQuery.map(this.elements(), function (elem) { return elem.id(); }),
