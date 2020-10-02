@@ -24,31 +24,6 @@ var Sequence = function (expData) {
 
 };
 
-Sequence.prototype.getGlobalEvents = function () {
-    var events = [];
-    var elements = this.elements();
-    for (var i = 0; i < elements.length; i++) {
-        var frame_events = elements[i].events();
-        for (var j = 0; j < frame_events.length; j++) {
-            if (frame_events[j].isGlobal() !== false) {
-                events.push(frame_events[j]);
-            }
-        }
-    }
-    for (var i = 0; i < elements.length; i++) {
-        var tmp_events = elements[i].events();
-        for (var j = 0; j < events.length; j++) {
-            var checkInArray = tmp_events.findIndex(function (element) {
-                return element.isGlobal() === events[j].isGlobal();
-            })
-            if (checkInArray === -1) {
-                tmp_events.push(events[j]);
-            }
-        }
-        elements[i].events(tmp_events);
-    }
-    this.elements(elements);
-}
 Sequence.prototype.dispose = function () {
     this.elements().forEach(function (elem) {
         elem.dispose();
@@ -224,7 +199,6 @@ Sequence.prototype.setPointers = function (entitiesArr) {
         return entitiesArr.byId[id];
     }));
 
-    this.getGlobalEvents();
     // converter to add all old existing factors to workspace only in editor
     //if(window.uc!==undefined){
     //    this.addAllRemainingFactorToWorkspace();
@@ -296,11 +270,17 @@ Sequence.prototype.reAddEntities = function (entitiesArr) {
  * @returns {Sequence}
  */
 Sequence.prototype.fromJS = function (data) {
+    console.log(data);
     this.id(data.id);
     this.name(data.name);
     this.elements(data.elements);
     if (data.hasOwnProperty("workspaceVars")) {
         this.workspaceVars(data.workspaceVars);
+    }
+    if (data.hasOwnProperty(this.globalEvents)) {
+        this.globalEvents(jQuery.map(data.globalEvents, function (eventData) {
+            return (new ExpEvent(self)).fromJS(eventData);
+        }));
     }
     return this;
 };
@@ -310,11 +290,17 @@ Sequence.prototype.fromJS = function (data) {
  * @returns {object}
  */
 Sequence.prototype.toJS = function () {
+    var tmp = jQuery.map(this.globalEvents(), function (event) {
+        return event.toJS();
+    });
+    console.log(tmp);
     return {
         id: this.id(),
         type: this.type,
         name: this.name(),
         elements: jQuery.map(this.elements(), function (elem) { return elem.id(); }),
-        workspaceVars: jQuery.map(this.workspaceVars(), function (variable) { return variable.id(); })
+        workspaceVars: jQuery.map(this.workspaceVars(), function (variable) { return variable.id(); }),
+        globalEvents: tmp,
+
     };
 };
