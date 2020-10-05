@@ -199,16 +199,31 @@ Sequence.prototype.setPointers = function (entitiesArr) {
         return entitiesArr.byId[id];
     }));
 
+    jQuery.each(this.globalEvents(), function (idx, event) {
+        event.setPointers(entitiesArr);
+    });
+
     // converter to add all old existing factors to workspace only in editor
     //if(window.uc!==undefined){
     //    this.addAllRemainingFactorToWorkspace();
     //}
-
-
 };
 
 Sequence.prototype.onFinishedLoading = function () {
     this.addAllRemainingFactorToWorkspace();
+};
+
+Sequence.prototype.reAddWorkspace = function () {
+    var self = this;
+    var tmpEntities = ko.observableArray([]).extend({ sortById: null });
+    this.reAddEntities(tmpEntities);
+    jQuery.each(tmpEntities(), function (idx, entity) {
+        if (entity instanceof GlobalVar) {
+            if (!self.workspaceVars.byId.hasOwnProperty(entity.id())) {
+                self.workspaceVars.push(entity);
+            }
+        }
+    });
 };
 
 Sequence.prototype.addVariableToWorkspace = function (variable) {
@@ -249,14 +264,28 @@ Sequence.prototype.reAddEntities = function (entitiesArr) {
     // add the direct child nodes:
     jQuery.each(this.elements(), function (index, elem) {
         entitiesArr.insertIfNotExist(elem);
+        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
+            entitiesArr.push(elem);
+        }
 
         // recursively make sure that all deep tree nodes are in the entities list:
-        if (elem.reAddEntities)
+        if (elem.reAddEntities) {
             elem.reAddEntities(entitiesArr);
+        }
     });
-
+    // add the direct child nodes:
+    jQuery.each(this.globalEvents(), function (index, evt) {
+        // recursively make sure that all deep tree nodes are in the entities list:
+        if (evt.reAddEntities) {
+            evt.reAddEntities(entitiesArr);
+        }
+    });
     // add the direct child nodes:
     jQuery.each(this.workspaceVars(), function (index, elem) {
+        // check if they are not already in the list:
+        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
+            entitiesArr.push(elem);
+        }
         entitiesArr.insertIfNotExist(elem);
     });
 
@@ -270,19 +299,23 @@ Sequence.prototype.reAddEntities = function (entitiesArr) {
  * @returns {Sequence}
  */
 Sequence.prototype.fromJS = function (data) {
-    console.log(data);
+    var self = this;
     this.id(data.id);
     this.name(data.name);
     this.elements(data.elements);
     if (data.hasOwnProperty("workspaceVars")) {
         this.workspaceVars(data.workspaceVars);
     }
-    if (data.hasOwnProperty(this.globalEvents)) {
-        this.globalEvents(jQuery.map(data.globalEvents, function (eventData) {
-            return (new ExpEvent(self)).fromJS(eventData);
-        }));
-    }
+    this.globalEvents(jQuery.map(data.globalEvents, function (eventData) {
+        return (new ExpEvent(self)).fromJS(eventData);
+    }));
+    // if (data.hasOwnProperty(this.globalEvents)) {
+    //     this.globalEvents(jQuery.map(data.globalEvents, function (eventData) {
+    //         return (new ExpEvent(self)).fromJS(eventData);
+    //     }));
+    // }
     return this;
+
 };
 
 /**
@@ -290,17 +323,20 @@ Sequence.prototype.fromJS = function (data) {
  * @returns {object}
  */
 Sequence.prototype.toJS = function () {
-    var tmp = jQuery.map(this.globalEvents(), function (event) {
-        return event.toJS();
+    var globalEvents = this.globalEvents();
+    globalEvents = globalEvents.filter(function (element) {
+        return element.isGlobal();
     });
-    console.log(tmp);
+
     return {
         id: this.id(),
         type: this.type,
         name: this.name(),
         elements: jQuery.map(this.elements(), function (elem) { return elem.id(); }),
         workspaceVars: jQuery.map(this.workspaceVars(), function (variable) { return variable.id(); }),
-        globalEvents: tmp,
+        globalEvents: jQuery.map(globalEvents, function (event) {
+            return event.toJS();
+        }),
 
     };
 };
