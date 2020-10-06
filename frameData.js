@@ -161,8 +161,6 @@ FrameData.prototype.getAllModifiers = function (modifiersArr) {
  */
 FrameData.prototype.setPointers = function (entitiesArr) {
     var self = this;
-    console.log("Elements SETPOINTERS -b")
-    console.log(this.events());
     // convert ids to actual pointers:
     this.elements(jQuery.map(this.elements(), function (id) {
         var elem = entitiesArr.byId[id];
@@ -188,17 +186,13 @@ FrameData.prototype.setPointers = function (entitiesArr) {
     //     console.log('cos');
     // }
     // why after interation in array the parent is null?
-    console.log("CZY TU JEST NULL");
-    console.log(this);
     // jQuery.each(this.parent.globalEvents(), function (index, evt) {
     //     evt.parent = self;
     //     self.events().push(evt);
     // })
-
     jQuery.each(this.events(), function (idx, event) {
         event.setPointers(entitiesArr);
     });
-
 };
 
 /**
@@ -253,7 +247,6 @@ FrameData.prototype.reAddEntities = function (entitiesArr) {
         evt.parent = self;
         self.events().push(evt);
     })
-    console.log(this.events());
     // add the direct child nodes:
     jQuery.each(this.localWorkspaceVars(), function (index, elem) {
         // check if they are not already in the list:
