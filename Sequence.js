@@ -309,11 +309,6 @@ Sequence.prototype.fromJS = function (data) {
     this.globalEvents(jQuery.map(data.globalEvents, function (eventData) {
         return (new ExpEvent(self)).fromJS(eventData);
     }));
-    // if (data.hasOwnProperty(this.globalEvents)) {
-    //     this.globalEvents(jQuery.map(data.globalEvents, function (eventData) {
-    //         return (new ExpEvent(self)).fromJS(eventData);
-    //     }));
-    // }
     return this;
 
 };
@@ -324,10 +319,6 @@ Sequence.prototype.fromJS = function (data) {
  */
 Sequence.prototype.toJS = function () {
     var globalEvents = this.globalEvents();
-    globalEvents = globalEvents.filter(function (element) {
-        return element.isGlobal();
-    });
-
     return {
         id: this.id(),
         type: this.type,
