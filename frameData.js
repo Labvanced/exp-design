@@ -242,11 +242,6 @@ FrameData.prototype.reAddEntities = function (entitiesArr) {
         }
     });
 
-    var self = this;
-    jQuery.each(this.parent.globalEvents(), function (index, evt) {
-        evt.parent = self;
-        self.events().push(evt);
-    })
     // add the direct child nodes:
     jQuery.each(this.localWorkspaceVars(), function (index, elem) {
         // check if they are not already in the list:

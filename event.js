@@ -40,6 +40,14 @@ ExpEvent.prototype.switchGlobal = function (data, event) {
     }
 }
 
+ExpEvent.prototype.getSequence = function () {
+    if (this.isGlobal()) {
+        console.log(this.parent);
+        return this.parent;
+    }
+    return this.parent.parent;
+}
+
 /**
  * delete the action at the specified index.
  * @param {number} index
