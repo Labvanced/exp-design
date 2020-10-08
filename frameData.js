@@ -182,14 +182,6 @@ FrameData.prototype.setPointers = function (entitiesArr) {
         return localVar;
     }));
 
-    // for (var i = 0; i < this.parent.globalEvents(); i++) {
-    //     console.log('cos');
-    // }
-    // why after interation in array the parent is null?
-    // jQuery.each(this.parent.globalEvents(), function (index, evt) {
-    //     evt.parent = self;
-    //     self.events().push(evt);
-    // })
     jQuery.each(this.events(), function (idx, event) {
         event.setPointers(entitiesArr);
     });

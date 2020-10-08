@@ -975,6 +975,7 @@ var TriggerOnFrameStart = function (event) {
 
 TriggerOnFrameStart.prototype.type = "TriggerOnFrameStart";
 TriggerOnFrameStart.prototype.label = "On Frame Start Trigger";
+TriggerOnFrameStart.prototype.iconPath = "/resources/icons/events/onChangeEvent.svg";
 
 /**
  * returns true if all settings are valid (used in the editor).
