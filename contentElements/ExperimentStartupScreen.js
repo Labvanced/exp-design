@@ -478,6 +478,12 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function () {
         this.osAllowed(false);
     }
 
+
+    this.experiment.exp_data.varBrowserSpec().value().value(browser);
+    this.experiment.exp_data.varBrowserVersionSpec().value().value(version);
+    this.experiment.exp_data.varSystemSpec().value().value(os);
+    this.experiment.exp_data.varAgentSpec().value().value(nAgt);
+
 };
 
 
