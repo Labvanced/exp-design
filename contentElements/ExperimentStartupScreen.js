@@ -363,7 +363,7 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function () {
         version = nAgt.substring(verOffset + 5);
     }
     // Chrome
-    else if ((verOffset = nAgt.indexOf('Chrome')) != -1) {
+    else if ((verOffset = nAgt.indexOf('Chrome')) != -1 || navigator.userAgent.match('CriOS')) {
         browser = 'Chrome';
         version = nAgt.substring(verOffset + 7);
     }
@@ -376,7 +376,7 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function () {
         }
     }
     // Firefox
-    else if ((verOffset = nAgt.indexOf('Firefox')) != -1) {
+    else if ((verOffset = nAgt.indexOf('Firefox')) != -1 || navigator.userAgent.match("FxiOS")) {
         browser = 'Firefox';
         version = nAgt.substring(verOffset + 8);
     }
@@ -460,7 +460,7 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function () {
         }
     }
 
-    if (os == "Mac/OS-X") {
+    if (os == "Mac/OS-X" || "iPhone" || "iPad") {
 
         if (/iPhone/.test(nAgt)) {
             os = "iPhone";
