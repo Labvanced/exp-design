@@ -17,7 +17,7 @@ var ExpEvent = function (parent) {
     this.actions = ko.observableArray([]);
     this.name = ko.observable(null);
     this.description = ko.observable('event description');
-    this.isGlobal = ko.observable(false);
+    this.isGlobal = ko.observable();
 
     this.shortName = ko.computed(function () {
         if (self.name()) {
@@ -33,16 +33,21 @@ var ExpEvent = function (parent) {
 
 ExpEvent.prototype.switchGlobal = function (data, event) {
     if (event.target.value == 'false') {
-        data.event.isGlobal(false);
+        var global = data.event.parent
+        if (global = data.event.parent) {
+            data.event.isGlobal(false);
+        }
     }
     else {
-        data.event.isGlobal(true);
+        var local = data.event.parent.parent;
+        if (local = data.event.parent.parent) {
+            data.event.isGlobal(true);
+        }
     }
 }
 
 ExpEvent.prototype.getSequence = function () {
     if (this.isGlobal()) {
-        console.log(this.parent);
         return this.parent;
     }
     return this.parent.parent;

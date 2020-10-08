@@ -25,9 +25,32 @@ var Sequence = function (expData) {
 };
 
 Sequence.prototype.dispose = function () {
+    var self = this;
     this.elements().forEach(function (elem) {
-        elem.dispose();
+        self.deleteChildEntity(elem)
     });
+    jQuery.each(this.workspaceVars(), function (index, entity) {
+        entity.removeBackRef(self);
+    });
+};
+
+Sequence.prototype.deleteChildEntity = function (entity) {
+    var self = this;
+    if (entity instanceof ExpEvent) {
+        this.globalEvents.remove(entity);
+    }
+    else {
+        this.elements.remove(entity);
+        if (typeof entity.dispose === 'function') {
+            entity.dispose();
+        }
+        self.expData.entities.remove(entity);
+    }
+
+    // if this element was selected, set selection to null
+    if (entity === this.currSelectedElement()) {
+        this.currSelectedElement(null);
+    }
 };
 
 /**
@@ -213,18 +236,6 @@ Sequence.prototype.onFinishedLoading = function () {
     this.addAllRemainingFactorToWorkspace();
 };
 
-Sequence.prototype.reAddWorkspace = function () {
-    var self = this;
-    var tmpEntities = ko.observableArray([]).extend({ sortById: null });
-    this.reAddEntities(tmpEntities);
-    jQuery.each(tmpEntities(), function (idx, entity) {
-        if (entity instanceof GlobalVar) {
-            if (!self.workspaceVars.byId.hasOwnProperty(entity.id())) {
-                self.workspaceVars.push(entity);
-            }
-        }
-    });
-};
 
 Sequence.prototype.addVariableToWorkspace = function (variable) {
     var isExisting = this.workspaceVars.byId[variable.id()];
@@ -264,9 +275,6 @@ Sequence.prototype.reAddEntities = function (entitiesArr) {
     // add the direct child nodes:
     jQuery.each(this.elements(), function (index, elem) {
         entitiesArr.insertIfNotExist(elem);
-        if (!entitiesArr.byId.hasOwnProperty(elem.id())) {
-            entitiesArr.push(elem);
-        }
 
         // recursively make sure that all deep tree nodes are in the entities list:
         if (elem.reAddEntities) {
