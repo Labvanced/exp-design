@@ -17,8 +17,6 @@ var ExpEvent = function (parent) {
     this.actions = ko.observableArray([]);
     this.name = ko.observable(null);
     this.description = ko.observable('event description');
-    this.isGlobal = ko.observable();
-
     this.shortName = ko.computed(function () {
         if (self.name()) {
             return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
@@ -28,23 +26,9 @@ var ExpEvent = function (parent) {
 
     // not serialized:
     this.isPaused = false;
-
+    this.isGlobal = ko.observable(this.parent.constructor.name === 'Sequence' ? true : false);
 };
 
-ExpEvent.prototype.switchGlobal = function (data, event) {
-    if (event.target.value == 'false') {
-        var global = data.event.parent
-        if (global = data.event.parent) {
-            data.event.isGlobal(false);
-        }
-    }
-    else {
-        var local = data.event.parent.parent;
-        if (local = data.event.parent.parent) {
-            data.event.isGlobal(true);
-        }
-    }
-}
 
 ExpEvent.prototype.getSequence = function () {
     if (this.isGlobal()) {
