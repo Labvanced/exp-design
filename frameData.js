@@ -161,6 +161,7 @@ FrameData.prototype.getAllModifiers = function (modifiersArr) {
  */
 FrameData.prototype.setPointers = function (entitiesArr) {
     var self = this;
+
     // convert ids to actual pointers:
     this.elements(jQuery.map(this.elements(), function (id) {
         var elem = entitiesArr.byId[id];
