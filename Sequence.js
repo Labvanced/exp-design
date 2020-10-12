@@ -26,7 +26,9 @@ var Sequence = function (expData) {
 
 Sequence.prototype.dispose = function () {
     var self = this;
+    // Delete event instead
     this.elements().forEach(function (elem) {
+        // 
         self.deleteChildEntity(elem)
     });
     jQuery.each(this.workspaceVars(), function (index, entity) {
@@ -34,17 +36,10 @@ Sequence.prototype.dispose = function () {
     });
 };
 
-Sequence.prototype.deleteChildEntity = function (entity) {
+Sequence.prototype.childEvent = function (entity) {
     var self = this;
     if (entity instanceof ExpEvent) {
         this.globalEvents.remove(entity);
-    }
-    else {
-        this.elements.remove(entity);
-        if (typeof entity.dispose === 'function') {
-            entity.dispose();
-        }
-        self.expData.entities.remove(entity);
     }
 
     // if this element was selected, set selection to null
