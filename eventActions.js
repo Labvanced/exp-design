@@ -1751,6 +1751,29 @@ ActionJumpTo.prototype.run = function (triggerParams) {
 
             player.startNextTrial(trialIndex);
         }
+
+        else if (this.jumpType() == "specificTrialVar") {
+            player.currentFrame.finishFrame();
+            player.recordData();
+
+            var trialIds = [];
+            for (var j = 0; j < player.randomizedTrials.length; j++) {
+                trialIds.push(player.randomizedTrials[j].trialVariation.uniqueId());
+            }
+            var indexOfNewTrial = trialIds.indexOf(parseInt(this.trialToJumpId()));
+            if (indexOfNewTrial instanceof Array) {
+                var trialIndex = indexOfNewTrial[0];
+            }
+            else if (indexOfNewTrial >= 0) {
+                var trialIndex = indexOfNewTrial;
+            }
+            else {
+                var trialIndex = player.trialIter + 1;
+            }
+
+            player.startNextTrial(trialIndex);
+        }
+
         else if (this.jumpType() == "specificTask") {
             player.currentFrame.finishFrame();
             player.recordData();
