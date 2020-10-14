@@ -2351,6 +2351,9 @@ ExpData.prototype.fromJS = function (data) {
         this.entities([]);
         jQuery.each(data.entities, function (idx, entityJson) {
             var entity = entityFactory(entityJson, self);
+            if (entity instanceof ExpEvent) {
+                return; // bug fix for old experiments... ExpEvent's are not saved seperated, but are always saved as part of their parent.
+            }
             if (entity) {
                 self.entities.insertIfNotExist(entity);
             }
