@@ -32,6 +32,7 @@ var StudySettings = function (expData) {
     this.pauseOnExitFullscreen = ko.observable(false);
     this.useOnlyCompletedSessionsForGroupRand = ko.observable(true);
     this.disablePreloadingResources = ko.observable(false);
+    this.allowedOrientations = ko.observable("anylock");
 
     // special device requirements:
     this.isAudioRecEnabled = ko.observable(false);
@@ -235,6 +236,12 @@ StudySettings.prototype.fromJS = function (data) {
     if (data.hasOwnProperty("disablePreloadingResources")) {
         this.disablePreloadingResources(data.disablePreloadingResources);
     }
+    if (data.hasOwnProperty("allowedOrientations")) {
+        this.allowedOrientations(data.allowedOrientations);
+    }
+    else {
+        this.allowedOrientations("any"); // keep same behavior for old experiments for backwards compatibility.
+    }
     if (data.hasOwnProperty('isAudioRecEnabled')) {
         this.isAudioRecEnabled(data.isAudioRecEnabled);
     }
@@ -318,6 +325,7 @@ StudySettings.prototype.toJS = function () {
         pauseOnExitFullscreen: this.pauseOnExitFullscreen(),
         useOnlyCompletedSessionsForGroupRand: this.useOnlyCompletedSessionsForGroupRand(),
         disablePreloadingResources: this.disablePreloadingResources(),
+        allowedOrientations: this.allowedOrientations(),
         isAudioRecEnabled: this.isAudioRecEnabled(),
         isVideoRecEnabled: this.isVideoRecEnabled(),
         participantConsent: this.participantConsent(),
