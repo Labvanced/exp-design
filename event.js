@@ -17,7 +17,6 @@ var ExpEvent = function (parent) {
     this.actions = ko.observableArray([]);
     this.name = ko.observable(null);
     this.description = ko.observable('event description');
-
     this.shortName = ko.computed(function () {
         if (self.name()) {
             return (self.name().length > 13 ? self.name().substring(0, 12) + '...' : self.name());
@@ -27,8 +26,16 @@ var ExpEvent = function (parent) {
 
     // not serialized:
     this.isPaused = false;
-
+    this.isGlobal = ko.observable(this.parent.constructor.name === 'Sequence' ? true : false);
 };
+
+
+ExpEvent.prototype.getSequence = function () {
+    if (this.isGlobal()) {
+        return this.parent;
+    }
+    return this.parent.parent;
+}
 
 /**
  * delete the action at the specified index.
@@ -226,7 +233,9 @@ ExpEvent.prototype.fromJS = function (data) {
     if (data.requirement) {
         this.requirementConverter(data);
     }
-
+    if (data.hasOwnProperty('isGlobal')) {
+        this.isGlobal(data.isGlobal);
+    }
 
 
 
@@ -264,7 +273,8 @@ ExpEvent.prototype.toJS = function () {
         type: this.type,
         trigger: this.trigger().toJS(),
         actions: actionData,
-        description: this.description()
+        description: this.description(),
+        isGlobal: this.isGlobal(),
     };
 };
 
