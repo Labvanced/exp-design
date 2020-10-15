@@ -1655,6 +1655,7 @@ var ActionJumpTo = function (event) {
     this.blockToJumpId = ko.observable(null);
     this.conditionGroupIdx = ko.observable(null);
     this.checkRequired = ko.observable(null);
+    this.jumpTrailType = ko.observable('id');
 
     this.alreadyTriggered = false;
 };
@@ -1860,6 +1861,10 @@ ActionJumpTo.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('checkRequired')) {
         this.checkRequired(data.checkRequired);
     }
+    if (data.hasOwnProperty('jumpTrailType')) {
+        this.jumpTrailType(data.jumpTrailType);
+    }
+
 
 
     return this;
@@ -1887,7 +1892,8 @@ ActionJumpTo.prototype.toJS = function () {
         trialToJumpId: this.trialToJumpId(),
         conditionGroupIdx: this.conditionGroupIdx(),
         blockToJumpId: this.blockToJumpId(),
-        checkRequired: this.checkRequired()
+        checkRequired: this.checkRequired(),
+        jumpTrailType: this.jumpTrailType()
 
     };
 };
