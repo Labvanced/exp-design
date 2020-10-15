@@ -25,19 +25,12 @@ var Sequence = function (expData) {
 };
 
 Sequence.prototype.dispose = function () {
-    var self = this;
-    // Delete event instead
     this.elements().forEach(function (elem) {
-        // 
-        self.deleteChildEntity(elem)
-    });
-    jQuery.each(this.workspaceVars(), function (index, entity) {
-        entity.removeBackRef(self);
+        elem.dispose();
     });
 };
 
-Sequence.prototype.childEvent = function (entity) {
-    var self = this;
+Sequence.prototype.deleteChildEntity = function (entity) {
     if (entity instanceof ExpEvent) {
         this.globalEvents.remove(entity);
     }
