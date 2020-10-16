@@ -1656,6 +1656,7 @@ var ActionJumpTo = function (event) {
     this.conditionGroupIdx = ko.observable(null);
     this.checkRequired = ko.observable(null);
     this.jumpTrailType = ko.observable('id');
+    this.variable = ko.observable(null);
 
     this.alreadyTriggered = false;
 };
@@ -1671,6 +1672,11 @@ ActionJumpTo.prototype.isValid = function () {
     return true;
 };
 
+ActionJumpTo.prototype.setVariableBackRef = function (variable) {
+    if (variable) {
+        variable.addBackRef(this, this.event, true, false, 'Jump to value var');
+    }
+};
 /**
  * This function is called when the parent event was triggered and the requirements are true. It either jumps to the
  * next frame or to specific frame or next trial.
@@ -1795,6 +1801,11 @@ ActionJumpTo.prototype.reAddEntities = function (entitiesArr) {
             }
         }
     }
+    if (this.variable()) {
+        if (!entitiesArr.byId.hasOwnProperty(this.variable().id())) {
+            entitiesArr.push(this.variable());
+        }
+    }
 };
 
 /**
@@ -1812,6 +1823,11 @@ ActionJumpTo.prototype.setPointers = function (entitiesArr) {
     // converter for old studies
     if (this.checkRequired() === null && this.jumpType() == "nextFrame") {
         this.checkRequired(true);
+    }
+    if (this.variable()) {
+        var globVar = entitiesArr.byId[this.variable()];
+        this.variable(globVar);
+        this.setVariableBackRef(globVar);
     }
 };
 
@@ -1842,6 +1858,7 @@ ActionJumpTo.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('jumpTrailType')) {
         this.jumpTrailType(data.jumpTrailType);
     }
+    this.variable(data.variable);
 
 
 
@@ -1860,6 +1877,10 @@ ActionJumpTo.prototype.toJS = function () {
     else {
         frameToJump = null;
     }
+    var variableId = null;
+    if (this.variable()) {
+        variableId = this.variable().id();
+    }
 
 
     return {
@@ -1871,7 +1892,8 @@ ActionJumpTo.prototype.toJS = function () {
         conditionGroupIdx: this.conditionGroupIdx(),
         blockToJumpId: this.blockToJumpId(),
         checkRequired: this.checkRequired(),
-        jumpTrailType: this.jumpTrailType()
+        jumpTrailType: this.jumpTrailType(),
+        variable: variableId
 
     };
 };
@@ -3476,7 +3498,6 @@ ActionReadParamFromURL.prototype.toJS = function () {
     };
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 
