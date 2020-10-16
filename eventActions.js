@@ -1655,7 +1655,7 @@ var ActionJumpTo = function (event) {
     this.blockToJumpId = ko.observable(null);
     this.conditionGroupIdx = ko.observable(null);
     this.checkRequired = ko.observable(null);
-    this.jumpTrailType = ko.observable('id');
+    this.jumpTrailType = ko.observable('fixed');
     this.variable = ko.observable(null);
 
     this.alreadyTriggered = false;
@@ -1758,7 +1758,6 @@ ActionJumpTo.prototype.run = function (triggerParams) {
 
             player.startNextTrial(trialIndex);
         }
-
         else if (this.jumpType() == "specificTask") {
             player.currentFrame.finishFrame();
             player.recordData();
@@ -1858,7 +1857,9 @@ ActionJumpTo.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('jumpTrailType')) {
         this.jumpTrailType(data.jumpTrailType);
     }
-    this.variable(data.variable);
+    if (data.hasOwnProperty('variable')) {
+        this.variable(data.variable);
+    }
 
 
 
@@ -1878,7 +1879,7 @@ ActionJumpTo.prototype.toJS = function () {
         frameToJump = null;
     }
     var variableId = null;
-    if (this.variable()) {
+    if (this.variable() && this.jumpType() == "specificTrial" && this.jumpTrailType()=="variable") {
         variableId = this.variable().id();
     }
 
