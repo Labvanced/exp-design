@@ -21,6 +21,7 @@ var RecSessionVarData = function (recSession) {
 
     this.subjCounterGlobal = ko.observable(null);
     this.subjCounterPerGroup = ko.observable(null);
+    this.multiUserGroupId = ko.observable(null);
 
     this.roleId = ko.observable(null);
     this.displayedLanguage = ko.observable(null);
@@ -87,6 +88,9 @@ RecSessionVarData.prototype.fromJS = function (data) {
     }
     if (data.hasOwnProperty('subjCounterPerGroup')) {
         this.subjCounterPerGroup(data.subjCounterPerGroup);
+    }
+    if (data.hasOwnProperty('multiUserGroupId')) {
+        this.multiUserGroupId(data.multiUserGroupId);
     }
     if (data.hasOwnProperty('roleId')) {
         this.roleId(data.roleId);
