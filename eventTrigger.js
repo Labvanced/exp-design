@@ -147,6 +147,10 @@ TriggerMouse.prototype.setupOnPlayerFrame = function (playerFrame) {
                 eventHandle.eventName = 'mousedown touchstart';
                 eventHandle.cb = function (ev) {
                     if ((self.buttonType() === "Left" && ev.button == 0) || (self.buttonType() === "Right" && ev.button == 2) || ev.type === 'touchstart') {
+                        if (playerFrame) {
+                            playerFrame.setMouseCoordsBasedOnEvent(ev);
+                        }
+
                         self.triggerOnTarget(playerFrame, target, ev);
                     }
                 };
