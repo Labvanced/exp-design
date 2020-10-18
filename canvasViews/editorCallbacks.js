@@ -105,7 +105,7 @@ EditorCallbacks.prototype.addCallbacks = function () {
     if (this.drag) {
         // Draggable On Frame in Editor View:
         $(this.div).draggable({
-            handle: '.draggableHandle',
+            handle: self2.editorOrPlayer == 'editor' ? '.draggableHandle' : null,
             distance: 10,
             cancel: '.notDraggable',
             drag: function (event, ui) {
