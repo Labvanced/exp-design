@@ -239,7 +239,7 @@ ExpData.prototype.staticTranslations = {
             yourEmail: "Email",
             missing: "missing",
             askEmailConsent1: "Why do we ask for your Email: ",
-            askEmailConsent2: "This is a longitudinal study, consisting of several participation sessions. Your email will only be recoded in order to invite/remind you to take part in the next session. Your Email will not be stored together with other kinds of data, and is accessible only internally to the Labvanced platform. We will not give away " +
+            askEmailConsent2: "This is a longitudinal study, consisting of several participation sessions. Your email will only be recorded in order to invite/remind you to take part in the next session. Your Email will not be stored together with other kinds of data, and is accessible only internally to the Labvanced platform. We will not give away " +
                 "your email or use it for different purposes.",
             yourCrowdsourcingID: "Your worker / crowdsourcing ID (*):",
             loading2: "Loading, please wait",
@@ -281,7 +281,7 @@ ExpData.prototype.staticTranslations = {
         },
         screenCalibration: {
             confirm: "Confirm",
-            calibrateIntro: "Distance and screen size are needed for the calibration:",
+            calibrateIntro: "Distance and screen size is needed for the calibration:",
             calibrateMethod1: "Specify your screen size manually if you know the size of your monitor.",
             calibrateScreenSize: "Screen size (diagonal):",
             calibrateInches: "inches",
@@ -298,7 +298,8 @@ ExpData.prototype.staticTranslations = {
             endExpMsg: "Thank you! The experiment session is finished.",
             goToLib: "Go to experiment library",
             endExpMsgTest: "The test recording of this task is over. To test the whole experiment or to record data, start the study under 'Run' in the navigation panel.",
-            moreExperiments: "Take part in more behavioral experiments:",
+            endExpMsg2: "Did you like this study? Want to give us some feedback? Follow us on Facebook!",
+            moreExperiments: "Take part in more behavioural experiments:",
             registerAndBuild: "OR register and build your own study for free:",
         },
         eyetracking: {
@@ -306,7 +307,7 @@ ExpData.prototype.staticTranslations = {
             previousCalib2: "Rerun Calibration",
             calibLoading: "loading calibration... please wait...",
             headPoseBlueMesh: "<p>Please position your head such that the blue mesh is aligned with the green target mesh:</p>",
-            feedbackHeadpose1: "Please make sure that your face is visible in your webcam.",
+            feedbackHeadpose1: "Please make sure that your face is visible on your webcam.",
             feedbackHeadpose2: "Please move closer to cam.",
             feedbackHeadpose3: "Please face the webcam and place the webcam near the monitor.",
             feedbackHeadpose4: "Please make sure that your head is oriented upright.",
@@ -333,7 +334,7 @@ ExpData.prototype.staticTranslations = {
                 "<li>you are the same person that calibrated in the previous session.</li>" +
                 "<li>the environment and lighting conditions did not change.</li>" +
                 "</ul></p>",
-            instructionsPreEnvironmentAdult: "<h3>Calibration of eye tracker</h3>" +
+            instructionsPreEnvironmentAdult: "<h3>Calibration of an eye tracker</h3>" +
                 "<p><b>Please read carefully</b></p>" +
                 "<p>To use your webcam for eye tracking, it needs to " +
                 "be calibrated for your specific environment. This will take about 3-4 minutes. " +
@@ -342,7 +343,7 @@ ExpData.prototype.staticTranslations = {
                 "<li>You are in a quiet room.</li>" +
                 "<li>You have enough time.</li>" +
                 "<li>You do not wear glasses.</li>" +
-                "<li>Your webcam is as near as possible to the center of your screen (if it is not integrated in your monitor anyway).</li>" +
+                "<li>Your webcam is as near as possible to the center of your screen (if it is not integrated with your monitor anyway).</li>" +
                 "</ul>",
             instructionsEnvironmentAdult: "<h3>Step 1: Setup illumination</h3>" +
                 "<p>Please make sure that:</p>" +
@@ -356,7 +357,7 @@ ExpData.prototype.staticTranslations = {
                 "Please make sure that:</p>" +
                 "<ul>" +
                 "<li>This head pose is comfortable for you to keep for a long duration.</li>" +
-                "<li>Please pay attention, that also the tilt and yaw orientation of your head is comfortable.</li>" +
+                "<li>Please pay attention, that also the tilt and yaw orientation of your head are comfortable.</li>" +
                 "<li>Please adjust your screen and webcam on the following screen, so that your webcam can easily detect your eye movements when you look at the screen. </li>" +
                 "</ul>",
             instructionsPositioningAdult: "<h3>Step 2: Set Center Pose</h3>" +
@@ -380,8 +381,8 @@ ExpData.prototype.staticTranslations = {
                 "<li>Position your head in a specified pose (position and orientation).</li>" +
                 "<li>Keep that pose and fixate on the points that are shown on the screen.</li>" +
                 "</ul></li>" +
-                "<li>To position your head correctly on each step, the best option is to try to overlap the face meshes, blue (current postion) and green (target position).</li>" +
-                "<li>If your head pose is not recocknized at any time, relax, sit straight again, and follow the instructions.</li>" +
+                "<li>To position your head correctly on each step, the best option is to try to overlap the face meshes, blue (current position) and green (target position).</li>" +
+                "<li>If your head pose is not recognized at any time, relax, sit straight again, and follow the instructions.</li>" +
                 "<li>After the calibration is done DO NOT move away from the screen and avoid strong head movements.</li>" +
                 "</ul>",
 
@@ -391,7 +392,7 @@ ExpData.prototype.staticTranslations = {
                 "<li>you are the same person that calibrated in the previous session.</li>" +
                 "<li>the environment and lighting conditions did not change.</li>" +
                 "</ul></p>",
-            instructionsPreEnvironmentInfant: "<h3>Calibration of eye tracker</h3>" +
+            instructionsPreEnvironmentInfant: "<h3>Calibration of an eye tracker</h3>" +
                 "<p><b>Instruction for parents: Please read carefully</b></p>" +
                 "<p>To use your webcam for eye tracking, it needs to " +
                 "be calibrated for your specific environment. This will take about 1-2 minutes. " +
@@ -421,7 +422,7 @@ ExpData.prototype.staticTranslations = {
             instructionsPreCalibInfant: "<h3>Step 3: Calibration</h3>" +
                 "<p><b>Instruction for parents: Please read carefully</b></p>" +
                 "<ul>" +
-                "<li>Now the calibration will start. Please, DO NOT move the webcam or screen anymore, otherwise calibration will fail.</li>" +
+                "<li>Now the calibration will start. Please, DO NOT move the webcam or screen anymore, otherwise, calibration will fail.</li>" +
                 "<li>We will present animals at different positions on the screen and record your child's gaze when looking at these animals.</li>" +
                 "<li>For the calibration to work, your child will need to look at these animals, and sit in a stable position on your lab without strong head movements during and after the calibration.</li>" +
                 "</ul>",
@@ -432,6 +433,221 @@ ExpData.prototype.staticTranslations = {
             moveBackward: "back"
         }
     },
+
+    Polish: {
+        start: {
+            library: "Biblioteka",
+            langSelect: "To badanie jest dostępne w wielu językach.",
+            studyLanguage: "Język badania:",
+            continue: "Kontyntynuj",
+            submit: "Zatwierdź",
+            refresh: "Odśwież",
+            initialSurvey: "Proszę wypełnić poniższe pola (pola wymagane są oznaczone *):",
+            yourGender: "Płeć",
+            yourGenderMale: "Mężczyzna",
+            yourGenderFemale: "Kobieta",
+            yourAge: "Twój wiek",
+            years: "Lata",
+            yourCountry: "Kraj / lokalizacja",
+            yourFirstLang: "Pierwszy język",
+            yourEmail: "Email",
+            missing: "brakujące",
+            askEmailConsent1: "Dlaczego prosimy o Twój e-mail:",
+            askEmailConsent2: "Jest to badanie podłużne, składające się z kilku sesji uczestnictwa. Twój e-mail zostanie nagrany tylko w celu zaproszenia / przypomnienia o wzięciu udziału w następnej sesji. Twój e-mail nie będzie przechowywany razem z innymi rodzajami danych i jest dostępny tylko wewnętrznie na platformie Labvanced. Nie będziemy używać " +
+                "Twój e-mail lub użyj go do innych celów.",
+            yourCrowdsourcingID: "Twój identyfikator pracownika / crowdsourcingu (*):",
+            loading2: "Ładowanie proszę czekać",
+            loading3: "To może zająć chwilę.",
+            loadingComplete: "Ładowanie zakończone!",
+            canStart: "Możesz teraz rozpocząć eksperyment. Spowoduje to przełączenie przeglądarki w tryb pełnoekranowy.",
+            keepFullscreen: "Należy pamiętać, że podczas eksperymentu nie należy naciskać klawisza Escape ani używać przycisku \"wstecz \" w przeglądarce.",
+            startButton: "Rozpoczynam",
+            startingExp: "Rozpoczynam eksperyment ...",
+            startingIn: "Zaczynamy za ",
+            participationAgreement1: " Zgadzam się, że wszystkie podane przeze mnie dane osobowe oraz wszystkie moje odpowiedzi będą rejestrowane i będą mogły być wykorzystane do celów badawczych w sposób pseudonimizowany. Zgadzam się również na",
+            participationAgreement2: "firmy Scicovery GmbH do rejestrowania, przechowywania i przetwarzania danych uczestników.",
+            customRequirement: "Niniejszym potwierdzam, że akceptuję warunki niniejszego badania i spełniam następujące warunki uczestnictwa, jak określono poniżej:",
+            requestPermissionHeader: "Wymagane uprawnienia urządzenia",
+            requestPermissionBody: "Ten eksperyment wymaga dostępu do kamery internetowej lub mikrofonu. Zezwól na dostęp do kamery internetowej lub mikrofonu, aby kontynuować.",
+        },
+        errors: {
+            errorSessionNotReady: "Obecnie nie możesz wziąć udziału w tym eksperymencie, ponieważ badanie to można rozpocząć tylko w określonych momentach.",
+            errorSessionStartIn: "Możesz rozpocząć tę sesję za ",
+            errorSessionOver: "Obecnie nie możesz wziąć udziału w tym eksperymencie, ponieważ dla tego badania nie zdefiniowano okna rozpoczęcia czasowego.",
+            playerErrorNoSubjGroup: "Błąd: w eksperymencie nie zdefiniowano żadnej grupy eksperymentalnej.",
+            playerErrorNoSession: "Błąd: nie ma zdefiniowanej sesji w grupie eksperymentalnej.",
+            playerErrorNoBlock: "Błąd: nie ma zdefiniowanego bloku w tej sesji eksperymentu.",
+        },
+        multiUser: {
+            multiUserExpLobby: "Eksperyment z wieloma uczestnikami (Multiple Participant)",
+            participantsInLobby: "Uczestnicy w lobby:",
+            readyToStart: "Gotowy do rozpoczęcia?",
+            waitingForOtherParticipants: "Czekamy na więcej uczestników ...",
+            experimentStartsShortly: "Twój eksperyment wkrótce się rozpocznie ...",
+            successfullyMatched_1: "Pomyślnie dopasowane. naciśnij ",
+            successfullyMatched_2: " przystąpić do eksperymentu!",
+            continueJointExpLobby: "kontyntynuj",
+            jointExpTestConnection: "Testowanie połączenia internetowego. proszę czekać 30 sekund... ",
+            inviteFriendMultiUser1: "Potrzebujesz innego gracza? Zaprosić znajomego!",
+            inviteFriendMultiUser2: "Twoje imię:",
+            inviteFriendMultiUser3: "Email Twojego znajomego:",
+            inviteFriendMultiUser4: "Zapraszam",
+        },
+        screenCalibration: {
+            confirm: "Potwierdzam",
+            calibrateIntro: "Do kalibracji potrzebna jest odległość i rozmiar ekranu:",
+            calibrateMethod1: "Jeśli znasz rozmiar swojego monitora, określ ręcznie rozmiar ekranu.",
+            calibrateScreenSize: "Rozmiar ekranu (przekątna):",
+            calibrateInches: "cale",
+            calibrateMethod2: "Użyj standardowego dowodu osobistego (85,60 × 53,98 mm) lub dowolnej innej karty tego samego rozmiaru na ekranie i spróbuj dopasować rozmiar wyświetlanej karty." +
+                "Możesz zmienić rozmiar obrazu, przeciągając strzałkę. Kalibracja jest prawidłowa, jeśli obraz dokładnie odpowiada rozmiarowi karty.",
+            calibDistance1: "Twoja odległość do ekranu (w cm) to:",
+            calibDistance2: "centymetry",
+        },
+        content: {
+            chooseSelection: "Proszę wybrać...",
+            answerPlaceholder: "Odpowiedź uczestnika ...",
+        },
+        end: {
+            endExpMsg: "Dziękuję! Sesja eksperymentalna została zakończona.",
+            goToLib: "Przejdź do biblioteki eksperymentów",
+            endExpMsgTest: "Testowe nagranie tego zadania dobiegło końca. Aby przetestować cały eksperyment lub zarejestrować dane, rozpocznij badanie pod „Uruchom” w panelu nawigacyjnym.",
+            endExpMsg2: "Podobało Ci się to badanie? Chcesz przekazać nam swoją opinię? Śledź nas na facebooku!",
+            moreExperiments: "Weź udział w większej liczbie eksperymentów behawioralnych:",
+            registerAndBuild: "LUB zarejestruj się i zbuduj własne badanie za darmo:",
+        },
+        eyetracking: {
+            previousCalib1: "Użyj poprzednich danych kalibracyjnych",
+            previousCalib2: "Uruchom ponownie kalibrację",
+            calibLoading: "ładowanie kalibracji ... proszę czekać ...",
+            headPoseBlueMesh: "<p>Ustaw głowę tak, aby niebieska siatka była wyrównana z zieloną siatką docelową:</p>",
+            feedbackHeadpose1: "Upewnij się, że Twoja twarz jest widoczna w kamerze internetowej.",
+            feedbackHeadpose2: "Podejdź bliżej do kamery.",
+            feedbackHeadpose3: "Skieruj się w stronę kamery internetowej i umieść ją w pobliżu monitora.",
+            feedbackHeadpose4: "Upewnij się, że Twoja głowa jest skierowana pionowo.",
+            feedbackHeadpose5: "Proszę przesunąć się w lewo.",
+            feedbackHeadpose6: "Proszę przesunąć się w prawo.",
+            feedbackHeadpose7: "Proszę przesunąć się w dół.",
+            feedbackHeadpose8: "Proszę przesunąć się w górę.",
+            feedbackHeadpose9: "Proszę podnieść głowę.",
+            feedbackHeadpose10: "Proszę opuścić głowę.",
+            feedbackHeadpose11: "Proszę, przesuń głowę w prawo.",
+            feedbackHeadpose12: "Proszę przesunąć głowę w lewo.",
+            feedbackHeadpose13: "Proszę pochylić głowę w dół.",
+            feedbackHeadpose14: "Proszę podnieść głowę.",
+            feedbackHeadpose15: "Proszę, obróć głowę w lewo.",
+            feedbackHeadpose16: "Proszę, obróć głowę w prawo.",
+            feedbackHeadpose17: "Podejdź bliżej do kamery.",
+            feedbackHeadpose18: "Odsuń się od kamery.",
+            countdown1: "Wspaniały! Teraz, proszę, zachowaj tę pozę głowy ... Zacznij od ",
+            poseError: "<p>Utracono pozycję głowy. Dopasuj głowę do zielonej siatki:</p>",
+            screenResolutionError: "Rozdzielczość ekranu została zmieniona. Proszę ponownie uruchomić kalibrację.",
+            instructionsExistingCalibDataFoundAdult: "<h3>Kalibracja Eye-Tracking</h3>" +
+                "<p>Znaleźliśmy poprzednie dane kalibracyjne w pamięci podręcznej przeglądarki. Możesz pominąć kalibrację, jeśli:" +
+                "<ul>" +
+                "<li>jesteś tą samą osobą, która wykonywała kalibrację w poprzedniej sesji.</li>" +
+                "<li>otoczenie i warunki oświetleniowe nie uległy zmianie.</li>" +
+                "</ul></p>",
+            instructionsPreEnvironmentAdult: "<h3>Kalibracja eye trackera</h3>" +
+                "<p><b>Proszę czytać uważnie</b></p>" +
+                "<p>Aby używać kamery internetowej do śledzenia wzroku, należy " +
+                "być skalibrowane dla konkretnego środowiska. Zajmie to około 3-4 minut. " +
+                "Przed rozpoczęciem kalibracji upewnij się, że:</p>" +
+                "<ul>" +
+                "<li>Jesteś w cichym pokoju.</li>" +
+                "<li>Masz wystarczająco dużo czasu.</li>" +
+                "<li>Nie nosisz okularów.</li>" +
+                "<li>Twoja kamera internetowa znajduje się jak najbliżej środka ekranu (jeśli i tak nie jest zintegrowana z monitorem)..</li>" +
+                "</ul>",
+            instructionsEnvironmentAdult: "<h3>Krok 1: Skonfiguruj oświetlenie</h3>" +
+                "<p>Proszę upewnij się że:</p>" +
+                "<li>Na obrazie za Tobą nie widać żadnego jasnego źródła światła (okienka, lampy).</li>" +
+                "<li>Twoja twarz i oczy powinny być dobrze oświetlone od przodu.</li>" +
+                "</ul>",
+            instructionsPrePositioningAdult: "<h3>Krok 2: Ustaw środkową pozycję</h3>" +
+                "<p><b>Proszę czytać uważnie</b></p>" +
+                "<p>Eye tracker zostanie skalibrowany dla określonej pozycji (pozycji i orientacji) Twojej głowy przed kamerą. " +
+                "W następnym kroku zdefiniujesz „środkową” pozę." +
+                "Proszę upewnij się że:</p>" +
+                "<ul>" +
+                "<li>Ta pozycja głowy jest wygodna do utrzymania przez długi czas.</li>" +
+                "<li>Zwróć uwagę, aby pochylenie i odchylenie głowy było wygodne.</li>" +
+                "<li>Dostosuj ekran i kamerę internetową na następującym ekranie, aby kamera internetowa mogła łatwo wykrywać ruchy oczu, gdy patrzysz na ekran. </li>" +
+                "</ul>",
+            instructionsPositioningAdult: "<h3>Krok 2: Ustaw środkową pozycję</h3>" +
+                "<ul>" +
+                "<li>Upewnij się, że patrzysz na ekran w wygodnej pozie.</li>" +
+                "<li>Bądź wystarczająco blisko kamery tak, aby twoja twarz i oczy były dobrze rozpoznawane i widoczne.</li>" +
+                "<li>To ostatni raz, kiedy dostosowujesz kamerę i pozycję ekranu.</li>" +
+                "</ul>",
+            instructionsPositioningCheckAdult: "<h3>Krok 2: Ustaw środkową pozycję</h3>" +
+                "<p>Chcesz użyć tej pozy (zielona siatka) czy wrócić?</p>" +
+                "<ul>" +
+                "<li>Czy pozycja skierowana w stronę ekranu jest dla Ciebie wygodna?</li>" +
+                "<li>Czy pozycja jest wystarczająco blisko aparatu, aby Twoje oczy były dobrze wykryte?</li>" +
+                "</ul>",
+            instructionsPreCalibAdult: "<h3>Krok 3: Kalibracja</h3>" +
+                "<p><b>Proszę czytać uważnie</b></p>" +
+                "<p>Teraz rozpocznie się prawdziwa kalibracja. NIE WOLNO już przesuwać kamery internetowej ani ekranu, ponieważ spowoduje to niepowodzenie kalibracji.</p>" +
+                "<ul>" +
+                "<li>Każdy krok kalibracji składa się z 2 części: " +
+                "<ul>" +
+                "<li>Ustaw głowę w określonej pozie (pozycja i orientacja).</li>" +
+                "<li>Zachowaj tę pozę i skup się na punktach pokazanych na ekranie.</li>" +
+                "</ul></li>" +
+                "<li>Aby prawidłowo ustawić głowę na każdym kroku, najlepszą opcją jest nałożenie na siebie siatek twarzy, niebieskiego (aktualna pozycja) i zielonego (pozycja docelowa).</li>" +
+                "<li>Jeśli pozycja głowy nie zostanie rozpoznana w dowolnym momencie, zrelaksuj się, usiądź prosto i postępuj zgodnie z instrukcjami.</li>" +
+                "<li>Po zakończeniu kalibracji NIE oddalaj się od ekranu i unikaj silnych ruchów głową.</li>" +
+                "</ul>",
+
+            instructionsExistingCalibDataFoundInfant: "<h3>Kalibracja Eye-Tracking</h3>" +
+                "<p>Znaleźliśmy poprzednie dane kalibracyjne w pamięci podręcznej przeglądarki. Możesz pominąć kalibrację, jeśli:" +
+                "<ul>" +
+                "<li>jesteś tą samą osobą, która wykonywała kalibrację w poprzedniej sesji.</li>" +
+                "<li>otoczenie i warunki oświetleniowe nie uległy zmianie.</li>" +
+                "</ul></p>",
+            instructionsPreEnvironmentInfant: "<h3>Kalibracja eye trackera</h3>" +
+                "<p><b>Instrukcja dla rodziców: przeczytaj uważnie</b></p>" +
+                "<p>Aby używać kamery internetowej do śledzenia wzroku, musi to zrobić " +
+                "być skalibrowane dla konkretnego środowiska. Zajmie to około 1-2 minut. " +
+                "Przed rozpoczęciem upewnij się, że:</p>" +
+                "<ul>" +
+                "<li>Twoje dziecko siedzi wygodnie na Twoich kolanach.</li>" +
+                "<li>Na obrazie za Tobą nie widać żadnego jasnego źródła światła (okienka, lampy).</li>" +
+                "<li>Twoje dziecko nie nosi okularów.</li>" +
+                "</ul>",
+            instructionsEnvironmentInfant: "",
+            instructionsPrePositioningInfant: "<h3>Krok 1: Ustaw środkową pozycję</h3>" +
+                "<p><b>Instrukcja dla rodziców: Eye tracker zostanie skalibrowany do określonej pozycji głowy. " +
+                "Proszę upewnij się że:</b></p>" +
+                "<ul>" +
+                "<li>Twarz Twojego dziecka jest widoczna na nagraniu i wykrywana za pomocą niebieskiej siatki, gdy patrzy na ekran (nie na Twoją).</li>" +
+                "<li>Pozycja/pozycja głowy jest wygodna dla Ciebie i Twojego dziecka, aby utrzymać przez resztę badania bez większego ruchu.</li>" +
+                "</ul>",
+            instructionsPositioningInfant: "",
+            instructionsPositioningCheckInfant: "<h3>Krok 2: Ustaw środkową pozycję</h3>" +
+                "<p><b>Instrukcja dla rodziców: przeczytaj uważnie</b></p>" +
+                "<p>Chcesz użyć tej pozy (zielona siatka) czy wrócić?</p>" +
+                "<ul>" +
+                "<li>Czy pozycja skierowana w stronę ekranu jest wygodna dla Twojego dziecka?</li>" +
+                "<li>Czy pozycja jest mniej więcej wyśrodkowana w poziomie, a twarz dobrze widoczna?</li>" +
+                "<li>Jeśli nie, to cofnij się i ponownie zdefiniuj pozycję środkową.</li>" +
+                "</ul>",
+            instructionsPreCalibInfant: "<h3>Krok 3: Kalibracja</h3>" +
+                "<p><b>Instrukcja dla rodziców: przeczytaj uważnie</b></p>" +
+                "<ul>" +
+                "<li>Teraz rozpocznie się kalibracja. NIE WOLNO już przesuwać kamery internetowej ani ekranu, w przeciwnym razie kalibracja się nie powiedzie.</li>" +
+                "<li>Przedstawimy zwierzęta w różnych pozycjach na ekranie i zarejestrujemy spojrzenie Twojego dziecka na te zwierzęta.</li>" +
+                "<li>Aby kalibracja zadziałała, Twoje dziecko będzie musiało patrzeć na te zwierzęta i siedzieć w stabilnej pozycji w laboratorium bez silnych ruchów głową podczas i po kalibracji.</li>" +
+                "</ul>",
+            countdownMessage1: "utrzymaj wzrok na czerwonym kole",
+            countdownMessage2: "utrzymaj zwrok na zwierzęciu",
+            loadingCalib: "Poczekaj na zakończenie kalibracji:<br>",
+            moveForward: "kontyntynuj",
+            moveBackward: "z powrotem"
+        }
+    },
+
     German: {
         start: {
             library: "Experimente",
