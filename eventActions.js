@@ -1745,16 +1745,33 @@ ActionJumpTo.prototype.run = function (triggerParams) {
             for (var j = 0; j < player.randomizedTrials.length; j++) {
                 trialIds.push(player.randomizedTrials[j].trialVariation.uniqueId());
             }
-            var indexOfNewTrial = trialIds.indexOf(parseInt(this.trialToJumpId()));
-            if (indexOfNewTrial instanceof Array) {
-                var trialIndex = indexOfNewTrial[0];
+            if (this.jumpTrailType() === 'fixed') {
+                var indexOfNewTrial = trialIds.indexOf(parseInt(this.trialToJumpId()));
+                var trialIndex = 1;
+                if (indexOfNewTrial instanceof Array) {
+                    trialIndex = indexOfNewTrial[0];
+                }
+                else if (indexOfNewTrial >= 0) {
+                    trialIndex = indexOfNewTrial;
+                }
+                else {
+                    trialIndex = player.trialIter + 1;
+                }
+            } else if (this.jumpTrailType() === 'variable') {
+                if (this.variable()) {
+                    var indexOfNewTrialVar = this.variable().getValue();
+                    if (indexOfNewTrialVar >= 0) {
+                        trialIndex = indexOfNewTrialVar;
+                    } else {
+                        console.error("wrong trial id assigned in variable for jumping to specific trial");
+                    }
+                }
+                else {
+                    console.error("no trial id assigned in variable for jumping to specific trial");
+                }
+
             }
-            else if (indexOfNewTrial >= 0) {
-                var trialIndex = indexOfNewTrial;
-            }
-            else {
-                var trialIndex = player.trialIter + 1;
-            }
+
 
             player.startNextTrial(trialIndex);
         }
@@ -1879,7 +1896,7 @@ ActionJumpTo.prototype.toJS = function () {
         frameToJump = null;
     }
     var variableId = null;
-    if (this.variable() && this.jumpType() == "specificTrial" && this.jumpTrailType()=="variable") {
+    if (this.variable() && this.jumpType() == "specificTrial" && this.jumpTrailType() == "variable") {
         variableId = this.variable().id();
     }
 
