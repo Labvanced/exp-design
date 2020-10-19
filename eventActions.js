@@ -1756,11 +1756,12 @@ ActionJumpTo.prototype.run = function (triggerParams) {
                 }
                 else {
                     trialIndex = player.trialIter + 1;
+                    console.error("non-existing fixed trial id assigned in jump to specific trial, skip/jump to next trial id");
                 }
             } else if (this.jumpTrailType() === 'variable') {
                 if (this.variable()) {
                     var indexOfNewTrialVar = this.variable().getValue();
-                    if (indexOfNewTrialVar >= 0) {
+                    if (indexOfNewTrialVar >= 1) {
                         trialIndex = indexOfNewTrialVar;
                     } else {
                         console.error("wrong trial id assigned in variable for jumping to specific trial");
