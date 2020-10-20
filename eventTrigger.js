@@ -311,7 +311,9 @@ TriggerEyetracking.prototype.getParameterSpec = function () {
         'Coordinate [X,Y] Array',
         'Time From Frame Onset',
         'Stimulus Name',
-        'Stimulus Info'
+        'Stimulus Info',
+        'Snapshot Timestamp',
+        'Coord. + Time [X,Y,T] Array',
     ];
 };
 
@@ -323,7 +325,7 @@ TriggerEyetracking.prototype.getParameterSpec = function () {
 TriggerEyetracking.prototype.setupOnPlayerFrame = function (playerFrame) {
     var self = this;
 
-    this.eventHandleForCleanUp = function (coordX, coordY) {
+    this.eventHandleForCleanUp = function (coordX, coordY, coordT) {
         if (self.limitToTargets()) {
             var allTargets = self.targets();
             for (var i = 0; i < allTargets.length; i++) {
@@ -347,7 +349,9 @@ TriggerEyetracking.prototype.setupOnPlayerFrame = function (playerFrame) {
                             [coordX, coordY],
                             playerFrame.getFrameTime(),
                             target.name(),
-                            stimulusInformation
+                            stimulusInformation,
+                            coordT,
+                            [coordX, coordY, coordT]
                         ]);
                     }
                 }
@@ -360,7 +364,9 @@ TriggerEyetracking.prototype.setupOnPlayerFrame = function (playerFrame) {
                 [coordX, coordY],
                 playerFrame.getFrameTime(),
                 null,
-                null
+                null,
+                coordT,
+                [coordX, coordY, coordT]
             ]);
         }
     };
