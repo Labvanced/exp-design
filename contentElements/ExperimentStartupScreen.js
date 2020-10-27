@@ -784,20 +784,18 @@ ExperimentStartupScreen.prototype.startExp = function () {
             $('#sectionPreload').html("<div style='position: fixed; width: 100%; height: 100%;'>" +
                 "<div style='margin: 0; position: absolute; top: 50%; left: 50%;margin-right: -50%; transform: translate(-50%, -50%); font-size: xx-large;'>Please rotate your screen.</div>" +
                 "</div>");
-                var subscriberHandle = player.screenOrientationCurrent.subscribe(function() {
-                    if (player.checkScreenOrientation()) {
-                        // continue startup process:
-                        subscriberHandle.dispose();
-                        $("#sectionPreload").hide();
-                        player.startExperimentContinue();
-                    }
-                })
+            var subscriberHandle = player.screenOrientationCurrent.subscribe(function () {
+                if (player.checkScreenOrientation()) {
+                    // continue startup process:
+                    subscriberHandle.dispose();
+                    $("#sectionPreload").hide();
+                    player.startExperimentContinue();
+                }
+            })
             return;
         }
-        setTimeout(function () {
-            $("#sectionPreload").hide();
-            player.startExperimentContinue();
-        }, 2000);
+        $("#sectionPreload").hide();
+        player.startExperimentContinue();
     }, 2000);
 
 };
