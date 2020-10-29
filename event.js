@@ -37,6 +37,30 @@ ExpEvent.prototype.getSequence = function () {
     return this.parent.parent;
 }
 
+ExpEvent.prototype.getIcon = function () {
+    var icons = {
+        'TriggerMouse': '/resources/icons/events/mouseEvent.svg',
+        'TriggerEyetracking':'/resources/features/technology.svg',
+        'TriggerButtonClick':'/resources/icons/tools/tool_button.svg',
+        'TriggerKeyboard':'/resources/icons/events/keyboardEvent.svg',
+        'TriggerOnFrameStart':'/resources/icons/events/onChangeEvent.svg',
+        'TriggerOnFrameEnd':'/resources/icons/events/onChangeEvent.svg',
+        'TriggerWebsocket':'/resources/icons/events/onChangeEvent.svg',
+        'TriggerEnterOnInput':'/resources/icons/tools/tool_input.svg',
+        'TriggerVariableValueChanged':'/resources/icons/Navigation/dark/variables-dark.svg',
+        'TriggerOnContentElement':'/resources/icons/upload.svg',
+        'TriggerAudioVideoEvent':'/resources/icons/tools/objectlist/tool_video.svg'
+    }
+
+
+    if(icons[this.trigger().type]){
+        return icons[this.trigger().type];
+    }
+
+    console.log(this.trigger().type);
+    return '/resources/icons/events/mouseEvent.svg';  
+}
+
 /**
  * delete the action at the specified index.
  * @param {number} index
