@@ -423,12 +423,13 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function () {
         { s: 'Windows-PC', r: /Windows CE/ },
         { s: 'Windows-PC', r: /Win16/ },
 
+        { s: 'iPad', r: /iPad/ },
+        { s: 'iPhone', r: /iPhone/ },
+
         { s: 'Mac/OS-X', r: /Mac OS X/ },
         { s: 'Mac/OS-X', r: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/ },
 
         { s: 'Android', r: /Android/ },
-        { s: 'iPhone', r: /iPhone/ },
-        { s: 'iPad', r: /iPad/ },
 
         { s: 'Linux-PC', r: /(Linux|X11)/ }, // warning: it is important to first check Android above, because it also includes Linux in agent string.
 
@@ -460,17 +461,6 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function () {
         }
     }
 
-    if (os == "Mac/OS-X" || "iPhone" || "iPad") {
-
-        if (/iPhone/.test(nAgt)) {
-            os = "iPhone";
-        }
-        else if (/iPad/.test(nAgt)) {
-            os = "iPad";
-        }
-
-
-    }
     if (this.allowedSystems().indexOf(os) >= 0) {
         this.osAllowed(true);
     }
