@@ -42,6 +42,13 @@ Factor.prototype.addFactorDependency = function (factor) {
     this.balancedInFactors.push(obj);
 };
 
+Factor.prototype.reomveAllLevels = function () {
+    while (this.nrLevels > 1) {
+        this.removeLevel(this.nrLevels);
+        this.nrLevels--;
+    }
+};
+
 
 Factor.prototype.removeFactorDependency = function (index) {
     this.balancedInFactors.splice(index, 1);
