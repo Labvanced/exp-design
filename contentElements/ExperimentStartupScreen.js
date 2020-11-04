@@ -620,17 +620,6 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function () {
     };
 
 
-    if (this.experiment.publishing_data.sendRecordedDataToExternalServer()) {
-        if (player.exp_license === 'lab') {
-            playerAjaxPostExternal(
-                '/startFirstPlayerSession',
-                data_send,
-                null
-            );
-        } else {
-            console.error("external data storage is only supported for lab license holders");
-        }
-    }
 
     playerAjaxPost('/startFirstPlayerSession',
         data_send,
@@ -648,6 +637,23 @@ ExperimentStartupScreen.prototype.sendDataAndContinue = function () {
 
             if (!(self.requiredGroup() == 'byParticipant' || self.requiredSession() == 'byParticipant')) {
                 player.setSubjectGroupNr(data.groupNr, data.sessionNr);
+            }
+            if (self.experiment.publishing_data.sendRecordedDataToExternalServer()) {
+                data_send.groupNr = player.groupNr;
+                data_send.sessionNr = player.sessionNr;
+                data_send.group_name = player.subj_group.name();
+                data_send.session_name = player.exp_session.name();
+                data_send.experiment_name = player.experiment.exp_name();
+
+                if (player.exp_license === 'lab') {
+                    playerAjaxPostExternal(
+                        '/startFirstPlayerSession',
+                        data_send,
+                        null
+                    );
+                } else {
+                    console.error("external data storage is only supported for lab license holders");
+                }
             }
             player.preloadAllContent();
             self.jumpToRequestPermissionScreen();
