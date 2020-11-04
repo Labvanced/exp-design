@@ -454,6 +454,12 @@ FactorGroup.prototype.removeFactor = function (factor) {
 
     if (factor.globalVar() && factor.globalVar() instanceof GlobalVar) {
         factor.globalVar().isFactor(false);
+        factor.globalVar().isHidden(true);
+        factor.globalVar().name("deleted_var_" + globalVar.name());
+        factor.globalVar().isRecorded(false);
+        factor.globalVar().resetAtTrialStart(false);
+        factor.globalVar().recordAtTrialEnd(false);
+        factor.globalVar().isFactor(false);
         factor.globalVar().removeBackRef(factor);
     }
 
