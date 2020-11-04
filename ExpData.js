@@ -2081,24 +2081,32 @@ ExpData.prototype.getTaskFromFrameId = function (frameId) {
             var currTaskName = entity.name();
             var sequences = entity.subSequencePerFactorGroup();
             for (var k = 0; k < sequences.length && found == false; k++) {
+                var sequence = null;
                 if (sequences[k] instanceof Sequence) {
-                    var sequence = sequences[k];
+                    sequence = sequences[k];
                 } else {
-                    var sequence = this.entities.byId[sequences[k]];
+                    sequence = this.entities.byId[sequences[k]];
                 }
-                var elements = sequence.elements();
-                for (var j = 0; j < elements.length && found == false; j++) {
-                    if (elements[j] instanceof FrameData || elements[j] instanceof PageData) {
-                        var frame = elements[j];
-                    } else {
-                        var frame = this.entities.byId[elements[j]];
-                    }
+                if (sequence) {
+                    var elements = sequence.elements();
+                    for (var j = 0; j < elements.length && found == false; j++) {
+                        var frame = null;
+                        if (elements[j] instanceof FrameData || elements[j] instanceof PageData) {
+                            frame = elements[j];
+                        } else {
+                            frame = this.entities.byId[elements[j]];
+                        }
+                        if (frame) {
+                            if (frame.id() === frameId) {
+                                taskName = currTaskName;
+                                found = true;
+                            }
+                        }
 
-                    if (frame.id() === frameId) {
-                        taskName = currTaskName;
-                        found = true;
+
                     }
                 }
+
 
             }
 
