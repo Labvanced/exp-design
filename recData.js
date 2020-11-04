@@ -8,6 +8,7 @@
  */
 var RecData = function () {
     this.data = {};
+    this.scope = "trial"; // any of GlobalVar.scopes (i.e. 'subject', 'session', 'task', 'trial')
 };
 
 
@@ -30,7 +31,7 @@ RecData.prototype.addRecording = function (globalVar, saveByName, isDuringTrial)
     else {
         this.data[globalVar.id()] = recVal;
     }
-    
+
 };
 
 /**
@@ -40,6 +41,9 @@ RecData.prototype.addRecording = function (globalVar, saveByName, isDuringTrial)
  */
 RecData.prototype.fromJS = function (data) {
     this.data = data.data;
+    if (data.hasOwnProperty('scope')) {
+        this.scope = data.scope;
+    }
     return this;
 };
 
@@ -49,6 +53,7 @@ RecData.prototype.fromJS = function (data) {
  */
 RecData.prototype.toJS = function () {
     return {
-        data: this.data
+        data: this.data,
+        scope: this.scope
     };
 };

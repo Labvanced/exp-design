@@ -4,8 +4,15 @@
  * @constructor
  */
 var RecSessionVarData = function (recSession) {
+
+    // parent recSession:
     this.recSession = recSession;
 
+    // new version uses RecData subfields (all data is in these subfields):
+    this.subjectData = new RecData();
+    this.sessionData = new RecData();
+
+    // these are all deprecated and will be removed in the near future (do not add new to the list):
     this.browserSpec = ko.observable(null);
     this.versionSpec = ko.observable(null);
     this.systemSpec = ko.observable(null);
@@ -18,15 +25,12 @@ var RecSessionVarData = function (recSession) {
     this.serverResponseTimes = ko.observable(null);
     this.crowdsourcinSubjId = ko.observable(null);
     this.timeDelayStd = ko.observable(null);
-
     this.subjCounterGlobal = ko.observable(null);
     this.subjCounterPerGroup = ko.observable(null);
     this.multiUserGroupId = ko.observable(null);
-
     this.roleId = ko.observable(null);
     this.displayedLanguage = ko.observable(null);
     this.Pixel_Density_PerMM = ko.observable(null);
-
 
     // dynamically added:
     this.timeDelayMeanTrimed = ko.observable("not measured");
@@ -39,6 +43,14 @@ var RecSessionVarData = function (recSession) {
  */
 RecSessionVarData.prototype.fromJS = function (data) {
 
+    if (data.hasOwnProperty('subjectData')) {
+        this.subjectData.fromJS(data.subjectData);
+    }
+    if (data.hasOwnProperty('sessionData')) {
+        this.sessionData.fromJS(data.sessionData);
+    }
+
+    // TODO: add convertion of old recorded data and insert them into this.subjectData or this.sessionData
     if (data.hasOwnProperty('browserSpec')) {
         this.browserSpec(data.browserSpec);
     }
@@ -101,8 +113,6 @@ RecSessionVarData.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('Pixel_Density_PerMM')) {
         this.Pixel_Density_PerMM(data.Pixel_Density_PerMM);
     }
-
-
 
     return this;
 };
