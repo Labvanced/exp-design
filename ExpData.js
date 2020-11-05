@@ -2096,7 +2096,7 @@ ExpData.prototype.getTaskFromFrameId = function (frameId) {
                         } else {
                             frame = this.entities.byId[elements[j]];
                         }
-                        if (frame) {
+                        if (frame && frame.id) {
                             if (frame.id() === frameId) {
                                 taskName = currTaskName;
                                 found = true;
@@ -2134,7 +2134,7 @@ ExpData.prototype.getFrameFromFrameElementId = function (frameElemId) {
                 } else {
                     element = this.entities.byId[elements[j]];
                 }
-                if (element) {
+                if (element && element.id) {
                     if (element.id() === frameElemId) {
                         frameOrPage = element;
                         found = true;
