@@ -2087,7 +2087,7 @@ ExpData.prototype.getTaskFromFrameId = function (frameId) {
                 } else {
                     sequence = this.entities.byId[sequences[k]];
                 }
-                if (sequence) {
+                if (sequence && sequence.elements) {
                     var elements = sequence.elements();
                     for (var j = 0; j < elements.length && found == false; j++) {
                         var frame = null;
