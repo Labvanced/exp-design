@@ -2081,24 +2081,32 @@ ExpData.prototype.getTaskFromFrameId = function (frameId) {
             var currTaskName = entity.name();
             var sequences = entity.subSequencePerFactorGroup();
             for (var k = 0; k < sequences.length && found == false; k++) {
+                var sequence = null;
                 if (sequences[k] instanceof Sequence) {
-                    var sequence = sequences[k];
+                    sequence = sequences[k];
                 } else {
-                    var sequence = this.entities.byId[sequences[k]];
+                    sequence = this.entities.byId[sequences[k]];
                 }
-                var elements = sequence.elements();
-                for (var j = 0; j < elements.length && found == false; j++) {
-                    if (elements[j] instanceof FrameData || elements[j] instanceof PageData) {
-                        var frame = elements[j];
-                    } else {
-                        var frame = this.entities.byId[elements[j]];
-                    }
+                if (sequence && sequence.elements) {
+                    var elements = sequence.elements();
+                    for (var j = 0; j < elements.length && found == false; j++) {
+                        var frame = null;
+                        if (elements[j] instanceof FrameData || elements[j] instanceof PageData) {
+                            frame = elements[j];
+                        } else {
+                            frame = this.entities.byId[elements[j]];
+                        }
+                        if (frame && frame.id) {
+                            if (frame.id() === frameId) {
+                                taskName = currTaskName;
+                                found = true;
+                            }
+                        }
 
-                    if (frame.id() === frameId) {
-                        taskName = currTaskName;
-                        found = true;
+
                     }
                 }
+
 
             }
 
@@ -2120,16 +2128,19 @@ ExpData.prototype.getFrameFromFrameElementId = function (frameElemId) {
 
             var elements = entity.elements();
             for (var j = 0; j < elements.length && found == false; j++) {
+                var element = null;
                 if (elements[j] instanceof FrameElement || elements[j] instanceof PageElement) {
-                    var element = elements[j];
+                    element = elements[j];
                 } else {
-                    var element = this.entities.byId[elements[j]];
+                    element = this.entities.byId[elements[j]];
+                }
+                if (element && element.id) {
+                    if (element.id() === frameElemId) {
+                        frameOrPage = element;
+                        found = true;
+                    }
                 }
 
-                if (element.id() === frameElemId) {
-                    frameOrPage = element;
-                    found = true;
-                }
             }
 
 
