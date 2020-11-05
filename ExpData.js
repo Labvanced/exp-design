@@ -2128,16 +2128,19 @@ ExpData.prototype.getFrameFromFrameElementId = function (frameElemId) {
 
             var elements = entity.elements();
             for (var j = 0; j < elements.length && found == false; j++) {
+                var element = null;
                 if (elements[j] instanceof FrameElement || elements[j] instanceof PageElement) {
-                    var element = elements[j];
+                    element = elements[j];
                 } else {
-                    var element = this.entities.byId[elements[j]];
+                    element = this.entities.byId[elements[j]];
+                }
+                if (element) {
+                    if (element.id() === frameElemId) {
+                        frameOrPage = element;
+                        found = true;
+                    }
                 }
 
-                if (element.id() === frameElemId) {
-                    frameOrPage = element;
-                    found = true;
-                }
             }
 
 
