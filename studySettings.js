@@ -62,6 +62,7 @@ var StudySettings = function (expData) {
     this.actionOnResourceError = ko.observable("abort experiment");
 
     this.eyetrackingUploadEnabled = ko.observable(false);
+    this.showHeadPoseIgnoreBtn = ko.observable(false);
 
 
     var self = this;
@@ -292,6 +293,10 @@ StudySettings.prototype.fromJS = function (data) {
     if (data.hasOwnProperty("eyetrackingUploadEnabled")) {
         this.eyetrackingUploadEnabled(data.eyetrackingUploadEnabled);
     }
+    if (data.hasOwnProperty("showHeadPoseIgnoreBtn")) {
+        this.showHeadPoseIgnoreBtn(data.showHeadPoseIgnoreBtn);
+    }
+
 
 
 
@@ -341,7 +346,10 @@ StudySettings.prototype.toJS = function () {
         assignSubjGroup: this.assignSubjGroup(),
         assignSession: this.assignSession(),
         actionOnResourceError: this.actionOnResourceError(),
-        eyetrackingUploadEnabled: this.eyetrackingUploadEnabled()
+        eyetrackingUploadEnabled: this.eyetrackingUploadEnabled(),
+        showHeadPoseIgnoreBtn: this.showHeadPoseIgnoreBtn(),
+
+
     };
     return data;
 };
