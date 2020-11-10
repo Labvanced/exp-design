@@ -452,6 +452,18 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function () {
         }
     }
 
+    if (os == "Mac/OS-X") {    // since iOS 13
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (isIOS) {
+            if (navigator.platform.indexOf("iPhone") != -1) {
+                os = "iPhone";
+            }
+            else {
+                os = "iPad";
+            }
+        }
+    }
+
     if (os == "Android") {
         if (/Mobile/.test(nAgt)) {
             os = "Android-Mobile";
