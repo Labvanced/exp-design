@@ -645,7 +645,7 @@ ExpData.prototype.staticTranslations = {
             countdownMessage2: "utrzymaj zwrok na zwierzęciu",
             loadingCalib: "Poczekaj na zakończenie kalibracji:<br>",
             moveForward: "kontyntynuj",
-            moveForwardIgnore: "continue anyway",
+            moveForwardIgnore: "kontynuować tak czy inaczej / pominąć kontrolę pozycji <br> (stosować tylko w przypadku, gdy ponowne dostosowanie nie jest możliwe)",
             moveBackward: "z powrotem"
         }
     },
@@ -857,7 +857,7 @@ ExpData.prototype.staticTranslations = {
             countdownMeldung2: "Fixieren Sie das Tier Bild",
             LadenCalib: "Bitte warten Sie, bis die Kalibrierung abgeschlossen ist:<br>",
             moveForward: "weiter",
-            moveForwardIgnore: "continue anyway",
+            moveForwardIgnore: "Trotzdem fortfahren / Posenprüfung überspringen <br> (Nur verwenden, falls eine Nachjustierung nicht möglich ist)",
             moveBackward: "zurück",
         }
     },
@@ -1068,7 +1068,7 @@ ExpData.prototype.staticTranslations = {
             countdownMessage2: "Sigue fijando al animal",
             loadingCalib: "Por favor, espere a que se complete la calibración:<br>",
             moveForward: "Continuar",
-            moveForwardIgnore: "continue anyway",
+            moveForwardIgnore: "Continuar de todos modos / saltar la comprobación de la pose <br> (Sólo usar en caso de que el reajuste no sea posible)",
             moveBackward: "atrás"
         }
     },
@@ -1280,7 +1280,7 @@ ExpData.prototype.staticTranslations = {
             countdownMessage2: "Continuar a fixar o animal",
             loadingCalib: "Por favor aguarde a calibração para completar:<br>",
             moveForward: "continuar",
-            moveForwardIgnore: "continue anyway",
+            moveForwardIgnore: "Continuar de qualquer forma / saltar verificação de pose <br> (Só utilizar no caso de não ser possível o reajustamento)",
             moveBackward: "para trás"
         }
     },
@@ -1494,7 +1494,7 @@ ExpData.prototype.staticTranslations = {
             countdownMessage2: "Continuez à fixer l'animal",
             loadingCalib: "Veuillez attendre la fin de la calibration:<br>",
             moveForward: "continuer",
-            moveForwardIgnore: "continue anyway",
+            moveForwardIgnore: "Continuer quand même / sauter la vérification de la pose <br> (à n'utiliser que dans le cas où le réajustement n'est pas possible)",
             moveBackward: "retour"
         }
     },
@@ -1706,7 +1706,7 @@ ExpData.prototype.staticTranslations = {
             countdownMessage2: "继续盯着动物",
             loadingCalib: "请等待校准完成。<br>",
             moveForward: "继续",
-            moveForwardIgnore: "continue anyway",
+            moveForwardIgnore: "继续/跳过姿势检查 <br> (仅在无法重新调整的情况下使用)",
             moveBackward: "后面"
         }
     },
