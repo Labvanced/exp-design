@@ -26,12 +26,12 @@ var ExpEvent = function (parent) {
 
     // not serialized:
     this.isPaused = false;
-    this.isGlobal = ko.observable(this.parent.constructor.name === 'Sequence' ? true : false);
+    this.isSequence = ko.observable(this.parent.constructor.name === 'Sequence' ? true : false);
 };
 
 
 ExpEvent.prototype.getSequence = function () {
-    if (this.isGlobal()) {
+    if (this.isSequence()) {
         return this.parent;
     }
     return this.parent.parent;
@@ -40,25 +40,25 @@ ExpEvent.prototype.getSequence = function () {
 ExpEvent.prototype.getIcon = function () {
     var icons = {
         'TriggerMouse': '/resources/icons/events/mouseEvent.svg',
-        'TriggerEyetracking':'/resources/features/technology.svg',
-        'TriggerButtonClick':'/resources/icons/tools/tool_button.svg',
-        'TriggerKeyboard':'/resources/icons/events/keyboardEvent.svg',
-        'TriggerOnFrameStart':'/resources/icons/events/onChangeEvent.svg',
-        'TriggerOnFrameEnd':'/resources/icons/events/onChangeEvent.svg',
-        'TriggerWebsocket':'/resources/icons/events/onChangeEvent.svg',
-        'TriggerEnterOnInput':'/resources/icons/tools/tool_input.svg',
-        'TriggerVariableValueChanged':'/resources/icons/Navigation/dark/variables-dark.svg',
-        'TriggerOnContentElement':'/resources/icons/upload.svg',
-        'TriggerAudioVideoEvent':'/resources/icons/tools/objectlist/tool_video.svg'
+        'TriggerEyetracking': '/resources/features/technology.svg',
+        'TriggerButtonClick': '/resources/icons/tools/tool_button.svg',
+        'TriggerKeyboard': '/resources/icons/events/keyboardEvent.svg',
+        'TriggerOnFrameStart': '/resources/icons/events/onChangeEvent.svg',
+        'TriggerOnFrameEnd': '/resources/icons/events/onChangeEvent.svg',
+        'TriggerWebsocket': '/resources/icons/events/onChangeEvent.svg',
+        'TriggerEnterOnInput': '/resources/icons/tools/tool_input.svg',
+        'TriggerVariableValueChanged': '/resources/icons/Navigation/dark/variables-dark.svg',
+        'TriggerOnContentElement': '/resources/icons/upload.svg',
+        'TriggerAudioVideoEvent': '/resources/icons/tools/objectlist/tool_video.svg'
     }
 
 
-    if(icons[this.trigger().type]){
+    if (icons[this.trigger().type]) {
         return icons[this.trigger().type];
     }
 
     console.log(this.trigger().type);
-    return '/resources/icons/events/mouseEvent.svg';  
+    return '/resources/icons/events/mouseEvent.svg';
 }
 
 /**
@@ -257,8 +257,8 @@ ExpEvent.prototype.fromJS = function (data) {
     if (data.requirement) {
         this.requirementConverter(data);
     }
-    if (data.hasOwnProperty('isGlobal')) {
-        this.isGlobal(data.isGlobal);
+    if (data.hasOwnProperty('isSequence')) {
+        this.isSequence(data.isSequence);
     }
 
 
@@ -298,7 +298,7 @@ ExpEvent.prototype.toJS = function () {
         trigger: this.trigger().toJS(),
         actions: actionData,
         description: this.description(),
-        isGlobal: this.isGlobal(),
+        isSequence: this.isSequence(),
     };
 };
 

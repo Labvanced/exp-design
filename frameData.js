@@ -295,7 +295,7 @@ FrameData.prototype.fromJS = function (data) {
 FrameData.prototype.toJS = function () {
     var events = this.events();
     events = events.filter(function (element) {
-        return !element.isGlobal();
+        return !element.isSequence();
     });
     return {
         id: this.id(),
