@@ -15,6 +15,16 @@
                            value="variable"
                            data-bind="checked: dataModel().progressType"></label>
             </div>
+
+
+            <span class="property-description">
+                Show Percent As Text:
+                <input class="taskeditor-checkbox"
+                       type="checkbox"
+                       data-bind="checked: dataModel().showPercentAsText">
+            </span>
+            <br>
+
             <!-- ko if: dataModel().progressType()=="fixed" -->
             Progress: <input type="number"
                    min="0"
@@ -38,13 +48,15 @@
 <template id="progress-bar-preview-template">
     <div class="myProgress">
         <div class="myBar"
-             data-bind="style: {'width': progress()+'%'}"><span data-bind="text: progress()+'%'"></span></div>
+             data-bind="style: {'width': progress()+'%'}"><span
+                  data-bind="visible: dataModel().showPercentAsText(), text: progress()+'%'"></span></div>
     </div>
 </template>
 
 <template id="progress-bar-playerview-template">
     <div class="myProgress">
         <div class="myBar"
-             data-bind="style: {'width': progress()+'%'}"><span data-bind="text: progress()+'%'"></span></div>
+             data-bind="style: {'width': progress()+'%'}"><span
+                  data-bind="visible: dataModel().showPercentAsText(), text: progress()+'%'"></span></div>
     </div>
 </template>
