@@ -8,6 +8,8 @@ var ProgressBarElement = function (expData) {
     this.progressValue = ko.observable(50);
     this.variable = ko.observable(null);
     this.progressType = ko.observable('fixed');
+    this.showPercentAsText = ko.observable(true);
+
 
     // modifier:
     this.modifier = ko.observable(new Modifier(this.expData, this));
@@ -112,7 +114,8 @@ ProgressBarElement.prototype.toJS = function () {
         progressValue: this.progressValue(),
         variable: variableId,
         modifier: this.modifier().toJS(),
-        progressType: this.progressType()
+        progressType: this.progressType(),
+        showPercentAsText: this.showPercentAsText(),
     };
 };
 
@@ -124,6 +127,10 @@ ProgressBarElement.prototype.fromJS = function (data) {
     this.modifier().fromJS(data.modifier);
     if (data.hasOwnProperty("progressType")) {
         this.progressType(data.progressType);
+    }
+
+    if (data.hasOwnProperty("prshowPercentAsTextogressType")) {
+        this.showPercentAsText(data.showPercentAsText);
     }
 
 
