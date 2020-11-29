@@ -3,19 +3,22 @@
      title="Group Settings">
     <div>
         <form data-bind="submit: ok">
-            <div>Please enter a subject code and which subject group or session you want to start?</div>
+            <div data-bind="text: expData().staticStrings().start.expSessionDialogText"></div>
 
             <div>
                 <label>
-                    <span class="survey-left-label">Subject Code:</span>
+                    <span class="survey-left-label"
+                          data-bind="text: expData().staticStrings().start.expSessionDialogSubjCode">Subject
+                        Code:</span>
                     <span>
-                        <input type="text"
+                        <input type="
+                          text"
                                data-bind="value: subjectCode" />
                     </span>
                 </label>
             </div>
 
-            <div>
+            <div data-bind="visible: expData().availableGroups().length > 1">
                 <label>
                     <span class="survey-left-label">Subject Group:</span>
                     <span>
@@ -29,7 +32,7 @@
                 </label>
             </div>
 
-            <div>
+            <div data-bind="visible: expData().availableSessions().length > 1">
                 <label>
                     <span class="survey-left-label">Session Number:</span>
                     <select data-bind="
