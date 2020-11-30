@@ -255,6 +255,9 @@ ExpData.prototype.staticTranslations = {
             customRequirement: "Hereby I confirm that I accept the terms and conditions of this study and fulfill the following participation requirements as stated below:",
             requestPermissionHeader: "Device permissions required",
             requestPermissionBody: "This experiment requires access to your webcam or microphone. In the following screen, please allow access to your webcam or microphone device to continue.",
+            expSessionDialogHeader: "Experiment Session",
+            expSessionDialogText: "Please enter details of the experiment session.",
+            expSessionDialogSubjCode: "Subject Code:",
         },
         errors: {
             errorSessionNotReady: "You can currently not take part in this experiment because this study can only be started at certain times.",
@@ -470,6 +473,9 @@ ExpData.prototype.staticTranslations = {
             customRequirement: "Niniejszym potwierdzam, że akceptuję warunki niniejszego badania i spełniam następujące warunki uczestnictwa, jak określono poniżej:",
             requestPermissionHeader: "Wymagane uprawnienia urządzenia",
             requestPermissionBody: "Ten eksperyment wymaga dostępu do kamery internetowej lub mikrofonu. Zezwól na dostęp do kamery internetowej lub mikrofonu, aby kontynuować.",
+            expSessionDialogHeader: "Sesja eksperymentalna",
+            expSessionDialogText: "Proszę podać szczegóły sesji eksperymentalnej.",
+            expSessionDialogSubjCode: "Kod obiektu: ",
         },
         errors: {
             errorSessionNotReady: "Obecnie nie możesz wziąć udziału w tym eksperymencie, ponieważ badanie to można rozpocząć tylko w określonych momentach.",
@@ -684,6 +690,9 @@ ExpData.prototype.staticTranslations = {
             customRequirement: "Ich bestätige hiermit, dass ich mit den folgenden Regeln und Bedingungen der Studie einverstanden bin und folgende Teilnahmebedingungen vollständig erfülle:",
             requestPermissionHeader: "Geräteberechtigungen erforderlich",
             requestPermissionBody: "Die Teilnahme an diesem Experiment benötigt Zugriff auf Ihre Webcam oder Ihr Microphone. Um fortzufahren, erlauben Sie bitte auf dem folgenden Bildschirm den Zugriff auf Ihre Webcam oder Ihr Mikrofon.",
+            expSessionDialogHeader: "Experiment-Sitzung",
+            expSessionDialogText: "Bitte geben Sie die Details der Versuchssitzung ein",
+            expSessionDialogSubjCode: "Subject Code:",
         },
         errors: {
             errorSessionNotReady: "Sie können derzeit nicht an diesem Experiment teilnehmen, da diese Studie nur zu bestimmten Zeiten gestartet werden kann.",
@@ -896,6 +905,9 @@ ExpData.prototype.staticTranslations = {
             customRequirement: "Por la presente confirmo que acepto los términos y condiciones de este estudio y cumplo con los siguientes requisitos de participación como se indica a continuación: ",
             requestPermissionHeader: "Requiere permiso del dispositivo",
             requestPermissionBody: "Este experimento requiere el acceso a su cámara web o micrófono. En la siguiente pantalla, permite el acceso a tu cámara web o al micrófono para continuar.",
+            expSessionDialogHeader: "Sesión de experimentación",
+            expSessionDialogText: "Por favor, introduzca los detalles de la sesión de experimentación",
+            expSessionDialogSubjCode: "Código del sujeto:",
         },
         errors: {
             errorSessionNotReady: "Actualmente no puede participar en este experimento porque este estudio solo puede iniciarse en un horario concreto",
@@ -1107,6 +1119,9 @@ ExpData.prototype.staticTranslations = {
             customRequirement: "Por meio deste, eu confirmo que aceito os termos e condições deste estudo e cumpro os seguintes requisitos de participação conforme declarado abaixo:",
             requestPermissionHeader: "Permissão de Dispositivo Necessária",
             requestPermissionBody: "Este experimento requer acesso à sua webcam ou microfone. Permita o acesso à sua webcam ou microfone para continuar.",
+            expSessionDialogHeader: "Sessão de Experiência",
+            expSessionDialogText: "Por favor, introduza os detalhes da sessão de experiência",
+            expSessionDialogSubjCode: "Subject Code:",
         },
         errors: {
             errorSessionNotReady: "No momento, você não pode participar deste experimento porque este estudo só pode ser iniciado em determinados momentos.",
@@ -1319,6 +1334,9 @@ ExpData.prototype.staticTranslations = {
             customRequirement: "Par la présente, je confirme que j'accepte les termes et conditions de cette étude et que je remplis les conditions de participation suivantes, comme indiqué ci-dessous:",
             requestPermissionHeader: "Autorisation requise de l'appareil",
             requestPermissionBody: "Cette expérience nécessite l'accès à votre webcam ou à votre microphone. Dans l'écran suivant, veuillez autoriser l'accès à votre webcam ou à votre microphone pour continuer.",
+            expSessionDialogHeader: "Session d'expérimentation",
+            expSessionDialogText: "Veuillez entrer les détails de la session d'expérimentation.",
+            expSessionDialogSubjCode: "Subject Code :",
         },
         errors: {
             errorSessionNotReady: "Vous ne pouvez actuellement pas participer à cette expérience car cette étude ne peut être lancée qu'à certains moments",
@@ -1532,10 +1550,9 @@ ExpData.prototype.staticTranslations = {
             CustomRequirement: "我在此确认，我接受本研究的条款和条件，并满足以下参与要求。我在此确认我接受本研究的条款和条件并满足以下参与要求：",
             requestPermissionHeader: "需要设备权限",
             requestPermissionBody: "本实验需要访问您的网络摄像头或麦克风。在下面的屏幕中，请允许访问您的网络摄像头或麦克风设备以继续进行。",
-
-
-
-
+            expSessionDialogHeader: "实验环节",
+            expSessionDialogText: "请输入实验环节的详细信息。",
+            expSessionDialogSubjCode: "主题代码：",
         },
         errors: {
             errorSessionNotReady: "你目前不能参加这个实验，因为这个研究只能在特定时间开始。",

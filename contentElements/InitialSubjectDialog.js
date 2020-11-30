@@ -78,7 +78,7 @@ InitialSubjectDialog.prototype.start = function (cb) {
         self.divContainer.dialog({
             modal: true,
             width: 500,
-            title: "Experiment Session",
+            title: self.expData().staticStrings().start.expSessionDialogHeader,
             open: function (event, ui) {
             },
             close: function () {
