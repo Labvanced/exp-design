@@ -229,6 +229,7 @@ Experiment.prototype.saveExpData = function (cb, force) {
 
     if (this.status() == "create" || force) {
         console.log("save experiment " + this.exp_name() + " and send to server...");
+        this.version(this.version() + 1);
         try {
             var serializedExp = this.toJS();
             if (uc.userdata.accountSettingsData.ctrlZenabled()) {

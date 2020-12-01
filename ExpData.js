@@ -165,6 +165,7 @@ ExpData.prototype.fixedVarNames = [
     'varScreenTotalWidthX',
     'varScreenTotalWidthY',
     'varPixelDensityPerMM',
+    'varExpVersion',
 
     //not recorded and not global by default
     'varBrowserSpec',
@@ -212,6 +213,7 @@ ExpData.prototype.varDescriptions = {
     'varScreenTotalWidthX': 'This variable holds the number of pixels in the X-dimension of the computer screen in pixels.',
     'varScreenTotalWidthY': 'This variable holds the number of pixels in the Y-dimension of the computer screen in pixels.',
     'varMultiUserGroupId': 'This variable holds a unique group ID for multi user studies.',
+    'varExpVersion': 'This variable holds the version of the experiment that is autoincremented when the study is saved.',
 
 
 
@@ -2027,6 +2029,13 @@ ExpData.prototype.createVars = function () {
         this.varScreenTotalWidthY().setDescription(ExpData.prototype.varDescriptions["varScreenTotalWidthY"]);
         this.varScreenTotalWidthY().isRecorded(false);
         this.varScreenTotalWidthY().includeInGlobalVarList(false);
+    }
+
+    if (!this.varExpVersion()) {
+        this.varExpVersion((new GlobalVar(this.expData)).initProperties('numeric', 'session', 'interval', 'Experiment_Version'));
+        this.varExpVersion().setDescription(ExpData.prototype.varDescriptions["Experiment Version"]);
+        this.varExpVersion().isRecorded(false);
+        this.varExpVersion().includeInGlobalVarList(false);
     }
 
     this.reAddEntities();
