@@ -166,6 +166,7 @@ var ExperimentStartupScreen = function (experiment) {
     this.allowedBrowsers = ko.computed(function () {
         var settings = self.expData.studySettings;
         var list = [];
+        list.push("Labvanced");
         if (settings.allowChrome()) {
             list.push("Chrome");
         }
@@ -379,6 +380,32 @@ ExperimentStartupScreen.prototype.detectBrowserAndSystemSpecs = function () {
     else if ((verOffset = nAgt.indexOf('Firefox')) != -1 || navigator.userAgent.match("FxiOS")) {
         browser = 'Firefox';
         version = nAgt.substring(verOffset + 8);
+    }
+    // Labvanced
+    else if ((verOffset = nAgt.indexOf('Labvanced')) != -1) {
+        browser = 'Labvanced';
+        version = nAgt.substring(verOffset + 10, nAgt.indexOf(' '));
+        if (is_nwjs()) {
+            var ifaces = require('os').networkInterfaces();
+            var ifnames = Object.keys(ifaces);
+            ifnames.sort();
+            var macAddrFound = false;
+            for (var ifidx = 0; ifidx < ifnames.length; ifidx++) {
+                var addr = ifaces[ifnames[ifidx]];
+                for (var addridx = 0; addridx < addr.length; addridx++) {
+                    var macAddr = addr[addridx].mac;
+                    if (macAddr.length == 17 && macAddr != "00:00:00:00:00:00") {
+                        console.log("found macAddr: ", macAddr)
+                        nAgt = nAgt + " MACADDR/" + macAddr;
+                        macAddrFound = true;
+                        break;
+                    }
+                }
+                if (macAddrFound) {
+                    break;
+                }
+            }
+        }
     }
     // MSIE 11+
     else if (nAgt.indexOf('Trident/') != -1) {

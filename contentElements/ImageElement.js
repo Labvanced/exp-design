@@ -38,8 +38,12 @@ var ImageElement = function (expData) {
             if (typeof player !== 'undefined') {
                 file_route = "/player/files/" + player.expSessionNr + "/";
                 if (is_nwjs()) {
-                    return player.playerPreloader.preloadedObjectUrlsById[this.modifier().selectedTrialView.file_id()];
-                    //file_route = "files/";
+                    if (player.playerPreloader.preloadedObjectUrlsById.hasOwnProperty(this.modifier().selectedTrialView.file_id())) {
+                        return player.playerPreloader.preloadedObjectUrlsById[this.modifier().selectedTrialView.file_id()];
+                    }
+                    else {
+                        return "file://" + player.getNwjsImgPath(this.modifier().selectedTrialView.file_id(), this.modifier().selectedTrialView.file_orig_name());
+                    }
                 }
             }
             return file_route + this.modifier().selectedTrialView.file_id() + "/" + this.modifier().selectedTrialView.file_orig_name();
