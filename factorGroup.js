@@ -82,7 +82,7 @@ var FactorGroup = function (expData, expTrialLoop) {
 
         function deepDive(arr, numNewLevels) {
 
-            if (arr[0].constructor === Array) {
+            if (arr[0] && arr[0].constructor === Array) {
                 // recursive call:
                 for (var t = 0; t < arr.length; t++) {
                     deepDive(arr[t], numNewLevels);
