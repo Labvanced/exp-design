@@ -68,7 +68,7 @@ var ExpTrialLoop = function (expData) {
 
     // external devices
     this.webcamEnabled = ko.observable(false);
-
+    this.isSeparator = ko.observable(false);
 
 
     // not serialized
@@ -1700,6 +1700,10 @@ ExpTrialLoop.prototype.fromJS = function (data) {
     if (data.hasOwnProperty('useDriftCorrection')) {
         this.useDriftCorrection(data.useDriftCorrection);
     }
+    if (data.hasOwnProperty('isSeparator')) {
+        this.isSeparator(data.isSeparator);
+    }
+
 
 
 
@@ -1761,5 +1765,6 @@ ExpTrialLoop.prototype.toJS = function () {
         webcamEnabled: this.webcamEnabled(),
         eventVariables: jQuery.map(this.eventVariables(), function (eventVariables) { return eventVariables.id(); }),
         useDriftCorrection: this.useDriftCorrection(),
+        isSeparator: this.isSeparator(),
     };
 };
