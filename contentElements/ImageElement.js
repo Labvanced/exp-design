@@ -35,6 +35,7 @@ var ImageElement = function (expData) {
 
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
             var file_route = "/files/";
+            console.log("if IMG!!!")
             if (typeof player !== 'undefined') {
                 file_route = "/player/files/" + player.expSessionNr + "/";
                 if (is_nwjs()) {

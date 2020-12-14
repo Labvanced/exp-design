@@ -33,7 +33,10 @@ var WebGLElement = function (expData) {
 
     this.imgSource = ko.computed(function () {
 
+        console.log(this.modifier().selectedTrialView)
+
         if (this.modifier().selectedTrialView.file_id() && this.modifier().selectedTrialView.file_orig_name()) {
+            console.log('W IFIE!!!!!!!!!!!!!');
             var file_route = "/files/";
             if (typeof player !== 'undefined') {
                 file_route = "/player/files/" + player.expSessionNr + "/";
@@ -109,6 +112,8 @@ WebGLElement.prototype.fromJS = function (data) {
 
 WebGLElement.prototype.toJS = function () {
 
+    console.log(this.file_orig_name());
+
     return {
         type: this.type,
         dataType: this.dataType,
@@ -119,3 +124,44 @@ WebGLElement.prototype.toJS = function () {
         modifier: this.modifier().toJS()
     };
 };
+function createWebGLElementComponents() {
+    ko.components.register('webGL-editview', {
+        viewModel: {
+            createViewModel: function (dataModel, componentInfo) {
+                var viewModel = function (dataModel) {
+                    this.dataModel = dataModel;
+                    this.iFrameUrl = dataModel.iFrameUrl;
+                };
+
+                return new viewModel(dataModel);
+            }
+
+        },
+        template: { element: 'webGL-editview-template' }
+    });
+
+    ko.components.register('webGL-preview', {
+        viewModel: {
+            createViewModel: function (dataModel, componentInfo) {
+                var viewModel = function (dataModel) {
+                    this.dataModel = dataModel;
+                };
+                return new viewModel(dataModel);
+            }
+        },
+        template: { element: 'webGL-preview-template' }
+    });
+
+
+    // ko.components.register('iframe-playerview', {
+    //     viewModel: {
+    //         createViewModel: function (dataModel, componentInfo) {
+    //             var viewModel = function (dataModel) {
+    //                 this.dataModel = dataModel;
+    //             };
+    //             return new viewModel(dataModel);
+    //         }
+    //     },
+    //     template: { element: 'iframe-playerview-template' }
+    // });
+}

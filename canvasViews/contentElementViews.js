@@ -86,6 +86,10 @@ ko.components.register('contentElementPreview', {
             if (contentElement instanceof IFrameElement) {
                 elem = $("<div style='width:100%; height:100%' data-bind='component: {name : \"iframe-preview\", params : $data.contentElement}'></div>");
             }
+            if (contentElement instanceof WebGLElement) {
+                elem = $("<div style='width:100%; height:100%' data-bind='component: {name : \"webGL-preview\", params : $data.contentElement}'></div>");
+            }
+
             $(divElem).append(elem);
             return viewModel;
         }
@@ -278,6 +282,12 @@ ko.components.register('contentElementEditview', {
             else if (contentElement instanceof IFrameElement) {
                 elem = $("<div data-bind='component: {name : \"iframe-editview\", params : $data.contentElement}'></div>");
             }
+            else if (contentElement instanceof WebGLElement) {
+                elem = $("<div data-bind='component: {name : \"webGL-editview\", params : $data.contentElement}'></div>");
+            }
+
+            console.log(elem)
+
             $(divElem).append(elem);
 
             return viewModel;

@@ -118,6 +118,10 @@ var createExpDesignComponents = (function () {
                     filepath: "/html_views/IFrameElement.html?FILE_VERSION_PLACEHOLDER",
                     createCompFcn: createIFrameElementComponents
                 },
+                {
+                    filepath: "/html_views/WebGLElement.html?FILE_VERSION_PLACEHOLDER",
+                    createCompFcn: createWebGLElementComponents
+                },
             ];
 
             var numRemainingItems = templates.length;

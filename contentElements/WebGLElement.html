@@ -1,0 +1,44 @@
+<template id="webGL-editview-template">
+    <div class="panel-body"
+         style="height: 100%; margin-top: -10px">
+        <div class="taskeditor-header">WebGL</div>
+
+
+        <label class="property-description"
+               for="imgFile3">Filename: </label>
+        <span style="width: 180px;">
+            <span id="imgFile3"
+                  class="taskeditor-input"
+                  style="display: inline-flex; margin-top: 8px; overflow: hidden"
+                  data-bind="{text: dataModel.modifier().selectedTrialView.file_orig_name, css: { 'modified-prop': !(dataModel.file_orig_name()==dataModel.modifier().selectedTrialView.file_orig_name()) }}"></span>
+            <span class="file-button"
+                  data-bind="click: function() { $root.mediaEditor.openFileManager(true)}"
+                  style="cursor: pointer">
+                <img src="/resources/icons/openFile.svg"
+                     style="width: 20px;" />
+            </span>
+        </span>
+
+        <div style="font-size: 12px; margin-left: 25px">
+            Use <b>Unity files</b> only.
+        </div>
+    </div>
+
+
+
+</template>
+
+
+<template id="webGL-preview-template">
+    <iframe style="width:98%; height:97%; margin-left:1%;  margin-top:1%"
+            data-bind="attr: { src:  dataModel.imgSource}"></iframe>
+
+</template>
+
+<template id="webGL-playerview-template">
+    <div data-bind="if: dataModel.iFrameUrlWithProtocol"
+         style="height:100%;">
+        <iframe style="width:98%; height:97%; margin-left:1%;  margin-top:1%"
+                data-bind="attr: { src:  dataModel.iFrameUrlWithProtocol}"></iframe>
+    </div>
+</template>
